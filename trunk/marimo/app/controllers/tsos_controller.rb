@@ -2,7 +2,7 @@ class TsosController < ApplicationController
   # GET /tsos
   # GET /tsos.xml
   def index
-    @tsos = Tso.find(:all)
+    @tsos = Tso.paginate(:page => params[:page])
 
     respond_to do |format|
       format.html # index.html.erb
