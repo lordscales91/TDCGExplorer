@@ -1,4 +1,7 @@
 class TsosController < ApplicationController
+  include AuthenticatedSystem
+  layout 'anon'
+
   # GET /tsos
   # GET /tsos.xml
   def index

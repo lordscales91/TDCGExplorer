@@ -1,0 +1,11 @@
+<%= form_tag session_path -%>
+  <p>
+    Login:<br />
+    <%= text_field_tag "login" %>
+  </p>
+  <p>
+    Password:<br />
+    <%= text_field_tag "password" %>
+  </p>
+  <%= submit_tag "Login" %>
+</form>
