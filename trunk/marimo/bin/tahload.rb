@@ -4,8 +4,8 @@ require File.dirname(__FILE__) + "/../config/environment"
 def create_arc(line)
   md = /^# ([a-z]{3}) (.+)/.match(line)
   _, extname, tmp = md.to_a
-  location = File.dirname(tmp)
-  basename = File.basename(tmp, "." + extname)
+  location, basename = tmp.split("\\")
+  basename.sub!(Regexp.new(Regexp.escape("." + extname) + "$"), '')
   if md = /^([A-Za-z0-9]{6,9})$/.match(basename)
     _, code = md.to_a
     summary = nil
