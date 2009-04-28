@@ -23,6 +23,15 @@
   <%=h @arc.origname %>
 </p>
 
+<p>
+  <b>Tahs:</b>
+  <ul>
+  <%-for tah in @arc.tahs-%>
+    <li><%=h tah.path %></li>
+  <%-end-%>
+  </ul>
+</p>
+
 
 <%= link_to 'Edit', edit_arc_path(@arc) %> |
 <%= link_to 'Back', arcs_path %>
