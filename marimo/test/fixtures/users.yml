@@ -1,9 +1,5 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  login: MyString
-  password: MyString
-
-two:
-  login: MyString
-  password: MyString
+  login: admin
+  password: marimo-d
