@@ -1,0 +1,20 @@
+<h1>Listing tahs</h1>
+
+<table>
+  <tr>
+    <th>Path</th>
+  </tr>
+
+<% for tah in @tahs %>
+  <tr>
+    <td><%=h tah.path %></td>
+    <td><%= link_to 'Show', tah %></td>
+    <td><%= link_to 'Edit', edit_tah_path(tah) %></td>
+    <td><%= link_to 'Destroy', tah, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New tah', new_tah_path %>
