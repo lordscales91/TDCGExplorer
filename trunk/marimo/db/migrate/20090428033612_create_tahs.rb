@@ -6,9 +6,11 @@ class CreateTahs < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :tahs, :arc_id
   end
 
   def self.down
+    remove_index :tahs, :arc_id
     drop_table :tahs
   end
 end
