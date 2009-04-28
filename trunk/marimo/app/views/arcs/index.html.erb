@@ -1,0 +1,28 @@
+<h1>Listing arcs</h1>
+
+<table>
+  <tr>
+    <th>Code</th>
+    <th>Extname</th>
+    <th>Location</th>
+    <th>Summary</th>
+    <th>Origname</th>
+  </tr>
+
+<% for arc in @arcs %>
+  <tr>
+    <td><%=h arc.code %></td>
+    <td><%=h arc.extname %></td>
+    <td><%=h arc.location %></td>
+    <td><%=h arc.summary %></td>
+    <td><%=h arc.origname %></td>
+    <td><%= link_to 'Show', arc %></td>
+    <td><%= link_to 'Edit', edit_arc_path(arc) %></td>
+    <td><%= link_to 'Destroy', arc, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New arc', new_arc_path %>
