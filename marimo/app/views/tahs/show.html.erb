@@ -3,6 +3,15 @@
   <%=h @tah.path %>
 </p>
 
+<p>
+  <b>Tsos:</b>
+  <ul>
+  <%-for tso in @tah.tsos-%>
+    <li><%=h tso.path %></li>
+  <%-end-%>
+  </ul>
+</p>
+
 
 <%= link_to 'Edit', edit_tah_path(@tah) %> |
 <%= link_to 'Back', tahs_path %>
