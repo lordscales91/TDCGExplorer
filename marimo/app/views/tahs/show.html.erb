@@ -12,6 +12,7 @@
   </ul>
 </p>
 
-
+<%-if logged_in? -%>
 <%= link_to 'Edit', edit_tah_path(@tah) %> |
+<%-end-%>
 <%= link_to 'Back', tahs_path %>

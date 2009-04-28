@@ -32,6 +32,7 @@
   </ul>
 </p>
 
-
+<%-if logged_in? -%>
 <%= link_to 'Edit', edit_arc_path(@arc) %> |
+<%-end-%>
 <%= link_to 'Back', arcs_path %>

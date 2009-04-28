@@ -3,6 +3,7 @@
   <%=h @tso.path %>
 </p>
 
-
+<%-if logged_in? -%>
 <%= link_to 'Edit', edit_tso_path(@tso) %> |
+<%-end-%>
 <%= link_to 'Back', tsos_path %>
