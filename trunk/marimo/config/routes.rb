@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :tsos
+
   map.resources :tahs
 
   map.resources :arcs
