@@ -1,0 +1,20 @@
+<h1>Listing tsos</h1>
+
+<table>
+  <tr>
+    <th>Path</th>
+  </tr>
+
+<% for tso in @tsos %>
+  <tr>
+    <td><%=h tso.path %></td>
+    <td><%= link_to 'Show', tso %></td>
+    <td><%= link_to 'Edit', edit_tso_path(tso) %></td>
+    <td><%= link_to 'Destroy', tso, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New tso', new_tso_path %>
