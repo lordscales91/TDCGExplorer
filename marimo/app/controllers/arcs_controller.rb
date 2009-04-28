@@ -2,7 +2,7 @@ class ArcsController < ApplicationController
   # GET /arcs
   # GET /arcs.xml
   def index
-    @arcs = Arc.find(:all)
+    @arcs = Arc.paginate(:page => params[:page])
 
     respond_to do |format|
       format.html # index.html.erb
