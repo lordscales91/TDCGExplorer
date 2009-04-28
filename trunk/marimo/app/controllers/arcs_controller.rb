@@ -2,7 +2,8 @@ class ArcsController < ApplicationController
   # GET /arcs
   # GET /arcs.xml
   def index
-    @arcs = Arc.paginate(:page => params[:page], :order => 'location, code')
+    @search = Arc::Search.new(params[:search])
+    @arcs = Arc.paginate(@search.find_options.merge(:page => params[:page], :order => 'location, code'))
 
     respond_to do |format|
       format.html # index.html.erb

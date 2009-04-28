@@ -1,5 +1,15 @@
 <h1>Listing arcs</h1>
 
+<% form_for(:search, @search, :url => arcs_path, :html => { :method => :get }) do |f| %>
+  <p>
+    <%= f.label :code %><br />
+    <%= f.text_field :code %>
+  </p>
+  <p>
+    <%= f.submit "Search" %>
+  </p>
+<% end %>
+
 <table>
   <tr>
     <th>Code</th>
