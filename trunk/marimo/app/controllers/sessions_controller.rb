@@ -1,16 +1,16 @@
 class SessionsController < ApplicationController
   include AuthenticatedSystem
-  layout 'anon'
+  layout 'sessions'
 
   def new
   end
 
   def create
-    user = User.authenticate(params[:login], params[:password])
+    user = User.authenticate("admin", params[:password])
     if user
       self.current_user = user
       flash[:notice] = "Logged in successfully."
-      redirect_back_or_default welcome_path
+      redirect_back_or_default root_path
     else
       flash[:error] = "Couldn't log you in"
       logger.warn "Failed login for '#{params[:login]}' from #{request.remote_ip} at #{Time.now.utc}"

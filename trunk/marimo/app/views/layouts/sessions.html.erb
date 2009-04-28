@@ -9,11 +9,7 @@
 </head>
 <body>
   <div>
-<%-if logged_in? -%>
-  <%= link_to "Logout", session_path, :method => :delete %>
-<%-else-%>
-  <%= link_to "Login", new_session_path %>
-<%-end-%>
+  <%= link_to "Home", root_path %>
   </div>
 <p style="color: green"><%= flash[:notice] %></p>
 
