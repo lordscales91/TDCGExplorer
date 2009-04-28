@@ -2,7 +2,7 @@ class Arc < ActiveRecord::Base
   has_many :tahs
 
   class Search
-    attr_accessor :code
+    attr_accessor :code, :summary
 
     def initialize(attributes)
       attributes.each do |name, value|
@@ -14,9 +14,13 @@ class Arc < ActiveRecord::Base
       @conditions ||= begin
         sql = "1"
         ret = [ sql ]
-        if code
+        unless code.blank?
           sql.concat " and code like ?"
           ret.push "%#{code}%"
+        end
+        unless summary.blank?
+          sql.concat " and summary like ?"
+          ret.push "%#{summary}%"
         end
         ret
       end
