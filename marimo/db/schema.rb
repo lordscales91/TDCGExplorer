@@ -28,11 +28,15 @@ ActiveRecord::Schema.define(:version => 20090428034048) do
     t.datetime "updated_at"
   end
 
+  add_index "tahs", ["arc_id"], :name => "index_tahs_on_arc_id"
+
   create_table "tsos", :force => true do |t|
     t.integer  "tah_id",     :limit => 11
     t.string   "path"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "tsos", ["tah_id"], :name => "index_tsos_on_tah_id"
 
 end

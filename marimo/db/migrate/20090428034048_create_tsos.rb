@@ -6,9 +6,11 @@ class CreateTsos < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :tsos, :tah_id
   end
 
   def self.down
+    remove_index :tsos, :tah_id
     drop_table :tsos
   end
 end
