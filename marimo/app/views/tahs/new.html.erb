@@ -1,0 +1,15 @@
+<h1>New tah</h1>
+
+<% form_for(@tah) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :path %><br />
+    <%= f.text_field :path %>
+  </p>
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', tahs_path %>
