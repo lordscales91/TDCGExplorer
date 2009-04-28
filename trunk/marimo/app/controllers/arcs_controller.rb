@@ -1,4 +1,7 @@
 class ArcsController < ApplicationController
+  include AuthenticatedSystem
+  layout 'anon'
+
   # GET /arcs
   # GET /arcs.xml
   def index

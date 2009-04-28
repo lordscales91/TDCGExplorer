@@ -1,4 +1,7 @@
 class TahsController < ApplicationController
+  include AuthenticatedSystem
+  layout 'anon'
+
   # GET /tahs
   # GET /tahs.xml
   def index
