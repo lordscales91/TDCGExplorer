@@ -9,8 +9,10 @@
   <tr>
     <td><%=h tah.path %></td>
     <td><%= link_to 'Show', tah %></td>
+<%-if logged_in? -%>
     <td><%= link_to 'Edit', edit_tah_path(tah) %></td>
     <td><%= link_to 'Destroy', tah, :confirm => 'Are you sure?', :method => :delete %></td>
+<%-end-%>
   </tr>
 <% end %>
 </table>

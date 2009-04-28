@@ -33,8 +33,10 @@
     <td><%=h arc.summary %></td>
     <td><%=h arc.origname %></td>
     <td><%= link_to 'Show', arc %></td>
+<%-if logged_in? -%>
     <td><%= link_to 'Edit', edit_arc_path(arc) %></td>
     <td><%= link_to 'Destroy', arc, :confirm => 'Are you sure?', :method => :delete %></td>
+<%-end-%>
   </tr>
 <% end %>
 </table>
