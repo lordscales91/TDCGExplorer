@@ -9,8 +9,10 @@
   <tr>
     <td><%=h tso.path %></td>
     <td><%= link_to 'Show', tso %></td>
+<%-if logged_in? -%>
     <td><%= link_to 'Edit', edit_tso_path(tso) %></td>
     <td><%= link_to 'Destroy', tso, :confirm => 'Are you sure?', :method => :delete %></td>
+<%-end-%>
   </tr>
 <% end %>
 </table>
