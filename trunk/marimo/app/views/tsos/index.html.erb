@@ -1,12 +1,18 @@
-<h1>Listing tsos</h1>
-
-<table>
+<table class="list tsos">
+  <thead>
   <tr>
     <th><%= _'Tso|Path' %></th>
+    <th></th>
+<%-if logged_in? -%>
+    <th></th>
+    <th></th>
+<%-end-%>
   </tr>
+  </thead>
 
+  <tbody>
 <% for tso in @tsos %>
-  <tr>
+  <tr class="<%= cycle('odd', 'even') %>">
     <td><%=h tso.path %></td>
     <td><%= link_to _('Show'), tso %></td>
 <%-if logged_in? -%>
@@ -15,9 +21,10 @@
 <%-end-%>
   </tr>
 <% end %>
+  </tbody>
 </table>
 
-<br />
-
+<%-if logged_in? -%>
 <%= link_to 'New tso', new_tso_path %>
+<%-end-%>
 <%= will_paginate(@tsos) %>

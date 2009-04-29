@@ -5,20 +5,40 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=Shift_JIS" />
   <title>Users: <%= controller.action_name %></title>
-  <%= stylesheet_link_tag 'scaffold' %>
+  <%= stylesheet_link_tag 'application' %>
 </head>
 <body>
-<div>
-  <%= link_to "Home", root_path %>
-<%-if logged_in? -%>
-  <%= link_to "Logout", session_path, :method => :delete %>
-<%-else-%>
-  <%= link_to "Login", new_session_path %>
-<%-end-%>
+<div id="wrapper">
+  <div id="top-menu">
+    <div id="account">
+      <%= link_to "Home", root_path %>
+    <%-if logged_in? -%>
+      <%= link_to "Logout", session_path, :method => :delete %>
+    <%-else-%>
+      <%= link_to "Login", new_session_path %>
+    <%-end-%>
+    </div>
+  </div>
+  <div id="header">
+    <h1>3DCG mods reference</h1>
+    <div id="main-menu">
+      <ul>
+        <li><%= link_menu_to _("arc"), arcs_path %></li>
+        <li><%= link_menu_to _("tah"), tahs_path %></li>
+        <li><%= link_menu_to _("tso"), tsos_path %></li>
+      </ul>
+    </div>
+  </div>
+  <div id="main" class="nosidebar">
+    <div id="content">
+<%= content_tag('div', flash[:error], :class => 'flash error') if flash[:error] %>
+<%= content_tag('div', flash[:notice], :class => 'flash notice') if flash[:notice] %>
+<%= yield %>
+    </div>
+  </div>
+  <div id="footer">
+    <p>copyright &copy; 2009  3DCG Craftsmen's Guild</p>
+  </div>
 </div>
-<p style="color: green"><%= flash[:notice] %></p>
-
-<%= yield  %>
-
 </body>
 </html>
