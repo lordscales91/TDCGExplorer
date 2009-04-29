@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: marimo 0.0.1\n"
-"POT-Creation-Date: 2009-04-30 04:49+0900\n"
+"POT-Creation-Date: 2009-04-30 06:15+0900\n"
 "PO-Revision-Date: 2009-04-30 04:29+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,27 +16,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: app/models/arc.rb:- app/views/welcome/index.html.erb:3
+#: app/models/arc.rb:- app/views/layouts/anon.html.erb:26
 msgid "arc"
 msgstr ""
 
-#: app/models/arc.rb:- app/views/arcs/index.html.erb:21
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:3
+#: app/views/arcs/index.html.erb:20
 msgid "Arc|Code"
 msgstr ""
 
-#: app/models/arc.rb:- app/views/arcs/index.html.erb:22
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:21
 msgid "Arc|Extname"
 msgstr ""
 
-#: app/models/arc.rb:- app/views/arcs/index.html.erb:23
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:22
 msgid "Arc|Location"
 msgstr ""
 
-#: app/models/arc.rb:- app/views/arcs/index.html.erb:24
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:7
+#: app/views/arcs/index.html.erb:23
 msgid "Arc|Summary"
 msgstr ""
 
-#: app/models/arc.rb:- app/views/arcs/index.html.erb:25
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:24
 msgid "Arc|Origname"
 msgstr ""
 
@@ -48,7 +50,7 @@ msgstr ""
 msgid "Arc|Updated at"
 msgstr ""
 
-#: app/models/tah.rb:- app/views/welcome/index.html.erb:4
+#: app/models/tah.rb:- app/views/layouts/anon.html.erb:27
 msgid "tah"
 msgstr ""
 
@@ -56,7 +58,7 @@ msgstr ""
 msgid "Tah|Arc"
 msgstr ""
 
-#: app/models/tah.rb:- app/views/tahs/index.html.erb:5
+#: app/models/tah.rb:- app/views/tahs/index.html.erb:4
 msgid "Tah|Path"
 msgstr ""
 
@@ -68,7 +70,7 @@ msgstr ""
 msgid "Tah|Updated at"
 msgstr ""
 
-#: app/models/tso.rb:- app/views/welcome/index.html.erb:5
+#: app/models/tso.rb:- app/views/layouts/anon.html.erb:28
 msgid "tso"
 msgstr ""
 
@@ -76,7 +78,7 @@ msgstr ""
 msgid "Tso|Tah"
 msgstr ""
 
-#: app/models/tso.rb:- app/views/tsos/index.html.erb:5
+#: app/models/tso.rb:- app/views/tsos/index.html.erb:4
 msgid "Tso|Path"
 msgstr ""
 
@@ -108,22 +110,26 @@ msgstr ""
 msgid "User|Updated at"
 msgstr ""
 
-#: app/views/arcs/index.html.erb:35 app/views/tahs/index.html.erb:11
-#: app/views/tsos/index.html.erb:11
+#: app/views/arcs/index.html.erb:11
+msgid "Search"
+msgstr ""
+
+#: app/views/arcs/index.html.erb:41 app/views/tahs/index.html.erb:17
+#: app/views/tsos/index.html.erb:17
 msgid "Show"
 msgstr ""
 
-#: app/views/arcs/index.html.erb:37 app/views/tahs/index.html.erb:13
-#: app/views/tsos/index.html.erb:13
+#: app/views/arcs/index.html.erb:43 app/views/tahs/index.html.erb:19
+#: app/views/tsos/index.html.erb:19
 msgid "Edit"
 msgstr ""
 
-#: app/views/arcs/index.html.erb:38 app/views/tahs/index.html.erb:14
-#: app/views/tsos/index.html.erb:14
+#: app/views/arcs/index.html.erb:44 app/views/tahs/index.html.erb:20
+#: app/views/tsos/index.html.erb:20
 msgid "Destroy"
 msgstr ""
 
-#: app/views/arcs/index.html.erb:38 app/views/tahs/index.html.erb:14
-#: app/views/tsos/index.html.erb:14
+#: app/views/arcs/index.html.erb:44 app/views/tahs/index.html.erb:20
+#: app/views/tsos/index.html.erb:20
 msgid "Are you sure?"
 msgstr ""
