@@ -1,6 +1,11 @@
-<p>
+<h2>
   <b><%= _'Tso|Path' %>:</b>
   <%=h @tso.path %>
+</h2>
+
+<p>
+  <b>ŠÜ‚Ü‚ê‚é<%= _'Tso|Tah' %>:</b>
+  <%= link_to h(@tso.tah.path), tah_path(@tso.tah) %>
 </p>
 
 <%-if logged_in? -%>
