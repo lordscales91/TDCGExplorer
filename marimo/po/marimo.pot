@@ -1,0 +1,129 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: marimo 0.0.1\n"
+"POT-Creation-Date: 2009-04-30 04:49+0900\n"
+"PO-Revision-Date: 2009-04-30 04:29+0900\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=Shift_JIS\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: app/models/arc.rb:- app/views/welcome/index.html.erb:3
+msgid "arc"
+msgstr ""
+
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:21
+msgid "Arc|Code"
+msgstr ""
+
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:22
+msgid "Arc|Extname"
+msgstr ""
+
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:23
+msgid "Arc|Location"
+msgstr ""
+
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:24
+msgid "Arc|Summary"
+msgstr ""
+
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:25
+msgid "Arc|Origname"
+msgstr ""
+
+#: app/models/arc.rb:-
+msgid "Arc|Created at"
+msgstr ""
+
+#: app/models/arc.rb:-
+msgid "Arc|Updated at"
+msgstr ""
+
+#: app/models/tah.rb:- app/views/welcome/index.html.erb:4
+msgid "tah"
+msgstr ""
+
+#: app/models/tah.rb:-
+msgid "Tah|Arc"
+msgstr ""
+
+#: app/models/tah.rb:- app/views/tahs/index.html.erb:5
+msgid "Tah|Path"
+msgstr ""
+
+#: app/models/tah.rb:-
+msgid "Tah|Created at"
+msgstr ""
+
+#: app/models/tah.rb:-
+msgid "Tah|Updated at"
+msgstr ""
+
+#: app/models/tso.rb:- app/views/welcome/index.html.erb:5
+msgid "tso"
+msgstr ""
+
+#: app/models/tso.rb:-
+msgid "Tso|Tah"
+msgstr ""
+
+#: app/models/tso.rb:- app/views/tsos/index.html.erb:5
+msgid "Tso|Path"
+msgstr ""
+
+#: app/models/tso.rb:-
+msgid "Tso|Created at"
+msgstr ""
+
+#: app/models/tso.rb:-
+msgid "Tso|Updated at"
+msgstr ""
+
+#: app/models/user.rb:-
+msgid "user"
+msgstr ""
+
+#: app/models/user.rb:-
+msgid "User|Login"
+msgstr ""
+
+#: app/models/user.rb:-
+msgid "User|Password"
+msgstr ""
+
+#: app/models/user.rb:-
+msgid "User|Created at"
+msgstr ""
+
+#: app/models/user.rb:-
+msgid "User|Updated at"
+msgstr ""
+
+#: app/views/arcs/index.html.erb:35 app/views/tahs/index.html.erb:11
+#: app/views/tsos/index.html.erb:11
+msgid "Show"
+msgstr ""
+
+#: app/views/arcs/index.html.erb:37 app/views/tahs/index.html.erb:13
+#: app/views/tsos/index.html.erb:13
+msgid "Edit"
+msgstr ""
+
+#: app/views/arcs/index.html.erb:38 app/views/tahs/index.html.erb:14
+#: app/views/tsos/index.html.erb:14
+msgid "Destroy"
+msgstr ""
+
+#: app/views/arcs/index.html.erb:38 app/views/tahs/index.html.erb:14
+#: app/views/tsos/index.html.erb:14
+msgid "Are you sure?"
+msgstr ""
