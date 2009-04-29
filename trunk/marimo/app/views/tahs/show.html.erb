@@ -1,11 +1,16 @@
-<p>
+<h2>
   <b><%= _'Tah|Path' %>:</b>
   <%=h @tah.path %>
-</p>
+</h2>
 
 <%-if logged_in? -%>
 <%= link_to _('Edit'), edit_tah_path(@tah) %>
 <%-end-%>
+
+<p>
+  <b>ŠÜ‚Ü‚ê‚é<%= _'Tah|Arc' %>:</b>
+  <%= link_to h(@tah.arc.code), arc_path(@tah.arc) %>
+</p>
 
 <p>
   <b><%= _'Tah|Tsos' %>:</b>
