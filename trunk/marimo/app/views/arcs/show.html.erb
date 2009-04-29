@@ -1,30 +1,30 @@
 <p>
-  <b>Code:</b>
+  <b><%= _'Arc|Code' %>:</b>
   <%=h @arc.code %>
 </p>
 
 <p>
-  <b>Extname:</b>
+  <b><%= _'Arc|Extname' %>:</b>
   <%=h @arc.extname %>
 </p>
 
 <p>
-  <b>Location:</b>
+  <b><%= _'Arc|Location' %>:</b>
   <%=h @arc.location %>
 </p>
 
 <p>
-  <b>Summary:</b>
+  <b><%= _'Arc|Summary' %>:</b>
   <%=h @arc.summary %>
 </p>
 
 <p>
-  <b>Origname:</b>
+  <b><%= _'Arc|Origname' %>:</b>
   <%=h @arc.origname %>
 </p>
 
 <p>
-  <b>Tahs:</b>
+  <b><%= _'Arc|Tahs' %>:</b>
   <ul>
   <%-for tah in @arc.tahs-%>
     <li><%=h tah.path %></li>
@@ -33,6 +33,5 @@
 </p>
 
 <%-if logged_in? -%>
-<%= link_to 'Edit', edit_arc_path(@arc) %> |
+<%= link_to _('Edit'), edit_arc_path(@arc) %> |
 <%-end-%>
-<%= link_to 'Back', arcs_path %>
