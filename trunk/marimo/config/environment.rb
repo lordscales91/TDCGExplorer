@@ -22,6 +22,8 @@ Rails::Initializer.run do |config|
 
   # Specify gems that this application depends on. 
   # They can then be installed with "rake gems:install" on new installations.
+  config.gem "gettext", :lib => "gettext/rails", :version => "= 1.93.0"
+  # config.gem "rspec-rails", :lib => "spec"
   config.gem "will_paginate", :lib => "will_paginate"
 
   # Only load the plugins named here, in the order given. By default, all plugins 

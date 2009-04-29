@@ -8,13 +8,14 @@
   <%= stylesheet_link_tag 'scaffold' %>
 </head>
 <body>
-  <div>
+<div>
+  <%= link_to "Home", root_path %>
 <%-if logged_in? -%>
   <%= link_to "Logout", session_path, :method => :delete %>
 <%-else-%>
   <%= link_to "Login", new_session_path %>
 <%-end-%>
-  </div>
+</div>
 <p style="color: green"><%= flash[:notice] %></p>
 
 <%= yield  %>

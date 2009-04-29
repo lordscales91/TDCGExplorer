@@ -18,11 +18,11 @@
 </p>
 <table>
   <tr>
-    <th>Code</th>
-    <th>Extname</th>
-    <th>Location</th>
-    <th>Summary</th>
-    <th>Origname</th>
+    <th><%= _'Arc|Code' %></th>
+    <th><%= _'Arc|Extname' %></th>
+    <th><%= _'Arc|Location' %></th>
+    <th><%= _'Arc|Summary' %></th>
+    <th><%= _'Arc|Origname' %></th>
   </tr>
 
 <% for arc in @arcs %>
@@ -32,10 +32,10 @@
     <td><%=h arc.location %></td>
     <td><%=h arc.summary %></td>
     <td><%=h arc.origname %></td>
-    <td><%= link_to 'Show', arc %></td>
+    <td><%= link_to _('Show'), arc %></td>
 <%-if logged_in? -%>
-    <td><%= link_to 'Edit', edit_arc_path(arc) %></td>
-    <td><%= link_to 'Destroy', arc, :confirm => 'Are you sure?', :method => :delete %></td>
+    <td><%= link_to _('Edit'), edit_arc_path(arc) %></td>
+    <td><%= link_to _('Destroy'), arc, :confirm => _('Are you sure?'), :method => :delete %></td>
 <%-end-%>
   </tr>
 <% end %>
