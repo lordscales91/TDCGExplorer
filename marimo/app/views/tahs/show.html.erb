@@ -1,10 +1,10 @@
 <p>
-  <b>Path:</b>
+  <b><%= _'Tah|Path' %>:</b>
   <%=h @tah.path %>
 </p>
 
 <p>
-  <b>Tsos:</b>
+  <b><%= _'Tah|Tsos' %>:</b>
   <ul>
   <%-for tso in @tah.tsos-%>
     <li><%=h tso.path %></li>
@@ -13,6 +13,5 @@
 </p>
 
 <%-if logged_in? -%>
-<%= link_to 'Edit', edit_tah_path(@tah) %> |
+<%= link_to _('Edit'), edit_tah_path(@tah) %> |
 <%-end-%>
-<%= link_to 'Back', tahs_path %>
