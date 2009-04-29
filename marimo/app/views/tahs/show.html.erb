@@ -3,15 +3,35 @@
   <%=h @tah.path %>
 </p>
 
+<%-if logged_in? -%>
+<%= link_to _('Edit'), edit_tah_path(@tah) %>
+<%-end-%>
+
 <p>
   <b><%= _'Tah|Tsos' %>:</b>
-  <ul>
-  <%-for tso in @tah.tsos-%>
-    <li><%=h tso.path %></li>
-  <%-end-%>
-  </ul>
 </p>
-
+<table class="list tsos">
+  <thead>
+  <tr>
+    <th><%= _'Tso|Path' %></th>
+    <th></th>
 <%-if logged_in? -%>
-<%= link_to _('Edit'), edit_tah_path(@tah) %> |
+    <th></th>
+    <th></th>
 <%-end-%>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for tso in @tah.tsos %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=h tso.path %></td>
+    <td><%= link_to _('Show'), tso %></td>
+<%-if logged_in? -%>
+    <td><%= link_to _('Edit'), edit_tso_path(tso) %></td>
+    <td><%= link_to _('Destroy'), tso, :confirm => _('Are you sure?'), :method => :delete %></td>
+<%-end-%>
+  </tr>
+<% end %>
+  </tbody>
+</table>
