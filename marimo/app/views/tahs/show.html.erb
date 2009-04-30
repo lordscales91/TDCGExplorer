@@ -63,3 +63,24 @@
 <% end %>
   </tbody>
 </table>
+
+<p>
+  <b><%= _'Tah|Duplicates' %>:</b>
+</p>
+<table class="list tahs">
+  <thead>
+  <tr>
+    <th><%= _'Tah|Path' %></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for tah in @tah.duplicates %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=h tah.path %></td>
+    <td><%= link_to _('Show'), tah %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>

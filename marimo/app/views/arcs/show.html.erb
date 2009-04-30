@@ -84,3 +84,32 @@
 <% end %>
   </tbody>
 </table>
+
+<p>
+  <b><%= _'Arc|Duplicates' %>:</b>
+</p>
+<table class="list arcs">
+  <thead>
+  <tr>
+    <th><%= _'Arc|Code' %></th>
+    <th><%= _'Arc|Extname' %></th>
+    <th><%= _'Arc|Location' %></th>
+    <th><%= _'Arc|Summary' %></th>
+    <th><%= _'Arc|Origname' %></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for arc in @arc.duplicates %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=h arc.code %></td>
+    <td><%=h arc.extname %></td>
+    <td><%=h arc.location %></td>
+    <td><%=h arc.summary %></td>
+    <td><%=h arc.origname %></td>
+    <td><%= link_to _('Show'), arc %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>

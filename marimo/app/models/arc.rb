@@ -5,6 +5,10 @@ class Arc < ActiveRecord::Base
     tahs.map(&:collisions).flatten.uniq.map(&:arc).uniq
   end
 
+  def duplicates
+    tahs.map(&:duplicates).flatten.uniq.map(&:arc).uniq
+  end
+
   class Search
     attr_accessor :code, :summary
 

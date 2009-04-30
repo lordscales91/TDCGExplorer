@@ -5,4 +5,8 @@ class Tah < ActiveRecord::Base
   def collisions
     tsos.map(&:collisions).flatten.uniq.map(&:tah).uniq
   end
+
+  def duplicates
+    tsos.map(&:duplicates).flatten.uniq.map(&:tah).uniq
+  end
 end

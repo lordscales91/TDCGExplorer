@@ -13,7 +13,15 @@ class Tso < ActiveRecord::Base
     nil
   end
 
+  def collisions_and_duplicates
+    @_collisions_and_duplicates ||= self.class.find(:all, :conditions => ['tah_hash = ? and id <> ?', tah_hash, id])
+  end
+
   def collisions
-    self.class.find(:all, :conditions => ['tah_hash = ? and id <> ?', tah_hash, id])
+    collisions_and_duplicates.reject { |t| t.path == path }
+  end
+
+  def duplicates
+    collisions_and_duplicates.select { |t| t.path == path }
   end
 end
