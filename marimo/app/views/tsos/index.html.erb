@@ -2,6 +2,7 @@
   <thead>
   <tr>
     <th><%= _'Tso|Path' %></th>
+    <th><%= _'Tso|Tah hash' %></th>
     <th></th>
 <%-if logged_in? -%>
     <th></th>
@@ -14,6 +15,7 @@
 <% for tso in @tsos %>
   <tr class="<%= cycle('odd', 'even') %>">
     <td><%=h tso.path %></td>
+    <td><%=h tso.tah_hash %></td>
     <td><%= link_to _('Show'), tso %></td>
 <%-if logged_in? -%>
     <td><%= link_to _('Edit'), edit_tso_path(tso) %></td>
