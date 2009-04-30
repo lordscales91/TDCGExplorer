@@ -1,0 +1,54 @@
+<% form_for(:search, @search, :url => arcs_path, :html => { :method => :get }) do |f| %>
+  <p>
+    <%= _'Arc|Code' %><br />
+    <%= f.text_field :code %>
+  </p>
+  <p>
+    <%= _'Arc|Summary' %><br />
+    <%= f.text_field :summary %>
+  </p>
+  <p>
+    <%= f.submit _("Search") %>
+  </p>
+<% end %>
+<p>
+  Total <%=h @arcs.total_entries %>
+</p>
+<table class="list arcs">
+  <thead>
+  <tr>
+    <th><%= _'Arc|Code' %></th>
+    <th><%= _'Arc|Extname' %></th>
+    <th><%= _'Arc|Location' %></th>
+    <th><%= _'Arc|Summary' %></th>
+    <th><%= _'Arc|Origname' %></th>
+    <th></th>
+<%-if logged_in? -%>
+    <th></th>
+    <th></th>
+<%-end-%>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for arc in @arcs %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=h arc.code %></td>
+    <td><%=h arc.extname %></td>
+    <td><%=h arc.location %></td>
+    <td><%=h arc.summary %></td>
+    <td><%=h arc.origname %></td>
+    <td><%= link_to _('Show'), arc %></td>
+<%-if logged_in? -%>
+    <td><%= link_to _('Edit'), edit_arc_path(arc) %></td>
+    <td><%= link_to _('Destroy'), arc, :confirm => _('Are you sure?'), :method => :delete %></td>
+<%-end-%>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%-if logged_in? -%>
+<%= link_to 'New arc', new_arc_path %>
+<%-end-%>
+<%= will_paginate(@arcs) %>

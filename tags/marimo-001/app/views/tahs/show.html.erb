@@ -1,0 +1,86 @@
+<h2>
+  <b><%= _'Tah|Path' %>:</b>
+  <%=h @tah.path %>
+</h2>
+
+<%-if logged_in? -%>
+<%= link_to _('Edit'), edit_tah_path(@tah) %>
+<%-end-%>
+
+<p>
+  <b>ŠÜ‚Ü‚ê‚é<%= _'Tah|Arc' %>:</b>
+  <%= link_to h(@tah.arc.code), arc_path(@tah.arc) %>
+</p>
+
+<p>
+  <b><%= _'Tah|Tsos' %>:</b>
+</p>
+<table class="list tsos">
+  <thead>
+  <tr>
+    <th><%= _'Tso|Path' %></th>
+    <th><%= _'Tso|Tah hash' %></th>
+    <th></th>
+<%-if logged_in? -%>
+    <th></th>
+    <th></th>
+<%-end-%>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for tso in @tah.tsos %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=h tso.path %></td>
+    <td><%=h tso.tah_hash %></td>
+    <td><%= link_to _('Show'), tso %></td>
+<%-if logged_in? -%>
+    <td><%= link_to _('Edit'), edit_tso_path(tso) %></td>
+    <td><%= link_to _('Destroy'), tso, :confirm => _('Are you sure?'), :method => :delete %></td>
+<%-end-%>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+
+<p>
+  <b><%= _'Tah|Collisions' %>:</b>
+</p>
+<table class="list tahs">
+  <thead>
+  <tr>
+    <th><%= _'Tah|Path' %></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for tah in @tah.collisions %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=h tah.path %></td>
+    <td><%= link_to _('Show'), tah %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+
+<p>
+  <b><%= _'Tah|Duplicates' %>:</b>
+</p>
+<table class="list tahs">
+  <thead>
+  <tr>
+    <th><%= _'Tah|Path' %></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for tah in @tah.duplicates %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=h tah.path %></td>
+    <td><%= link_to _('Show'), tah %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>

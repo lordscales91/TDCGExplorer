@@ -1,0 +1,193 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: marimo 0.0.1\n"
+"POT-Creation-Date: 2009-04-30 13:18+0900\n"
+"PO-Revision-Date: 2009-04-30 04:29+0900\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=Shift_JIS\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: app/models/arc.rb:- app/views/layouts/anon.html.erb:26
+msgid "arc"
+msgstr "書庫"
+
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:3
+#: app/views/arcs/index.html.erb:20 app/views/arcs/show.html.erb:2
+#: app/views/arcs/show.html.erb:65 app/views/arcs/show.html.erb:94
+msgid "Arc|Code"
+msgstr "Code"
+
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:21
+#: app/views/arcs/show.html.erb:7 app/views/arcs/show.html.erb:66
+#: app/views/arcs/show.html.erb:95
+msgid "Arc|Extname"
+msgstr "拡張子"
+
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:22
+#: app/views/arcs/show.html.erb:12 app/views/arcs/show.html.erb:67
+#: app/views/arcs/show.html.erb:96
+msgid "Arc|Location"
+msgstr "所在"
+
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:7
+#: app/views/arcs/index.html.erb:23 app/views/arcs/show.html.erb:17
+#: app/views/arcs/show.html.erb:68 app/views/arcs/show.html.erb:97
+msgid "Arc|Summary"
+msgstr "要約"
+
+#: app/models/arc.rb:- app/views/arcs/index.html.erb:24
+#: app/views/arcs/show.html.erb:22 app/views/arcs/show.html.erb:69
+#: app/views/arcs/show.html.erb:98
+msgid "Arc|Origname"
+msgstr "Origname"
+
+#: app/models/arc.rb:-
+msgid "Arc|Created at"
+msgstr "作成日時"
+
+#: app/models/arc.rb:-
+msgid "Arc|Updated at"
+msgstr "更新日時"
+
+#: app/models/tah.rb:- app/views/layouts/anon.html.erb:27
+msgid "tah"
+msgstr "tah"
+
+#: app/models/tah.rb:- app/views/tahs/show.html.erb:11
+msgid "Tah|Arc"
+msgstr "書庫"
+
+#: app/models/tah.rb:- app/views/arcs/show.html.erb:36
+#: app/views/tahs/index.html.erb:4 app/views/tahs/show.html.erb:2
+#: app/views/tahs/show.html.erb:52 app/views/tahs/show.html.erb:73
+msgid "Tah|Path"
+msgstr "Path"
+
+#: app/models/tah.rb:-
+msgid "Tah|Created at"
+msgstr "作成日時"
+
+#: app/models/tah.rb:-
+msgid "Tah|Updated at"
+msgstr "更新日時"
+
+#: app/models/tso.rb:- app/views/layouts/anon.html.erb:28
+msgid "tso"
+msgstr "tso"
+
+#: app/models/tso.rb:- app/views/tsos/show.html.erb:12
+msgid "Tso|Tah"
+msgstr "tah"
+
+#: app/models/tso.rb:- app/views/tahs/show.html.erb:21
+#: app/views/tsos/index.html.erb:4 app/views/tsos/show.html.erb:2
+#: app/views/tsos/show.html.erb:26 app/views/tsos/show.html.erb:49
+msgid "Tso|Path"
+msgstr "Path"
+
+#: app/models/tso.rb:-
+msgid "Tso|Created at"
+msgstr "作成日時"
+
+#: app/models/tso.rb:-
+msgid "Tso|Updated at"
+msgstr "更新日時"
+
+#: app/models/tso.rb:- app/views/tahs/show.html.erb:22
+#: app/views/tsos/index.html.erb:5 app/views/tsos/show.html.erb:7
+#: app/views/tsos/show.html.erb:27 app/views/tsos/show.html.erb:50
+msgid "Tso|Tah hash"
+msgstr "tah hash"
+
+#: app/models/user.rb:-
+msgid "user"
+msgstr "user"
+
+#: app/models/user.rb:-
+msgid "User|Login"
+msgstr "Login"
+
+#: app/models/user.rb:-
+msgid "User|Password"
+msgstr "Password"
+
+#: app/models/user.rb:-
+msgid "User|Created at"
+msgstr "作成日時"
+
+#: app/models/user.rb:-
+msgid "User|Updated at"
+msgstr "更新日時"
+
+#: app/views/arcs/index.html.erb:11
+msgid "Search"
+msgstr "検索"
+
+#: app/views/arcs/index.html.erb:41 app/views/arcs/show.html.erb:49
+#: app/views/arcs/show.html.erb:82 app/views/arcs/show.html.erb:111
+#: app/views/tahs/index.html.erb:17 app/views/tahs/show.html.erb:36
+#: app/views/tahs/show.html.erb:61 app/views/tahs/show.html.erb:82
+#: app/views/tsos/index.html.erb:19 app/views/tsos/show.html.erb:37
+#: app/views/tsos/show.html.erb:60
+msgid "Show"
+msgstr "詳細"
+
+#: app/views/arcs/index.html.erb:43 app/views/arcs/show.html.erb:27
+#: app/views/arcs/show.html.erb:51 app/views/tahs/index.html.erb:19
+#: app/views/tahs/show.html.erb:7 app/views/tahs/show.html.erb:38
+#: app/views/tsos/index.html.erb:21 app/views/tsos/show.html.erb:17
+msgid "Edit"
+msgstr "編集"
+
+#: app/views/arcs/index.html.erb:44 app/views/arcs/show.html.erb:52
+#: app/views/tahs/index.html.erb:20 app/views/tahs/show.html.erb:39
+#: app/views/tsos/index.html.erb:22
+msgid "Destroy"
+msgstr "削除"
+
+#: app/views/arcs/index.html.erb:44 app/views/arcs/show.html.erb:52
+#: app/views/tahs/index.html.erb:20 app/views/tahs/show.html.erb:39
+#: app/views/tsos/index.html.erb:22
+msgid "Are you sure?"
+msgstr "よろしいですか?"
+
+#: app/views/arcs/show.html.erb:31
+msgid "Arc|Tahs"
+msgstr "Tahs"
+
+#: app/views/arcs/show.html.erb:60
+msgid "Arc|Collisions"
+msgstr "衝突"
+
+#: app/views/arcs/show.html.erb:89
+msgid "Arc|Duplicates"
+msgstr "重複"
+
+#: app/views/tahs/show.html.erb:16
+msgid "Tah|Tsos"
+msgstr "Tsos"
+
+#: app/views/tahs/show.html.erb:47
+msgid "Tah|Collisions"
+msgstr "衝突"
+
+#: app/views/tahs/show.html.erb:68
+msgid "Tah|Duplicates"
+msgstr "重複"
+
+#: app/views/tsos/show.html.erb:21
+msgid "Tso|Collisions"
+msgstr "衝突"
+
+#: app/views/tsos/show.html.erb:44
+msgid "Tso|Duplicates"
+msgstr "重複"

@@ -1,0 +1,32 @@
+<h1>Editing arc</h1>
+
+<% form_for(@arc) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :code %><br />
+    <%= f.text_field :code %>
+  </p>
+  <p>
+    <%= f.label :extname %><br />
+    <%= f.text_field :extname %>
+  </p>
+  <p>
+    <%= f.label :location %><br />
+    <%= f.text_field :location %>
+  </p>
+  <p>
+    <%= f.label :summary %><br />
+    <%= f.text_field :summary %>
+  </p>
+  <p>
+    <%= f.label :origname %><br />
+    <%= f.text_field :origname %>
+  </p>
+  <p>
+    <%= f.submit "Update" %>
+  </p>
+<% end %>
+
+<%= link_to 'Show', @arc %> |
+<%= link_to 'Back', arcs_path %>

@@ -1,0 +1,55 @@
+<% form_for(:search, @search, :url => tsos_path, :html => { :method => :get }) do |f| %>
+  <p>
+    <%= _'Tso|Path' %><br />
+    <%= f.text_field :path %>
+  </p>
+  <p>
+    <%= f.submit _("Search") %>
+  </p>
+<% end %>
+
+<p>
+  <b><%= _'Tso|Collisions' %>:</b>
+</p>
+<table class="list tsos">
+  <thead>
+  <tr>
+    <th><%= _'Tso|Path' %></th>
+    <th><%= _'Tso|Tah hash' %></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for tso in @search.collisions %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=h tso.path %></td>
+    <td><%=h tso.tah_hash %></td>
+    <td><%= link_to _('Show'), tso %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+
+<p>
+  <b><%= _'Tso|Duplicates' %>:</b>
+</p>
+<table class="list tsos">
+  <thead>
+  <tr>
+    <th><%= _'Tso|Path' %></th>
+    <th><%= _'Tso|Tah hash' %></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for tso in @search.duplicates %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=h tso.path %></td>
+    <td><%=h tso.tah_hash %></td>
+    <td><%= link_to _('Show'), tso %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
