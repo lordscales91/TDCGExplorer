@@ -1,6 +1,10 @@
 class Arc < ActiveRecord::Base
   has_many :tahs
 
+  def collisions
+    tahs.map(&:collisions).flatten.uniq.map(&:arc).uniq
+  end
+
   class Search
     attr_accessor :code, :summary
 

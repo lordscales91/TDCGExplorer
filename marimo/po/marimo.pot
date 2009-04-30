@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: marimo 0.0.1\n"
-"POT-Creation-Date: 2009-04-30 11:52+0900\n"
+"POT-Creation-Date: 2009-04-30 12:55+0900\n"
 "PO-Revision-Date: 2009-04-30 04:29+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,26 +22,28 @@ msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:3
 #: app/views/arcs/index.html.erb:20 app/views/arcs/show.html.erb:2
+#: app/views/arcs/show.html.erb:65
 msgid "Arc|Code"
 msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:21
-#: app/views/arcs/show.html.erb:7
+#: app/views/arcs/show.html.erb:7 app/views/arcs/show.html.erb:66
 msgid "Arc|Extname"
 msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:22
-#: app/views/arcs/show.html.erb:12
+#: app/views/arcs/show.html.erb:12 app/views/arcs/show.html.erb:67
 msgid "Arc|Location"
 msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:7
 #: app/views/arcs/index.html.erb:23 app/views/arcs/show.html.erb:17
+#: app/views/arcs/show.html.erb:68
 msgid "Arc|Summary"
 msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:24
-#: app/views/arcs/show.html.erb:22
+#: app/views/arcs/show.html.erb:22 app/views/arcs/show.html.erb:69
 msgid "Arc|Origname"
 msgstr ""
 
@@ -63,6 +65,7 @@ msgstr ""
 
 #: app/models/tah.rb:- app/views/arcs/show.html.erb:36
 #: app/views/tahs/index.html.erb:4 app/views/tahs/show.html.erb:2
+#: app/views/tahs/show.html.erb:52
 msgid "Tah|Path"
 msgstr ""
 
@@ -84,6 +87,7 @@ msgstr ""
 
 #: app/models/tso.rb:- app/views/tahs/show.html.erb:21
 #: app/views/tsos/index.html.erb:4 app/views/tsos/show.html.erb:2
+#: app/views/tsos/show.html.erb:26
 msgid "Tso|Path"
 msgstr ""
 
@@ -95,8 +99,9 @@ msgstr ""
 msgid "Tso|Updated at"
 msgstr ""
 
-#: app/models/tso.rb:- app/views/tsos/index.html.erb:5
-#: app/views/tsos/show.html.erb:7
+#: app/models/tso.rb:- app/views/tahs/show.html.erb:22
+#: app/views/tsos/index.html.erb:5 app/views/tsos/show.html.erb:7
+#: app/views/tsos/show.html.erb:27
 msgid "Tso|Tah hash"
 msgstr ""
 
@@ -125,27 +130,29 @@ msgid "Search"
 msgstr ""
 
 #: app/views/arcs/index.html.erb:41 app/views/arcs/show.html.erb:49
-#: app/views/tahs/index.html.erb:17 app/views/tahs/show.html.erb:34
-#: app/views/tsos/index.html.erb:19
+#: app/views/arcs/show.html.erb:86 app/views/tahs/index.html.erb:17
+#: app/views/tahs/show.html.erb:36 app/views/tahs/show.html.erb:61
+#: app/views/tsos/index.html.erb:19 app/views/tsos/show.html.erb:37
 msgid "Show"
 msgstr ""
 
 #: app/views/arcs/index.html.erb:43 app/views/arcs/show.html.erb:27
-#: app/views/arcs/show.html.erb:51 app/views/tahs/index.html.erb:19
-#: app/views/tahs/show.html.erb:7 app/views/tahs/show.html.erb:36
-#: app/views/tsos/index.html.erb:21 app/views/tsos/show.html.erb:17
+#: app/views/arcs/show.html.erb:51 app/views/arcs/show.html.erb:88
+#: app/views/tahs/index.html.erb:19 app/views/tahs/show.html.erb:7
+#: app/views/tahs/show.html.erb:38 app/views/tsos/index.html.erb:21
+#: app/views/tsos/show.html.erb:17
 msgid "Edit"
 msgstr ""
 
 #: app/views/arcs/index.html.erb:44 app/views/arcs/show.html.erb:52
-#: app/views/tahs/index.html.erb:20 app/views/tahs/show.html.erb:37
-#: app/views/tsos/index.html.erb:22
+#: app/views/arcs/show.html.erb:89 app/views/tahs/index.html.erb:20
+#: app/views/tahs/show.html.erb:39 app/views/tsos/index.html.erb:22
 msgid "Destroy"
 msgstr ""
 
 #: app/views/arcs/index.html.erb:44 app/views/arcs/show.html.erb:52
-#: app/views/tahs/index.html.erb:20 app/views/tahs/show.html.erb:37
-#: app/views/tsos/index.html.erb:22
+#: app/views/arcs/show.html.erb:89 app/views/tahs/index.html.erb:20
+#: app/views/tahs/show.html.erb:39 app/views/tsos/index.html.erb:22
 msgid "Are you sure?"
 msgstr ""
 
@@ -153,6 +160,18 @@ msgstr ""
 msgid "Arc|Tahs"
 msgstr ""
 
+#: app/views/arcs/show.html.erb:60
+msgid "Arc|Collisions"
+msgstr ""
+
 #: app/views/tahs/show.html.erb:16
 msgid "Tah|Tsos"
+msgstr ""
+
+#: app/views/tahs/show.html.erb:47
+msgid "Tah|Collisions"
+msgstr ""
+
+#: app/views/tsos/show.html.erb:21
+msgid "Tso|Collisions"
 msgstr ""
