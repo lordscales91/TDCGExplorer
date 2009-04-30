@@ -32,6 +32,7 @@ class Tso < ActiveRecord::Base
       attributes.each do |name, value|
         send("#{name}=", value)
       end if attributes
+      self.path ||= ''
       self.tah_hash = '%08X' % TAHHash.calc(path) if defined? TAHHash
       self.tah_hash ||= ''
     end
