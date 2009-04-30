@@ -5,7 +5,7 @@ class TsosController < ApplicationController
   # GET /tsos
   # GET /tsos.xml
   def index
-    @tsos = Tso.paginate(:page => params[:page])
+    @search = Tso::Search.new(params[:search])
 
     respond_to do |format|
       format.html # index.html.erb
