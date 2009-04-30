@@ -18,10 +18,10 @@ class Tso < ActiveRecord::Base
   end
 
   def collisions
-    collisions_and_duplicates.reject { |t| t.path == path }
+    collisions_and_duplicates.reject { |t| t.path.downcase == path.downcase }
   end
 
   def duplicates
-    collisions_and_duplicates.select { |t| t.path == path }
+    collisions_and_duplicates.select { |t| t.path.downcase == path.downcase }
   end
 end
