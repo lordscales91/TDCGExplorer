@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090428135653) do
+ActiveRecord::Schema.define(:version => 20090430021058) do
 
   create_table "arcs", :force => true do |t|
     t.string   "code",       :limit => 10
@@ -35,9 +35,11 @@ ActiveRecord::Schema.define(:version => 20090428135653) do
     t.string   "path"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "tah_hash",   :limit => 8,  :null => false
   end
 
   add_index "tsos", ["tah_id"], :name => "index_tsos_on_tah_id"
+  add_index "tsos", ["tah_hash"], :name => "index_tsos_on_tah_hash"
 
   create_table "users", :force => true do |t|
     t.string   "login"
