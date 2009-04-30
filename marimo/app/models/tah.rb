@@ -1,6 +1,6 @@
 class Tah < ActiveRecord::Base
   belongs_to :arc
-  has_many :tsos
+  has_many :tsos, :dependent => :destroy
 
   def collisions
     tsos.map(&:collisions).flatten.uniq.map(&:tah).uniq
