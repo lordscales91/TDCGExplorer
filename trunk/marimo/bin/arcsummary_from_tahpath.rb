@@ -8,5 +8,7 @@ Arc.find(:all, :conditions => "summary is null").each do |arc|
     folder = md[0]
     folder.sub!(/\.tah$/, '')
     puts [arc.id, folder, arc.origname].join("\t")
+    arc.summary = folder
+    arc.save!
   end
 end
