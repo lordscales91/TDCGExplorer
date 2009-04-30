@@ -12,4 +12,8 @@ class Tso < ActiveRecord::Base
     self.tah_hash ||= ''
     nil
   end
+
+  def collisions
+    self.class.find(:all, :conditions => ['tah_hash = ? and id <> ?', tah_hash, id])
+  end
 end

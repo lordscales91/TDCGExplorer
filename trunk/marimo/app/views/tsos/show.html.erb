@@ -16,3 +16,26 @@
 <%-if logged_in? -%>
 <%= link_to _('Edit'), edit_tso_path(@tso) %>
 <%-end-%>
+
+<p>
+  <b><%= _'Tso|Collisions' %>:</b>
+</p>
+<table class="list tsos">
+  <thead>
+  <tr>
+    <th><%= _'Tso|Path' %></th>
+    <th><%= _'Tso|Tah hash' %></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for tso in @tso.collisions %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=h tso.path %></td>
+    <td><%=h tso.tah_hash %></td>
+    <td><%= link_to _('Show'), tso %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
