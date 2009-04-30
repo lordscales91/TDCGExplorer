@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: marimo 0.0.1\n"
-"POT-Creation-Date: 2009-04-30 07:05+0900\n"
+"POT-Creation-Date: 2009-04-30 11:52+0900\n"
 "PO-Revision-Date: 2009-04-30 04:29+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,12 +57,12 @@ msgstr ""
 msgid "tah"
 msgstr ""
 
-#: app/models/tah.rb:-
+#: app/models/tah.rb:- app/views/tahs/show.html.erb:11
 msgid "Tah|Arc"
 msgstr ""
 
-#: app/models/tah.rb:- app/views/tahs/index.html.erb:4
-#: app/views/tahs/show.html.erb:2
+#: app/models/tah.rb:- app/views/arcs/show.html.erb:36
+#: app/views/tahs/index.html.erb:4 app/views/tahs/show.html.erb:2
 msgid "Tah|Path"
 msgstr ""
 
@@ -78,12 +78,12 @@ msgstr ""
 msgid "tso"
 msgstr ""
 
-#: app/models/tso.rb:-
+#: app/models/tso.rb:- app/views/tsos/show.html.erb:12
 msgid "Tso|Tah"
 msgstr ""
 
-#: app/models/tso.rb:- app/views/tsos/index.html.erb:4
-#: app/views/tsos/show.html.erb:2
+#: app/models/tso.rb:- app/views/tahs/show.html.erb:21
+#: app/views/tsos/index.html.erb:4 app/views/tsos/show.html.erb:2
 msgid "Tso|Path"
 msgstr ""
 
@@ -93,6 +93,11 @@ msgstr ""
 
 #: app/models/tso.rb:-
 msgid "Tso|Updated at"
+msgstr ""
+
+#: app/models/tso.rb:- app/views/tsos/index.html.erb:5
+#: app/views/tsos/show.html.erb:7
+msgid "Tso|Tah hash"
 msgstr ""
 
 #: app/models/user.rb:-
@@ -119,31 +124,35 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: app/views/arcs/index.html.erb:41 app/views/tahs/index.html.erb:17
-#: app/views/tsos/index.html.erb:17
+#: app/views/arcs/index.html.erb:41 app/views/arcs/show.html.erb:49
+#: app/views/tahs/index.html.erb:17 app/views/tahs/show.html.erb:34
+#: app/views/tsos/index.html.erb:19
 msgid "Show"
 msgstr ""
 
-#: app/views/arcs/index.html.erb:43 app/views/arcs/show.html.erb:36
-#: app/views/tahs/index.html.erb:19 app/views/tahs/show.html.erb:16
-#: app/views/tsos/index.html.erb:19 app/views/tsos/show.html.erb:7
+#: app/views/arcs/index.html.erb:43 app/views/arcs/show.html.erb:27
+#: app/views/arcs/show.html.erb:51 app/views/tahs/index.html.erb:19
+#: app/views/tahs/show.html.erb:7 app/views/tahs/show.html.erb:36
+#: app/views/tsos/index.html.erb:21 app/views/tsos/show.html.erb:17
 msgid "Edit"
 msgstr ""
 
-#: app/views/arcs/index.html.erb:44 app/views/tahs/index.html.erb:20
-#: app/views/tsos/index.html.erb:20
+#: app/views/arcs/index.html.erb:44 app/views/arcs/show.html.erb:52
+#: app/views/tahs/index.html.erb:20 app/views/tahs/show.html.erb:37
+#: app/views/tsos/index.html.erb:22
 msgid "Destroy"
 msgstr ""
 
-#: app/views/arcs/index.html.erb:44 app/views/tahs/index.html.erb:20
-#: app/views/tsos/index.html.erb:20
+#: app/views/arcs/index.html.erb:44 app/views/arcs/show.html.erb:52
+#: app/views/tahs/index.html.erb:20 app/views/tahs/show.html.erb:37
+#: app/views/tsos/index.html.erb:22
 msgid "Are you sure?"
 msgstr ""
 
-#: app/views/arcs/show.html.erb:27
+#: app/views/arcs/show.html.erb:31
 msgid "Arc|Tahs"
 msgstr ""
 
-#: app/views/tahs/show.html.erb:7
+#: app/views/tahs/show.html.erb:16
 msgid "Tah|Tsos"
 msgstr ""
