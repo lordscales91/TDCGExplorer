@@ -15,7 +15,7 @@
   <thead>
   <tr>
     <th><%= _'Tso|Path' %></th>
-    <th><%= _'Tso|Tah hash' %></th>
+    <th><%= _'Tso|Tah' %></th>
     <th></th>
   </tr>
   </thead>
@@ -24,7 +24,7 @@
 <% for tso in @search.collisions %>
   <tr class="<%= cycle('odd', 'even') %>">
     <td><%=h tso.path %></td>
-    <td><%=h tso.tah_hash %></td>
+    <td><%=h tso.tah.path %></td>
     <td><%= link_to _('Show'), tso %></td>
   </tr>
 <% end %>
@@ -38,7 +38,7 @@
   <thead>
   <tr>
     <th><%= _'Tso|Path' %></th>
-    <th><%= _'Tso|Tah hash' %></th>
+    <th><%= _'Tso|Tah' %></th>
     <th></th>
   </tr>
   </thead>
@@ -47,7 +47,7 @@
 <% for tso in @search.duplicates %>
   <tr class="<%= cycle('odd', 'even') %>">
     <td><%=h tso.path %></td>
-    <td><%=h tso.tah_hash %></td>
+    <td><%=h tso.tah.path %></td>
     <td><%= link_to _('Show'), tso %></td>
   </tr>
 <% end %>
