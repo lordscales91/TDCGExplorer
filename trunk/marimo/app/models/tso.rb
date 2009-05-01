@@ -69,11 +69,11 @@ Z éËéùÇøÇÃè¨ï®
   end
 
   def self.row_name(row)
-    row + ":" + ROW_NAMES[row]
+    row + ":" + ROW_NAMES[row.upcase]
   end
 
   def row_name
-    row + ":" + ROW_NAMES[row]
+    row + ":" + ROW_NAMES[row.upcase]
   end
 
   class Search
