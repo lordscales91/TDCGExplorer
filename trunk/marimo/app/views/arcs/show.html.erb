@@ -23,6 +23,11 @@
   <%=h @arc.origname %>
 </p>
 
+<p>
+  <b><%= _'Arc|Rows' %>:</b>
+  <%=h @arc.row_caption %>
+</p>
+
 <%-if logged_in? -%>
 <%= link_to _('Edit'), edit_arc_path(@arc) %>
 <%-end-%>
