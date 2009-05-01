@@ -25,6 +25,57 @@ class Tso < ActiveRecord::Base
     collisions_and_duplicates.select { |t| t.path.downcase == path.downcase }
   end
 
+  def row
+    File.basename(path, '.tso')[9,1]
+  end
+
+  ROW_TBL = <<-EOT
+A 身体
+E 瞳
+D 頭皮(生え際)
+B 前髪
+C 後髪
+U アホ毛類
+F ブラ
+H パンツ
+G 全身下着・水着
+W タイツ・ガーター
+I 靴下
+J 上衣(シャツ等)
+M 下衣(スカート等)
+K 全身衣装(ナース服等)
+L 上着オプション(エプロン等)
+O 靴
+Q 眼鏡
+V 眼帯
+Y リボン
+P 頭部装備(帽子等)
+N 尻尾
+3 イヤリング類
+R 首輪
+S 手首
+X 腕装備(手甲など)
+T 背中(羽など)
+0 眉毛
+2 ほくろ
+1 八重歯
+Z 手持ちの小物
+  EOT
+  # Z 背景
+  ROW_NAMES = {}
+  ROW_TBL.each_line do |line|
+    row, name = line.chomp.split(/ /)
+    ROW_NAMES[row] = name
+  end
+
+  def self.row_name(row)
+    row + ":" + ROW_NAMES[row]
+  end
+
+  def row_name
+    row + ":" + ROW_NAMES[row]
+  end
+
   class Search
     attr_accessor :path, :tah_hash
 

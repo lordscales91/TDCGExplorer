@@ -3,9 +3,9 @@
 one:
   id: 1
   tah_id: 1
-  path: MyString
+  path: N001BODY_A00.tso
 
 two:
   id: 2
   tah_id: 1
-  path: MyString
+  path: N001BODY_A01.tso

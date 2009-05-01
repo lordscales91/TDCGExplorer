@@ -9,6 +9,18 @@ class Arc < ActiveRecord::Base
     tahs.map(&:duplicates).flatten.uniq.map(&:arc).uniq
   end
 
+  def rows
+    tahs.map(&:rows).flatten.uniq
+  end
+
+  def row_names
+    rows.map { |row| Tso.row_name(row) }
+  end
+
+  def row_caption
+    row_names.join('/')
+  end
+
   class Search
     attr_accessor :code, :summary
 

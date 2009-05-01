@@ -3,6 +3,11 @@
   <%=h @tah.path %>
 </h2>
 
+<p>
+  <b><%= _'Tah|Rows' %>:</b>
+  <%=h @tah.row_caption %>
+</p>
+
 <%-if logged_in? -%>
 <%= link_to _('Edit'), edit_tah_path(@tah) %>
 <%-end-%>

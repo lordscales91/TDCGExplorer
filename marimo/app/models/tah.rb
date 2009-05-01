@@ -9,4 +9,16 @@ class Tah < ActiveRecord::Base
   def duplicates
     tsos.map(&:duplicates).flatten.uniq.map(&:tah).uniq
   end
+
+  def rows
+    tsos.map(&:row).compact.uniq
+  end
+
+  def row_names
+    rows.map { |row| Tso.row_name(row) }
+  end
+
+  def row_caption
+    row_names.join('/')
+  end
 end
