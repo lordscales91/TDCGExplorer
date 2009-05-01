@@ -26,7 +26,7 @@ class Tso < ActiveRecord::Base
   end
 
   def row
-    File.basename(path, '.tso')[9,1]
+    File.basename(path, '.tso')[9,1].upcase
   end
 
   ROW_TBL = <<-EOT
@@ -69,11 +69,11 @@ Z ŽèŽ‚¿‚Ì¬•¨
   end
 
   def self.row_name(row)
-    row + ":" + ROW_NAMES[row.upcase]
+    row + ":" + ROW_NAMES[row]
   end
 
   def row_name
-    row + ":" + ROW_NAMES[row.upcase]
+    row + ":" + ROW_NAMES[row]
   end
 
   class Search
