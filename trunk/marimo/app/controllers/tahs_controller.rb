@@ -1,6 +1,7 @@
 class TahsController < ApplicationController
   include AuthenticatedSystem
   layout 'anon'
+  before_filter :login_required, :only => [ :new, :edit, :create, :update ]
 
   # GET /tahs
   # GET /tahs.xml
