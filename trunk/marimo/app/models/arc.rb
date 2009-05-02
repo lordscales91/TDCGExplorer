@@ -2,6 +2,10 @@ class Arc < ActiveRecord::Base
   has_many :tahs, :dependent => :destroy, :order => "position"
   has_many :arc_equips, :dependent => :destroy
   has_many :equips, :through => :arc_equips
+  has_many :relationships, :dependent => :destroy, :foreign_key => "from_id"
+  has_many :relations, :through => :relationships, :source => "to"
+  has_many :rev_relationships, :dependent => :destroy, :class_name => 'Relationship', :foreign_key => "to_id"
+  has_many :rev_relations, :through => :rev_relationships, :source => "from"
 
   def collisions
     tahs.map(&:collisions).flatten.uniq.map(&:arc).uniq
