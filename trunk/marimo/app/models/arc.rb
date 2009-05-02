@@ -1,5 +1,7 @@
 class Arc < ActiveRecord::Base
   has_many :tahs, :dependent => :destroy
+  has_many :arc_equips, :dependent => :destroy
+  has_many :equips, :through => :arc_equips
 
   def collisions
     tahs.map(&:collisions).flatten.uniq.map(&:arc).uniq
