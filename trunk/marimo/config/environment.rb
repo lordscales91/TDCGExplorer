@@ -69,3 +69,9 @@ $KCODE = 'SJIS'
 
 ActiveRecord::Base.colorize_logging = false
 ActionController::Base.default_charset = 'Shift_JIS'
+
+class String
+  def to_xs
+    gsub(/[&<>]/) { XChar::PREDEFINED[$1[0]] }
+  end
+end
