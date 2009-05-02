@@ -1,14 +1,14 @@
-<p>
-  <b>Name:</b>
+<h2>
+  <b><%= _'Equip|Name' %>:</b>
   <%=h @equip.name %>
-</p>
+</h2>
 
 <%-if logged_in? -%>
 <%= link_to _('Edit'), edit_equip_path(@equip) %>
 <%-end-%>
 
 <p>
-  <b>Arcs:</b>
+  <b><%= _'Equip|Arcs' %>:</b>
 </p>
 <table class="list arcs">
   <thead>
