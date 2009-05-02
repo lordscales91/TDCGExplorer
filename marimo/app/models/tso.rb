@@ -31,7 +31,8 @@ class Tso < ActiveRecord::Base
     when %r[data/bgmodel/]
       nil
     when %r[data/model/]
-      File.basename(path)[9,1].upcase
+      row = File.basename(path, '.tso')[9,1]
+      row ? row.upcase : nil
     end
   end
 
