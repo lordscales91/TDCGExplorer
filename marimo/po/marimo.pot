@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: marimo 0.0.1\n"
-"POT-Creation-Date: 2009-05-01 18:27+0900\n"
+"POT-Creation-Date: 2009-05-02 11:55+0900\n"
 "PO-Revision-Date: 2009-04-30 04:29+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,31 +22,33 @@ msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:3
 #: app/views/arcs/index.html.erb:20 app/views/arcs/show.html.erb:2
-#: app/views/arcs/show.html.erb:70 app/views/arcs/show.html.erb:99
+#: app/views/arcs/show.html.erb:77 app/views/arcs/show.html.erb:106
+#: app/views/equips/show.html.erb:16
 msgid "Arc|Code"
 msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:21
-#: app/views/arcs/show.html.erb:7 app/views/arcs/show.html.erb:71
-#: app/views/arcs/show.html.erb:100
+#: app/views/arcs/show.html.erb:7 app/views/arcs/show.html.erb:78
+#: app/views/arcs/show.html.erb:107 app/views/equips/show.html.erb:17
 msgid "Arc|Extname"
 msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:22
-#: app/views/arcs/show.html.erb:12 app/views/arcs/show.html.erb:72
-#: app/views/arcs/show.html.erb:101
+#: app/views/arcs/show.html.erb:12 app/views/arcs/show.html.erb:79
+#: app/views/arcs/show.html.erb:108 app/views/equips/show.html.erb:18
 msgid "Arc|Location"
 msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:7
 #: app/views/arcs/index.html.erb:23 app/views/arcs/show.html.erb:17
-#: app/views/arcs/show.html.erb:73 app/views/arcs/show.html.erb:102
+#: app/views/arcs/show.html.erb:80 app/views/arcs/show.html.erb:109
+#: app/views/equips/show.html.erb:19
 msgid "Arc|Summary"
 msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:24
-#: app/views/arcs/show.html.erb:22 app/views/arcs/show.html.erb:74
-#: app/views/arcs/show.html.erb:103
+#: app/views/arcs/show.html.erb:22 app/views/arcs/show.html.erb:81
+#: app/views/arcs/show.html.erb:110 app/views/equips/show.html.erb:20
 msgid "Arc|Origname"
 msgstr ""
 
@@ -58,6 +60,43 @@ msgstr ""
 msgid "Arc|Updated at"
 msgstr ""
 
+#: app/models/arc_equip.rb:-
+msgid "arc equip"
+msgstr ""
+
+#: app/models/arc_equip.rb:-
+msgid "ArcEquip|Arc"
+msgstr ""
+
+#: app/models/arc_equip.rb:-
+msgid "ArcEquip|Equip"
+msgstr ""
+
+#: app/models/arc_equip.rb:-
+msgid "ArcEquip|Created at"
+msgstr ""
+
+#: app/models/arc_equip.rb:-
+msgid "ArcEquip|Updated at"
+msgstr ""
+
+#: app/models/equip.rb:- app/views/layouts/anon.html.erb:29
+msgid "equip"
+msgstr ""
+
+#: app/models/equip.rb:- app/views/equips/index.html.erb:4
+#: app/views/equips/show.html.erb:2
+msgid "Equip|Name"
+msgstr ""
+
+#: app/models/equip.rb:-
+msgid "Equip|Created at"
+msgstr ""
+
+#: app/models/equip.rb:-
+msgid "Equip|Updated at"
+msgstr ""
+
 #: app/models/tah.rb:- app/views/layouts/anon.html.erb:27
 msgid "tah"
 msgstr ""
@@ -66,7 +105,7 @@ msgstr ""
 msgid "Tah|Arc"
 msgstr ""
 
-#: app/models/tah.rb:- app/views/arcs/show.html.erb:41
+#: app/models/tah.rb:- app/views/arcs/show.html.erb:48
 #: app/views/tahs/index.html.erb:4 app/views/tahs/show.html.erb:2
 #: app/views/tahs/show.html.erb:57 app/views/tahs/show.html.erb:78
 msgid "Tah|Path"
@@ -134,8 +173,9 @@ msgstr ""
 msgid "Search"
 msgstr ""
 
-#: app/views/arcs/index.html.erb:41 app/views/arcs/show.html.erb:54
-#: app/views/arcs/show.html.erb:87 app/views/arcs/show.html.erb:116
+#: app/views/arcs/index.html.erb:41 app/views/arcs/show.html.erb:61
+#: app/views/arcs/show.html.erb:94 app/views/arcs/show.html.erb:123
+#: app/views/equips/index.html.erb:17 app/views/equips/show.html.erb:37
 #: app/views/tahs/index.html.erb:17 app/views/tahs/show.html.erb:41
 #: app/views/tahs/show.html.erb:66 app/views/tahs/show.html.erb:87
 #: app/views/tsos/index.html.erb:28 app/views/tsos/index.html.erb:51
@@ -143,20 +183,23 @@ msgstr ""
 msgid "Show"
 msgstr ""
 
-#: app/views/arcs/index.html.erb:43 app/views/arcs/show.html.erb:32
-#: app/views/arcs/show.html.erb:56 app/views/tahs/index.html.erb:19
-#: app/views/tahs/show.html.erb:12 app/views/tahs/show.html.erb:43
-#: app/views/tsos/show.html.erb:22
+#: app/views/arcs/index.html.erb:43 app/views/arcs/show.html.erb:39
+#: app/views/arcs/show.html.erb:63 app/views/equips/index.html.erb:19
+#: app/views/equips/show.html.erb:7 app/views/equips/show.html.erb:39
+#: app/views/tahs/index.html.erb:19 app/views/tahs/show.html.erb:12
+#: app/views/tahs/show.html.erb:43 app/views/tsos/show.html.erb:22
 msgid "Edit"
 msgstr ""
 
-#: app/views/arcs/index.html.erb:44 app/views/arcs/show.html.erb:57
+#: app/views/arcs/index.html.erb:44 app/views/arcs/show.html.erb:64
+#: app/views/equips/index.html.erb:20 app/views/equips/show.html.erb:40
 #: app/views/tahs/index.html.erb:20 app/views/tahs/show.html.erb:44
 msgid "Destroy"
 msgstr ""
 
-#: app/views/arcs/index.html.erb:44 app/views/arcs/show.html.erb:57
-#: app/views/tahs/index.html.erb:20 app/views/tahs/show.html.erb:44
+#: app/views/arcs/index.html.erb:44 app/views/arcs/show.html.erb:64
+#: app/views/equips/show.html.erb:40 app/views/tahs/index.html.erb:20
+#: app/views/tahs/show.html.erb:44
 msgid "Are you sure?"
 msgstr ""
 
@@ -164,16 +207,24 @@ msgstr ""
 msgid "Arc|Rows"
 msgstr ""
 
-#: app/views/arcs/show.html.erb:36
+#: app/views/arcs/show.html.erb:32
+msgid "Arc|Equips"
+msgstr ""
+
+#: app/views/arcs/show.html.erb:43
 msgid "Arc|Tahs"
 msgstr ""
 
-#: app/views/arcs/show.html.erb:65
+#: app/views/arcs/show.html.erb:72
 msgid "Arc|Collisions"
 msgstr ""
 
-#: app/views/arcs/show.html.erb:94
+#: app/views/arcs/show.html.erb:101
 msgid "Arc|Duplicates"
+msgstr ""
+
+#: app/views/equips/show.html.erb:11
+msgid "Equip|Arcs"
 msgstr ""
 
 #: app/views/tahs/show.html.erb:7
