@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: marimo 0.0.1\n"
-"POT-Creation-Date: 2009-05-02 11:55+0900\n"
+"POT-Creation-Date: 2009-05-03 03:27+0900\n"
 "PO-Revision-Date: 2009-04-30 04:29+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,33 +22,33 @@ msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:3
 #: app/views/arcs/index.html.erb:20 app/views/arcs/show.html.erb:2
-#: app/views/arcs/show.html.erb:77 app/views/arcs/show.html.erb:106
+#: app/views/arcs/show.html.erb:108 app/views/arcs/show.html.erb:137
 #: app/views/equips/show.html.erb:16
 msgid "Arc|Code"
 msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:21
-#: app/views/arcs/show.html.erb:7 app/views/arcs/show.html.erb:78
-#: app/views/arcs/show.html.erb:107 app/views/equips/show.html.erb:17
+#: app/views/arcs/show.html.erb:7 app/views/arcs/show.html.erb:109
+#: app/views/arcs/show.html.erb:138 app/views/equips/show.html.erb:17
 msgid "Arc|Extname"
 msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:22
-#: app/views/arcs/show.html.erb:12 app/views/arcs/show.html.erb:79
-#: app/views/arcs/show.html.erb:108 app/views/equips/show.html.erb:18
+#: app/views/arcs/show.html.erb:12 app/views/arcs/show.html.erb:110
+#: app/views/arcs/show.html.erb:139 app/views/equips/show.html.erb:18
 msgid "Arc|Location"
 msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:7
 #: app/views/arcs/index.html.erb:23 app/views/arcs/show.html.erb:17
-#: app/views/arcs/show.html.erb:80 app/views/arcs/show.html.erb:109
+#: app/views/arcs/show.html.erb:111 app/views/arcs/show.html.erb:140
 #: app/views/equips/show.html.erb:19
 msgid "Arc|Summary"
 msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:24
-#: app/views/arcs/show.html.erb:22 app/views/arcs/show.html.erb:81
-#: app/views/arcs/show.html.erb:110 app/views/equips/show.html.erb:20
+#: app/views/arcs/show.html.erb:22 app/views/arcs/show.html.erb:112
+#: app/views/arcs/show.html.erb:141 app/views/equips/show.html.erb:20
 msgid "Arc|Origname"
 msgstr ""
 
@@ -97,6 +97,34 @@ msgstr ""
 msgid "Equip|Updated at"
 msgstr ""
 
+#: app/models/relationship.rb:-
+msgid "relationship"
+msgstr ""
+
+#: app/models/relationship.rb:-
+msgid "Relationship|From"
+msgstr ""
+
+#: app/models/relationship.rb:- app/views/arcs/show.html.erb:78
+msgid "Relationship|To"
+msgstr ""
+
+#: app/models/relationship.rb:- app/views/arcs/show.html.erb:77
+msgid "Relationship|Kind"
+msgstr ""
+
+#: app/models/relationship.rb:- app/views/arcs/show.html.erb:79
+msgid "Relationship|Note"
+msgstr ""
+
+#: app/models/relationship.rb:-
+msgid "Relationship|Created at"
+msgstr ""
+
+#: app/models/relationship.rb:-
+msgid "Relationship|Updated at"
+msgstr ""
+
 #: app/models/tah.rb:- app/views/layouts/anon.html.erb:27
 msgid "tah"
 msgstr ""
@@ -117,6 +145,10 @@ msgstr ""
 
 #: app/models/tah.rb:-
 msgid "Tah|Updated at"
+msgstr ""
+
+#: app/models/tah.rb:-
+msgid "Tah|Position"
 msgstr ""
 
 #: app/models/tso.rb:- app/views/layouts/anon.html.erb:28
@@ -149,6 +181,10 @@ msgstr ""
 msgid "Tso|Tah hash"
 msgstr ""
 
+#: app/models/tso.rb:-
+msgid "Tso|Position"
+msgstr ""
+
 #: app/models/user.rb:-
 msgid "user"
 msgstr ""
@@ -174,7 +210,7 @@ msgid "Search"
 msgstr ""
 
 #: app/views/arcs/index.html.erb:41 app/views/arcs/show.html.erb:61
-#: app/views/arcs/show.html.erb:94 app/views/arcs/show.html.erb:123
+#: app/views/arcs/show.html.erb:125 app/views/arcs/show.html.erb:154
 #: app/views/equips/index.html.erb:17 app/views/equips/show.html.erb:37
 #: app/views/tahs/index.html.erb:17 app/views/tahs/show.html.erb:41
 #: app/views/tahs/show.html.erb:66 app/views/tahs/show.html.erb:87
@@ -216,15 +252,27 @@ msgid "Arc|Tahs"
 msgstr ""
 
 #: app/views/arcs/show.html.erb:72
+msgid "Arc|Relations"
+msgstr ""
+
+#: app/views/arcs/show.html.erb:103
 msgid "Arc|Collisions"
 msgstr ""
 
-#: app/views/arcs/show.html.erb:101
+#: app/views/arcs/show.html.erb:132
 msgid "Arc|Duplicates"
 msgstr ""
 
 #: app/views/equips/show.html.erb:11
 msgid "Equip|Arcs"
+msgstr ""
+
+#: app/views/layouts/anon.html.erb:31
+msgid "tahdump"
+msgstr ""
+
+#: app/views/tahdumps/show.html.erb:6
+msgid "Commit"
 msgstr ""
 
 #: app/views/tahs/show.html.erb:7

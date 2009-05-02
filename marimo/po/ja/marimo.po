@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: marimo 0.0.1\n"
-"POT-Creation-Date: 2009-05-02 11:55+0900\n"
+"POT-Creation-Date: 2009-05-03 03:27+0900\n"
 "PO-Revision-Date: 2009-04-30 04:29+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,33 +22,33 @@ msgstr "書庫"
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:3
 #: app/views/arcs/index.html.erb:20 app/views/arcs/show.html.erb:2
-#: app/views/arcs/show.html.erb:77 app/views/arcs/show.html.erb:106
+#: app/views/arcs/show.html.erb:108 app/views/arcs/show.html.erb:137
 #: app/views/equips/show.html.erb:16
 msgid "Arc|Code"
 msgstr "Code"
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:21
-#: app/views/arcs/show.html.erb:7 app/views/arcs/show.html.erb:78
-#: app/views/arcs/show.html.erb:107 app/views/equips/show.html.erb:17
+#: app/views/arcs/show.html.erb:7 app/views/arcs/show.html.erb:109
+#: app/views/arcs/show.html.erb:138 app/views/equips/show.html.erb:17
 msgid "Arc|Extname"
 msgstr "拡張子"
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:22
-#: app/views/arcs/show.html.erb:12 app/views/arcs/show.html.erb:79
-#: app/views/arcs/show.html.erb:108 app/views/equips/show.html.erb:18
+#: app/views/arcs/show.html.erb:12 app/views/arcs/show.html.erb:110
+#: app/views/arcs/show.html.erb:139 app/views/equips/show.html.erb:18
 msgid "Arc|Location"
 msgstr "所在"
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:7
 #: app/views/arcs/index.html.erb:23 app/views/arcs/show.html.erb:17
-#: app/views/arcs/show.html.erb:80 app/views/arcs/show.html.erb:109
+#: app/views/arcs/show.html.erb:111 app/views/arcs/show.html.erb:140
 #: app/views/equips/show.html.erb:19
 msgid "Arc|Summary"
 msgstr "要約"
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:24
-#: app/views/arcs/show.html.erb:22 app/views/arcs/show.html.erb:81
-#: app/views/arcs/show.html.erb:110 app/views/equips/show.html.erb:20
+#: app/views/arcs/show.html.erb:22 app/views/arcs/show.html.erb:112
+#: app/views/arcs/show.html.erb:141 app/views/equips/show.html.erb:20
 msgid "Arc|Origname"
 msgstr "Origname"
 
@@ -97,6 +97,34 @@ msgstr "作成日時"
 msgid "Equip|Updated at"
 msgstr "更新日時"
 
+#: app/models/relationship.rb:-
+msgid "relationship"
+msgstr "関係性"
+
+#: app/models/relationship.rb:-
+msgid "Relationship|From"
+msgstr "書庫"
+
+#: app/models/relationship.rb:- app/views/arcs/show.html.erb:78
+msgid "Relationship|To"
+msgstr "書庫"
+
+#: app/models/relationship.rb:- app/views/arcs/show.html.erb:77
+msgid "Relationship|Kind"
+msgstr "関係性"
+
+#: app/models/relationship.rb:- app/views/arcs/show.html.erb:79
+msgid "Relationship|Note"
+msgstr "注釈"
+
+#: app/models/relationship.rb:-
+msgid "Relationship|Created at"
+msgstr "作成日時"
+
+#: app/models/relationship.rb:-
+msgid "Relationship|Updated at"
+msgstr "更新日時"
+
 #: app/models/tah.rb:- app/views/layouts/anon.html.erb:27
 msgid "tah"
 msgstr "tah"
@@ -118,6 +146,10 @@ msgstr "作成日時"
 #: app/models/tah.rb:-
 msgid "Tah|Updated at"
 msgstr "更新日時"
+
+#: app/models/tah.rb:-
+msgid "Tah|Position"
+msgstr "位置"
 
 #: app/models/tso.rb:- app/views/layouts/anon.html.erb:28
 msgid "tso"
@@ -149,6 +181,10 @@ msgstr "更新日時"
 msgid "Tso|Tah hash"
 msgstr "tah hash"
 
+#: app/models/tso.rb:-
+msgid "Tso|Position"
+msgstr "位置"
+
 #: app/models/user.rb:-
 msgid "user"
 msgstr "user"
@@ -174,7 +210,7 @@ msgid "Search"
 msgstr "検索"
 
 #: app/views/arcs/index.html.erb:41 app/views/arcs/show.html.erb:61
-#: app/views/arcs/show.html.erb:94 app/views/arcs/show.html.erb:123
+#: app/views/arcs/show.html.erb:125 app/views/arcs/show.html.erb:154
 #: app/views/equips/index.html.erb:17 app/views/equips/show.html.erb:37
 #: app/views/tahs/index.html.erb:17 app/views/tahs/show.html.erb:41
 #: app/views/tahs/show.html.erb:66 app/views/tahs/show.html.erb:87
@@ -216,16 +252,28 @@ msgid "Arc|Tahs"
 msgstr "Tahs"
 
 #: app/views/arcs/show.html.erb:72
+msgid "Arc|Relations"
+msgstr "関連書庫"
+
+#: app/views/arcs/show.html.erb:103
 msgid "Arc|Collisions"
 msgstr "衝突"
 
-#: app/views/arcs/show.html.erb:101
+#: app/views/arcs/show.html.erb:132
 msgid "Arc|Duplicates"
 msgstr "重複"
 
 #: app/views/equips/show.html.erb:11
 msgid "Equip|Arcs"
 msgstr "書庫"
+
+#: app/views/layouts/anon.html.erb:31
+msgid "tahdump"
+msgstr "tahdump"
+
+#: app/views/tahdumps/show.html.erb:6
+msgid "Commit"
+msgstr "Commit"
 
 #: app/views/tahs/show.html.erb:7
 msgid "Tah|Rows"

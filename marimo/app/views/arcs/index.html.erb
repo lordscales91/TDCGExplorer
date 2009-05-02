@@ -22,7 +22,6 @@
     <th><%= _'Arc|Location' %></th>
     <th><%= _'Arc|Summary' %></th>
     <th><%= _'Arc|Origname' %></th>
-    <th></th>
 <%-if logged_in? -%>
     <th></th>
     <th></th>
@@ -33,12 +32,11 @@
   <tbody>
 <% for arc in @arcs %>
   <tr class="<%= cycle('odd', 'even') %>">
-    <td><%=h arc.code %></td>
+    <td><%=link_to h(arc.code), arc %></td>
     <td><%=h arc.extname %></td>
     <td><%=h arc.location %></td>
     <td><%=h arc.summary %></td>
     <td><%=h arc.origname %></td>
-    <td><%= link_to _('Show'), arc %></td>
 <%-if logged_in? -%>
     <td><%= link_to _('Edit'), edit_arc_path(arc) %></td>
     <td><%= link_to _('Destroy'), arc, :confirm => _('Are you sure?'), :method => :delete %></td>
