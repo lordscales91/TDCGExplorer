@@ -28,6 +28,13 @@
   <%=h @arc.row_caption %>
 </p>
 
+<p>
+  <b><%= _'Arc|Equips' %>:</b>
+<%-for equip in @arc.equips-%>
+  <%=link_to h(equip.name), equip %>
+<%-end-%>
+</p>
+
 <%-if logged_in? -%>
 <%= link_to _('Edit'), edit_arc_path(@arc) %>
 <%-end-%>

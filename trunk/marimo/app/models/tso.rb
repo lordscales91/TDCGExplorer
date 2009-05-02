@@ -26,7 +26,12 @@ class Tso < ActiveRecord::Base
   end
 
   def row
-    File.basename(path, '.tso')[9,1].upcase
+    case path
+    when %r[data/bgmodel/]
+      nil
+    when %r[data/model/]
+      File.basename(path)[9,1].upcase
+    end
   end
 
   ROW_TBL = <<-EOT
@@ -69,11 +74,11 @@ Z ŽèŽ‚¿‚Ì¬•¨
   end
 
   def self.row_name(row)
-    row + ":" + ROW_NAMES[row]
+    row ? row + ":" + ROW_NAMES[row] : nil
   end
 
   def row_name
-    row + ":" + ROW_NAMES[row]
+    row ? row + ":" + ROW_NAMES[row] : nil
   end
 
   class Search
