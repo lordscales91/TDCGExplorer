@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090502020324) do
+ActiveRecord::Schema.define(:version => 20090502090839) do
 
   create_table "arc_equips", :force => true do |t|
     t.integer  "arc_id",     :limit => 11
@@ -42,6 +42,7 @@ ActiveRecord::Schema.define(:version => 20090502020324) do
     t.string   "path"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "position",   :limit => 11
   end
 
   add_index "tahs", ["arc_id"], :name => "index_tahs_on_arc_id"
