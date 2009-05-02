@@ -1,6 +1,7 @@
 class TsosController < ApplicationController
   include AuthenticatedSystem
   layout 'anon'
+  before_filter :login_required, :only => [ :new, :edit, :create, :update ]
 
   # GET /tsos
   # GET /tsos.xml
