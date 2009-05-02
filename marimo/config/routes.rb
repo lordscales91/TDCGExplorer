@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resource :tahdump
+
   map.resources :equips
 
   map.resources :users
