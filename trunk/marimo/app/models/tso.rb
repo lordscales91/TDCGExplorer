@@ -6,6 +6,7 @@ end
 
 class Tso < ActiveRecord::Base
   belongs_to :tah
+  acts_as_list :scope => :tah
 
   def before_save
     self.tah_hash = '%08X' % TAHHash.calc(path) if defined? TAHHash
