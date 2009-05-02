@@ -1,6 +1,7 @@
 class ArcsController < ApplicationController
   include AuthenticatedSystem
   layout 'anon'
+  before_filter :login_required, :only => [ :new, :edit, :create, :update ]
 
   # GET /arcs
   # GET /arcs.xml
