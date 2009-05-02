@@ -1,4 +1,7 @@
 class EquipsController < ApplicationController
+  include AuthenticatedSystem
+  layout 'anon'
+
   # GET /equips
   # GET /equips.xml
   def index
