@@ -1,7 +1,7 @@
 class Tah < ActiveRecord::Base
   belongs_to :arc
   acts_as_list :scope => :arc
-  has_many :tsos, :dependent => :destroy
+  has_many :tsos, :dependent => :destroy, :order => "position"
 
   def collisions
     tsos.map(&:collisions).flatten.uniq.map(&:tah).uniq
