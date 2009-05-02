@@ -1,5 +1,5 @@
 class Arc < ActiveRecord::Base
-  has_many :tahs, :dependent => :destroy
+  has_many :tahs, :dependent => :destroy, :order => "position"
   has_many :arc_equips, :dependent => :destroy
   has_many :equips, :through => :arc_equips
 
