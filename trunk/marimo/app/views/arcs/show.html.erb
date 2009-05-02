@@ -40,6 +40,36 @@
 <%-end-%>
 
 <p>
+  <b><%= _'Arc|Relations' %>:</b>
+</p>
+<table class="list arcs">
+  <thead>
+  <tr>
+    <th><%= _'Arc|Code' %></th>
+    <th><%= _'Relationship|Kind' %></th>
+    <th><%= _'Relationship|Note' %></th>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for rel in @arc.relationships %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=link_to h(rel.to.code), rel.to %></td>
+    <td><%=h rel.kind_caption %></td>
+    <td><%=h rel.note %></td>
+  </tr>
+<% end %>
+<% for rel in @arc.rev_relationships %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=link_to h(rel.from.code), rel.from %></td>
+    <td><%=h rel.rev_kind_caption %></td>
+    <td><%=h rel.note %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+
+<p>
   <b><%= _'Arc|Tahs' %>:</b>
 </p>
 <table class="list tahs">
@@ -79,19 +109,17 @@
     <th><%= _'Arc|Location' %></th>
     <th><%= _'Arc|Summary' %></th>
     <th><%= _'Arc|Origname' %></th>
-    <th></th>
   </tr>
   </thead>
 
   <tbody>
 <% for arc in @arc.collisions %>
   <tr class="<%= cycle('odd', 'even') %>">
-    <td><%=h arc.code %></td>
+    <td><%=link_to h(arc.code), arc %></td>
     <td><%=h arc.extname %></td>
     <td><%=h arc.location %></td>
     <td><%=h arc.summary %></td>
     <td><%=h arc.origname %></td>
-    <td><%= link_to _('Show'), arc %></td>
   </tr>
 <% end %>
   </tbody>
@@ -108,19 +136,17 @@
     <th><%= _'Arc|Location' %></th>
     <th><%= _'Arc|Summary' %></th>
     <th><%= _'Arc|Origname' %></th>
-    <th></th>
   </tr>
   </thead>
 
   <tbody>
 <% for arc in @arc.duplicates %>
   <tr class="<%= cycle('odd', 'even') %>">
-    <td><%=h arc.code %></td>
+    <td><%=link_to h(arc.code), arc %></td>
     <td><%=h arc.extname %></td>
     <td><%=h arc.location %></td>
     <td><%=h arc.summary %></td>
     <td><%=h arc.origname %></td>
-    <td><%= link_to _('Show'), arc %></td>
   </tr>
 <% end %>
   </tbody>
