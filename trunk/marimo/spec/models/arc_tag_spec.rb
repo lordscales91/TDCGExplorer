@@ -1,14 +1,13 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe ArcTag do
-  before(:each) do
-    @valid_attributes = {
-      :arc => ,
-      :tag => 
-    }
+  fixtures :arcs, :arc_tags, :tags
+
+  it "one arc should eq arcs.one" do
+    arc_tags(:one).arc.should == arcs(:one)
   end
 
-  it "should create a new instance given valid attributes" do
-    ArcTag.create!(@valid_attributes)
+  it "one tag should eq tags.one" do
+    arc_tags(:one).tag.should == tags(:one)
   end
 end
