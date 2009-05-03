@@ -45,7 +45,7 @@ class Tahdump
     end
 
     def commit(arc, i)
-      tah = ::Tah.find_or_initialize_by_position(i+1)
+      tah = arc.tahs.find_or_initialize_by_position(i+1)
       tah.arc = arc
       tah.path = path
       tah.save
@@ -64,7 +64,7 @@ class Tahdump
     attr_accessor :tah, :path
 
     def commit(tah, i)
-      tso = ::Tso.find_or_initialize_by_position(i+1)
+      tso = tah.tsos.find_or_initialize_by_position(i+1)
       tso.tah = tah
       tso.path = path
       tso.save
