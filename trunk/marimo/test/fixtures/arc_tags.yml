@@ -1,9 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  arc: 
-  tag: 
+  id: 1
+  arc_id: 1
+  tag_id: 1
 
 two:
-  arc: 
-  tag: 
+  id: 2
+  arc_id: 1
+  tag_id: 2
