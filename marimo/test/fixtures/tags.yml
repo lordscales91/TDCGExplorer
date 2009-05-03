@@ -1,7 +1,9 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  name: MyString
+  id: 1
+  name: tag1
 
 two:
-  name: MyString
+  id: 2
+  name: tag2
