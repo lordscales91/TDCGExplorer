@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090503032743) do
+ActiveRecord::Schema.define(:version => 20090503033332) do
 
   create_table "arc_equips", :force => true do |t|
     t.integer  "arc_id",     :limit => 11
@@ -20,6 +20,16 @@ ActiveRecord::Schema.define(:version => 20090503032743) do
 
   add_index "arc_equips", ["arc_id"], :name => "index_arc_equips_on_arc_id"
   add_index "arc_equips", ["equip_id"], :name => "index_arc_equips_on_equip_id"
+
+  create_table "arc_tags", :force => true do |t|
+    t.integer  "arc_id",     :limit => 11
+    t.integer  "tag_id",     :limit => 11
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "arc_tags", ["arc_id"], :name => "index_arc_tags_on_arc_id"
+  add_index "arc_tags", ["tag_id"], :name => "index_arc_tags_on_tag_id"
 
   create_table "arcs", :force => true do |t|
     t.string   "code",       :limit => 10
