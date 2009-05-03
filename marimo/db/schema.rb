@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090502171332) do
+ActiveRecord::Schema.define(:version => 20090503032743) do
 
   create_table "arc_equips", :force => true do |t|
     t.integer  "arc_id",     :limit => 11
@@ -48,6 +48,12 @@ ActiveRecord::Schema.define(:version => 20090502171332) do
 
   add_index "relationships", ["from_id"], :name => "index_relationships_on_from_id"
   add_index "relationships", ["to_id"], :name => "index_relationships_on_to_id"
+
+  create_table "tags", :force => true do |t|
+    t.string   "name",       :limit => 15, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "tahs", :force => true do |t|
     t.integer  "arc_id",     :limit => 11
