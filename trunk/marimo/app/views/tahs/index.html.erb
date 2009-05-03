@@ -1,3 +1,15 @@
+<% form_for(:search, @search, :url => tahs_path, :html => { :method => :get }) do |f| %>
+  <p>
+    <%= _'Tah|Path' %><br />
+    <%= f.text_field :path %>
+  </p>
+  <p>
+    <%= f.submit _("Search") %>
+  </p>
+<% end %>
+<p>
+  Total <%=h @tahs.total_entries %>
+</p>
 <table class="list tahs">
   <thead>
   <tr>
