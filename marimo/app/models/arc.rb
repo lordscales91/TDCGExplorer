@@ -6,6 +6,8 @@ class Arc < ActiveRecord::Base
   has_many :relations, :through => :relationships, :source => "to"
   has_many :rev_relationships, :dependent => :destroy, :class_name => 'Relationship', :foreign_key => "to_id"
   has_many :rev_relations, :through => :rev_relationships, :source => "from"
+  has_many :arc_tags
+  has_many :tags, :through => :arc_tags
 
   def collisions
     tahs.map(&:collisions).flatten.uniq.map(&:arc).uniq
