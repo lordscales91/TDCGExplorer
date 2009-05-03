@@ -22,8 +22,12 @@ class Tahdump
       arc.origname = origname
       arc.save
 
-      @tahs.each do |tah|
-        tah.commit(arc)
+      ( arc.tahs.size-1 ).downto( @tahs.size ) do |i|
+        arc.tahs[i].destroy
+      end if arc.tahs.size > @tahs.size
+
+      @tahs.each_with_index do |tah, i|
+        tah.commit(arc, i)
       end
     end
   end
@@ -40,13 +44,18 @@ class Tahdump
       @tsos.push tso
     end
 
-    def commit(arc)
-      tah = ::Tah.find_or_initialize_by_path(path)
+    def commit(arc, i)
+      tah = ::Tah.find_or_initialize_by_position(i+1)
       tah.arc = arc
+      tah.path = path
       tah.save
 
-      @tsos.each do |tso|
-        tso.commit(tah)
+      ( tah.tsos.size-1 ).downto( @tsos.size ) do |i|
+        tah.tsos[i].destroy
+      end if tah.tsos.size > @tsos.size
+
+      @tsos.each_with_index do |tso, i|
+        tso.commit(tah, i)
       end
     end
   end
@@ -54,9 +63,10 @@ class Tahdump
   class Tso
     attr_accessor :tah, :path
 
-    def commit(tah)
-      tso = ::Tso.find_or_initialize_by_path(path)
+    def commit(tah, i)
+      tso = ::Tso.find_or_initialize_by_position(i+1)
       tso.tah = tah
+      tso.path = path
       tso.save
     end
   end

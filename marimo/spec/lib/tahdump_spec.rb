@@ -107,6 +107,36 @@ EOT
     tah.should == new_tah
   end
 
+  it "tah 数が減少している場合 削除する" do
+    arc = Arc.create(:code => "TA0026")
+    tah_1 = arc.tahs.create(:path => "眉項目へ追加/hoku.tah")
+    tah_2 = arc.tahs.create(:path => "眉項目へ追加/kiba.tah")
+
+    data = <<'EOT'
+# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
+# TAH in archive 眉項目へ追加/hoku.tah
+EOT
+    tahdump = Tahdump.new(data)
+    tahdump.commit
+
+    arc.tahs.should have(1).items
+  end
+
+  it "tah 数が増加している場合 追加する" do
+    arc = Arc.create(:code => "TA0026")
+    tah_1 = arc.tahs.create(:path => "眉項目へ追加/hoku.tah")
+
+    data = <<'EOT'
+# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
+# TAH in archive 眉項目へ追加/hoku.tah
+# TAH in archive 眉項目へ追加/kiba.tah
+EOT
+    tahdump = Tahdump.new(data)
+    tahdump.commit
+
+    arc.tahs.should have(2).items
+  end
+
   it "指定 path を持つ既存の tso がない場合 tso を作成する" do
     arc = Arc.create(:code => "TA0026")
     tah = arc.tahs.create(:path => "眉項目へ追加/hoku.tah")
@@ -138,5 +168,39 @@ EOT
 
     new_tso = tah.tsos.find_by_path("data/model/N005HOKU_200.tso")
     tso.should == new_tso
+  end
+
+  it "tso 数が減少している場合 削除する" do
+    arc = Arc.create(:code => "TA0026")
+    tah = arc.tahs.create(:path => "眉項目へ追加/hoku.tah")
+    tso_1 = tah.tsos.create(:path => "data/model/N005HOKU_200.tso")
+    tso_2 = tah.tsos.create(:path => "data/model/N005HOKU_201.tso")
+
+    data = <<'EOT'
+# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
+# TAH in archive 眉項目へ追加/hoku.tah
+data/model/N005HOKU_200.tso
+EOT
+    tahdump = Tahdump.new(data)
+    tahdump.commit
+
+    tah.tsos.should have(1).items
+  end
+
+  it "tso 数が増加している場合 追加する" do
+    arc = Arc.create(:code => "TA0026")
+    tah = arc.tahs.create(:path => "眉項目へ追加/hoku.tah")
+    tso_1 = tah.tsos.create(:path => "data/model/N005HOKU_200.tso")
+
+    data = <<'EOT'
+# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
+# TAH in archive 眉項目へ追加/hoku.tah
+data/model/N005HOKU_200.tso
+data/model/N005HOKU_201.tso
+EOT
+    tahdump = Tahdump.new(data)
+    tahdump.commit
+
+    tah.tsos.should have(2).items
   end
 end
