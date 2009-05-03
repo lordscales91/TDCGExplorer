@@ -22,4 +22,29 @@ class Tah < ActiveRecord::Base
   def row_caption
     row_names.join('/')
   end
+
+  class Search
+    attr_accessor :path
+
+    def initialize(attributes)
+      attributes.each do |name, value|
+        send("#{name}=", value)
+      end if attributes
+    end
+
+    def conditions
+      @conditions ||= begin
+        sql = "1"
+        ret = [ sql ]
+        unless path.blank?
+          sql.concat " and path like ?"
+          ret.push "%#{path}%"
+        end
+      end
+    end
+
+    def find_options
+      { :conditions => conditions }
+    end
+  end
 end
