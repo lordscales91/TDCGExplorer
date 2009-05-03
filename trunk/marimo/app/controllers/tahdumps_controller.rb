@@ -6,7 +6,7 @@ class TahdumpsController < ApplicationController
   end
 
   def create
-    tahdump = TAHDump.new(params[:tahdump])
+    tahdump = Tahdump.new(params[:tahdump])
     if tahdump.commit
       flash[:notice] = 'TAHDump was successfully committed.'
       redirect_to tahdump_path
