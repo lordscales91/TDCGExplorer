@@ -35,6 +35,13 @@
 <%-end-%>
 </p>
 
+<p>
+  <b><%= _'Arc|Tags' %>:</b>
+<%-for tag in @arc.tags-%>
+  <%=link_to h(tag.name), tag %>
+<%-end-%>
+</p>
+
 <%-if logged_in? -%>
 <%= link_to _('Edit'), edit_arc_path(@arc) %>
 <%-end-%>

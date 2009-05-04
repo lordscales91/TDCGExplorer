@@ -15,6 +15,8 @@ class Arc < ActiveRecord::Base
 
   has_many :arc_tags
   has_many :tags, :through => :arc_tags
+  after_update :save_arc_tags
+  validates_associated :arc_tags
 
   def collisions
     tahs.map(&:collisions).flatten.uniq.map(&:arc).uniq
@@ -76,6 +78,28 @@ class Arc < ActiveRecord::Base
         ar.destroy
       else
         ar.save(false)
+      end
+    end
+  end
+
+  def arc_tag_attributes=(arc_tag_attributes)
+    arc_tag_attributes.each do |attributes|
+      unless id = attributes.delete(:id)
+        arc_tags.build(attributes)
+      else
+        id = id.to_i
+        arc_tag = arc_tags.detect { |ae| ae.id == id }
+        arc_tag.attributes = attributes
+      end
+    end
+  end
+
+  def save_arc_tags
+    arc_tags.each do |ae|
+      if ae.should_destroy?
+        ae.destroy
+      else
+        ae.save(false)
       end
     end
   end
