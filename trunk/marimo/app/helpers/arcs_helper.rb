@@ -10,4 +10,10 @@ module ArcsHelper
       page.insert_html :bottom, :relationships, :partial => 'relationship', :object => Relationship.new
     end
   end
+
+  def add_arc_tag_link(name)
+    link_to_function name do |page|
+      page.insert_html :bottom, :arc_tags, :partial => 'arc_tag', :object => ArcTag.new
+    end
+  end
 end
