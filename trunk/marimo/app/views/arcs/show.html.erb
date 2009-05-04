@@ -105,6 +105,7 @@
   </tbody>
 </table>
 
+<%-unless @arc.collisions.empty?-%>
 <p>
   <b><%= _'Arc|Collisions' %>:</b>
 </p>
@@ -131,7 +132,9 @@
 <% end %>
   </tbody>
 </table>
+<%-end-%>
 
+<%-unless @arc.duplicates.empty?-%>
 <p>
   <b><%= _'Arc|Duplicates' %>:</b>
 </p>
@@ -158,3 +161,4 @@
 <% end %>
   </tbody>
 </table>
+<%-end-%>
