@@ -70,6 +70,9 @@ $KCODE = 'SJIS'
 ActiveRecord::Base.colorize_logging = false
 ActionController::Base.default_charset = 'Shift_JIS'
 
+WillPaginate::ViewHelpers.pagination_options[:prev_label] = '&laquo; ‘O‚Ö'
+WillPaginate::ViewHelpers.pagination_options[:next_label] = 'ŽŸ‚Ö &raquo;'
+
 class String
   def to_json(options = nil) #:nodoc:
     '"' + gsub(ActiveSupport::JSON::Encoding.escape_regex) { |s|

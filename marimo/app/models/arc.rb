@@ -113,23 +113,25 @@ class Arc < ActiveRecord::Base
       end if attributes
     end
 
+    def text=(text)
+      self.code = text
+      self.summary = text
+    end
+
     def conditions
       @conditions ||= begin
         sql = "1"
         ret = [ sql ]
+        terms = []
         unless code.blank?
-          sql.concat " and code like ?"
+          terms.push "code like ?"
           ret.push "%#{code}%"
         end
         unless summary.blank?
-          sql.concat " and summary like ?"
+          terms.push "summary like ?"
           ret.push "%#{summary}%"
         end
-        unless text.blank?
-          sql.concat " and ( code like ? or summary like ? )"
-          ret.push "%#{text}%"
-          ret.push "%#{text}%"
-        end
+        sql.concat " and (#{ terms.join(' or ') })"
         ret
       end
     end
