@@ -1,5 +1,3 @@
-<h1>Editing arc</h1>
-
 <% form_for(@arc) do |f| %>
   <%= f.error_messages %>
 
@@ -23,10 +21,16 @@
     <%= f.label :origname %><br />
     <%= f.text_field :origname %>
   </p>
+<div id="arc_equips">
+  <%= _'Arc|Equips' %><br />
+  <%= render :partial => 'arc_equip', :collection => @arc.arc_equips %>
+</div>
   <p>
-    <%= f.submit "Update" %>
+    <%= add_arc_equip_link _('Add a equip') %>
+  </p>
+  <p>
+    <%= f.submit _("Update") %>
   </p>
 <% end %>
 
-<%= link_to 'Show', @arc %> |
-<%= link_to 'Back', arcs_path %>
+<%= link_to _('Show'), @arc %>
