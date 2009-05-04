@@ -3,13 +3,13 @@ class Relationship < ActiveRecord::Base
   belongs_to :to, :class_name => 'Arc'
 
   def self.kind_collection
-    [['重複', 1], ['新版', 2], ['前提', 3]]
+    [['同一内容', 1], ['新版', 2], ['前提', 3]]
   end
 
   def kind_caption
     case kind
     when 1
-      '重複'
+      '同一内容'
     when 2
       '新版'
     when 3
@@ -20,7 +20,7 @@ class Relationship < ActiveRecord::Base
   def rev_kind_caption
     case kind
     when 1
-      '重複'
+      '同一内容'
     when 2
       '旧版'
     when 3
