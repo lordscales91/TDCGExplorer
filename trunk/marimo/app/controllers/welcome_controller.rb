@@ -9,9 +9,9 @@ class WelcomeController < ApplicationController
       @tahs = []
     else
       @arc_search = Arc::Search.new(params[:search])
-      @arcs = Arc.paginate(@arc_search.find_options.merge(:page => nil, :order => 'location, code'))
+      @arcs = Arc.paginate(@arc_search.find_options.merge(:page => nil, :order => 'location, code', :per_page => 15))
       @tah_search = Tah::Search.new(params[:search])
-      @tahs = Tah.paginate(@tah_search.find_options.merge(:page => nil))
+      @tahs = Tah.paginate(@tah_search.find_options.merge(:page => nil, :per_page => 15))
     end
   end
 
