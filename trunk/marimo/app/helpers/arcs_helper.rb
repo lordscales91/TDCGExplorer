@@ -18,6 +18,6 @@ module ArcsHelper
   end
 
   def relationship_kind_collection
-    [['d•¡', 1], ['V”Å', 2], ['‘O’ñ', 3]]
+    Relationship.kind_collection
   end
 end

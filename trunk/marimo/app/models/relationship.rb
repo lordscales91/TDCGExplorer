@@ -2,6 +2,10 @@ class Relationship < ActiveRecord::Base
   belongs_to :from, :class_name => 'Arc'
   belongs_to :to, :class_name => 'Arc'
 
+  def self.kind_collection
+    [['d•¡', 1], ['V”Å', 2], ['‘O’ñ', 3]]
+  end
+
   def kind_caption
     case kind
     when 1
