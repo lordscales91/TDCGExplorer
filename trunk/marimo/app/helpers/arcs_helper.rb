@@ -16,4 +16,8 @@ module ArcsHelper
       page.insert_html :bottom, :arc_tags, :partial => 'arc_tag', :object => ArcTag.new
     end
   end
+
+  def relationship_kind_collection
+    [['d•¡', 1], ['V”Å', 2], ['‘O’ñ', 3]]
+  end
 end
