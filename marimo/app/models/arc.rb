@@ -105,7 +105,7 @@ class Arc < ActiveRecord::Base
   end
 
   class Search
-    attr_accessor :code, :summary
+    attr_accessor :code, :summary, :text
 
     def initialize(attributes)
       attributes.each do |name, value|
@@ -124,6 +124,11 @@ class Arc < ActiveRecord::Base
         unless summary.blank?
           sql.concat " and summary like ?"
           ret.push "%#{summary}%"
+        end
+        unless text.blank?
+          sql.concat " and ( code like ? or summary like ? )"
+          ret.push "%#{text}%"
+          ret.push "%#{text}%"
         end
         ret
       end

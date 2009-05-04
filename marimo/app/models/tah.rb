@@ -32,6 +32,10 @@ class Tah < ActiveRecord::Base
       end if attributes
     end
 
+    def text=(text)
+      self.path = text
+    end
+
     def conditions
       @conditions ||= begin
         sql = "1"
