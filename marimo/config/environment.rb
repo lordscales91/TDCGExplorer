@@ -71,6 +71,12 @@ ActiveRecord::Base.colorize_logging = false
 ActionController::Base.default_charset = 'Shift_JIS'
 
 class String
+  def to_json(options = nil) #:nodoc:
+    '"' + gsub(ActiveSupport::JSON::Encoding.escape_regex) { |s|
+      ActiveSupport::JSON::Encoding::ESCAPED_CHARS[s]
+    } + '"'
+  end
+
   def to_xs
     gsub(/[&<>]/) { XChar::PREDEFINED[$1[0]] }
   end
