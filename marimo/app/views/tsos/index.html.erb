@@ -23,6 +23,7 @@
   <%=h tso.tah_hash %>
 </p>
 
+<%-unless tso.collisions.empty?-%>
 <p>
   <b><%= _'Tso|Collisions' %>:</b>
 </p>
@@ -45,7 +46,9 @@
 <% end %>
   </tbody>
 </table>
+<%-end-%>
 
+<%-unless tso.duplicates.empty?-%>
 <p>
   <b><%= _'Tso|Duplicates' %>:</b>
 </p>
@@ -68,6 +71,7 @@
 <% end %>
   </tbody>
 </table>
+<%-end-%>
 <% end %>
 
 <%= will_paginate(@tsos) %>

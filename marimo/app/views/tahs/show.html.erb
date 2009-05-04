@@ -48,6 +48,7 @@
   </tbody>
 </table>
 
+<%-unless @tah.collisions.empty?-%>
 <p>
   <b><%= _'Tah|Collisions' %>:</b>
 </p>
@@ -68,7 +69,9 @@
 <% end %>
   </tbody>
 </table>
+<%-end-%>
 
+<%-unless @tah.duplicates.empty?-%>
 <p>
   <b><%= _'Tah|Duplicates' %>:</b>
 </p>
@@ -89,3 +92,4 @@
 <% end %>
   </tbody>
 </table>
+<%-end-%>
