@@ -1,13 +1,7 @@
 <% form_for(:search, @search, :url => arcs_path, :html => { :method => :get }) do |f| %>
   <p>
-    <%= _'Arc|Code' %><br />
-    <%= f.text_field :code %>
-  </p>
-  <p>
-    <%= _'Arc|Summary' %><br />
-    <%= f.text_field :summary %>
-  </p>
-  <p>
+    <%= _'Arc|Code' %> or <%= _'Arc|Summary' %><br />
+    <%= f.text_field :text %>
     <%= f.submit _("Search") %>
   </p>
 <% end %>
