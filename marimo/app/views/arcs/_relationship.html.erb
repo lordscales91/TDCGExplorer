@@ -5,7 +5,7 @@
 </p>
 <p>
   <%= relationship_f.label :kind %><br />
-  <%= relationship_f.text_field :kind, :index => nil, :id => '' %>
+  <%= relationship_f.select :kind, relationship_kind_collection, {}, {:index => nil, :id => ''} %>
 </p>
 <p>
   <%= relationship_f.label :note %><br />
