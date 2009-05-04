@@ -95,6 +95,21 @@ Z è‚¿‚Ì¬•¨
       self.tah_hash ||= ''
     end
 
+    def conditions
+      @conditions ||= begin
+        sql = "1"
+        ret = [ sql ]
+        unless path.blank?
+          sql.concat " and path like ?"
+          ret.push "%#{path}%"
+        end
+      end
+    end
+
+    def find_options
+      { :conditions => conditions }
+    end
+
     def collisions_and_duplicates
       @_collisions_and_duplicates ||= Tso.find(:all, :conditions => ['tah_hash = ?', tah_hash])
     end
