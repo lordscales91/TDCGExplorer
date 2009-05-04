@@ -42,6 +42,9 @@
 <% end %>
   </tbody>
 </table>
+<div class="pagination">
+  <%= link_to _('and more')+' &raquo;', arcs_path(:search => params[:search]) %>
+</div>
 <%-end-%>
 
 <%-unless @tahs.empty?-%>
@@ -79,6 +82,9 @@
 <% end %>
   </tbody>
 </table>
+<div class="pagination">
+  <%= link_to _('and more')+' &raquo;', tahs_path(:search => params[:search]) %>
+</div>
 <%-end-%>
 
 <%-if @search.text.blank?-%>
