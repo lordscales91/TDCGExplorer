@@ -11,6 +11,9 @@
 <table class="list tahs">
   <thead>
   <tr>
+    <th><%= _'Arc|Code' %></th>
+    <th><%= _'Arc|Extname' %></th>
+    <th><%= _'Arc|Location' %></th>
     <th><%= _'Tah|Path' %></th>
     <th></th>
 <%-if logged_in? -%>
@@ -23,6 +26,9 @@
   <tbody>
 <% for tah in @tahs %>
   <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=link_to h(tah.arc.code), tah.arc %></td>
+    <td><%=h tah.arc.extname %></td>
+    <td><%=h tah.arc.location %></td>
     <td><%=h tah.path %></td>
     <td><%= link_to _('Show'), tah %></td>
 <%-if logged_in? -%>
