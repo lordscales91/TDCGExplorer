@@ -60,4 +60,15 @@ describe TsosController do
     end
 
   end
+
+  describe "DELETE destroy" do
+
+    it "—v user ”FØ" do
+      controller.should_receive(:current_user).and_return(mock_user)
+      Tso.stub!(:find).and_return(mock_tso)
+      mock_tso.stub!(:destroy).and_return(true)
+      delete :destroy, :id => "1"
+    end
+
+  end
 end
