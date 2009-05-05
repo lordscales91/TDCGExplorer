@@ -66,4 +66,15 @@ describe ArcsController do
     end
 
   end
+
+  describe "DELETE destroy" do
+
+    it "—v user ”FØ" do
+      controller.should_receive(:current_user).and_return(mock_user)
+      Arc.stub!(:find).and_return(mock_arc)
+      mock_arc.stub!(:destroy).and_return(true)
+      delete :destroy, :id => "1"
+    end
+
+  end
 end
