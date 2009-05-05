@@ -53,6 +53,9 @@
   <thead>
   <tr>
     <th><%= _'Arc|Code' %></th>
+    <th><%= _'Arc|Extname' %></th>
+    <th><%= _'Arc|Location' %></th>
+    <th><%= _'Arc|Summary' %></th>
     <th><%= _'Relationship|Kind' %></th>
     <th><%= _'Relationship|Note' %></th>
   </tr>
@@ -62,6 +65,9 @@
 <% for rel in @arc.relationships %>
   <tr class="<%= cycle('odd', 'even') %>">
     <td><%=link_to h(rel.to.code), rel.to %></td>
+    <td><%=h rel.to.extname %></td>
+    <td><%=h rel.to.location %></td>
+    <td><%=h rel.to.summary %></td>
     <td><%=h rel.kind_caption %></td>
     <td><%=h rel.note %></td>
   </tr>
@@ -69,6 +75,9 @@
 <% for rel in @arc.rev_relationships %>
   <tr class="<%= cycle('odd', 'even') %>">
     <td><%=link_to h(rel.from.code), rel.from %></td>
+    <td><%=h rel.from.extname %></td>
+    <td><%=h rel.from.location %></td>
+    <td><%=h rel.from.summary %></td>
     <td><%=h rel.rev_kind_caption %></td>
     <td><%=h rel.note %></td>
   </tr>
