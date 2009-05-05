@@ -66,4 +66,15 @@ describe TahsController do
     end
 
   end
+
+  describe "DELETE destroy" do
+
+    it "—v user ”FØ" do
+      controller.should_receive(:current_user).and_return(mock_user)
+      Tah.stub!(:find).and_return(mock_tah)
+      mock_tah.stub!(:destroy).and_return(true)
+      delete :destroy, :id => "1"
+    end
+
+  end
 end
