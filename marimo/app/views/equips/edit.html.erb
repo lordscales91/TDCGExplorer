@@ -1,5 +1,3 @@
-<h1>Editing equip</h1>
-
 <% form_for(@equip) do |f| %>
   <%= f.error_messages %>
 
@@ -8,9 +6,8 @@
     <%= f.text_field :name %>
   </p>
   <p>
-    <%= f.submit "Update" %>
+    <%= f.submit _("Update") %>
   </p>
 <% end %>
 
-<%= link_to 'Show', @equip %> |
-<%= link_to 'Back', equips_path %>
+<%= link_to _('Show'), @equip %>
