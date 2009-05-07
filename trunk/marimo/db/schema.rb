@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090507103059) do
+ActiveRecord::Schema.define(:version => 20090507111210) do
 
   create_table "arc_equips", :force => true do |t|
     t.integer  "arc_id",     :limit => 11
@@ -87,6 +87,7 @@ ActiveRecord::Schema.define(:version => 20090507103059) do
 
   add_index "tsos", ["tah_id"], :name => "index_tsos_on_tah_id"
   add_index "tsos", ["tah_hash"], :name => "index_tsos_on_tah_hash"
+  add_index "tsos", ["md5"], :name => "index_tsos_on_md5"
 
   create_table "users", :force => true do |t|
     t.string   "login"
