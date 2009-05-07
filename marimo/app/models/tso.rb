@@ -11,6 +11,7 @@ class Tso < ActiveRecord::Base
   def before_save
     self.tah_hash = '%08X' % TAHHash.calc(path) if defined? TAHHash
     self.tah_hash ||= ''
+    self.md5 ||= ''
     nil
   end
 
