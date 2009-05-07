@@ -144,7 +144,7 @@ EOT
     data = <<'EOT'
 # zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
 # TAH in archive 眉項目へ追加/hoku.tah
-data/model/N005HOKU_200.tso
+6df59c0777761af5d8d55585b52c613d data/model/N005HOKU_200.tso
 EOT
     tahdump = Tahdump.new(data)
     tahdump.commit
@@ -161,7 +161,7 @@ EOT
     data = <<'EOT'
 # zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
 # TAH in archive 眉項目へ追加/hoku.tah
-data/model/N005HOKU_200.tso
+6df59c0777761af5d8d55585b52c613d data/model/N005HOKU_200.tso
 EOT
     tahdump = Tahdump.new(data)
     tahdump.commit
@@ -179,7 +179,7 @@ EOT
     data = <<'EOT'
 # zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
 # TAH in archive 眉項目へ追加/hoku.tah
-data/model/N005HOKU_200.tso
+6df59c0777761af5d8d55585b52c613d data/model/N005HOKU_200.tso
 EOT
     tahdump = Tahdump.new(data)
     tahdump.commit
@@ -195,8 +195,8 @@ EOT
     data = <<'EOT'
 # zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
 # TAH in archive 眉項目へ追加/hoku.tah
-data/model/N005HOKU_200.tso
-data/model/N005HOKU_201.tso
+6df59c0777761af5d8d55585b52c613d data/model/N005HOKU_200.tso
+7ad8006d091820d78962755b23fb6d5e data/model/N005HOKU_201.tso
 EOT
     tahdump = Tahdump.new(data)
     tahdump.commit
