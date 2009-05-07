@@ -1,14 +1,14 @@
-<% form_for(:search, @search, :url => tsos_path, :html => { :method => :get }) do |f| %>
+<% form_for(:search, @search, :url => md5_tsos_path, :html => { :method => :get }) do |f| %>
   <p>
-    <%= _('Tso|Path') %><br />
-    <%= f.text_field :path, :size => 50 %>
+    <%= _('Tso|Md5') %><br />
+    <%= f.text_field :md5, :size => 50 %>
     <%= f.submit _("Search") %>
   </p>
 <% end %>
 <%-content_for :sidebar do-%>
 <h3><%= _'Search' %></h3>
 <p>
-  <%= link_to _("MD5 search"), md5_tsos_path %>
+  <%= link_to _("Path search"), tsos_path %>
 </p>
 <%-end-%>
 <p>
@@ -18,7 +18,7 @@
   <thead>
   <tr>
     <th><%= _'Tso|Path' %></th>
-    <th><%= _'Tso|Tah hash' %></th>
+    <th><%= _'Tso|Md5' %></th>
     <th></th>
 <%-if logged_in? -%>
     <th></th>
@@ -31,7 +31,7 @@
 <% for tso in @tsos %>
   <tr class="<%= cycle('odd', 'even') %>">
     <td><%=h tso.path %></td>
-    <td><%=h tso.tah_hash %></td>
+    <td><%=h tso.md5 %></td>
     <td><%= link_to _('Show'), tso %></td>
 <%-if logged_in? -%>
     <td><%= link_to _('Edit'), edit_tso_path(tso) %></td>

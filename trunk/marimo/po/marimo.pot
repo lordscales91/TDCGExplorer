@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: marimo 0.0.1\n"
-"POT-Creation-Date: 2009-05-07 22:16+0900\n"
+"POT-Creation-Date: 2009-05-07 23:27+0900\n"
 "PO-Revision-Date: 2009-04-30 04:29+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -210,9 +210,9 @@ msgid "Tso|Tah"
 msgstr ""
 
 #: app/models/tso.rb:- app/views/tahs/show.html.erb:26
-#: app/views/tsos/index.html.erb:3 app/views/tsos/index.html.erb:14
-#: app/views/tsos/show.html.erb:2 app/views/tsos/show.html.erb:37
-#: app/views/tsos/show.html.erb:62
+#: app/views/tsos/index.html.erb:3 app/views/tsos/index.html.erb:20
+#: app/views/tsos/md5.html.erb:20 app/views/tsos/show.html.erb:2
+#: app/views/tsos/show.html.erb:37 app/views/tsos/show.html.erb:62
 msgid "Tso|Path"
 msgstr ""
 
@@ -225,7 +225,7 @@ msgid "Tso|Updated at"
 msgstr ""
 
 #: app/models/tso.rb:- app/views/tahs/show.html.erb:27
-#: app/views/tsos/index.html.erb:15 app/views/tsos/show.html.erb:7
+#: app/views/tsos/index.html.erb:21 app/views/tsos/show.html.erb:7
 msgid "Tso|Tah hash"
 msgstr ""
 
@@ -233,7 +233,8 @@ msgstr ""
 msgid "Tso|Position"
 msgstr ""
 
-#: app/models/tso.rb:- app/views/tsos/show.html.erb:17
+#: app/models/tso.rb:- app/views/tsos/md5.html.erb:3
+#: app/views/tsos/md5.html.erb:21 app/views/tsos/show.html.erb:17
 msgid "Tso|Md5"
 msgstr ""
 
@@ -282,7 +283,7 @@ msgid "Add a tag"
 msgstr ""
 
 #: app/views/arcs/edit.html.erb:46 app/views/equips/edit.html.erb:9
-#: app/views/tahs/edit.html.erb:9 app/views/tsos/edit.html.erb:9
+#: app/views/tahs/edit.html.erb:9 app/views/tsos/edit.html.erb:13
 msgid "Update"
 msgstr ""
 
@@ -290,14 +291,17 @@ msgstr ""
 #: app/views/equips/edit.html.erb:13 app/views/equips/index.html.erb:17
 #: app/views/tahs/edit.html.erb:13 app/views/tahs/index.html.erb:33
 #: app/views/tahs/show.html.erb:41 app/views/tahs/show.html.erb:67
-#: app/views/tahs/show.html.erb:90 app/views/tsos/edit.html.erb:13
-#: app/views/tsos/index.html.erb:29 app/views/tsos/show.html.erb:48
-#: app/views/tsos/show.html.erb:73 app/views/welcome/index.html.erb:76
+#: app/views/tahs/show.html.erb:90 app/views/tsos/edit.html.erb:17
+#: app/views/tsos/index.html.erb:35 app/views/tsos/md5.html.erb:35
+#: app/views/tsos/show.html.erb:48 app/views/tsos/show.html.erb:73
+#: app/views/welcome/index.html.erb:76
 msgid "Show"
 msgstr ""
 
 #: app/views/arcs/index.html.erb:5 app/views/tahs/index.html.erb:5
-#: app/views/tsos/index.html.erb:5 app/views/welcome/index.html.erb:5
+#: app/views/tsos/index.html.erb:5 app/views/tsos/index.html.erb:9
+#: app/views/tsos/md5.html.erb:5 app/views/tsos/md5.html.erb:9
+#: app/views/welcome/index.html.erb:5
 msgid "Search"
 msgstr ""
 
@@ -305,24 +309,25 @@ msgstr ""
 #: app/views/arcs/show.html.erb:109 app/views/equips/index.html.erb:19
 #: app/views/equips/show.html.erb:7 app/views/equips/show.html.erb:37
 #: app/views/tahs/index.html.erb:35 app/views/tahs/show.html.erb:12
-#: app/views/tahs/show.html.erb:43 app/views/tsos/index.html.erb:31
-#: app/views/tsos/show.html.erb:27 app/views/welcome/index.html.erb:38
-#: app/views/welcome/index.html.erb:78
+#: app/views/tahs/show.html.erb:43 app/views/tsos/index.html.erb:37
+#: app/views/tsos/md5.html.erb:37 app/views/tsos/show.html.erb:27
+#: app/views/welcome/index.html.erb:38 app/views/welcome/index.html.erb:78
 msgid "Edit"
 msgstr ""
 
 #: app/views/arcs/index.html.erb:36 app/views/arcs/show.html.erb:110
 #: app/views/equips/index.html.erb:20 app/views/equips/show.html.erb:38
 #: app/views/tahs/index.html.erb:36 app/views/tahs/show.html.erb:44
-#: app/views/tsos/index.html.erb:32 app/views/welcome/index.html.erb:39
-#: app/views/welcome/index.html.erb:79
+#: app/views/tsos/index.html.erb:38 app/views/tsos/md5.html.erb:38
+#: app/views/welcome/index.html.erb:39 app/views/welcome/index.html.erb:79
 msgid "Destroy"
 msgstr ""
 
 #: app/views/arcs/index.html.erb:36 app/views/arcs/show.html.erb:110
 #: app/views/equips/show.html.erb:38 app/views/tahs/index.html.erb:36
-#: app/views/tahs/show.html.erb:44 app/views/tsos/index.html.erb:32
-#: app/views/welcome/index.html.erb:39 app/views/welcome/index.html.erb:79
+#: app/views/tahs/show.html.erb:44 app/views/tsos/index.html.erb:38
+#: app/views/tsos/md5.html.erb:38 app/views/welcome/index.html.erb:39
+#: app/views/welcome/index.html.erb:79
 msgid "Are you sure?"
 msgstr ""
 
@@ -368,6 +373,14 @@ msgstr ""
 
 #: app/views/tahs/show.html.erb:76
 msgid "Tah|Duplicates"
+msgstr ""
+
+#: app/views/tsos/index.html.erb:11
+msgid "MD5 search"
+msgstr ""
+
+#: app/views/tsos/md5.html.erb:11
+msgid "Path search"
 msgstr ""
 
 #: app/views/tsos/show.html.erb:12
