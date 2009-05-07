@@ -15,6 +15,16 @@ class TsosController < ApplicationController
     end
   end
 
+  def md5
+    @search = Tso::Search.new(params[:search])
+    @tsos = Tso.paginate(@search.find_options.merge(:page => params[:page]))
+
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @tsos.to_xml(:except => [ :created_at, :updated_at ]) }
+    end
+  end
+
   # GET /tsos/1
   # GET /tsos/1.xml
   def show

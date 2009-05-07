@@ -34,7 +34,10 @@
       </ul>
     </div>
   </div>
-  <div id="main" class="nosidebar">
+  <div id="main" class="<%= has_content?(:sidebar) ? '' : 'nosidebar' %>">
+    <div id="sidebar">
+<%= yield :sidebar %>
+    </div>
     <div id="content">
 <%= content_tag('div', flash[:error], :class => 'flash error') if flash[:error] %>
 <%= content_tag('div', flash[:notice], :class => 'flash notice') if flash[:notice] %>

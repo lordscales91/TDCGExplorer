@@ -85,7 +85,7 @@ Z è‚¿‚Ì¬•¨
   end
 
   class Search
-    attr_accessor :path, :tah_hash
+    attr_accessor :path, :tah_hash, :md5
 
     def initialize(attributes)
       attributes.each do |name, value|
@@ -94,6 +94,7 @@ Z è‚¿‚Ì¬•¨
       self.path ||= ''
       self.tah_hash = '%08X' % TAHHash.calc(path) if defined? TAHHash
       self.tah_hash ||= ''
+      self.md5 ||= ''
     end
 
     def conditions
@@ -103,6 +104,10 @@ Z è‚¿‚Ì¬•¨
         unless path.blank?
           sql.concat " and path like ?"
           ret.push "%#{path}%"
+        end
+        unless md5.blank?
+          sql.concat " and md5 = ?"
+          ret.push "#{md5}"
         end
       end
     end
