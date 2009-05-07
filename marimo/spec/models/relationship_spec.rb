@@ -27,6 +27,10 @@ describe Relationship do
     Relationship.new(:from_id => 1, :to_id => 2).should_not be_valid
   end
 
+  it "‹t‚Ì from, to ‚Ì‘g‚Ý‡‚í‚¹‚ðŽ‚Â rel ‚ª‚ ‚é‚È‚ç valid ‚Å‚È‚¢" do
+    Relationship.new(:from_id => 2, :to_id => 1).should_not be_valid
+  end
+
   it "one ‚Í valid ‚Å‚ ‚é" do
     relationships(:one).should be_valid
   end
