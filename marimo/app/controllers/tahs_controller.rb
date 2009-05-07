@@ -11,7 +11,7 @@ class TahsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @tahs }
+      format.xml  { render :xml => @tahs.to_xml(:except => [ :created_at, :updated_at ]) }
     end
   end
 
@@ -22,7 +22,7 @@ class TahsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @tah }
+      format.xml  { render :xml => @tah.to_xml(:except => [ :created_at, :updated_at ], :include => :tsos) }
     end
   end
 

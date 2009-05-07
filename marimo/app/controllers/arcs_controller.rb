@@ -11,7 +11,7 @@ class ArcsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @arcs }
+      format.xml  { render :xml => @arcs.to_xml(:except => [ :created_at, :updated_at ]) }
     end
   end
 
@@ -22,7 +22,7 @@ class ArcsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @arc }
+      format.xml  { render :xml => @arc.to_xml(:except => [ :created_at, :updated_at ], :include => :tahs) }
     end
   end
 
