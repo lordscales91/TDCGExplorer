@@ -61,12 +61,13 @@ class Tahdump
   end
 
   class Tso
-    attr_accessor :tah, :path
+    attr_accessor :tah, :path, :md5
 
     def commit(tah, i)
       tso = tah.tsos.find_or_initialize_by_position(i+1)
       tso.tah = tah
       tso.path = path
+      tso.md5 = md5
       tso.save
     end
   end
@@ -146,9 +147,10 @@ class Tahdump
   end
 
   def create_tso(line)
-    path = line
+    md5, path = line.split(/ /)
     tso = Tso.new
     tso.path = path
+    tso.md5 = md5
     tso
   end
 end
