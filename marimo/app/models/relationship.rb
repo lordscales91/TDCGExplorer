@@ -2,6 +2,11 @@ class Relationship < ActiveRecord::Base
   belongs_to :from, :class_name => 'Arc'
   belongs_to :to, :class_name => 'Arc'
 
+  def validate_on_create
+    errors.add_to_base("self reference") if from_id == to_id
+    errors.add_to_base("this relationship has been taken") if Relationship.find(:first, :conditions => ["from_id = ? and to_id = ?", from.id, to.id])
+  end
+
   def self.kind_collection
     [['“¯ˆê“à—e', 1], ['V”Å', 2], ['‘O’ñ', 3]]
   end
