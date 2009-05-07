@@ -1,0 +1,9 @@
+<%-fields_for 'arc[arc_equip_attributes][]', arc_equip do |arc_equip_f|-%>
+<p>
+  <%= arc_equip_f.label :equip %><br />
+  <%= arc_equip_f.text_field :equip_name, :index => nil, :id => '' %>
+</p>
+  <%-unless arc_equip.new_record?-%>
+    <%= arc_equip_f.hidden_field :id, :index => nil, :id => '' %>
+  <%-end-%>
+<%-end-%>

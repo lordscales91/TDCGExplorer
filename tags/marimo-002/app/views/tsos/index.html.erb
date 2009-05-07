@@ -1,0 +1,75 @@
+<% form_for(:search, @search, :url => tsos_path, :html => { :method => :get }) do |f| %>
+  <p>
+    <%= _'Tso|Path' %><br />
+    <%= f.text_field :path %>
+    <%= f.submit _("Search") %>
+  </p>
+<% end %>
+
+<p>
+  <b><%= _'Tah|Tsos' %>:</b>
+</p>
+
+<% for tso in @tsos %>
+<h3>
+  <b><%= _'Tso|Path' %>:</b>
+  <%=h tso.path %>
+</h3>
+
+<p>
+  <b><%= _'Tso|Tah hash' %>:</b>
+  <%=h tso.tah_hash %>
+</p>
+
+<%-unless tso.collisions.empty?-%>
+<p>
+  <b><%= _'Tso|Collisions' %>:</b>
+</p>
+<table class="list tsos">
+  <thead>
+  <tr>
+    <th><%= _'Tso|Path' %></th>
+    <th><%= _'Tso|Tah' %></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for collision in tso.collisions %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=h collision.path %></td>
+    <td><%=h collision.tah.path %></td>
+    <td><%= link_to _('Show'), tso %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+<%-end-%>
+
+<%-unless tso.duplicates.empty?-%>
+<p>
+  <b><%= _'Tso|Duplicates' %>:</b>
+</p>
+<table class="list tsos">
+  <thead>
+  <tr>
+    <th><%= _'Tso|Path' %></th>
+    <th><%= _'Tso|Tah' %></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for duplicate in tso.duplicates %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=h duplicate.path %></td>
+    <td><%=h duplicate.tah.path %></td>
+    <td><%= link_to _('Show'), tso %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+<%-end-%>
+<% end %>
+
+<%= will_paginate(@tsos) %>
