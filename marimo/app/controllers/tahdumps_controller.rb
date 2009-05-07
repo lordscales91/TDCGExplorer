@@ -7,11 +7,11 @@ class TahdumpsController < ApplicationController
 
   def create
     tahdump = Tahdump.new(params[:tahdump])
-    if tahdump.commit
-      flash[:notice] = 'TAHDump was successfully committed.'
-      redirect_to tahdump_path
-    else
-      render :action => "show"
-    end
+    tahdump.commit
+    flash[:notice] = 'TAHDump was successfully committed.'
+    redirect_to tahdump_path
+  rescue RuntimeError
+    flash[:error] = $!.message
+    render :action => "show"
   end
 end
