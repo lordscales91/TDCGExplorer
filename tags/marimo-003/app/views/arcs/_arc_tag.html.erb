@@ -1,0 +1,9 @@
+<%-fields_for 'arc[arc_tag_attributes][]', arc_tag do |arc_tag_f|-%>
+<p>
+  <%= arc_tag_f.label :tag %><br />
+  <%= arc_tag_f.text_field :tag_name, :index => nil, :id => '' %>
+</p>
+  <%-unless arc_tag.new_record?-%>
+    <%= arc_tag_f.hidden_field :id, :index => nil, :id => '' %>
+  <%-end-%>
+<%-end-%>
