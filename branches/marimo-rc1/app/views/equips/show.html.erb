@@ -1,0 +1,43 @@
+<h2>
+  <b><%= _'Equip|Name' %>:</b>
+  <%=h @equip.name %>
+</h2>
+
+<%-if logged_in? -%>
+<%= link_to _('Edit'), edit_equip_path(@equip) %>
+<%-end-%>
+
+<p>
+  <b><%= _'Equip|Arcs' %>:</b>
+</p>
+<table class="list arcs">
+  <thead>
+  <tr>
+    <th><%= _'Arc|Code' %></th>
+    <th><%= _'Arc|Extname' %></th>
+    <th><%= _'Arc|Location' %></th>
+    <th><%= _'Arc|Summary' %></th>
+    <th><%= _'Arc|Origname' %></th>
+<%-if logged_in? -%>
+    <th></th>
+    <th></th>
+<%-end-%>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for arc in @equip.arcs %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=link_to h(arc.code), arc %></td>
+    <td><%=h arc.extname %></td>
+    <td><%=h arc.location %></td>
+    <td><%=h arc.summary %></td>
+    <td><%=h arc.origname %></td>
+<%-if logged_in? -%>
+    <td><%= link_to _('Edit'), edit_arc_path(arc) %></td>
+    <td><%= link_to _('Destroy'), arc, :confirm => _('Are you sure?'), :method => :delete %></td>
+<%-end-%>
+  </tr>
+<% end %>
+  </tbody>
+</table>

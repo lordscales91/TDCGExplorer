@@ -1,0 +1,17 @@
+<% form_for(@tso) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :path %><br />
+    <%= f.text_field :path %>
+  </p>
+  <p>
+    <%= f.label :md5 %><br />
+    <%= f.text_field :md5 %>
+  </p>
+  <p>
+    <%= f.submit _("Update") %>
+  </p>
+<% end %>
+
+<%= link_to _('Show'), @tso %>

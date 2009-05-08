@@ -1,0 +1,8 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  id: 1
+  from_id: 1
+  to_id: 2
+  kind: 1
+  note: MyString
