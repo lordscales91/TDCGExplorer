@@ -12,6 +12,7 @@ describe "/tags/index.html.erb" do
         :name => "value for name"
       )
     ]
+    template.stub!(:logged_in?).and_return(false)
   end
 
   it "renders a list of tags" do
