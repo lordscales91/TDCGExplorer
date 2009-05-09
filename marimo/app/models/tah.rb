@@ -44,6 +44,7 @@ class Tah < ActiveRecord::Base
           sql.concat " and path like ?"
           ret.push "%#{path}%"
         end
+        ret
       end
     end
 
