@@ -6,6 +6,7 @@ describe "/tags/show.html.erb" do
     assigns[:tag] = @tag = stub_model(Tag,
       :name => "value for name"
     )
+    template.stub!(:logged_in?).and_return(false)
   end
 
   it "renders attributes in <p>" do
@@ -13,4 +14,3 @@ describe "/tags/show.html.erb" do
     response.should have_text(/value\ for\ name/)
   end
 end
-
