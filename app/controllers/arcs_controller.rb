@@ -42,6 +42,15 @@ class ArcsController < ApplicationController
     @arc = Arc.find(params[:id])
   end
 
+  def tags
+    @arc = Arc.find(params[:id])
+    if request.put?
+      if @arc.update_attributes(params[:arc])
+        redirect_to(@arc)
+      end
+    end
+  end
+
   # POST /arcs
   # POST /arcs.xml
   def create
