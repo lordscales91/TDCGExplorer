@@ -3,9 +3,9 @@
 one:
   id: 1
   tah_id: 1
-  path: N001BODY_A00.tso
+  path: data/model/N400BODY_A00.tso
 
 two:
   id: 2
-  tah_id: 1
-  path: N001BODY_A01.tso
+  tah_id: 2
+  path: data/model/N400BODY_A01.tso
