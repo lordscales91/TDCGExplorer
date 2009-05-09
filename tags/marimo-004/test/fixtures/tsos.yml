@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  id: 1
+  tah_id: 1
+  path: data/model/N400BODY_A00.tso
+
+two:
+  id: 2
+  tah_id: 2
+  path: data/model/N400BODY_A01.tso
