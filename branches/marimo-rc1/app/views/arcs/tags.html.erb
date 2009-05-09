@@ -1,0 +1,53 @@
+<h2>
+  <b><%= _'Arc|Code' %>:</b>
+  <%=h @arc.code %>
+</h2>
+
+<p>
+  <b><%= _'Arc|Extname' %>:</b>
+  <%=h @arc.extname %>
+</p>
+
+<p>
+  <b><%= _'Arc|Location' %>:</b>
+  <%=h @arc.location %>
+</p>
+
+<p>
+  <b><%= _'Arc|Summary' %>:</b>
+  <%=h @arc.summary %>
+</p>
+
+<p>
+  <b><%= _'Arc|Origname' %>:</b>
+  <%=h @arc.origname %>
+</p>
+
+<p>
+  <b><%= _'Arc|Rows' %>:</b>
+  <%=h @arc.row_caption %>
+</p>
+
+<p>
+  <b><%= _'Arc|Equips' %>:</b>
+<%-for equip in @arc.equips-%>
+  <%=h equip.name %>
+<%-end-%>
+</p>
+
+<% form_for(:arc, @arc, :url => tags_arc_path(@arc), :html => {:method => :put}) do |f| %>
+  <%= f.error_messages %>
+
+<div id="arc_tags">
+  <%= _'Arc|Tags' %><br />
+  <%= render :partial => 'arc_tag', :collection => @arc.arc_tags %>
+</div>
+  <p>
+    <%= add_arc_tag_link _('Add a tag') %>
+  </p>
+  <p>
+    <%= f.submit _("Save") %>
+  </p>
+<% end %>
+
+<%= link_to _('Back'), @arc %>

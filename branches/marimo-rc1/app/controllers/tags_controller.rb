@@ -1,4 +1,7 @@
 class TagsController < ApplicationController
+  include AuthenticatedSystem
+  layout 'anon'
+
   # GET /tags
   # GET /tags.xml
   def index
