@@ -109,6 +109,7 @@ Z è‚¿‚Ì¬•¨
           sql.concat " and md5 = ?"
           ret.push "#{md5}"
         end
+        ret
       end
     end
 
