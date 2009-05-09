@@ -1,6 +1,13 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe TagsController do
+  before do
+    controller.stub!(:current_user).and_return(mock_user)
+  end
+
+  def mock_user(stubs={})
+    @_mock_user ||= mock_model(User, stubs)
+  end
 
   def mock_tag(stubs={})
     @mock_tag ||= mock_model(Tag, stubs)
@@ -28,6 +35,12 @@ describe TagsController do
       get :new
       assigns[:tag].should equal(mock_tag)
     end
+
+    it "要 user 認証" do
+      controller.should_receive(:current_user).and_return(mock_user)
+      Tag.stub!(:new).and_return(mock_tag)
+      get :new
+    end
   end
 
   describe "GET edit" do
@@ -35,6 +48,12 @@ describe TagsController do
       Tag.stub!(:find).with("37").and_return(mock_tag)
       get :edit, :id => "37"
       assigns[:tag].should equal(mock_tag)
+    end
+
+    it "要 user 認証" do
+      controller.should_receive(:current_user).and_return(mock_user)
+      Tag.stub!(:find).and_return(mock_tag)
+      get :edit, :id => "1"
     end
   end
 
@@ -66,6 +85,12 @@ describe TagsController do
         post :create, :tag => {}
         response.should render_template('new')
       end
+    end
+
+    it "要 user 認証" do
+      controller.should_receive(:current_user).and_return(mock_user)
+      Tag.stub!(:new).and_return(mock_tag(:save => true))
+      put :create, :tag => {}
     end
     
   end
@@ -111,6 +136,12 @@ describe TagsController do
         response.should render_template('edit')
       end
     end
+
+    it "要 user 認証" do
+      controller.should_receive(:current_user).and_return(mock_user)
+      Tag.stub!(:find).and_return(mock_tag(:update_attributes => true))
+      put :update, :id => "1"
+    end
     
   end
 
@@ -125,6 +156,13 @@ describe TagsController do
       Tag.stub!(:find).and_return(mock_tag(:destroy => true))
       delete :destroy, :id => "1"
       response.should redirect_to(tags_url)
+    end
+
+    it "要 user 認証" do
+      controller.should_receive(:current_user).and_return(mock_user)
+      Tag.stub!(:find).and_return(mock_tag)
+      mock_tag.stub!(:destroy).and_return(true)
+      delete :destroy, :id => "1"
     end
   end
 

@@ -7,8 +7,12 @@ class ArcTag < ActiveRecord::Base
   end
 
   def tag_name=(tag_name)
-    tag = Tag.find_or_create_by_name(tag_name)
-    self.tag_id = tag.id
+    if tag_name.blank?
+      self.tag_id = nil
+    else
+      tag = Tag.find_or_create_by_name(tag_name)
+      self.tag_id = tag.id
+    end
   end
 
   def should_destroy?
