@@ -1,3 +1,8 @@
+<%-if arc_tag.tag && arc_tag.tag.locked?-%>
+<p>
+  <span class="icon icon-lock"><%=h arc_tag.tag.name %></span>
+</p>
+<%-else-%>
 <%-fields_for 'arc[arc_tag_attributes][]', arc_tag do |arc_tag_f|-%>
 <p>
   <%= arc_tag_f.label :tag %><br />
@@ -6,4 +11,5 @@
   <%-unless arc_tag.new_record?-%>
     <%= arc_tag_f.hidden_field :id, :index => nil, :id => '' %>
   <%-end-%>
+<%-end-%>
 <%-end-%>
