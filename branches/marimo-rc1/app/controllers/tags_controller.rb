@@ -1,6 +1,7 @@
 class TagsController < ApplicationController
   include AuthenticatedSystem
   layout 'anon'
+  before_filter :login_required, :only => [ :new, :edit, :create, :update, :destroy ]
 
   # GET /tags
   # GET /tags.xml
