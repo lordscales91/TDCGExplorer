@@ -40,6 +40,7 @@
 <%-for tag in @arc.tags-%>
   <%=link_to h(tag.name), tag %>
 <%-end-%>
+[ <%= link_to _('Edit'), tags_arc_path(@arc) %> ]
 </p>
 
 <%-if logged_in? -%>
