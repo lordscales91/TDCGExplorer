@@ -11,3 +11,25 @@ describe ArcTag do
     arc_tags(:one).tag.should == tags(:one)
   end
 end
+
+describe ArcTag, "tag_name" do
+  fixtures :arcs, :arc_tags, :tags
+
+  it "one.tag_name ‚Í tag1 ‚Å‚ ‚é" do
+    arc_tags(:one).tag_name.should == "tag1"
+  end
+end
+
+describe ArcTag, "assign tag_name" do
+  fixtures :arcs, :arc_tags, :tags
+
+  it "one.tag_name ‚ğ '' ‚Éİ’è‚·‚é‚Æ one.tag_id ‚Í nil ‚É‚È‚é" do
+    arc_tags(:one).tag_name = ''
+    arc_tags(:one).tag_id.should be_nil
+  end
+
+  it "one.tag_name ‚ğ ' ' ‚Éİ’è‚·‚é‚Æ one.tag_id ‚Í nil ‚É‚È‚é" do
+    arc_tags(:one).tag_name = ' '
+    arc_tags(:one).tag_id.should be_nil
+  end
+end
