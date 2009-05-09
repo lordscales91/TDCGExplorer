@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: marimo 0.0.1\n"
-"POT-Creation-Date: 2009-05-09 13:18+0900\n"
+"POT-Creation-Date: 2009-05-09 13:31+0900\n"
 "PO-Revision-Date: 2009-04-30 04:29+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,8 +25,9 @@ msgstr ""
 #: app/views/arcs/index.html.erb:14 app/views/arcs/show.html.erb:2
 #: app/views/arcs/show.html.erb:56 app/views/arcs/show.html.erb:125
 #: app/views/arcs/show.html.erb:154 app/views/arcs/tags.html.erb:2
-#: app/views/equips/show.html.erb:16 app/views/tahs/index.html.erb:14
-#: app/views/welcome/index.html.erb:17 app/views/welcome/index.html.erb:57
+#: app/views/equips/show.html.erb:16 app/views/tags/show.html.erb:16
+#: app/views/tahs/index.html.erb:14 app/views/welcome/index.html.erb:17
+#: app/views/welcome/index.html.erb:57
 msgid "Arc|Code"
 msgstr ""
 
@@ -34,8 +35,8 @@ msgstr ""
 #: app/views/arcs/show.html.erb:7 app/views/arcs/show.html.erb:57
 #: app/views/arcs/show.html.erb:126 app/views/arcs/show.html.erb:155
 #: app/views/arcs/tags.html.erb:7 app/views/equips/show.html.erb:17
-#: app/views/tahs/index.html.erb:15 app/views/welcome/index.html.erb:18
-#: app/views/welcome/index.html.erb:58
+#: app/views/tags/show.html.erb:17 app/views/tahs/index.html.erb:15
+#: app/views/welcome/index.html.erb:18 app/views/welcome/index.html.erb:58
 msgid "Arc|Extname"
 msgstr ""
 
@@ -43,8 +44,8 @@ msgstr ""
 #: app/views/arcs/show.html.erb:12 app/views/arcs/show.html.erb:58
 #: app/views/arcs/show.html.erb:127 app/views/arcs/show.html.erb:156
 #: app/views/arcs/tags.html.erb:12 app/views/equips/show.html.erb:18
-#: app/views/tahs/index.html.erb:16 app/views/welcome/index.html.erb:19
-#: app/views/welcome/index.html.erb:59
+#: app/views/tags/show.html.erb:18 app/views/tahs/index.html.erb:16
+#: app/views/welcome/index.html.erb:19 app/views/welcome/index.html.erb:59
 msgid "Arc|Location"
 msgstr ""
 
@@ -52,14 +53,16 @@ msgstr ""
 #: app/views/arcs/index.html.erb:17 app/views/arcs/show.html.erb:17
 #: app/views/arcs/show.html.erb:59 app/views/arcs/show.html.erb:128
 #: app/views/arcs/show.html.erb:157 app/views/arcs/tags.html.erb:17
-#: app/views/equips/show.html.erb:19 app/views/welcome/index.html.erb:20
+#: app/views/equips/show.html.erb:19 app/views/tags/show.html.erb:19
+#: app/views/welcome/index.html.erb:20
 msgid "Arc|Summary"
 msgstr ""
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:18
 #: app/views/arcs/show.html.erb:22 app/views/arcs/show.html.erb:129
 #: app/views/arcs/show.html.erb:158 app/views/arcs/tags.html.erb:22
-#: app/views/equips/show.html.erb:20 app/views/welcome/index.html.erb:21
+#: app/views/equips/show.html.erb:20 app/views/tags/show.html.erb:20
+#: app/views/welcome/index.html.erb:21
 msgid "Arc|Origname"
 msgstr ""
 
@@ -161,7 +164,7 @@ msgstr ""
 msgid "tag"
 msgstr ""
 
-#: app/models/tag.rb:-
+#: app/models/tag.rb:- app/views/tags/show.html.erb:2
 msgid "Tag|Name"
 msgstr ""
 
@@ -316,7 +319,8 @@ msgstr ""
 #: app/views/arcs/index.html.erb:35 app/views/arcs/show.html.erb:43
 #: app/views/arcs/show.html.erb:47 app/views/arcs/show.html.erb:110
 #: app/views/equips/index.html.erb:19 app/views/equips/show.html.erb:7
-#: app/views/equips/show.html.erb:37 app/views/tahs/index.html.erb:35
+#: app/views/equips/show.html.erb:37 app/views/tags/show.html.erb:7
+#: app/views/tags/show.html.erb:37 app/views/tahs/index.html.erb:35
 #: app/views/tahs/show.html.erb:12 app/views/tahs/show.html.erb:43
 #: app/views/tsos/index.html.erb:37 app/views/tsos/md5.html.erb:37
 #: app/views/tsos/show.html.erb:27 app/views/welcome/index.html.erb:38
@@ -326,17 +330,18 @@ msgstr ""
 
 #: app/views/arcs/index.html.erb:36 app/views/arcs/show.html.erb:111
 #: app/views/equips/index.html.erb:20 app/views/equips/show.html.erb:38
-#: app/views/tahs/index.html.erb:36 app/views/tahs/show.html.erb:44
-#: app/views/tsos/index.html.erb:38 app/views/tsos/md5.html.erb:38
-#: app/views/welcome/index.html.erb:39 app/views/welcome/index.html.erb:79
+#: app/views/tags/show.html.erb:38 app/views/tahs/index.html.erb:36
+#: app/views/tahs/show.html.erb:44 app/views/tsos/index.html.erb:38
+#: app/views/tsos/md5.html.erb:38 app/views/welcome/index.html.erb:39
+#: app/views/welcome/index.html.erb:79
 msgid "Destroy"
 msgstr ""
 
 #: app/views/arcs/index.html.erb:36 app/views/arcs/show.html.erb:111
-#: app/views/equips/show.html.erb:38 app/views/tahs/index.html.erb:36
-#: app/views/tahs/show.html.erb:44 app/views/tsos/index.html.erb:38
-#: app/views/tsos/md5.html.erb:38 app/views/welcome/index.html.erb:39
-#: app/views/welcome/index.html.erb:79
+#: app/views/equips/show.html.erb:38 app/views/tags/show.html.erb:38
+#: app/views/tahs/index.html.erb:36 app/views/tahs/show.html.erb:44
+#: app/views/tsos/index.html.erb:38 app/views/tsos/md5.html.erb:38
+#: app/views/welcome/index.html.erb:39 app/views/welcome/index.html.erb:79
 msgid "Are you sure?"
 msgstr ""
 
@@ -370,6 +375,10 @@ msgstr ""
 
 #: app/views/layouts/anon.html.erb:32 app/views/layouts/sessions.html.erb:27
 msgid "tahdump"
+msgstr ""
+
+#: app/views/tags/show.html.erb:11
+msgid "Tag|Arcs"
 msgstr ""
 
 #: app/views/tahdumps/show.html.erb:6
