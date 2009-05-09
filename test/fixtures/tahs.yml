@@ -3,9 +3,9 @@
 one:
   id: 1
   arc_id: 1
-  path: MyString
+  path: COBRA_COS.tah
 
 two:
   id: 2
-  arc_id: 1
-  path: MyString
+  arc_id: 2
+  path: tattoo/tattoo.tah
