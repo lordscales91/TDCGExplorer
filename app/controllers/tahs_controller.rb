@@ -19,6 +19,7 @@ class TahsController < ApplicationController
   # GET /tahs/1.xml
   def show
     @tah = Tah.find(params[:id])
+    @tah_tsos = @tah.tsos.paginate(:page => params[:page])
 
     respond_to do |format|
       format.html # show.html.erb
