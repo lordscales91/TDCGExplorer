@@ -34,7 +34,7 @@
   </thead>
 
   <tbody>
-<% for tso in @tah.tsos %>
+<% for tso in @tah_tsos %>
   <tr class="<%= cycle('odd', 'even') %>">
     <td><%=h tso.path %></td>
     <td><%=h tso.tah_hash %></td>
@@ -47,6 +47,8 @@
 <% end %>
   </tbody>
 </table>
+
+<%= will_paginate(@tah_tsos) %>
 
 <%-unless @tah.collisions.empty?-%>
 <p>
