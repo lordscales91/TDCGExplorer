@@ -13,6 +13,14 @@ describe TahsController do
     @_mock_tah ||= mock_model(Tah, stubs)
   end
 
+  def mock_tah_tsos(stubs={})
+    @_mock_tah_tsos ||= mock("tah tsos", stubs)
+  end
+
+  def mock_tso(stubs={})
+    @_mock_tso ||= mock_model(Tso, stubs)
+  end
+
   describe "GET index" do
 
     it "tahs ‚ð“¾‚é" do
@@ -26,7 +34,7 @@ describe TahsController do
   describe "GET show" do
 
     it "Žw’è tah ‚ð“¾‚é" do
-      Tah.should_receive(:find).with("42").and_return(mock_tah)
+      Tah.should_receive(:find).with("42").and_return(mock_tah(:tsos => mock_tah_tsos(:paginate => [ mock_tso ])))
       get :show, :id => "42"
       assigns[:tah].should == mock_tah
     end
