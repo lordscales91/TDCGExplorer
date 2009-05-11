@@ -13,7 +13,7 @@ class Arc < ActiveRecord::Base
   after_update :save_relationships
   validates_associated :relationships
 
-  has_many :arc_tags
+  has_many :arc_tags, :dependent => :destroy
   has_many :tags, :through => :arc_tags
   after_update :save_arc_tags
   validates_associated :arc_tags
