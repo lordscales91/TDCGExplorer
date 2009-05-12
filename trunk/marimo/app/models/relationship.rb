@@ -48,12 +48,16 @@ class Relationship < ActiveRecord::Base
     end
   end
 
+  def trim(string)
+    string.sub(/^[ @]+/, '').sub(/[ @]+$/, '')
+  end
+
   def from_code
     from ? from.code : nil
   end
 
   def from_code=(from_code)
-    from = Arc.find_by_code(from_code)
+    from = Arc.find_by_code(trim(from_code))
     self.from_id = from ? from.id : nil
   end
 
@@ -62,7 +66,7 @@ class Relationship < ActiveRecord::Base
   end
 
   def to_code=(to_code)
-    to = Arc.find_by_code(to_code)
+    to = Arc.find_by_code(trim(to_code))
     self.to_id = to ? to.id : nil
   end
 
