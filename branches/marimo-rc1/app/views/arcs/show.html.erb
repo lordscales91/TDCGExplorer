@@ -29,13 +29,6 @@
 </p>
 
 <p>
-  <b><%= _'Arc|Equips' %>:</b>
-<%-for equip in @arc.equips-%>
-  <%=link_to h(equip.name), equip %>
-<%-end-%>
-</p>
-
-<p>
   <b><%= _'Arc|Tags' %>:</b>
 <%-for tag in @arc.tags-%>
   <%=link_to h(tag.name), tag %>

@@ -21,13 +21,6 @@
     <%= f.label :origname %><br />
     <%= f.text_field :origname %>
   </p>
-<div id="arc_equips">
-  <%= _'Arc|Equips' %><br />
-  <%= render :partial => 'arc_equip', :collection => @arc.arc_equips %>
-</div>
-  <p>
-    <%= add_arc_equip_link _('Add a equip') %>
-  </p>
 <div id="relationships">
   <%= _'Arc|Relations' %><br />
   <%= render :partial => 'relationship', :collection => @arc.relationships %>
