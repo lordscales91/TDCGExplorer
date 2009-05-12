@@ -20,4 +20,8 @@ module ArcsHelper
   def relationship_kind_collection
     Relationship.kind_collection
   end
+
+  def rev_relationship_kind_collection
+    Relationship.rev_kind_collection
+  end
 end
