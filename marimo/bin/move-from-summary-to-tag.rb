@@ -16,7 +16,6 @@ def caption_to_tag_names(caption)
 end
 
 Arc.find(:all, :conditions => ["summary like ?", '%y%']).each do |arc|
-=begin
   arc.summary.scan(/y(.+?)z/) do |caption, |
     tag_names = caption_to_tag_names(caption)
     if tag_names.nil?
@@ -27,7 +26,6 @@ Arc.find(:all, :conditions => ["summary like ?", '%y%']).each do |arc|
       tag.arc_tags.find_or_create_by_arc_id(arc.id)
     end
   end
-=end
   arc.summary = arc.summary.gsub(/y(.+?)z/, '')
   arc.save
 end
