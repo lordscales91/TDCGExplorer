@@ -8,10 +8,13 @@ class Arc < ActiveRecord::Base
 
   has_many :relationships, :dependent => :destroy, :foreign_key => "from_id"
   has_many :relations, :through => :relationships, :source => "to"
-  has_many :rev_relationships, :dependent => :destroy, :class_name => 'Relationship', :foreign_key => "to_id"
-  has_many :rev_relations, :through => :rev_relationships, :source => "from"
   after_update :save_relationships
   validates_associated :relationships
+
+  has_many :rev_relationships, :dependent => :destroy, :class_name => 'Relationship', :foreign_key => "to_id"
+  has_many :rev_relations, :through => :rev_relationships, :source => "from"
+  after_update :save_rev_relationships
+  validates_associated :rev_relationships
 
   has_many :arc_tags, :dependent => :destroy
   has_many :tags, :through => :arc_tags
@@ -78,6 +81,28 @@ class Arc < ActiveRecord::Base
         ar.destroy
       else
         ar.save(false)
+      end
+    end
+  end
+
+  def rev_relationship_attributes=(rev_relationship_attributes)
+    rev_relationship_attributes.each do |attributes|
+      unless id = attributes.delete(:id)
+        rev_relationships.build(attributes)
+      else
+        id = id.to_i
+        relationship = rev_relationships.detect { |br| br.id == id }
+        relationship.attributes = attributes
+      end
+    end
+  end
+
+  def save_rev_relationships
+    rev_relationships.each do |br|
+      if br.should_destroy?
+        br.destroy
+      else
+        br.save(false)
       end
     end
   end
