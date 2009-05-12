@@ -28,13 +28,6 @@
   <%=h @arc.row_caption %>
 </p>
 
-<p>
-  <b><%= _'Arc|Equips' %>:</b>
-<%-for equip in @arc.equips-%>
-  <%=h equip.name %>
-<%-end-%>
-</p>
-
 <% form_for(:arc, @arc, :url => tags_arc_path(@arc), :html => {:method => :put}) do |f| %>
   <%= f.error_messages %>
 
