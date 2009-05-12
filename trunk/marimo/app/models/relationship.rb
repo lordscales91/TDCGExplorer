@@ -3,9 +3,11 @@ class Relationship < ActiveRecord::Base
   belongs_to :to, :class_name => 'Arc'
 
   def validate_on_create
-    errors.add_to_base("self reference") if from_id == to_id
-    errors.add_to_base("this relationship has been taken") if Relationship.find(:first, :conditions => ["from_id = ? and to_id = ?", from.id, to.id])
-    errors.add_to_base("this relationship has been taken") if Relationship.find(:first, :conditions => ["from_id = ? and to_id = ?", to.id, from.id])
+    unless from.nil? || to.nil?
+      errors.add_to_base("self reference") if from_id == to_id
+      errors.add_to_base("this relationship has been taken") if Relationship.find(:first, :conditions => ["from_id = ? and to_id = ?", from.id, to.id])
+      errors.add_to_base("this relationship has been taken") if Relationship.find(:first, :conditions => ["from_id = ? and to_id = ?", to.id, from.id])
+    end
   end
 
   def self.kind_collection

@@ -21,10 +21,20 @@
     <%= f.label :origname %><br />
     <%= f.text_field :origname %>
   </p>
-<div id="relationships">
+<div>
   <%= _'Arc|Relations' %><br />
+<table>
+  <thead>
+    <th><%= _'Relationship|To' %></th>
+    <th><%= _'Relationship|Kind' %></th>
+    <th><%= _'Relationship|Note' %></th>
+    <th></th>
+  </thead>
+  <tbody id="relationships">
   <%= render :partial => 'relationship', :collection => @arc.relationships %>
   <%= render :partial => 'rev_relationship', :collection => @arc.rev_relationships %>
+  </tbody>
+</table>
 </div>
   <p>
     <%= add_relationship_link _('Add a relation') %>
