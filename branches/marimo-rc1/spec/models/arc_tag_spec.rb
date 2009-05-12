@@ -32,4 +32,29 @@ describe ArcTag, "assign tag_name" do
     arc_tags(:one).tag_name = ' '
     arc_tags(:one).tag_id.should be_nil
   end
+
+  it "one.tag_name を 'tag1' に設定すると one.tag_id は 1 になる" do
+    arc_tags(:one).tag_name = 'tag1'
+    arc_tags(:one).tag_id.should == 1
+  end
+
+  it "one.tag_name を 'tag1 ' に設定すると one.tag_id は 1 になる" do
+    arc_tags(:one).tag_name = 'tag1 '
+    arc_tags(:one).tag_id.should == 1
+  end
+
+  it "one.tag_name を 'tag1　' に設定すると one.tag_id は 1 になる" do
+    arc_tags(:one).tag_name = 'tag1　'
+    arc_tags(:one).tag_id.should == 1
+  end
+
+  it "one.tag_name を ' tag1' に設定すると one.tag_id は 1 になる" do
+    arc_tags(:one).tag_name = ' tag1'
+    arc_tags(:one).tag_id.should == 1
+  end
+
+  it "one.tag_name を '　tag1' に設定すると one.tag_id は 1 になる" do
+    arc_tags(:one).tag_name = '　tag1'
+    arc_tags(:one).tag_id.should == 1
+  end
 end
