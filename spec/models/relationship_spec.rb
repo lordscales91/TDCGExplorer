@@ -1,5 +1,73 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
+describe Relationship, "assign from_code" do
+  fixtures :arcs, :relationships
+
+  it "from_code を 'TA0583' にすると from_id は 1 になる" do
+    rel = relationships(:one)
+    rel.from_code = 'TA0583'
+    rel.from_id.should == 1
+  end
+
+  it "from_code を 'TA0583 ' にすると from_id は 1 になる" do
+    rel = relationships(:one)
+    rel.from_code = 'TA0583 '
+    rel.from_id.should == 1
+  end
+
+  it "from_code を 'TA0583　' にすると from_id は 1 になる" do
+    rel = relationships(:one)
+    rel.from_code = 'TA0583　'
+    rel.from_id.should == 1
+  end
+
+  it "from_code を ' TA0583' にすると from_id は 1 になる" do
+    rel = relationships(:one)
+    rel.from_code = ' TA0583'
+    rel.from_id.should == 1
+  end
+
+  it "from_code を '　TA0583' にすると from_id は 1 になる" do
+    rel = relationships(:one)
+    rel.from_code = '　TA0583'
+    rel.from_id.should == 1
+  end
+end
+
+describe Relationship, "assign to_code" do
+  fixtures :arcs, :relationships
+
+  it "to_code を 'TA0013' にすると to_id は 2 になる" do
+    rel = relationships(:one)
+    rel.to_code = 'TA0013'
+    rel.to_id.should == 2
+  end
+
+  it "to_code を 'TA0013 ' にすると to_id は 2 になる" do
+    rel = relationships(:one)
+    rel.to_code = 'TA0013 '
+    rel.to_id.should == 2
+  end
+
+  it "to_code を 'TA0013　' にすると to_id は 2 になる" do
+    rel = relationships(:one)
+    rel.to_code = 'TA0013　'
+    rel.to_id.should == 2
+  end
+
+  it "to_code を ' TA0013' にすると to_id は 2 になる" do
+    rel = relationships(:one)
+    rel.to_code = ' TA0013'
+    rel.to_id.should == 2
+  end
+
+  it "to_code を '　TA0013' にすると to_id は 2 になる" do
+    rel = relationships(:one)
+    rel.to_code = '　TA0013'
+    rel.to_id.should == 2
+  end
+end
+
 describe Relationship do
   fixtures :arcs, :relationships
 
