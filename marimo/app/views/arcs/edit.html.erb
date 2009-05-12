@@ -24,6 +24,7 @@
 <div id="relationships">
   <%= _'Arc|Relations' %><br />
   <%= render :partial => 'relationship', :collection => @arc.relationships %>
+  <%= render :partial => 'rev_relationship', :collection => @arc.rev_relationships %>
 </div>
   <p>
     <%= add_relationship_link _('Add a relation') %>

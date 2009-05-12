@@ -23,6 +23,10 @@ class Relationship < ActiveRecord::Base
     end
   end
 
+  def self.rev_kind_collection
+    [['“¯ˆê“à—e', 1], ['‹Œ”Å', 2], ['’ñ‹Ÿ', 3]]
+  end
+
   def rev_kind_caption
     case kind
     when 1
@@ -32,6 +36,15 @@ class Relationship < ActiveRecord::Base
     when 3
       '’ñ‹Ÿ'
     end
+  end
+
+  def from_code
+    from ? from.code : nil
+  end
+
+  def from_code=(from_code)
+    from = Arc.find_by_code(from_code)
+    self.from_id = from ? from.id : nil
   end
 
   def to_code
@@ -44,6 +57,6 @@ class Relationship < ActiveRecord::Base
   end
 
   def should_destroy?
-    to_id.nil?
+    from_id.nil? || to_id.nil?
   end
 end
