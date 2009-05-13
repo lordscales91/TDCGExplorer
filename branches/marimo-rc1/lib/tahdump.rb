@@ -125,7 +125,7 @@ class Tahdump
       origname = nil
     elsif md = /^([A-Za-z0-9]{6,9})_(.+)/.match(basename)
       _, code, tmp = md.to_a
-      summary, origname = tmp.split("_", 2)
+      summary, origname = tmp.split("@", 2)
     else
       raise "pattern not matched. " + line
     end
