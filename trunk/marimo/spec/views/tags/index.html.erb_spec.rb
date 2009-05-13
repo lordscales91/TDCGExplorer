@@ -13,6 +13,8 @@ describe "/tags/index.html.erb" do
       )
     ]
     template.stub!(:logged_in?).and_return(false)
+    assigns[:tags].stub!(:total_entries).and_return(1)
+    assigns[:tags].stub!(:total_pages).and_return(0)
   end
 
   it "renders a list of tags" do

@@ -20,3 +20,12 @@ describe Tag, "arcs" do
     tags(:two).arcs.should include( arcs(:one) )
   end
 end
+
+describe Tag, "search" do
+  fixtures :tags
+
+  it "name tag2 ‚ÅŒŸõ‚·‚é‚Æ two ‚Éƒ}ƒbƒ`‚·‚é" do
+    @search = Tag::Search.new('name' => 'tag2')
+    Tag.find(:all, @search.find_options).should == [ tags(:two) ]
+  end
+end
