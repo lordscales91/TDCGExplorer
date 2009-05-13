@@ -28,7 +28,7 @@ class Arc < ActiveRecord::Base
       exist[at.tag_id] = true
     end
     if found
-      errors.add_to_base(_"detect a duplicate tag")
+      errors.add_to_base _("detect a duplicate tag")
     end
   end
 
