@@ -1,5 +1,17 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
+describe ArcTag, "validate" do
+  fixtures :arcs, :arc_tags, :tags
+
+  it "“¯‚¶ arc, tag ‚Ì‘g‚Ý‡‚í‚¹‚ðŽ‚Â arc_tag ‚ª‚ ‚é‚È‚ç valid ‚Å‚È‚¢" do
+    ArcTag.new(:arc_id => 1, :tag_id => 1).should_not be_valid
+  end
+
+  it "one ‚Í valid ‚Å‚ ‚é" do
+    arc_tags(:one).should be_valid
+  end
+end
+
 describe ArcTag do
   fixtures :arcs, :arc_tags, :tags
 
