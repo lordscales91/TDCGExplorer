@@ -10,6 +10,16 @@ describe Arc, "tags" do
   it "one ÇÕ tags Ç… tags.two Çä‹Çﬁ" do
     arcs(:one).tags.should include( tags(:two) )
   end
+
+  it "one ÇÕ valid Ç≈Ç†ÇÈ" do
+    arcs(:one).should be_valid
+  end
+
+  it "èdï° arc_tag Ç™Ç†ÇÈÇ»ÇÁ one ÇÕ valid Ç≈Ç»Ç¢" do
+    arc_tag = arcs(:one).arc_tags.detect { |at| at.tag_id == 1 }
+    arc_tag.tag_id = 2
+    arcs(:one).should_not be_valid
+  end
 end
 
 describe Arc, "search" do
