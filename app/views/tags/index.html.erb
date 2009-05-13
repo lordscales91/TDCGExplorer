@@ -1,3 +1,13 @@
+<% form_for(:search, @search, :url => tags_path, :html => { :method => :get }) do |f| %>
+  <p>
+    <%= _'Tag|Name' %><br />
+    <%= f.text_field :name %>
+    <%= f.submit _("Search") %>
+  </p>
+<% end %>
+<p>
+  Total <%=h @tags.total_entries %>
+</p>
 <table class="list tags">
   <thead>
   <tr>
@@ -23,3 +33,5 @@
 <% end %>
   </tbody>
 </table>
+
+<%= will_paginate(@tags) %>

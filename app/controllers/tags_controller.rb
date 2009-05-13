@@ -6,7 +6,8 @@ class TagsController < ApplicationController
   # GET /tags
   # GET /tags.xml
   def index
-    @tags = Tag.find(:all)
+    @search = Tag::Search.new(params[:search])
+    @tags = Tag.paginate(@search.find_options.merge(:page => params[:page]))
 
     respond_to do |format|
       format.html # index.html.erb
@@ -18,6 +19,7 @@ class TagsController < ApplicationController
   # GET /tags/1.xml
   def show
     @tag = Tag.find(params[:id])
+    @tag_arcs = @tag.arcs.paginate(:page => params[:page])
 
     respond_to do |format|
       format.html # show.html.erb

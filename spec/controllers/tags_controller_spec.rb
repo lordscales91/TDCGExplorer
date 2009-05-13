@@ -10,12 +10,16 @@ describe TagsController do
   end
 
   def mock_tag(stubs={})
-    @mock_tag ||= mock_model(Tag, stubs)
+    @_mock_tag ||= mock_model(Tag, stubs)
+  end
+  
+  def mock_arc(stubs={})
+    @_mock_arc ||= mock_model(Arc, stubs)
   end
   
   describe "GET index" do
     it "assigns all tags as @tags" do
-      Tag.stub!(:find).with(:all).and_return([mock_tag])
+      Tag.stub!(:paginate).and_return([mock_tag])
       get :index
       assigns[:tags].should == [mock_tag]
     end
@@ -23,7 +27,7 @@ describe TagsController do
 
   describe "GET show" do
     it "assigns the requested tag as @tag" do
-      Tag.stub!(:find).with("37").and_return(mock_tag)
+      Tag.stub!(:find).with("37").and_return(mock_tag(:arcs => [ mock_arc ]))
       get :show, :id => "37"
       assigns[:tag].should equal(mock_tag)
     end
