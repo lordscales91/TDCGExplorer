@@ -11,34 +11,9 @@
 <p>
   <b><%= _'tag' %>:</b>
 </p>
-<table class="list tags">
-  <thead>
-  <tr>
-    <th><%= _'Tag|Name' %></th>
-    <th></th>
-<%-if logged_in? -%>
-    <th></th>
-    <th></th>
-<%-end-%>
-  </tr>
-  </thead>
-
-  <tbody>
 <% for tag in @tags %>
-  <tr class="<%= cycle('odd', 'even') %>">
-    <td><%=h tag.name %></td>
-    <td><%= link_to _('Show'), tag %></td>
-<%-if logged_in? -%>
-    <td><%= link_to _('Edit'), edit_tag_path(tag) %></td>
-    <td><%= link_to _('Destroy'), tag, :confirm => 'Are you sure?', :method => :delete %></td>
-<%-end-%>
-  </tr>
+  <%=link_to h(tag.name), tag %>
 <% end %>
-  </tbody>
-</table>
-<div class="pagination">
-  <%= link_to _('and more')+' &raquo;', tags_path(:search => params[:search]) %>
-</div>
 <%-end-%>
 
 <%-unless @arcs.empty?-%>
