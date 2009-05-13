@@ -26,7 +26,7 @@
   </thead>
 
   <tbody>
-<% for arc in @tag.arcs %>
+<% for arc in @tag_arcs %>
   <tr class="<%= cycle('odd', 'even') %>">
     <td><%=link_to h(arc.code), arc %></td>
     <td><%=h arc.extname %></td>
@@ -41,3 +41,5 @@
 <% end %>
   </tbody>
 </table>
+
+<%= will_paginate(@tag_arcs) %>

@@ -19,6 +19,7 @@ class TagsController < ApplicationController
   # GET /tags/1.xml
   def show
     @tag = Tag.find(params[:id])
+    @tag_arcs = @tag.arcs.paginate(:page => params[:page])
 
     respond_to do |format|
       format.html # show.html.erb
