@@ -1,5 +1,14 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
+describe Tag, "validate" do
+  fixtures :tags
+
+  it "“¯‚¶–¼‘O‚Ì tag ‚ª‚ ‚ê‚Î valid ‚Å‚È‚¢" do
+    tags(:one).name = "tag2"
+    tags(:one).should_not be_valid
+  end
+end
+
 describe Tag, "arcs" do
   fixtures :arcs, :arc_tags, :tags
 
