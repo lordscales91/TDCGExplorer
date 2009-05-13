@@ -14,7 +14,23 @@ class Arc < ActiveRecord::Base
   has_many :arc_tags, :dependent => :destroy
   has_many :tags, :through => :arc_tags
   after_update :save_arc_tags
-  validates_associated :arc_tags
+  # validates_associated :arc_tags
+
+  def validate_on_update
+    exist = {}
+    found = false
+    arc_tags.each do |at|
+      next unless at.tag_id
+      if exist[at.tag_id]
+        found = true
+        break
+      end
+      exist[at.tag_id] = true
+    end
+    if found
+      errors.add_to_base(_"detect a duplicate tag")
+    end
+  end
 
   def collisions
     tahs.map(&:collisions).flatten.uniq.map(&:arc).uniq
