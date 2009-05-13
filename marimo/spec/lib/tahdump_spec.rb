@@ -56,7 +56,7 @@ EOT
     arc = Arc.create(:code => "TA0026")
 
     data = <<'EOT'
-# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
+# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。@眉項目へ追加.zip
 EOT
     tahdump = Tahdump.new(data)
     tahdump.commit
@@ -69,7 +69,7 @@ EOT
     arc = Arc.create(:code => "TA0026")
 
     data = <<'EOT'
-# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
+# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。@眉項目へ追加.zip
 EOT
     tahdump = Tahdump.new(data)
     tahdump.commit
@@ -82,7 +82,7 @@ EOT
     arc = Arc.create(:code => "TA0026")
 
     data = <<'EOT'
-# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
+# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。@眉項目へ追加.zip
 # TAH in archive 眉項目へ追加/hoku.tah
 EOT
     tahdump = Tahdump.new(data)
@@ -97,7 +97,7 @@ EOT
     tah = arc.tahs.create(:path => "眉項目へ追加/hoku.tah")
 
     data = <<'EOT'
-# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
+# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。@眉項目へ追加.zip
 # TAH in archive 眉項目へ追加/hoku.tah
 EOT
     tahdump = Tahdump.new(data)
@@ -113,7 +113,7 @@ EOT
     tah_2 = arc.tahs.create(:path => "眉項目へ追加/kiba.tah")
 
     data = <<'EOT'
-# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
+# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。@眉項目へ追加.zip
 # TAH in archive 眉項目へ追加/hoku.tah
 EOT
     tahdump = Tahdump.new(data)
@@ -127,7 +127,7 @@ EOT
     tah_1 = arc.tahs.create(:path => "眉項目へ追加/hoku.tah")
 
     data = <<'EOT'
-# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
+# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。@眉項目へ追加.zip
 # TAH in archive 眉項目へ追加/hoku.tah
 # TAH in archive 眉項目へ追加/kiba.tah
 EOT
@@ -142,7 +142,7 @@ EOT
     tah = arc.tahs.create(:path => "眉項目へ追加/hoku.tah")
 
     data = <<'EOT'
-# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
+# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。@眉項目へ追加.zip
 # TAH in archive 眉項目へ追加/hoku.tah
 6df59c0777761af5d8d55585b52c613d data/model/N005HOKU_200.tso
 EOT
@@ -159,7 +159,7 @@ EOT
     tso = tah.tsos.create(:path => "data/model/N005HOKU_200.tso")
 
     data = <<'EOT'
-# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
+# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。@眉項目へ追加.zip
 # TAH in archive 眉項目へ追加/hoku.tah
 6df59c0777761af5d8d55585b52c613d data/model/N005HOKU_200.tso
 EOT
@@ -177,7 +177,7 @@ EOT
     tso_2 = tah.tsos.create(:path => "data/model/N005HOKU_201.tso")
 
     data = <<'EOT'
-# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
+# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。@眉項目へ追加.zip
 # TAH in archive 眉項目へ追加/hoku.tah
 6df59c0777761af5d8d55585b52c613d data/model/N005HOKU_200.tso
 EOT
@@ -193,7 +193,7 @@ EOT
     tso_1 = tah.tsos.create(:path => "data/model/N005HOKU_200.tso")
 
     data = <<'EOT'
-# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。_眉項目へ追加.zip
+# zip 3ch\TA0026_同時着用したいものを～。変更＆追加。@眉項目へ追加.zip
 # TAH in archive 眉項目へ追加/hoku.tah
 6df59c0777761af5d8d55585b52c613d data/model/N005HOKU_200.tso
 7ad8006d091820d78962755b23fb6d5e data/model/N005HOKU_201.tso
