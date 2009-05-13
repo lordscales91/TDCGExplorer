@@ -117,7 +117,8 @@ class Arc < ActiveRecord::Base
         ret = [ sql ]
         terms = []
         unless text.blank?
-          sql.concat " and (code like ? or summary like ?)"
+          sql.concat " and (code like ? or summary like ? or origname like ?)"
+          ret.push "%#{text}%"
           ret.push "%#{text}%"
           ret.push "%#{text}%"
         end
