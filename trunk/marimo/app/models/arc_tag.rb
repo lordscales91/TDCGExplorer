@@ -2,9 +2,9 @@ class ArcTag < ActiveRecord::Base
   belongs_to :arc
   belongs_to :tag
 
-  def validate_on_create
-    errors.add_to_base("this arc_tag has been taken") if ArcTag.find(:first, :conditions => ["arc_id = ? and tag_id = ?", arc_id, tag_id])
-  end
+  # def validate_on_create
+  #   errors.add_to_base("this arc_tag has been taken") if ArcTag.find(:first, :conditions => ["arc_id = ? and tag_id = ?", arc_id, tag_id])
+  # end
 
   def trim(string)
     string.sub(/^[ @]+/, '').sub(/[ @]+$/, '')
