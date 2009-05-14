@@ -2,6 +2,13 @@ class ArcsController < ApplicationController
   include AuthenticatedSystem
   layout 'anon'
   before_filter :login_required, :only => [ :new, :edit, :create, :update, :destroy ]
+  skip_before_filter :verify_authenticity_token, :only => [ :auto_complete_for_tag_name ]
+
+  def auto_complete_for_tag_name
+    find_options = { :conditions => [ "name like ?", '%' + NKF.nkf('-Ws', params[:arc][:arc_tag_attributes][0][:tag_name]) + '%' ], :limit => 10 }
+    @items = Tag.find(:all, find_options)
+    render :inline => "<%= auto_complete_result @items, 'name' %>"
+  end
 
   # GET /arcs
   # GET /arcs.xml
