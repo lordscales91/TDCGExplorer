@@ -10,7 +10,7 @@
   <div class="auto_complete" id="arc_tag_<%= arc_tag.object_id %>_ac"></div>
 <script type="text/javascript">
 //<![CDATA[
-new Ajax.Autocompleter('arc_tag_<%= arc_tag.object_id %>_tag_name', 'arc_tag_<%= arc_tag.object_id %>_ac', '<%= url_for(:action => 'auto_complete_for_tag_name') %>', {frequency:1.0})
+new Ajax.Autocompleter('arc_tag_<%= arc_tag.object_id %>_tag_name', 'arc_tag_<%= arc_tag.object_id %>_ac', '<%= url_for(:action => 'auto_complete_for_tag_name') %>', {frequency:1.5})
 //]]>
 </script>
 </p>
