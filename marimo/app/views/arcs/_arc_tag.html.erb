@@ -5,8 +5,14 @@
 <%-else-%>
 <%-fields_for 'arc[arc_tag_attributes][]', arc_tag do |arc_tag_f|-%>
 <p>
-  <%= arc_tag_f.label :tag %><br />
-  <%= arc_tag_f.text_field :tag_name, :index => nil, :id => '' %>
+  <%= arc_tag_f.label :tag, nil, :for => "arc_tag_#{arc_tag.object_id}_tag_name" %><br />
+  <%= arc_tag_f.text_field :tag_name, :index => nil, :id => "arc_tag_#{arc_tag.object_id}_tag_name" %>
+  <div class="auto_complete" id="arc_tag_<%= arc_tag.object_id %>_ac"></div>
+<script type="text/javascript">
+//<![CDATA[
+new Ajax.Autocompleter('arc_tag_<%= arc_tag.object_id %>_tag_name', 'arc_tag_<%= arc_tag.object_id %>_ac', '/arcs/auto_complete_for_tag_name', {frequency:1.0})
+//]]>
+</script>
 </p>
   <%-unless arc_tag.new_record?-%>
     <%= arc_tag_f.hidden_field :id, :index => nil, :id => '' %>
