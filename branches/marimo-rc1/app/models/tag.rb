@@ -1,5 +1,5 @@
 class Tag < ActiveRecord::Base
-  has_many :arc_tags
+  has_many :arc_tags, :dependent => :destroy
   has_many :arcs, :through => :arc_tags
   validates_uniqueness_of :name
 
