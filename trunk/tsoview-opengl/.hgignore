@@ -1,0 +1,3 @@
+syntax: glob
+a.out
+*.o
