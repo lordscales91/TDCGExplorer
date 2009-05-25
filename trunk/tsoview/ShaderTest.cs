@@ -62,7 +62,7 @@ class ShaderTest : IDisposable
             Console.WriteLine("Error: " + ex);
             return false;
         }
-        string effect_file = @"body\default.cgfx";
+        string effect_file = @"toonshader.cgfx";
         if (! File.Exists(effect_file))
         {
             Console.WriteLine("File not found: " + effect_file);
