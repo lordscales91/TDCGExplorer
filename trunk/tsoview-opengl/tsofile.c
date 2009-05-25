@@ -62,7 +62,7 @@ void tso_read(Tsofile *tso, FILE *file)
 
 	/* make short name */
     {
-	char *p = rindex(node->name, '|');
+	char *p = strrchr(node->name, '|');
 	char *e = node->name + strlen(node->name);
 	int len = e - p;
 	node->short_name = (char *)malloc(sizeof(char)*(len+1));
@@ -72,7 +72,7 @@ void tso_read(Tsofile *tso, FILE *file)
     }
 
 	/* make parent name */
-	char *p = rindex(node->name, '|');
+	char *p = strrchr(node->name, '|');
 	int len = p - node->name;
 
 	char parent_name[256];

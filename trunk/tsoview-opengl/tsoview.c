@@ -159,8 +159,8 @@ void cube()
 	    cgUpdateProgramParameters(myCgVertexProgram);
 	    cgUpdateProgramParameters(myCgFragmentProgram);
 
-	    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, mesh->bufObje[j]);
-	    glBindBufferARB(GL_ARRAY_BUFFER_ARB, mesh->bufObjs[j]);
+	    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->bufObje[j]);
+	    glBindBuffer(GL_ARRAY_BUFFER, mesh->bufObjs[j]);
 
 	    /* position */
 	    glVertexPointer(3, GL_FLOAT, sizeof(Vertex), BUFFER_OFFSET(0));
@@ -171,17 +171,17 @@ void cube()
 	    glEnableClientState(GL_NORMAL_ARRAY);
 
 	    /* uv */
-	    glClientActiveTexture(GL_TEXTURE0_ARB);
+	    glClientActiveTexture(GL_TEXTURE0);
 	    glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), BUFFER_OFFSET(10*sizeof(float)+sizeof(int)*4));
 	    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	    /* boneWgts */
-	    glClientActiveTexture(GL_TEXTURE3_ARB);
+	    glClientActiveTexture(GL_TEXTURE3);
 	    glTexCoordPointer(4, GL_FLOAT, sizeof(Vertex), BUFFER_OFFSET(3*sizeof(float)));
 	    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
 	    /* boneIdxs */
-	    glClientActiveTexture(GL_TEXTURE4_ARB);
+	    glClientActiveTexture(GL_TEXTURE4);
 	    glTexCoordPointer(4, GL_INT, sizeof(Vertex), BUFFER_OFFSET(7*sizeof(float)));
 	    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
@@ -278,8 +278,8 @@ void mouse(int button, int state, int x, int y)
 void mesh_delete_buffers(Mesh * mesh)
 {
     int nbufs = mesh->nsubs;
-    glDeleteBuffersARB(nbufs, mesh->bufObje);
-    glDeleteBuffersARB(nbufs, mesh->bufObjs);
+    glDeleteBuffers(nbufs, mesh->bufObje);
+    glDeleteBuffers(nbufs, mesh->bufObjs);
 }
 
 void keyboard(unsigned char key, int x, int y)
@@ -328,8 +328,8 @@ void mesh_gen_buffers(Mesh *mesh)
     int nbufs = mesh->nsubs;
     mesh->bufObjs = (GLuint *)malloc(sizeof(GLuint)*nbufs);
     mesh->bufObje = (GLuint *)malloc(sizeof(GLuint)*nbufs);
-    glGenBuffersARB(nbufs, mesh->bufObjs);
-    glGenBuffersARB(nbufs, mesh->bufObje);
+    glGenBuffers(nbufs, mesh->bufObjs);
+    glGenBuffers(nbufs, mesh->bufObje);
 }
 
 void mesh_gen_indices(Mesh *mesh)
@@ -357,11 +357,11 @@ void mesh_bind_buffers(Mesh *mesh)
     {
 	Submesh *sub = mesh->subs[j];
 
-	glBindBufferARB(GL_ARRAY_BUFFER_ARB, mesh->bufObjs[j]);
-	glBufferDataARB(GL_ARRAY_BUFFER_ARB, sizeof(Vertex)*sub->nverts, sub->vertices, GL_STATIC_DRAW_ARB);
+	glBindBuffer(GL_ARRAY_BUFFER, mesh->bufObjs[j]);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex)*sub->nverts, sub->vertices, GL_STATIC_DRAW);
 
-	glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER_ARB, mesh->bufObje[j]);
-	glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER_ARB, sizeof(GLushort)*sub->nindices, sub->indices, GL_STATIC_DRAW_ARB);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->bufObje[j]);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLushort)*sub->nindices, sub->indices, GL_STATIC_DRAW);
     }
 }
 
@@ -506,15 +506,17 @@ int main(int argc, char* argv[])
     glutInit(&argc, argv);
 
     glutCreateWindow(myProgramName);
-    glutDisplayFunc(display);
-    glutReshapeFunc(reshape);
-    glutMouseFunc(mouse);
-    glutKeyboardFunc(keyboard);
+    printf("version %s\n", glGetString(GL_VERSION));
 
     GLint buffers, samples;
     glGetIntegerv(GL_SAMPLE_BUFFERS, &buffers);
     glGetIntegerv(GL_SAMPLES, &samples);
     printf("buffers %d samples %d\n", buffers, samples);
+
+    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    glutMouseFunc(mouse);
+    glutKeyboardFunc(keyboard);
 
     init();
     glutMainLoop();
