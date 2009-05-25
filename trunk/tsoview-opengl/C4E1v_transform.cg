@@ -1,0 +1,61 @@
+// This is C4E1v_transform from "The Cg Tutorial" (Addison-Wesley, ISBN
+// 0321194969) by Randima Fernando and Mark J. Kilgard.  See page 97.
+
+uniform float4x4 wvp : WorldViewProjection;
+uniform float4x4 localBoneMats[16];
+
+void calc_skindeform(
+  float4 position,
+  float4 normal,
+  float4 weights,
+  int4 indices,
+  out float4 opos,
+  out float4 onor)
+{
+  float4 pos;
+  float4 nor;
+
+  float4x4 mb;
+  float w;
+
+  w = weights[0];
+  mb = localBoneMats[indices[0]];
+  pos = mul(mb, position)*w;
+  nor = mul(mb, normal)*w;
+
+  w = weights[1];
+  mb = localBoneMats[indices[1]];
+  pos += mul(mb, position)*w;
+  nor += mul(mb, normal)*w;
+
+  w = weights[2];
+  mb = localBoneMats[indices[2]];
+  pos += mul(mb, position)*w;
+  nor += mul(mb, normal)*w;
+
+  w = weights[3];
+  mb = localBoneMats[indices[3]];
+  pos += mul(mb, position)*w;
+  nor += mul(mb, normal)*w;
+
+  opos = float4(pos.xyz, 1);
+  onor = float4(nor.xyz, 1);
+}
+
+void C4E1v_transform(float4 position : POSITION,
+                     float4 normal : NORMAL,
+                     float2 texCoord  : TEXCOORD0,
+                     float4 boneWgts  : TEXCOORD3,
+                     int4 boneIdxs : TEXCOORD4,
+                 out float4 oPosition : POSITION,
+                 out float4 oNormal : TEXCOORD1,
+                 out float2 oTexCoord : TEXCOORD0)
+{
+  float4 pos;
+  float4 nor;
+  calc_skindeform(position, normal, boneWgts, boneIdxs, pos, nor);
+  // Transform position from object space to clip space
+  oPosition = mul(wvp, pos);
+  oNormal = mul(wvp, nor);
+  oTexCoord = texCoord;
+}
