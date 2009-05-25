@@ -1,4 +1,4 @@
-CFLAGS += -g -Wall
+CFLAGS += -Wall
 CLINKFLAGS += -framework Cg -framework OpenGL -framework GLUT -framework Foundation
 all: tsoview tsodump matline tmodump
 
