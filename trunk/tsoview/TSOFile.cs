@@ -7,17 +7,13 @@ using Microsoft.DirectX.Direct3D;
 
 namespace TAHdecrypt
 {
-    public class TSOMesh : IDisposable
+    public class TSOSubMesh : IDisposable
     {
         public string name;
-        public Matrix transform_matrix;
-        public UInt32 unknown1;
-        public UInt32 sub_mesh_count;
         public int spec;
-        public List<UInt32> bone_index_LUT; //to look up bone field entries... bones are not directly assigned to vertices but by the means of this bone index LUT (look up table)... so if there is e.g. a bone field entry with the value 1, this means to look up in the LUT the first entry to retrieve the actual bone index...
-        public vertex_field[] vertices;
-        public TSOMesh[] sub_meshes;
+        public List<UInt32> bone_index_LUT;
         public List<TSONode> bone_LUT;
+        public vertex_field[] vertices;
 
         public Mesh dm = null;
 
@@ -36,11 +32,24 @@ namespace TAHdecrypt
 
         public void Dispose()
         {
-            if (sub_meshes != null)
-            foreach (TSOMesh tm_sub in sub_meshes)
-                tm_sub.Dispose();
             if (dm != null)
                 dm.Dispose();
+        }
+    }
+
+    public class TSOMesh : IDisposable
+    {
+        public string name;
+        public Matrix transform_matrix;
+        public UInt32 unknown1;
+        public UInt32 sub_mesh_count;
+        public TSOSubMesh[] sub_meshes;
+
+        public void Dispose()
+        {
+            if (sub_meshes != null)
+            foreach (TSOSubMesh tm_sub in sub_meshes)
+                tm_sub.Dispose();
         }
     }
 
@@ -198,23 +207,14 @@ namespace TAHdecrypt
             mesh.transform_matrix = ReadMatrix();
             mesh.unknown1 = reader.ReadUInt32();
             mesh.sub_mesh_count = reader.ReadUInt32();
-            mesh.sub_meshes = new TSOMesh[mesh.sub_mesh_count];
-
-            mesh.spec = 0;
-            mesh.bone_index_LUT = new List<UInt32>();
-            mesh.bone_LUT = new List<TSONode>();
-
-            mesh.vertices = new vertex_field[0];
+            mesh.sub_meshes = new TSOSubMesh[mesh.sub_mesh_count];
 
             for (int a = 0; a < mesh.sub_mesh_count; a++)
             {
-                TSOMesh act_mesh = new TSOMesh();
+                TSOSubMesh act_mesh = new TSOSubMesh();
                 mesh.sub_meshes[a] = act_mesh;
 
                 act_mesh.name = mesh.name + "_sub_" + a.ToString();
-                act_mesh.transform_matrix = mesh.transform_matrix;
-                act_mesh.unknown1 = mesh.unknown1;
-                act_mesh.sub_mesh_count = 0;
 
                 act_mesh.spec = reader.ReadInt32();
                 int bone_index_LUT_entry_count = reader.ReadInt32(); //numbones
@@ -237,7 +237,7 @@ namespace TAHdecrypt
 
             for (int a = 0; a < mesh.sub_mesh_count; a++)
             {
-                TSOMesh sub_mesh = mesh.sub_meshes[a];
+                TSOSubMesh sub_mesh = mesh.sub_meshes[a];
 
                 for (int i = 0; i < sub_mesh.bone_index_LUT.Count; i++)
                 {
@@ -497,7 +497,7 @@ namespace TAHdecrypt
     public void LoadMesh()
     {
         foreach (TSOMesh tm in meshes)
-        foreach (TSOMesh tm_sub in tm.sub_meshes)
+        foreach (TSOSubMesh tm_sub in tm.sub_meshes)
         {
             int numVertices = tm_sub.vertices.Length;
             int numFaces = numVertices - 2;
@@ -674,7 +674,7 @@ namespace TAHdecrypt
             effect.ValidateTechnique(effect.Technique);
         }
 
-        public void SwitchShader(TSOMesh tm_sub)
+        public void SwitchShader(TSOSubMesh tm_sub)
         {
             SwitchShader(scripts[0].sub_scripts[tm_sub.spec].shader);
         }
