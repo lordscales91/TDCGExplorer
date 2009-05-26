@@ -274,7 +274,7 @@ public class TSOSample : IDisposable
             tso.BeginRender();
 
             foreach (TSOMesh tm in tso.meshes)
-            foreach (TSOMesh tm_sub in tm.sub_meshes)
+            foreach (TSOSubMesh tm_sub in tm.sub_meshes)
             {
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
