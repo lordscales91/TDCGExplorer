@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.ComponentModel;
 using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
@@ -84,12 +85,16 @@ namespace TAHdecrypt
         public string[] script_data;
     }
 
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class TSOSubScript
     {
-        public string name;
-        public string file;
+        internal string name;
+        internal string file;
         public string[] script_data;
-        public Shader shader = null;
+        internal Shader shader = null;
+
+        public string Name { get { return name; } set { name = value; } }
+        public string File { get { return file; } set { file = value; } }
     }
 
     public class TSOTex : IDisposable
