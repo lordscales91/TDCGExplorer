@@ -214,6 +214,95 @@ public class TSOFigure : IDisposable
     }
 }
 
+public class TSOFigureForm : Form
+{
+    Button btn1;
+    ListView lv;
+    DataGridView dg;
+
+    public TSOFigureForm()
+    {
+        this.ClientSize = new System.Drawing.Size(800, 600);
+        this.Text = "TSOGrid";
+        //this.AllowDrop = true;
+
+        btn1 = new Button();
+        btn1.Location = new Point(10, 10);
+        btn1.Text = "&Dump";
+        btn1.Click += new EventHandler(btn1_Click);
+        this.Controls.Add(btn1);
+
+        lv = new ListView();
+        lv.Bounds = new Rectangle(new Point(10, 40), new Size(300, 200));
+        lv.View = View.Details;
+        lv.FullRowSelect = true;
+        lv.HideSelection = false;
+        lv.GridLines = true;
+
+        lv.Columns.Add("Name", -2, HorizontalAlignment.Left);
+        lv.Columns.Add("File", -2, HorizontalAlignment.Left);
+        lv.SelectedIndexChanged += lv_SelectedIndexChanged;
+
+        this.Controls.Add(lv);
+
+        dg = new DataGridView();
+        dg.Bounds = new Rectangle(new Point(10, 250), new Size(300, 200));
+        dg.EditMode = DataGridViewEditMode.EditOnEnter;
+        dg.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        this.Controls.Add(dg);
+    }
+
+    protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
+    {
+        //this.Render(); // Render on painting
+    }
+
+    protected override void OnKeyPress(System.Windows.Forms.KeyPressEventArgs e)
+    {
+        if ((int)(byte)e.KeyChar == (int)System.Windows.Forms.Keys.Escape)
+            this.Dispose(); // Esc was pressed
+    }
+
+    private TSOFile tso = null;
+    private Shader shader = null;
+
+    public void SetTSOFile(TSOFile tso)
+    {
+        this.tso = tso;
+        foreach (TSOSubScript sub_script in tso.sub_scripts)
+        {
+            ListViewItem li = new ListViewItem(sub_script.Name);
+            li.SubItems.Add(sub_script.File);
+            li.Tag = sub_script;
+            lv.Items.Add(li);
+        }
+    }
+
+    public void SetShader(Shader shader)
+    {
+        this.shader = shader;
+        dg.DataSource = shader.shader_parameters;
+    }
+
+    protected void btn1_Click(object sender, EventArgs e)
+    {
+        if (shader == null)
+            return;
+        Console.WriteLine("-- dump shader parameters --");
+        foreach (ShaderParameter param in shader.shader_parameters)
+            Console.WriteLine("Name {0} F1 {1}", param.Name, param.F1);
+    }
+
+    protected void lv_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (lv.SelectedItems.Count == 0)
+            return;
+        ListViewItem li = lv.SelectedItems[0];
+        TSOSubScript sub_script = li.Tag as TSOSubScript;
+        SetShader(sub_script.shader);
+    }
+}
+
 public class TSOSample : IDisposable
 {
     internal TSOForm form;
@@ -364,6 +453,15 @@ public class TSOSample : IDisposable
         }
     }
 
+    public void SetFigureIndex(int figureIndex)
+    {
+        if (figureIndex < 0)
+            figureIndex = 0;
+        if (figureIndex > TSOFigureList.Count-1)
+            figureIndex = 0;
+        this.figureIndex = figureIndex;
+    }
+
     public void AddFigureFromTSODirectory(string source_file)
     {
         TSOFigure fig = new TSOFigure();
@@ -373,8 +471,9 @@ public class TSOSample : IDisposable
             tso.Open(device, effect);
             fig.AddTSO(tso);
         }
-        figureIndex = TSOFigureList.Count;
+        int idx = TSOFigureList.Count;
         TSOFigureList.Add(fig);
+        SetFigureIndex(idx);
     }
 
     public TSOFigure GetSelectedOrCreateFigure()
@@ -386,8 +485,9 @@ public class TSOSample : IDisposable
             fig = TSOFigureList[figureIndex];
         if (TSOFigureList.Count == 0)
         {
-            figureIndex = TSOFigureList.Count;
+            int idx = TSOFigureList.Count;
             TSOFigureList.Add(fig);
+            SetFigureIndex(idx);
         }
         return fig;
     }
@@ -413,9 +513,7 @@ public class TSOSample : IDisposable
 
     public void NextTSOFigure()
     {
-        figureIndex++;
-        if (figureIndex >= TSOFigureList.Count)
-            figureIndex = 0;
+        SetFigureIndex(figureIndex+1);
     }
 
     public void LoadTMOFile(string source_file)
@@ -445,13 +543,14 @@ public class TSOSample : IDisposable
         }
         else
         {
-            figureIndex = TSOFigureList.Count;
+            int idx = TSOFigureList.Count;
             foreach (TSOFigure fig in fig_list)
             {
                 fig.OpenTSOFile(device, effect);
                 fig.UpdateNodeMapAndBoneMatrices();
                 TSOFigureList.Add(fig);
             }
+            SetFigureIndex(idx);
         }
         {
             TSOFigure fig;
@@ -659,10 +758,10 @@ public class TSOSample : IDisposable
         if (keysEnabled[keyDelete] && keys[keyDelete])
         {
             keysEnabled[keyDelete] = false;
+            SetFigureIndex(0);
             foreach (TSOFigure fig in TSOFigureList)
                 fig.Dispose();
             TSOFigureList.Clear();
-            figureIndex = 0;
             GC.Collect(); // free meshes and textures.
         }
 
@@ -957,6 +1056,7 @@ static class TSOView
         Debug.Listeners.Add(new TextWriterTraceListener(Console.Out));
 
         using (TSOSample sample = new TSOSample())
+        using (TSOFigureForm fig_form = new TSOFigureForm())
         using (TSOForm form = new TSOForm())
         {
             if (sample.InitializeApplication(form))
@@ -964,6 +1064,7 @@ static class TSOView
                 foreach (string arg in args)
                     sample.LoadAnyFile(arg);
 
+                fig_form.Show();
                 form.Show();
                 long wait = (long)(10000000.0f/60.0f);
                 long nextTicks = DateTime.Now.Ticks;
