@@ -321,11 +321,6 @@ namespace TAHdecrypt
             v.skin_weight_indices = BitConverter.ToUInt32(idx, 0);
         }
 
-        public TSONode[] flat_bones()
-        {
-            return nodes;
-        }
-
         public int Load(string source_file)
         {
             this.source_file = source_file;
