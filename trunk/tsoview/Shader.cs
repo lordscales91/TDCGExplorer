@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.ComponentModel;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
 namespace TAHdecrypt
 {
+    [TypeConverter(typeof(ExpandableObjectConverter))]
     public class ShaderParameter
     {
         public enum Type {Unknown, String, Float, Float3, Float4, Texture};
@@ -14,9 +16,16 @@ namespace TAHdecrypt
         internal string name;
 
         private string str;
-        private float flo;
-        private Vector3 v;
-        private Vector4 q;
+        private float f1;
+        private float f2;
+        private float f3;
+        private float f4;
+
+        public string Name { get { return name; } set { name = value; } }
+        public float F1 { get { return f1; } set { f1 = value; } }
+        public float F2 { get { return f2; } set { f2 = value; } }
+        public float F3 { get { return f3; } set { f3 = value; } }
+        public float F4 { get { return f4; } set { f4 = value; } }
 
         public static ShaderParameter Parse(string line)
         {
@@ -28,6 +37,10 @@ namespace TAHdecrypt
             string name = type_name.Substring(m+1).Trim();
 
             return new ShaderParameter(type, name, value);
+        }
+
+        public ShaderParameter()
+        {
         }
 
         public ShaderParameter(string type_string, string name, string value)
@@ -71,40 +84,44 @@ namespace TAHdecrypt
             str = value.Trim('"');
         }
 
+        public void SetFloatDim(string value, int dim)
+        {
+            string[] token = value.Trim('[', ']', ' ').Split(',');
+            if (dim > 0)
+                f1 = float.Parse(token[0].Trim());
+            if (dim > 1)
+                f2 = float.Parse(token[1].Trim());
+            if (dim > 2)
+                f3 = float.Parse(token[2].Trim());
+            if (dim > 3)
+                f4 = float.Parse(token[3].Trim());
+        }
+
         public float GetFloat()
         {
-            return flo;
+            return f1;
         }
         public void SetFloat(string value)
         {
-            flo = float.Parse(value.Trim('[', ']', ' '));
+            SetFloatDim(value, 1);
         }
 
         public Vector3 GetFloat3()
         {
-            return v;
+            return new Vector3(f1, f2, f3);
         }
         public void SetFloat3(string value)
         {
-            string[] token = value.Trim('[', ']', ' ').Split(',');
-            v = new Vector3();
-            v.X = float.Parse(token[0].Trim());
-            v.Y = float.Parse(token[1].Trim());
-            v.Z = float.Parse(token[2].Trim());
+            SetFloatDim(value, 3);
         }
 
         public Vector4 GetFloat4()
         {
-            return q;
+            return new Vector4(f1, f2, f3, f4);
         }
         public void SetFloat4(string value)
         {
-            string[] token = value.Trim('[', ']', ' ').Split(',');
-            q = new Vector4();
-            q.X = float.Parse(token[0].Trim());
-            q.Y = float.Parse(token[1].Trim());
-            q.Z = float.Parse(token[2].Trim());
-            q.W = float.Parse(token[3].Trim());
+            SetFloatDim(value, 4);
         }
 
         public string GetTexture()
