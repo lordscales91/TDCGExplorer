@@ -217,6 +217,7 @@ public class TSOFigure : IDisposable
 public class TSOFigureForm : Form
 {
     Button btn1;
+    ListView lv_fig;
     ListView lv;
     DataGridView dg;
 
@@ -232,8 +233,20 @@ public class TSOFigureForm : Form
         btn1.Click += new EventHandler(btn1_Click);
         this.Controls.Add(btn1);
 
+        lv_fig = new ListView();
+        lv_fig.Bounds = new Rectangle(new Point(10, 40), new Size(100, 200));
+        lv_fig.View = View.Details;
+        lv_fig.FullRowSelect = true;
+        lv_fig.HideSelection = false;
+        lv_fig.GridLines = true;
+
+        lv_fig.Columns.Add("Name", -2, HorizontalAlignment.Left);
+        lv_fig.SelectedIndexChanged += lv_fig_SelectedIndexChanged;
+
+        this.Controls.Add(lv_fig);
+
         lv = new ListView();
-        lv.Bounds = new Rectangle(new Point(10, 40), new Size(300, 200));
+        lv.Bounds = new Rectangle(new Point(120, 40), new Size(300, 200));
         lv.View = View.Details;
         lv.FullRowSelect = true;
         lv.HideSelection = false;
@@ -246,7 +259,7 @@ public class TSOFigureForm : Form
         this.Controls.Add(lv);
 
         dg = new DataGridView();
-        dg.Bounds = new Rectangle(new Point(10, 250), new Size(300, 200));
+        dg.Bounds = new Rectangle(new Point(10, 250), new Size(410, 250));
         dg.EditMode = DataGridViewEditMode.EditOnEnter;
         dg.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         this.Controls.Add(dg);
@@ -263,12 +276,38 @@ public class TSOFigureForm : Form
             this.Dispose(); // Esc was pressed
     }
 
+    private TSOFigure fig = null;
     private TSOFile tso = null;
     private Shader shader = null;
+
+    public void Clear()
+    {
+        dg.DataSource = null;
+        this.shader = null;
+        lv.Items.Clear();
+        this.tso = null;
+        lv_fig.Items.Clear();
+        this.fig = null;
+    }
+
+    public void SetTSOFigure(TSOFigure fig)
+    {
+        this.fig = fig;
+        lv_fig.Items.Clear();
+        for (int i = 0; i < fig.TSOList.Count; i++)
+        {
+            TSOFile tso = fig.TSOList[i];
+            ListViewItem li = new ListViewItem("TSO #" + i.ToString());
+            li.Tag = tso;
+            lv_fig.Items.Add(li);
+        }
+        lv_fig.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+    }
 
     public void SetTSOFile(TSOFile tso)
     {
         this.tso = tso;
+        lv.Items.Clear();
         foreach (TSOSubScript sub_script in tso.sub_scripts)
         {
             ListViewItem li = new ListViewItem(sub_script.Name);
@@ -276,6 +315,7 @@ public class TSOFigureForm : Form
             li.Tag = sub_script;
             lv.Items.Add(li);
         }
+        lv.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
     }
 
     public void SetShader(Shader shader)
@@ -290,7 +330,16 @@ public class TSOFigureForm : Form
             return;
         Console.WriteLine("-- dump shader parameters --");
         foreach (ShaderParameter param in shader.shader_parameters)
-            Console.WriteLine("Name {0} F1 {1}", param.Name, param.F1);
+            Console.WriteLine("Name {0} F1 {1} F2 {2} F3 {3} F4 {4}", param.Name, param.F1, param.F2, param.F3, param.F4);
+    }
+
+    protected void lv_fig_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (lv_fig.SelectedItems.Count == 0)
+            return;
+        ListViewItem li = lv_fig.SelectedItems[0];
+        TSOFile tso = li.Tag as TSOFile;
+        SetTSOFile(tso);
     }
 
     protected void lv_SelectedIndexChanged(object sender, EventArgs e)
@@ -305,6 +354,7 @@ public class TSOFigureForm : Form
 
 public class TSOSample : IDisposable
 {
+    internal TSOFigureForm fig_form;
     internal TSOForm form;
 
     internal Device device;
@@ -460,6 +510,11 @@ public class TSOSample : IDisposable
         if (figureIndex > TSOFigureList.Count-1)
             figureIndex = 0;
         this.figureIndex = figureIndex;
+        TSOFigure fig;
+        if (TryGetFigure(out fig))
+            fig_form.SetTSOFigure(fig);
+        else
+            fig_form.Clear();
     }
 
     public void AddFigureFromTSODirectory(string source_file)
@@ -758,10 +813,10 @@ public class TSOSample : IDisposable
         if (keysEnabled[keyDelete] && keys[keyDelete])
         {
             keysEnabled[keyDelete] = false;
-            SetFigureIndex(0);
             foreach (TSOFigure fig in TSOFigureList)
                 fig.Dispose();
             TSOFigureList.Clear();
+            SetFigureIndex(0);
             GC.Collect(); // free meshes and textures.
         }
 
@@ -1059,6 +1114,8 @@ static class TSOView
         using (TSOFigureForm fig_form = new TSOFigureForm())
         using (TSOForm form = new TSOForm())
         {
+            sample.fig_form = fig_form;
+
             if (sample.InitializeApplication(form))
             {
                 foreach (string arg in args)
