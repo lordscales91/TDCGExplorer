@@ -250,10 +250,6 @@ public class TSOSample : IDisposable
     // ライト方向
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
 
-    // スキンメッシュ関連
-    private int maxBones = 16;
-    private Matrix[] boneMatrices = null;
-
     private void form_OnKeyDown(object sender, KeyEventArgs e)
     {
         if ((int)e.KeyCode < keys.Length)
@@ -536,8 +532,6 @@ public class TSOSample : IDisposable
 
         Directory.SetCurrentDirectory(Application.StartupPath);
 
-        boneMatrices = new Matrix[maxBones];
-
         string effect_file = @"toonshader.cgfx";
         if (! File.Exists(effect_file))
         {
@@ -779,9 +773,8 @@ public class TSOSample : IDisposable
                 {
                     //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
                     TSONode bone = tm_sub.GetBone(numPalettes);
-                    boneMatrices[numPalettes] = bone.GetOffsetMatrix() * bone.combined_matrix;
+                    clipped_boneMatrices[numPalettes] = bone.GetOffsetMatrix() * bone.combined_matrix;
                 }
-                Array.Copy(boneMatrices, clipped_boneMatrices, tm_sub.maxPalettes);
                 effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
 
                 int npass = effect.Begin(0);
@@ -821,9 +814,8 @@ public class TSOSample : IDisposable
                 {
                     //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
                     TSONode bone = tm_sub.GetBone(numPalettes);
-                    boneMatrices[numPalettes] = bone.GetOffsetMatrix() * bone.combined_matrix;
+                    clipped_boneMatrices[numPalettes] = bone.GetOffsetMatrix() * bone.combined_matrix;
                 }
-                Array.Copy(boneMatrices, clipped_boneMatrices, tm_sub.maxPalettes);
                 effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
 
                 int npass = effect.Begin(0);

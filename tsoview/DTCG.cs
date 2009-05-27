@@ -34,10 +34,6 @@ public class TSOSample : IDisposable
     // アニメーション関連
     private MatrixStack matrixStack = null;
 
-    // スキンメッシュ関連
-    private int maxBones = 16;
-    private Matrix[] boneMatrices = null;
-
     internal List<TSOFile> TSOList = new List<TSOFile>();
     internal TMOFile tmo;
     internal Dictionary<string, TMONode> tmo_nodemap;
@@ -114,8 +110,6 @@ public class TSOSample : IDisposable
         matrixStack = new MatrixStack();
 
         Directory.SetCurrentDirectory(Application.StartupPath);
-
-        boneMatrices = new Matrix[maxBones];
 
         string effect_file = @"toonshader.cgfx";
         if (! File.Exists(effect_file))
@@ -286,9 +280,8 @@ public class TSOSample : IDisposable
                 {
                     //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
                     TSONode bone = tm_sub.GetBone(numPalettes);
-                    boneMatrices[numPalettes] = bone.GetOffsetMatrix() * bone.combined_matrix;
+                    clipped_boneMatrices[numPalettes] = bone.GetOffsetMatrix() * bone.combined_matrix;
                 }
-                Array.Copy(boneMatrices, clipped_boneMatrices, tm_sub.maxPalettes);
                 effect.SetValue("LocalBoneMats", clipped_boneMatrices);
 
                 int npass = effect.Begin(0);
