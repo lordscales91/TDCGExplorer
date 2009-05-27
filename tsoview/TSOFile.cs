@@ -81,10 +81,14 @@ namespace TAHdecrypt
     public class TSOScript
     {
         public string name;
+        public string[] script_data;
+    }
+
+    public class TSOSubScript
+    {
+        public string name;
         public string file;
         public string[] script_data;
-        public TSOScript[] sub_scripts;
-
         public Shader shader = null;
     }
 
@@ -182,6 +186,7 @@ namespace TAHdecrypt
         public TSONode[] nodes;
         public TSOTex[] textures;
         public TSOScript[] scripts;
+        public TSOSubScript[] sub_scripts;
         public TSOMesh[] meshes;
 
         internal string source_file;
@@ -399,12 +404,11 @@ namespace TAHdecrypt
             }
 
             UInt32 sub_script_count = reader.ReadUInt32();
-            TSOScript[] sub_scripts = new TSOScript[sub_script_count];
+            sub_scripts = new TSOSubScript[sub_script_count];
             for (int i = 0; i < sub_script_count; i++)
             {
                 sub_scripts[i] = read_sub_script();
             }
-            scripts[0].sub_scripts = sub_scripts;
 
             UInt32 mesh_count = reader.ReadUInt32();
             meshes = new TSOMesh[mesh_count];
@@ -434,9 +438,9 @@ namespace TAHdecrypt
             return script;
         }
 
-        public TSOScript read_sub_script()
+        public TSOSubScript read_sub_script()
         {
-            TSOScript sub_script = new TSOScript();
+            TSOSubScript sub_script = new TSOSubScript();
             sub_script.name = ReadString();
             sub_script.file = ReadString();
             UInt32 sub_line_counts = reader.ReadUInt32();
@@ -676,7 +680,7 @@ namespace TAHdecrypt
 
         public void SwitchShader(TSOSubMesh tm_sub)
         {
-            SwitchShader(scripts[0].sub_scripts[tm_sub.spec].shader);
+            SwitchShader(sub_scripts[tm_sub.spec].shader);
         }
 
         public void EndRender()
