@@ -429,6 +429,9 @@ public class TSOSample : IDisposable
 
         device.RenderState.SourceBlend = Blend.SourceAlpha; 
         device.RenderState.DestinationBlend = Blend.InvSourceAlpha;
+        device.RenderState.AlphaTestEnable = true;
+        device.RenderState.ReferenceAlpha = 0x08;
+        device.RenderState.AlphaFunction = Compare.GreaterEqual;
 
         device.RenderState.IndexedVertexBlendEnable = true;
 
@@ -594,7 +597,6 @@ public class TSOSample : IDisposable
                 //tso.SwitchShader(tm_sub);
                 Matrix[] clipped_boneMatrices = new Matrix[tm_sub.maxPalettes];
 
-                int i = 0;
                 for (int numPalettes = 0; numPalettes < tm_sub.maxPalettes; numPalettes++)
                 {
                     //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
@@ -607,7 +609,7 @@ public class TSOSample : IDisposable
                 for (int ipass = 0; ipass < npass; ipass++)
                 {
                     effect.BeginPass(ipass);
-                    tm_sub.dm.DrawSubset(i);
+                    tm_sub.dm.DrawSubset(0);
                     effect.EndPass();
                 }
                 effect.End();
@@ -635,7 +637,6 @@ public class TSOSample : IDisposable
                 tso.SwitchShader(tm_sub);
                 Matrix[] clipped_boneMatrices = new Matrix[tm_sub.maxPalettes];
 
-                int i = 0;
                 for (int numPalettes = 0; numPalettes < tm_sub.maxPalettes; numPalettes++)
                 {
                     //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
@@ -648,7 +649,7 @@ public class TSOSample : IDisposable
                 for (int ipass = 0; ipass < npass; ipass++)
                 {
                     effect.BeginPass(ipass);
-                    tm_sub.dm.DrawSubset(i);
+                    tm_sub.dm.DrawSubset(0);
                     effect.EndPass();
                 }
                 effect.End();
