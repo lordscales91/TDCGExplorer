@@ -503,6 +503,15 @@ public class TSOSample : IDisposable
         }
     }
 
+    public void UpdateFigureForm()
+    {
+        TSOFigure fig;
+        if (TryGetFigure(out fig))
+            fig_form.SetTSOFigure(fig);
+        else
+            fig_form.Clear();
+    }
+
     public void SetFigureIndex(int figureIndex)
     {
         if (figureIndex < 0)
@@ -510,11 +519,7 @@ public class TSOSample : IDisposable
         if (figureIndex > TSOFigureList.Count-1)
             figureIndex = 0;
         this.figureIndex = figureIndex;
-        TSOFigure fig;
-        if (TryGetFigure(out fig))
-            fig_form.SetTSOFigure(fig);
-        else
-            fig_form.Clear();
+        UpdateFigureForm();
     }
 
     public void AddFigureFromTSODirectory(string source_file)
@@ -556,6 +561,7 @@ public class TSOSample : IDisposable
             tso.Open(device, effect);
             fig.AddTSO(tso);
         }
+        UpdateFigureForm();
     }
 
     public bool TryGetFigure(out TSOFigure fig)
