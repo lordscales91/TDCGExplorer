@@ -15,6 +15,16 @@ public class TSOCamera
     internal float camZRotDef = 0.0f;   //カメラ Z軸回転差分
     internal float camAngleUnit = 0.02f;        //移動時回転単位（ラジアン）
 
+    /// <summary>カメラ位置と姿勢をリセット</summary>
+    public void Reset()
+    {
+        center = Vector3.Empty;
+        translation = Vector3.Empty;
+        camPosL = new Vector3(0.0f, 0.0f, -10.0f);
+        camPoseMat = Matrix.Identity;
+        needUpdate = true;
+    }
+
     /// <summary>カメラ位置更新</summary>
     /// <param name="camDirX">移動方向（経度）</param>
     /// <param name="camDirY">移動方向（緯度）</param>

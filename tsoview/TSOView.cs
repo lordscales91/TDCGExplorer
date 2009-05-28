@@ -731,7 +731,6 @@ public class TSOSample : IDisposable
         dev_zbuf = device.DepthStencilSurface;
 
         camera.Update();
-        camera.SetTranslation(camTranslation);
 
         Transform_Projection = Matrix.PerspectiveFovLH(
                 Geometry.DegreeToRadian(30.0f),
@@ -779,6 +778,7 @@ public class TSOSample : IDisposable
     internal int keySprite      = (int)Keys.Z;
     internal int keyFigure      = (int)Keys.Tab;
     internal int keyDelete      = (int)Keys.Delete;
+    internal int keyCameraReset = (int)Keys.D0;
 
     public void FrameMove()
     {
@@ -818,6 +818,11 @@ public class TSOSample : IDisposable
             TSOFigureList.Clear();
             SetFigureIndex(0);
             GC.Collect(); // free meshes and textures.
+        }
+        if (keysEnabled[keyCameraReset] && keys[keyCameraReset])
+        {
+            keysEnabled[keyCameraReset] = false;
+            camera.Reset();
         }
 
         float keyL = 0.0f;
