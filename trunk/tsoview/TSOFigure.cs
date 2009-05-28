@@ -31,6 +31,18 @@ public class TSOFigure : IDisposable
 
     internal Dictionary<TSONode, TMONode> nodemap;
 
+    //指定位置にあるtsoの位置を入れ替えます。描画順を変更します。
+    public void SwapAt(int aidx, int bidx)
+    {
+        Debug.Assert(aidx < bidx);
+        TSOFile a = TSOList[aidx];
+        TSOFile b = TSOList[bidx];
+        TSOList.RemoveAt(bidx);
+        TSOList.RemoveAt(aidx);
+        TSOList.Insert(aidx, b);
+        TSOList.Insert(bidx, a);
+    }
+
     //nodemapとbone行列を更新します。
     public void UpdateNodeMapAndBoneMatrices()
     {

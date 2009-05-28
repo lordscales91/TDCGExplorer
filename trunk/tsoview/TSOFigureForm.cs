@@ -13,6 +13,8 @@ namespace TAHdecrypt
 public class TSOFigureForm : Form
 {
     Button btn1;
+    Button btnUp;
+    Button btnDown;
     ListView lv_fig;
     ListView lv;
     DataGridView dg;
@@ -25,15 +27,28 @@ public class TSOFigureForm : Form
 
         btn1 = new Button();
         btn1.Location = new Point(10, 10);
-        btn1.Text = "&Dump";
+        btn1.Text = "Dump";
         btn1.Click += new EventHandler(btn1_Click);
         this.Controls.Add(btn1);
+
+        btnUp = new Button();
+        btnUp.Location = new Point(95, 10);
+        btnUp.Text = "&Up";
+        btnUp.Click += new EventHandler(btnUp_Click);
+        this.Controls.Add(btnUp);
+
+        btnDown = new Button();
+        btnDown.Location = new Point(180, 10);
+        btnDown.Text = "&Down";
+        btnDown.Click += new EventHandler(btnDown_Click);
+        this.Controls.Add(btnDown);
 
         lv_fig = new ListView();
         lv_fig.Bounds = new Rectangle(new Point(10, 40), new Size(100, 200));
         lv_fig.View = View.Details;
         lv_fig.FullRowSelect = true;
         lv_fig.HideSelection = false;
+        lv_fig.MultiSelect = false;
         lv_fig.GridLines = true;
 
         lv_fig.Columns.Add("Name", -2, HorizontalAlignment.Left);
@@ -46,6 +61,7 @@ public class TSOFigureForm : Form
         lv.View = View.Details;
         lv.FullRowSelect = true;
         lv.HideSelection = false;
+        lv.MultiSelect = false;
         lv.GridLines = true;
 
         lv.Columns.Add("Name", -2, HorizontalAlignment.Left);
@@ -127,6 +143,34 @@ public class TSOFigureForm : Form
         Console.WriteLine("-- dump shader parameters --");
         foreach (ShaderParameter param in shader.shader_parameters)
             Console.WriteLine("Name {0} F1 {1} F2 {2} F3 {3} F4 {4}", param.Name, param.F1, param.F2, param.F3, param.F4);
+    }
+
+    protected void btnUp_Click(object sender, EventArgs e)
+    {
+        if (lv_fig.SelectedItems.Count == 0)
+            return;
+        int li_idx = lv_fig.SelectedIndices[0];
+        int li_idx_prev = li_idx-1;
+        if (li_idx_prev < 0)
+            return;
+        fig.SwapAt(li_idx_prev, li_idx);
+        SetTSOFigure(fig);
+        ListViewItem li = lv_fig.Items[li_idx_prev];
+        li.Selected = true;
+    }
+
+    protected void btnDown_Click(object sender, EventArgs e)
+    {
+        if (lv_fig.SelectedItems.Count == 0)
+            return;
+        int li_idx = lv_fig.SelectedIndices[0];
+        int li_idx_next = li_idx+1;
+        if (li_idx_next > lv_fig.Items.Count-1)
+            return;
+        fig.SwapAt(li_idx, li_idx_next);
+        SetTSOFigure(fig);
+        ListViewItem li = lv_fig.Items[li_idx_next];
+        li.Selected = true;
     }
 
     protected void lv_fig_SelectedIndexChanged(object sender, EventArgs e)
