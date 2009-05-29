@@ -449,6 +449,7 @@ public class TSOSample : IDisposable
     internal int keyFigure      = (int)Keys.Tab;
     internal int keyDelete      = (int)Keys.Delete;
     internal int keyCameraReset = (int)Keys.D0;
+    internal int keyCameraLoadOrSave = (int)Keys.D1;
 
     public void FrameMove()
     {
@@ -496,6 +497,14 @@ public class TSOSample : IDisposable
             TSOFigure fig;
             if (TryGetFigure(out fig))
                 camera.SetCenter(fig.position);
+        }
+        if (keysEnabled[keyCameraLoadOrSave] && keys[keyCameraLoadOrSave])
+        {
+            keysEnabled[keyCameraLoadOrSave] = false;
+            if (keys[(int)Keys.ControlKey])
+                camera.Save(@"camera.xml");
+            else
+                camera = TSOCamera.Load(@"camera.xml");
         }
 
         float keyL = 0.0f;
