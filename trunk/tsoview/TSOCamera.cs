@@ -58,6 +58,18 @@ public class TSOCamera
         return camera;
     }
 
+    public static TSOCamera Slerp(TSOCamera cam1, TSOCamera cam2, float ratio)
+    {
+        TSOCamera camera = new TSOCamera();
+        camera.Center = Vector3.Lerp(cam1.Center, cam2.Center, ratio);
+        camera.Translation = Vector3.Lerp(cam1.Translation, cam2.Translation, ratio);
+        camera.CamPosL = Vector3.Lerp(cam1.CamPosL, cam2.CamPosL, ratio);
+        Quaternion q1 = Quaternion.RotationMatrix(cam1.CamPoseMat);
+        Quaternion q2 = Quaternion.RotationMatrix(cam2.CamPoseMat);
+        camera.CamPoseMat = Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, ratio));
+        return camera;
+    }
+
     /// <summary>カメラ位置と姿勢をリセット</summary>
     public void Reset()
     {

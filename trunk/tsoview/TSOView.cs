@@ -286,6 +286,9 @@ public class TSOSample : IDisposable
     }
 
     private TSOCamera camera = new TSOCamera();
+    private TSOCamera cam1 = null;
+    private TSOCamera cam2 = null;
+    private int cam_frame_index = 0;
     private Matrix world_matrix = Matrix.Identity;
     private Matrix Transform_View = Matrix.Identity;
     private Matrix Transform_Projection = Matrix.Identity;
@@ -468,6 +471,7 @@ public class TSOSample : IDisposable
     internal int keyCameraReset = (int)Keys.D0;
     internal int keyCameraLoadOrSave1 = (int)Keys.D1;
     internal int keyCameraLoadOrSave2 = (int)Keys.D2;
+    internal int keyCameraSleap = (int)Keys.D3;
 
     public void FrameMove()
     {
@@ -540,6 +544,33 @@ public class TSOSample : IDisposable
                 TSOFigure fig;
                 if (TryGetFigure(out fig))
                     camera.SetCenter(fig.position);
+            }
+        }
+        if (keysEnabled[keyCameraSleap] && keys[keyCameraSleap])
+        {
+            keysEnabled[keyCameraSleap] = false;
+            if (File.Exists(@"camera1.xml"))
+            {
+                cam1 = TSOCamera.Load(@"camera1.xml");
+            }
+            if (File.Exists(@"camera2.xml"))
+            {
+                cam2 = TSOCamera.Load(@"camera2.xml");
+            }
+        }
+        if (cam1 != null && cam2 != null)
+        {
+            camera = TSOCamera.Slerp(cam1, cam2, cam_frame_index/200.0f);
+            cam_frame_index++;
+            if (cam_frame_index >= 200)
+            {
+                cam_frame_index = 0;
+                camera = cam2;
+                TSOFigure fig;
+                if (TryGetFigure(out fig))
+                    camera.SetCenter(fig.position);
+                cam1 = null;
+                cam2 = null;
             }
         }
 
