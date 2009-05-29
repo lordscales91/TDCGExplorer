@@ -472,6 +472,7 @@ public class TSOSample : IDisposable
     internal int keyCameraLoadOrSave1 = (int)Keys.D1;
     internal int keyCameraLoadOrSave2 = (int)Keys.D2;
     internal int keyCameraSlerp = (int)Keys.C;
+    internal int keyFigureForm = (int)Keys.G;
 
     public void FrameMove()
     {
@@ -570,6 +571,14 @@ public class TSOSample : IDisposable
                 if (TryGetFigure(out fig))
                     camera.SetCenter(fig.position);
             }
+        }
+        if (keysEnabled[keyFigureForm] && keys[keyFigureForm])
+        {
+            keys[keyFigureForm] = false;
+            keysEnabled[keyFigureForm] = true;
+            // stale KeyUp event
+            fig_form.Show();
+            fig_form.Activate();
         }
         if (cam1 != null && cam2 != null)
         {
@@ -885,7 +894,6 @@ static class TSOView
                 foreach (string arg in args)
                     sample.LoadAnyFile(arg);
 
-                fig_form.Show();
                 form.Show();
                 long wait = (long)(10000000.0f/60.0f);
                 long nextTicks = DateTime.Now.Ticks;
