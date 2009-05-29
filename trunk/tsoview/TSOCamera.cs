@@ -1,4 +1,8 @@
 using System;
+using System.IO;
+using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
@@ -14,6 +18,23 @@ public class TSOCamera
     internal Matrix camPoseMat = Matrix.Identity;       //カメラ姿勢行列
     internal float camZRotDef = 0.0f;   //カメラ Z軸回転差分
     internal float camAngleUnit = 0.02f;        //移動時回転単位（ラジアン）
+
+    public Vector3 Center { get { return center; } set { center = value; } }
+    public Vector3 Translation { get { return translation; } set { translation = value; } }
+    public Vector3 CamPosL { get { return camPosL; } set { camPosL = value; } }
+    public Matrix CamPoseMat { get { return camPoseMat; } set { camPoseMat = value; } }
+
+    /// <summary>カメラ位置と姿勢を書き出す</summary>
+    public void Dump()
+    {
+        XmlSerializer serializer = new XmlSerializer(typeof(TSOCamera));
+        XmlWriterSettings settings = new XmlWriterSettings();
+        settings.Encoding = Encoding.GetEncoding("Shift_JIS");
+        settings.Indent = true;
+        XmlWriter writer = XmlWriter.Create(Console.Out, settings);
+        serializer.Serialize(writer, this);
+        writer.Close();
+    }
 
     /// <summary>カメラ位置と姿勢をリセット</summary>
     public void Reset()
