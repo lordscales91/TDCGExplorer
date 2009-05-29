@@ -36,6 +36,16 @@ public class TSOCamera
         writer.Close();
     }
 
+    /// <summary>カメラ位置と姿勢を読み込む</summary>
+    public static TSOCamera Load(string source_file)
+    {
+        XmlReader reader = XmlReader.Create(source_file);
+        XmlSerializer serializer = new XmlSerializer(typeof(TSOCamera));
+        TSOCamera camera = serializer.Deserialize(reader) as TSOCamera;
+        reader.Close();
+        return camera;
+    }
+
     /// <summary>カメラ位置と姿勢をリセット</summary>
     public void Reset()
     {
