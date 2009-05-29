@@ -24,7 +24,7 @@ public class TSOCamera
     public Vector3 CamPosL { get { return camPosL; } set { camPosL = value; } }
     public Matrix CamPoseMat { get { return camPoseMat; } set { camPoseMat = value; } }
 
-    /// <summary>カメラ位置と姿勢を書き出す</summary>
+    /// <summary>カメラ位置と姿勢を標準出力へ書き出す</summary>
     public void Dump()
     {
         XmlSerializer serializer = new XmlSerializer(typeof(TSOCamera));
@@ -32,6 +32,18 @@ public class TSOCamera
         settings.Encoding = Encoding.GetEncoding("Shift_JIS");
         settings.Indent = true;
         XmlWriter writer = XmlWriter.Create(Console.Out, settings);
+        serializer.Serialize(writer, this);
+        writer.Close();
+    }
+
+    /// <summary>カメラ位置と姿勢を書き出す</summary>
+    public void Save(string dest_file)
+    {
+        XmlSerializer serializer = new XmlSerializer(typeof(TSOCamera));
+        XmlWriterSettings settings = new XmlWriterSettings();
+        settings.Encoding = Encoding.GetEncoding("Shift_JIS");
+        settings.Indent = true;
+        XmlWriter writer = XmlWriter.Create(dest_file, settings);
         serializer.Serialize(writer, this);
         writer.Close();
     }
