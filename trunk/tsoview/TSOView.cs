@@ -466,7 +466,8 @@ public class TSOSample : IDisposable
     internal int keyFigure      = (int)Keys.Tab;
     internal int keyDelete      = (int)Keys.Delete;
     internal int keyCameraReset = (int)Keys.D0;
-    internal int keyCameraLoadOrSave = (int)Keys.D1;
+    internal int keyCameraLoadOrSave1 = (int)Keys.D1;
+    internal int keyCameraLoadOrSave2 = (int)Keys.D2;
 
     public void FrameMove()
     {
@@ -515,13 +516,31 @@ public class TSOSample : IDisposable
             if (TryGetFigure(out fig))
                 camera.SetCenter(fig.position);
         }
-        if (keysEnabled[keyCameraLoadOrSave] && keys[keyCameraLoadOrSave])
+        if (keysEnabled[keyCameraLoadOrSave1] && keys[keyCameraLoadOrSave1])
         {
-            keysEnabled[keyCameraLoadOrSave] = false;
+            keysEnabled[keyCameraLoadOrSave1] = false;
             if (keys[(int)Keys.ControlKey])
-                camera.Save(@"camera.xml");
-            else
-                camera = TSOCamera.Load(@"camera.xml");
+                camera.Save(@"camera1.xml");
+            else if (File.Exists(@"camera1.xml"))
+            {
+                camera = TSOCamera.Load(@"camera1.xml");
+                TSOFigure fig;
+                if (TryGetFigure(out fig))
+                    camera.SetCenter(fig.position);
+            }
+        }
+        if (keysEnabled[keyCameraLoadOrSave2] && keys[keyCameraLoadOrSave2])
+        {
+            keysEnabled[keyCameraLoadOrSave2] = false;
+            if (keys[(int)Keys.ControlKey])
+                camera.Save(@"camera2.xml");
+            else if (File.Exists(@"camera2.xml"))
+            {
+                camera = TSOCamera.Load(@"camera2.xml");
+                TSOFigure fig;
+                if (TryGetFigure(out fig))
+                    camera.SetCenter(fig.position);
+            }
         }
 
         float keyL = 0.0f;
