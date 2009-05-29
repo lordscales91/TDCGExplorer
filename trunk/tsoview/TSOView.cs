@@ -117,8 +117,15 @@ public class TSOSample : IDisposable
         }
     }
 
-    const float screenCenterX = 800 / 2.0f;
-    const float screenCenterY = 600 / 2.0f;
+    private float screenCenterX = 800 / 2.0f;
+    private float screenCenterY = 600 / 2.0f;
+
+    public void SetForm(TSOForm form)
+    {
+        this.form = form;
+        screenCenterX = form.ClientSize.Width / 2.0f;
+        screenCenterY = form.ClientSize.Height / 2.0f;
+    }
 
     public Vector3 ScreenToVector(float screenPointX, float screenPointY)
     {
@@ -297,7 +304,7 @@ public class TSOSample : IDisposable
 
     public bool InitializeApplication(TSOForm form)
     {
-        this.form = form;
+        SetForm(form);
 
         for (int i = 0; i < keysEnabled.Length; i++)
         {
@@ -857,9 +864,9 @@ public class TSOSample : IDisposable
 
 public class TSOForm : Form
 {
-    public TSOForm()
+    public TSOForm(TSOConfig config)
     {
-        this.ClientSize = new System.Drawing.Size(800, 600);
+        this.ClientSize = config.ClientSize;
         this.Text = "TSOView";
         this.AllowDrop = true;
     }
@@ -883,9 +890,16 @@ static class TSOView
     {
         Debug.Listeners.Add(new TextWriterTraceListener(Console.Out));
 
+        TSOConfig config;
+
+        if (File.Exists(@"config.xml"))
+            config = TSOConfig.Load(@"config.xml");
+        else
+            config = new TSOConfig();
+
         using (TSOSample sample = new TSOSample())
         using (TSOFigureForm fig_form = new TSOFigureForm())
-        using (TSOForm form = new TSOForm())
+        using (TSOForm form = new TSOForm(config))
         {
             sample.fig_form = fig_form;
 

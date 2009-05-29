@@ -58,6 +58,7 @@ public class TSOCamera
         return camera;
     }
 
+    /// <summary>ƒJƒƒ‰ˆÊ’u‚Æp¨‚ğ•âŠÔ‚·‚é</summary>
     public static TSOCamera Slerp(TSOCamera cam1, TSOCamera cam2, float ratio)
     {
         TSOCamera camera = new TSOCamera();
