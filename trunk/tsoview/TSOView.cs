@@ -45,8 +45,6 @@ public class TSOSample : IDisposable
     internal bool[] keys = new bool[256];
     internal bool[] keysEnabled = new bool[256];
 
-    // カメラ位置
-    internal Vector3 camTranslation = new Vector3(0.0f, 0.0f, 0.0f);
     // ライト方向
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
 
@@ -97,9 +95,7 @@ public class TSOSample : IDisposable
                 camera.Move(-dx, dy, 0.0f);
             break;
         case MouseButtons.Middle:
-            camTranslation.X -= dx*0.125f;
-            camTranslation.Y += dy*0.125f;
-            camera.SetTranslation(camTranslation);
+            camera.MoveView(-dx*0.125f, dy*0.125f);
             break;
         case MouseButtons.Right:
             camera.Move(0.0f, 0.0f, dy*0.125f);
