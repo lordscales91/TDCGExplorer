@@ -434,6 +434,27 @@ public class TSOSample : IDisposable
         return true;
     }
 
+    public void ClearFigureList()
+    {
+        foreach (TSOFigure fig in TSOFigureList)
+            fig.Dispose();
+        TSOFigureList.Clear();
+        SetFigureIndex(0);
+        GC.Collect(); // free meshes and textures.
+    }
+
+    public void RemoveSelectedFigure()
+    {
+        TSOFigure fig;
+        if (TryGetFigure(out fig))
+        {
+            fig.Dispose();
+            TSOFigureList.Remove(fig);
+            SetFigureIndex(figureIndex-1);
+            GC.Collect(); // free meshes and textures.
+        }
+    }
+
     internal bool motionEnabled = false;
     internal bool shadowEnabled = false;
     internal bool spriteEnabled = false;
@@ -480,11 +501,11 @@ public class TSOSample : IDisposable
         if (keysEnabled[keyDelete] && keys[keyDelete])
         {
             keysEnabled[keyDelete] = false;
-            foreach (TSOFigure fig in TSOFigureList)
-                fig.Dispose();
-            TSOFigureList.Clear();
-            SetFigureIndex(0);
-            GC.Collect(); // free meshes and textures.
+
+            if (keys[(int)Keys.ControlKey])
+                ClearFigureList();
+            else
+                RemoveSelectedFigure();
         }
         if (keysEnabled[keyCameraReset] && keys[keyCameraReset])
         {
