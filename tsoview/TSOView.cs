@@ -471,7 +471,7 @@ public class TSOSample : IDisposable
     internal int keyCameraReset = (int)Keys.D0;
     internal int keyCameraLoadOrSave1 = (int)Keys.D1;
     internal int keyCameraLoadOrSave2 = (int)Keys.D2;
-    internal int keyCameraSleap = (int)Keys.D3;
+    internal int keyCameraSlerp = (int)Keys.C;
 
     public void FrameMove()
     {
@@ -546,31 +546,41 @@ public class TSOSample : IDisposable
                     camera.SetCenter(fig.position);
             }
         }
-        if (keysEnabled[keyCameraSleap] && keys[keyCameraSleap])
+        if (keysEnabled[keyCameraSlerp] && keys[keyCameraSlerp])
         {
-            keysEnabled[keyCameraSleap] = false;
-            if (File.Exists(@"camera1.xml"))
+            keysEnabled[keyCameraSlerp] = false;
+            if (cam1 != null && cam2 != null)
             {
-                cam1 = TSOCamera.Load(@"camera1.xml");
+                camera = cam2;
+                cam_frame_index = 0;
+                cam1 = null;
+                cam2 = null;
             }
-            if (File.Exists(@"camera2.xml"))
+            else
             {
-                cam2 = TSOCamera.Load(@"camera2.xml");
+                if (File.Exists(@"camera1.xml"))
+                    cam1 = TSOCamera.Load(@"camera1.xml");
+                if (File.Exists(@"camera2.xml"))
+                    cam2 = TSOCamera.Load(@"camera2.xml");
+                if (cam1 != null && cam2 != null)
+                    camera = cam1;
+            }
+            {
+                TSOFigure fig;
+                if (TryGetFigure(out fig))
+                    camera.SetCenter(fig.position);
             }
         }
         if (cam1 != null && cam2 != null)
         {
-            camera = TSOCamera.Slerp(cam1, cam2, cam_frame_index/200.0f);
+            camera = TSOCamera.Slerp(cam1, cam2, cam_frame_index/120.0f);
             cam_frame_index++;
-            if (cam_frame_index >= 200)
+            if (cam_frame_index >= 120)
             {
                 cam_frame_index = 0;
-                camera = cam2;
-                TSOFigure fig;
-                if (TryGetFigure(out fig))
-                    camera.SetCenter(fig.position);
-                cam1 = null;
-                cam2 = null;
+                TSOCamera cam0 = cam2;
+                cam2 = cam1;
+                cam1 = cam0;
             }
         }
 
