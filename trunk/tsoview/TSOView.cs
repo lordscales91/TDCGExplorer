@@ -677,6 +677,7 @@ public class TSOSample : IDisposable
         sprite.End();
     }
 
+        /*
         int height = 24;
         for (int i = 0; i < keys.Length; i++)
         {
@@ -686,6 +687,7 @@ public class TSOSample : IDisposable
                 height += 24;
             }
         }
+        */
 
         device.EndScene();
         device.Present();
