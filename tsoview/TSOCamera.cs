@@ -9,7 +9,7 @@ using Microsoft.DirectX.Direct3D;
 public class TSOCamera
 {
     internal Vector3 center = Vector3.Empty;    //回転中心位置
-    internal Vector3 translation = Vector3.Empty;
+    internal Vector3 translation = Vector3.Empty;       //view座標上の位置
     internal Vector3 camPosL = new Vector3(0.0f, 0.0f, -10.0f); //カメラ位置
     internal Vector3 camDirDef = Vector3.Empty; //カメラ移動方向ベクトル
     internal float offsetZ = 0.0f;      //カメラ奥行オフセット値
@@ -139,7 +139,7 @@ public class TSOCamera
             camPosL += offsetZ * z;
         }
 
-        //ビュー行列更新
+        //view行列更新
         Vector3 posW = camPosL + center;
         {
             Matrix m = camPoseMat;
@@ -155,7 +155,7 @@ public class TSOCamera
         needUpdate = false;
     }
 
-    /// <summary>ビュー行列を取得</summary>
+    /// <summary>view行列を取得</summary>
     public Matrix GetViewMatrix()
     {
         return viewMat;
@@ -168,10 +168,18 @@ public class TSOCamera
         needUpdate = true;
     }
 
-    /// <summary>移動位置を設定</summary>
+    /// <summary>view座標上の位置を設定</summary>
     public void SetTranslation(Vector3 translation)
     {
         this.translation = translation;
+        needUpdate = true;
+    }
+
+    /// <summary>view座標上で移動</summary>
+    public void MoveView(float dx, float dy)
+    {
+        this.translation.X += dx;
+        this.translation.Y += dy;
         needUpdate = true;
     }
 
