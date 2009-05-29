@@ -493,6 +493,9 @@ public class TSOSample : IDisposable
         {
             keysEnabled[keyCameraReset] = false;
             camera.Reset();
+            TSOFigure fig;
+            if (TryGetFigure(out fig))
+                camera.SetCenter(fig.position);
         }
 
         float keyL = 0.0f;
