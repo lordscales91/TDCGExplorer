@@ -24,6 +24,7 @@ public class TSOFigureForm : Form
         this.ClientSize = new System.Drawing.Size(800, 600);
         this.Text = "TSOGrid";
         //this.AllowDrop = true;
+        this.FormClosing += new FormClosingEventHandler(form_FormClosing);
 
         btn1 = new Button();
         btn1.Location = new Point(10, 10);
@@ -75,6 +76,15 @@ public class TSOFigureForm : Form
         dg.EditMode = DataGridViewEditMode.EditOnEnter;
         dg.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         this.Controls.Add(dg);
+    }
+
+    protected void form_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        if (e.CloseReason != CloseReason.FormOwnerClosing)
+        {
+            this.Hide();
+            e.Cancel = true;
+        }
     }
 
     protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
