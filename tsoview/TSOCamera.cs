@@ -106,6 +106,48 @@ public class TSOCamera
         needUpdate = true;
     }
 
+    public void LookAt(Vector3 eye, Vector3 center, Vector3 up)
+    {
+        this.camPosL = center - eye;
+        {
+            // カメラ姿勢を更新
+            Vector3 z = Vector3.Normalize(-camPosL);
+            Vector3 y = up;
+            Vector3 x = Vector3.Normalize(Vector3.Cross(y, z));
+            y = Vector3.Normalize(Vector3.Cross(z, x));
+            {
+                Matrix m = Matrix.Identity;
+                m.M11 = x.X;
+                m.M12 = x.Y;
+                m.M13 = x.Z;
+                m.M21 = y.X;
+                m.M22 = y.Y;
+                m.M23 = y.Z;
+                m.M31 = z.X;
+                m.M32 = z.Y;
+                m.M33 = z.Z;
+                this.camPoseMat = m;
+            }
+        }
+        this.center = Vector3.Empty;
+        this.translation = eye;
+
+        //view行列更新
+        Vector3 posW = camPosL + center;
+        {
+            Matrix m = camPoseMat;
+            m.M41 = posW.X;
+            m.M42 = posW.Y;
+            m.M43 = posW.Z;
+            m.M44 = 1.0f;
+            viewMat = Matrix.Invert(m) * Matrix.Translation(-translation);
+        }
+    }
+    public void LookAt(Vector3 eye, Vector3 center)
+    {
+        LookAt(eye, center, new Vector3(0.0f, 1.0f, 0.0f));
+    }
+
     /// <summary>カメラ更新</summary>
     public void Update()
     {

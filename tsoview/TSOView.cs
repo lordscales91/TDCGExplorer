@@ -315,6 +315,8 @@ public class TSOSample : IDisposable
     private Matrix Light_View = Matrix.Identity;
     private Matrix Light_Projection = Matrix.Identity;
 
+    public TSOCamera Camera { get { return camera; } }
+
     public bool InitializeApplication(TSOForm form)
     {
         SetForm(form);
