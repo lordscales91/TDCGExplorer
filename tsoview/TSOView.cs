@@ -9,6 +9,7 @@ using System.IO;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
+using CSScriptLibrary;
 
 namespace TAHdecrypt
 {
@@ -39,7 +40,7 @@ public class TSOSample : IDisposable
     internal Surface dev_surface = null;
     internal Surface dev_zbuf = null;
 
-    internal List<TSOFigure> TSOFigureList = new List<TSOFigure>();
+    public List<TSOFigure> TSOFigureList = new List<TSOFigure>();
 
     // ÉLÅ[ì¸óÕÇï€éù
     internal bool[] keys = new bool[256];
@@ -883,6 +884,11 @@ public class TSOForm : Form
     }
 }
 
+public interface IScript
+{
+    void Hello(TSOSample sample);
+}
+
 static class TSOView
 {
     [STAThread]
@@ -907,6 +913,9 @@ static class TSOView
             {
                 foreach (string arg in args)
                     sample.LoadAnyFile(arg);
+
+                var script = CSScript.Load("Script.cs").CreateInstance("TAHdecrypt.Script").AlignToInterface<IScript>();
+                script.Hello(sample);
 
                 form.Show();
                 long wait = (long)(10000000.0f/60.0f);
