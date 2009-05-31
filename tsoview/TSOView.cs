@@ -14,6 +14,118 @@ using CSScriptLibrary;
 namespace TAHdecrypt
 {
 
+public class TSOCameraAction
+{
+    internal int frame_index;
+    internal Vector3 eye;
+    internal Vector3 center;
+
+    public TSOCameraAction(int frame_index, Vector3 eye, Vector3 center)
+    {
+        this.frame_index = frame_index;
+        this.eye = eye;
+        this.center = center;
+    }
+}
+
+public class TSOCameraMotion
+{
+    internal int frame_index = 0;
+    internal List<TSOCameraAction> action_list = new List<TSOCameraAction>();
+
+    public int Count
+    {
+        get {
+            return action_list.Count;
+        }
+    }
+
+    public int Length
+    {
+        get {
+            int len = 0;
+
+            foreach (TSOCameraAction action in action_list)
+            {
+                if (action.frame_index <= len)
+                    continue;
+                else
+                    len = action.frame_index;
+            }
+            return len;
+        }
+    }
+
+    public TSOCamera GetCamera()
+    {
+        return TSOCamera.Slerp(Cam1, Cam2, (float)frame_index/(float)Length);
+    }
+
+    public void NextFrame()
+    {
+        frame_index++;
+        if (frame_index >= Length)
+            frame_index = 0;
+    }
+
+    public TSOCameraAction FindAction1(int frame_index)
+    {
+        TSOCameraAction found = null;
+
+        foreach (TSOCameraAction action in action_list)
+        {
+            if (action.frame_index <= frame_index)
+                found = action;
+            else
+                break;
+        }
+        return found;
+    }
+
+    public TSOCameraAction FindAction2(int frame_index)
+    {
+        TSOCameraAction found = null;
+
+        foreach (TSOCameraAction action in action_list)
+        {
+            if (action.frame_index <= frame_index)
+                continue;
+            else
+            {
+                found = action;
+                break;
+            }
+        }
+        return found;
+    }
+
+    public TSOCamera Cam1
+    {
+        get {
+            TSOCamera cam = new TSOCamera();
+            TSOCameraAction act = FindAction1(frame_index);
+            cam.LookAt(act.eye, act.center);
+            return cam;
+        }
+    }
+
+    public TSOCamera Cam2
+    {
+        get {
+            TSOCamera cam = new TSOCamera();
+            TSOCameraAction act = FindAction2(frame_index);
+            cam.LookAt(act.eye, act.center);
+            return cam;
+        }
+    }
+
+    public void Add(int frame_index, Vector3 eye, Vector3 center)
+    {
+        TSOCameraAction act = new TSOCameraAction(frame_index, eye, center);
+        action_list.Add(act);
+    }
+}
+
 public class TSOSample : IDisposable
 {
     internal TSOFigureForm fig_form;
@@ -309,6 +421,7 @@ public class TSOSample : IDisposable
     private TSOCamera cam1 = null;
     private TSOCamera cam2 = null;
     private int cam_frame_index = 0;
+    private TSOCameraMotion camera_motion = new TSOCameraMotion();
     private Matrix world_matrix = Matrix.Identity;
     private Matrix Transform_View = Matrix.Identity;
     private Matrix Transform_Projection = Matrix.Identity;
@@ -316,6 +429,15 @@ public class TSOSample : IDisposable
     private Matrix Light_Projection = Matrix.Identity;
 
     public TSOCamera Camera { get { return camera; } }
+
+    public void LookAt(Vector3 eye, Vector3 center)
+    {
+        camera.LookAt(eye, center);
+    }
+    public void LookAt(int frame_index, Vector3 eye, Vector3 center)
+    {
+        camera_motion.Add(frame_index, eye, center);
+    }
 
     public bool InitializeApplication(TSOForm form)
     {
@@ -613,6 +735,11 @@ public class TSOSample : IDisposable
                 cam2 = cam1;
                 cam1 = cam0;
             }
+        }
+        if (camera_motion.Count != 0)
+        {
+            camera = camera_motion.GetCamera();
+            camera_motion.NextFrame();
         }
 
         float keyL = 0.0f;
