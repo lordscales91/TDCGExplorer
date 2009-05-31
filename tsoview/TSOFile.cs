@@ -134,7 +134,13 @@ namespace TAHdecrypt
                     bw.Write((int)0);
                 }
 
-                bw.Write(data, 0, data.Length);
+                int count = width * depth;
+                int index = width * height * depth - count;
+                for (int y = 0; y < height; y++)
+                {
+                    bw.Write(data, index, count);
+                    index -= count;
+                }
                 bw.Flush();
 
                 ms.Seek(0, SeekOrigin.Begin);
@@ -524,7 +530,7 @@ namespace TAHdecrypt
                         gs.Write(tv.skin_weight_indices);
                         gs.Write(tv.normal);
                         gs.Write(tv.u);
-                        gs.Write(1-tv.v);
+                        gs.Write(tv.v);
                     }
                 }
                 tm_sub.dm.UnlockVertexBuffer();
