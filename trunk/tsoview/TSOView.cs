@@ -253,6 +253,18 @@ public class TSOSample : IDisposable
         }
     }
 
+    public void LoadTMOFile(int frame_index, string source_file)
+    {
+        TSOFigure fig;
+        if (TryGetFigure(out fig))
+        {
+            int append_length = frame_index - fig.Tmo.frames.Length;
+            TMOFile motion = new TMOFile();
+            motion.Load(source_file);
+            fig.Tmo.SlerpFrameEndTo(motion, append_length);
+        }
+    }
+
     public void AddFigureFromPNGFile(string source_file)
     {
         List<TSOFigure> fig_list = LoadPNGFile(source_file);
