@@ -56,7 +56,7 @@ public class TSOFigureMotion
         tmo.Load(source_file);
 
         string name = Path.GetFileNameWithoutExtension(source_file);
-        Console.WriteLine("name {0}", name);
+        //Console.WriteLine("name {0}", name);
         tmomap[name] = tmo;
     }
 
@@ -536,19 +536,21 @@ public class TSOSample : IDisposable
     private Matrix Light_View = Matrix.Identity;
     private Matrix Light_Projection = Matrix.Identity;
 
-    public TSOCamera Camera { get { return camera; } }
-
-    public void LookAt(Vector3 eye, Vector3 center)
-    {
-        camera.LookAt(eye, center);
-    }
-    public void LookAt(int frame_index, Vector3 eye, Vector3 center)
+    public void Camera(int frame_index, Vector3 eye, Vector3 center)
     {
         camera_motion.Add(frame_index, eye, center);
     }
-    public void LookAt(int frame_index, Vector3 eye, Vector3 center, int interp_length)
+    public void Camera(int frame_index, Vector3 eye, Vector3 center, int interp_length)
     {
         camera_motion.Add(frame_index, eye, center, interp_length);
+    }
+    public void Camera(int frame_index, float eyex, float eyey, float eyez, float centerx, float centery, float centerz)
+    {
+        camera_motion.Add(frame_index, new Vector3(eyex, eyey, eyez), new Vector3(centerx, centery, centerz));
+    }
+    public void Camera(int frame_index, float eyex, float eyey, float eyez, float centerx, float centery, float centerz, int interp_length)
+    {
+        camera_motion.Add(frame_index, new Vector3(eyex, eyey, eyez), new Vector3(centerx, centery, centerz), interp_length);
     }
 
     public bool InitializeApplication(TSOForm form)

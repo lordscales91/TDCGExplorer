@@ -19,9 +19,9 @@ public class Script
         sample.Motion(120, @"GRABIA_XP_N002");
         sample.Motion(180, @"GRABIA_XP_N000");
 
-        sample.LookAt(  0, new Vector3(0.0f, +10.0f, 0.0f), new Vector3(0.0f, +20.0f, -40.0f));
-        sample.LookAt( 60, new Vector3(0.0f, +10.0f, 0.0f), new Vector3(0.0f, +20.0f, -20.0f));
-        sample.LookAt(180, new Vector3(0.0f, +10.0f, 0.0f), new Vector3(0.0f, +20.0f, -40.0f), 60);
+        sample.Camera(  0, 0.0f, +10.0f, 0.0f, 0.0f, +20.0f, -40.0f);
+        sample.Camera( 60, 0.0f, +10.0f, 0.0f, 0.0f, +20.0f, -20.0f);
+        sample.Camera(180, 0.0f, +10.0f, 0.0f, 0.0f, +20.0f, -40.0f, 60);
     }
 }
 }
