@@ -31,7 +31,8 @@ public class TSOCameraAction
 public class TSOCameraMotion
 {
     internal int frame_index = 0;
-    internal List<TSOCameraAction> action_list = new List<TSOCameraAction>();
+    internal LinkedList<TSOCameraAction> action_list = new LinkedList<TSOCameraAction>();
+    internal LinkedListNode<TSOCameraAction> current_action = null;
 
     public int Count
     {
@@ -43,86 +44,73 @@ public class TSOCameraMotion
     public int Length
     {
         get {
-            int len = 0;
-
-            foreach (TSOCameraAction action in action_list)
-            {
-                if (action.frame_index <= len)
-                    continue;
-                else
-                    len = action.frame_index;
-            }
-            return len;
+            if (action_list.Last != null)
+                return action_list.Last.Value.frame_index;
+            else
+                return 0;
         }
     }
 
     public TSOCamera GetCamera()
     {
-        return TSOCamera.Slerp(Cam1, Cam2, (float)frame_index/(float)Length);
+        TSOCamera cam1 = new TSOCamera();
+        TSOCameraAction act1 = FindAction1();
+        cam1.LookAt(act1.eye, act1.center);
+        return cam1;
+        /*
+        TSOCamera cam2 = new TSOCamera();
+        TSOCameraAction act2 = FindAction2();
+        cam2.LookAt(act2.eye, act2.center);
+        return TSOCamera.Slerp(cam1, cam2, (float)frame_index/(float)Length);
+        */
     }
 
     public void NextFrame()
     {
         frame_index++;
-        if (frame_index >= Length)
+        if (current_action.Next != null)
+        {
+            if (current_action.Next.Value.frame_index <= frame_index)
+                current_action = current_action.Next;
+        } else {
             frame_index = 0;
-    }
-
-    public TSOCameraAction FindAction1(int frame_index)
-    {
-        TSOCameraAction found = null;
-
-        foreach (TSOCameraAction action in action_list)
-        {
-            if (action.frame_index <= frame_index)
-                found = action;
-            else
-                break;
-        }
-        return found;
-    }
-
-    public TSOCameraAction FindAction2(int frame_index)
-    {
-        TSOCameraAction found = null;
-
-        foreach (TSOCameraAction action in action_list)
-        {
-            if (action.frame_index <= frame_index)
-                continue;
-            else
-            {
-                found = action;
-                break;
-            }
-        }
-        return found;
-    }
-
-    public TSOCamera Cam1
-    {
-        get {
-            TSOCamera cam = new TSOCamera();
-            TSOCameraAction act = FindAction1(frame_index);
-            cam.LookAt(act.eye, act.center);
-            return cam;
+            current_action = action_list.First;
         }
     }
 
-    public TSOCamera Cam2
+    public TSOCameraAction FindAction1()
     {
-        get {
-            TSOCamera cam = new TSOCamera();
-            TSOCameraAction act = FindAction2(frame_index);
-            cam.LookAt(act.eye, act.center);
-            return cam;
-        }
+        return current_action.Value;
+    }
+
+    public TSOCameraAction FindAction2()
+    {
+        if (current_action.Next != null)
+            return current_action.Next.Value;
+        else
+            return action_list.First.Value;
     }
 
     public void Add(int frame_index, Vector3 eye, Vector3 center)
     {
-        TSOCameraAction act = new TSOCameraAction(frame_index, eye, center);
-        action_list.Add(act);
+        LinkedListNode<TSOCameraAction> act = action_list.First;
+        LinkedListNode<TSOCameraAction> new_act = new LinkedListNode<TSOCameraAction>(new TSOCameraAction(frame_index, eye, center));
+        LinkedListNode<TSOCameraAction> found = null;
+
+        while (act != null)
+        {
+            if (act.Value.frame_index <= frame_index)
+                found = act;
+            else
+                break;
+            act = act.Next;
+        }
+        if (found != null)
+            action_list.AddAfter(found, new_act);
+        else {
+            action_list.AddFirst(new_act);
+            current_action = new_act;
+        }
     }
 }
 
