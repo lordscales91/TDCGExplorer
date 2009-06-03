@@ -52,17 +52,25 @@ public class TSOFigureMotion
 
     public void LoadTMOFile(string source_file)
     {
-        TMOFile tmo = new TMOFile();
-        tmo.Load(source_file);
+        if (File.Exists(source_file))
+        {
+            TMOFile tmo = new TMOFile();
+            tmo.Load(source_file);
 
-        string name = Path.GetFileNameWithoutExtension(source_file);
-        //Console.WriteLine("name {0}", name);
-        tmomap[name] = tmo;
+            string name = Path.GetFileNameWithoutExtension(source_file);
+            tmomap[name] = tmo;
+        } else {
+            Console.WriteLine("Error: file not found in LoadTMOFile: " + source_file);
+        }
     }
 
     public TMOFile FindTMOFile(string name)
     {
-        return tmomap[name];
+        TMOFile tmo;
+        if (tmomap.TryGetValue(name, out tmo))
+            return tmo;
+        else
+            return null;
     }
 
     public TMOFile GetTMOFile()
@@ -854,7 +862,7 @@ public class TSOSample : IDisposable
         {
             TMOFile tmo = figure_motion.GetTMOFile();
             TSOFigure fig;
-            if (TryGetFigure(out fig) && tmo != fig.Tmo)
+            if (tmo != null && TryGetFigure(out fig) && tmo != fig.Tmo)
             {
                 fig.Tmo = tmo;
                 fig.UpdateNodeMapAndBoneMatrices();
