@@ -14,6 +14,105 @@ using CSScriptLibrary;
 namespace TAHdecrypt
 {
 
+public class TSOFigureAction
+{
+    internal int frame_index;
+    internal string motion_name;
+
+    public TSOFigureAction(int frame_index, string motion_name)
+    {
+        this.frame_index = frame_index;
+        this.motion_name = motion_name;
+    }
+}
+
+public class TSOFigureMotion
+{
+    internal int frame_index = 0;
+    internal LinkedList<TSOFigureAction> action_list = new LinkedList<TSOFigureAction>();
+    internal LinkedListNode<TSOFigureAction> current_action = null;
+    internal Dictionary<string, TMOFile> tmomap = new Dictionary<string, TMOFile>();
+
+    public int Count
+    {
+        get {
+            return action_list.Count;
+        }
+    }
+
+    public int Length
+    {
+        get {
+            if (action_list.Last != null)
+                return action_list.Last.Value.frame_index;
+            else
+                return 0;
+        }
+    }
+
+    public void LoadTMOFile(string source_file)
+    {
+        TMOFile tmo = new TMOFile();
+        tmo.Load(source_file);
+
+        string name = Path.GetFileNameWithoutExtension(source_file);
+        Console.WriteLine("name {0}", name);
+        tmomap[name] = tmo;
+    }
+
+    public TMOFile FindTMOFile(string name)
+    {
+        return tmomap[name];
+    }
+
+    public TMOFile GetTMOFile()
+    {
+        TSOFigureAction act1 = FindAction1();
+        TMOFile tmo1 = FindTMOFile(act1.motion_name);
+        return tmo1;
+    }
+
+    public void NextFrame()
+    {
+        frame_index++;
+        if (current_action.Next != null)
+        {
+            if (current_action.Next.Value.frame_index <= frame_index)
+                current_action = current_action.Next;
+        } else {
+            frame_index = 0;
+            current_action = action_list.First;
+        }
+    }
+
+    public TSOFigureAction FindAction1()
+    {
+        return current_action.Value;
+    }
+
+    public void Add(int frame_index, string motion_name)
+    {
+        LinkedListNode<TSOFigureAction> act = action_list.First;
+        LinkedListNode<TSOFigureAction> new_act = new LinkedListNode<TSOFigureAction>(new TSOFigureAction(frame_index, motion_name));
+        LinkedListNode<TSOFigureAction> found = null;
+
+        while (act != null)
+        {
+            if (act.Value.frame_index <= frame_index)
+                found = act;
+            else
+                break;
+            act = act.Next;
+        }
+        if (found != null)
+            action_list.AddAfter(found, new_act);
+        else {
+            action_list.AddFirst(new_act);
+            current_action = new_act;
+        }
+    }
+}
+
 public class TSOCameraAction
 {
     internal int frame_index;
@@ -373,16 +472,14 @@ public class TSOSample : IDisposable
         }
     }
 
-    public void LoadTMOFile(int frame_index, string source_file)
+    public void LoadMotion(string source_file)
     {
-        TSOFigure fig;
-        if (TryGetFigure(out fig))
-        {
-            int append_length = frame_index - fig.Tmo.frames.Length;
-            TMOFile motion = new TMOFile();
-            motion.Load(source_file);
-            fig.Tmo.SlerpFrameEndTo(motion, append_length);
-        }
+        figure_motion.LoadTMOFile(source_file);
+    }
+
+    public void Motion(int frame_index, string motion_name)
+    {
+        figure_motion.Add(frame_index, motion_name);
     }
 
     public void AddFigureFromPNGFile(string source_file)
@@ -428,8 +525,11 @@ public class TSOSample : IDisposable
     private TSOCamera camera = new TSOCamera();
     private TSOCamera cam1 = null;
     private TSOCamera cam2 = null;
+
     private int cam_frame_index = 0;
     private TSOCameraMotion camera_motion = new TSOCameraMotion();
+    private TSOFigureMotion figure_motion = new TSOFigureMotion();
+
     private Matrix world_matrix = Matrix.Identity;
     private Matrix Transform_View = Matrix.Identity;
     private Matrix Transform_Projection = Matrix.Identity;
@@ -747,6 +847,17 @@ public class TSOSample : IDisposable
                 cam2 = cam1;
                 cam1 = cam0;
             }
+        }
+        if (figure_motion.Count != 0)
+        {
+            TMOFile tmo = figure_motion.GetTMOFile();
+            TSOFigure fig;
+            if (TryGetFigure(out fig) && tmo != fig.Tmo)
+            {
+                fig.Tmo = tmo;
+                fig.UpdateNodeMapAndBoneMatrices();
+            }
+            figure_motion.NextFrame();
         }
         if (camera_motion.Count != 0)
         {
