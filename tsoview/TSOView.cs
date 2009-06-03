@@ -19,12 +19,22 @@ public class TSOCameraAction
     internal int frame_index;
     internal Vector3 eye;
     internal Vector3 center;
+    internal int interp_length;
 
-    public TSOCameraAction(int frame_index, Vector3 eye, Vector3 center)
+    public TSOCameraAction(int frame_index, Vector3 eye, Vector3 center, int interp_length)
     {
         this.frame_index = frame_index;
         this.eye = eye;
         this.center = center;
+        this.interp_length = interp_length;
+    }
+
+    //•âŠÔ‚ðŠJŽn‚·‚éŽž‚ð“¾‚Ü‚·B
+    public int interp_begin
+    {
+        get {
+            return frame_index - interp_length;
+        }
     }
 }
 
@@ -53,16 +63,22 @@ public class TSOCameraMotion
 
     public TSOCamera GetCamera()
     {
-        TSOCamera cam1 = new TSOCamera();
         TSOCameraAction act1 = FindAction1();
-        cam1.LookAt(act1.eye, act1.center);
-        return cam1;
-        /*
-        TSOCamera cam2 = new TSOCamera();
         TSOCameraAction act2 = FindAction2();
-        cam2.LookAt(act2.eye, act2.center);
-        return TSOCamera.Slerp(cam1, cam2, (float)frame_index/(float)Length);
-        */
+
+        TSOCamera cam1 = new TSOCamera();
+        cam1.LookAt(act1.eye, act1.center);
+
+        if (act2 != null && frame_index >= act2.interp_begin)
+        {
+            TSOCamera cam2 = new TSOCamera();
+            cam2.LookAt(act2.eye, act2.center);
+            int frame_delta = frame_index - act2.interp_begin;
+            //Console.WriteLine("index {0} delta {1}", frame_index, frame_delta);
+            return TSOCamera.Slerp(cam1, cam2, (float)frame_delta/(float)act2.interp_length);
+        } else {
+            return cam1;
+        }
     }
 
     public void NextFrame()
@@ -88,13 +104,17 @@ public class TSOCameraMotion
         if (current_action.Next != null)
             return current_action.Next.Value;
         else
-            return action_list.First.Value;
+            return null;
     }
 
     public void Add(int frame_index, Vector3 eye, Vector3 center)
     {
+        Add(frame_index, eye, center, 0);
+    }
+    public void Add(int frame_index, Vector3 eye, Vector3 center, int interp_length)
+    {
         LinkedListNode<TSOCameraAction> act = action_list.First;
-        LinkedListNode<TSOCameraAction> new_act = new LinkedListNode<TSOCameraAction>(new TSOCameraAction(frame_index, eye, center));
+        LinkedListNode<TSOCameraAction> new_act = new LinkedListNode<TSOCameraAction>(new TSOCameraAction(frame_index, eye, center, interp_length));
         LinkedListNode<TSOCameraAction> found = null;
 
         while (act != null)
@@ -425,6 +445,10 @@ public class TSOSample : IDisposable
     public void LookAt(int frame_index, Vector3 eye, Vector3 center)
     {
         camera_motion.Add(frame_index, eye, center);
+    }
+    public void LookAt(int frame_index, Vector3 eye, Vector3 center, int interp_length)
+    {
+        camera_motion.Add(frame_index, eye, center, interp_length);
     }
 
     public bool InitializeApplication(TSOForm form)
