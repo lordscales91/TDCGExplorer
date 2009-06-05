@@ -201,6 +201,16 @@ public class TSOSample : IDisposable
         SetFigureIndex(idx);
     }
 
+    public TSOFigure GetSelectedFigure()
+    {
+        TSOFigure fig;
+        if (TSOFigureList.Count == 0)
+            fig = null;
+        else
+            fig = TSOFigureList[figureIndex];
+        return fig;
+    }
+
     public TSOFigure GetSelectedOrCreateFigure()
     {
         TSOFigure fig;
@@ -240,6 +250,9 @@ public class TSOSample : IDisposable
     public void NextTSOFigure()
     {
         SetFigureIndex(figureIndex+1);
+        TSOFigure fig;
+        if (TryGetFigure(out fig))
+            camera.SetCenter(fig.Center);
     }
 
     public void LoadTMOFile(string source_file)
@@ -249,7 +262,7 @@ public class TSOSample : IDisposable
         {
             fig.LoadTMOFile(source_file);
             fig.UpdateNodeMapAndBoneMatrices();
-            camera.SetCenter(fig.position);
+            camera.SetCenter(fig.Center);
         }
     }
 
@@ -291,7 +304,7 @@ public class TSOSample : IDisposable
         {
             TSOFigure fig;
             if (TryGetFigure(out fig))
-                camera.SetCenter(fig.position);
+                camera.SetCenter(fig.Center);
         }
     }
 
@@ -539,9 +552,6 @@ public class TSOSample : IDisposable
         {
             keysEnabled[keyFigure] = false;
             NextTSOFigure();
-            TSOFigure fig;
-            if (TryGetFigure(out fig))
-                camera.SetCenter(fig.position);
         }
         if (keysEnabled[keyDelete] && keys[keyDelete])
         {
@@ -558,7 +568,7 @@ public class TSOSample : IDisposable
             camera.Reset();
             TSOFigure fig;
             if (TryGetFigure(out fig))
-                camera.SetCenter(fig.position);
+                camera.SetCenter(fig.Center);
         }
         if (keysEnabled[keyCameraLoadOrSave1] && keys[keyCameraLoadOrSave1])
         {
@@ -570,7 +580,7 @@ public class TSOSample : IDisposable
                 camera = TSOCamera.Load(@"camera1.xml");
                 TSOFigure fig;
                 if (TryGetFigure(out fig))
-                    camera.SetCenter(fig.position);
+                    camera.SetCenter(fig.Center);
             }
         }
         if (keysEnabled[keyCameraLoadOrSave2] && keys[keyCameraLoadOrSave2])
@@ -583,7 +593,7 @@ public class TSOSample : IDisposable
                 camera = TSOCamera.Load(@"camera2.xml");
                 TSOFigure fig;
                 if (TryGetFigure(out fig))
-                    camera.SetCenter(fig.position);
+                    camera.SetCenter(fig.Center);
             }
         }
         if (keysEnabled[keyCameraSlerp] && keys[keyCameraSlerp])
@@ -608,7 +618,7 @@ public class TSOSample : IDisposable
             {
                 TSOFigure fig;
                 if (TryGetFigure(out fig))
-                    camera.SetCenter(fig.position);
+                    camera.SetCenter(fig.Center);
             }
         }
         if (keysEnabled[keyFigureForm] && keys[keyFigureForm])
