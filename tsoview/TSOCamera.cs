@@ -6,6 +6,9 @@ using System.Xml.Serialization;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
+namespace TAHdecrypt
+{
+
 public class TSOCamera
 {
     internal Vector3 center = Vector3.Empty;    //âÒì]íÜêSà íu
@@ -245,4 +248,5 @@ public class TSOCamera
         offsetZ = 0.0f;
         camZRotDef = 0.0f;
     }
+}
 }
