@@ -17,7 +17,13 @@ public class TSOFigure : IDisposable
 {
     internal List<TSOFile> TSOList = new List<TSOFile>();
     internal TMOFile tmo = null;
-    internal Vector3 position = Vector3.Empty; //中心点
+    internal Vector3 center = Vector3.Empty; //中心点
+    internal Vector3 translation = Vector3.Empty; //位置
+
+    public Vector3 Center
+    {
+        get { return center; }
+    }
 
     public TMOFile Tmo
     {
@@ -30,6 +36,18 @@ public class TSOFigure : IDisposable
     }
 
     internal Dictionary<TSONode, TMONode> nodemap;
+
+    public void Move(float dx, float dy, float dz)
+    {
+        Move(new Vector3(dx, dy, dz));
+    }
+
+    public void Move(Vector3 delta)
+    {
+        center += delta;
+        translation += delta;
+        UpdateBoneMatrices(true);
+    }
 
     //指定位置にあるtsoの位置を入れ替えます。描画順を変更します。
     public void SwapAt(int aidx, int bidx)
@@ -51,9 +69,7 @@ public class TSOFigure : IDisposable
         foreach (TSOFile tso in TSOList)
             AddNodeMap(tso);
 
-        TMOFrame tmo_frame = GetTMOFrame();
-        foreach (TSOFile tso in TSOList)
-            UpdateBoneMatrices(tso, tmo_frame);
+        UpdateBoneMatrices(true);
     }
 
     //TSOFileに対するnodemapを追加します。
@@ -89,7 +105,7 @@ public class TSOFigure : IDisposable
         if (tmo.nodemap.TryGetValue("|W_Hips", out tmo_node))
         {
             Matrix m = tmo_node.frame_matrices[0].m;
-            position = new Vector3(m.M41, m.M42, -m.M43);
+            center = new Vector3(m.M41, m.M42, -m.M43) + translation;
         }
     }
 
@@ -126,10 +142,10 @@ public class TSOFigure : IDisposable
     }
 
     //bone行列を更新します。
-    //ただしframe indexに変更なければ更新しません。
-    public void UpdateBoneMatrices()
+    //forcedがfalseの場合frame indexに変更なければ更新しません。
+    public void UpdateBoneMatrices(bool forced)
     {
-        if (frame_index == current_frame_index)
+        if (!forced && frame_index == current_frame_index)
             return;
         current_frame_index = frame_index;
 
@@ -137,10 +153,14 @@ public class TSOFigure : IDisposable
         foreach (TSOFile tso in TSOList)
             UpdateBoneMatrices(tso, tmo_frame);
     }
+    public void UpdateBoneMatrices()
+    {
+        UpdateBoneMatrices(false);
+    }
 
     protected void UpdateBoneMatrices(TSOFile tso, TMOFrame tmo_frame)
     {
-        matrixStack.LoadMatrix(Matrix.Identity);
+        matrixStack.LoadMatrix(Matrix.Translation(translation));
         UpdateBoneMatrices(tso.nodes[0], tmo_frame);
     }
 
