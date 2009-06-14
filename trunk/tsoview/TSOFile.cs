@@ -332,33 +332,24 @@ namespace TAHdecrypt
             v.skin_weight_indices = BitConverter.ToUInt32(idx, 0);
         }
 
-        public int Load(string source_file)
+        public void Load(string source_file)
         {
             this.source_file = source_file;
 
             Load(File.OpenRead(source_file));
-            return 0;
         }
 
-        public int Load(Stream source_stream)
+        public void Load(Stream source_stream)
         {
-            try
-            {
-                reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
-            }
-            catch (Exception)
-            {
-                Console.WriteLine("Error: This file cannot be read or does not exist.");
-                return -1;
-            }
+            reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
 
-            byte[] file_header = new byte[4];
-            file_header = reader.ReadBytes(4);
+            byte[] magic = reader.ReadBytes(4);
 
-            if (! System.Text.Encoding.ASCII.GetString(file_header).Contains("TSO1"))
-            {
-                Console.WriteLine("Error: This seems not to be a TSO file.");
-            }
+            if(magic[0] != (byte)'T'
+            || magic[1] != (byte)'S'
+            || magic[2] != (byte)'O'
+            || magic[3] != (byte)'1')
+                throw new Exception("File is not TSO");
 
             int node_count = reader.ReadInt32();
             nodes = new TSONode[node_count];
@@ -426,7 +417,6 @@ namespace TAHdecrypt
                 //Console.WriteLine("mesh name {0} len {1}", mesh.name, mesh.sub_meshes.Length);
             }
             reader.Close();
-            return 0;
         }
 
         public TSOScript read_script()
