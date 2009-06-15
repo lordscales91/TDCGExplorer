@@ -8,6 +8,10 @@ class Tso < ActiveRecord::Base
   belongs_to :tah
   acts_as_list :scope => :tah
 
+  has_many :tso_col_bases, :dependent => :destroy
+  has_many :col_bases, :through => :tso_col_bases
+  after_update :update_col_bases
+
   def before_save
     self.tah_hash = '%08X' % TAHHash.calc(path) if defined? TAHHash
     self.tah_hash ||= ''
@@ -16,7 +20,12 @@ class Tso < ActiveRecord::Base
   end
 
   def collisions_and_duplicates
-    @_collisions_and_duplicates ||= self.class.find(:all, :conditions => ['tah_hash = ? and id <> ?', tah_hash, id])
+    @_collisions_and_duplicates ||=
+      begin
+        ary = self.class.find(:all, :conditions => ['tah_hash = ?', tah_hash])
+        ary.delete(self)
+        ary
+      end
   end
 
   def collisions
@@ -82,6 +91,40 @@ Z ŽèŽ‚¿‚Ì¬•¨
 
   def row_name
     row ? row + ":" + ROW_NAMES[row] : nil
+  end
+
+  def col_basis_path
+    case path
+    when %r[data/bgmodel/]
+      nil
+    when %r[data/model/]
+      path.sub(/\d{2}\.tso$/, '00.tso')
+    end
+  end
+
+  def find_col_bases
+    @_col_bases ||=
+      begin
+        ary = self.class.find(:all, :conditions => ['path = ?', col_basis_path])
+        ary.delete(self)
+        ary
+      end
+  end
+
+  def update_col_bases
+    old_col_bases = col_bases
+    new_col_bases = find_col_bases
+    old_ids = old_col_bases.map(&:id)
+    new_ids = new_col_bases.map(&:id)
+    add_ids = new_ids - old_ids
+    sub_ids = old_ids - new_ids
+    sub_ids.each do |col_basis_id|
+      tso_col_basis = tso_col_bases.detect { |tc| tc.col_basis_id == col_basis_id }
+      tso_col_basis.destroy
+    end
+    add_ids.each do |col_basis_id|
+      tso_col_basis = tso_col_bases.create(:col_basis_id => col_basis_id)
+    end
   end
 
   class Search

@@ -95,3 +95,26 @@
   </tbody>
 </table>
 <%-end-%>
+
+<%-unless @tah.col_bases.empty?-%>
+<p>
+  <b><%= _'Tah|Col bases' %>:</b>
+</p>
+<table class="list tahs">
+  <thead>
+  <tr>
+    <th><%= _'Tah|Path' %></th>
+    <th></th>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for tah in @tah.col_bases %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=h tah.path %></td>
+    <td><%= link_to _('Show'), tah %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+<%-end-%>

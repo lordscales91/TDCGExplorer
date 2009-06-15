@@ -23,6 +23,10 @@ class Tah < ActiveRecord::Base
     row_names.join('/')
   end
 
+  def col_bases
+    tsos.map(&:col_bases).flatten.uniq.map(&:tah).uniq
+  end
+
   class Search
     attr_accessor :path
 
