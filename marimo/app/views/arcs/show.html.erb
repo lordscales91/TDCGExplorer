@@ -165,3 +165,32 @@
   </tbody>
 </table>
 <%-end-%>
+
+<%-unless @arc.col_bases.empty?-%>
+<p>
+  <b><%= _'Arc|Col bases' %>:</b>
+</p>
+<table class="list arcs">
+  <thead>
+  <tr>
+    <th><%= _'Arc|Code' %></th>
+    <th><%= _'Arc|Extname' %></th>
+    <th><%= _'Arc|Location' %></th>
+    <th><%= _'Arc|Summary' %></th>
+    <th><%= _'Arc|Origname' %></th>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for arc in @arc.col_bases %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=link_to h(arc.code), arc %></td>
+    <td><%=h arc.extname %></td>
+    <td><%=h arc.location %></td>
+    <td><%=h arc.summary %></td>
+    <td><%=h arc.origname %></td>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+<%-end-%>
