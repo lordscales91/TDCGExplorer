@@ -13,20 +13,37 @@ describe Tso, "row" do
   end
 end
 
-describe Tso, "col_base_path" do
+describe Tso, "col_basis_path" do
   fixtures :tsos, :tso_col_bases
 
   it "one" do
-    tsos(:one).col_base_path.should == 'data/model/N400BODY_A00.tso'
+    tsos(:one).col_basis_path.should == 'data/model/N400BODY_A00.tso'
   end
 
   it "two" do
-    tsos(:two).col_base_path.should == 'data/model/N400BODY_A00.tso'
+    tsos(:two).col_basis_path.should == 'data/model/N400BODY_A00.tso'
   end
 
   it "”wŒi‚È‚ç nil ‚ð“¾‚é" do
     tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso')
-    tso.col_base_path.should be_nil
+    tso.col_basis_path.should be_nil
+  end
+end
+
+describe Tso, "find_col_bases" do
+  fixtures :tsos, :tso_col_bases
+
+  it "one" do
+    tsos(:one).find_col_bases.should be_empty
+  end
+
+  it "two" do
+    tsos(:two).find_col_bases.should == [ tsos(:one) ]
+  end
+
+  it "”wŒi‚È‚ç nil ‚ð“¾‚é" do
+    tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso')
+    tso.find_col_bases.should be_empty
   end
 end
 

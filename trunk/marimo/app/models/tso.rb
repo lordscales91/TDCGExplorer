@@ -87,7 +87,7 @@ Z è‚¿‚Ì¬•¨
     row ? row + ":" + ROW_NAMES[row] : nil
   end
 
-  def col_base_path
+  def col_basis_path
     case path
     when %r[data/bgmodel/]
       nil
@@ -97,7 +97,7 @@ Z è‚¿‚Ì¬•¨
   end
 
   def find_col_bases
-    @_col_bases ||= self.class.find(:all, :conditions => ['path = ? and id <> ?', col_base_path, id])
+    @_col_bases ||= self.class.find(:all, :conditions => ['path = ? and id <> ?', col_basis_path, id])
   end
 
   class Search
