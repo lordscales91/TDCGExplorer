@@ -8,6 +8,9 @@ class Tso < ActiveRecord::Base
   belongs_to :tah
   acts_as_list :scope => :tah
 
+  has_many :tso_col_bases, :dependent => :destroy
+  has_many :col_bases, :through => :tso_col_bases
+
   def before_save
     self.tah_hash = '%08X' % TAHHash.calc(path) if defined? TAHHash
     self.tah_hash ||= ''
@@ -93,7 +96,7 @@ Z è‚¿‚Ì¬•¨
     end
   end
 
-  def col_bases
+  def find_col_bases
     @_col_bases ||= self.class.find(:all, :conditions => ['path = ? and id <> ?', col_base_path, id])
   end
 
