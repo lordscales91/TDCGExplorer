@@ -20,7 +20,12 @@ class Tso < ActiveRecord::Base
   end
 
   def collisions_and_duplicates
-    @_collisions_and_duplicates ||= self.class.find(:all, :conditions => ['tah_hash = ? and id <> ?', tah_hash, id])
+    @_collisions_and_duplicates ||=
+      begin
+        ary = self.class.find(:all, :conditions => ['tah_hash = ?', tah_hash])
+        ary.delete(self)
+        ary
+      end
   end
 
   def collisions
@@ -98,7 +103,12 @@ Z è‚¿‚Ì¬•¨
   end
 
   def find_col_bases
-    @_col_bases ||= self.class.find(:all, :conditions => ['path = ? and id <> ?', col_basis_path, id])
+    @_col_bases ||=
+      begin
+        ary = self.class.find(:all, :conditions => ['path = ?', col_basis_path])
+        ary.delete(self)
+        ary
+      end
   end
 
   def update_col_bases
