@@ -84,6 +84,19 @@ Z è‚¿‚Ì¬•¨
     row ? row + ":" + ROW_NAMES[row] : nil
   end
 
+  def col_base_path
+    case path
+    when %r[data/bgmodel/]
+      nil
+    when %r[data/model/]
+      path.sub(/\d{2}\.tso$/, '00.tso')
+    end
+  end
+
+  def col_bases
+    @_col_bases ||= self.class.find(:all, :conditions => ['path = ? and id <> ?', col_base_path, id])
+  end
+
   class Search
     attr_accessor :path, :tah_hash, :md5
 
