@@ -52,6 +52,10 @@ class Arc < ActiveRecord::Base
     row_names.join('/')
   end
 
+  def col_bases
+    tahs.map(&:col_bases).flatten.uniq.map(&:arc).uniq
+  end
+
   def relationship_attributes=(relationship_attributes)
     relationship_attributes.each do |attributes|
       unless id = attributes.delete(:id)
