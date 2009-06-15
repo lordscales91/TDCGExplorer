@@ -14,7 +14,7 @@ describe Tso, "row" do
 end
 
 describe Tso, "col_base_path" do
-  fixtures :tsos
+  fixtures :tsos, :tso_col_bases
 
   it "one" do
     tsos(:one).col_base_path.should == 'data/model/N400BODY_A00.tso'
@@ -31,7 +31,7 @@ describe Tso, "col_base_path" do
 end
 
 describe Tso, "col_bases" do
-  fixtures :tsos
+  fixtures :tsos, :tso_col_bases
 
   it "one" do
     tsos(:one).col_bases.should be_empty
