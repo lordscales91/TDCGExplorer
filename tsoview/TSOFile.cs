@@ -416,7 +416,6 @@ namespace TAHdecrypt
 
                 //Console.WriteLine("mesh name {0} len {1}", mesh.name, mesh.sub_meshes.Length);
             }
-            reader.Close();
         }
 
         public TSOScript read_script()
