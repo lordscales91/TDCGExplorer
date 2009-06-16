@@ -13,7 +13,7 @@ class Tso < ActiveRecord::Base
   after_update :update_col_bases
 
   def before_save
-    self.tah_hash = '%08X' % TAHHash.calc(path) if defined? TAHHash
+    self.tah_hash = '%08X' % TAHHash.calc(path) if defined?(TAHHash)
     self.tah_hash ||= ''
     self.md5 ||= ''
     nil
@@ -29,11 +29,13 @@ class Tso < ActiveRecord::Base
   end
 
   def collisions
-    collisions_and_duplicates.reject { |t| t.path.downcase == path.downcase }
+    path_downcase = path.downcase
+    collisions_and_duplicates.reject { |t| t.path.downcase == path_downcase }
   end
 
   def duplicates
-    collisions_and_duplicates.select { |t| t.path.downcase == path.downcase }
+    path_downcase = path.downcase
+    collisions_and_duplicates.select { |t| t.path.downcase == path_downcase }
   end
 
   def row
@@ -103,12 +105,15 @@ Z è‚¿‚Ì¬•¨
   end
 
   def find_col_bases
-    @_col_bases ||=
-      begin
-        ary = self.class.find(:all, :conditions => ['path = ?', col_basis_path])
-        ary.delete(self)
-        ary
-      end
+    return [ ] unless defined?(TAHHash)
+    path = col_basis_path
+    return [ ] if path.nil?
+    tah_hash = '%08X' % TAHHash.calc(path)
+    ary = self.class.find(:all, :conditions => ['tah_hash = ?', tah_hash])
+    path_downcase = path.downcase
+    ary = ary.select { |t| t.path.downcase == path_downcase }
+    ary.delete(self)
+    ary
   end
 
   def update_col_bases
@@ -135,7 +140,7 @@ Z è‚¿‚Ì¬•¨
         send("#{name}=", value)
       end if attributes
       self.path ||= ''
-      self.tah_hash = '%08X' % TAHHash.calc(path) if defined? TAHHash
+      self.tah_hash = '%08X' % TAHHash.calc(path) if defined?(TAHHash) && /\.tso$/.match(path)
       self.tah_hash ||= ''
       self.md5 ||= ''
     end
