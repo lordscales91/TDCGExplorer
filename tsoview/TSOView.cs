@@ -190,7 +190,21 @@ public class TSOSample : IDisposable
     public void AddFigureFromTSODirectory(string source_file)
     {
         TSOFigure fig = new TSOFigure();
-        List<TSOFile> tso_list = fig.LoadTSOFile(source_file);
+        List<TSOFile> tso_list = new List<TSOFile>();
+        try
+        {
+            string[] files = Directory.GetFiles(source_file, "*.TSO");
+            foreach (string file in files)
+            {
+                TSOFile tso = new TSOFile();
+                tso.Load(file);
+                tso_list.Add(tso);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex);
+        }
         foreach (TSOFile tso in tso_list)
         {
             tso.Open(device, effect);
@@ -230,11 +244,16 @@ public class TSOSample : IDisposable
     public void LoadTSOFile(string source_file)
     {
         TSOFigure fig = GetSelectedOrCreateFigure();
-        List<TSOFile> tso_list = fig.LoadTSOFile(source_file);
-        foreach (TSOFile tso in tso_list)
+        try
         {
+            TSOFile tso = new TSOFile();
+            tso.Load(source_file);
             tso.Open(device, effect);
             fig.AddTSO(tso);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex);
         }
         UpdateFigureForm();
     }
@@ -260,7 +279,17 @@ public class TSOSample : IDisposable
         TSOFigure fig;
         if (TryGetFigure(out fig))
         {
-            fig.LoadTMOFile(source_file);
+            if (File.Exists(source_file))
+            try
+            {
+                TMOFile tmo = new TMOFile();
+                tmo.Load(source_file);
+                fig.Tmo = tmo;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex);
+            }
             fig.UpdateNodeMapAndBoneMatrices();
             camera.SetCenter(fig.Center);
         }
