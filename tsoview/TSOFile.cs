@@ -200,7 +200,6 @@ namespace TAHdecrypt
         public TSOSubScript[] sub_scripts;
         public TSOMesh[] meshes;
 
-        internal string source_file;
         internal Dictionary<string, TSONode> nodemap;
 
         public string ReadString()
@@ -334,9 +333,8 @@ namespace TAHdecrypt
 
         public void Load(string source_file)
         {
-            this.source_file = source_file;
-
-            Load(File.OpenRead(source_file));
+            using (Stream source_stream = File.OpenRead(source_file))
+                Load(source_stream);
         }
 
         public void Load(Stream source_stream)
