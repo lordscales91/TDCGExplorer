@@ -138,6 +138,7 @@ EOT
   end
 
   it "指定 path を持つ既存の tso がない場合 tso を作成する" do
+    TAHHash.stub!(:calc).and_return(0xBC0EEF52)
     arc = Arc.create(:code => "TA0026")
     tah = arc.tahs.create(:path => "眉項目へ追加/hoku.tah")
 
@@ -154,6 +155,7 @@ EOT
   end
 
   it "指定 path を持つ既存の tso がある場合 tso を更新する" do
+    TAHHash.stub!(:calc).and_return(0xBC0EEF52)
     arc = Arc.create(:code => "TA0026")
     tah = arc.tahs.create(:path => "眉項目へ追加/hoku.tah")
     tso = tah.tsos.create(:path => "data/model/N005HOKU_200.tso")
@@ -171,6 +173,7 @@ EOT
   end
 
   it "tso 数が減少している場合 削除する" do
+    TAHHash.stub!(:calc).and_return(0xBC0EEF52)
     arc = Arc.create(:code => "TA0026")
     tah = arc.tahs.create(:path => "眉項目へ追加/hoku.tah")
     tso_1 = tah.tsos.create(:path => "data/model/N005HOKU_200.tso")
@@ -188,6 +191,7 @@ EOT
   end
 
   it "tso 数が増加している場合 追加する" do
+    TAHHash.stub!(:calc).and_return(0xBC0EEF52)
     arc = Arc.create(:code => "TA0026")
     tah = arc.tahs.create(:path => "眉項目へ追加/hoku.tah")
     tso_1 = tah.tsos.create(:path => "data/model/N005HOKU_200.tso")
