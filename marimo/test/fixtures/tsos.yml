@@ -4,8 +4,10 @@ one:
   id: 1
   tah_id: 1
   path: data/model/N400BODY_A00.tso
+  tah_hash: BC0EEF52
 
 two:
   id: 2
   tah_id: 2
   path: data/model/N400BODY_A01.tso
+  tah_hash: BC0EFF52
