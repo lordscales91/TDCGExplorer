@@ -191,49 +191,6 @@ public class TSOFigure : IDisposable
         matrixStack.Pop();
     }
 
-    public List<TSOFile> LoadTSOFile(string source_file)
-    {
-        List<TSOFile> tso_list = new List<TSOFile>();
-        try
-        {
-            if (Path.GetExtension(source_file).ToUpper() == ".TSO")
-            {
-                TSOFile tso = new TSOFile();
-                tso.Load(source_file);
-                tso_list.Add(tso);
-            }
-            else if (Directory.Exists(source_file))
-            {
-                string[] files = Directory.GetFiles(source_file, "*.TSO");
-                foreach (string file in files)
-                {
-                    TSOFile tso = new TSOFile();
-                    tso.Load(file);
-                    tso_list.Add(tso);
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error: " + ex);
-        }
-        return tso_list;
-    }
-
-    public void LoadTMOFile(string source_file)
-    {
-        if (File.Exists(source_file))
-        try
-        {
-            tmo.Load(source_file);
-            UpdateTMO();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error: " + ex);
-        }
-    }
-
     public void OpenTSOFile(Device device, Effect effect)
     {
         foreach (TSOFile tso in TSOList)
