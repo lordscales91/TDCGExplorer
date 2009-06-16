@@ -25,7 +25,7 @@ describe Tso, "col_basis_path" do
   end
 
   it "”wŒi‚È‚ç nil ‚ð“¾‚é" do
-    tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso')
+    tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso', :tah_hash => '27BF16BA')
     tso.col_basis_path.should be_nil
   end
 end
@@ -42,7 +42,7 @@ describe Tso, "find_col_bases" do
   end
 
   it "”wŒi‚È‚ç nil ‚ð“¾‚é" do
-    tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso')
+    tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso', :tah_hash => '27BF16BA')
     tso.find_col_bases.should be_empty
   end
 end
@@ -59,7 +59,7 @@ describe Tso, "col_bases" do
   end
 
   it "”wŒi‚È‚ç nil ‚ð“¾‚é" do
-    tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso')
+    tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso', :tah_hash => '27BF16BA')
     tso.col_bases.should be_empty
   end
 end
