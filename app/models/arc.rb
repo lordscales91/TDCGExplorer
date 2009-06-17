@@ -53,7 +53,9 @@ class Arc < ActiveRecord::Base
   end
 
   def col_bases
-    tahs.map(&:col_bases).flatten.uniq.map(&:arc).uniq
+    ary = tahs.map(&:col_bases).flatten.uniq.map(&:arc).uniq
+    ary.delete(self)
+    ary
   end
 
   def relationship_attributes=(relationship_attributes)
