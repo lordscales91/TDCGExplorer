@@ -34,8 +34,8 @@ describe Arc, "col_bases" do
       tahs(:two).save!
     end
 
-    it "one" do
-      arcs(:one).col_bases.should == [ arcs(:one) ]
+    it "one: self ‚ðŠÜ‚Ü‚È‚¢" do
+      arcs(:one).col_bases.should == [ ]
     end
 
     it "two" do
