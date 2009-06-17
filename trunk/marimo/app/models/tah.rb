@@ -24,7 +24,9 @@ class Tah < ActiveRecord::Base
   end
 
   def col_bases
-    tsos.map(&:col_bases).flatten.uniq.map(&:tah).uniq
+    ary = tsos.map(&:col_bases).flatten.uniq.map(&:tah).uniq
+    ary.delete(self)
+    ary
   end
 
   class Search
