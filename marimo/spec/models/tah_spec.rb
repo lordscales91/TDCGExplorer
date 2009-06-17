@@ -19,8 +19,8 @@ describe Tah, "col_bases" do
       tsos(:two).save!
     end
 
-    it "one" do
-      tahs(:one).col_bases.should == [ tahs(:one) ]
+    it "one: self �͊܂܂Ȃ�" do
+      tahs(:one).col_bases.should == [ ]
     end
 
     it "two" do

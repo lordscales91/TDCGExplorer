@@ -19,8 +19,8 @@ describe Arc, "col_bases" do
       tsos(:two).save!
     end
 
-    it "one" do
-      arcs(:one).col_bases.should == [ arcs(:one) ]
+    it "one: self �͊܂܂Ȃ�" do
+      arcs(:one).col_bases.should == [ ]
     end
 
     it "two" do
