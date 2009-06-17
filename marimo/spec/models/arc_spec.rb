@@ -10,6 +10,23 @@ describe Arc, "col_bases" do
   it "two" do
     arcs(:two).col_bases.should == [ arcs(:one) ]
   end
+
+  describe "tsos(:two).tah == tahs(:one) ‚È‚ç" do
+    before do
+      TAHHash.should_receive(:calc).with('data/model/N400BODY_A00.tso').and_return(0xBC0EEF52) # in update_col_base
+      TAHHash.should_receive(:calc).with('data/model/N400BODY_A01.tso').and_return(0xBC0EFF52) # in before_save
+      tsos(:two).tah_id = 1
+      tsos(:two).save!
+    end
+
+    it "one" do
+      arcs(:one).col_bases.should == [ arcs(:one) ]
+    end
+
+    it "two" do
+      arcs(:two).col_bases.should == [ ]
+    end
+  end
 end
 
 describe Arc, "tags" do
