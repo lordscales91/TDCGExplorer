@@ -27,6 +27,21 @@ describe Arc, "col_bases" do
       arcs(:two).col_bases.should == [ ]
     end
   end
+
+  describe "tahs(:two).arc == arcs(:one) ‚È‚ç" do
+    before do
+      tahs(:two).arc_id = 1
+      tahs(:two).save!
+    end
+
+    it "one" do
+      arcs(:one).col_bases.should == [ arcs(:one) ]
+    end
+
+    it "two" do
+      arcs(:two).col_bases.should == [ ]
+    end
+  end
 end
 
 describe Arc, "tags" do
