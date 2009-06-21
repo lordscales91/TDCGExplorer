@@ -1,0 +1,43 @@
+<% form_for(:search, @search, :url => tahs_path, :html => { :method => :get }) do |f| %>
+  <p>
+    <%= _'Tah|Path' %><br />
+    <%= f.text_field :path %>
+    <%= f.submit _("Search") %>
+  </p>
+<% end %>
+<p>
+  Total <%=h @tahs.total_entries %>
+</p>
+<table class="list tahs">
+  <thead>
+  <tr>
+    <th><%= _'Arc|Code' %></th>
+    <th><%= _'Arc|Extname' %></th>
+    <th><%= _'Arc|Location' %></th>
+    <th><%= _'Tah|Path' %></th>
+    <th></th>
+<%-if logged_in? -%>
+    <th></th>
+    <th></th>
+<%-end-%>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for tah in @tahs %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=link_to h(tah.arc.code), tah.arc %></td>
+    <td><%=h tah.arc.extname %></td>
+    <td><%=h tah.arc.location %></td>
+    <td><%=h tah.path %></td>
+    <td><%= link_to _('Show'), tah %></td>
+<%-if logged_in? -%>
+    <td><%= link_to _('Edit'), edit_tah_path(tah) %></td>
+    <td><%= link_to _('Destroy'), tah, :confirm => _('Are you sure?'), :method => :delete %></td>
+<%-end-%>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+
+<%= will_paginate(@tahs) %>

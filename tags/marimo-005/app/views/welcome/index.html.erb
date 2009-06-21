@@ -1,0 +1,102 @@
+<div align="center">
+<% form_for(:search, @search, :url => root_path, :html => { :method => :get }) do |f| %>
+  <p>
+    <%= f.text_field :text %>
+    <%= f.submit _("Search") %>
+  </p>
+<% end %>
+</div>
+
+<%-unless @tags.empty?-%>
+<p>
+  <b><%= _'tag' %>:</b>
+</p>
+<% for tag in @tags %>
+  <%=link_to h(tag.name), tag %>
+<% end %>
+<%-end-%>
+
+<%-unless @arcs.empty?-%>
+<p>
+  <b><%= _'arc' %>:</b>
+</p>
+<table class="list arcs">
+  <thead>
+  <tr>
+    <th><%= _'Arc|Code' %></th>
+    <th><%= _'Arc|Extname' %></th>
+    <th><%= _'Arc|Location' %></th>
+    <th><%= _'Arc|Summary' %></th>
+    <th><%= _'Arc|Origname' %></th>
+<%-if logged_in? -%>
+    <th></th>
+    <th></th>
+<%-end-%>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for arc in @arcs %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=link_to h(arc.code), arc %></td>
+    <td><%=h arc.extname %></td>
+    <td><%=h arc.location %></td>
+    <td><%=h arc.summary %></td>
+    <td><%=h arc.origname %></td>
+<%-if logged_in? -%>
+    <td><%= link_to _('Edit'), edit_arc_path(arc) %></td>
+    <td><%= link_to _('Destroy'), arc, :confirm => _('Are you sure?'), :method => :delete %></td>
+<%-end-%>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+<div class="pagination">
+  <%= link_to _('and more')+' &raquo;', arcs_path(:search => params[:search]) %>
+</div>
+<%-end-%>
+
+<%-unless @tahs.empty?-%>
+<p>
+  <b><%= _'tah' %>:</b>
+</p>
+<table class="list tahs">
+  <thead>
+  <tr>
+    <th><%= _'Arc|Code' %></th>
+    <th><%= _'Arc|Extname' %></th>
+    <th><%= _'Arc|Location' %></th>
+    <th><%= _'Tah|Path' %></th>
+    <th></th>
+<%-if logged_in? -%>
+    <th></th>
+    <th></th>
+<%-end-%>
+  </tr>
+  </thead>
+
+  <tbody>
+<% for tah in @tahs %>
+  <tr class="<%= cycle('odd', 'even') %>">
+    <td><%=link_to h(tah.arc.code), tah.arc %></td>
+    <td><%=h tah.arc.extname %></td>
+    <td><%=h tah.arc.location %></td>
+    <td><%=h tah.path %></td>
+    <td><%= link_to _('Show'), tah %></td>
+<%-if logged_in? -%>
+    <td><%= link_to _('Edit'), edit_tah_path(tah) %></td>
+    <td><%= link_to _('Destroy'), tah, :confirm => _('Are you sure?'), :method => :delete %></td>
+<%-end-%>
+  </tr>
+<% end %>
+  </tbody>
+</table>
+<div class="pagination">
+  <%= link_to _('and more')+' &raquo;', tahs_path(:search => params[:search]) %>
+</div>
+<%-end-%>
+
+<%-if @search.text.blank?-%>
+<div style="float: left "><img src="/ban1.GIF" /></div>
+<div style="float: right"><img src="/ban2.GIF" /></div>
+<%-end-%>

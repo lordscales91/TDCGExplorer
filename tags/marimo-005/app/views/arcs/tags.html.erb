@@ -1,0 +1,60 @@
+<%= auto_complete_stylesheet %>
+<script type="text/javascript">
+function newCounter()
+{
+  var i = 0;
+  return function()
+  {
+    i = i + 1;
+    return i;
+  }
+}
+ 
+var c1 = newCounter();
+</script>
+<h2>
+  <b><%= _'Arc|Code' %>:</b>
+  <%=h @arc.code %>
+</h2>
+
+<p>
+  <b><%= _'Arc|Extname' %>:</b>
+  <%=h @arc.extname %>
+</p>
+
+<p>
+  <b><%= _'Arc|Location' %>:</b>
+  <%=h @arc.location %>
+</p>
+
+<p>
+  <b><%= _'Arc|Summary' %>:</b>
+  <%=h @arc.summary %>
+</p>
+
+<p>
+  <b><%= _'Arc|Origname' %>:</b>
+  <%=h @arc.origname %>
+</p>
+
+<p>
+  <b><%= _'Arc|Rows' %>:</b>
+  <%=h @arc.row_caption %>
+</p>
+
+<% form_for(:arc, @arc, :url => tags_arc_path(@arc), :html => {:method => :put}) do |f| %>
+  <%= f.error_messages %>
+
+<div id="arc_tags">
+  <%= _'Arc|Tags' %><br />
+  <%= render :partial => 'arc_tag', :collection => @arc.arc_tags %>
+</div>
+  <p>
+    <%= link_to _('Add a tag'), '#', :onclick => add_arc_tag_function %>
+  </p>
+  <p>
+    <%= f.submit _("Save") %>
+  </p>
+<% end %>
+
+<%= link_to _('Back'), @arc %>
