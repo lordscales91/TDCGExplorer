@@ -25,6 +25,14 @@ describe ArcsController do
     it "maps #code_rels .xml" do
       route_for(:controller => "arcs", :action => "code_rels", :code => "TA0001", :format => "xml").should == "/arcs/code/TA0001/rels.xml"
     end
+  
+    it "maps #code_revs" do
+      route_for(:controller => "arcs", :action => "code_revs", :code => "TA0001").should == "/arcs/code/TA0001/revs"
+    end
+  
+    it "maps #code_revs .xml" do
+      route_for(:controller => "arcs", :action => "code_revs", :code => "TA0001", :format => "xml").should == "/arcs/code/TA0001/revs.xml"
+    end
   end
 
   describe "route recognition" do
@@ -50,6 +58,14 @@ describe ArcsController do
   
     it "generates params for #code_rels" do
       params_from(:get, "/arcs/code/TA0001/rels.xml").should == {:controller => "arcs", :action => "code_rels", :code => "TA0001", :format => "xml"}
+    end
+  
+    it "generates params for #code_revs" do
+      params_from(:get, "/arcs/code/TA0001/revs").should == {:controller => "arcs", :action => "code_revs", :code => "TA0001"}
+    end
+  
+    it "generates params for #code_revs" do
+      params_from(:get, "/arcs/code/TA0001/revs.xml").should == {:controller => "arcs", :action => "code_revs", :code => "TA0001", :format => "xml"}
     end
   end
 end
