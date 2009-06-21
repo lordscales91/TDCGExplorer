@@ -9,6 +9,10 @@ describe ArcsController do
     it "maps #show" do
       route_for(:controller => "arcs", :action => "show", :id => "1").should == "/arcs/1"
     end
+  
+    it "maps #code" do
+      route_for(:controller => "arcs", :action => "code", :code => "TA0001").should == "/arcs/code/TA0001"
+    end
   end
 
   describe "route recognition" do
@@ -18,6 +22,10 @@ describe ArcsController do
   
     it "generates params for #show" do
       params_from(:get, "/arcs/1").should == {:controller => "arcs", :action => "show", :id => "1"}
+    end
+  
+    it "generates params for #code" do
+      params_from(:get, "/arcs/code/TA0001").should == {:controller => "arcs", :action => "code", :code => "TA0001"}
     end
   end
 end
