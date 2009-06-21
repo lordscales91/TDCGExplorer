@@ -38,6 +38,12 @@ public class TSOCameraMotion
     internal int frame_index = 0;
     internal LinkedList<TSOCameraAction> action_list = new LinkedList<TSOCameraAction>();
     internal LinkedListNode<TSOCameraAction> current_action = null;
+    internal TSOCamera camera = null;
+
+    public TSOCameraMotion(TSOCamera camera)
+    {
+        this.camera = camera;
+    }
 
     public int Count
     {
@@ -56,28 +62,31 @@ public class TSOCameraMotion
         }
     }
 
-    public TSOCamera GetCamera()
+    public void UpdateCamera()
     {
         TSOCameraAction act1 = FindAction1();
         TSOCameraAction act2 = FindAction2();
 
-        TSOCamera cam1 = new TSOCamera();
-        cam1.LookAt(act1.eye, act1.center);
-
+        if (frame_index == act1.frame_index)
+        {
+            //Console.WriteLine("camera LookAt index {0}", frame_index);
+            camera.LookAt(act1.eye, act1.center);
+        }
         if (act2 != null && frame_index >= act2.interp_begin)
         {
+            TSOCamera cam1 = new TSOCamera();
             TSOCamera cam2 = new TSOCamera();
+            cam1.LookAt(act1.eye, act1.center);
             cam2.LookAt(act2.eye, act2.center);
             int frame_delta = frame_index - act2.interp_begin;
-            //Console.WriteLine("index {0} delta {1}", frame_index, frame_delta);
-            return TSOCamera.Slerp(cam1, cam2, (float)frame_delta/(float)act2.interp_length);
-        } else {
-            return cam1;
+            //Console.WriteLine("camera Interp index {0} delta {1}", frame_index, frame_delta);
+            camera.Interp(cam1, cam2, (float)frame_delta/(float)act2.interp_length);
         }
     }
 
     public void NextFrame()
     {
+        UpdateCamera();
         frame_index++;
         if (current_action.Next != null)
         {
