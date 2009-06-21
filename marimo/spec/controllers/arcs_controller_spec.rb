@@ -33,6 +33,16 @@ describe ArcsController do
 
   end
 
+  describe "GET code" do
+
+    it "Žw’è arc ‚ð“¾‚é" do
+      Arc.should_receive(:find_by_code).with("TA0042").and_return(mock_arc)
+      get :code, :code => "TA0042"
+      assigns[:arc].should == mock_arc
+    end
+
+  end
+
   describe "GET edit" do
 
     it "Žw’è arc ‚ð“¾‚é" do
