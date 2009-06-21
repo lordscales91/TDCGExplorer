@@ -17,6 +17,10 @@ describe ArcsController do
     @_mock_rel ||= mock_model(Relationship, stubs)
   end
 
+  def mock_rev(stubs={})
+    @_mock_rev ||= mock_model(Relationship, stubs)
+  end
+
   describe "GET index" do
 
     it "arcs ‚ð“¾‚é" do
@@ -55,6 +59,18 @@ describe ArcsController do
       get :code_rels, :code => "TA0042"
       assigns[:arc].should == mock_arc
       assigns[:arc_rels].should == [ mock_rel ]
+    end
+
+  end
+
+  describe "GET code_revs" do
+
+    it "Žw’è arc revs ‚ð“¾‚é" do
+      Arc.should_receive(:find_by_code).with("TA0042").and_return(mock_arc)
+      mock_arc.should_receive(:rev_relationships).and_return([ mock_rev ])
+      get :code_revs, :code => "TA0042"
+      assigns[:arc].should == mock_arc
+      assigns[:arc_revs].should == [ mock_rev ]
     end
 
   end
