@@ -87,7 +87,21 @@ public class TSOCamera
         Quaternion q1 = Quaternion.RotationMatrix(cam1.CamPoseMat);
         Quaternion q2 = Quaternion.RotationMatrix(cam2.CamPoseMat);
         camPoseMat = Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, ratio));
-        needUpdate = true;
+
+        //view行列更新
+        Vector3 posW = camPosL + center;
+        {
+            Matrix m = camPoseMat;
+            m.M41 = posW.X;
+            m.M42 = posW.Y;
+            m.M43 = posW.Z;
+            m.M44 = 1.0f;
+            viewMat = Matrix.Invert(m) * Matrix.Translation(-translation);
+        }
+
+        //差分をリセット
+        ResetDefValue();
+        needUpdate = false;
     }
 
     /// <summary>カメラ位置と姿勢をリセット</summary>
@@ -152,7 +166,7 @@ public class TSOCamera
         this.translation = eye;
 
         //view行列更新
-        Vector3 posW = camPosL + center;
+        Vector3 posW = camPosL + this.center;
         {
             Matrix m = camPoseMat;
             m.M41 = posW.X;
@@ -161,6 +175,10 @@ public class TSOCamera
             m.M44 = 1.0f;
             viewMat = Matrix.Invert(m) * Matrix.Translation(-translation);
         }
+
+        //差分をリセット
+        ResetDefValue();
+        needUpdate = false;
     }
     public void LookAt(Vector3 eye, Vector3 center)
     {
