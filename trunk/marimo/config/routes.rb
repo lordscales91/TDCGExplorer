@@ -14,7 +14,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :tahs
 
   map.resources :arcs, :member => { :tags => :any }
-  map.connect 'arcs/code/:code', :controller => 'arcs', :action => 'code'
+  map.connect 'arcs/code/:code', :controller => 'arcs', :action => 'code', :conditions => {:method => :get}
+  map.connect 'arcs/code/:code.:format', :controller => 'arcs', :action => 'code', :conditions => {:method => :get}
 
   # The priority is based upon order of creation: first created -> highest priority.
 

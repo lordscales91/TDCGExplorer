@@ -33,6 +33,17 @@ class ArcsController < ApplicationController
     end
   end
 
+  # GET /arcs/code/TA0001
+  # GET /arcs/code/TA0001.xml
+  def code
+    @arc = Arc.find_by_code(params[:code])
+
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml  { render :xml => @arc.to_xml(:except => [ :created_at, :updated_at ], :include => :tahs) }
+    end
+  end
+
   # GET /arcs/new
   # GET /arcs/new.xml
   def new
