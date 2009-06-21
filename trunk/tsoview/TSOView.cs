@@ -41,6 +41,9 @@ public class TSOSample : IDisposable
     internal Surface dev_zbuf = null;
 
     public List<TSOFigure> TSOFigureList = new List<TSOFigure>();
+    public List<TMOFile> TMOFileList = new List<TMOFile>();
+
+    internal Dictionary<string, TMOFile> tmomap = new Dictionary<string, TMOFile>();
 
     // ƒL[“ü—Í‚ð•ÛŽ
     internal bool[] keys = new bool[256];
@@ -297,12 +300,21 @@ public class TSOSample : IDisposable
 
     public void LoadMotion(string source_file)
     {
-        figure_motion.LoadTMOFile(source_file);
+        if (File.Exists(source_file))
+        {
+            TMOFile tmo = new TMOFile();
+            tmo.Load(source_file);
+
+            string name = Path.GetFileNameWithoutExtension(source_file);
+            tmomap[name] = tmo;
+        } else {
+            Console.WriteLine("Error: file not found in LoadTMOFile: " + source_file);
+        }
     }
 
-    public void Motion(int frame_index, string motion_name)
+    public TMOFile GetMotion(string name)
     {
-        figure_motion.Add(frame_index, motion_name);
+        return tmomap[name];
     }
 
     public void AddFigureFromPNGFile(string source_file)
@@ -346,35 +358,22 @@ public class TSOSample : IDisposable
     }
 
     private TSOCamera camera = new TSOCamera();
+
+    public TSOCamera Camera
+    {
+        get { return camera; }
+    }
+
     private TSOCamera cam1 = null;
     private TSOCamera cam2 = null;
 
     private int cam_frame_index = 0;
-    private TSOCameraMotion camera_motion = new TSOCameraMotion();
-    private TSOFigureMotion figure_motion = new TSOFigureMotion();
 
     private Matrix world_matrix = Matrix.Identity;
     private Matrix Transform_View = Matrix.Identity;
     private Matrix Transform_Projection = Matrix.Identity;
     private Matrix Light_View = Matrix.Identity;
     private Matrix Light_Projection = Matrix.Identity;
-
-    public void Camera(int frame_index, Vector3 eye, Vector3 center)
-    {
-        camera_motion.Add(frame_index, eye, center);
-    }
-    public void Camera(int frame_index, Vector3 eye, Vector3 center, int interp_length)
-    {
-        camera_motion.Add(frame_index, eye, center, interp_length);
-    }
-    public void Camera(int frame_index, float eyex, float eyey, float eyez, float centerx, float centery, float centerz)
-    {
-        camera_motion.Add(frame_index, new Vector3(eyex, eyey, eyez), new Vector3(centerx, centery, centerz));
-    }
-    public void Camera(int frame_index, float eyex, float eyey, float eyez, float centerx, float centery, float centerz, int interp_length)
-    {
-        camera_motion.Add(frame_index, new Vector3(eyex, eyey, eyez), new Vector3(centerx, centery, centerz), interp_length);
-    }
 
     public bool InitializeApplication(TSOForm form)
     {
@@ -660,7 +659,7 @@ public class TSOSample : IDisposable
         }
         if (cam1 != null && cam2 != null)
         {
-            camera = TSOCamera.Slerp(cam1, cam2, cam_frame_index/120.0f);
+            camera = TSOCamera.Interpolation(cam1, cam2, cam_frame_index/120.0f);
             cam_frame_index++;
             if (cam_frame_index >= 120)
             {
@@ -670,22 +669,11 @@ public class TSOSample : IDisposable
                 cam1 = cam0;
             }
         }
-        if (figure_motion.Count != 0)
+        foreach (TSOFigure fig in TSOFigureList)
         {
-            TMOFile tmo = figure_motion.GetTMOFile();
-            TSOFigure fig;
-            if (tmo != null && TryGetFigure(out fig) && tmo != fig.Tmo)
-            {
-                fig.Tmo = tmo;
-                fig.UpdateNodeMapAndBoneMatrices();
-            }
-            figure_motion.NextFrame();
+            fig.NextFrame();
         }
-        if (camera_motion.Count != 0)
-        {
-            camera = camera_motion.GetCamera();
-            camera_motion.NextFrame();
-        }
+        camera.NextFrame();
 
         float keyL = 0.0f;
         float keyR = 0.0f;

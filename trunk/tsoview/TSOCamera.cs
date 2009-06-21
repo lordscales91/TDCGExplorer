@@ -27,6 +27,11 @@ public class TSOCamera
     public Vector3 CamPosL { get { return camPosL; } set { camPosL = value; } }
     public Matrix CamPoseMat { get { return camPoseMat; } set { camPoseMat = value; } }
 
+    public TSOCamera()
+    {
+        motion = new TSOCameraMotion(this);
+    }
+
     /// <summary>カメラ位置と姿勢を標準出力へ書き出す</summary>
     public void Dump()
     {
@@ -62,7 +67,7 @@ public class TSOCamera
     }
 
     /// <summary>カメラ位置と姿勢を補間する</summary>
-    public static TSOCamera Slerp(TSOCamera cam1, TSOCamera cam2, float ratio)
+    public static TSOCamera Interpolation(TSOCamera cam1, TSOCamera cam2, float ratio)
     {
         TSOCamera camera = new TSOCamera();
         camera.Center = Vector3.Lerp(cam1.Center, cam2.Center, ratio);
@@ -72,6 +77,17 @@ public class TSOCamera
         Quaternion q2 = Quaternion.RotationMatrix(cam2.CamPoseMat);
         camera.CamPoseMat = Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, ratio));
         return camera;
+    }
+
+    public void Interp(TSOCamera cam1, TSOCamera cam2, float ratio)
+    {
+        center = Vector3.Lerp(cam1.Center, cam2.Center, ratio);
+        translation = Vector3.Lerp(cam1.Translation, cam2.Translation, ratio);
+        camPosL = Vector3.Lerp(cam1.CamPosL, cam2.CamPosL, ratio);
+        Quaternion q1 = Quaternion.RotationMatrix(cam1.CamPoseMat);
+        Quaternion q2 = Quaternion.RotationMatrix(cam2.CamPoseMat);
+        camPoseMat = Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, ratio));
+        needUpdate = true;
     }
 
     /// <summary>カメラ位置と姿勢をリセット</summary>
@@ -247,6 +263,38 @@ public class TSOCamera
         camDirDef = Vector3.Empty;
         offsetZ = 0.0f;
         camZRotDef = 0.0f;
+    }
+
+    private TSOCameraMotion motion = null;
+
+    public TSOCameraMotion Motion
+    {
+        get { return motion; }
+    }
+
+    public void SetMotion(int frame_index, Vector3 eye, Vector3 center)
+    {
+        motion.Add(frame_index, eye, center);
+    }
+    public void SetMotion(int frame_index, Vector3 eye, Vector3 center, int interp_length)
+    {
+        motion.Add(frame_index, eye, center, interp_length);
+    }
+    public void SetMotion(int frame_index, float eyex, float eyey, float eyez, float centerx, float centery, float centerz)
+    {
+        motion.Add(frame_index, new Vector3(eyex, eyey, eyez), new Vector3(centerx, centery, centerz));
+    }
+    public void SetMotion(int frame_index, float eyex, float eyey, float eyez, float centerx, float centery, float centerz, int interp_length)
+    {
+        motion.Add(frame_index, new Vector3(eyex, eyey, eyez), new Vector3(centerx, centery, centerz), interp_length);
+    }
+
+    public void NextFrame()
+    {
+        if (motion.Count != 0)
+        {
+            motion.NextFrame();
+        }
     }
 }
 }

@@ -12,12 +12,12 @@ namespace TAHdecrypt
 public class TSOFigureAction
 {
     internal int frame_index;
-    internal string motion_name;
+    internal TMOFile tmo;
 
-    public TSOFigureAction(int frame_index, string motion_name)
+    public TSOFigureAction(int frame_index, TMOFile tmo)
     {
         this.frame_index = frame_index;
-        this.motion_name = motion_name;
+        this.tmo = tmo;
     }
 }
 
@@ -26,7 +26,6 @@ public class TSOFigureMotion
     internal int frame_index = 0;
     internal LinkedList<TSOFigureAction> action_list = new LinkedList<TSOFigureAction>();
     internal LinkedListNode<TSOFigureAction> current_action = null;
-    internal Dictionary<string, TMOFile> tmomap = new Dictionary<string, TMOFile>();
 
     public int Count
     {
@@ -45,34 +44,10 @@ public class TSOFigureMotion
         }
     }
 
-    public void LoadTMOFile(string source_file)
+    public TMOFile GetTMO()
     {
-        if (File.Exists(source_file))
-        {
-            TMOFile tmo = new TMOFile();
-            tmo.Load(source_file);
-
-            string name = Path.GetFileNameWithoutExtension(source_file);
-            tmomap[name] = tmo;
-        } else {
-            Console.WriteLine("Error: file not found in LoadTMOFile: " + source_file);
-        }
-    }
-
-    public TMOFile FindTMOFile(string name)
-    {
-        TMOFile tmo;
-        if (tmomap.TryGetValue(name, out tmo))
-            return tmo;
-        else
-            return null;
-    }
-
-    public TMOFile GetTMOFile()
-    {
-        TSOFigureAction act1 = FindAction1();
-        TMOFile tmo1 = FindTMOFile(act1.motion_name);
-        return tmo1;
+        TSOFigureAction act = current_action.Value;
+        return act.tmo;
     }
 
     public void NextFrame()
@@ -88,15 +63,10 @@ public class TSOFigureMotion
         }
     }
 
-    public TSOFigureAction FindAction1()
-    {
-        return current_action.Value;
-    }
-
-    public void Add(int frame_index, string motion_name)
+    public void Add(int frame_index, TMOFile tmo)
     {
         LinkedListNode<TSOFigureAction> act = action_list.First;
-        LinkedListNode<TSOFigureAction> new_act = new LinkedListNode<TSOFigureAction>(new TSOFigureAction(frame_index, motion_name));
+        LinkedListNode<TSOFigureAction> new_act = new LinkedListNode<TSOFigureAction>(new TSOFigureAction(frame_index, tmo));
         LinkedListNode<TSOFigureAction> found = null;
 
         while (act != null)

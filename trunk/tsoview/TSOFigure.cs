@@ -98,6 +98,7 @@ public class TSOFigure : IDisposable
     //frame indexÇ∆íÜêSì_Çê›íËÇµÇ‹Ç∑ÅB
     protected void UpdateTMO()
     {
+        Debug.Assert(tmo != null);
         frame_index = 0;
         current_frame_index = 0;
 
@@ -195,6 +196,32 @@ public class TSOFigure : IDisposable
     {
         foreach (TSOFile tso in TSOList)
             tso.Open(device, effect);
+    }
+
+    private TSOFigureMotion motion = new TSOFigureMotion();
+
+    public TSOFigureMotion Motion
+    {
+        get { return motion; }
+    }
+
+    public void SetMotion(int frame_index, TMOFile tmo)
+    {
+        motion.Add(frame_index, tmo);
+    }
+
+    public void NextFrame()
+    {
+        if (motion.Count != 0)
+        {
+            TMOFile tmo = motion.GetTMO();
+            if (tmo != Tmo)
+            {
+                Tmo = tmo;
+                UpdateNodeMapAndBoneMatrices();
+            }
+            motion.NextFrame();
+        }
     }
 
     public void Dispose()
