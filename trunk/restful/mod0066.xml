@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<arc>
+  <code>mod0066</code>
+  <extname>zip</extname>
+  <id type="integer">2521</id>
+  <location>futaba</location>
+  <origname>BG-soapland-r</origname>
+  <summary>ソープ背景（たぶん）競合解消版</summary>
+  <tahs type="array">
+    <tah>
+      <arc-id type="integer">2521</arc-id>
+      <id type="integer">12582</id>
+      <path>BG-soapland.tah</path>
+      <position type="integer">1</position>
+    </tah>
+  </tahs>
+</arc>

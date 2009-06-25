@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<relationships type="array">
+  <relationship>
+    <from-id type="integer">2521</from-id>
+    <id type="integer">1</id>
+    <kind type="integer">1</kind>
+    <note nil="true"></note>
+    <to-id type="integer">709</to-id>
+  </relationship>
+</relationships>
