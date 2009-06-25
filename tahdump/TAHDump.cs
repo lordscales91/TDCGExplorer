@@ -36,7 +36,7 @@ namespace TAHdecrypt
             }
             foreach (TAHEntry ent in tah.EntrySet.Entries)
             {
-                if (Path.GetExtension(ent.FileName) == ".tso")
+                if (ent.FileName!=null && Path.GetExtension(ent.FileName).ToLower() == ".tso")
                 {
                     byte[] data = TAHUtil.ReadEntryData(tah.Reader, ent);
                     byte[] hash = md5.ComputeHash(data);
