@@ -10,3 +10,4 @@ csc @tmotool.rsp TMOPose.cs
 csc @tmotool.rsp TMOAppend.cs
 csc @tmotool.rsp TMOMotionCopy.cs
 csc @tmotool.rsp TMOAnim.cs
+csc @tmotool.rsp /r:CSScriptLibrary.dll TMOTool.cs
