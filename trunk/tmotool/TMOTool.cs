@@ -53,7 +53,7 @@ namespace TAHdecrypt
                 for (int i = 1; i < args.Length; i++)
                 {
                     string script_name = args[i];
-                    string script_file = @"data/scripts/" + script_name + ".cs";
+                    string script_file = @"lib/" + script_name + ".cs";
                     var script = CSScript.Load(script_file).CreateInstance("TAHdecrypt." + script_name).AlignToInterface<ITMOCommand>();
                     script.Nodes = nodes;
                     script.Execute();
