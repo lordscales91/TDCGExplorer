@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using System.IO;
 using CSScriptLibrary;
 
@@ -13,6 +14,11 @@ namespace TAHdecrypt
 
     public class TMOTool
     {
+        static string GetCommandPath()
+        {
+            return Application.StartupPath + @"\command";
+        }
+
         static void Main(string[] args) 
         {
             if (args.Length < 1)
@@ -53,8 +59,8 @@ namespace TAHdecrypt
                 for (int i = 1; i < args.Length; i++)
                 {
                     string script_name = args[i];
-                    string script_file = @"lib/" + script_name + ".cs";
-                    var script = CSScript.Load(script_file).CreateInstance("TAHdecrypt." + script_name).AlignToInterface<ITMOCommand>();
+                    string script_file = GetCommandPath() + @"\" + script_name + ".cs";
+                    var script = CSScript.Load(script_file).CreateInstance("TDCG.TMOTool.Command." + script_name).AlignToInterface<ITMOCommand>();
                     script.Nodes = nodes;
                     script.Execute();
                 }
