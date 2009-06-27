@@ -18,6 +18,10 @@ namespace TAHdecrypt
         {
             return Application.StartupPath + @"\command";
         }
+        static string GetDestinationPath()
+        {
+            return @"updated";
+        }
 
         static void Main(string[] args) 
         {
@@ -28,7 +32,8 @@ namespace TAHdecrypt
             }
 
             string source_file = args[0];
-            string dest_file = source_file + ".tmp";
+            string dest_file = Path.Combine(GetDestinationPath(), Path.GetFileName(source_file));
+            Directory.CreateDirectory(GetDestinationPath());
 
             TMOFile tmo = new TMOFile();
             try
@@ -59,7 +64,7 @@ namespace TAHdecrypt
                 for (int i = 1; i < args.Length; i++)
                 {
                     string script_name = args[i];
-                    string script_file = GetCommandPath() + @"\" + script_name + ".cs";
+                    string script_file = Path.Combine(GetCommandPath(), script_name + ".cs");
                     var script = CSScript.Load(script_file).CreateInstance("TDCG.TMOTool.Command." + script_name).AlignToInterface<ITMOCommand>();
                     script.Nodes = nodes;
                     script.Execute();
@@ -69,10 +74,7 @@ namespace TAHdecrypt
             }
 
             tmo.Save(dest_file);
-
-            System.IO.File.Delete(source_file);
-            System.IO.File.Move(dest_file, source_file);
-            Console.WriteLine("updated " + source_file);
+            Console.WriteLine("saved " + dest_file);
 
             return;
         }
