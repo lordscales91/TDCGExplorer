@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
+using TAHdecrypt;
 
-namespace TAHdecrypt
+namespace TDCG.TMOTool.Command
 {
     public class Boin : ITMOCommand
     {
