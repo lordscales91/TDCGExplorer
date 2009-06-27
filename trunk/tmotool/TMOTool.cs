@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
+using System.Text.RegularExpressions;
 using CSScriptLibrary;
 
 namespace TAHdecrypt
@@ -14,26 +15,72 @@ namespace TAHdecrypt
 
     public class TMOTool
     {
+        static Regex re;
+        static List<string> script_names = new List<string>();
+
         static string GetCommandPath()
         {
             return Application.StartupPath + @"\command";
         }
         static string GetDestinationPath()
         {
-            return @"updated";
+            return Path.GetFullPath(@"updated");
         }
 
         static void Main(string[] args) 
         {
             if (args.Length < 1)
             {
-                Console.WriteLine("Usage: TMOTool <source file> [script name ...]");
+                Console.WriteLine("Usage: TMOTool <tmo file> [script name ...]");
                 return;
             }
 
-            string source_file = args[0];
-            string dest_file = Path.Combine(GetDestinationPath(), Path.GetFileName(source_file));
-            Directory.CreateDirectory(GetDestinationPath());
+            string source_file = Path.GetFullPath(args[0]);
+            for (int i = 1; i < args.Length; i++)
+                script_names.Add(args[i]);
+            try
+            {
+                string ext = Path.GetExtension(source_file).ToUpper();
+                if (ext == ".TMO")
+                {
+                    re = new Regex(@"\A" + Regex.Escape(Path.GetDirectoryName(source_file)) + @"\\?");
+                    DumpTMOEntries(source_file);
+                }
+                else if (Directory.Exists(source_file))
+                {
+                    re = new Regex(@"\A" + Regex.Escape(source_file) + @"\\?");
+                    DumpDirEntries(source_file);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex);
+            }
+
+            return;
+        }
+
+        public static void DumpDirEntries(string dir)
+        {
+            if (dir == GetDestinationPath())
+                return;
+
+            string[] tmo_files = Directory.GetFiles(dir, "*.TMO");
+            foreach (string file in tmo_files)
+            {
+                DumpTMOEntries(file);
+            }
+            string[] entries = Directory.GetDirectories(dir);
+            foreach (string entry in entries)
+            {
+                DumpDirEntries(entry);
+            }
+        }
+
+        public static void DumpTMOEntries(string source_file)
+        {
+            string dest_file = Path.Combine(GetDestinationPath(), re.Replace(source_file, @""));
+            Directory.CreateDirectory(Path.GetDirectoryName(dest_file));
 
             TMOFile tmo = new TMOFile();
             try
@@ -45,6 +92,7 @@ namespace TAHdecrypt
                 Console.WriteLine(ex.Message);
                 return;
             }
+            Console.WriteLine("processing " + source_file);
 
             if (tmo.nodes[0].ShortName != "W_Hips") {
                 Console.WriteLine("Passed: root node is not W_Hips");
@@ -61,9 +109,8 @@ namespace TAHdecrypt
             }
 
             try {
-                for (int i = 1; i < args.Length; i++)
+                foreach (string script_name in script_names)
                 {
-                    string script_name = args[i];
                     string script_file = Path.Combine(GetCommandPath(), script_name + ".cs");
                     var script = CSScript.Load(script_file).CreateInstance("TDCG.TMOTool.Command." + script_name).AlignToInterface<ITMOCommand>();
                     script.Nodes = nodes;
@@ -75,8 +122,6 @@ namespace TAHdecrypt
 
             tmo.Save(dest_file);
             Console.WriteLine("saved " + dest_file);
-
-            return;
         }
     }
 }
