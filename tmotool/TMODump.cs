@@ -7,6 +7,11 @@ public static class TMODump
 {
     static Regex re;
 
+    static string GetDestinationPath()
+    {
+        return Path.GetFullPath(@"updated");
+    }
+
     public static void Main(string[] args)
     {
         if (args.Length != 1)
@@ -15,18 +20,21 @@ public static class TMODump
             return;
         }
 
-        string source_file = args[0];
+        string source_file = Path.GetFullPath(args[0]);
+        Console.WriteLine(source_file);
         try
         {
             string ext = Path.GetExtension(source_file).ToUpper();
             if (ext == ".TMO")
             {
                 re = new Regex(@"\A" + Regex.Escape(Path.GetDirectoryName(source_file)) + @"\\?");
+                Console.WriteLine(re);
                 DumpTMOEntries(source_file);
             }
             else if (Directory.Exists(source_file))
             {
                 re = new Regex(@"\A" + Regex.Escape(source_file) + @"\\?");
+                Console.WriteLine(re);
                 DumpDirEntries(source_file);
             }
         }
@@ -38,6 +46,9 @@ public static class TMODump
 
     public static void DumpDirEntries(string dir)
     {
+        if (dir == GetDestinationPath())
+            return;
+
         string[] tmo_files = Directory.GetFiles(dir, "*.TMO");
         foreach (string file in tmo_files)
         {

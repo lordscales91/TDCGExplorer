@@ -17,6 +17,16 @@
 コマンドプロンプトから起動します。
 具体的な使い方についてはチュートリアル (tutorial.htm) を参照してください。
 
+TMOTool.exe <tmo file> [script name ...]
+　指定したtmo fileに対して体型変更を行います。
+　フォルダを指定すると再帰的に処理します。
+
+　script nameには体型変更スクリプトの名前を指定します。
+　標準では Boin Dom Pedo のいずれかを指定します（複数指定可）。
+
+　処理したtmo fileは updated フォルダに書き出されます。
+　フォルダがない場合は自動的に作成されます。
+
 TMOMove.exe <tmo file> [x y z]
 　指定したtmo fileをx y z方向に移動します。
 　注意：ファイルは上書きされます。
