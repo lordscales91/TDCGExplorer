@@ -60,7 +60,7 @@ namespace TAHdecrypt
 
             System.IO.File.Delete(source_file);
             System.IO.File.Move(dest_file, source_file);
-            Console.WriteLine("Boined: " + source_file);
+            Console.WriteLine("updated " + source_file);
 
             return;
         }
