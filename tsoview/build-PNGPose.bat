@@ -1,1 +1,1 @@
-csc /out:PNGPose.exe /reference:ICSharpCode.SharpZipLib.DLL PNGFile.cs PNGWriter.cs PNGPose.cs
+csc /r:ICSharpCode.SharpZipLib.dll PNGFile.cs PNGWriter.cs PNGPose.cs
