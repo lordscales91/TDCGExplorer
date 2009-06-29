@@ -1,1 +1,0 @@
-csc /lib:"C:\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2902.0" /r:Microsoft.DirectX.Direct3DX.dll,Microsoft.DirectX.Direct3D.dll,Microsoft.DirectX.dll /r:NyARToolkitCSUtils.dll,NyARToolkitCS.dll,DirectShowLib-2005.dll /m:TAHdecrypt.ARCG TMOFile.cs TMOWriter.cs TSOFile.cs Shader.cs ARCG.cs
