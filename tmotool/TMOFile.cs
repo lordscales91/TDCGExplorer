@@ -362,6 +362,13 @@ namespace TAHdecrypt
             m *= Matrix.RotationQuaternion(qt);
         }
 
+        public void RotateZ(float angle)
+        {
+            Vector3 v = new Vector3(m.M31, m.M32, m.M33);
+            Quaternion qt = Quaternion.RotationAxis(v, angle);
+            m *= Matrix.RotationQuaternion(qt);
+        }
+
         public void RotateWorldY(float angle)
         {
             Vector3 v = new Vector3(0.0f, 1.0f, 0.0f);
@@ -542,6 +549,12 @@ namespace TAHdecrypt
         {
             foreach(TMOMat i in frame_matrices)
                 i.RotateY(angle);
+        }
+
+        public void RotateZ(float angle)
+        {
+            foreach(TMOMat i in frame_matrices)
+                i.RotateZ(angle);
         }
 
         public void RotateWorldY(float angle)
