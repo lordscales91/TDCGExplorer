@@ -24,8 +24,7 @@ TMOTool.exe <tmo file> [script name ...]
 　script nameには体型変更スクリプトの名前を指定します。
 　標準では Boin Dom Pedo のいずれかを指定します（複数指定可）。
 
-　処理したtmo fileは updated フォルダに書き出されます。
-　フォルダがない場合は自動的に作成されます。
+　処理したtmo fileはカレントディレクトリに書き出されます。
 
 TMOMove.exe <tmo file> [x y z]
 　指定したtmo fileをx y z方向に移動します。
