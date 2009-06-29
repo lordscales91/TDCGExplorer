@@ -12,7 +12,7 @@ namespace TDCG.TMOTool.Command
         Dictionary<string, TMONode> nodes;
         public Dictionary<string, TMONode> Nodes { set { nodes = value; }}
 
-        float DegreeToRadian(float angle)
+        static float DegreeToRadian(float angle)
         {
            return (float)(Math.PI * angle / 180.0);
         }
