@@ -24,7 +24,7 @@ namespace TAHdecrypt
         }
         static string GetDestinationPath()
         {
-            return Path.GetFullPath(@"updated");
+            return Path.GetFullPath(@".");
         }
 
         static void Main(string[] args) 
@@ -38,17 +38,16 @@ namespace TAHdecrypt
             string source_file = Path.GetFullPath(args[0]);
             for (int i = 1; i < args.Length; i++)
                 script_names.Add(args[i]);
+            re = new Regex(@"\A" + Regex.Escape(Path.GetDirectoryName(source_file)) + @"\\?");
             try
             {
                 string ext = Path.GetExtension(source_file).ToUpper();
                 if (ext == ".TMO")
                 {
-                    re = new Regex(@"\A" + Regex.Escape(Path.GetDirectoryName(source_file)) + @"\\?");
                     DumpTMOEntries(source_file);
                 }
                 else if (Directory.Exists(source_file))
                 {
-                    re = new Regex(@"\A" + Regex.Escape(source_file) + @"\\?");
                     DumpDirEntries(source_file);
                 }
             }
