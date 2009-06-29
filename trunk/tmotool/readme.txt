@@ -22,7 +22,7 @@ TMOTool.exe <tmo file> [script name ...]
 　フォルダを指定すると再帰的に処理します。
 
 　script nameには体型変更スクリプトの名前を指定します。
-　標準では Boin Dom Pedo のいずれかを指定します（複数指定可）。
+　Boin Dom Pedo Ika Kemo を指定できます（複数指定可）。
 
 　処理したtmo fileはカレントディレクトリに書き出されます。
 
