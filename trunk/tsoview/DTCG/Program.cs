@@ -10,8 +10,9 @@ using System.IO;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
+using TAHdecrypt;
 
-namespace TAHdecrypt
+namespace DTCG
 {
 public class TSOSample : IDisposable
 {
