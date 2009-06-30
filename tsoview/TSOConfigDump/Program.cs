@@ -1,8 +1,9 @@
 using System;
+using TAHdecrypt;
 
-namespace TAHdecrypt
+namespace TSOConfigDump
 {
-    static class TSOConfigDump
+    static class Program
     {
         static void Main(string[] args)
         {
