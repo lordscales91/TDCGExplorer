@@ -16,8 +16,9 @@ using System.Runtime.InteropServices;
 using jp.nyatla.nyartoolkit.cs;
 using jp.nyatla.nyartoolkit.cs.core;
 using jp.nyatla.nyartoolkit.cs.detector;
+using TAHdecrypt;
 
-namespace TAHdecrypt
+namespace ARCG
 {
 public class TSOSample : IDisposable, CaptureListener
 {
