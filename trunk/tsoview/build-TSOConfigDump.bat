@@ -1,1 +1,1 @@
-csc /out:TSOConfigDump.exe TSOConfig.cs TSOConfigDump\Program.cs
+csc /out:build\TSOConfigDump.exe TSOConfig.cs TSOConfigDump\Program.cs
