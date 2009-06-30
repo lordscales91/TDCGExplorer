@@ -432,9 +432,7 @@ public class TSOSample : IDisposable
             return false;
         }
 
-        Directory.SetCurrentDirectory(Application.StartupPath);
-
-        string effect_file = @"toonshader.cgfx";
+        string effect_file = Path.Combine(Application.StartupPath, @"toonshader.cgfx");
         if (! File.Exists(effect_file))
         {
             Console.WriteLine("File not found: " + effect_file);
