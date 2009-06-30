@@ -1,8 +1,9 @@
 using System;
+using TAHdecrypt;
 
-namespace TAHdecrypt
+namespace TSOCameraDump
 {
-    static class TSOCameraDump
+    static class Program
     {
         static void Main(string[] args)
         {
