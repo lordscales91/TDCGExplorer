@@ -1,1 +1,1 @@
-csc @tsoview.rsp @pngfile.rsp PNGNodeCopy\Program.cs
+csc /out:PNGNodeCopy.exe @tsoview.rsp @pngfile.rsp PNGNodeCopy\Program.cs
