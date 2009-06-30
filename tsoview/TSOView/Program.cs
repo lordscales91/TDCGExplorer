@@ -10,8 +10,9 @@ using System.IO;
 //using Microsoft.DirectX.Direct3D;
 //using Direct3D=Microsoft.DirectX.Direct3D;
 using CSScriptLibrary;
+using TAHdecrypt;
 
-namespace TAHdecrypt
+namespace TSOView
 {
 
 public class TSOForm : Form

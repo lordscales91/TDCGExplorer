@@ -17,7 +17,7 @@ namespace TAHdecrypt
 public class TSOSample : IDisposable
 {
     internal TSOFigureForm fig_form;
-    internal TSOForm form;
+    internal Form form;
 
     internal Device device;
 
@@ -124,7 +124,7 @@ public class TSOSample : IDisposable
     private float screenCenterX = 800 / 2.0f;
     private float screenCenterY = 600 / 2.0f;
 
-    public void SetForm(TSOForm form)
+    public void SetForm(Form form)
     {
         this.form = form;
         screenCenterX = form.ClientSize.Width / 2.0f;
@@ -375,7 +375,7 @@ public class TSOSample : IDisposable
     private Matrix Light_View = Matrix.Identity;
     private Matrix Light_Projection = Matrix.Identity;
 
-    public bool InitializeApplication(TSOForm form)
+    public bool InitializeApplication(Form form)
     {
         SetForm(form);
 
