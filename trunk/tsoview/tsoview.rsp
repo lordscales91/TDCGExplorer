@@ -2,7 +2,7 @@
 /r:Microsoft.DirectX.dll
 /r:Microsoft.DirectX.Direct3D.dll
 /r:Microsoft.DirectX.Direct3DX.dll
-TMOFile.cs
-TMOWriter.cs
-TSOFile.cs
-Shader.cs
+TDCG\TMOFile.cs
+TDCG\TMOWriter.cs
+TDCG\TSOFile.cs
+TDCG\Shader.cs

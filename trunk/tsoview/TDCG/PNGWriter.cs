@@ -5,7 +5,7 @@ using System.IO;
 using ICSharpCode.SharpZipLib.Checksums;
 //using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
-namespace TAHdecrypt
+namespace TDCG
 {
     public class PNGWriter
     {

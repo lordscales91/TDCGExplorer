@@ -1,1 +1,1 @@
-csc /out:TSOView.exe @tsoview.rsp @pngfile.rsp /r:CSScriptLibrary.dll TSOCamera.cs TSOFigure.cs TSOConfig.cs TSOFigureForm.cs TSOCameraMotion.cs TSOFigureMotion.cs TSOSample.cs TSOView\Program.cs
+csc /out:TSOView.exe @tsoview.rsp @pngfile.rsp /r:CSScriptLibrary.dll TDCG\Camera\TSOCamera.cs TDCG\Figure\TSOFigure.cs TSOConfig.cs TDCG\Figure\TSOFigureForm.cs TDCG\Camera\TSOCameraMotion.cs TDCG\Figure\TSOFigureMotion.cs TSOSample.cs TSOView\Program.cs

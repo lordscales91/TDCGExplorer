@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace TAHdecrypt
+namespace TDCG
 {
 
 public class TSOConfig
