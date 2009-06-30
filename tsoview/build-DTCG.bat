@@ -1,1 +1,1 @@
-csc /unsafe @tsoview.rsp DTCG.cs
+csc /out:DTCG.exe /unsafe @tsoview.rsp DTCG\Program.cs
