@@ -5,15 +5,15 @@ using System.Windows.Forms;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
-namespace TAHdecrypt
+namespace ShaderTest
 {
-class ShaderTest : IDisposable
+class Program : IDisposable
 {
     static void Main(string[] args)
     {
-        using (ShaderTest shader_test = new ShaderTest())
+        using (Program program = new Program())
         using (TMOForm form = new TMOForm())
-        if (shader_test.InitializeApplication(form))
+        if (program.InitializeApplication(form))
         {
             Console.WriteLine("Test succeeded.");
             /*
