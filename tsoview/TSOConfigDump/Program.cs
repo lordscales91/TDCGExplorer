@@ -1,5 +1,5 @@
 using System;
-using TAHdecrypt;
+using TDCG;
 
 namespace TSOConfigDump
 {

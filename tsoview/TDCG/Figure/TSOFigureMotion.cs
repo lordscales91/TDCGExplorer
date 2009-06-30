@@ -6,7 +6,7 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
 
-namespace TAHdecrypt
+namespace TDCG.Figure
 {
 
 public class TSOFigureAction

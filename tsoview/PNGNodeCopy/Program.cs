@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-using TAHdecrypt;
+using TDCG;
 
 namespace PNGNodeCopy
 {

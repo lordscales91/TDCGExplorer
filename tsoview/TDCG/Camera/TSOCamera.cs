@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
-namespace TAHdecrypt
+namespace TDCG.Camera
 {
 
 public class TSOCamera

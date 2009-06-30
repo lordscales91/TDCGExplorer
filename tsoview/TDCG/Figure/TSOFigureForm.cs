@@ -7,7 +7,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.IO;
 
-namespace TAHdecrypt
+namespace TDCG.Figure
 {
 
 public class TSOFigureForm : Form

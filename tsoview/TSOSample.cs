@@ -10,8 +10,10 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
 //using CSScriptLibrary;
+using TDCG.Camera;
+using TDCG.Figure;
 
-namespace TAHdecrypt
+namespace TDCG
 {
 
 public class TSOSample : IDisposable

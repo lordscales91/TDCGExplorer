@@ -5,7 +5,7 @@ using System.ComponentModel;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
-namespace TAHdecrypt
+namespace TDCG
 {
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class ShaderParameter

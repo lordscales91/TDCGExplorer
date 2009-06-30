@@ -10,7 +10,8 @@ using System.IO;
 //using Microsoft.DirectX.Direct3D;
 //using Direct3D=Microsoft.DirectX.Direct3D;
 using CSScriptLibrary;
-using TAHdecrypt;
+using TDCG;
+using TDCG.Figure;
 
 namespace TSOView
 {
@@ -66,7 +67,7 @@ static class TSOView
                 foreach (string arg in args)
                     sample.LoadAnyFile(arg);
 
-                var script = CSScript.Load("Script.cs").CreateInstance("TAHdecrypt.Script").AlignToInterface<IScript>();
+                var script = CSScript.Load("Script.cs").CreateInstance("TDCG.Script").AlignToInterface<IScript>();
                 script.Hello(sample);
 
                 form.Show();
