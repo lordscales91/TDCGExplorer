@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+using TAHdecrypt;
 
-namespace TAHdecrypt
+namespace PNGNodeCopy
 {
     public class TSOFigure
     {
@@ -17,7 +18,7 @@ namespace TAHdecrypt
         internal byte[] figu;
     }
 
-    class PNGNodeCopy
+    class Program
     {
         static void Main(string[] args) 
         {
@@ -34,8 +35,8 @@ namespace TAHdecrypt
             if (args.Length > 2)
                 node_name = args[2];
 
-            PNGNodeCopy png = new PNGNodeCopy();
-            png.CopyNode(source_file, motion_file, node_name);
+            Program program = new Program();
+            program.CopyNode(source_file, motion_file, node_name);
         }
 
         internal List<TSOFigure> TSOFigureList = new List<TSOFigure>();

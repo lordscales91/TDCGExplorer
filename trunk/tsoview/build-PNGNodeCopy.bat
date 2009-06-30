@@ -1,1 +1,1 @@
-csc @tsoview.rsp /r:ICSharpCode.SharpZipLib.dll PNGFile.cs PNGWriter.cs PNGNodeCopy.cs
+csc @tsoview.rsp @pngfile.rsp PNGNodeCopy\Program.cs
