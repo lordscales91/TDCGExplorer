@@ -17,7 +17,7 @@ namespace TAHdecrypt
 public class TSOSample : IDisposable
 {
     internal TSOFigureForm fig_form;
-    internal Form form;
+    internal Control control;
 
     internal Device device;
 
@@ -124,11 +124,11 @@ public class TSOSample : IDisposable
     private float screenCenterX = 800 / 2.0f;
     private float screenCenterY = 600 / 2.0f;
 
-    public void SetForm(Form form)
+    public void SetControl(Control control)
     {
-        this.form = form;
-        screenCenterX = form.ClientSize.Width / 2.0f;
-        screenCenterY = form.ClientSize.Height / 2.0f;
+        this.control = control;
+        screenCenterX = control.ClientSize.Width / 2.0f;
+        screenCenterY = control.ClientSize.Height / 2.0f;
     }
 
     public Vector3 ScreenToVector(float screenPointX, float screenPointY)
@@ -375,22 +375,22 @@ public class TSOSample : IDisposable
     private Matrix Light_View = Matrix.Identity;
     private Matrix Light_Projection = Matrix.Identity;
 
-    public bool InitializeApplication(Form form)
+    public bool InitializeApplication(Control control)
     {
-        SetForm(form);
+        SetControl(control);
 
         for (int i = 0; i < keysEnabled.Length; i++)
         {
             keysEnabled[i] = true;
         }
-        form.KeyDown += new KeyEventHandler(form_OnKeyDown);
-        form.KeyUp += new KeyEventHandler(form_OnKeyUp);
+        control.KeyDown += new KeyEventHandler(form_OnKeyDown);
+        control.KeyUp += new KeyEventHandler(form_OnKeyUp);
 
-        form.MouseDown += new MouseEventHandler(form_OnMouseDown);
-        form.MouseMove += new MouseEventHandler(form_OnMouseMove);
+        control.MouseDown += new MouseEventHandler(form_OnMouseDown);
+        control.MouseMove += new MouseEventHandler(form_OnMouseMove);
 
-        form.DragDrop += new DragEventHandler(form_OnDragDrop);
-        form.DragEnter += new DragEventHandler(form_OnDragEnter);
+        control.DragDrop += new DragEventHandler(form_OnDragDrop);
+        control.DragEnter += new DragEventHandler(form_OnDragEnter);
 
         PresentParameters pp = new PresentParameters();
         try
@@ -417,7 +417,7 @@ public class TSOSample : IDisposable
                 flags = CreateFlags.HardwareVertexProcessing;
             if (caps.DeviceCaps.SupportsPureDevice)
                 flags |= CreateFlags.PureDevice;
-            device = new Device(adapter_ordinal, DeviceType.Hardware, form.Handle, flags, pp);
+            device = new Device(adapter_ordinal, DeviceType.Hardware, control.Handle, flags, pp);
 
             FontDescription fd = new FontDescription();
             fd.Height = 24;
