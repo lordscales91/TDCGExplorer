@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
+using TAHdecrypt;
 
-namespace TAHdecrypt
+namespace PNGPose
 {
-class PNGPose
+class Program
 {
     public static void Main(string[] args)
     {
@@ -26,17 +27,17 @@ class PNGPose
             dest_path = Path.Combine(dest_path, folder_name);
             Console.WriteLine("Extract File: " + source_file);
 
-            PNGPose png = new PNGPose();
+            Program program = new Program();
 
-            png.Extract(source_file, dest_path);
+            program.Extract(source_file, dest_path);
         }
         else if (Directory.Exists(source_file))
         {
             Console.WriteLine("Compose File: " + source_file);
 
-            PNGPose png = new PNGPose();
+            Program program = new Program();
 
-            png.Compose(source_file);
+            program.Compose(source_file);
         }
     }
         int numTMO = 0;
