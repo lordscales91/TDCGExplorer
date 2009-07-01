@@ -11,7 +11,6 @@ using System.IO;
 //using Direct3D=Microsoft.DirectX.Direct3D;
 using CSScriptLibrary;
 using TDCG;
-using TDCG.Figure;
 
 namespace TSOView
 {
@@ -57,7 +56,7 @@ static class TSOView
             config = new TSOConfig();
 
         using (TSOSample sample = new TSOSample())
-        using (TSOFigureForm fig_form = new TSOFigureForm())
+        using (FigureForm fig_form = new FigureForm())
         using (TSOForm form = new TSOForm(config))
         {
             sample.fig_form = fig_form;

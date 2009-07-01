@@ -7,10 +7,10 @@ using System.Threading;
 using System.Windows.Forms;
 using System.IO;
 
-namespace TDCG.Figure
+namespace TDCG
 {
 
-public class TSOFigureForm : Form
+public class FigureForm : Form
 {
     Button btn1;
     Button btnUp;
@@ -19,7 +19,7 @@ public class TSOFigureForm : Form
     ListView lv;
     DataGridView dg;
 
-    public TSOFigureForm()
+    public FigureForm()
     {
         this.ClientSize = new System.Drawing.Size(800, 600);
         this.Text = "TSOGrid";
@@ -98,7 +98,7 @@ public class TSOFigureForm : Form
             this.Dispose(); // Esc was pressed
     }
 
-    private TSOFigure fig = null;
+    private Figure fig = null;
     private TSOFile tso = null;
     private Shader shader = null;
 
@@ -112,7 +112,7 @@ public class TSOFigureForm : Form
         this.fig = null;
     }
 
-    public void SetTSOFigure(TSOFigure fig)
+    public void SetFigure(Figure fig)
     {
         this.fig = fig;
         lv_fig.Items.Clear();
@@ -164,7 +164,7 @@ public class TSOFigureForm : Form
         if (li_idx_prev < 0)
             return;
         fig.SwapAt(li_idx_prev, li_idx);
-        SetTSOFigure(fig);
+        SetFigure(fig);
         ListViewItem li = lv_fig.Items[li_idx_prev];
         li.Selected = true;
     }
@@ -178,7 +178,7 @@ public class TSOFigureForm : Form
         if (li_idx_next > lv_fig.Items.Count-1)
             return;
         fig.SwapAt(li_idx, li_idx_next);
-        SetTSOFigure(fig);
+        SetFigure(fig);
         ListViewItem li = lv_fig.Items[li_idx_next];
         li.Selected = true;
     }

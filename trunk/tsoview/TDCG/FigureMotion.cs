@@ -6,26 +6,26 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
 
-namespace TDCG.Figure
+namespace TDCG
 {
 
-public class TSOFigureAction
+public class FigureAction
 {
     internal int frame_index;
     internal TMOFile tmo;
 
-    public TSOFigureAction(int frame_index, TMOFile tmo)
+    public FigureAction(int frame_index, TMOFile tmo)
     {
         this.frame_index = frame_index;
         this.tmo = tmo;
     }
 }
 
-public class TSOFigureMotion
+public class FigureMotion
 {
     internal int frame_index = 0;
-    internal LinkedList<TSOFigureAction> action_list = new LinkedList<TSOFigureAction>();
-    internal LinkedListNode<TSOFigureAction> current_action = null;
+    internal LinkedList<FigureAction> action_list = new LinkedList<FigureAction>();
+    internal LinkedListNode<FigureAction> current_action = null;
 
     public int Count
     {
@@ -46,7 +46,7 @@ public class TSOFigureMotion
 
     public TMOFile GetTMO()
     {
-        TSOFigureAction act = current_action.Value;
+        FigureAction act = current_action.Value;
         return act.tmo;
     }
 
@@ -65,9 +65,9 @@ public class TSOFigureMotion
 
     public void Add(int frame_index, TMOFile tmo)
     {
-        LinkedListNode<TSOFigureAction> act = action_list.First;
-        LinkedListNode<TSOFigureAction> new_act = new LinkedListNode<TSOFigureAction>(new TSOFigureAction(frame_index, tmo));
-        LinkedListNode<TSOFigureAction> found = null;
+        LinkedListNode<FigureAction> act = action_list.First;
+        LinkedListNode<FigureAction> new_act = new LinkedListNode<FigureAction>(new FigureAction(frame_index, tmo));
+        LinkedListNode<FigureAction> found = null;
 
         while (act != null)
         {

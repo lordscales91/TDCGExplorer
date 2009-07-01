@@ -10,10 +10,10 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
 
-namespace TDCG.Figure
+namespace TDCG
 {
 
-public class TSOFigure : IDisposable
+public class Figure : IDisposable
 {
     internal List<TSOFile> TSOList = new List<TSOFile>();
     internal TMOFile tmo = null;
@@ -87,7 +87,7 @@ public class TSOFigure : IDisposable
     private int frame_index = 0;
     private int current_frame_index = -1;
 
-    public TSOFigure()
+    public Figure()
     {
         tmo = new TMOFile();
         nodemap = new Dictionary<TSONode, TMONode>();
@@ -198,9 +198,9 @@ public class TSOFigure : IDisposable
             tso.Open(device, effect);
     }
 
-    private TSOFigureMotion motion = new TSOFigureMotion();
+    private FigureMotion motion = new FigureMotion();
 
-    public TSOFigureMotion Motion
+    public FigureMotion Motion
     {
         get { return motion; }
     }

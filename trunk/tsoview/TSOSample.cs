@@ -10,14 +10,13 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
 //using CSScriptLibrary;
-using TDCG.Figure;
 
 namespace TDCG
 {
 
 public class TSOSample : IDisposable
 {
-    internal TSOFigureForm fig_form;
+    internal FigureForm fig_form;
     internal Control control;
 
     internal Device device;
@@ -41,7 +40,7 @@ public class TSOSample : IDisposable
     internal Surface dev_surface = null;
     internal Surface dev_zbuf = null;
 
-    public List<TSOFigure> TSOFigureList = new List<TSOFigure>();
+    public List<Figure> FigureList = new List<Figure>();
     public List<TMOFile> TMOFileList = new List<TMOFile>();
 
     internal Dictionary<string, TMOFile> tmomap = new Dictionary<string, TMOFile>();
@@ -174,9 +173,9 @@ public class TSOSample : IDisposable
 
     public void UpdateFigureForm()
     {
-        TSOFigure fig;
+        Figure fig;
         if (TryGetFigure(out fig))
-            fig_form.SetTSOFigure(fig);
+            fig_form.SetFigure(fig);
         else
             fig_form.Clear();
     }
@@ -185,7 +184,7 @@ public class TSOSample : IDisposable
     {
         if (figureIndex < 0)
             figureIndex = 0;
-        if (figureIndex > TSOFigureList.Count-1)
+        if (figureIndex > FigureList.Count-1)
             figureIndex = 0;
         this.figureIndex = figureIndex;
         UpdateFigureForm();
@@ -193,7 +192,7 @@ public class TSOSample : IDisposable
 
     public void AddFigureFromTSODirectory(string source_file)
     {
-        TSOFigure fig = new TSOFigure();
+        Figure fig = new Figure();
         List<TSOFile> tso_list = new List<TSOFile>();
         try
         {
@@ -214,32 +213,32 @@ public class TSOSample : IDisposable
             tso.Open(device, effect);
             fig.AddTSO(tso);
         }
-        int idx = TSOFigureList.Count;
-        TSOFigureList.Add(fig);
+        int idx = FigureList.Count;
+        FigureList.Add(fig);
         SetFigureIndex(idx);
     }
 
-    public TSOFigure GetSelectedFigure()
+    public Figure GetSelectedFigure()
     {
-        TSOFigure fig;
-        if (TSOFigureList.Count == 0)
+        Figure fig;
+        if (FigureList.Count == 0)
             fig = null;
         else
-            fig = TSOFigureList[figureIndex];
+            fig = FigureList[figureIndex];
         return fig;
     }
 
-    public TSOFigure GetSelectedOrCreateFigure()
+    public Figure GetSelectedOrCreateFigure()
     {
-        TSOFigure fig;
-        if (TSOFigureList.Count == 0)
-            fig = new TSOFigure();
+        Figure fig;
+        if (FigureList.Count == 0)
+            fig = new Figure();
         else
-            fig = TSOFigureList[figureIndex];
-        if (TSOFigureList.Count == 0)
+            fig = FigureList[figureIndex];
+        if (FigureList.Count == 0)
         {
-            int idx = TSOFigureList.Count;
-            TSOFigureList.Add(fig);
+            int idx = FigureList.Count;
+            FigureList.Add(fig);
             SetFigureIndex(idx);
         }
         return fig;
@@ -247,7 +246,7 @@ public class TSOSample : IDisposable
 
     public void LoadTSOFile(string source_file)
     {
-        TSOFigure fig = GetSelectedOrCreateFigure();
+        Figure fig = GetSelectedOrCreateFigure();
         try
         {
             TSOFile tso = new TSOFile();
@@ -262,25 +261,25 @@ public class TSOSample : IDisposable
         UpdateFigureForm();
     }
 
-    public bool TryGetFigure(out TSOFigure fig)
+    public bool TryGetFigure(out Figure fig)
     {
         fig = null;
-        if (figureIndex < TSOFigureList.Count)
-            fig = TSOFigureList[figureIndex];
+        if (figureIndex < FigureList.Count)
+            fig = FigureList[figureIndex];
         return fig != null;
     }
 
-    public void NextTSOFigure()
+    public void NextFigure()
     {
         SetFigureIndex(figureIndex+1);
-        TSOFigure fig;
+        Figure fig;
         if (TryGetFigure(out fig))
             camera.SetCenter(fig.Center);
     }
 
     public void LoadTMOFile(string source_file)
     {
-        TSOFigure fig;
+        Figure fig;
         if (TryGetFigure(out fig))
         {
             if (File.Exists(source_file))
@@ -320,12 +319,12 @@ public class TSOSample : IDisposable
 
     public void AddFigureFromPNGFile(string source_file)
     {
-        List<TSOFigure> fig_list = LoadPNGFile(source_file);
+        List<Figure> fig_list = LoadPNGFile(source_file);
         if (fig_list.Count != 0) //taOb png
         if (fig_list[0].TSOList.Count == 0) //POSE png
         {
             TMOFile tmo = fig_list[0].Tmo;
-            TSOFigure fig;
+            Figure fig;
             if (tmo != null && TryGetFigure(out fig))
             {
                 fig.Tmo = tmo;
@@ -334,17 +333,17 @@ public class TSOSample : IDisposable
         }
         else
         {
-            int idx = TSOFigureList.Count;
-            foreach (TSOFigure fig in fig_list)
+            int idx = FigureList.Count;
+            foreach (Figure fig in fig_list)
             {
                 fig.OpenTSOFile(device, effect);
                 fig.UpdateNodeMapAndBoneMatrices();
-                TSOFigureList.Add(fig);
+                FigureList.Add(fig);
             }
             SetFigureIndex(idx);
         }
         {
-            TSOFigure fig;
+            Figure fig;
             if (TryGetFigure(out fig))
                 camera.SetCenter(fig.Center);
         }
@@ -518,20 +517,20 @@ public class TSOSample : IDisposable
 
     public void ClearFigureList()
     {
-        foreach (TSOFigure fig in TSOFigureList)
+        foreach (Figure fig in FigureList)
             fig.Dispose();
-        TSOFigureList.Clear();
+        FigureList.Clear();
         SetFigureIndex(0);
         GC.Collect(); // free meshes and textures.
     }
 
     public void RemoveSelectedFigure()
     {
-        TSOFigure fig;
+        Figure fig;
         if (TryGetFigure(out fig))
         {
             fig.Dispose();
-            TSOFigureList.Remove(fig);
+            FigureList.Remove(fig);
             SetFigureIndex(figureIndex-1);
             GC.Collect(); // free meshes and textures.
         }
@@ -578,7 +577,7 @@ public class TSOSample : IDisposable
         if (keysEnabled[keyFigure] && keys[keyFigure])
         {
             keysEnabled[keyFigure] = false;
-            NextTSOFigure();
+            NextFigure();
         }
         if (keysEnabled[keyDelete] && keys[keyDelete])
         {
@@ -593,7 +592,7 @@ public class TSOSample : IDisposable
         {
             keysEnabled[keyCameraReset] = false;
             camera.Reset();
-            TSOFigure fig;
+            Figure fig;
             if (TryGetFigure(out fig))
                 camera.SetCenter(fig.Center);
         }
@@ -605,7 +604,7 @@ public class TSOSample : IDisposable
             else if (File.Exists(@"camera1.xml"))
             {
                 camera = Camera.Load(@"camera1.xml");
-                TSOFigure fig;
+                Figure fig;
                 if (TryGetFigure(out fig))
                     camera.SetCenter(fig.Center);
             }
@@ -618,7 +617,7 @@ public class TSOSample : IDisposable
             else if (File.Exists(@"camera2.xml"))
             {
                 camera = Camera.Load(@"camera2.xml");
-                TSOFigure fig;
+                Figure fig;
                 if (TryGetFigure(out fig))
                     camera.SetCenter(fig.Center);
             }
@@ -643,7 +642,7 @@ public class TSOSample : IDisposable
                     camera = cam1;
             }
             {
-                TSOFigure fig;
+                Figure fig;
                 if (TryGetFigure(out fig))
                     camera.SetCenter(fig.Center);
             }
@@ -668,7 +667,7 @@ public class TSOSample : IDisposable
                 cam1 = cam0;
             }
         }
-        foreach (TSOFigure fig in TSOFigureList)
+        foreach (Figure fig in FigureList)
         {
             fig.NextFrame();
         }
@@ -725,17 +724,17 @@ public class TSOSample : IDisposable
         Light_View.M33 = -Light_View.M33;
         Light_View.M34 = -Light_View.M34;
     }
-        foreach (TSOFigure fig in TSOFigureList)
+        foreach (Figure fig in FigureList)
         foreach (TSOFile tso in fig.TSOList)
             tso.lightDir = lightDir;
 
         //device.Transform.World = world_matrix;
-        foreach (TSOFigure fig in TSOFigureList)
+        foreach (Figure fig in FigureList)
             fig.UpdateBoneMatrices();
 
         if (motionEnabled)
         {
-            foreach (TSOFigure fig in TSOFigureList)
+            foreach (Figure fig in FigureList)
                 fig.NextTMOFrame();
         }
     }
@@ -763,7 +762,7 @@ public class TSOSample : IDisposable
 
         effect.Technique = handle_ShadowMap;
 
-        foreach (TSOFigure fig in TSOFigureList)
+        foreach (Figure fig in FigureList)
         foreach (TSOFile tso in fig.TSOList)
         {
             //tso.BeginRender();
@@ -803,7 +802,7 @@ public class TSOSample : IDisposable
 
         device.RenderState.AlphaBlendEnable = true;
 
-        foreach (TSOFigure fig in TSOFigureList)
+        foreach (Figure fig in FigureList)
         foreach (TSOFile tso in fig.TSOList)
         {
             tso.BeginRender();
@@ -867,7 +866,7 @@ public class TSOSample : IDisposable
 
     public void Dispose()
     {
-        foreach (TSOFigure fig in TSOFigureList)
+        foreach (Figure fig in FigureList)
             fig.Dispose();
         if (sprite != null)
             sprite.Dispose();
@@ -883,25 +882,25 @@ public class TSOSample : IDisposable
             device.Dispose();
     }
 
-    public List<TSOFigure> LoadPNGFile(string source_file)
+    public List<Figure> LoadPNGFile(string source_file)
     {
-        List<TSOFigure> fig_list = new List<TSOFigure>();
+        List<Figure> fig_list = new List<Figure>();
 
         if (File.Exists(source_file))
         try
         {
             PNGFile png = new PNGFile();
-            TSOFigure fig = null;
+            Figure fig = null;
             TMOFile tmo = null;
 
             png.Hsav += delegate(string type)
             {
-                fig = new TSOFigure();
+                fig = new Figure();
                 fig_list.Add(fig);
             };
             png.Lgta += delegate(Stream dest, int extract_length)
             {
-                fig = new TSOFigure();
+                fig = new Figure();
                 fig_list.Add(fig);
             };
             png.Ftmo += delegate(Stream dest, int extract_length)
