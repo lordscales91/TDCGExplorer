@@ -9,11 +9,11 @@ public class Script
 {
     public void Hello(TSOSample sample)
     {
-        Console.WriteLine("TSOFigureList.Count {0}", sample.TSOFigureList.Count);
+        Console.WriteLine("FigureList.Count {0}", sample.FigureList.Count);
         /*
         sample.LoadMotion(@"sample.tmo");
 
-        TSOFigure fig;
+        Figure fig;
         if (sample.TryGetFigure(out fig))
         {
             fig.SetMotion(  0, sample.GetMotion("sample"));
