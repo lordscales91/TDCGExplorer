@@ -6,17 +6,17 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
 
-namespace TDCG.Camera
+namespace TDCG
 {
 
-public class TSOCameraAction
+public class CameraAction
 {
     internal int frame_index;
     internal Vector3 eye;
     internal Vector3 center;
     internal int interp_length;
 
-    public TSOCameraAction(int frame_index, Vector3 eye, Vector3 center, int interp_length)
+    public CameraAction(int frame_index, Vector3 eye, Vector3 center, int interp_length)
     {
         this.frame_index = frame_index;
         this.eye = eye;
@@ -33,14 +33,14 @@ public class TSOCameraAction
     }
 }
 
-public class TSOCameraMotion
+public class CameraMotion
 {
     internal int frame_index = 0;
-    internal LinkedList<TSOCameraAction> action_list = new LinkedList<TSOCameraAction>();
-    internal LinkedListNode<TSOCameraAction> current_action = null;
-    internal TSOCamera camera = null;
+    internal LinkedList<CameraAction> action_list = new LinkedList<CameraAction>();
+    internal LinkedListNode<CameraAction> current_action = null;
+    internal Camera camera = null;
 
-    public TSOCameraMotion(TSOCamera camera)
+    public CameraMotion(Camera camera)
     {
         this.camera = camera;
     }
@@ -64,8 +64,8 @@ public class TSOCameraMotion
 
     public void UpdateCamera()
     {
-        TSOCameraAction act1 = FindAction1();
-        TSOCameraAction act2 = FindAction2();
+        CameraAction act1 = FindAction1();
+        CameraAction act2 = FindAction2();
 
         if (frame_index == act1.frame_index)
         {
@@ -74,8 +74,8 @@ public class TSOCameraMotion
         }
         if (act2 != null && frame_index >= act2.interp_begin)
         {
-            TSOCamera cam1 = new TSOCamera();
-            TSOCamera cam2 = new TSOCamera();
+            Camera cam1 = new Camera();
+            Camera cam2 = new Camera();
             cam1.LookAt(act1.eye, act1.center);
             cam2.LookAt(act2.eye, act2.center);
             int frame_delta = frame_index - act2.interp_begin;
@@ -98,12 +98,12 @@ public class TSOCameraMotion
         }
     }
 
-    public TSOCameraAction FindAction1()
+    public CameraAction FindAction1()
     {
         return current_action.Value;
     }
 
-    public TSOCameraAction FindAction2()
+    public CameraAction FindAction2()
     {
         if (current_action.Next != null)
             return current_action.Next.Value;
@@ -117,9 +117,9 @@ public class TSOCameraMotion
     }
     public void Add(int frame_index, Vector3 eye, Vector3 center, int interp_length)
     {
-        LinkedListNode<TSOCameraAction> act = action_list.First;
-        LinkedListNode<TSOCameraAction> new_act = new LinkedListNode<TSOCameraAction>(new TSOCameraAction(frame_index, eye, center, interp_length));
-        LinkedListNode<TSOCameraAction> found = null;
+        LinkedListNode<CameraAction> act = action_list.First;
+        LinkedListNode<CameraAction> new_act = new LinkedListNode<CameraAction>(new CameraAction(frame_index, eye, center, interp_length));
+        LinkedListNode<CameraAction> found = null;
 
         while (act != null)
         {

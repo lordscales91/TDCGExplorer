@@ -10,7 +10,6 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
 //using CSScriptLibrary;
-using TDCG.Camera;
 using TDCG.Figure;
 
 namespace TDCG
@@ -359,15 +358,15 @@ public class TSOSample : IDisposable
         }
     }
 
-    private TSOCamera camera = new TSOCamera();
+    private Camera camera = new Camera();
 
-    public TSOCamera Camera
+    public Camera Camera
     {
         get { return camera; }
     }
 
-    private TSOCamera cam1 = null;
-    private TSOCamera cam2 = null;
+    private Camera cam1 = null;
+    private Camera cam2 = null;
 
     private int cam_frame_index = 0;
 
@@ -605,7 +604,7 @@ public class TSOSample : IDisposable
                 camera.Save(@"camera1.xml");
             else if (File.Exists(@"camera1.xml"))
             {
-                camera = TSOCamera.Load(@"camera1.xml");
+                camera = Camera.Load(@"camera1.xml");
                 TSOFigure fig;
                 if (TryGetFigure(out fig))
                     camera.SetCenter(fig.Center);
@@ -618,7 +617,7 @@ public class TSOSample : IDisposable
                 camera.Save(@"camera2.xml");
             else if (File.Exists(@"camera2.xml"))
             {
-                camera = TSOCamera.Load(@"camera2.xml");
+                camera = Camera.Load(@"camera2.xml");
                 TSOFigure fig;
                 if (TryGetFigure(out fig))
                     camera.SetCenter(fig.Center);
@@ -637,9 +636,9 @@ public class TSOSample : IDisposable
             else
             {
                 if (File.Exists(@"camera1.xml"))
-                    cam1 = TSOCamera.Load(@"camera1.xml");
+                    cam1 = Camera.Load(@"camera1.xml");
                 if (File.Exists(@"camera2.xml"))
-                    cam2 = TSOCamera.Load(@"camera2.xml");
+                    cam2 = Camera.Load(@"camera2.xml");
                 if (cam1 != null && cam2 != null)
                     camera = cam1;
             }
@@ -659,12 +658,12 @@ public class TSOSample : IDisposable
         }
         if (cam1 != null && cam2 != null)
         {
-            camera = TSOCamera.Interpolation(cam1, cam2, cam_frame_index/120.0f);
+            camera = Camera.Interpolation(cam1, cam2, cam_frame_index/120.0f);
             cam_frame_index++;
             if (cam_frame_index >= 120)
             {
                 cam_frame_index = 0;
-                TSOCamera cam0 = cam2;
+                Camera cam0 = cam2;
                 cam2 = cam1;
                 cam1 = cam0;
             }
