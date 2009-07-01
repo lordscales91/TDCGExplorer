@@ -1,5 +1,5 @@
 using System;
-using TDCG.Camera;
+using TDCG;
 
 namespace TSOCameraDump
 {
@@ -7,7 +7,7 @@ namespace TSOCameraDump
     {
         static void Main(string[] args)
         {
-            TSOCamera camera = new TSOCamera();
+            Camera camera = new Camera();
             camera.Dump();
         }
     }

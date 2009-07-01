@@ -6,10 +6,10 @@ using System.Xml.Serialization;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
-namespace TDCG.Camera
+namespace TDCG
 {
 
-public class TSOCamera
+public class Camera
 {
     internal Vector3 center = Vector3.Empty;    //回転中心位置
     internal Vector3 translation = Vector3.Empty;       //view座標上の位置
@@ -27,15 +27,15 @@ public class TSOCamera
     public Vector3 CamPosL { get { return camPosL; } set { camPosL = value; } }
     public Matrix CamPoseMat { get { return camPoseMat; } set { camPoseMat = value; } }
 
-    public TSOCamera()
+    public Camera()
     {
-        motion = new TSOCameraMotion(this);
+        motion = new CameraMotion(this);
     }
 
     /// <summary>カメラ位置と姿勢を標準出力へ書き出す</summary>
     public void Dump()
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(TSOCamera));
+        XmlSerializer serializer = new XmlSerializer(typeof(Camera));
         XmlWriterSettings settings = new XmlWriterSettings();
         settings.Encoding = Encoding.GetEncoding("Shift_JIS");
         settings.Indent = true;
@@ -47,7 +47,7 @@ public class TSOCamera
     /// <summary>カメラ位置と姿勢を書き出す</summary>
     public void Save(string dest_file)
     {
-        XmlSerializer serializer = new XmlSerializer(typeof(TSOCamera));
+        XmlSerializer serializer = new XmlSerializer(typeof(Camera));
         XmlWriterSettings settings = new XmlWriterSettings();
         settings.Encoding = Encoding.GetEncoding("Shift_JIS");
         settings.Indent = true;
@@ -57,19 +57,19 @@ public class TSOCamera
     }
 
     /// <summary>カメラ位置と姿勢を読み込む</summary>
-    public static TSOCamera Load(string source_file)
+    public static Camera Load(string source_file)
     {
         XmlReader reader = XmlReader.Create(source_file);
-        XmlSerializer serializer = new XmlSerializer(typeof(TSOCamera));
-        TSOCamera camera = serializer.Deserialize(reader) as TSOCamera;
+        XmlSerializer serializer = new XmlSerializer(typeof(Camera));
+        Camera camera = serializer.Deserialize(reader) as Camera;
         reader.Close();
         return camera;
     }
 
     /// <summary>カメラ位置と姿勢を補間する</summary>
-    public static TSOCamera Interpolation(TSOCamera cam1, TSOCamera cam2, float ratio)
+    public static Camera Interpolation(Camera cam1, Camera cam2, float ratio)
     {
-        TSOCamera camera = new TSOCamera();
+        Camera camera = new Camera();
         camera.Center = Vector3.Lerp(cam1.Center, cam2.Center, ratio);
         camera.Translation = Vector3.Lerp(cam1.Translation, cam2.Translation, ratio);
         camera.CamPosL = Vector3.Lerp(cam1.CamPosL, cam2.CamPosL, ratio);
@@ -79,7 +79,7 @@ public class TSOCamera
         return camera;
     }
 
-    public void Interp(TSOCamera cam1, TSOCamera cam2, float ratio)
+    public void Interp(Camera cam1, Camera cam2, float ratio)
     {
         center = Vector3.Lerp(cam1.Center, cam2.Center, ratio);
         translation = Vector3.Lerp(cam1.Translation, cam2.Translation, ratio);
@@ -283,9 +283,9 @@ public class TSOCamera
         camZRotDef = 0.0f;
     }
 
-    private TSOCameraMotion motion = null;
+    private CameraMotion motion = null;
 
-    public TSOCameraMotion Motion
+    public CameraMotion Motion
     {
         get { return motion; }
     }

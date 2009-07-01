@@ -1,13 +1,13 @@
 using System;
-using TDCG.Camera;
+using TDCG;
 
-namespace TSOCameraLoad
+namespace CameraLoad
 {
     static class Program
     {
         static void Main(string[] args)
         {
-            TSOCamera camera = TSOCamera.Load(@"camera.xml");
+            Camera camera = Camera.Load(@"camera.xml");
             camera.Dump();
         }
     }
