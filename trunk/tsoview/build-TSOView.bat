@@ -1,1 +1,1 @@
-csc /out:build\TSOView.exe @tsoview.rsp @pngfile.rsp /r:CSScriptLibrary.dll TDCG\Camera.cs TDCG\Figure.cs TSOConfig.cs TDCG\FigureForm.cs TDCG\CameraMotion.cs TDCG\FigureMotion.cs TDCG\Viewer.cs TSOView\Program.cs
+csc /out:build\TSOView.exe /m:TSOView.Program @tsoview.rsp @pngfile.rsp /r:CSScriptLibrary.dll TDCG\Camera.cs TDCG\Figure.cs TDCG\FigureForm.cs TDCG\CameraMotion.cs TDCG\FigureMotion.cs TDCG\Viewer.cs TSOView\TSOConfig.cs TSOView\Program.cs
