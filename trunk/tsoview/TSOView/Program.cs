@@ -38,7 +38,7 @@ public class TSOForm : Form
 
 public interface IScript
 {
-    void Hello(TSOSample sample);
+    void Hello(Viewer viewer);
 }
 
 static class TSOView
@@ -55,19 +55,19 @@ static class TSOView
         else
             config = new TSOConfig();
 
-        using (TSOSample sample = new TSOSample())
+        using (Viewer viewer = new Viewer())
         using (FigureForm fig_form = new FigureForm())
         using (TSOForm form = new TSOForm(config))
         {
-            sample.fig_form = fig_form;
+            viewer.fig_form = fig_form;
 
-            if (sample.InitializeApplication(form))
+            if (viewer.InitializeApplication(form))
             {
                 foreach (string arg in args)
-                    sample.LoadAnyFile(arg);
+                    viewer.LoadAnyFile(arg);
 
                 var script = CSScript.Load(Path.Combine(Application.StartupPath, "Script.cs")).CreateInstance("TDCG.Script").AlignToInterface<IScript>();
-                script.Hello(sample);
+                script.Hello(viewer);
 
                 form.Show();
                 long wait = (long)(10000000.0f/60.0f);
@@ -77,9 +77,9 @@ static class TSOView
                 {
                     if (DateTime.Now.Ticks >= nextTicks)
                     {
-                        sample.FrameMove();
+                        viewer.FrameMove();
                         if (DateTime.Now.Ticks < nextTicks + wait)
-                            sample.Render();
+                            viewer.Render();
                         nextTicks += wait;
                     }
                     Application.DoEvents();

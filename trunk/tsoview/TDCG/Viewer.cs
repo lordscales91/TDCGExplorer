@@ -14,7 +14,7 @@ using Direct3D=Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
 
-public class TSOSample : IDisposable
+public class Viewer : IDisposable
 {
     internal FigureForm fig_form;
     internal Control control;

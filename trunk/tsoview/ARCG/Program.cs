@@ -20,7 +20,7 @@ using TDCG;
 
 namespace ARCG
 {
-public class TSOSample : IDisposable, CaptureListener
+public class Viewer : IDisposable, CaptureListener
 {
     internal DsBGRX32Raster raster = null;
     internal Surface surface;
@@ -499,7 +499,7 @@ public class TSOSample : IDisposable, CaptureListener
     {
       using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))
       if (sf != null)
-          SurfaceLoader.Save("sample.bmp", ImageFileFormat.Bmp, sf);
+          SurfaceLoader.Save("viewer.bmp", ImageFileFormat.Bmp, sf);
     }
 
     public void start()
@@ -548,23 +548,23 @@ static class ARCG
         if (args.Length > 1)
             tmo_file = args[1];
 
-        using (TSOSample sample = new TSOSample())
+        using (Viewer viewer = new Viewer())
         using (TSOForm form = new TSOForm())
         {
-            sample.LoadTSOFile(tso_file);
-            sample.LoadTMOFile(tmo_file);
+            viewer.LoadTSOFile(tso_file);
+            viewer.LoadTMOFile(tmo_file);
 
-            if (sample.InitializeApplication(form))
+            if (viewer.InitializeApplication(form))
             {
                 form.Show();
-                sample.start();
+                viewer.start();
                 // While the form is still valid, render and process messages
                 while (form.Created)
                 {
-                    sample.MainLoop();
+                    viewer.MainLoop();
                     Application.DoEvents();
                 }
-                sample.stop();
+                viewer.stop();
             }
 
         }
