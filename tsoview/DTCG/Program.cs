@@ -14,7 +14,7 @@ using TDCG;
 
 namespace DTCG
 {
-public class TSOSample : IDisposable
+public class Viewer : IDisposable
 {
     internal TSOForm form;
 
@@ -222,7 +222,7 @@ public class TSOSample : IDisposable
         if (keysEnabled[keySave] && keys[keySave])
         {
             keysEnabled[keySave] = false;
-            SaveToBitmap("sample.bmp");
+            SaveToBitmap("viewer.bmp");
         }
         if (keysEnabled[keyMotion] && keys[keyMotion])
         {
@@ -449,7 +449,7 @@ public class TSOForm : Form
 {
     public void UpdateBackground()
     {
-        using (Bitmap src = new Bitmap("sample.bmp"))
+        using (Bitmap src = new Bitmap("viewer.bmp"))
         using (Graphics g = Graphics.FromImage(bmp))
         {
             g.DrawImage(src, 0, 0);
@@ -511,21 +511,21 @@ static class DTCG
         if (args.Length > 1)
             tmo_file = args[1];
 
-        using (TSOSample sample = new TSOSample())
+        using (Viewer viewer = new Viewer())
         using (TSOForm form = new TSOForm())
         using (TMOForm tmo_form = new TMOForm())
         {
-            sample.LoadTSOFile(tso_file);
-            sample.LoadTMOFile(tmo_file);
+            viewer.LoadTSOFile(tso_file);
+            viewer.LoadTMOFile(tmo_file);
 
-            if (sample.InitializeApplication(form, tmo_form))
+            if (viewer.InitializeApplication(form, tmo_form))
             {
                 form.Show();
                 //tmo_form.Show();
                 // While the form is still valid, render and process messages
                 while (form.Created)
                 {
-                    sample.MainLoop();
+                    viewer.MainLoop();
                     Application.DoEvents();
                 }
             }
