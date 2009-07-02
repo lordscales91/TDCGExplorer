@@ -21,7 +21,7 @@ public class FigureForm : Form
 
     public FigureForm()
     {
-        this.ClientSize = new System.Drawing.Size(800, 600);
+        this.ClientSize = new Size(800, 600);
         this.Text = "TSOGrid";
         //this.AllowDrop = true;
         this.FormClosing += new FormClosingEventHandler(form_FormClosing);

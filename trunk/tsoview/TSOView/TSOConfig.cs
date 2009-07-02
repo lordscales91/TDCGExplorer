@@ -35,11 +35,5 @@ public class TSOConfig
         reader.Close();
         return config;
     }
-
-    static void Main(string[] args)
-    {
-        TSOConfig config = new TSOConfig();
-        config.Dump();
-    }
 }
 }
