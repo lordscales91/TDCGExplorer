@@ -16,7 +16,6 @@ namespace TDCG
 
 public class Viewer : IDisposable
 {
-    internal FigureForm fig_form;
     internal Control control;
 
     internal Device device;
@@ -45,29 +44,8 @@ public class Viewer : IDisposable
 
     internal Dictionary<string, TMOFile> tmomap = new Dictionary<string, TMOFile>();
 
-    // キー入力を保持
-    internal bool[] keys = new bool[256];
-    internal bool[] keysEnabled = new bool[256];
-
     // ライト方向
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
-
-    private void form_OnKeyDown(object sender, KeyEventArgs e)
-    {
-        if ((int)e.KeyCode < keys.Length)
-        {
-            keys[(int)e.KeyCode] = true;
-        }
-    }
-
-    private void form_OnKeyUp(object sender, KeyEventArgs e)
-    {
-        if ((int)e.KeyCode < keys.Length)
-        {
-            keys[(int)e.KeyCode] = false;
-            keysEnabled[(int)e.KeyCode] = true;
-        }
-    }
 
     private Point lastScreenPoint = Point.Empty;
 
@@ -171,14 +149,7 @@ public class Viewer : IDisposable
         }
     }
 
-    public void UpdateFigureForm()
-    {
-        Figure fig;
-        if (TryGetFigure(out fig))
-            fig_form.SetFigure(fig);
-        else
-            fig_form.Clear();
-    }
+    public event EventHandler FigureEvent;
 
     public void SetFigureIndex(int figureIndex)
     {
@@ -187,7 +158,7 @@ public class Viewer : IDisposable
         if (figureIndex > FigureList.Count-1)
             figureIndex = 0;
         this.figureIndex = figureIndex;
-        UpdateFigureForm();
+        FigureEvent(this, EventArgs.Empty);
     }
 
     public void AddFigureFromTSODirectory(string source_file)
@@ -258,7 +229,7 @@ public class Viewer : IDisposable
         {
             Console.WriteLine("Error: " + ex);
         }
-        UpdateFigureForm();
+        FigureEvent(this, EventArgs.Empty);
     }
 
     public bool TryGetFigure(out Figure fig)
@@ -361,13 +332,13 @@ public class Viewer : IDisposable
 
     public Camera Camera
     {
-        get { return camera; }
+        get {
+            return camera;
+        }
+        set {
+            camera = value;
+        }
     }
-
-    private Camera cam1 = null;
-    private Camera cam2 = null;
-
-    private int cam_frame_index = 0;
 
     private Matrix world_matrix = Matrix.Identity;
     private Matrix Transform_View = Matrix.Identity;
@@ -378,13 +349,6 @@ public class Viewer : IDisposable
     public bool InitializeApplication(Control control)
     {
         SetControl(control);
-
-        for (int i = 0; i < keysEnabled.Length; i++)
-        {
-            keysEnabled[i] = true;
-        }
-        control.KeyDown += new KeyEventHandler(form_OnKeyDown);
-        control.KeyUp += new KeyEventHandler(form_OnKeyUp);
 
         control.MouseDown += new MouseEventHandler(form_OnMouseDown);
         control.MouseMove += new MouseEventHandler(form_OnMouseMove);
@@ -540,166 +504,29 @@ public class Viewer : IDisposable
     internal bool shadowEnabled = false;
     internal bool spriteEnabled = false;
 
-    internal int keySave        = (int)Keys.Return;
-    internal int keyMotion      = (int)Keys.Space;
-    internal int keyShadow      = (int)Keys.S;
-    internal int keySprite      = (int)Keys.Z;
-    internal int keyFigure      = (int)Keys.Tab;
-    internal int keyDelete      = (int)Keys.Delete;
-    internal int keyCameraReset = (int)Keys.D0;
-    internal int keyCameraLoadOrSave1 = (int)Keys.D1;
-    internal int keyCameraLoadOrSave2 = (int)Keys.D2;
-    internal int keyCameraSlerp = (int)Keys.C;
-    internal int keyFigureForm = (int)Keys.G;
+    public void SwitchMotionEnabled()
+    {
+        motionEnabled = ! motionEnabled;
+    }
+
+    public void SwitchShadowEnabled()
+    {
+        shadowEnabled = ! shadowEnabled;
+    }
+
+    public void SwitchSpriteEnabled()
+    {
+        spriteEnabled = ! spriteEnabled;
+    }
 
     public void FrameMove()
     {
-        if (keysEnabled[keySave] && keys[keySave])
-        {
-            keysEnabled[keySave] = false;
-            SaveToBitmap();
-        }
-        if (keysEnabled[keyMotion] && keys[keyMotion])
-        {
-            keysEnabled[keyMotion] = false;
-            motionEnabled = ! motionEnabled;
-        }
-        if (keysEnabled[keyShadow] && keys[keyShadow])
-        {
-            keysEnabled[keyShadow] = false;
-            shadowEnabled = ! shadowEnabled;
-        }
-        if (keysEnabled[keySprite] && keys[keySprite])
-        {
-            keysEnabled[keySprite] = false;
-            spriteEnabled = ! spriteEnabled;
-        }
-        if (keysEnabled[keyFigure] && keys[keyFigure])
-        {
-            keysEnabled[keyFigure] = false;
-            NextFigure();
-        }
-        if (keysEnabled[keyDelete] && keys[keyDelete])
-        {
-            keysEnabled[keyDelete] = false;
-
-            if (keys[(int)Keys.ControlKey])
-                ClearFigureList();
-            else
-                RemoveSelectedFigure();
-        }
-        if (keysEnabled[keyCameraReset] && keys[keyCameraReset])
-        {
-            keysEnabled[keyCameraReset] = false;
-            camera.Reset();
-            Figure fig;
-            if (TryGetFigure(out fig))
-                camera.SetCenter(fig.Center);
-        }
-        if (keysEnabled[keyCameraLoadOrSave1] && keys[keyCameraLoadOrSave1])
-        {
-            keysEnabled[keyCameraLoadOrSave1] = false;
-            if (keys[(int)Keys.ControlKey])
-                camera.Save(@"camera1.xml");
-            else if (File.Exists(@"camera1.xml"))
-            {
-                camera = Camera.Load(@"camera1.xml");
-                Figure fig;
-                if (TryGetFigure(out fig))
-                    camera.SetCenter(fig.Center);
-            }
-        }
-        if (keysEnabled[keyCameraLoadOrSave2] && keys[keyCameraLoadOrSave2])
-        {
-            keysEnabled[keyCameraLoadOrSave2] = false;
-            if (keys[(int)Keys.ControlKey])
-                camera.Save(@"camera2.xml");
-            else if (File.Exists(@"camera2.xml"))
-            {
-                camera = Camera.Load(@"camera2.xml");
-                Figure fig;
-                if (TryGetFigure(out fig))
-                    camera.SetCenter(fig.Center);
-            }
-        }
-        if (keysEnabled[keyCameraSlerp] && keys[keyCameraSlerp])
-        {
-            keysEnabled[keyCameraSlerp] = false;
-            if (cam1 != null && cam2 != null)
-            {
-                camera = cam2;
-                cam_frame_index = 0;
-                cam1 = null;
-                cam2 = null;
-            }
-            else
-            {
-                if (File.Exists(@"camera1.xml"))
-                    cam1 = Camera.Load(@"camera1.xml");
-                if (File.Exists(@"camera2.xml"))
-                    cam2 = Camera.Load(@"camera2.xml");
-                if (cam1 != null && cam2 != null)
-                    camera = cam1;
-            }
-            {
-                Figure fig;
-                if (TryGetFigure(out fig))
-                    camera.SetCenter(fig.Center);
-            }
-        }
-        if (keysEnabled[keyFigureForm] && keys[keyFigureForm])
-        {
-            keys[keyFigureForm] = false;
-            keysEnabled[keyFigureForm] = true;
-            // stale KeyUp event
-            fig_form.Show();
-            fig_form.Activate();
-        }
-        if (cam1 != null && cam2 != null)
-        {
-            camera = Camera.Interpolation(cam1, cam2, cam_frame_index/120.0f);
-            cam_frame_index++;
-            if (cam_frame_index >= 120)
-            {
-                cam_frame_index = 0;
-                Camera cam0 = cam2;
-                cam2 = cam1;
-                cam1 = cam0;
-            }
-        }
         foreach (Figure fig in FigureList)
         {
             fig.NextFrame();
         }
         camera.NextFrame();
 
-        float keyL = 0.0f;
-        float keyR = 0.0f;
-        float keyU = 0.0f;
-        float keyD = 0.0f;
-        float keyPush = 0.0f;
-        float keyPull = 0.0f;
-        float keyZRol = 0.0f;
-
-        if (keys[(int)Keys.Left])
-            keyL = 1.0f;
-        if (keys[(int)Keys.Right])
-            keyR = 1.0f;
-        if (keys[(int)Keys.PageUp])
-            keyU = 1.0f;
-        if (keys[(int)Keys.PageDown])
-            keyD = 1.0f;
-        if (keys[(int)Keys.Up])
-            keyPush = 1.0f;
-        if (keys[(int)Keys.Down])
-            keyPull = 1.0f;
-        if (keys[(int)Keys.A])
-            keyZRol = -1.0f;
-        if (keys[(int)Keys.D])
-            keyZRol = +1.0f;
-
-        camera.Move(keyL - keyR, keyD - keyU, keyPush - keyPull);
-        camera.RotZ(Geometry.DegreeToRadian(keyZRol));
         camera.Update();
 
         Transform_View = camera.GetViewMatrix();
@@ -846,18 +673,6 @@ public class Viewer : IDisposable
         sprite.Draw(ztex, rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
         sprite.End();
     }
-
-        /*
-        int height = 24;
-        for (int i = 0; i < keys.Length; i++)
-        {
-            if (keys[i])
-            {
-                font.DrawText(null, ((Keys)i).ToString(), 0, height, Color.Black);
-                height += 24;
-            }
-        }
-        */
 
         device.EndScene();
         device.Present();
