@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace TDCG
+namespace TSOView
 {
 
 public class TSOConfig
@@ -34,6 +34,12 @@ public class TSOConfig
         TSOConfig config = serializer.Deserialize(reader) as TSOConfig;
         reader.Close();
         return config;
+    }
+
+    static void Main(string[] args)
+    {
+        TSOConfig config = new TSOConfig();
+        config.Dump();
     }
 }
 }

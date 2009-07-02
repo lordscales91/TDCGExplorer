@@ -41,7 +41,7 @@ public interface IScript
     void Hello(Viewer viewer);
 }
 
-static class TSOView
+static class Program
 {
     [STAThread]
     static void Main(string[] args) 
