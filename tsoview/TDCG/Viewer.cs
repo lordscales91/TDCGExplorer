@@ -225,6 +225,24 @@ public class Viewer : IDisposable
             FigureEvent(this, EventArgs.Empty);
     }
 
+    public void LoadTSOFile(Stream source_stream)
+    {
+        Figure fig = GetSelectedOrCreateFigure();
+        try
+        {
+            TSOFile tso = new TSOFile();
+            tso.Load(source_stream);
+            tso.Open(device, effect);
+            fig.AddTSO(tso);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex);
+        }
+        if (FigureEvent != null)
+            FigureEvent(this, EventArgs.Empty);
+    }
+
     public bool TryGetFigure(out Figure fig)
     {
         fig = null;
@@ -251,6 +269,26 @@ public class Viewer : IDisposable
             {
                 TMOFile tmo = new TMOFile();
                 tmo.Load(source_file);
+                fig.Tmo = tmo;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex);
+            }
+            fig.UpdateNodeMapAndBoneMatrices();
+            camera.SetCenter(fig.Center);
+        }
+    }
+
+    public void LoadTMOFile(Stream source_stream)
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            try
+            {
+                TMOFile tmo = new TMOFile();
+                tmo.Load(source_stream);
                 fig.Tmo = tmo;
             }
             catch (Exception ex)
