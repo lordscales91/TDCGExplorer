@@ -90,15 +90,6 @@ public class Viewer : IDisposable
 
     int figureIndex = 0;
 
-    private void form_OnDragDrop(object sender, DragEventArgs e)
-    {
-        if (e.Data.GetDataPresent(DataFormats.FileDrop))
-        {
-            foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
-                LoadAnyFile(src);
-        }
-    }
-
     private float screenCenterX = 800 / 2.0f;
     private float screenCenterY = 600 / 2.0f;
 
@@ -320,14 +311,6 @@ public class Viewer : IDisposable
         }
     }
 
-    private void form_OnDragEnter(object sender, DragEventArgs e)
-    {
-        if (e.Data.GetDataPresent(DataFormats.FileDrop))
-        {
-            e.Effect = DragDropEffects.Copy;
-        }
-    }
-
     private Camera camera = new Camera();
 
     public Camera Camera
@@ -352,9 +335,6 @@ public class Viewer : IDisposable
 
         control.MouseDown += new MouseEventHandler(form_OnMouseDown);
         control.MouseMove += new MouseEventHandler(form_OnMouseMove);
-
-        control.DragDrop += new DragEventHandler(form_OnDragDrop);
-        control.DragEnter += new DragEventHandler(form_OnDragEnter);
 
         PresentParameters pp = new PresentParameters();
         try

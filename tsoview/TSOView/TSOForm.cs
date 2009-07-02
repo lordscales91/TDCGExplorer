@@ -62,6 +62,9 @@ public class TSOForm : Form
         }
         this.KeyDown += new KeyEventHandler(form_OnKeyDown);
         this.KeyUp += new KeyEventHandler(form_OnKeyUp);
+
+        this.DragDrop += new DragEventHandler(form_OnDragDrop);
+        this.DragEnter += new DragEventHandler(form_OnDragEnter);
     }
 
     private void form_OnKeyDown(object sender, KeyEventArgs e)
@@ -225,6 +228,23 @@ public class TSOForm : Form
 
         camera.Move(keyL - keyR, keyD - keyU, keyPush - keyPull);
         camera.RotZ(Geometry.DegreeToRadian(keyZRol));
+    }
+
+    private void form_OnDragEnter(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            e.Effect = DragDropEffects.Copy;
+        }
+    }
+
+    private void form_OnDragDrop(object sender, DragEventArgs e)
+    {
+        if (e.Data.GetDataPresent(DataFormats.FileDrop))
+        {
+            foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
+                viewer.LoadAnyFile(src);
+        }
     }
 
     public void Render()
