@@ -29,7 +29,7 @@ public class TSOForm : Form
     internal int keyCameraReset = (int)Keys.D0;
     internal int keyCameraLoadOrSave1 = (int)Keys.D1;
     internal int keyCameraLoadOrSave2 = (int)Keys.D2;
-    internal int keyCameraSlerp = (int)Keys.C;
+    internal int keyCameraInterpolation = (int)Keys.C;
     internal int keyFigureForm = (int)Keys.G;
 
     internal Viewer viewer = null;
@@ -151,9 +151,9 @@ public class TSOForm : Form
                     camera.SetCenter(fig.Center);
             }
         }
-        if (keysEnabled[keyCameraSlerp] && keys[keyCameraSlerp])
+        if (keysEnabled[keyCameraInterpolation] && keys[keyCameraInterpolation])
         {
-            keysEnabled[keyCameraSlerp] = false;
+            keysEnabled[keyCameraInterpolation] = false;
             if (cam1 != null && cam2 != null)
             {
                 camera = cam2;
