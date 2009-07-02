@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
-using Direct3D=Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {

@@ -6,9 +6,6 @@ using System.Diagnostics;
 //using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using Direct3D=Microsoft.DirectX.Direct3D;
 using TDCG;
 
 namespace TSOView
@@ -82,6 +79,11 @@ public class TSOForm : Form
             keys[(int)e.KeyCode] = false;
             keysEnabled[(int)e.KeyCode] = true;
         }
+    }
+
+    static float DegreeToRadian(float angle)
+    {
+        return (float)(Math.PI * angle / 180.0);
     }
 
     public void FrameMove()
@@ -227,7 +229,7 @@ public class TSOForm : Form
             keyZRol = +1.0f;
 
         camera.Move(keyL - keyR, keyD - keyU, keyPush - keyPull);
-        camera.RotZ(Geometry.DegreeToRadian(keyZRol));
+        camera.RotZ(DegreeToRadian(keyZRol));
     }
 
     private void form_OnDragEnter(object sender, DragEventArgs e)
