@@ -149,7 +149,8 @@ public class Viewer : IDisposable
         if (figureIndex > FigureList.Count-1)
             figureIndex = 0;
         this.figureIndex = figureIndex;
-        FigureEvent(this, EventArgs.Empty);
+        if (FigureEvent != null)
+            FigureEvent(this, EventArgs.Empty);
     }
 
     public void AddFigureFromTSODirectory(string source_file)
@@ -220,7 +221,8 @@ public class Viewer : IDisposable
         {
             Console.WriteLine("Error: " + ex);
         }
-        FigureEvent(this, EventArgs.Empty);
+        if (FigureEvent != null)
+            FigureEvent(this, EventArgs.Empty);
     }
 
     public bool TryGetFigure(out Figure fig)
