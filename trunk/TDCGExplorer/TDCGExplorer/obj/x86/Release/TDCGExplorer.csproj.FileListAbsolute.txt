@@ -1,0 +1,15 @@
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\bin\x86\Release\TDCGExplorer.exe
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\bin\x86\Release\TDCGExplorer.pdb
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\bin\x86\Release\ArchiveLib.dll
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\bin\x86\Release\System.Data.SQLite.DLL
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\bin\x86\Release\TDCG.dll
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\bin\x86\Release\System.Data.SQLite.xml
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\obj\x86\Release\ResolveAssemblyReference.cache
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\obj\x86\Release\TDCGExplorer.EditSystemDatabase.resources
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\obj\x86\Release\TDCGExplorer.MainForm.resources
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\obj\x86\Release\TDCGExplorer.Properties.Resources.resources
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\obj\x86\Release\TDCGExplorer.csproj.GenerateResource.Cache
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\obj\x86\Release\TDCGExplorer.exe
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\obj\x86\Release\TDCGExplorer.pdb
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\bin\x86\Release\TDCGExplorer.exe.config
+C:\Users\konoa\Documents\Visual Studio 2008\Projects\TDCGExplorer\TDCGExplorer\bin\x86\Release\ICSharpCode.SharpZipLib.dll
