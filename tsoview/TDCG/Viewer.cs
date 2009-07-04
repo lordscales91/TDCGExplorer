@@ -190,6 +190,7 @@ public class Viewer : IDisposable
         SetFigureIndex(idx);
     }
 
+    /// 選択フィギュアを得る。
     public Figure GetSelectedFigure()
     {
         Figure fig;
@@ -200,6 +201,7 @@ public class Viewer : IDisposable
         return fig;
     }
 
+    /// 選択フィギュアを得る。なければ作成する。
     public Figure GetSelectedOrCreateFigure()
     {
         Figure fig;
@@ -216,6 +218,8 @@ public class Viewer : IDisposable
         return fig;
     }
 
+    /// <summary>指定パスから TSOFile を読み込む。</summary>
+    /// <param name="source_file">TSOFile のパス</param>
     public void LoadTSOFile(string source_file)
     {
         Figure fig = GetSelectedOrCreateFigure();
@@ -234,6 +238,8 @@ public class Viewer : IDisposable
             FigureEvent(this, EventArgs.Empty);
     }
 
+    /// <summary>指定ストリームから TSOFile を読み込む。</summary>
+    /// <param name="source_stream">TSOFile のストリーム</param>
     public void LoadTSOFile(Stream source_stream)
     {
         Figure fig = GetSelectedOrCreateFigure();
@@ -252,6 +258,7 @@ public class Viewer : IDisposable
             FigureEvent(this, EventArgs.Empty);
     }
 
+    /// 選択フィギュアを得る。
     public bool TryGetFigure(out Figure fig)
     {
         fig = null;
@@ -260,6 +267,7 @@ public class Viewer : IDisposable
         return fig != null;
     }
 
+    /// 次のフィギュアを選択する。
     public void NextFigure()
     {
         SetFigureIndex(figureIndex+1);
@@ -268,6 +276,8 @@ public class Viewer : IDisposable
             camera.SetCenter(fig.Center);
     }
 
+    /// <summary>指定パスから TMOFile を読み込む。</summary>
+    /// <param name="source_file">TMOFile のパス</param>
     public void LoadTMOFile(string source_file)
     {
         Figure fig;
@@ -289,6 +299,8 @@ public class Viewer : IDisposable
         }
     }
 
+    /// <summary>指定ストリームから TMOFile を読み込む。</summary>
+    /// <param name="source_stream">TMOFile のストリーム</param>
     public void LoadTMOFile(Stream source_stream)
     {
         Figure fig;
