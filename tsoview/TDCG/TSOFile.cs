@@ -16,7 +16,7 @@ namespace TDCG
         public List<TSONode> bone_LUT;
         public vertex_field[] vertices;
 
-        public Mesh dm = null;
+        internal Mesh dm = null;
 
         public int maxPalettes;
         public int boneID_OFFSET;
@@ -29,6 +29,87 @@ namespace TDCG
         public TSONode GetBone(int i)
         {
             return bone_LUT[i];
+        }
+
+        static VertexElement[] ve = new VertexElement[]
+        {
+            new VertexElement(0,  0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
+            new VertexElement(0, 12, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 3),
+            new VertexElement(0, 28, DeclarationType.Ubyte4, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 4),
+            new VertexElement(0, 32, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0),
+            new VertexElement(0, 44, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
+                VertexElement.VertexDeclarationEnd
+        };
+
+        static AttributeRange ar = new AttributeRange();
+        /*
+        ar.AttributeId = 0;
+        ar.FaceStart = 0;
+        ar.FaceCount = 0;
+        ar.VertexStart = 0;
+        ar.VertexCount = 0;
+        */
+
+        public void LoadMesh(Device device)
+        {
+            int numVertices = vertices.Length;
+            int numFaces = numVertices - 2;
+
+            dm = new Mesh(numFaces, numVertices, MeshFlags.Managed | MeshFlags.WriteOnly, ve, device);
+
+            //
+            // rewrite vertex buffer
+            //
+            {
+                GraphicsStream gs = dm.LockVertexBuffer(LockFlags.None);
+                {
+                    for (int i = 0; i < vertices.Length; i++)
+                    {
+                        vertex_field tv = vertices[i];
+
+                        gs.Write(tv.position);
+                        for (int j = 0; j < 4; j++)
+                            gs.Write(tv.skin_weights[j].weight);
+                        gs.Write(tv.skin_weight_indices);
+                        gs.Write(tv.normal);
+                        gs.Write(tv.u);
+                        gs.Write(tv.v);
+                    }
+                }
+                dm.UnlockVertexBuffer();
+            }
+
+            //
+            // rewrite index buffer
+            //
+            {
+                GraphicsStream gs = dm.LockIndexBuffer(LockFlags.None);
+                {
+                    for (int i = 2; i < vertices.Length; i++)
+                    {
+                        if (i % 2 != 0)
+                        {
+                            gs.Write((short)(i-0));
+                            gs.Write((short)(i-1));
+                            gs.Write((short)(i-2));
+                        }
+                        else
+                        {
+                            gs.Write((short)(i-2));
+                            gs.Write((short)(i-1));
+                            gs.Write((short)(i-0));
+                        }
+                    }
+                }
+                dm.UnlockIndexBuffer();
+            }
+
+            //
+            // rewrite attribute buffer
+            //
+            {
+                dm.SetAttributeTable(new AttributeRange[] { ar }); 
+            }
         }
 
         public void Dispose()
@@ -472,91 +553,6 @@ namespace TDCG
             return tex;
         }
 
-        static VertexElement[] ve = new VertexElement[]
-        {
-            new VertexElement(0,  0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
-            new VertexElement(0, 12, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 3),
-            new VertexElement(0, 28, DeclarationType.Ubyte4, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 4),
-            new VertexElement(0, 32, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0),
-            new VertexElement(0, 44, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
-                VertexElement.VertexDeclarationEnd
-        };
-
-        static AttributeRange ar = new AttributeRange();
-        /*
-        ar.AttributeId = 0;
-        ar.FaceStart = 0;
-        ar.FaceCount = 0;
-        ar.VertexStart = 0;
-        ar.VertexCount = 0;
-        */
-
-    public void LoadMesh()
-    {
-        foreach (TSOMesh tm in meshes)
-        foreach (TSOSubMesh tm_sub in tm.sub_meshes)
-        {
-            int numVertices = tm_sub.vertices.Length;
-            int numFaces = numVertices - 2;
-
-            tm_sub.dm = new Mesh(numFaces, numVertices, MeshFlags.Managed | MeshFlags.WriteOnly, ve, device);
-
-            //
-            // rewrite vertex buffer
-            //
-            {
-                GraphicsStream gs = tm_sub.dm.LockVertexBuffer(LockFlags.None);
-                {
-                    for (int i = 0; i < tm_sub.vertices.Length; i++)
-                    {
-                        vertex_field tv = tm_sub.vertices[i];
-
-                        gs.Write(tv.position);
-                        for (int j = 0; j < 4; j++)
-                            gs.Write(tv.skin_weights[j].weight);
-                        gs.Write(tv.skin_weight_indices);
-                        gs.Write(tv.normal);
-                        gs.Write(tv.u);
-                        gs.Write(tv.v);
-                    }
-                }
-                tm_sub.dm.UnlockVertexBuffer();
-            }
-
-            //
-            // rewrite index buffer
-            //
-            {
-                GraphicsStream gs = tm_sub.dm.LockIndexBuffer(LockFlags.None);
-                {
-                    for (int i = 2; i < tm_sub.vertices.Length; i++)
-                    {
-                        if (i % 2 != 0)
-                        {
-                            gs.Write((short)(i-0));
-                            gs.Write((short)(i-1));
-                            gs.Write((short)(i-2));
-                        }
-                        else
-                        {
-                            gs.Write((short)(i-2));
-                            gs.Write((short)(i-1));
-                            gs.Write((short)(i-0));
-                        }
-                    }
-                }
-                tm_sub.dm.UnlockIndexBuffer();
-            }
-
-            //
-            // rewrite attribute buffer
-            //
-            {
-                tm_sub.dm.SetAttributeTable(new AttributeRange[] { ar }); 
-            }
-        }
-    }
-
         internal Device device;
         internal Effect effect;
 
@@ -576,7 +572,9 @@ namespace TDCG
             this.device = device;
             this.effect = effect;
 
-            LoadMesh();
+            foreach (TSOMesh tm in meshes)
+            foreach (TSOSubMesh tm_sub in tm.sub_meshes)
+                tm_sub.LoadMesh(device);
 
             texmap = new Dictionary<string, TSOTex>();
 
