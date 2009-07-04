@@ -424,12 +424,15 @@ public class Viewer : IDisposable
             Console.WriteLine("File not found: " + effect_file);
             return false;
         }
-        string compile_error;
-        effect = Effect.FromFile(device, effect_file, null, ShaderFlags.None, null, out compile_error);
-        if (compile_error != null)
+        using(FileStream effect_stream = File.OpenRead(effect_file))
         {
-            Console.WriteLine(compile_error);
-            return false;
+            string compile_error;
+            effect = Effect.FromStream(device, effect_stream, null, ShaderFlags.None, null, out compile_error);
+            if (compile_error != null)
+            {
+                Console.WriteLine(compile_error);
+                return false;
+            }
         }
         handle_LocalBoneMats = effect.GetParameter(null, "LocalBoneMats");
         handle_ShadowMap = effect.GetTechnique("ShadowMap");
