@@ -187,7 +187,7 @@ namespace TDCG
         public int depth;
         public byte[] data;
 
-        public Texture tex;
+        internal Texture tex;
 
         public void Open(Device device)
         {
