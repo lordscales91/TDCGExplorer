@@ -46,6 +46,11 @@ namespace TDCGExplorer
 
         public string GetDisplayPath()
         {
+            // アノテーションが入力されているならそれを表示する.
+            if (TDCGExplorer.GetAnnoDatabase().annotation.ContainsKey(code)==true)
+            {
+                return TDCGExplorer.GetAnnoDatabase().annotation[code];
+            }
             // リネームされていない場合で.
             if (Path.GetFileNameWithoutExtension(path) == code)
             {

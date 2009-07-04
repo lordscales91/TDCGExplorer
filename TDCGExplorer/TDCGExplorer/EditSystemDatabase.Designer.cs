@@ -47,7 +47,7 @@
             // OKButton
             // 
             this.OKButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OKButton.Location = new System.Drawing.Point(448, 364);
+            this.OKButton.Location = new System.Drawing.Point(448, 168);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
             this.OKButton.TabIndex = 0;
@@ -59,9 +59,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(70, 13);
+            this.label1.Size = new System.Drawing.Size(76, 13);
             this.label1.TabIndex = 1;
-            this.label1.Text = "arcs directory";
+            this.label1.Text = "arcsディレクトリ";
             // 
             // tbArcsDirectory
             // 
@@ -73,7 +73,7 @@
             // DialoogCancelButton
             // 
             this.DialoogCancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.DialoogCancelButton.Location = new System.Drawing.Point(529, 364);
+            this.DialoogCancelButton.Location = new System.Drawing.Point(529, 168);
             this.DialoogCancelButton.Name = "DialoogCancelButton";
             this.DialoogCancelButton.Size = new System.Drawing.Size(75, 23);
             this.DialoogCancelButton.TabIndex = 3;
@@ -85,9 +85,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 41);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(63, 13);
+            this.label2.Size = new System.Drawing.Size(73, 13);
             this.label2.TabIndex = 4;
-            this.label2.Text = "zip directory";
+            this.label2.Text = "ZIPディレクトリ";
             // 
             // tbZipDirectory
             // 
@@ -124,9 +124,9 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(12, 145);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(55, 13);
+            this.label4.Size = new System.Drawing.Size(72, 13);
             this.label4.TabIndex = 8;
-            this.label4.Text = "zip regexp";
+            this.label4.Text = "ZIP正規表現";
             // 
             // tbArcnamesServer
             // 
@@ -156,15 +156,15 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(12, 67);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(73, 13);
+            this.label6.Size = new System.Drawing.Size(60, 13);
             this.label6.TabIndex = 12;
-            this.label6.Text = "work directory";
+            this.label6.Text = "ZIP展開先";
             // 
             // EditSystemDatabase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(615, 399);
+            this.ClientSize = new System.Drawing.Size(615, 203);
             this.Controls.Add(this.tbWorkPath);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.tbArcnamesServer);
@@ -180,7 +180,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.OKButton);
             this.Name = "EditSystemDatabase";
-            this.Text = "Edit System Database";
+            this.Text = "初期設定";
             this.ResumeLayout(false);
             this.PerformLayout();
 

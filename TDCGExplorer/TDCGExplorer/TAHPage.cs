@@ -1,18 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using ArchiveLib;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Data;
 
 namespace TDCGExplorer
 {
     class TAHPage : TabPage
     {
-        private ListBox listBox;
         List<ArcsTahFilesEntry> filesEntries;
+        private DataGridView dataGridView;
         GenTahInfo info;
 
         public TAHPage(GenTahInfo entryinfo, List<ArcsTahFilesEntry> filesentries)
@@ -22,42 +23,60 @@ namespace TDCGExplorer
             info = entryinfo;
             Text = info.shortname;
             filesEntries = filesentries;
-
+            DataTable data = new DataTable();
+            data.Columns.Add("ID", Type.GetType("System.String"));
+            data.Columns.Add("ファイル名", Type.GetType("System.String"));
+            data.Columns.Add("ファイルタイプ", Type.GetType("System.String"));
+            data.Columns.Add("ハッシュ値", Type.GetType("System.String"));
+            data.Columns.Add("データサイズ", Type.GetType("System.String"));
             foreach (ArcsTahFilesEntry file in filesentries)
             {
-                listBox.Items.Add(file.GetDisplayPath());
+                DataRow row = data.NewRow();
+                string[] content = { file.tahentry.ToString(), file.GetDisplayPath(), Path.GetExtension(file.path), file.hash.ToString("x8"), file.length.ToString() };
+                row.ItemArray = content;
+                data.Rows.Add(row);
             }
+            dataGridView.DataSource = data;
+            foreach (DataGridViewColumn col in dataGridView.Columns)
+            {
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dataGridView.ReadOnly = true;
         }
 
         private void InitializeComponent()
         {
-            this.listBox = new System.Windows.Forms.ListBox();
+            this.dataGridView = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.SuspendLayout();
             // 
-            // listBox
+            // dataGridView
             // 
-            this.listBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.dataGridView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.listBox.FormattingEnabled = true;
-            this.listBox.Location = new System.Drawing.Point(0, 0);
-            this.listBox.Name = "listBox";
-            this.listBox.Size = new System.Drawing.Size(200, 95);
-            this.listBox.TabIndex = 0;
-            this.listBox.DoubleClick += new System.EventHandler(this.listBox_DoubleClick);
+            this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView.Location = new System.Drawing.Point(0, 0);
+            this.dataGridView.Name = "dataGridView";
+            this.dataGridView.Size = new System.Drawing.Size(240, 150);
+            this.dataGridView.TabIndex = 0;
+            this.dataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentDoubleClick);
+            this.dataGridView.Resize += new System.EventHandler(this.dataGridView_Resize);
             // 
             // TAHPage
             // 
-            this.Controls.Add(this.listBox);
+            this.Controls.Add(this.dataGridView);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
 
         }
 
-        private void listBox_DoubleClick(object sender, EventArgs e)
+        private void dataGridView_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
         {
             try
             {
-                int index = listBox.SelectedIndex;
+                int index = e.RowIndex;
                 if (index >= 0)
                 {
                     string ext = Path.GetExtension(filesEntries[index].path).ToLower();
@@ -169,6 +188,11 @@ namespace TDCGExplorer
             {
                 MessageBox.Show("Error occured:"+ex.Message, "Error", MessageBoxButtons.OK);
             }
+        }
+
+        private void dataGridView_Resize(object sender, EventArgs e)
+        {
+            dataGridView.Size = Size;
         }
     }
 }

@@ -13,7 +13,13 @@ namespace TDCGExplorer
             : base(text)
         {
         }
-        public virtual void DoTvTreeSelect(TahGenTreeNode sender, ListBox mainListBox)
+        public virtual void DoTvTreeSelect()
+        {
+        }
+        public virtual void DoLookupServer()
+        {
+        }
+        public virtual void DoEditAnnotation()
         {
         }
     }
@@ -34,12 +40,12 @@ namespace TDCGExplorer
             set { entries = value; }
         }
 
-        public override void DoTvTreeSelect(TahGenTreeNode sender, ListBox mainListBox)
+        public override void DoTvTreeSelect()
         {
-            mainListBox.Items.Clear();
+            TDCGExplorer.GetMainForm().ListBoxMainView.Items.Clear();
             foreach (ArcsTahEntry file in Entries)
             {
-                mainListBox.Items.Add(new LbFileItem(file));
+                TDCGExplorer.GetMainForm().ListBoxMainView.Items.Add(new LbFileItem(file));
             }
         }
     }
@@ -60,14 +66,36 @@ namespace TDCGExplorer
             set { zipid = value; }
         }
 
-        public override void DoTvTreeSelect(TahGenTreeNode sender, ListBox mainListBox)
+        public override void DoTvTreeSelect()
         {
-            mainListBox.Items.Clear();
+            TDCGExplorer.GetMainForm().ListBoxMainView.Items.Clear();
             //セレクトされたときにSQLに問い合わせる.
             List<ArcsZipTahEntry> files = TDCGExplorer.GetArcsDatabase().GetZipTahs(zipid);
             foreach (ArcsZipTahEntry file in files)
             {
-                mainListBox.Items.Add(new LbZipFileItem(file));
+                TDCGExplorer.GetMainForm().ListBoxMainView.Items.Add(new LbZipFileItem(file));
+            }
+        }
+        // MOD Refサーバに問い合わせる.
+        public override void DoLookupServer()
+        {
+            MODRefPage modprefpage = new MODRefPage(zipid);
+            TDCGExplorer.GetMainForm().TabControlMainView.Controls.Add(modprefpage);
+            TDCGExplorer.GetMainForm().TabControlMainView.SelectTab(TDCGExplorer.GetMainForm().TabControlMainView.Controls.Count - 1);
+        }
+        // アノテーションを入力する.
+        public override void DoEditAnnotation()
+        {
+            AnnotationEdit edit = new AnnotationEdit();
+            ArcsZipArcEntry zip = TDCGExplorer.GetArcsDatabase().GetZip(zipid);
+            Dictionary<string, string> annon = TDCGExplorer.GetAnnoDatabase().annotation;
+            edit.text = zip.GetDisplayPath();
+            edit.code = zip.code;
+            // エディットがOKなら書き換える.
+            if (edit.ShowDialog() == DialogResult.OK)
+            {
+                TDCGExplorer.GetAnnoDatabase().SetSqlValue(zip.code, edit.text);
+                Text = edit.text;
             }
         }
     }
@@ -88,12 +116,12 @@ namespace TDCGExplorer
         }
 
 
-        public override void DoTvTreeSelect(TahGenTreeNode sender, ListBox mainListBox)
+        public override void DoTvTreeSelect()
         {
-            mainListBox.Items.Clear();
+            TDCGExplorer.GetMainForm().ListBoxMainView.Items.Clear();
             foreach (CollisionItem file in entries)
             {
-                mainListBox.Items.Add(new LbCollisionItem(file));
+                TDCGExplorer.GetMainForm().ListBoxMainView.Items.Add(new LbCollisionItem(file));
             }
         }
     }
