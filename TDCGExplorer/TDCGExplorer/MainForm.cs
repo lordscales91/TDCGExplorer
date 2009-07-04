@@ -222,28 +222,6 @@ namespace TDCGExplorer
         }
 
         // ZIPファイルを展開する
-        private void extractZipFileToolStripMenuItem1_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                ZipTreeNode node = (ZipTreeNode)tvMainTree.SelectedNode;
-                if (TDCGExplorer.InstallZipFile(node))
-                {
-                    //MessageBox.Show("Extracted on work directory", "Extract", MessageBoxButtons.OK);
-                }
-                else
-                {
-                    MessageBox.Show("Error occured.", "Extract", MessageBoxButtons.OK);
-                }
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show("Please select zip file.", "Extract", MessageBoxButtons.OK);
-                Debug.WriteLine(exception.Message);
-            }
-        }
-
-        // ZIPファイルを展開する
         private void extractZipToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -257,6 +235,10 @@ namespace TDCGExplorer
                 {
                     MessageBox.Show("Error occured.", "Extract", MessageBoxButtons.OK);
                 }
+            }
+            catch (System.InvalidCastException ex)
+            {
+                MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
             }
             catch (Exception exception)
             {
@@ -325,15 +307,19 @@ namespace TDCGExplorer
                 ZipTreeNode node = (ZipTreeNode)tvMainTree.SelectedNode;
                 node.DoLookupServer();
             }
+            catch (System.InvalidCastException ex)
+            {
+                MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
+            }
             catch (Exception exception)
             {
-                MessageBox.Show("Error occured:"+exception.Message, "Server", MessageBoxButtons.OK);
+                MessageBox.Show("Error occured:" + exception.Message, "Server", MessageBoxButtons.OK);
                 Debug.WriteLine(exception.Message);
             }
 
         }
         // アノテーションを編集.
-        private void EditAnntationToolStripMenuItem_Click(object sender, EventArgs e)
+        private void EditAnnotationToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
@@ -344,6 +330,28 @@ namespace TDCGExplorer
             {
                 Debug.WriteLine(exception.Message);
             }
+        }
+
+        private void LookupModRefToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            lookupMODRelationshipToolStripMenuItem_Click(sender, e);
+        }
+
+        private void 検索ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            FindDialog dialog = new FindDialog();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                Cursor.Current = Cursors.WaitCursor;
+                TDCGExplorer.FindNode(dialog.text);
+                Cursor.Current = Cursors.Default;
+            }
+        }
+
+        // ZIPファイルを展開する
+        private void extractZipFileToolStripMenuItem1_Click_1(object sender, EventArgs e)
+        {
+            extractZipToolStripMenuItem_Click(sender, e);
         }
     }
 }

@@ -33,7 +33,7 @@ namespace TDCGExplorer
             if (info.zipid != -1)
             {
                 ArcsZipArcEntry zipEntry = TDCGExplorer.GetArcsDatabase().GetZip(info.zipid);
-                string zipsource = TDCGExplorer.GetSystemDatabase().zips_path + "\\" + zipEntry.path;
+                string zipsource = Path.Combine(TDCGExplorer.GetSystemDatabase().zips_path, zipEntry.path);
                 switch (Path.GetExtension(zipEntry.path.ToLower()))
                 {
                     case ".zip":

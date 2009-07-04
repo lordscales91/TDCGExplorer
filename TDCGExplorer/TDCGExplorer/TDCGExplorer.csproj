@@ -110,6 +110,12 @@
     <Compile Include="AnnotationEdit.Designer.cs">
       <DependentUpon>AnnotationEdit.cs</DependentUpon>
     </Compile>
+    <Compile Include="FindDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FindDialog.Designer.cs">
+      <DependentUpon>FindDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="GenTahInfo.cs" />
     <Compile Include="ImagePage.cs">
       <SubType>Component</SubType>
@@ -134,17 +140,18 @@
     <Compile Include="TAHPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="TAHStream.cs" />
     <Compile Include="TAHUtil.cs" />
     <Compile Include="TDCGExplorer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="CollisionTahPage.resx">
-      <DependentUpon>CollisionTahPage.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="EditSystemDatabase.resx">
       <DependentUpon>EditSystemDatabase.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AnnotationEdit.resx">
       <DependentUpon>AnnotationEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FindDialog.resx">
+      <DependentUpon>FindDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -162,14 +169,14 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="default.tmo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <None Include="toonshader.cgfx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -219,7 +226,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="names.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="unrar.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

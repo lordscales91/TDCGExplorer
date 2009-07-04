@@ -41,12 +41,12 @@ namespace TDCGExplorer
 
         private string GetAnnotationDatabasePath()
         {
-            return Environment.GetFolderPath(Environment.SpecialFolder.Personal) + TDCGExplorer.GetAppDataPath();
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal) , TDCGExplorer.GetAppDataPath());
         }
 
         private string GetAnnotationDatabaseName()
         {
-            return GetAnnotationDatabasePath() + "\\anotation.db";
+            return Path.Combine(GetAnnotationDatabasePath(), "anotation.db");
         }
 
         public string GetSqlValue(string id, string defval)
