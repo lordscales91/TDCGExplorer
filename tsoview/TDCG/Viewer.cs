@@ -369,22 +369,6 @@ public class Viewer : IDisposable
     private Matrix Light_View = Matrix.Identity;
     private Matrix Light_Projection = Matrix.Identity;
 
-    private void OnDeviceLost(object sender, EventArgs e)
-    {
-        Console.WriteLine("OnDeviceLost");
-    }
-
-    private void OnDeviceReset(object sender, EventArgs e)
-    {
-        Console.WriteLine("OnDeviceReset");
-    }
-
-    private void CancelResize(object sender, CancelEventArgs e)
-    {
-        Console.WriteLine("CancelResize");
-        //e.Cancel = true;
-    }
-
     public bool InitializeApplication(Control control)
     {
         SetControl(control);
@@ -453,12 +437,14 @@ public class Viewer : IDisposable
 
         int devw = 0;
         int devh = 0;
-        using (Surface surface = device.DepthStencilSurface)
+        dev_surface = device.GetRenderTarget(0);
         {
-            devw = surface.Description.Width;
-            devh = surface.Description.Height;
+            devw = dev_surface.Description.Width;
+            devh = dev_surface.Description.Height;
         }
         Console.WriteLine("dev {0}x{1}", devw, devh);
+
+        dev_zbuf = device.DepthStencilSurface;
 
         ztex = new Texture(device, 1024, 1024, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
         effect.SetValue("texShadowMap", ztex);
@@ -474,9 +460,6 @@ public class Viewer : IDisposable
         sprite = new Sprite(device);
         w_scale = (float)devw / ztexw;
         h_scale = (float)devh / ztexh;
-
-        dev_surface = device.GetRenderTarget(0);
-        dev_zbuf = device.DepthStencilSurface;
 
         camera.Update();
 
@@ -494,7 +477,6 @@ public class Viewer : IDisposable
         // xxx: for w-buffering
         device.Transform.Projection = Transform_Projection;
 
-        if (effect != null)
         {
             effect.SetValue("proj", Transform_Projection);
             effect.SetValue("lightproj", Light_Projection);
@@ -517,6 +499,88 @@ public class Viewer : IDisposable
         device.RenderState.IndexedVertexBlendEnable = true;
 
         return true;
+    }
+
+    private void OnDeviceLost(object sender, EventArgs e)
+    {
+        Console.WriteLine("OnDeviceLost");
+        if (ztex_zbuf != null)
+            ztex_zbuf.Dispose();
+        if (ztex_surface != null)
+            ztex_surface.Dispose();
+        if (ztex != null)
+            ztex.Dispose();
+        if (dev_zbuf != null)
+            dev_zbuf.Dispose();
+        if (dev_surface != null)
+            dev_surface.Dispose();
+    }
+
+    private void OnDeviceReset(object sender, EventArgs e)
+    {
+        Console.WriteLine("OnDeviceReset");
+        int devw = 0;
+        int devh = 0;
+        dev_surface = device.GetRenderTarget(0);
+        {
+            devw = dev_surface.Description.Width;
+            devh = dev_surface.Description.Height;
+        }
+        Console.WriteLine("dev {0}x{1}", devw, devh);
+
+        dev_zbuf = device.DepthStencilSurface;
+
+        ztex = new Texture(device, 1024, 1024, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+        effect.SetValue("texShadowMap", ztex);
+        ztex_surface = ztex.GetSurfaceLevel(0);
+        {
+            ztexw = ztex_surface.Description.Width;
+            ztexh = ztex_surface.Description.Height;
+        }
+        Console.WriteLine("ztex {0}x{1}", ztexw, ztexh);
+
+        ztex_zbuf = device.CreateDepthStencilSurface(ztexw, ztexh, DepthFormat.D16, MultiSampleType.None, 0, false);
+
+        Transform_Projection = Matrix.PerspectiveFovLH(
+                Geometry.DegreeToRadian(30.0f),
+                (float)device.Viewport.Width / (float)device.Viewport.Height,
+                1.0f,
+                1000.0f );
+        Light_Projection = Matrix.PerspectiveFovLH(
+                Geometry.DegreeToRadian(45.0f),
+                1.0f,
+                20.0f,
+                250.0f );
+
+        // xxx: for w-buffering
+        device.Transform.Projection = Transform_Projection;
+
+        {
+            effect.SetValue("proj", Transform_Projection);
+            effect.SetValue("lightproj", Light_Projection);
+        }
+
+        device.RenderState.Lighting = false;
+        device.RenderState.CullMode = Cull.CounterClockwise;
+
+        device.RenderState.AlphaBlendEnable = true;
+        device.SetTextureStageState(0, TextureStageStates.AlphaOperation, (int)TextureOperation.Modulate);
+        device.SetTextureStageState(0, TextureStageStates.AlphaArgument1, (int)TextureArgument.TextureColor);
+        device.SetTextureStageState(0, TextureStageStates.AlphaArgument2, (int)TextureArgument.Current);
+
+        device.RenderState.SourceBlend = Blend.SourceAlpha; 
+        device.RenderState.DestinationBlend = Blend.InvSourceAlpha;
+        device.RenderState.AlphaTestEnable = true;
+        device.RenderState.ReferenceAlpha = 0x08;
+        device.RenderState.AlphaFunction = Compare.GreaterEqual;
+
+        device.RenderState.IndexedVertexBlendEnable = true;
+    }
+
+    private void CancelResize(object sender, CancelEventArgs e)
+    {
+        Console.WriteLine("CancelResize");
+        //e.Cancel = true;
     }
 
     public void ClearFigureList()
@@ -715,6 +779,25 @@ public class Viewer : IDisposable
     }
 
         device.EndScene();
+        {
+            int ret;
+            if (! device.CheckCooperativeLevel(out ret))
+            {
+                switch ((ResultCode)ret)
+                {
+                    case ResultCode.DeviceLost:
+                        Thread.Sleep(30);
+                        return;
+                    case ResultCode.DeviceNotReset:
+                        device.Reset(device.PresentationParameters);
+                        break;
+                    default:
+                        Console.WriteLine((ResultCode)ret);
+                        return;
+                }
+            }
+        }
+
         device.Present();
         Thread.Sleep(30);
     }
@@ -725,10 +808,16 @@ public class Viewer : IDisposable
             fig.Dispose();
         if (sprite != null)
             sprite.Dispose();
+        if (ztex_zbuf != null)
+            ztex_zbuf.Dispose();
         if (ztex_surface != null)
             ztex_surface.Dispose();
         if (ztex != null)
             ztex.Dispose();
+        if (dev_zbuf != null)
+            dev_zbuf.Dispose();
+        if (dev_surface != null)
+            dev_surface.Dispose();
         if (effect != null)
             effect.Dispose();
         if (font != null)
