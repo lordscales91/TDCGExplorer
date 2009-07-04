@@ -52,7 +52,7 @@ class ArcsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @arc_rels.to_xml(:except => [ :created_at, :updated_at ]) }
+      format.xml  { render :xml => @arc_rels.to_xml(:root => 'relationships', :except => [ :created_at, :updated_at ]) }
     end
   end
 
@@ -64,7 +64,7 @@ class ArcsController < ApplicationController
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @arc_revs.to_xml(:except => [ :created_at, :updated_at ]) }
+      format.xml  { render :xml => @arc_revs.to_xml(:root => 'relationships', :except => [ :created_at, :updated_at ]) }
     end
   end
 
