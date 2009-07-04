@@ -31,19 +31,17 @@
             this.components = new System.ComponentModel.Container();
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.tDCGExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.extractZipFileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createFromArcsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editSystemDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.displayTahsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dCGModsReferenceToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadLatestArcsnameszipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.zIPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.extractZipFileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.lookupMODRelationshipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tSOViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetTSOViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.switchToMortionEnabledToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteLastFigureToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tvMainTree = new System.Windows.Forms.TreeView();
             this.cmContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -58,6 +56,7 @@
             this.splitContainerH = new System.Windows.Forms.SplitContainer();
             this.splitContainerWithView = new System.Windows.Forms.SplitContainer();
             this.listBoxMainListBox = new System.Windows.Forms.ListBox();
+            this.注訳を入力ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.cmContextMenu.SuspendLayout();
             this.StatusStrip.SuspendLayout();
@@ -78,7 +77,6 @@
             this.tDCGExplorerToolStripMenuItem,
             this.databaseToolStripMenuItem,
             this.dCGModsReferenceToolStripMenuItem,
-            this.zIPToolStripMenuItem,
             this.tSOViewToolStripMenuItem});
             this.MainMenu.Location = new System.Drawing.Point(0, 0);
             this.MainMenu.Name = "MainMenu";
@@ -89,85 +87,76 @@
             // tDCGExplorerToolStripMenuItem
             // 
             this.tDCGExplorerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.extractZipFileToolStripMenuItem1,
             this.exitToolStripMenuItem});
             this.tDCGExplorerToolStripMenuItem.Name = "tDCGExplorerToolStripMenuItem";
-            this.tDCGExplorerToolStripMenuItem.Size = new System.Drawing.Size(92, 20);
-            this.tDCGExplorerToolStripMenuItem.Text = "TDCGExplorer";
+            this.tDCGExplorerToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
+            this.tDCGExplorerToolStripMenuItem.Text = "ファイル";
+            // 
+            // extractZipFileToolStripMenuItem1
+            // 
+            this.extractZipFileToolStripMenuItem1.Name = "extractZipFileToolStripMenuItem1";
+            this.extractZipFileToolStripMenuItem1.Size = new System.Drawing.Size(218, 22);
+            this.extractZipFileToolStripMenuItem1.Text = "アーカイブファイルの展開";
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
-            this.exitToolStripMenuItem.Text = "Exit";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.exitToolStripMenuItem.Text = "終了";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // databaseToolStripMenuItem
             // 
             this.databaseToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.createFromArcsToolStripMenuItem,
-            this.editSystemDatabaseToolStripMenuItem,
-            this.displayTahsToolStripMenuItem});
+            this.editSystemDatabaseToolStripMenuItem});
             this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
-            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
-            this.databaseToolStripMenuItem.Text = "Database";
+            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(91, 20);
+            this.databaseToolStripMenuItem.Text = "データベース";
             // 
             // createFromArcsToolStripMenuItem
             // 
             this.createFromArcsToolStripMenuItem.Name = "createFromArcsToolStripMenuItem";
-            this.createFromArcsToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.createFromArcsToolStripMenuItem.Text = "Create from arcs";
+            this.createFromArcsToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.createFromArcsToolStripMenuItem.Text = "データベースの構築・更新";
             this.createFromArcsToolStripMenuItem.Click += new System.EventHandler(this.createFromArcsToolStripMenuItem_Click);
             // 
             // editSystemDatabaseToolStripMenuItem
             // 
             this.editSystemDatabaseToolStripMenuItem.Name = "editSystemDatabaseToolStripMenuItem";
-            this.editSystemDatabaseToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.editSystemDatabaseToolStripMenuItem.Text = "Edit system database";
-            this.editSystemDatabaseToolStripMenuItem.Click += new System.EventHandler(this.editSystemDatabaseToolStripMenuItem_Click);
-            // 
-            // displayTahsToolStripMenuItem
-            // 
-            this.displayTahsToolStripMenuItem.Name = "displayTahsToolStripMenuItem";
-            this.displayTahsToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.displayTahsToolStripMenuItem.Text = "Display arcs database";
-            this.displayTahsToolStripMenuItem.Click += new System.EventHandler(this.displayArcsToolStripMenuItem_Click);
+            this.editSystemDatabaseToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.editSystemDatabaseToolStripMenuItem.Text = "初期設定";
+            this.editSystemDatabaseToolStripMenuItem.Click += new System.EventHandler(this.editSystemDatabaseToolStripMenuItem_Click_1);
             // 
             // dCGModsReferenceToolStripMenuItem
             // 
             this.dCGModsReferenceToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.downloadLatestArcsnameszipToolStripMenuItem});
+            this.downloadLatestArcsnameszipToolStripMenuItem,
+            this.lookupMODRelationshipToolStripMenuItem});
             this.dCGModsReferenceToolStripMenuItem.Name = "dCGModsReferenceToolStripMenuItem";
-            this.dCGModsReferenceToolStripMenuItem.Size = new System.Drawing.Size(168, 20);
-            this.dCGModsReferenceToolStripMenuItem.Text = "3DCG mods reference server";
+            this.dCGModsReferenceToolStripMenuItem.Size = new System.Drawing.Size(134, 20);
+            this.dCGModsReferenceToolStripMenuItem.Text = "3DCG mods reference";
             // 
             // downloadLatestArcsnameszipToolStripMenuItem
             // 
             this.downloadLatestArcsnameszipToolStripMenuItem.Name = "downloadLatestArcsnameszipToolStripMenuItem";
-            this.downloadLatestArcsnameszipToolStripMenuItem.Size = new System.Drawing.Size(236, 22);
-            this.downloadLatestArcsnameszipToolStripMenuItem.Text = "Download latest arcsnames.zip";
+            this.downloadLatestArcsnameszipToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.downloadLatestArcsnameszipToolStripMenuItem.Text = "最新のarcsnames.zipを取得";
             this.downloadLatestArcsnameszipToolStripMenuItem.Click += new System.EventHandler(this.downloadLatestArcsnameszipToolStripMenuItem_Click);
             // 
-            // zIPToolStripMenuItem
+            // lookupMODRelationshipToolStripMenuItem
             // 
-            this.zIPToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.extractZipFileToolStripMenuItem1});
-            this.zIPToolStripMenuItem.Name = "zIPToolStripMenuItem";
-            this.zIPToolStripMenuItem.Size = new System.Drawing.Size(36, 20);
-            this.zIPToolStripMenuItem.Text = "ZIP";
-            // 
-            // extractZipFileToolStripMenuItem1
-            // 
-            this.extractZipFileToolStripMenuItem1.Name = "extractZipFileToolStripMenuItem1";
-            this.extractZipFileToolStripMenuItem1.Size = new System.Drawing.Size(146, 22);
-            this.extractZipFileToolStripMenuItem1.Text = "Extract zip file";
-            this.extractZipFileToolStripMenuItem1.Click += new System.EventHandler(this.extractZipFileToolStripMenuItem1_Click);
+            this.lookupMODRelationshipToolStripMenuItem.Name = "lookupMODRelationshipToolStripMenuItem";
+            this.lookupMODRelationshipToolStripMenuItem.Size = new System.Drawing.Size(220, 22);
+            this.lookupMODRelationshipToolStripMenuItem.Text = "MODの依存関係を表示";
+            this.lookupMODRelationshipToolStripMenuItem.Click += new System.EventHandler(this.lookupMODRelationshipToolStripMenuItem_Click);
             // 
             // tSOViewToolStripMenuItem
             // 
             this.tSOViewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.resetTSOViewerToolStripMenuItem,
-            this.switchToMortionEnabledToolStripMenuItem,
-            this.deleteLastFigureToolStripMenuItem});
+            this.switchToMortionEnabledToolStripMenuItem});
             this.tSOViewToolStripMenuItem.Name = "tSOViewToolStripMenuItem";
             this.tSOViewToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
             this.tSOViewToolStripMenuItem.Text = "TSOView";
@@ -175,23 +164,16 @@
             // resetTSOViewerToolStripMenuItem
             // 
             this.resetTSOViewerToolStripMenuItem.Name = "resetTSOViewerToolStripMenuItem";
-            this.resetTSOViewerToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
-            this.resetTSOViewerToolStripMenuItem.Text = "Reset TSO Viewer";
+            this.resetTSOViewerToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.resetTSOViewerToolStripMenuItem.Text = "ビューワをリセット";
             this.resetTSOViewerToolStripMenuItem.Click += new System.EventHandler(this.resetTSOViewerToolStripMenuItem_Click);
             // 
             // switchToMortionEnabledToolStripMenuItem
             // 
             this.switchToMortionEnabledToolStripMenuItem.Name = "switchToMortionEnabledToolStripMenuItem";
-            this.switchToMortionEnabledToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
-            this.switchToMortionEnabledToolStripMenuItem.Text = "Switch to mortion enabled";
+            this.switchToMortionEnabledToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.switchToMortionEnabledToolStripMenuItem.Text = "アニメーション開始";
             this.switchToMortionEnabledToolStripMenuItem.Click += new System.EventHandler(this.switchToMortionEnabledToolStripMenuItem_Click);
-            // 
-            // deleteLastFigureToolStripMenuItem
-            // 
-            this.deleteLastFigureToolStripMenuItem.Name = "deleteLastFigureToolStripMenuItem";
-            this.deleteLastFigureToolStripMenuItem.Size = new System.Drawing.Size(214, 22);
-            this.deleteLastFigureToolStripMenuItem.Text = "Delete last figure";
-            this.deleteLastFigureToolStripMenuItem.Click += new System.EventHandler(this.deleteLastFigureToolStripMenuItem_Click);
             // 
             // tvMainTree
             // 
@@ -210,22 +192,23 @@
             // 
             this.cmContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.expandAllToolStripMenuItem,
-            this.extractZipToolStripMenuItem});
+            this.extractZipToolStripMenuItem,
+            this.注訳を入力ToolStripMenuItem});
             this.cmContextMenu.Name = "cmContextMenu";
-            this.cmContextMenu.Size = new System.Drawing.Size(128, 48);
+            this.cmContextMenu.Size = new System.Drawing.Size(219, 92);
             // 
             // expandAllToolStripMenuItem
             // 
             this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
-            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
-            this.expandAllToolStripMenuItem.Text = "Expand all";
+            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.expandAllToolStripMenuItem.Text = "ツリーを展開";
             this.expandAllToolStripMenuItem.Click += new System.EventHandler(this.expandAllToolStripMenuItem1_Click);
             // 
             // extractZipToolStripMenuItem
             // 
             this.extractZipToolStripMenuItem.Name = "extractZipToolStripMenuItem";
-            this.extractZipToolStripMenuItem.Size = new System.Drawing.Size(127, 22);
-            this.extractZipToolStripMenuItem.Text = "Extract zip";
+            this.extractZipToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.extractZipToolStripMenuItem.Text = "アーカイブファイルを展開";
             this.extractZipToolStripMenuItem.Click += new System.EventHandler(this.extractZipToolStripMenuItem_Click);
             // 
             // StatusStrip
@@ -355,6 +338,13 @@
             this.listBoxMainListBox.TabIndex = 0;
             this.listBoxMainListBox.DoubleClick += new System.EventHandler(this.listBoxMainListBox_DoubleClick);
             // 
+            // 注訳を入力ToolStripMenuItem
+            // 
+            this.注訳を入力ToolStripMenuItem.Name = "注訳を入力ToolStripMenuItem";
+            this.注訳を入力ToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.注訳を入力ToolStripMenuItem.Text = "注訳を入力";
+            this.注訳を入力ToolStripMenuItem.Click += new System.EventHandler(this.EditAnntationToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -396,9 +386,7 @@
         private System.Windows.Forms.StatusStrip StatusStrip;
         private System.Windows.Forms.ToolStripMenuItem databaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem createFromArcsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem editSystemDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel;
-        private System.Windows.Forms.ToolStripMenuItem displayTahsToolStripMenuItem;
         private System.Windows.Forms.Timer MainTimer;
         private System.Windows.Forms.ContextMenuStrip cmContextMenu;
         private System.Windows.Forms.ToolStripMenuItem expandAllToolStripMenuItem;
@@ -410,14 +398,15 @@
         private System.Windows.Forms.ListBox listBoxMainListBox;
         private System.Windows.Forms.ToolStripMenuItem dCGModsReferenceToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadLatestArcsnameszipToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem zIPToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem extractZipFileToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem extractZipToolStripMenuItem;
         private System.Windows.Forms.SplitContainer splitContainerWithView;
         private System.Windows.Forms.ToolStripMenuItem tSOViewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetTSOViewerToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem switchToMortionEnabledToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteLastFigureToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem extractZipFileToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem editSystemDatabaseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem lookupMODRelationshipToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 注訳を入力ToolStripMenuItem;
 
     }
 }

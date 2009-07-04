@@ -70,13 +70,6 @@ namespace TDCGExplorer
             TDCGExplorer.CreateNewArcsDatabase();
         }
 
-        // システムデータベースを編集する.
-        private void editSystemDatabaseToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (threadCheck() == true) return;
-            TDCGExplorer.EditSystemDatabase();
-        }
-
         // 起動時処理.
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -97,12 +90,22 @@ namespace TDCGExplorer
             viewer = null;
         }
 
-        // tahを表示する.
-        private void displayArcsToolStripMenuItem_Click(object sender, EventArgs e)
+        // invokeの為のdelegate
+        private delegate void displayFromArcsHander();
+
+        // 非同期で呼び出されるメソッド
+        private void asyncDlgDisplayFromArcs()
         {
             TDCGExplorer.DisplayArcsDB(tvMainTree);
         }
 
+        // 非同期でツリー表示を更新する.
+        public void asyncDisplayFromArcs()
+        {
+            Invoke(new displayFromArcsHander(asyncDlgDisplayFromArcs));
+        }
+
+        // タイマー
         private void MainTimer_Tick(object sender, EventArgs e)
         {
             toolStripStatusLabel.Text = TDCGExplorer.GetToolTips();
@@ -123,6 +126,7 @@ namespace TDCGExplorer
             }
         }
 
+        // ウインドウが閉じる時の後始末.
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (threadCheck() == true){
@@ -143,6 +147,7 @@ namespace TDCGExplorer
             }
         }
  
+        // ツリーを展開する.
         private void expandAllToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             try
@@ -158,18 +163,20 @@ namespace TDCGExplorer
             }
         }
 
+        // タブを閉じる.
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             tabMainView.SelectedTab.Dispose();
         }
 
+        // ツリーで選択されたら.
         private void tvMainTree_AfterSelect(object sender, TreeViewEventArgs e)
         {
             try
             {
                 TahGenTreeNode node = (TahGenTreeNode)tvMainTree.SelectedNode;
                 SuspendLayout();
-                node.DoTvTreeSelect(node, listBoxMainListBox);
+                node.DoTvTreeSelect();
                 ResumeLayout();
             }
             catch (Exception exception)
@@ -178,6 +185,7 @@ namespace TDCGExplorer
             }
         }
 
+        // リストボックスがダブルクリックされたら.
         private void listBoxMainListBox_DoubleClick(object sender, EventArgs e)
         {
             try
@@ -197,8 +205,10 @@ namespace TDCGExplorer
             }
         }
 
+        // arcsnames.zipをダウンロードする.
         private void downloadLatestArcsnameszipToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (threadCheck() == true) return;
             if (TDCGExplorer.DownloadArcNamesZipFromServer() == true)
             {
                 TDCGExplorer.GetArcNamesZipInfo();
@@ -211,6 +221,7 @@ namespace TDCGExplorer
             }
         }
 
+        // ZIPファイルを展開する
         private void extractZipFileToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             try
@@ -232,6 +243,7 @@ namespace TDCGExplorer
             }
         }
 
+        // ZIPファイルを展開する
         private void extractZipToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -253,6 +265,7 @@ namespace TDCGExplorer
             }
         }
 
+        // TSOビューワをリセットする
         private void resetTSOViewerToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (viewer!=null)
@@ -264,6 +277,7 @@ namespace TDCGExplorer
             }
         }
 
+        // 初期TMOを読み込む
         public void doInitialTmoLoad()
         {
             if (viewer != null)
@@ -276,6 +290,7 @@ namespace TDCGExplorer
             }
         }
 
+        // モーション開始
         private void switchToMortionEnabledToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (viewer != null)
@@ -284,19 +299,7 @@ namespace TDCGExplorer
             }
         }
 
-        private void deleteLastFigureToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (viewer != null)
-            {
-                int figures = viewer.FigureList.Count;
-                if (figures != 0)
-                {
-                    viewer.SetFigureIndex(figures);
-                    viewer.RemoveSelectedFigure();
-                }
-            }
-        }
-
+        // TSOビューを生成
         public void makeTSOViwer()
         {
             if (viewer == null)
@@ -304,6 +307,42 @@ namespace TDCGExplorer
                 viewer = new Viewer();
                 viewer.InitializeApplication(splitContainerWithView.Panel2);
                 fInitialTmoLoad = false;
+            }
+        }
+
+        // 初期設定を行う.
+        private void editSystemDatabaseToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            if (threadCheck() == true) return;
+            TDCGExplorer.EditSystemDatabase();
+        }
+
+        // MODサーバに接続する.
+        private void lookupMODRelationshipToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ZipTreeNode node = (ZipTreeNode)tvMainTree.SelectedNode;
+                node.DoLookupServer();
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show("Error occured:"+exception.Message, "Server", MessageBoxButtons.OK);
+                Debug.WriteLine(exception.Message);
+            }
+
+        }
+        // アノテーションを編集.
+        private void EditAnntationToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ZipTreeNode node = (ZipTreeNode)tvMainTree.SelectedNode;
+                node.DoEditAnnotation();
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.Message);
             }
         }
     }

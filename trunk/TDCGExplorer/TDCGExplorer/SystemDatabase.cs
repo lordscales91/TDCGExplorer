@@ -127,7 +127,7 @@ namespace TDCGExplorer
         // mod-dbへのurl
         public string moddb_url
         {
-            get { return GetSqlValue("moddburl", "http://3dcustom.ath.cx/devel/"); }
+            get { return GetSqlValue("moddburl", "http://3dcustom.ath.cx/rails/"); }
             set { SetSqlValue("moddburl", value); }
         }
         // zipファイル名抽出
@@ -136,25 +136,25 @@ namespace TDCGExplorer
             get { return GetSqlValue("zipregexp", "^([a-zA-Z0-9]+)"); }
             set { SetSqlValue("zipregexp", value); }
         }
-
+        // DBビルドフラグ.
         public string database_build
         {
             get { return GetSqlValue("database-build", ""); }
             set { SetSqlValue("database-build", value); }
         }
-
+        // ウインドウ位置
         public string window_rectangle
         {
             get { return GetSqlValue("window_rectangle", "50,50,640,480"); }
             set { SetSqlValue("window_rectangle", value); }
         }
-
+        // 画面レイアウト
         public string splitter_distance
         {
             get { return GetSqlValue("splitter_distance", "100,100,200"); }
             set { SetSqlValue("splitter_distance", value); }
         }
-
+        // arcnames.zip取得先
         public string arcnames_server
         {
             get { return GetSqlValue("arcnames_server", "http://3dcustom.ath.cx/text/arcnames.zip"); }

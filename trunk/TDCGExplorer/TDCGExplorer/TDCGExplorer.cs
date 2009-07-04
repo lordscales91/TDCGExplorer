@@ -18,6 +18,7 @@ namespace TDCGExplorer
     {
         private static SystemDatabase systemDatabase;
         private static ArcsDatabase arcsDatabase;
+        private static AnnotationDB annotationDatabase;
         private static ArcNamesDictionary arcNames;
         private static MainForm form;
 
@@ -36,6 +37,7 @@ namespace TDCGExplorer
             systemDatabase = new SystemDatabase();
             arcsDatabase = new ArcsDatabase();
             arcNames = new ArcNamesDictionary();
+            annotationDatabase = new AnnotationDB();
 
             TAHEntry.ReadExternalFileList();
             arcNames.Init();
@@ -82,6 +84,12 @@ namespace TDCGExplorer
         public static ArcsDatabase GetArcsDatabase()
         {
             return arcsDatabase;
+        }
+
+        // 注訳DBの取得.
+        public static AnnotationDB GetAnnoDatabase()
+        {
+            return annotationDatabase;
         }
 
         // formの取得.
@@ -431,6 +439,9 @@ namespace TDCGExplorer
                     arcs.CreateIndex(); // インデックスを作成する.
                     arcs.CreateInstalledZips();
                     transacion.Commit();
+
+                    TDCGExplorer.GetMainForm().asyncDisplayFromArcs(); // 表示更新.
+
                     TDCGExplorer.fThreadRun = false;
                     TDCGExplorer.SetToolTips("Database build complete");
                     TDCGExplorer.GetSystemDatabase().database_build = "yes";
