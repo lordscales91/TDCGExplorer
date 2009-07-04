@@ -438,68 +438,9 @@ public class Viewer : IDisposable
         handle_ShadowMap = effect.GetTechnique("ShadowMap");
         effect.ValidateTechnique(effect.Technique);
 
-        int devw = 0;
-        int devh = 0;
-        dev_surface = device.GetRenderTarget(0);
-        {
-            devw = dev_surface.Description.Width;
-            devh = dev_surface.Description.Height;
-        }
-        Console.WriteLine("dev {0}x{1}", devw, devh);
-
-        dev_zbuf = device.DepthStencilSurface;
-
-        ztex = new Texture(device, 1024, 1024, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-        effect.SetValue("texShadowMap", ztex);
-        ztex_surface = ztex.GetSurfaceLevel(0);
-        {
-            ztexw = ztex_surface.Description.Width;
-            ztexh = ztex_surface.Description.Height;
-        }
-        Console.WriteLine("ztex {0}x{1}", ztexw, ztexh);
-
-        ztex_zbuf = device.CreateDepthStencilSurface(ztexw, ztexh, DepthFormat.D16, MultiSampleType.None, 0, false);
-
         sprite = new Sprite(device);
-        w_scale = (float)devw / ztexw;
-        h_scale = (float)devh / ztexh;
-
         camera.Update();
-
-        Transform_Projection = Matrix.PerspectiveFovLH(
-                Geometry.DegreeToRadian(30.0f),
-                (float)device.Viewport.Width / (float)device.Viewport.Height,
-                1.0f,
-                1000.0f );
-        Light_Projection = Matrix.PerspectiveFovLH(
-                Geometry.DegreeToRadian(45.0f),
-                1.0f,
-                20.0f,
-                250.0f );
-
-        // xxx: for w-buffering
-        device.Transform.Projection = Transform_Projection;
-
-        {
-            effect.SetValue("proj", Transform_Projection);
-            effect.SetValue("lightproj", Light_Projection);
-        }
-
-        device.RenderState.Lighting = false;
-        device.RenderState.CullMode = Cull.CounterClockwise;
-
-        device.RenderState.AlphaBlendEnable = true;
-        device.SetTextureStageState(0, TextureStageStates.AlphaOperation, (int)TextureOperation.Modulate);
-        device.SetTextureStageState(0, TextureStageStates.AlphaArgument1, (int)TextureArgument.TextureColor);
-        device.SetTextureStageState(0, TextureStageStates.AlphaArgument2, (int)TextureArgument.Current);
-
-        device.RenderState.SourceBlend = Blend.SourceAlpha; 
-        device.RenderState.DestinationBlend = Blend.InvSourceAlpha;
-        device.RenderState.AlphaTestEnable = true;
-        device.RenderState.ReferenceAlpha = 0x08;
-        device.RenderState.AlphaFunction = Compare.GreaterEqual;
-
-        device.RenderState.IndexedVertexBlendEnable = true;
+        OnDeviceReset(device, null);
 
         return true;
     }
@@ -543,6 +484,9 @@ public class Viewer : IDisposable
         Console.WriteLine("ztex {0}x{1}", ztexw, ztexh);
 
         ztex_zbuf = device.CreateDepthStencilSurface(ztexw, ztexh, DepthFormat.D16, MultiSampleType.None, 0, false);
+
+        w_scale = (float)devw / ztexw;
+        h_scale = (float)devh / ztexh;
 
         Transform_Projection = Matrix.PerspectiveFovLH(
                 Geometry.DegreeToRadian(30.0f),
