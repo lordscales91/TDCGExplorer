@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Threading;
-//using System.ComponentModel;
+using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
 using Microsoft.DirectX;
@@ -369,6 +369,22 @@ public class Viewer : IDisposable
     private Matrix Light_View = Matrix.Identity;
     private Matrix Light_Projection = Matrix.Identity;
 
+    private void OnDeviceLost(object sender, EventArgs e)
+    {
+        Console.WriteLine("OnDeviceLost");
+    }
+
+    private void OnDeviceReset(object sender, EventArgs e)
+    {
+        Console.WriteLine("OnDeviceReset");
+    }
+
+    private void CancelResize(object sender, CancelEventArgs e)
+    {
+        Console.WriteLine("CancelResize");
+        //e.Cancel = true;
+    }
+
     public bool InitializeApplication(Control control)
     {
         SetControl(control);
@@ -402,6 +418,10 @@ public class Viewer : IDisposable
             if (caps.DeviceCaps.SupportsPureDevice)
                 flags |= CreateFlags.PureDevice;
             device = new Device(adapter_ordinal, DeviceType.Hardware, control.Handle, flags, pp);
+
+            device.DeviceLost += new EventHandler(OnDeviceLost);
+            device.DeviceReset += new EventHandler(OnDeviceReset);
+            device.DeviceResizing += new CancelEventHandler(CancelResize);
 
             FontDescription fd = new FontDescription();
             fd.Height = 24;
