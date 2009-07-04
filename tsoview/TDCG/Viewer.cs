@@ -49,6 +49,15 @@ public class Viewer : IDisposable
 
     private Point lastScreenPoint = Point.Empty;
 
+    private void control_OnSizeChanged(object sender, EventArgs e)
+    {
+        Transform_Projection = Matrix.PerspectiveFovLH(
+                Geometry.DegreeToRadian(30.0f),
+                (float)control.Width / (float)control.Height,
+                1.0f,
+                1000.0f );
+    }
+
     private void form_OnMouseDown(object sender, MouseEventArgs e)
     {
         switch (e.Button)
@@ -373,6 +382,7 @@ public class Viewer : IDisposable
     {
         SetControl(control);
 
+        control.SizeChanged += new EventHandler(control_OnSizeChanged);
         control.MouseDown += new MouseEventHandler(form_OnMouseDown);
         control.MouseMove += new MouseEventHandler(form_OnMouseMove);
 
