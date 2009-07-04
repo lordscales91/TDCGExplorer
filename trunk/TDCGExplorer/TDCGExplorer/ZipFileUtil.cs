@@ -25,9 +25,9 @@ namespace TDCGExplorer
                         arc.Extract(entry, ms);
                         ms.Seek(0, SeekOrigin.Begin);
 
-                        Directory.CreateDirectory(Path.GetDirectoryName(destpath + "\\" + entry.FileName));
+                        Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(destpath, entry.FileName)));
 
-                        Stream fileStream = File.OpenWrite(destpath + "\\" + entry.FileName);
+                        Stream fileStream = File.OpenWrite(Path.Combine(destpath, entry.FileName));
 
                         BufferedStream bufferedDataStream = new BufferedStream(ms);
                         BufferedStream bufferedFileStream = new BufferedStream(fileStream);

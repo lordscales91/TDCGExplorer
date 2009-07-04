@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Diagnostics;
 
 namespace TDCGExplorer
 {
@@ -20,29 +21,88 @@ namespace TDCGExplorer
             Text = zipEntry.GetDisplayPath();
 
             string moddb = TDCGExplorer.GetSystemDatabase().moddb_url;
-            string relurl = moddb+"arcs/code/"+zipEntry.code+"/rels.xml";
-
-            ArcRels relationships = ArcRels.Load(relurl);
+            string relurl;
+            ArcRels relationships;
 
             string msg = "<html><body><h2>MOD Archive code:"+zipEntry.code+"</h2>";
 
-            if (relationships != null)
+            Cursor.Current = Cursors.WaitCursor;
+            try
             {
-                foreach (Relationship relation in relationships.Relationships)
+
+                relurl = moddb + "arcs/code/" + zipEntry.code + "/rels.xml";
+                relationships = ArcRels.Load(relurl);
+                if (relationships != null)
                 {
-                    string arcurl = moddb + "arcs/" + relation.ToId.ToString() + ".xml";
-                    string[] kindstr = { "新版", "旧版", "前提", "提供" };
-                    Arc arc = Arc.Load(arcurl);
-                    msg += "<pre>";
-                    msg += "属性:" + kindstr[relation.Kind] + "<br/>";
-                    msg += "MODコード名:" + arc.Code + "<br/>";
-                    msg += "サマリー:" + arc.Summary + "<br/>";
-                    msg += "元ファイル名:" + arc.Origname + "<br/>";
-                    msg += "拡張子:" + arc.Extname + "<br/>";
-                    msg += "所在:" + arc.Location + "<br/>";
-                    msg += "</pre>";
+                    if (relationships.Relationships != null)
+                    {
+                        foreach (Relationship relation in relationships.Relationships)
+                        {
+                            string arcurl = moddb + "arcs/" + relation.ToId.ToString() + ".xml";
+                            string[] kindstr = { "0", "1", "新版", "前提" };
+                            try
+                            {
+                                Arc arc = Arc.Load(arcurl);
+                                if (arc != null)
+                                {
+                                    msg += "<pre>";
+                                    msg += "属性:" + kindstr[relation.Kind] + "<br/>";
+                                    msg += "MODコード名:" + arc.Code + "<br/>";
+                                    msg += "サマリー:" + arc.Summary + "<br/>";
+                                    msg += "元ファイル名:" + arc.Origname + "<br/>";
+                                    msg += "拡張子:" + arc.Extname + "<br/>";
+                                    msg += "所在:" + arc.Location + "<br/>";
+                                    msg += "</pre>";
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex.Message);
+                            }
+                        }
+                    }
+                }
+
+                relurl = moddb + "arcs/code/" + zipEntry.code + "/revs.xml";
+                relationships = ArcRels.Load(relurl);
+                if (relationships != null)
+                {
+                    if (relationships.Relationships != null)
+                    {
+                        foreach (Relationship relation in relationships.Relationships)
+                        {
+                            if (relation.Kind == 1) continue;
+                            string arcurl = moddb + "arcs/" + relation.FromId.ToString() + ".xml";
+                            string[] kindstr = { "0", "1", "旧版", "提供" };
+                            try
+                            {
+                                Arc arc = Arc.Load(arcurl);
+                                if (arc != null)
+                                {
+                                    msg += "<pre>";
+                                    msg += "属性:" + kindstr[relation.Kind] + "<br/>";
+                                    msg += "MODコード名:" + arc.Code + "<br/>";
+                                    msg += "サマリー:" + arc.Summary + "<br/>";
+                                    msg += "元ファイル名:" + arc.Origname + "<br/>";
+                                    msg += "拡張子:" + arc.Extname + "<br/>";
+                                    msg += "所在:" + arc.Location + "<br/>";
+                                    msg += "</pre>";
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex.Message);
+                            }
+                        }
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+            Cursor.Current = Cursors.Default;
+
             msg += "</body></html>";
             webBrowser.DocumentText = msg;
         }
@@ -86,7 +146,7 @@ namespace TDCGExplorer
         public int FromId { get; set; }
         [XmlElement("to-id")]
         public int ToId { get; set; }
-        [XmlElement("Kind")]
+        [XmlElement("kind")]
         public int Kind { get; set; }
     }
     [XmlRoot("relationships")]

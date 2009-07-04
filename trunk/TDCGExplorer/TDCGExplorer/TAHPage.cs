@@ -14,6 +14,7 @@ namespace TDCGExplorer
     {
         List<ArcsTahFilesEntry> filesEntries;
         private DataGridView dataGridView;
+        private System.ComponentModel.IContainer components;
         GenTahInfo info;
 
         public TAHPage(GenTahInfo entryinfo, List<ArcsTahFilesEntry> filesentries)
@@ -82,13 +83,14 @@ namespace TDCGExplorer
                     string ext = Path.GetExtension(filesEntries[index].path).ToLower();
                     if (ext == ".tso" || ext == ".tmo")
                     {
+#if false
                         ArcsTahFilesEntry tsoInfo = filesEntries[index];
                         // zipファイルの中か?
                         if (info.zipid != -1)
                         {
                             IArchive archive;
                             ArcsZipArcEntry zip = TDCGExplorer.GetArcsDatabase().GetZip(info.zipid);
-                            string zippath = TDCGExplorer.GetSystemDatabase().zips_path + "\\" + zip.path;
+                            string zippath = Path.Combine(TDCGExplorer.GetSystemDatabase().zips_path, zip.path);
                             switch (Path.GetExtension(zip.path).ToLower())
                             {
                                 case ".zip":
@@ -129,8 +131,10 @@ namespace TDCGExplorer
                                             {
                                                 byte[] data = TAHUtil.ReadEntryData(tah.Reader, ent);
                                                 // 
+                                                Cursor.Current = Cursors.WaitCursor;
                                                 using (MemoryStream ims = new MemoryStream(data))
                                                 {
+
                                                     TDCGExplorer.GetMainForm().makeTSOViwer();
                                                     if (ext == ".tso")
                                                     {
@@ -139,6 +143,7 @@ namespace TDCGExplorer
                                                     }
                                                     else if (ext == ".tmo") TDCGExplorer.GetMainForm().Viewer.LoadTMOFile(ims);
                                                 }
+                                                Cursor.Current = Cursors.Default;
                                             }
                                             tahentry++;
                                         }
@@ -148,7 +153,7 @@ namespace TDCGExplorer
                         }
                         else
                         {
-                            string source = TDCGExplorer.GetSystemDatabase().arcs_path + "\\" + info.path;
+                            string source = Path.Combine(TDCGExplorer.GetSystemDatabase().arcs_path, info.path);
                             TAHFile tah = new TAHFile(source);
                             tah.LoadEntries();
                             int tahentry = 0;
@@ -161,6 +166,7 @@ namespace TDCGExplorer
                                     // 
                                     using (MemoryStream ims = new MemoryStream(data))
                                     {
+                                        Cursor.Current = Cursors.WaitCursor;
                                         TDCGExplorer.GetMainForm().makeTSOViwer();
                                         if (ext == ".tso")
                                         {
@@ -168,20 +174,30 @@ namespace TDCGExplorer
                                             TDCGExplorer.GetMainForm().doInitialTmoLoad(); // 初期tmoを読み込む.
                                         }
                                         else if (ext == ".tmo") TDCGExplorer.GetMainForm().Viewer.LoadTMOFile(ims);
+                                        Cursor.Current = Cursors.Default;
                                     }
                                 }
                                 tahentry++;
                             }
+                        }
+#endif
+                        using (TAHStream tahstream = new TAHStream(info, filesEntries[index]))
+                        {
+                            Cursor.Current = Cursors.WaitCursor;
+                            TDCGExplorer.GetMainForm().makeTSOViwer();
+                            if (ext == ".tso")
+                            {
+                                TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(tahstream.stream);
+                                TDCGExplorer.GetMainForm().doInitialTmoLoad(); // 初期tmoを読み込む.
+                            }
+                            else if (ext == ".tmo") TDCGExplorer.GetMainForm().Viewer.LoadTMOFile(tahstream.stream);
+                            Cursor.Current = Cursors.Default;
                         }
                     }
                     else
                     {
                         MessageBox.Show("TAH INFO:\n" + filesEntries[index].id + "," + filesEntries[index].path + "," + filesEntries[index].hash.ToString("x8"), "Not Implemented", MessageBoxButtons.OK);
                     }
-                }
-                else
-                {
-                    MessageBox.Show("Not Implemented", "Not Implemented", MessageBoxButtons.OK);
                 }
             }
             catch (Exception ex)

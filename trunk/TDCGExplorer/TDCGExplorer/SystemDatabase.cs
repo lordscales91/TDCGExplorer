@@ -44,12 +44,12 @@ namespace TDCGExplorer
         // システムデータベースはTDCGディレクトリ下のTDCGExplorer/system.db
         public string GetSystemDatabasePath()
         {
-            return Environment.GetFolderPath(Environment.SpecialFolder.Personal) + TDCGExplorer.GetAppDataPath();
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), TDCGExplorer.GetAppDataPath());
         }
 
         public string GetSystemDatabaseName()
         {
-            return GetSystemDatabasePath() + "\\system.db";
+            return Path.Combine(GetSystemDatabasePath(), "system.db");
         }
 
 
@@ -116,12 +116,12 @@ namespace TDCGExplorer
 
         // arcpathの取得・設定.
         public string arcs_path {
-            get { return GetSqlValue("arcpath", Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles)+"\\TechArts3D\\３Ｄカスタム少女\\arcs"); }
+            get { return GetSqlValue("arcpath", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "TechArts3D\\３Ｄカスタム少女\\arcs")); }
             set { SetSqlValue("arcpath", value); }
         }
         // zipフォルダのトップディレクトリ
         public string zips_path {
-            get { return GetSqlValue("zippath", GetSystemDatabasePath() + "\\archive"); }
+            get { return GetSqlValue("zippath", Path.Combine(GetSystemDatabasePath(), "archive")); }
             set { SetSqlValue("zippath", value); }
         }
         // mod-dbへのurl
@@ -163,7 +163,7 @@ namespace TDCGExplorer
         // 作業フォルダのトップディレクトリ
         public string work_path
         {
-            get { return GetSqlValue("workpath", GetSystemDatabasePath() + "\\work"); }
+            get { return GetSqlValue("workpath", Path.Combine(GetSystemDatabasePath(), "work")); }
             set { SetSqlValue("workpath", value); }
         }
     }

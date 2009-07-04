@@ -88,12 +88,12 @@ namespace TDCGExplorer
 
         public string GetArcsDatabasePath()
         {
-            return Environment.GetFolderPath(Environment.SpecialFolder.Personal) + TDCGExplorer.GetAppDataPath();
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), TDCGExplorer.GetAppDataPath());
         }
 
         public string GetArcsDatabaseName()
         {
-            return GetArcsDatabasePath() + "\\arcs.db";
+            return Path.Combine(GetArcsDatabasePath(), "arcs.db");
         }
 
         public ArcsDatabase()

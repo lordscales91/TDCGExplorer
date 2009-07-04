@@ -48,7 +48,8 @@ namespace TDCGExplorer
 
         public string zipArcLocalName()
         {
-            return Environment.GetFolderPath(Environment.SpecialFolder.Personal) + TDCGExplorer.GetAppDataPath() + "\\arcsname.zip";
+            string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), TDCGExplorer.GetAppDataPath());
+            return Path.Combine(path,"arcsname.zip");
         }
 
         // arcsnames.zipをサーバからダウンロードする.

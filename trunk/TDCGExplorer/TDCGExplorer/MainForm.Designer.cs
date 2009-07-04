@@ -32,6 +32,7 @@
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.tDCGExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractZipFileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.検索ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createFromArcsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -46,6 +47,8 @@
             this.cmContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractZipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.注訳を入力ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mODの依存関係を表示ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainTimer = new System.Windows.Forms.Timer(this.components);
@@ -56,7 +59,6 @@
             this.splitContainerH = new System.Windows.Forms.SplitContainer();
             this.splitContainerWithView = new System.Windows.Forms.SplitContainer();
             this.listBoxMainListBox = new System.Windows.Forms.ListBox();
-            this.注訳を入力ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.cmContextMenu.SuspendLayout();
             this.StatusStrip.SuspendLayout();
@@ -88,6 +90,7 @@
             // 
             this.tDCGExplorerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.extractZipFileToolStripMenuItem1,
+            this.検索ToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.tDCGExplorerToolStripMenuItem.Name = "tDCGExplorerToolStripMenuItem";
             this.tDCGExplorerToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
@@ -98,6 +101,14 @@
             this.extractZipFileToolStripMenuItem1.Name = "extractZipFileToolStripMenuItem1";
             this.extractZipFileToolStripMenuItem1.Size = new System.Drawing.Size(218, 22);
             this.extractZipFileToolStripMenuItem1.Text = "アーカイブファイルの展開";
+            this.extractZipFileToolStripMenuItem1.Click += new System.EventHandler(this.extractZipFileToolStripMenuItem1_Click_1);
+            // 
+            // 検索ToolStripMenuItem
+            // 
+            this.検索ToolStripMenuItem.Name = "検索ToolStripMenuItem";
+            this.検索ToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.検索ToolStripMenuItem.Text = "検索...";
+            this.検索ToolStripMenuItem.Click += new System.EventHandler(this.検索ToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
@@ -193,7 +204,8 @@
             this.cmContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.expandAllToolStripMenuItem,
             this.extractZipToolStripMenuItem,
-            this.注訳を入力ToolStripMenuItem});
+            this.注訳を入力ToolStripMenuItem,
+            this.mODの依存関係を表示ToolStripMenuItem});
             this.cmContextMenu.Name = "cmContextMenu";
             this.cmContextMenu.Size = new System.Drawing.Size(219, 92);
             // 
@@ -210,6 +222,20 @@
             this.extractZipToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
             this.extractZipToolStripMenuItem.Text = "アーカイブファイルを展開";
             this.extractZipToolStripMenuItem.Click += new System.EventHandler(this.extractZipToolStripMenuItem_Click);
+            // 
+            // 注訳を入力ToolStripMenuItem
+            // 
+            this.注訳を入力ToolStripMenuItem.Name = "注訳を入力ToolStripMenuItem";
+            this.注訳を入力ToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.注訳を入力ToolStripMenuItem.Text = "注訳を入力";
+            this.注訳を入力ToolStripMenuItem.Click += new System.EventHandler(this.EditAnnotationToolStripMenuItem_Click);
+            // 
+            // mODの依存関係を表示ToolStripMenuItem
+            // 
+            this.mODの依存関係を表示ToolStripMenuItem.Name = "mODの依存関係を表示ToolStripMenuItem";
+            this.mODの依存関係を表示ToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
+            this.mODの依存関係を表示ToolStripMenuItem.Text = "MODの依存関係を表示";
+            this.mODの依存関係を表示ToolStripMenuItem.Click += new System.EventHandler(this.LookupModRefToolStripMenuItem_Click);
             // 
             // StatusStrip
             // 
@@ -338,13 +364,6 @@
             this.listBoxMainListBox.TabIndex = 0;
             this.listBoxMainListBox.DoubleClick += new System.EventHandler(this.listBoxMainListBox_DoubleClick);
             // 
-            // 注訳を入力ToolStripMenuItem
-            // 
-            this.注訳を入力ToolStripMenuItem.Name = "注訳を入力ToolStripMenuItem";
-            this.注訳を入力ToolStripMenuItem.Size = new System.Drawing.Size(218, 22);
-            this.注訳を入力ToolStripMenuItem.Text = "注訳を入力";
-            this.注訳を入力ToolStripMenuItem.Click += new System.EventHandler(this.EditAnntationToolStripMenuItem_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -407,6 +426,8 @@
         private System.Windows.Forms.ToolStripMenuItem editSystemDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lookupMODRelationshipToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 注訳を入力ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem mODの依存関係を表示ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 検索ToolStripMenuItem;
 
     }
 }

@@ -54,7 +54,7 @@ namespace TDCGExplorer
 
         public static string GetAppDataPath()
         {
-            return "\\TechArts3D\\TDCG\\TDCGExplorer";
+            return "TechArts3D\\TDCG\\TDCGExplorer";
         }
 
         public static void SetToolTips(string message)
@@ -392,12 +392,12 @@ namespace TDCGExplorer
         {
             ZipTreeNode zipNode = (ZipTreeNode)sender;
             ArcsZipArcEntry zipentry = GetArcsDatabase().GetZip(zipNode.Entry);
-            string zipsource = TDCGExplorer.GetSystemDatabase().zips_path + "\\" + zipentry.path;
+            string zipsource = Path.Combine(TDCGExplorer.GetSystemDatabase().zips_path, zipentry.path);
             string destpath = GetSystemDatabase().work_path;
             if (arcNames.entry.ContainsKey(zipentry.code) == true)
             {
                 // サマリ文字列を自動的に追加しておく.
-                destpath = destpath + "\\" + zipentry.code + " " + arcNames.entry[zipentry.code].summary;
+                destpath = Path.Combine(destpath, zipentry.code) + " " + arcNames.entry[zipentry.code].summary;
             }
             // 展開に成功したらzipのノードの色を変える.
             if (ZipFileUtil.ExtractZipFile(zipsource, destpath) == true)
@@ -406,6 +406,48 @@ namespace TDCGExplorer
                 return true;
             }
             return false;
+        }
+
+        private static bool HasString(string target, string word)
+        {
+            if (word == "")
+                return false;
+            if (target.IndexOf(word) >= 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private static void FindTreeNode(TreeNode node, string key)
+        {
+            if (HasString(node.Text.ToLower(), key.ToLower()) == true)
+            {
+                node.BackColor = Color.LawnGreen;
+                TreeNode parent = node.Parent;
+                while (parent != null)
+                {
+                    parent.Expand();
+                    parent = parent.Parent;
+                }
+            }
+            else
+            {
+                node.BackColor = Color.Transparent;
+            }
+            foreach (TreeNode subnode in node.Nodes)
+            {
+                FindTreeNode(subnode, key);
+            }
+        }
+
+        public static void FindNode(string key)
+        {
+            foreach(TreeNode node in GetMainForm().TabTreeMainView.Nodes)
+                FindTreeNode(node, key);
         }
     }
 
