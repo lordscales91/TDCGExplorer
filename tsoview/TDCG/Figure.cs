@@ -16,7 +16,7 @@ namespace TDCG
     /// </summary>
 public class Figure : IDisposable
 {
-    internal List<TSOFile> TSOList = new List<TSOFile>();
+    public List<TSOFile> TSOList = new List<TSOFile>();
     internal TMOFile tmo = null;
 
     internal Vector3 center = Vector3.Empty;
