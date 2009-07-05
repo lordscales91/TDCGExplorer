@@ -21,11 +21,21 @@ namespace TDCG
             bw.Write(0x314F5354);
         }
 
+        /// <summary>
+        /// 指定ライタにbyte配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="bytes">byte配列</param>
         public static void Write(BinaryWriter bw, byte[] bytes)
         {
             bw.Write(bytes);
         }
 
+        /// <summary>
+        /// 指定ライタにnull終端文字列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="s">文字列</param>
         public static void Write(BinaryWriter bw, string s)
         {
             foreach(byte i in Encoding.Default.GetBytes(s))
@@ -34,6 +44,11 @@ namespace TDCG
             bw.Write((byte)0);
         }
 
+        /// <summary>
+        /// 指定ライタにnode配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="items">node配列</param>
         public static void Write(BinaryWriter bw, TSONode[] items)
         {
             bw.Write(items.Length);
@@ -47,11 +62,21 @@ namespace TDCG
                 Write(bw, ref i.transformation_matrix);
         }
 
+        /// <summary>
+        /// 指定ライタにnodeを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="item">node</param>
         public static void Write(BinaryWriter bw, TSONode item)
         {
             Write(bw, item.Name);
         }
 
+        /// <summary>
+        /// 指定ライタにテクスチャ配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="items">テクスチャ配列</param>
         public static void Write(BinaryWriter bw, TSOTex[] items)
         {
             bw.Write(items.Length);
@@ -60,6 +85,11 @@ namespace TDCG
                 Write(bw, i);
         }
 
+        /// <summary>
+        /// 指定ライタにテクスチャを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="item">テクスチャ</param>
         public static void Write(BinaryWriter bw, TSOTex item)
         {
             Write(bw, item.name);
@@ -70,6 +100,11 @@ namespace TDCG
             Write(bw, item.data);
         }
 
+        /// <summary>
+        /// 指定ライタに行列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="m">行列</param>
         public static void Write(BinaryWriter bw, ref Matrix m)
         {
             bw.Write(m.M11); bw.Write(m.M12); bw.Write(m.M13); bw.Write(m.M14);
