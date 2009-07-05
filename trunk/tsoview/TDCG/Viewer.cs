@@ -27,6 +27,7 @@ public class Viewer : IDisposable
     private EffectHandle handle_LocalBoneMats;
     private EffectHandle handle_ShadowMap;
 
+    private bool shadowMapEnabled = false;
     internal Texture ztex = null;
     int ztexw = 0;
     int ztexh = 0;
@@ -412,9 +413,21 @@ public class Viewer : IDisposable
     /// deviceを作成します。
     /// </summary>
     /// <param name="control">レンダリング先となるcontrol</param>
-    /// <returns></returns>
+    /// <returns>deviceの作成に成功したか</returns>
     public bool InitializeApplication(Control control)
     {
+        return InitializeApplication(control, false);
+    }
+
+    /// <summary>
+    /// deviceを作成します。
+    /// </summary>
+    /// <param name="control">レンダリング先となるcontrol</param>
+    /// <param name="shadowMapEnabled">シャドウマップを作成するか</param>
+    /// <returns>deviceの作成に成功したか</returns>
+    public bool InitializeApplication(Control control, bool shadowMapEnabled)
+    {
+        this.shadowMapEnabled = shadowMapEnabled;
         SetControl(control);
 
         control.SizeChanged += new EventHandler(control_OnSizeChanged);
@@ -469,7 +482,7 @@ public class Viewer : IDisposable
             Console.WriteLine("File not found: " + effect_file);
             return false;
         }
-        using(FileStream effect_stream = File.OpenRead(effect_file))
+        using (FileStream effect_stream = File.OpenRead(effect_file))
         {
             string compile_error;
             effect = Effect.FromStream(device, effect_stream, null, ShaderFlags.None, null, out compile_error);
@@ -480,10 +493,13 @@ public class Viewer : IDisposable
             }
         }
         handle_LocalBoneMats = effect.GetParameter(null, "LocalBoneMats");
-        handle_ShadowMap = effect.GetTechnique("ShadowMap");
-        effect.ValidateTechnique(effect.Technique);
+        if (shadowMapEnabled)
+        {
+            handle_ShadowMap = effect.GetTechnique("ShadowMap");
+            effect.ValidateTechnique(effect.Technique);
 
-        sprite = new Sprite(device);
+            sprite = new Sprite(device);
+        }
         camera.Update();
         OnDeviceReset(device, null);
 
@@ -518,27 +534,29 @@ public class Viewer : IDisposable
         Console.WriteLine("dev {0}x{1}", devw, devh);
 
         dev_zbuf = device.DepthStencilSurface;
-
-        ztex = new Texture(device, 1024, 1024, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-        effect.SetValue("texShadowMap", ztex);
-        ztex_surface = ztex.GetSurfaceLevel(0);
+        if (shadowMapEnabled)
         {
-            ztexw = ztex_surface.Description.Width;
-            ztexh = ztex_surface.Description.Height;
+            ztex = new Texture(device, 1024, 1024, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+            effect.SetValue("texShadowMap", ztex);
+            ztex_surface = ztex.GetSurfaceLevel(0);
+            {
+                ztexw = ztex_surface.Description.Width;
+                ztexh = ztex_surface.Description.Height;
+            }
+            Console.WriteLine("ztex {0}x{1}", ztexw, ztexh);
+
+            ztex_zbuf = device.CreateDepthStencilSurface(ztexw, ztexh, DepthFormat.D16, MultiSampleType.None, 0, false);
+
+            w_scale = (float)devw / ztexw;
+            h_scale = (float)devh / ztexh;
         }
-        Console.WriteLine("ztex {0}x{1}", ztexw, ztexh);
-
-        ztex_zbuf = device.CreateDepthStencilSurface(ztexw, ztexh, DepthFormat.D16, MultiSampleType.None, 0, false);
-
-        w_scale = (float)devw / ztexw;
-        h_scale = (float)devh / ztexh;
-
         Transform_Projection = Matrix.PerspectiveFovLH(
                 Geometry.DegreeToRadian(30.0f),
                 (float)device.Viewport.Width / (float)device.Viewport.Height,
                 1.0f,
                 1000.0f );
-        Light_Projection = Matrix.PerspectiveFovLH(
+        if (shadowMapEnabled)
+            Light_Projection = Matrix.PerspectiveFovLH(
                 Geometry.DegreeToRadian(45.0f),
                 1.0f,
                 20.0f,
@@ -549,7 +567,8 @@ public class Viewer : IDisposable
 
         {
             effect.SetValue("proj", Transform_Projection);
-            effect.SetValue("lightproj", Light_Projection);
+            if (shadowMapEnabled)
+                effect.SetValue("lightproj", Light_Projection);
         }
 
         device.RenderState.Lighting = false;
@@ -603,8 +622,8 @@ public class Viewer : IDisposable
     }
 
     internal bool motionEnabled = false;
-    internal bool shadowEnabled = false;
-    internal bool spriteEnabled = false;
+    internal bool shadowShown = false;
+    internal bool SpriteShown = false;
 
     /// <summary>
     /// モーションの有無を切り替えます。
@@ -617,17 +636,17 @@ public class Viewer : IDisposable
     /// <summary>
     /// シャドウマップの有無を切り替えます。
     /// </summary>
-    public void SwitchShadowEnabled()
+    public void SwitchShadowShown()
     {
-        shadowEnabled = ! shadowEnabled;
+        shadowShown = ! shadowShown;
     }
 
     /// <summary>
     /// スプライトの有無を切り替えます。
     /// </summary>
-    public void SwitchSpriteEnabled()
+    public void SwitchSpriteShown()
     {
-        spriteEnabled = ! spriteEnabled;
+        SpriteShown = ! SpriteShown;
     }
 
     /// <summary>
@@ -653,18 +672,20 @@ public class Viewer : IDisposable
         device.Transform.View = Transform_View;
         effect.SetValue("view", Transform_View);
 
-    {
-        float scale = 40.0f;
+        if (shadowMapEnabled)
+        {
+            float scale = 40.0f;
 
-        Light_View = Matrix.LookAtLH(
-                lightDir * -scale,
-                new Vector3( 0.0f, 5.0f, 0.0f ), 
-                new Vector3( 0.0f, 1.0f, 0.0f ) );
-        Light_View.M31 = -Light_View.M31;
-        Light_View.M32 = -Light_View.M32;
-        Light_View.M33 = -Light_View.M33;
-        Light_View.M34 = -Light_View.M34;
-    }
+            Light_View = Matrix.LookAtLH(
+                    lightDir * -scale,
+                    new Vector3( 0.0f, 5.0f, 0.0f ), 
+                    new Vector3( 0.0f, 1.0f, 0.0f ) );
+            Light_View.M31 = -Light_View.M31;
+            Light_View.M32 = -Light_View.M32;
+            Light_View.M33 = -Light_View.M33;
+            Light_View.M34 = -Light_View.M34;
+        }
+
         foreach (Figure fig in FigureList)
         foreach (TSOFile tso in fig.TSOList)
             tso.lightDir = lightDir;
@@ -687,9 +708,12 @@ public class Viewer : IDisposable
     {
         device.BeginScene();
 
-        device.SetRenderTarget(0, ztex_surface);
-        device.DepthStencilSurface = ztex_zbuf;
-        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
+        if (shadowMapEnabled)
+        {
+            device.SetRenderTarget(0, ztex_surface);
+            device.DepthStencilSurface = ztex_zbuf;
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
+        }
 
         {
             Matrix world_view_matrix = world_matrix * Transform_View;
@@ -697,10 +721,11 @@ public class Viewer : IDisposable
             effect.SetValue("wld", world_matrix);
             effect.SetValue("wv", world_view_matrix);
             effect.SetValue("wvp", world_view_projection_matrix);
-            effect.SetValue("lightview", Light_View);
+            if (shadowMapEnabled)
+                effect.SetValue("lightview", Light_View);
         }
 
-    if (shadowEnabled)
+    if (shadowMapEnabled && shadowShown)
     {
         device.RenderState.AlphaBlendEnable = false;
 
@@ -779,7 +804,7 @@ public class Viewer : IDisposable
             tso.EndRender();
         }
 
-    if (spriteEnabled)
+    if (shadowMapEnabled && SpriteShown)
     {
         sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
         Rectangle rect = new Rectangle(0, 0, ztexw, ztexh);
