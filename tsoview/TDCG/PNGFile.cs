@@ -7,6 +7,9 @@ using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
 namespace TDCG
 {
+    /// <summary>
+    /// PNGFile ‚ðˆµ‚¤ƒNƒ‰ƒX
+    /// </summary>
     public class PNGFile
     {
         protected BinaryReader reader;

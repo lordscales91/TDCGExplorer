@@ -7,8 +7,14 @@ using ICSharpCode.SharpZipLib.Checksums;
 
 namespace TDCG
 {
+    /// <summary>
+    /// PNGFile を書き出すメソッド群
+    /// </summary>
     public class PNGWriter
     {
+        /// <summary>
+        /// CSC チェックを行うオブジェクト
+        /// </summary>
 	protected static Crc32 crc = new Crc32();
 
         public static void Write(BinaryWriter bw, byte[] bytes)

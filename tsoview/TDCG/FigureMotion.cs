@@ -5,19 +5,27 @@ using System.IO;
 
 namespace TDCG
 {
-
+/// <summary>
+/// フィギュアアクション
+/// </summary>
 public class FigureAction
 {
     internal int frame_index;
     internal TMOFile tmo;
-
+    /// <summary>
+    /// フィギュアアクションを生成する。
+    /// </summary>
+    /// <param name="frame_index">フレーム番号</param>
+    /// <param name="tmo">tmo</param>
     public FigureAction(int frame_index, TMOFile tmo)
     {
         this.frame_index = frame_index;
         this.tmo = tmo;
     }
 }
-
+/// <summary>
+/// フィギュアモーション
+/// </summary>
 public class FigureMotion
 {
     internal int frame_index = 0;

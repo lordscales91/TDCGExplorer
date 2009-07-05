@@ -13,7 +13,9 @@ using Direct3D=Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
-
+    /// <summary>
+    /// ビューア
+    /// </summary>
 public class Viewer : IDisposable
 {
     internal Control control;
@@ -102,13 +104,19 @@ public class Viewer : IDisposable
     private float screenCenterX = 800 / 2.0f;
     private float screenCenterY = 600 / 2.0f;
 
-    public void SetControl(Control control)
+    protected void SetControl(Control control)
     {
         this.control = control;
         screenCenterX = control.ClientSize.Width / 2.0f;
         screenCenterY = control.ClientSize.Height / 2.0f;
     }
 
+    /// <summary>
+    /// スクリーン座標を射影座標に変換する。
+    /// </summary>
+    /// <param name="screenPointX">スクリーンX座標</param>
+    /// <param name="screenPointY">スクリーンY座標</param>
+    /// <returns></returns>
     public Vector3 ScreenToVector(float screenPointX, float screenPointY)
     {
         float radius = 1.0f;
@@ -129,6 +137,10 @@ public class Viewer : IDisposable
         return new Vector3(x, y, z);
     }
 
+    /// <summary>
+    /// 任意のファイルを読み込む。
+    /// </summary>
+    /// <param name="source_file">任意のパス</param>
     public void LoadAnyFile(string source_file)
     {
         switch (Path.GetExtension(source_file).ToUpper())
@@ -151,6 +163,10 @@ public class Viewer : IDisposable
 
     public event EventHandler FigureEvent;
 
+    /// <summary>
+    /// フィギュアを選択する。
+    /// </summary>
+    /// <param name="figureIndex">フィギュア番号</param>
     public void SetFigureIndex(int figureIndex)
     {
         if (figureIndex < 0)
