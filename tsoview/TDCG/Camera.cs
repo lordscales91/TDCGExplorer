@@ -69,8 +69,8 @@ public class Camera
 
     /// <summary>
     /// カメラの位置と姿勢を指定パスへ書き出します。
-    /// <param name="dest_file">パス</param>
     /// </summary>
+    /// <param name="dest_file">パス</param>
     public void Save(string dest_file)
     {
         XmlSerializer serializer = new XmlSerializer(typeof(Camera));
@@ -84,8 +84,8 @@ public class Camera
 
     /// <summary>
     /// カメラの位置と姿勢を指定パスから読み込みます。
-    /// <param name="source_file">パス</param>
     /// </summary>
+    /// <param name="source_file">パス</param>
     public static Camera Load(string source_file)
     {
         XmlReader reader = XmlReader.Create(source_file);
@@ -176,8 +176,8 @@ public class Camera
 
     /// <summary>
     /// カメラをZ軸回転します。
-    /// <param name="radian">回転角度（ラジアン）</param>
     /// </summary>
+    /// <param name="radian">回転角度（ラジアン）</param>
     public void RotZ(float radian)
     {
         if (radian == 0.0f)
@@ -315,8 +315,8 @@ public class Camera
 
     /// <summary>
     /// 回転中心を設定します。
-    /// <param name="center">回転中心</param>
     /// </summary>
+    /// <param name="center">回転中心</param>
     public void SetCenter(Vector3 center)
     {
         this.center = center;
@@ -325,8 +325,8 @@ public class Camera
 
     /// <summary>
     /// view座標上の位置を設定します。
-    /// <param name="translation">view座標上の位置</param>
     /// </summary>
+    /// <param name="translation">view座標上の位置</param>
     public void SetTranslation(Vector3 translation)
     {
         this.translation = translation;
@@ -335,9 +335,9 @@ public class Camera
 
     /// <summary>
     /// view座標上で移動します。
+    /// </summary>
     /// <param name="dx">X軸移動距離</param>
     /// <param name="dy">Y軸移動距離</param>
-    /// </summary>
     public void MoveView(float dx, float dy)
     {
         this.translation.X += dx;

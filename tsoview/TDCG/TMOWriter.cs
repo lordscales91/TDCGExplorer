@@ -8,12 +8,12 @@ using Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
-    /// TMOFile を書き出すメソッド群
+    /// TMOFileを書き出すメソッド群
     /// </summary>
     public class TMOWriter
     {
         /// <summary>
-        /// 指定ライタ に 'TMO1' を書き出す。
+        /// 指定ライタ に 'TMO1' を書き出します。
         /// </summary>
         /// <param name="bw">ライタ</param>
         public static void WriteMagic(BinaryWriter bw)

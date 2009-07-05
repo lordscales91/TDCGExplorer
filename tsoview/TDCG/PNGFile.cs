@@ -8,12 +8,12 @@ using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 namespace TDCG
 {
     /// <summary>
-    /// PNGFile を扱うクラス
+    /// PNGFileを扱うクラス
     /// </summary>
     public class PNGFile
     {
         /// <summary>
-        /// リーダ
+        /// バイナリ値として読み取ります。
         /// </summary>
         protected BinaryReader reader;
 
@@ -21,7 +21,7 @@ namespace TDCG
         internal byte[] ihdr;
         internal List<byte[]> IdatList = new List<byte[]>();
         /// <summary>
-        /// CSC チェックを行うオブジェクト
+        /// CSCチェックを行うオブジェクト
         /// </summary>
         protected Crc32 crc = new Crc32();
 

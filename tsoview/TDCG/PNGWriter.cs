@@ -8,16 +8,17 @@ using ICSharpCode.SharpZipLib.Checksums;
 namespace TDCG
 {
     /// <summary>
-    /// PNGFile を書き出すメソッド群
+    /// PNGFileを書き出すメソッド群
     /// </summary>
     public class PNGWriter
     {
         /// <summary>
-        /// CSC チェックを行うオブジェクト
+        /// CSCチェックを行うオブジェクト
         /// </summary>
-	    protected static Crc32 crc = new Crc32();
+        protected static Crc32 crc = new Crc32();
+
         /// <summary>
-        /// 指定ライタにbyte配列を書き出す。
+        /// 指定ライタにbyte配列を書き出します。
         /// </summary>
         /// <param name="bw">ライタ</param>
         /// <param name="bytes">bute配列</param>
@@ -27,7 +28,7 @@ namespace TDCG
                 bw.Write(bytes);
         }
         /// <summary>
-        /// 指定ライタにチャンクを書き出す。
+        /// 指定ライタにチャンクを書き出します。
         /// </summary>
         /// <param name="bw">ライタ</param>
         /// <param name="type">チャンクタイプ</param>
@@ -51,7 +52,7 @@ namespace TDCG
             Write(bw, crc_buf);
         }
         /// <summary>
-        /// 指定ライタにIHDRチャンクを書き出す。
+        /// 指定ライタにIHDRチャンクを書き出します。
         /// </summary>
         /// <param name="bw">ライタ</param>
         /// <param name="chunk_data">チャンク</param>
@@ -60,7 +61,7 @@ namespace TDCG
             WriteChunk(bw, "IHDR", chunk_data);
         }
         /// <summary>
-        /// 指定ライタにIDATチャンクを書き出す。
+        /// 指定ライタにIDATチャンクを書き出します。
         /// </summary>
         /// <param name="bw">ライタ</param>
         /// <param name="chunk_data">チャンク</param>
@@ -69,7 +70,7 @@ namespace TDCG
             WriteChunk(bw, "IDAT", chunk_data);
         }
         /// <summary>
-        /// 指定ライタにIENDチャンクを書き出す。
+        /// 指定ライタにIENDチャンクを書き出します。
         /// </summary>
         /// <param name="bw">ライタ</param>
         public static void WriteIEND(BinaryWriter bw)
