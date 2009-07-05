@@ -8,7 +8,7 @@ using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 namespace TDCG
 {
     /// <summary>
-    /// PNGFileを扱うクラス
+    /// PNGファイルを扱います。
     /// </summary>
     public class PNGFile
     {
@@ -29,7 +29,11 @@ namespace TDCG
 
         public BinaryWriterHandler WriteTaOb;
 
-        public int Save(string dest_file)
+        /// <summary>
+        /// 指定パスに保存します。
+        /// </summary>
+        /// <param name="dest_file">パス</param>
+        public void Save(string dest_file)
         {
             BinaryWriter bw = new BinaryWriter(File.Create(dest_file), System.Text.Encoding.Default);
 
@@ -44,7 +48,6 @@ namespace TDCG
             PNGWriter.WriteIEND(bw);
 
             bw.Close();
-            return 0;
         }
 
         public delegate void PngHeaderHandler(byte[] header);
@@ -55,7 +58,11 @@ namespace TDCG
         public PngDataHandler Idat;
         public PngDataHandler Iend;
 
-        public int Load(string source_file)
+        /// <summary>
+        /// 指定パスから読み込みます。
+        /// </summary>
+        /// <param name="source_file">パス</param>
+        public void Load(string source_file)
         {
             this.reader = new BinaryReader(File.OpenRead(source_file), System.Text.Encoding.Default);
             this.header = reader.ReadBytes(8);
@@ -85,8 +92,8 @@ namespace TDCG
                 crc.Update(chunk_type);
                 crc.Update(chunk_data);
 
-		if (sum != crc.Value)
-		    throw new ICSharpCode.SharpZipLib.GZip.GZipException("GZIP crc sum mismatch");
+		        if (sum != crc.Value)
+		            throw new ICSharpCode.SharpZipLib.GZip.GZipException("GZIP crc sum mismatch");
 
                 if (type == "taOb")
                 {
@@ -113,7 +120,6 @@ namespace TDCG
                 }
             }
             reader.Close();
-            return 0;
         }
 
         public delegate void TaobTypeHandler(string type);

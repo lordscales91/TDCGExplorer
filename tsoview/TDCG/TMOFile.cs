@@ -8,7 +8,7 @@ using Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
-    /// TMOFileを扱うクラス
+    /// TMOファイルを扱います。
     /// </summary>
     public class TMOFile
     {
@@ -116,11 +116,13 @@ namespace TDCG
                 int matrix_count = reader.ReadInt32();
                 frames[i].matrices = new TMOMat[matrix_count];
 
-                for (int j = 0; j < matrix_count; j++) {
-                    frames[i].matrices[j] = new TMOMat(ReadMatrix());
-                    nodes[j].frame_matrices.Add(frames[i].matrices[j]);
+                for (int j = 0; j < matrix_count; j++)
+                {
+                    TMOMat m = frames[i].matrices[j] = new TMOMat();
+                    ReadMatrix(ref m.m);
+                    nodes[j].frame_matrices.Add(m);
 
-                    //Console.WriteLine(frames[i].matrices[j].m);
+                    //Console.WriteLine(m.m);
                 }
             }
 
@@ -271,6 +273,10 @@ namespace TDCG
             return true;
         }
 
+        /// <summary>
+        /// null終端文字列を読みとります。
+        /// </summary>
+        /// <returns>文字列</returns>
         public string ReadString()
         {
             StringBuilder string_builder = new StringBuilder();
@@ -282,10 +288,12 @@ namespace TDCG
             return string_builder.ToString();
         }
 
-        public Matrix ReadMatrix()
+        /// <summary>
+        /// Matrixを読みとります。
+        /// </summary>
+        /// <param name="m">Matrix</param>
+        public void ReadMatrix(ref Matrix m)
         {
-            Matrix m = new Matrix();
-
             m.M11 = reader.ReadSingle();
             m.M12 = reader.ReadSingle();
             m.M13 = reader.ReadSingle();
@@ -302,8 +310,6 @@ namespace TDCG
             m.M42 = reader.ReadSingle();
             m.M43 = reader.ReadSingle();
             m.M44 = reader.ReadSingle();
-
-            return m;
         }
     }
 
@@ -311,11 +317,26 @@ namespace TDCG
     {
         internal Matrix m;
 
+        /// <summary>
+        /// TMOMatを作成します。
+        /// </summary>
+        public TMOMat()
+        {
+        }
+
+        /// <summary>
+        /// TMOMatを作成します。
+        /// </summary>
+        /// <param name="m">matrix</param>
         public TMOMat(Matrix m)
         {
             this.m = m;
         }
 
+        /// <summary>
+        /// 指定変位だけ移動します。
+        /// </summary>
+        /// <param name="translation">変位</param>
         public void Move(Vector3 translation)
         {
             m.M41 += translation.X;
@@ -323,6 +344,12 @@ namespace TDCG
             m.M43 += translation.Z;
         }
 
+        /// <summary>
+        /// 指定比率で拡大します。
+        /// </summary>
+        /// <param name="x">X軸拡大比率</param>
+        /// <param name="y">Y軸拡大比率</param>
+        /// <param name="z">Z軸拡大比率</param>
         public void Scale(float x, float y, float z)
         {
             /*
@@ -336,6 +363,10 @@ namespace TDCG
             m.M43 /= z;
         }
 
+        /// <summary>
+        /// 指定行列で拡大します。
+        /// </summary>
+        /// <param name="scaling">scaling matrix</param>
         public void Scale(Matrix scaling)
         {
             /*
@@ -349,6 +380,10 @@ namespace TDCG
             m.M43 /= scaling.M33;
         }
 
+        /// <summary>
+        /// 指定行列で縮小します。位置は変更しません。
+        /// </summary>
+        /// <param name="scaling">scaling matrix</param>
         public void Scale0(Matrix scaling)
         {
             m.M11 /= scaling.M11;
@@ -362,6 +397,10 @@ namespace TDCG
             m.M33 /= scaling.M33;
         }
 
+        /// <summary>
+        /// 指定行列で拡大します。位置は変更しません。
+        /// </summary>
+        /// <param name="scaling">scaling matrix</param>
         public void Scale1(Matrix scaling)
         {
             m.M11 *= scaling.M11;
@@ -375,6 +414,10 @@ namespace TDCG
             m.M33 *= scaling.M33;
         }
 
+        /// <summary>
+        /// 指定角度でX軸回転します。
+        /// </summary>
+        /// <param name="angle">角度（ラジアン）</param>
         public void RotateX(float angle)
         {
             Vector3 v = new Vector3(m.M11, m.M12, m.M13);
@@ -382,6 +425,10 @@ namespace TDCG
             m *= Matrix.RotationQuaternion(qt);
         }
 
+        /// <summary>
+        /// 指定角度でY軸回転します。
+        /// </summary>
+        /// <param name="angle">角度（ラジアン）</param>
         public void RotateY(float angle)
         {
             Vector3 v = new Vector3(m.M21, m.M22, m.M23);
@@ -389,6 +436,10 @@ namespace TDCG
             m *= Matrix.RotationQuaternion(qt);
         }
 
+        /// <summary>
+        /// 指定角度でworld座標上でY軸回転します。
+        /// </summary>
+        /// <param name="angle">角度（ラジアン）</param>
         public void RotateWorldY(float angle)
         {
             Vector3 v = new Vector3(0.0f, 1.0f, 0.0f);
@@ -396,6 +447,15 @@ namespace TDCG
             m *= Matrix.RotationQuaternion(qt);
         }
 
+        /// <summary>
+        /// 補間を行います。
+        /// </summary>
+        /// <param name="mat0">行列0</param>
+        /// <param name="mat1">行列1</param>
+        /// <param name="mat2">行列2</param>
+        /// <param name="mat3">行列3</param>
+        /// <param name="length">分割数</param>
+        /// <returns>分割数だけTMOMatを持つ配列</returns>
         public static TMOMat[] Slerp(TMOMat mat0, TMOMat mat1, TMOMat mat2, TMOMat mat3, int length)
         {
             TMOMat[] ret = new TMOMat[length];
@@ -414,6 +474,11 @@ namespace TDCG
             return ret;
         }
 
+        /// <summary>
+        /// 回転行列と変位行列に分割します。
+        /// </summary>
+        /// <param name="m">回転行列</param>
+        /// <returns>変位行列</returns>
         public static Vector3 DecomposeMatrix(ref Matrix m)
         {
             Vector3 t = new Vector3(m.M41, m.M42, m.M43);
@@ -423,6 +488,13 @@ namespace TDCG
             return t;
         }
 
+        /// <summary>
+        /// 加減算を行います。
+        /// </summary>
+        /// <param name="mat0">行列0</param>
+        /// <param name="mat1">行列1</param>
+        /// <param name="mat2">行列2</param>
+        /// <returns>行列1 - 行列2 + 行列0</returns>
         public static TMOMat AddSub(TMOMat mat0, TMOMat mat1, TMOMat mat2)
         {
             Matrix m0 = mat0.m;

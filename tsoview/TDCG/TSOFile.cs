@@ -139,6 +139,9 @@ namespace TDCG
         }
     }
 
+    /// <summary>
+    /// メッシュ
+    /// </summary>
     public class TSOMesh : IDisposable
     {
         public string name;
@@ -155,6 +158,9 @@ namespace TDCG
         }
     }
 
+    /// <summary>
+    /// 頂点
+    /// </summary>
     public struct vertex_field
     {
         public Vector3 position;
@@ -165,6 +171,9 @@ namespace TDCG
         public UInt32 skin_weight_indices;
     }
 
+    /// <summary>
+    /// スキンウェイト
+    /// </summary>
     public class SkinWeight : IComparable
     {
         public Single weight;
@@ -180,12 +189,18 @@ namespace TDCG
         }
     }
 
+    /// <summary>
+    /// スクリプト
+    /// </summary>
     public class TSOScript
     {
         public string name;
         public string[] script_data;
     }
 
+    /// <summary>
+    /// サブスクリプト
+    /// </summary>
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class TSOSubScript
     {
@@ -198,6 +213,9 @@ namespace TDCG
         public string File { get { return file; } set { file = value; } }
     }
 
+    /// <summary>
+    /// テクスチャ
+    /// </summary>
     public class TSOTex : IDisposable
     {
         public string name;
@@ -256,6 +274,9 @@ namespace TDCG
         }
     }
 
+    /// <summary>
+    /// node (bone)
+    /// </summary>
     public class TSONode
     {
         internal int id;
@@ -291,6 +312,9 @@ namespace TDCG
         }
     }
 
+    /// <summary>
+    /// TSOファイルを扱います。
+    /// </summary>
     public class TSOFile : IDisposable
     {
         /// <summary>
@@ -309,7 +333,7 @@ namespace TDCG
         /// <summary>
         /// null終端文字列を読みとります。
         /// </summary>
-        /// <returns></returns>
+        /// <returns>文字列</returns>
         public string ReadString()
         {
             StringBuilder string_builder = new StringBuilder();
