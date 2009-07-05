@@ -162,6 +162,8 @@ public class Viewer : IDisposable
             FigureEvent(this, EventArgs.Empty);
     }
 
+    /// <summary>指定ディレクトリから Figure を作成して追加する。</summary>
+    /// <param name="source_file">TSOFile を含むディレクトリ</param>
     public void AddFigureFromTSODirectory(string source_file)
     {
         Figure fig = new Figure();
@@ -340,6 +342,8 @@ public class Viewer : IDisposable
         return tmomap[name];
     }
 
+    /// <summary>指定パスから PNGFile を読み込み Figure を作成して追加する。</summary>
+    /// <param name="source_file">PNGFile のパス</param>
     public void AddFigureFromPNGFile(string source_file)
     {
         List<Figure> fig_list = LoadPNGFile(source_file);
@@ -552,6 +556,7 @@ public class Viewer : IDisposable
         //e.Cancel = true;
     }
 
+    /// 全フィギュアを削除する。
     public void ClearFigureList()
     {
         foreach (Figure fig in FigureList)
@@ -561,6 +566,7 @@ public class Viewer : IDisposable
         GC.Collect(); // free meshes and textures.
     }
 
+    /// 選択フィギュアを削除する。
     public void RemoveSelectedFigure()
     {
         Figure fig;
@@ -577,21 +583,25 @@ public class Viewer : IDisposable
     internal bool shadowEnabled = false;
     internal bool spriteEnabled = false;
 
+    /// モーションの有無を切り替える。
     public void SwitchMotionEnabled()
     {
         motionEnabled = ! motionEnabled;
     }
 
+    /// シャドウマップの有無を切り替える。
     public void SwitchShadowEnabled()
     {
         shadowEnabled = ! shadowEnabled;
     }
 
+    /// スプライトの有無を切り替える。
     public void SwitchSpriteEnabled()
     {
         spriteEnabled = ! spriteEnabled;
     }
 
+    /// 次のアニメーションフレームに進む。
     public void FrameMove()
     {
         foreach (Figure fig in FigureList)
@@ -639,6 +649,7 @@ public class Viewer : IDisposable
         }
     }
 
+    /// シーンをレンダリングする。
     public void Render()
     {
         device.BeginScene();
@@ -795,6 +806,8 @@ public class Viewer : IDisposable
             device.Dispose();
     }
 
+    /// <summary>指定パスから PNGFile を読み込み Figure を作成する。</summary>
+    /// <param name="source_file">PNGFile のパス</param>
     public List<Figure> LoadPNGFile(string source_file)
     {
         List<Figure> fig_list = new List<Figure>();
@@ -840,6 +853,7 @@ public class Viewer : IDisposable
         return fig_list;
     }
 
+    /// バックバッファを Bitmap ファイルに保存する。
     public void SaveToBitmap()
     {
       using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))
