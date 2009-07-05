@@ -49,11 +49,21 @@ public class Figure : IDisposable
 
     internal Dictionary<TSONode, TMONode> nodemap;
 
+    /// <summary>
+    /// フィギュアを移動します（相対座標）。
+    /// </summary>
+    /// <param name="dx"></param>
+    /// <param name="dy"></param>
+    /// <param name="dz"></param>
     public void Move(float dx, float dy, float dz)
     {
         Move(new Vector3(dx, dy, dz));
     }
 
+    /// <summary>
+    /// フィギュアを移動します（相対座標）。
+    /// </summary>
+    /// <param name="delta"></param>
     public void Move(Vector3 delta)
     {
         center += delta;
@@ -116,7 +126,7 @@ public class Figure : IDisposable
     }
     
     /// TMOFileを変更したときに呼ぶ必要があります。
-    /// frame indexと中心点を設定します。
+    /// tmo frame indexと中心点を設定します。
     protected void UpdateTMO()
     {
         Debug.Assert(tmo != null);
@@ -131,6 +141,9 @@ public class Figure : IDisposable
         }
     }
 
+    /// <summary>
+    /// 次のtmo frameに進みます。
+    /// </summary>
     public void NextTMOFrame()
     {
         if (tmo.frames != null)
@@ -142,9 +155,9 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// 現在のmotion frameを得ます。
+    /// 現在のtmo frameを得ます。
     /// </summary>
-    /// <returns>現在のmotion frame</returns>
+    /// <returns>現在のtmo frame</returns>
     protected TMOFrame GetTMOFrame()
     {
         if (tmo.frames != null)
@@ -181,6 +194,10 @@ public class Figure : IDisposable
         foreach (TSOFile tso in TSOList)
             UpdateBoneMatrices(tso, tmo_frame);
     }
+    
+    /// <summary>
+    /// bone行列を更新します。
+    /// </summary>
     public void UpdateBoneMatrices()
     {
         UpdateBoneMatrices(false);
@@ -219,6 +236,11 @@ public class Figure : IDisposable
         matrixStack.Pop();
     }
 
+    /// <summary>
+    /// TSOFileを指定device上で開きます。
+    /// </summary>
+    /// <param name="device">device</param>
+    /// <param name="effect">effect</param>
     public void OpenTSOFile(Device device, Effect effect)
     {
         foreach (TSOFile tso in TSOList)
@@ -226,17 +248,28 @@ public class Figure : IDisposable
     }
 
     private FigureMotion motion = new FigureMotion();
-
+    
+    /// <summary>
+    /// フィギュアモーションを得ます。
+    /// </summary>
     public FigureMotion Motion
     {
         get { return motion; }
     }
 
+    /// <summary>
+    /// フィギュアモーションを設定します。
+    /// </summary>
+    /// <param name="frame_index">フレーム番号</param>
+    /// <param name="tmo">tmo</param>
     public void SetMotion(int frame_index, TMOFile tmo)
     {
         motion.Add(frame_index, tmo);
     }
 
+    /// <summary>
+    /// 次のモーションフレームに進みます。
+    /// </summary>
     public void NextFrame()
     {
         if (motion.Count != 0)

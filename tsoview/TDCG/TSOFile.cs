@@ -293,6 +293,9 @@ namespace TDCG
 
     public class TSOFile : IDisposable
     {
+        /// <summary>
+        /// バイナリ値として読み取ります。
+        /// </summary>
         protected BinaryReader reader;
 
         public TSONode[] nodes;
@@ -303,6 +306,10 @@ namespace TDCG
 
         internal Dictionary<string, TSONode> nodemap;
 
+        /// <summary>
+        /// null終端文字列を読みとります。
+        /// </summary>
+        /// <returns></returns>
         public string ReadString()
         {
             StringBuilder string_builder = new StringBuilder();
@@ -314,13 +321,17 @@ namespace TDCG
             return string_builder.ToString();
         }
 
-        public TSOMesh read_mesh()
+        /// <summary>
+        /// TMOMeshを読みとります。
+        /// </summary>
+        /// <returns>TSOMesh</returns>
+        public TSOMesh ReadMesh()
         {
             TSOMesh mesh = new TSOMesh();
 
             mesh.name = ReadString();
             mesh.name = mesh.name.Replace(":", "_colon_").Replace("#", "_sharp_"); //should be compatible with directx naming conventions 
-            mesh.transform_matrix = ReadMatrix();
+            ReadMatrix(ref mesh.transform_matrix);
             mesh.unknown1 = reader.ReadUInt32();
             mesh.sub_mesh_count = reader.ReadUInt32();
             mesh.sub_meshes = new TSOSubMesh[mesh.sub_mesh_count];
@@ -366,10 +377,12 @@ namespace TDCG
             return mesh;
         }
 
-        public Matrix ReadMatrix()
+        /// <summary>
+        /// Matrixを読みとります。
+        /// </summary>
+        /// <param name="m">Matrix</param>
+        public void ReadMatrix(ref Matrix m)
         {
-            Matrix m;
-
             m.M11 = reader.ReadSingle();
             m.M12 = reader.ReadSingle();
             m.M13 = reader.ReadSingle();
@@ -389,25 +402,27 @@ namespace TDCG
             m.M42 = reader.ReadSingle();
             m.M43 = reader.ReadSingle();
             m.M44 = reader.ReadSingle();
-
-            return m;
         }
 
-        public Vector3 ReadVector3()
+        /// <summary>
+        /// Vector3を読みとります。
+        /// </summary>
+        /// <param name="v">Vector3</param>
+        public void ReadVector3(ref Vector3 v)
         {
-            Vector3 v;
-
             v.X = reader.ReadSingle();
             v.Y = reader.ReadSingle();
             v.Z = reader.ReadSingle();
-
-            return v;
         }
 
+        /// <summary>
+        /// 頂点を読みとります。
+        /// </summary>
+        /// <param name="v">頂点</param>
         public void ReadVertex(ref vertex_field v)
         {
-            v.position = ReadVector3();
-            v.normal = ReadVector3();
+            ReadVector3(ref v.position);
+            ReadVector3(ref v.normal);
             v.u = reader.ReadSingle();
             v.v = reader.ReadSingle();
             int bone_weight_entry_count = reader.ReadInt32();
@@ -432,12 +447,20 @@ namespace TDCG
             v.skin_weight_indices = BitConverter.ToUInt32(idx, 0);
         }
 
+        /// <summary>
+        /// 指定パスから読み込みます。
+        /// </summary>
+        /// <param name="source_file">パス</param>
         public void Load(string source_file)
         {
             using (Stream source_stream = File.OpenRead(source_file))
                 Load(source_stream);
         }
 
+        /// <summary>
+        /// 指定ストリームから読み込みます。
+        /// </summary>
+        /// <param name="source_stream">ストリーム</param>
         public void Load(Stream source_stream)
         {
             reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
@@ -478,7 +501,7 @@ namespace TDCG
             int node_matrix_count = reader.ReadInt32();
             for (int i = 0; i < node_matrix_count; i++)
             {
-                nodes[i].transformation_matrix = ReadMatrix();
+                ReadMatrix(ref nodes[i].transformation_matrix);
             }
             for (int i = 0; i < node_matrix_count; i++)
             {
@@ -510,7 +533,7 @@ namespace TDCG
             meshes = new TSOMesh[mesh_count];
             for (int i = 0; i < mesh_count; i++)
             {
-                TSOMesh mesh = read_mesh();
+                TSOMesh mesh = ReadMesh();
                 meshes[i] = mesh;
 
                 //Console.WriteLine("mesh name {0} len {1}", mesh.name, mesh.sub_meshes.Length);
@@ -587,6 +610,11 @@ namespace TDCG
         private EffectHandle handle_LightDirForced;
         private EffectHandle handle_UVSCR;
 
+        /// <summary>
+        /// 指定device上で開きます。
+        /// </summary>
+        /// <param name="device">device</param>
+        /// <param name="effect">effect</param>
         public void Open(Device device, Effect effect)
         {
             this.device = device;

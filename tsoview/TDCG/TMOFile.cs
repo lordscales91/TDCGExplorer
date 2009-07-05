@@ -13,7 +13,7 @@ namespace TDCG
     public class TMOFile
     {
         /// <summary>
-        /// リーダ
+        /// バイナリ値として読み取ります。
         /// </summary>
         protected BinaryReader reader;
 
@@ -26,12 +26,20 @@ namespace TDCG
 
         internal Dictionary<string, TMONode> nodemap;
 
+        /// <summary>
+        /// 指定パスに保存します。
+        /// </summary>
+        /// <param name="dest_file">パス</param>
         public void Save(string dest_file)
         {
             using (Stream dest_stream = File.Create(dest_file))
                 Save(dest_stream);
         }
 
+        /// <summary>
+        /// 指定ストリームに保存します。
+        /// </summary>
+        /// <param name="dest_stream">ストリーム</param>
         public void Save(Stream dest_stream)
         {
             BinaryWriter bw = new BinaryWriter(dest_stream);
@@ -45,12 +53,20 @@ namespace TDCG
             TMOWriter.Write(bw, footer);
         }
 
+        /// <summary>
+        /// 指定パスから読み込みます。
+        /// </summary>
+        /// <param name="source_file">パス</param>
         public void Load(string source_file)
         {
             using (Stream source_stream = File.OpenRead(source_file))
                 Load(source_stream);
         }
 
+        /// <summary>
+        /// 指定ストリームから読み込みます。
+        /// </summary>
+        /// <param name="source_stream">ストリーム</param>
         public void Load(Stream source_stream)
         {
             this.reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
@@ -111,7 +127,14 @@ namespace TDCG
             this.footer = reader.ReadBytes(4);
         }
 
-        public int[] CreateFrameIndexPair(TMOFile motion)
+        /// <summary>
+        /// node idのペアを作成します。
+        /// ペアのキーはnode id
+        /// ペアの値はもうひとつのtmoにおいてShortNameが一致するnode idになります。
+        /// </summary>
+        /// <param name="motion">もうひとつのtmo</param>
+        /// <returns>tmo frame indexのペア</returns>
+        public int[] CreateNodeIdPair(TMOFile motion)
         {
             Dictionary<string, TMONode> source_nodes = new Dictionary<string, TMONode>();
 
@@ -146,13 +169,13 @@ namespace TDCG
 
         public void AppendFrameFrom(TMOFile motion)
         {
-            int[] index_pair = CreateFrameIndexPair(motion);
+            int[] id_pair = CreateNodeIdPair(motion);
 
             TMOFrame source_frame = frames[0];
             int append_length = motion.frames.Length;
             TMOFrame[] append_frames = new TMOFrame[append_length];
             for (int i = 0; i < motion.frames.Length; i++)
-                append_frames[i] = TMOFrame.Select(source_frame, motion.frames[i], index_pair);
+                append_frames[i] = TMOFrame.Select(source_frame, motion.frames[i], id_pair);
                 
             int old_length = frames.Length;
             Array.Resize(ref frames, frames.Length + append_length);
@@ -206,14 +229,14 @@ namespace TDCG
 
         public void CopyMotionFrom(TMOFile motion)
         {
-            int[] index_pair = CreateFrameIndexPair(motion);
+            int[] id_pair = CreateNodeIdPair(motion);
 
             TMOFrame source_frame = frames[0];
             TMOFrame motion_frame = motion.frames[0];
             int append_length = motion.frames.Length;
             TMOFrame[] interp_frames = new TMOFrame[append_length];
             for (int i = 0; i < motion.frames.Length; i++)
-                interp_frames[i] = TMOFrame.AddSub(source_frame, motion.frames[i], motion_frame, index_pair);
+                interp_frames[i] = TMOFrame.AddSub(source_frame, motion.frames[i], motion_frame, id_pair);
                 
             int old_length = frames.Length;
             Array.Resize(ref frames, frames.Length + append_length);
