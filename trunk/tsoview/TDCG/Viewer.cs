@@ -13,7 +13,7 @@ using Direct3D=Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
-    /// ビューア
+    /// TSOFileをDirect3D上でレンダリングします。
     /// </summary>
 public class Viewer : IDisposable
 {
@@ -108,7 +108,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// スクリーン座標を射影座標に変換する。
+    /// スクリーン座標を射影座標に変換します。
     /// </summary>
     /// <param name="screenPointX">スクリーンX座標</param>
     /// <param name="screenPointY">スクリーンY座標</param>
@@ -134,7 +134,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// 任意のファイルを読み込む。
+    /// 任意のファイルを読み込みます。
     /// </summary>
     /// <param name="source_file">任意のパス</param>
     public void LoadAnyFile(string source_file)
@@ -160,7 +160,7 @@ public class Viewer : IDisposable
     public event EventHandler FigureEvent;
 
     /// <summary>
-    /// フィギュアを選択する。
+    /// フィギュアを選択します。
     /// </summary>
     /// <param name="figureIndex">フィギュア番号</param>
     public void SetFigureIndex(int figureIndex)
@@ -175,9 +175,9 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// 指定ディレクトリから Figure を作成して追加する。
+    /// 指定ディレクトリからフィギュアを作成して追加します。
     /// </summary>
-    /// <param name="source_file">TSOFile を含むディレクトリ</param>
+    /// <param name="source_file">TSOFileを含むディレクトリ</param>
     public void AddFigureFromTSODirectory(string source_file)
     {
         Figure fig = new Figure();
@@ -207,7 +207,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// 選択フィギュアを得る。
+    /// 選択フィギュアを得ます。
     /// </summary>
     public Figure GetSelectedFigure()
     {
@@ -220,7 +220,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// 選択フィギュアを得る。なければ作成する。
+    /// 選択フィギュアを得ます。なければ作成します。
     /// </summary>
     public Figure GetSelectedOrCreateFigure()
     {
@@ -239,9 +239,9 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// 指定パスから TSOFile を読み込む。
+    /// 指定パスからTSOFileを読み込みます。
     /// </summary>
-    /// <param name="source_file">TSOFile のパス</param>
+    /// <param name="source_file">パス</param>
     public void LoadTSOFile(string source_file)
     {
         Figure fig = GetSelectedOrCreateFigure();
@@ -261,9 +261,9 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// 指定ストリームから TSOFile を読み込む。
+    /// 指定ストリームからTSOFileを読み込みます。
     /// </summary>
-    /// <param name="source_stream">TSOFile のストリーム</param>
+    /// <param name="source_stream">ストリーム</param>
     public void LoadTSOFile(Stream source_stream)
     {
         Figure fig = GetSelectedOrCreateFigure();
@@ -282,7 +282,9 @@ public class Viewer : IDisposable
             FigureEvent(this, EventArgs.Empty);
     }
 
-    /// 選択フィギュアを得る。
+    /// <summary>
+    /// 選択フィギュアを得ます。
+    /// </summary>
     public bool TryGetFigure(out Figure fig)
     {
         fig = null;
@@ -291,7 +293,7 @@ public class Viewer : IDisposable
         return fig != null;
     }
 
-    /// 次のフィギュアを選択する。
+    /// 次のフィギュアを選択します。
     public void NextFigure()
     {
         SetFigureIndex(figureIndex+1);
@@ -301,9 +303,9 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// 指定パスから TMOFile を読み込む。
+    /// 指定パスからTMOFileを読み込みます。
     /// </summary>
-    /// <param name="source_file">TMOFile のパス</param>
+    /// <param name="source_file">パス</param>
     public void LoadTMOFile(string source_file)
     {
         Figure fig;
@@ -326,9 +328,9 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// 指定ストリームから TMOFile を読み込む。
+    /// 指定ストリームからTMOFileを読み込みます。
     /// </summary>
-    /// <param name="source_stream">TMOFile のストリーム</param>
+    /// <param name="source_stream">ストリーム</param>
     public void LoadTMOFile(Stream source_stream)
     {
         Figure fig;
@@ -350,7 +352,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// 指定パスから PNGFile を読み込み Figure を作成して追加する。
+    /// 指定パスからPNGFileを読み込みフィギュアを作成して追加します。
     /// </summary>
     /// <param name="source_file">PNGFile のパス</param>
     public void AddFigureFromPNGFile(string source_file)
@@ -387,6 +389,9 @@ public class Viewer : IDisposable
 
     private Camera camera = new Camera();
 
+    /// <summary>
+    /// カメラ
+    /// </summary>
     public Camera Camera
     {
         get {
@@ -403,6 +408,11 @@ public class Viewer : IDisposable
     private Matrix Light_View = Matrix.Identity;
     private Matrix Light_Projection = Matrix.Identity;
 
+    /// <summary>
+    /// deviceを作成します。
+    /// </summary>
+    /// <param name="control">レンダリング先となるcontrol</param>
+    /// <returns></returns>
     public bool InitializeApplication(Control control)
     {
         SetControl(control);
@@ -566,7 +576,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// 全フィギュアを削除する。
+    /// 全フィギュアを削除します。
     /// </summary>
     public void ClearFigureList()
     {
@@ -578,7 +588,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// 選択フィギュアを削除する。
+    /// 選択フィギュアを削除します。
     /// </summary>
     public void RemoveSelectedFigure()
     {
@@ -597,7 +607,7 @@ public class Viewer : IDisposable
     internal bool spriteEnabled = false;
 
     /// <summary>
-    /// モーションの有無を切り替える。
+    /// モーションの有無を切り替えます。
     /// </summary>
     public void SwitchMotionEnabled()
     {
@@ -605,7 +615,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// シャドウマップの有無を切り替える。
+    /// シャドウマップの有無を切り替えます。
     /// </summary>
     public void SwitchShadowEnabled()
     {
@@ -613,7 +623,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// スプライトの有無を切り替える。
+    /// スプライトの有無を切り替えます。
     /// </summary>
     public void SwitchSpriteEnabled()
     {
@@ -621,7 +631,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// 次のアニメーションフレームに進む。
+    /// 次のシーンフレームに進みます。
     /// </summary>
     public void FrameMove()
     {
@@ -671,7 +681,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// シーンをレンダリングする。
+    /// シーンをレンダリングします。
     /// </summary>
     public void Render()
     {
@@ -830,9 +840,9 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// 指定パスから PNGFile を読み込み Figure を作成する。
+    /// 指定パスからPNGFileを読み込みフィギュアを作成します。
     /// </summary>
-    /// <param name="source_file">PNGFile のパス</param>
+    /// <param name="source_file">PNGFileのパス</param>
     public List<Figure> LoadPNGFile(string source_file)
     {
         List<Figure> fig_list = new List<Figure>();
@@ -879,7 +889,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// バックバッファを Bitmap ファイルに保存する。
+    /// バックバッファをBitmapファイルに保存します。
     /// </summary>
     public void SaveToBitmap()
     {
