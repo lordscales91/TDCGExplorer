@@ -52,9 +52,9 @@ public class Figure : IDisposable
     /// <summary>
     /// フィギュアを移動します（相対座標）。
     /// </summary>
-    /// <param name="dx"></param>
-    /// <param name="dy"></param>
-    /// <param name="dz"></param>
+    /// <param name="dx">X軸変位</param>
+    /// <param name="dy">Y軸変位</param>
+    /// <param name="dz">Z軸変位</param>
     public void Move(float dx, float dy, float dz)
     {
         Move(new Vector3(dx, dy, dz));
@@ -63,7 +63,7 @@ public class Figure : IDisposable
     /// <summary>
     /// フィギュアを移動します（相対座標）。
     /// </summary>
-    /// <param name="delta"></param>
+    /// <param name="delta">変位</param>
     public void Move(Vector3 delta)
     {
         center += delta;
@@ -74,8 +74,8 @@ public class Figure : IDisposable
     /// <summary>
     /// 指定位置にあるtsoの位置を入れ替えます。描画順を変更します。
     /// </summary>
-    /// <param name="aidx"></param>
-    /// <param name="bidx"></param>
+    /// <param name="aidx">リスト上の位置a</param>
+    /// <param name="bidx">リスト上の位置b</param>
     public void SwapAt(int aidx, int bidx)
     {
         Debug.Assert(aidx < bidx);
@@ -250,7 +250,7 @@ public class Figure : IDisposable
     private FigureMotion motion = new FigureMotion();
     
     /// <summary>
-    /// フィギュアモーションを得ます。
+    /// フィギュアモーション
     /// </summary>
     public FigureMotion Motion
     {

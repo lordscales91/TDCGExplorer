@@ -374,18 +374,55 @@ public class Camera
         get { return motion; }
     }
 
+    /// <summary>
+    /// カメラモーションを設定します。
+    /// </summary>
+    /// <param name="frame_index">フレーム番号</param>
+    /// <param name="eye">注視点</param>
+    /// <param name="center">カメラの位置</param>
     public void SetMotion(int frame_index, Vector3 eye, Vector3 center)
     {
         motion.Add(frame_index, eye, center);
     }
+
+    /// <summary>
+    /// カメラモーションを設定します。
+    /// </summary>
+    /// <param name="frame_index">フレーム番号</param>
+    /// <param name="eye">注視点</param>
+    /// <param name="center">カメラの位置</param>
+    /// <param name="interp_length">補間するフレーム長さ</param>
     public void SetMotion(int frame_index, Vector3 eye, Vector3 center, int interp_length)
     {
         motion.Add(frame_index, eye, center, interp_length);
     }
+
+    /// <summary>
+    /// カメラモーションを設定します。
+    /// </summary>
+    /// <param name="frame_index">フレーム番号</param>
+    /// <param name="eyex">注視点のX座標</param>
+    /// <param name="eyey">注視点のY座標</param>
+    /// <param name="eyez">注視点のZ座標</param>
+    /// <param name="centerx">カメラの位置のX座標</param>
+    /// <param name="centery">カメラの位置のY座標</param>
+    /// <param name="centerz">カメラの位置のZ座標</param>
     public void SetMotion(int frame_index, float eyex, float eyey, float eyez, float centerx, float centery, float centerz)
     {
         motion.Add(frame_index, new Vector3(eyex, eyey, eyez), new Vector3(centerx, centery, centerz));
     }
+
+    /// <summary>
+    /// カメラモーションを設定します。
+    /// </summary>
+    /// <param name="frame_index">フレーム番号</param>
+    /// <param name="eyex">注視点のX座標</param>
+    /// <param name="eyey">注視点のY座標</param>
+    /// <param name="eyez">注視点のZ座標</param>
+    /// <param name="centerx">カメラの位置のX座標</param>
+    /// <param name="centery">カメラの位置のY座標</param>
+    /// <param name="centerz">カメラの位置のZ座標</param>
+    /// <param name="interp_length">補間するフレーム長さ</param>
     public void SetMotion(int frame_index, float eyex, float eyey, float eyez, float centerx, float centery, float centerz, int interp_length)
     {
         motion.Add(frame_index, new Vector3(eyex, eyey, eyez), new Vector3(centerx, centery, centerz), interp_length);

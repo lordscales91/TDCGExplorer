@@ -25,8 +25,15 @@ namespace TDCG
         /// </summary>
         protected Crc32 crc = new Crc32();
 
+        /// <summary>
+        /// バイナリ書き込みに用いるデリゲート型
+        /// </summary>
+        /// <param name="bw"></param>
         public delegate void BinaryWriterHandler(BinaryWriter bw);
 
+        /// <summary>
+        /// TaObチャンクを書き出すハンドラ
+        /// </summary>
         public BinaryWriterHandler WriteTaOb;
 
         /// <summary>

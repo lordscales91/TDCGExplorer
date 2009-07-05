@@ -16,6 +16,7 @@ public class CameraAction
     internal Vector3 eye;
     internal Vector3 center;
     internal int interp_length;
+
     /// <summary>
     /// カメラアクションを生成する。
     /// </summary>
@@ -31,7 +32,9 @@ public class CameraAction
         this.interp_length = interp_length;
     }
 
-    //補間を開始する時刻を得ます。
+    /// <summary>
+    /// 補間を開始する時刻
+    /// </summary>
     public int interp_begin
     {
         get {
@@ -49,11 +52,18 @@ public class CameraMotion
     internal LinkedListNode<CameraAction> current_action = null;
     internal Camera camera = null;
 
+    /// <summary>
+    /// カメラモーションを生成します。
+    /// </summary>
+    /// <param name="camera">カメラ</param>
     public CameraMotion(Camera camera)
     {
         this.camera = camera;
     }
 
+    /// <summary>
+    /// カメラアクション数
+    /// </summary>
     public int Count
     {
         get {
@@ -61,6 +71,9 @@ public class CameraMotion
         }
     }
 
+    /// <summary>
+    /// モーションフレーム長さ
+    /// </summary>
     public int Length
     {
         get {
@@ -71,6 +84,9 @@ public class CameraMotion
         }
     }
 
+    /// <summary>
+    /// カメラの位置と姿勢を更新します。
+    /// </summary>
     public void UpdateCamera()
     {
         CameraAction act1 = FindAction1();
@@ -93,6 +109,9 @@ public class CameraMotion
         }
     }
 
+    /// <summary>
+    /// 次のモーションフレームに進みます。
+    /// </summary>
     public void NextFrame()
     {
         UpdateCamera();
@@ -107,11 +126,19 @@ public class CameraMotion
         }
     }
 
+    /// <summary>
+    /// 現在のカメラアクションを得ます。
+    /// </summary>
+    /// <returns></returns>
     public CameraAction FindAction1()
     {
         return current_action.Value;
     }
 
+    /// <summary>
+    /// 次のカメラアクションを得ます。
+    /// </summary>
+    /// <returns></returns>
     public CameraAction FindAction2()
     {
         if (current_action.Next != null)
@@ -120,10 +147,24 @@ public class CameraMotion
             return null;
     }
 
+    /// <summary>
+    /// カメラアクションを追加します。
+    /// </summary>
+    /// <param name="frame_index">フレーム番号</param>
+    /// <param name="eye">注視点</param>
+    /// <param name="center">カメラの位置</param>
     public void Add(int frame_index, Vector3 eye, Vector3 center)
     {
         Add(frame_index, eye, center, 0);
     }
+
+    /// <summary>
+    /// カメラアクションを追加します。
+    /// </summary>
+    /// <param name="frame_index">フレーム番号</param>
+    /// <param name="eye">注視点</param>
+    /// <param name="center">カメラの位置</param>
+    /// <param name="interp_length">補間するフレーム長さ</param>
     public void Add(int frame_index, Vector3 eye, Vector3 center, int interp_length)
     {
         LinkedListNode<CameraAction> act = action_list.First;

@@ -21,11 +21,21 @@ namespace TDCG
             bw.Write(0x314F4D54);
         }
 
+        /// <summary>
+        /// 指定ライタにbyte配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="bytes">byte配列</param>
         public static void Write(BinaryWriter bw, byte[] bytes)
         {
             bw.Write(bytes);
         }
 
+        /// <summary>
+        /// 指定ライタにnull終端文字列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="s">文字列</param>
         public static void Write(BinaryWriter bw, string s)
         {
             foreach(byte i in Encoding.Default.GetBytes(s))
@@ -34,6 +44,11 @@ namespace TDCG
             bw.Write((byte)0);
         }
 
+        /// <summary>
+        /// 指定ライタにnode配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="items">node配列</param>
         public static void Write(BinaryWriter bw, TMONode[] items)
         {
             bw.Write(items.Length);
@@ -42,11 +57,21 @@ namespace TDCG
                 Write(bw, i);
         }
 
+        /// <summary>
+        /// 指定ライタにnodeを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="item">node</param>
         public static void Write(BinaryWriter bw, TMONode item)
         {
             Write(bw, item.Name);
         }
 
+        /// <summary>
+        /// 指定ライタにframe配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="items">frame配列</param>
         public static void Write(BinaryWriter bw, TMOFrame[] items)
         {
             bw.Write(items.Length);
@@ -57,11 +82,21 @@ namespace TDCG
             }
         }
 
+        /// <summary>
+        /// 指定ライタにframeを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="item">frame</param>
         public static void Write(BinaryWriter bw, TMOFrame item)
         {
             Write(bw, item.matrices);
         }
 
+        /// <summary>
+        /// 指定ライタに行列の配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="items">行列の配列</param>
         public static void Write(BinaryWriter bw, TMOMat[] items)
         {
             bw.Write(items.Length);
@@ -70,6 +105,11 @@ namespace TDCG
                 Write(bw, i);
         }
 
+        /// <summary>
+        /// 指定ライタに行列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="item">行列</param>
         public static void Write(BinaryWriter bw, TMOMat item)
         {
             Matrix m = item.m;

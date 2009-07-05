@@ -32,6 +32,9 @@ public class FigureMotion
     internal LinkedList<FigureAction> action_list = new LinkedList<FigureAction>();
     internal LinkedListNode<FigureAction> current_action = null;
 
+    /// <summary>
+    /// フィギュアアクション数
+    /// </summary>
     public int Count
     {
         get {
@@ -39,6 +42,9 @@ public class FigureMotion
         }
     }
 
+    /// <summary>
+    /// モーションフレーム長さ
+    /// </summary>
     public int Length
     {
         get {
@@ -49,12 +55,19 @@ public class FigureMotion
         }
     }
 
+    /// <summary>
+    /// 現在のtmoを得ます。
+    /// </summary>
+    /// <returns>tmo</returns>
     public TMOFile GetTMO()
     {
         FigureAction act = current_action.Value;
         return act.tmo;
     }
 
+    /// <summary>
+    /// 次のモーションフレームへ進みます。
+    /// </summary>
     public void NextFrame()
     {
         frame_index++;
@@ -68,6 +81,11 @@ public class FigureMotion
         }
     }
 
+    /// <summary>
+    /// フィギュアアクションを追加します。
+    /// </summary>
+    /// <param name="frame_index">フレーム番号</param>
+    /// <param name="tmo">tmo</param>
     public void Add(int frame_index, TMOFile tmo)
     {
         LinkedListNode<FigureAction> act = action_list.First;
