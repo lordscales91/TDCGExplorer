@@ -8,7 +8,7 @@ using Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
-    /// TMOFile を扱うクラス
+    /// TMOFileを扱うクラス
     /// </summary>
     public class TMOFile
     {
