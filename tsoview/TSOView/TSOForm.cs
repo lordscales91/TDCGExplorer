@@ -101,12 +101,12 @@ public class TSOForm : Form
         if (keysEnabled[keyShadow] && keys[keyShadow])
         {
             keysEnabled[keyShadow] = false;
-            viewer.SwitchShadowEnabled();
+            viewer.SwitchShadowShown();
         }
         if (keysEnabled[keySprite] && keys[keySprite])
         {
             keysEnabled[keySprite] = false;
-            viewer.SwitchSpriteEnabled();
+            viewer.SwitchSpriteShown();
         }
         if (keysEnabled[keyFigure] && keys[keyFigure])
         {
