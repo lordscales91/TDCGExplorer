@@ -7,6 +7,9 @@ using Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
+    /// <summary>
+    /// TMOFile ‚ðˆµ‚¤ƒNƒ‰ƒX
+    /// </summary>
     public class TMOFile
     {
         protected BinaryReader reader;

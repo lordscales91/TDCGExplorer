@@ -11,7 +11,9 @@ using Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
-
+    /// <summary>
+    /// ƒtƒBƒMƒ…ƒA
+    /// </summary>
 public class Figure : IDisposable
 {
     internal List<TSOFile> TSOList = new List<TSOFile>();

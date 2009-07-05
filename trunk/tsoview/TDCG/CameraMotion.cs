@@ -7,14 +7,22 @@ using Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
-
+/// <summary>
+/// カメラアクション
+/// </summary>
 public class CameraAction
 {
     internal int frame_index;
     internal Vector3 eye;
     internal Vector3 center;
     internal int interp_length;
-
+    /// <summary>
+    /// カメラアクションを生成する。
+    /// </summary>
+    /// <param name="frame_index">フレーム番号</param>
+    /// <param name="eye">注視点</param>
+    /// <param name="center">中心座標</param>
+    /// <param name="interp_length">補間するフレーム長さ</param>
     public CameraAction(int frame_index, Vector3 eye, Vector3 center, int interp_length)
     {
         this.frame_index = frame_index;
@@ -31,7 +39,9 @@ public class CameraAction
         }
     }
 }
-
+    /// <summary>
+    /// カメラモーション
+    /// </summary>
 public class CameraMotion
 {
     internal int frame_index = 0;

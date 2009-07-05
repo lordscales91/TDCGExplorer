@@ -8,6 +8,9 @@ using Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
+    /// <summary>
+    /// サブメッシュ
+    /// </summary>
     public class TSOSubMesh : IDisposable
     {
         public string name;

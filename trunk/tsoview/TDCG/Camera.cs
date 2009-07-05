@@ -8,7 +8,9 @@ using Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
-
+    /// <summary>
+    /// ƒJƒƒ‰
+    /// </summary>
 public class Camera
 {
     internal Vector3 center = Vector3.Empty;    //‰ñ“]’†SˆÊ’u
