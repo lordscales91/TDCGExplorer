@@ -9,7 +9,6 @@ using System.IO;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
-//using CSScriptLibrary;
 
 namespace TDCG
 {
@@ -42,9 +41,6 @@ public class Viewer : IDisposable
     internal Surface dev_zbuf = null;
 
     public List<Figure> FigureList = new List<Figure>();
-    public List<TMOFile> TMOFileList = new List<TMOFile>();
-
-    internal Dictionary<string, TMOFile> tmomap = new Dictionary<string, TMOFile>();
 
     // ライト方向
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
@@ -178,7 +174,9 @@ public class Viewer : IDisposable
             FigureEvent(this, EventArgs.Empty);
     }
 
-    /// <summary>指定ディレクトリから Figure を作成して追加する。</summary>
+    /// <summary>
+    /// 指定ディレクトリから Figure を作成して追加する。
+    /// </summary>
     /// <param name="source_file">TSOFile を含むディレクトリ</param>
     public void AddFigureFromTSODirectory(string source_file)
     {
@@ -208,7 +206,9 @@ public class Viewer : IDisposable
         SetFigureIndex(idx);
     }
 
+    /// <summary>
     /// 選択フィギュアを得る。
+    /// </summary>
     public Figure GetSelectedFigure()
     {
         Figure fig;
@@ -219,7 +219,9 @@ public class Viewer : IDisposable
         return fig;
     }
 
+    /// <summary>
     /// 選択フィギュアを得る。なければ作成する。
+    /// </summary>
     public Figure GetSelectedOrCreateFigure()
     {
         Figure fig;
@@ -236,7 +238,9 @@ public class Viewer : IDisposable
         return fig;
     }
 
-    /// <summary>指定パスから TSOFile を読み込む。</summary>
+    /// <summary>
+    /// 指定パスから TSOFile を読み込む。
+    /// </summary>
     /// <param name="source_file">TSOFile のパス</param>
     public void LoadTSOFile(string source_file)
     {
@@ -256,7 +260,9 @@ public class Viewer : IDisposable
             FigureEvent(this, EventArgs.Empty);
     }
 
-    /// <summary>指定ストリームから TSOFile を読み込む。</summary>
+    /// <summary>
+    /// 指定ストリームから TSOFile を読み込む。
+    /// </summary>
     /// <param name="source_stream">TSOFile のストリーム</param>
     public void LoadTSOFile(Stream source_stream)
     {
@@ -294,7 +300,9 @@ public class Viewer : IDisposable
             camera.SetCenter(fig.Center);
     }
 
-    /// <summary>指定パスから TMOFile を読み込む。</summary>
+    /// <summary>
+    /// 指定パスから TMOFile を読み込む。
+    /// </summary>
     /// <param name="source_file">TMOFile のパス</param>
     public void LoadTMOFile(string source_file)
     {
@@ -317,7 +325,9 @@ public class Viewer : IDisposable
         }
     }
 
-    /// <summary>指定ストリームから TMOFile を読み込む。</summary>
+    /// <summary>
+    /// 指定ストリームから TMOFile を読み込む。
+    /// </summary>
     /// <param name="source_stream">TMOFile のストリーム</param>
     public void LoadTMOFile(Stream source_stream)
     {
@@ -339,26 +349,9 @@ public class Viewer : IDisposable
         }
     }
 
-    public void LoadMotion(string source_file)
-    {
-        if (File.Exists(source_file))
-        {
-            TMOFile tmo = new TMOFile();
-            tmo.Load(source_file);
-
-            string name = Path.GetFileNameWithoutExtension(source_file);
-            tmomap[name] = tmo;
-        } else {
-            Console.WriteLine("Error: file not found in LoadTMOFile: " + source_file);
-        }
-    }
-
-    public TMOFile GetMotion(string name)
-    {
-        return tmomap[name];
-    }
-
-    /// <summary>指定パスから PNGFile を読み込み Figure を作成して追加する。</summary>
+    /// <summary>
+    /// 指定パスから PNGFile を読み込み Figure を作成して追加する。
+    /// </summary>
     /// <param name="source_file">PNGFile のパス</param>
     public void AddFigureFromPNGFile(string source_file)
     {
@@ -572,7 +565,9 @@ public class Viewer : IDisposable
         //e.Cancel = true;
     }
 
+    /// <summary>
     /// 全フィギュアを削除する。
+    /// </summary>
     public void ClearFigureList()
     {
         foreach (Figure fig in FigureList)
@@ -582,7 +577,9 @@ public class Viewer : IDisposable
         GC.Collect(); // free meshes and textures.
     }
 
+    /// <summary>
     /// 選択フィギュアを削除する。
+    /// </summary>
     public void RemoveSelectedFigure()
     {
         Figure fig;
@@ -599,25 +596,33 @@ public class Viewer : IDisposable
     internal bool shadowEnabled = false;
     internal bool spriteEnabled = false;
 
+    /// <summary>
     /// モーションの有無を切り替える。
+    /// </summary>
     public void SwitchMotionEnabled()
     {
         motionEnabled = ! motionEnabled;
     }
 
+    /// <summary>
     /// シャドウマップの有無を切り替える。
+    /// </summary>
     public void SwitchShadowEnabled()
     {
         shadowEnabled = ! shadowEnabled;
     }
 
+    /// <summary>
     /// スプライトの有無を切り替える。
+    /// </summary>
     public void SwitchSpriteEnabled()
     {
         spriteEnabled = ! spriteEnabled;
     }
 
+    /// <summary>
     /// 次のアニメーションフレームに進む。
+    /// </summary>
     public void FrameMove()
     {
         foreach (Figure fig in FigureList)
@@ -665,7 +670,9 @@ public class Viewer : IDisposable
         }
     }
 
+    /// <summary>
     /// シーンをレンダリングする。
+    /// </summary>
     public void Render()
     {
         device.BeginScene();
@@ -822,7 +829,9 @@ public class Viewer : IDisposable
             device.Dispose();
     }
 
-    /// <summary>指定パスから PNGFile を読み込み Figure を作成する。</summary>
+    /// <summary>
+    /// 指定パスから PNGFile を読み込み Figure を作成する。
+    /// </summary>
     /// <param name="source_file">PNGFile のパス</param>
     public List<Figure> LoadPNGFile(string source_file)
     {
@@ -869,7 +878,9 @@ public class Viewer : IDisposable
         return fig_list;
     }
 
+    /// <summary>
     /// バックバッファを Bitmap ファイルに保存する。
+    /// </summary>
     public void SaveToBitmap()
     {
       using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))
