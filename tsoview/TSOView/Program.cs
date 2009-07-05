@@ -38,7 +38,7 @@ static class Program
             form.fig_form = fig_form;
             form.viewer = viewer;
 
-            if (viewer.InitializeApplication(form, false))
+            if (viewer.InitializeApplication(form, true))
             {
                 viewer.FigureEvent += delegate(object sender, EventArgs e)
                 {
