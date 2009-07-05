@@ -13,7 +13,36 @@ namespace TDCG
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class ShaderParameter
     {
-        public enum Type {Unknown, String, Float, Float3, Float4, Texture};
+        /// <summary>
+        /// シェーダ設定の型名
+        /// </summary>
+        public enum Type
+        {
+            /// <summary>
+            /// わからない
+            /// </summary>
+            Unknown,
+            /// <summary>
+            /// string
+            /// </summary>
+            String,
+            /// <summary>
+            /// float
+            /// </summary>
+            Float,
+            /// <summary>
+            /// float3
+            /// </summary>
+            Float3,
+            /// <summary>
+            /// float4
+            /// </summary>
+            Float4,
+            /// <summary>
+            /// テクスチャ
+            /// </summary>
+            Texture
+        };
 
         internal Type type;
         internal string name;

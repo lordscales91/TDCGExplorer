@@ -18,12 +18,23 @@ public class Figure : IDisposable
 {
     internal List<TSOFile> TSOList = new List<TSOFile>();
     internal TMOFile tmo = null;
-    internal Vector3 center = Vector3.Empty; //中心点
-    internal Vector3 translation = Vector3.Empty; //位置
 
+    internal Vector3 center = Vector3.Empty;
+    /// <summary>
+    /// 中心座標
+    /// </summary>
     public Vector3 Center
     {
         get { return center; }
+    }
+
+    internal Vector3 translation = Vector3.Empty;
+    /// <summary>
+    /// 移動変位
+    /// </summary>
+    public Vector3 Translation
+    {
+        get { return translation; }
     }
 
     public TMOFile Tmo
@@ -50,7 +61,11 @@ public class Figure : IDisposable
         UpdateBoneMatrices(true);
     }
 
-    //指定位置にあるtsoの位置を入れ替えます。描画順を変更します。
+    /// <summary>
+    /// 指定位置にあるtsoの位置を入れ替えます。描画順を変更します。
+    /// </summary>
+    /// <param name="aidx"></param>
+    /// <param name="bidx"></param>
     public void SwapAt(int aidx, int bidx)
     {
         Debug.Assert(aidx < bidx);
@@ -62,7 +77,9 @@ public class Figure : IDisposable
         TSOList.Insert(bidx, a);
     }
 
-    //nodemapとbone行列を更新します。
+    /// <summary>
+    /// nodemapとbone行列を更新します。
+    /// </summary>
     public void UpdateNodeMapAndBoneMatrices()
     {
         nodemap.Clear();
@@ -73,7 +90,10 @@ public class Figure : IDisposable
         UpdateBoneMatrices(true);
     }
 
-    //TSOFileに対するnodemapを追加します。
+    /// <summary>
+    /// TSOFileに対するnodemapを追加します。
+    /// </summary>
+    /// <param name="tso">tso</param>
     protected void AddNodeMap(TSOFile tso)
     {
         foreach (TSONode tso_node in tso.nodes)
@@ -94,9 +114,9 @@ public class Figure : IDisposable
         nodemap = new Dictionary<TSONode, TMONode>();
         matrixStack = new MatrixStack();
     }
-
-    //TMOFileを変更したときに呼ぶ必要があります。
-    //frame indexと中心点を設定します。
+    
+    /// TMOFileを変更したときに呼ぶ必要があります。
+    /// frame indexと中心点を設定します。
     protected void UpdateTMO()
     {
         Debug.Assert(tmo != null);
@@ -121,7 +141,10 @@ public class Figure : IDisposable
         }
     }
 
-    //現在のmotion frameを得ます。
+    /// <summary>
+    /// 現在のmotion frameを得ます。
+    /// </summary>
+    /// <returns>現在のmotion frame</returns>
     protected TMOFrame GetTMOFrame()
     {
         if (tmo.frames != null)
@@ -129,7 +152,10 @@ public class Figure : IDisposable
         return null;
     }
 
-    //TSOFileをTSOListに追加します。
+    /// <summary>
+    /// TSOFileをTSOListに追加します。
+    /// </summary>
+    /// <param name="tso">tso</param>
     public void AddTSO(TSOFile tso)
     {
         if (tmo.frames != null)
@@ -143,8 +169,8 @@ public class Figure : IDisposable
         TSOList.Add(tso);
     }
 
-    //bone行列を更新します。
-    //forcedがfalseの場合frame indexに変更なければ更新しません。
+    /// bone行列を更新します。
+    /// forcedがfalseの場合frame indexに変更なければ更新しません。
     public void UpdateBoneMatrices(bool forced)
     {
         if (!forced && frame_index == current_frame_index)

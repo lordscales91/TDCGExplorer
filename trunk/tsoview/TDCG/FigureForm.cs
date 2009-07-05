@@ -9,7 +9,9 @@ using System.IO;
 
 namespace TDCG
 {
-
+    /// <summary>
+    /// フィギュア情報を扱うフォーム
+    /// </summary>
 public class FigureForm : Form
 {
     Button btn1;
@@ -18,7 +20,9 @@ public class FigureForm : Form
     ListView lv_fig;
     ListView lv;
     DataGridView dg;
-
+    /// <summary>
+    /// フィギュア情報フォームを生成する。
+    /// </summary>
     public FigureForm()
     {
         this.ClientSize = new Size(800, 600);

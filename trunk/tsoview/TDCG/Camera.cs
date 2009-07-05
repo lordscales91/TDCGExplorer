@@ -13,28 +13,46 @@ namespace TDCG
     /// </summary>
 public class Camera
 {
-    internal Vector3 center = Vector3.Empty;    //回転中心位置
-    internal Vector3 translation = Vector3.Empty;       //view座標上の位置
-    internal Vector3 camPosL = new Vector3(0.0f, 0.0f, -10.0f); //カメラ位置
+    internal Vector3 center = Vector3.Empty;
+    /// <summary>
+    /// 回転中心位置
+    /// </summary>
+    public Vector3 Center { get { return center; } set { center = value; } }
+
+    internal Vector3 translation = Vector3.Empty;
+    /// <summary>
+    /// view座標上の位置
+    /// </summary>
+    public Vector3 Translation { get { return translation; } set { translation = value; } }
+
+    internal Vector3 camPosL = new Vector3(0.0f, 0.0f, -10.0f);
+    /// <summary>
+    /// カメラ位置
+    /// </summary>
+    public Vector3 CamPosL { get { return camPosL; } set { camPosL = value; } }
+    
     internal Vector3 camDirDef = Vector3.Empty; //カメラ移動方向ベクトル
     internal float offsetZ = 0.0f;      //カメラ奥行オフセット値
     internal bool needUpdate = true;    //更新したか
     internal Matrix viewMat = Matrix.Identity;  //ビュー行列
-    internal Matrix camPoseMat = Matrix.Identity;       //カメラ姿勢行列
+
+    internal Matrix camPoseMat = Matrix.Identity;
+    /// <summary>
+    /// カメラ姿勢行列
+    /// </summary>
+    public Matrix CamPoseMat { get { return camPoseMat; } set { camPoseMat = value; } }
+
     internal float camZRotDef = 0.0f;   //カメラ Z軸回転差分
     internal float camAngleUnit = 0.02f;        //移動時回転単位（ラジアン）
-
-    public Vector3 Center { get { return center; } set { center = value; } }
-    public Vector3 Translation { get { return translation; } set { translation = value; } }
-    public Vector3 CamPosL { get { return camPosL; } set { camPosL = value; } }
-    public Matrix CamPoseMat { get { return camPoseMat; } set { camPoseMat = value; } }
 
     public Camera()
     {
         motion = new CameraMotion(this);
     }
 
-    /// <summary>カメラ位置と姿勢を標準出力へ書き出す</summary>
+    /// <summary>
+    /// カメラ位置と姿勢を標準出力へ書き出す
+    /// </summary>
     public void Dump()
     {
         XmlSerializer serializer = new XmlSerializer(typeof(Camera));
@@ -46,7 +64,9 @@ public class Camera
         writer.Close();
     }
 
-    /// <summary>カメラ位置と姿勢を書き出す</summary>
+    /// <summary>
+    /// カメラ位置と姿勢を書き出す
+    /// </summary>
     public void Save(string dest_file)
     {
         XmlSerializer serializer = new XmlSerializer(typeof(Camera));
@@ -58,7 +78,9 @@ public class Camera
         writer.Close();
     }
 
-    /// <summary>カメラ位置と姿勢を読み込む</summary>
+    /// <summary>
+    /// カメラ位置と姿勢を読み込む
+    /// </summary>
     public static Camera Load(string source_file)
     {
         XmlReader reader = XmlReader.Create(source_file);
@@ -68,7 +90,9 @@ public class Camera
         return camera;
     }
 
-    /// <summary>カメラ位置と姿勢を補間する</summary>
+    /// <summary>
+    /// カメラ位置と姿勢を補間する
+    /// </summary>
     public static Camera Interpolation(Camera cam1, Camera cam2, float ratio)
     {
         Camera camera = new Camera();
@@ -106,7 +130,9 @@ public class Camera
         needUpdate = false;
     }
 
-    /// <summary>カメラ位置と姿勢をリセット</summary>
+    /// <summary>
+    /// カメラ位置と姿勢をリセット
+    /// </summary>
     public void Reset()
     {
         center = Vector3.Empty;
@@ -116,7 +142,9 @@ public class Camera
         needUpdate = true;
     }
 
-    /// <summary>カメラ位置更新</summary>
+    /// <summary>
+    /// カメラ位置更新
+    /// </summary>
     /// <param name="camDirX">移動方向（経度）</param>
     /// <param name="camDirY">移動方向（緯度）</param>
     /// <param name="offsetZ">奥行オフセット値</param>
@@ -131,7 +159,9 @@ public class Camera
         needUpdate = true;
     }
 
-    /// <summary>Z軸回転</summary>
+    /// <summary>
+    /// Z軸回転
+    /// </summary>
     public void RotZ(float radian)
     {
         if (radian == 0.0f)
@@ -187,7 +217,9 @@ public class Camera
         LookAt(eye, center, new Vector3(0.0f, 1.0f, 0.0f));
     }
 
-    /// <summary>カメラ更新</summary>
+    /// <summary>
+    /// カメラ更新
+    /// </summary>
     public void Update()
     {
         if (! needUpdate)
@@ -249,27 +281,35 @@ public class Camera
         needUpdate = false;
     }
 
-    /// <summary>view行列を取得</summary>
+    /// <summary>
+    /// view行列を取得
+    /// </summary>
     public Matrix GetViewMatrix()
     {
         return viewMat;
     }
 
-    /// <summary>回転中心位置を設定</summary>
+    /// <summary>
+    /// 回転中心位置を設定
+    /// </summary>
     public void SetCenter(Vector3 center)
     {
         this.center = center;
         needUpdate = true;
     }
 
-    /// <summary>view座標上の位置を設定</summary>
+    /// <summary>
+    /// view座標上の位置を設定
+    /// </summary>
     public void SetTranslation(Vector3 translation)
     {
         this.translation = translation;
         needUpdate = true;
     }
 
-    /// <summary>view座標上で移動</summary>
+    /// <summary>
+    /// view座標上で移動
+    /// </summary>
     public void MoveView(float dx, float dy)
     {
         this.translation.X += dx;
@@ -277,7 +317,9 @@ public class Camera
         needUpdate = true;
     }
 
-    // 差分をリセット
+    /// <summary>
+    /// 差分をリセット
+    /// </summary>
     protected void ResetDefValue()
     {
         camDirDef = Vector3.Empty;

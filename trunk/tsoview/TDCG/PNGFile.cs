@@ -12,13 +12,18 @@ namespace TDCG
     /// </summary>
     public class PNGFile
     {
+        /// <summary>
+        /// リーダ
+        /// </summary>
         protected BinaryReader reader;
 
         internal byte[] header;
         internal byte[] ihdr;
         internal List<byte[]> IdatList = new List<byte[]>();
-
-	protected Crc32 crc = new Crc32();
+        /// <summary>
+        /// CSC チェックを行うオブジェクト
+        /// </summary>
+        protected Crc32 crc = new Crc32();
 
         public delegate void BinaryWriterHandler(BinaryWriter bw);
 
