@@ -86,6 +86,7 @@ public class Camera
     /// カメラの位置と姿勢を指定パスから読み込みます。
     /// </summary>
     /// <param name="source_file">パス</param>
+    /// <returns>カメラ</returns>
     public static Camera Load(string source_file)
     {
         XmlReader reader = XmlReader.Create(source_file);
@@ -101,7 +102,7 @@ public class Camera
     /// <param name="cam1">補間開始時の位置を姿勢を保持するカメラ</param>
     /// <param name="cam2">補間終了時の位置を姿勢を保持するカメラ</param>
     /// <param name="ratio">補間比率</param>
-    /// <returns></returns>
+    /// <returns>カメラ</returns>
     public static Camera Interpolation(Camera cam1, Camera cam2, float ratio)
     {
         Camera camera = new Camera();
@@ -236,6 +237,14 @@ public class Camera
         ResetDefValue();
         needUpdate = false;
     }
+
+    /// <summary>
+    /// カメラの位置と姿勢を更新します。
+    /// マウスの回転中心は原点にリセットします。
+    /// 注意：この操作は Move() RotZ() Update() とは異なる系統です。
+    /// </summary>
+    /// <param name="eye">注視点</param>
+    /// <param name="center">view座標上のカメラの位置</param>
     public void LookAt(Vector3 eye, Vector3 center)
     {
         LookAt(eye, center, new Vector3(0.0f, 1.0f, 0.0f));
