@@ -12,6 +12,9 @@ namespace TDCG
     /// </summary>
     public class TMOFile
     {
+        /// <summary>
+        /// ƒŠ[ƒ_
+        /// </summary>
         protected BinaryReader reader;
 
         internal byte[] header;

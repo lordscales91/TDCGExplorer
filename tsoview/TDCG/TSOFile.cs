@@ -13,16 +13,33 @@ namespace TDCG
     /// </summary>
     public class TSOSubMesh : IDisposable
     {
+        /// <summary>
+        /// 名前
+        /// </summary>
         public string name;
+        /// <summary>
+        /// シェーダ設定番号
+        /// </summary>
         public int spec;
+        /// <summary>
+        /// ボーン参照リスト
+        /// </summary>
         public List<UInt32> bone_index_LUT;
+        /// <summary>
+        /// ボーン参照リスト
+        /// </summary>
         public List<TSONode> bone_LUT;
+        /// <summary>
+        /// 頂点配列
+        /// </summary>
         public vertex_field[] vertices;
 
         internal Mesh dm = null;
 
+        /// <summary>
+        /// パレット長さ
+        /// </summary>
         public int maxPalettes;
-        public int boneID_OFFSET;
 
         public int NumberBones
         {
