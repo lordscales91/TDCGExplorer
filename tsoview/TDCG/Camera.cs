@@ -15,19 +15,19 @@ public class Camera
 {
     internal Vector3 center = Vector3.Empty;
     /// <summary>
-    /// 回転中心位置
+    /// 回転中心
     /// </summary>
     public Vector3 Center { get { return center; } set { center = value; } }
 
     internal Vector3 translation = Vector3.Empty;
     /// <summary>
-    /// view座標上の位置
+    /// view座標上のカメラの位置
     /// </summary>
     public Vector3 Translation { get { return translation; } set { translation = value; } }
 
     internal Vector3 camPosL = new Vector3(0.0f, 0.0f, -10.0f);
     /// <summary>
-    /// カメラ位置
+    /// 注視点を原点とした座標上のカメラの位置
     /// </summary>
     public Vector3 CamPosL { get { return camPosL; } set { camPosL = value; } }
     
@@ -38,20 +38,23 @@ public class Camera
 
     internal Matrix camPoseMat = Matrix.Identity;
     /// <summary>
-    /// カメラ姿勢行列
+    /// カメラの姿勢行列
     /// </summary>
     public Matrix CamPoseMat { get { return camPoseMat; } set { camPoseMat = value; } }
 
     internal float camZRotDef = 0.0f;   //カメラ Z軸回転差分
     internal float camAngleUnit = 0.02f;        //移動時回転単位（ラジアン）
 
+    /// <summary>
+    /// カメラを生成します。
+    /// </summary>
     public Camera()
     {
         motion = new CameraMotion(this);
     }
 
     /// <summary>
-    /// カメラ位置と姿勢を標準出力へ書き出す
+    /// カメラの位置と姿勢を標準出力へ書き出します。
     /// </summary>
     public void Dump()
     {
@@ -65,7 +68,8 @@ public class Camera
     }
 
     /// <summary>
-    /// カメラ位置と姿勢を書き出す
+    /// カメラの位置と姿勢を指定パスへ書き出します。
+    /// <param name="dest_file">パス</param>
     /// </summary>
     public void Save(string dest_file)
     {
@@ -79,7 +83,8 @@ public class Camera
     }
 
     /// <summary>
-    /// カメラ位置と姿勢を読み込む
+    /// カメラの位置と姿勢を指定パスから読み込みます。
+    /// <param name="source_file">パス</param>
     /// </summary>
     public static Camera Load(string source_file)
     {
@@ -91,8 +96,12 @@ public class Camera
     }
 
     /// <summary>
-    /// カメラ位置と姿勢を補間する
+    /// カメラの位置と姿勢を補完します。
     /// </summary>
+    /// <param name="cam1">補間開始時の位置を姿勢を保持するカメラ</param>
+    /// <param name="cam2">補間終了時の位置を姿勢を保持するカメラ</param>
+    /// <param name="ratio">補間比率</param>
+    /// <returns></returns>
     public static Camera Interpolation(Camera cam1, Camera cam2, float ratio)
     {
         Camera camera = new Camera();
@@ -105,6 +114,12 @@ public class Camera
         return camera;
     }
 
+    /// <summary>
+    /// カメラの位置と姿勢を補完します。
+    /// </summary>
+    /// <param name="cam1">補間開始時の位置を姿勢を保持するカメラ</param>
+    /// <param name="cam2">補間終了時の位置を姿勢を保持するカメラ</param>
+    /// <param name="ratio">補間比率</param>
     public void Interp(Camera cam1, Camera cam2, float ratio)
     {
         center = Vector3.Lerp(cam1.Center, cam2.Center, ratio);
@@ -131,7 +146,7 @@ public class Camera
     }
 
     /// <summary>
-    /// カメラ位置と姿勢をリセット
+    /// カメラの位置と姿勢をリセットします。
     /// </summary>
     public void Reset()
     {
@@ -143,7 +158,7 @@ public class Camera
     }
 
     /// <summary>
-    /// カメラ位置更新
+    /// カメラの位置を更新します。
     /// </summary>
     /// <param name="camDirX">移動方向（経度）</param>
     /// <param name="camDirY">移動方向（緯度）</param>
@@ -160,7 +175,8 @@ public class Camera
     }
 
     /// <summary>
-    /// Z軸回転
+    /// カメラをZ軸回転します。
+    /// <param name="radian">回転角度（ラジアン）</param>
     /// </summary>
     public void RotZ(float radian)
     {
@@ -171,6 +187,14 @@ public class Camera
         needUpdate = true;
     }
 
+    /// <summary>
+    /// カメラの位置と姿勢を更新します。
+    /// マウスの回転中心は原点にリセットします。
+    /// 注意：この操作は Move() RotZ() Update() とは異なる系統です。
+    /// </summary>
+    /// <param name="eye">注視点</param>
+    /// <param name="center">view座標上のカメラの位置</param>
+    /// <param name="up">上方ベクトル</param>
     public void LookAt(Vector3 eye, Vector3 center, Vector3 up)
     {
         this.camPosL = center - eye;
@@ -218,7 +242,7 @@ public class Camera
     }
 
     /// <summary>
-    /// カメラ更新
+    /// カメラの位置と姿勢を更新します。
     /// </summary>
     public void Update()
     {
@@ -282,7 +306,7 @@ public class Camera
     }
 
     /// <summary>
-    /// view行列を取得
+    /// view行列を取得します。
     /// </summary>
     public Matrix GetViewMatrix()
     {
@@ -290,7 +314,8 @@ public class Camera
     }
 
     /// <summary>
-    /// 回転中心位置を設定
+    /// 回転中心を設定します。
+    /// <param name="center">回転中心</param>
     /// </summary>
     public void SetCenter(Vector3 center)
     {
@@ -299,7 +324,8 @@ public class Camera
     }
 
     /// <summary>
-    /// view座標上の位置を設定
+    /// view座標上の位置を設定します。
+    /// <param name="translation">view座標上の位置</param>
     /// </summary>
     public void SetTranslation(Vector3 translation)
     {
@@ -308,7 +334,9 @@ public class Camera
     }
 
     /// <summary>
-    /// view座標上で移動
+    /// view座標上で移動します。
+    /// <param name="dx">X軸移動距離</param>
+    /// <param name="dy">Y軸移動距離</param>
     /// </summary>
     public void MoveView(float dx, float dy)
     {
@@ -318,7 +346,7 @@ public class Camera
     }
 
     /// <summary>
-    /// 差分をリセット
+    /// 差分をリセットします。
     /// </summary>
     protected void ResetDefValue()
     {
@@ -329,6 +357,9 @@ public class Camera
 
     private CameraMotion motion = null;
 
+    /// <summary>
+    /// カメラモーション
+    /// </summary>
     public CameraMotion Motion
     {
         get { return motion; }
@@ -351,6 +382,9 @@ public class Camera
         motion.Add(frame_index, new Vector3(eyex, eyey, eyez), new Vector3(centerx, centery, centerz), interp_length);
     }
 
+    /// <summary>
+    /// 次のモーションフレームに進みます。
+    /// </summary>
     public void NextFrame()
     {
         if (motion.Count != 0)
