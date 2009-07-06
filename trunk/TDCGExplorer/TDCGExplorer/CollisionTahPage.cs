@@ -21,6 +21,8 @@ namespace TDCGExplorer
             collisionEntry = argCollisionEntry;
             Text = Path.GetFileName(collisionEntry.tah.path);
 
+            TDCGExplorer.SetToolTips(Text);
+
             DataTable data = new DataTable();
             data.Columns.Add("衝突元", Type.GetType("System.String"));
             data.Columns.Add("衝突先", Type.GetType("System.String"));
@@ -45,13 +47,16 @@ namespace TDCGExplorer
             }
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             dataGridView.ReadOnly = true;
+            dataGridView.AllowUserToAddRows = false;
+
+            selectIndex(0);
         }
 
         private void InitializeComponent()
         {
             this.splitContainer = new System.Windows.Forms.SplitContainer();
-            this.webBrowser = new System.Windows.Forms.WebBrowser();
             this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.webBrowser = new System.Windows.Forms.WebBrowser();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
@@ -74,20 +79,8 @@ namespace TDCGExplorer
             // splitContainer.Panel2
             // 
             this.splitContainer.Panel2.Controls.Add(this.webBrowser);
-            this.splitContainer.Size = new System.Drawing.Size(150, 100);
-            this.splitContainer.SplitterDistance = 30;
+            this.splitContainer.Size = new System.Drawing.Size(0, 54);
             this.splitContainer.TabIndex = 0;
-            // 
-            // webBrowser
-            // 
-            this.webBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.webBrowser.Location = new System.Drawing.Point(0, 0);
-            this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser.Name = "webBrowser";
-            this.webBrowser.Size = new System.Drawing.Size(250, 250);
-            this.webBrowser.TabIndex = 0;
             // 
             // dataGridView
             // 
@@ -97,13 +90,27 @@ namespace TDCGExplorer
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView.Location = new System.Drawing.Point(0, 0);
             this.dataGridView.Name = "dataGridView";
-            this.dataGridView.Size = new System.Drawing.Size(240, 150);
+            this.dataGridView.Size = new System.Drawing.Size(90, 150);
             this.dataGridView.TabIndex = 0;
-            this.dataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentDoubleClick);
+            this.dataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentClick);
+            this.dataGridView.MouseEnter += new System.EventHandler(this.dataGridView_MouseEnter);
+            // 
+            // webBrowser
+            // 
+            this.webBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.webBrowser.Location = new System.Drawing.Point(0, 0);
+            this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser.Name = "webBrowser";
+            this.webBrowser.Size = new System.Drawing.Size(100, 250);
+            this.webBrowser.TabIndex = 0;
             // 
             // CollisionTahPage
             // 
             this.Controls.Add(this.splitContainer);
+            this.Size = new System.Drawing.Size(0, 0);
+            this.Layout += new System.Windows.Forms.LayoutEventHandler(this.CollisionTahPage_Layout);
             this.Resize += new System.EventHandler(this.CollisionTahPage_Resize);
             this.splitContainer.Panel1.ResumeLayout(false);
             this.splitContainer.Panel2.ResumeLayout(false);
@@ -120,32 +127,48 @@ namespace TDCGExplorer
             webBrowser.Size = splitContainer.Panel2.ClientSize;
         }
 
-        private void dataGridView_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void selectIndex(int index)
+        {
+            ArcsCollisionRecord col = collisionEntry.entries[index];
+
+            ArcsDatabase db = TDCGExplorer.GetArcsDatabase();
+            // 衝突した先のtahを取得する.
+            ArcsTahEntry from = db.GetTah(col.fromTahID);
+            ArcsTahEntry to = db.GetTah(col.toTahID);
+            // 既に同じ名前で追加していないか調べる.
+            ArcsTahFilesEntry fromfile = db.GetTahFilesEntry(col.fromFilesID);
+            ArcsTahFilesEntry tofile = db.GetTahFilesEntry(col.toFilesID);
+
+            string text =
+                @"<p>" +
+                @"<h2> 衝突したtah : " + from.shortname + "</h2>" +
+                @"<adress>" + "ディレクトリ : " + Path.GetDirectoryName(from.path) + "</adress>" +
+                @"<h3> 衝突先 : " + to.shortname + "</h3>" +
+                @"<adress>" + "ディレクトリ : " + Path.GetDirectoryName(to.path) + "</adress>" +
+                @"<pre>" + fromfile.GetDisplayPath().ToLower() + " → " + tofile.GetDisplayPath().ToLower() + "</pre>" +
+                @"<pre>" + "ハッシュコード : " + tofile.hash.ToString("x8") + "</pre>";
+
+            webBrowser.DocumentText = text;
+        }
+
+        private void dataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             int index = e.RowIndex;
             if (index >= 0)
             {
-                ArcsCollisionRecord col = collisionEntry.entries[index];
-
-                ArcsDatabase db = TDCGExplorer.GetArcsDatabase();
-                // 衝突した先のtahを取得する.
-                ArcsTahEntry from = db.GetTah(col.fromTahID);
-                ArcsTahEntry to = db.GetTah(col.toTahID);
-                // 既に同じ名前で追加していないか調べる.
-                ArcsTahFilesEntry fromfile = db.GetTahFilesEntry(col.fromFilesID);
-                ArcsTahFilesEntry tofile = db.GetTahFilesEntry(col.toFilesID);
-
-                string text =
-                    @"<p>" +
-                    @"<h2> 衝突したtah : " + from.shortname + "</h2>" +
-                    @"<adress>" + "ディレクトリ : " + Path.GetDirectoryName(from.path) + "</adress>" +
-                    @"<h3> 衝突先 : " + to.shortname + "</h3>" +
-                    @"<adress>" + "ディレクトリ : " + Path.GetDirectoryName(to.path) + "</adress>" +
-                    @"<pre>" + fromfile.GetDisplayPath().ToLower() + " → " + tofile.GetDisplayPath().ToLower() + "</pre>" +
-                    @"<pre>" + "ハッシュコード : " + tofile.hash.ToString("x8") + "</pre>";
-
-                webBrowser.DocumentText = text;
+                selectIndex(index);
             }
+        }
+
+        private void dataGridView_MouseEnter(object sender, EventArgs e)
+        {
+            Control obj = (Control)sender;
+            obj.Focus();
+        }
+
+        private void CollisionTahPage_Layout(object sender, LayoutEventArgs e)
+        {
+            splitContainer.SplitterDistance = ClientSize.Height/3;
         }
     }
 }

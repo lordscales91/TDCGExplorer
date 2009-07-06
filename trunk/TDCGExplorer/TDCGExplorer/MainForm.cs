@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
@@ -13,8 +12,10 @@ namespace TDCGExplorer
 {
     public partial class MainForm : Form
     {
-        private Viewer viewer;
+        private Viewer viewer = null;
         private bool fInitialTmoLoad = false;
+        private TreeNode lastSelectTreeNode = null;
+        private Color lastSelectTreeNodeColor = Color.Transparent;
 
         public MainForm()
         {
@@ -26,13 +27,13 @@ namespace TDCGExplorer
             get { return tabMainView; }
             set { }
         }
-
+#if false
         public TreeView TabTreeMainView
         {
-            get { return tvMainTree; }
+            get { return treeViewArcs; }
             set { }
         }
-
+#endif
         public ListBox ListBoxMainView
         {
             get { return listBoxMainListBox; }
@@ -73,7 +74,7 @@ namespace TDCGExplorer
         // 起動時処理.
         private void MainForm_Load(object sender, EventArgs e)
         {
-            TDCGExplorer.IfReadyDbDisplayArcsDB(tvMainTree);
+            TDCGExplorer.IfReadyDbDisplayArcsDB();
 
             string windowRect = TDCGExplorer.GetSystemDatabase().window_rectangle;
             string[] rect = windowRect.Split(',');
@@ -88,6 +89,8 @@ namespace TDCGExplorer
             splitContainerWithView.SplitterDistance = int.Parse(distance[2]);
 
             viewer = null;
+
+            listBoxMainListBox.HorizontalScrollbar = true;
         }
 
         // invokeの為のdelegate
@@ -96,7 +99,8 @@ namespace TDCGExplorer
         // 非同期で呼び出されるメソッド
         private void asyncDlgDisplayFromArcs()
         {
-            TDCGExplorer.DisplayArcsDB(tvMainTree);
+            //TDCGExplorer.DisplayArcsDB(treeViewArcs);
+            DisplayDB();
         }
 
         // 非同期でツリー表示を更新する.
@@ -152,7 +156,7 @@ namespace TDCGExplorer
         {
             try
             {
-                TreeNode node = (TreeNode)tvMainTree.SelectedNode;
+                TreeNode node = (TreeNode)lastSelectTreeNode;
                 SuspendLayout();
                 node.ExpandAll();
                 ResumeLayout();
@@ -166,59 +170,7 @@ namespace TDCGExplorer
         // タブを閉じる.
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            tabMainView.SelectedTab.Dispose();
-        }
-
-        // ツリーで選択されたら.
-        private void tvMainTree_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            try
-            {
-                TahGenTreeNode node = (TahGenTreeNode)tvMainTree.SelectedNode;
-                SuspendLayout();
-                node.DoTvTreeSelect();
-                ResumeLayout();
-            }
-            catch (Exception exception)
-            {
-                Debug.WriteLine(exception.Message);
-            }
-        }
-
-        // リストボックスがダブルクリックされたら.
-        private void listBoxMainListBox_DoubleClick(object sender, EventArgs e)
-        {
-            try
-            {
-                int index = listBoxMainListBox.SelectedIndex;
-                if (index >= 0)
-                {
-                    LbGenItem item = (LbGenItem)listBoxMainListBox.Items[index];
-                    SuspendLayout();
-                    item.DoClick(tabMainView);
-                    ResumeLayout();
-                }
-            }
-            catch (Exception exception)
-            {
-                Debug.WriteLine(exception.Message);
-            }
-        }
-
-        // arcsnames.zipをダウンロードする.
-        private void downloadLatestArcsnameszipToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (threadCheck() == true) return;
-            if (TDCGExplorer.DownloadArcNamesZipFromServer() == true)
-            {
-                TDCGExplorer.GetArcNamesZipInfo();
-                TDCGExplorer.DisplayArcsDB(tvMainTree);
-                MessageBox.Show("Download success, database updated.", "Download", MessageBoxButtons.OK);
-            }
-            else
-            {
-                MessageBox.Show("Internet access failure. Please check firewall.", "Download", MessageBoxButtons.OK);
-            }
+            if (tabMainView.SelectedTab != null) tabMainView.SelectedTab.Dispose();
         }
 
         // ZIPファイルを展開する
@@ -226,7 +178,7 @@ namespace TDCGExplorer
         {
             try
             {
-                ZipTreeNode node = (ZipTreeNode)tvMainTree.SelectedNode;
+                ZipTreeNode node = (ZipTreeNode)lastSelectTreeNode;
                 if (TDCGExplorer.InstallZipFile(node))
                 {
                     //MessageBox.Show("Extracted on work directory", "Extract", MessageBoxButtons.OK);
@@ -239,6 +191,7 @@ namespace TDCGExplorer
             catch (System.InvalidCastException ex)
             {
                 MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
+                Debug.WriteLine(ex.Message);
             }
             catch (Exception exception)
             {
@@ -300,20 +253,15 @@ namespace TDCGExplorer
         }
 
         // MODサーバに接続する.
-        private void lookupMODRelationshipToolStripMenuItem_Click(object sender, EventArgs e)
+        private void LookupModRefServer()
         {
             try
             {
-                ZipTreeNode node = (ZipTreeNode)tvMainTree.SelectedNode;
+                ZipTreeNode node = (ZipTreeNode)lastSelectTreeNode;
                 node.DoLookupServer();
-            }
-            catch (System.InvalidCastException ex)
-            {
-                MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
             }
             catch (Exception exception)
             {
-                MessageBox.Show("Error occured:" + exception.Message, "Server", MessageBoxButtons.OK);
                 Debug.WriteLine(exception.Message);
             }
 
@@ -323,8 +271,13 @@ namespace TDCGExplorer
         {
             try
             {
-                ZipTreeNode node = (ZipTreeNode)tvMainTree.SelectedNode;
+                ZipTreeNode node = (ZipTreeNode)lastSelectTreeNode;
                 node.DoEditAnnotation();
+            }
+            catch (System.InvalidCastException ex)
+            {
+                MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
+                Debug.WriteLine(ex.Message);
             }
             catch (Exception exception)
             {
@@ -332,18 +285,21 @@ namespace TDCGExplorer
             }
         }
 
-        private void LookupModRefToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            lookupMODRelationshipToolStripMenuItem_Click(sender, e);
-        }
-
-        private void 検索ToolStripMenuItem_Click(object sender, EventArgs e)
+        // 検索
+        private void FindItemToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FindDialog dialog = new FindDialog();
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 Cursor.Current = Cursors.WaitCursor;
-                TDCGExplorer.FindNode(dialog.text);
+                foreach (TreeNode node in treeViewArcs.Nodes)
+                    TDCGExplorer.FindTreeNode(node, dialog.text);
+                foreach (TreeNode node in treeViewZips.Nodes)
+                    TDCGExplorer.FindTreeNode(node, dialog.text);
+                foreach (TreeNode node in treeViewInstalled.Nodes)
+                    TDCGExplorer.FindTreeNode(node, dialog.text);
+                foreach (TreeNode node in treeViewCollision.Nodes)
+                    TDCGExplorer.FindTreeNode(node, dialog.text);
                 Cursor.Current = Cursors.Default;
             }
         }
@@ -352,6 +308,277 @@ namespace TDCGExplorer
         private void extractZipFileToolStripMenuItem1_Click_1(object sender, EventArgs e)
         {
             extractZipToolStripMenuItem_Click(sender, e);
+        }
+
+        // リストアイテムが選択された.
+        private void listBoxMainListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                int index = listBoxMainListBox.SelectedIndex;
+                if (index >= 0)
+                {
+                    LbGenItem item = (LbGenItem)listBoxMainListBox.Items[index];
+                    SuspendLayout();
+                    item.DoClick(tabMainView,false);
+                    listBoxMainListBox.Focus();
+                    ResumeLayout();
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.Message);
+            }
+        }
+
+        // 新規タブでページを開く.
+        private void NewTabPageToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int index = listBoxMainListBox.SelectedIndex;
+                if (index >= 0)
+                {
+                    LbGenItem item = (LbGenItem)listBoxMainListBox.Items[index];
+                    SuspendLayout();
+                    item.DoClick(tabMainView, true);
+                    listBoxMainListBox.Focus();
+                    ResumeLayout();
+                }
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.Message);
+            }
+        }
+
+        private void EditAnnotationToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            EditAnnotationToolStripMenuItem_Click(sender, e);
+        }
+
+        private void ExpandTreeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            expandAllToolStripMenuItem1_Click(sender, e);
+        }
+
+        private void NewTabToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            NewTabPageToolStripMenuItem_Click(sender, e);
+        }
+
+        private void CloseTabToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TabPage tab = TabControlMainView.SelectedTab;
+            if (tab != null) tab.Dispose();
+        }
+
+        public void ClearTreeBox()
+        {
+            lastSelectTreeNode = null;
+            lastSelectTreeNodeColor = Color.Transparent;
+            treeViewArcs.Nodes.Clear();
+            treeViewCollision.Nodes.Clear();
+            treeViewZips.Nodes.Clear();
+            treeViewInstalled.Nodes.Clear();
+            // リストボックスの中身を消去する.
+            listBoxMainListBox.Items.Clear();
+            // ページを消去する.
+            tabMainView.Controls.Clear();
+        }
+
+        public void HilightTreeNode(TreeNode node)
+        {
+            lastSelectTreeNode = node;
+            lastSelectTreeNodeColor = node.BackColor;
+        }
+
+        private void TreeViewForcusEnter(object sender, EventArgs e)
+        {
+            // フォーカスが戻ったら色を戻す
+            if(lastSelectTreeNode!=null)
+                lastSelectTreeNode.BackColor = lastSelectTreeNodeColor;
+        }
+
+        private void TrewViewForcusLeave(object sender, EventArgs e)
+        {
+            // 選択中のノードの色を変える
+            if (lastSelectTreeNode != null)
+                lastSelectTreeNode.BackColor = Color.LightBlue;
+        }
+
+        public void DisplayDB()
+        {
+            try
+            {
+                ArcsDatabase db = TDCGExplorer.GetArcsDatabase();
+
+                // 全ノードを消去する.
+                //tvTree.Nodes.Clear();
+                treeViewArcs.Nodes.Clear();
+                treeViewZips.Nodes.Clear();
+                treeViewCollision.Nodes.Clear();
+                treeViewInstalled.Nodes.Clear();
+
+                TDCGExplorer.MakeArcsTreeView(db, treeViewArcs );
+                TDCGExplorer.MakeZipsTreeView(db, treeViewZips);
+                TDCGExplorer.MakeCollisionTreeView(db, treeViewCollision);
+                TDCGExplorer.MakeInstalledArcsTreeView(db, treeViewInstalled);
+            }
+            catch (Exception e)
+            {
+                TDCGExplorer.fThreadRun = false;
+                TDCGExplorer.SetToolTips("Error occured : " + e.Message);
+            }
+        }
+
+        // ツリーで選択されたら.
+        private void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            TreeView treeView = (TreeView)sender;
+            SuspendLayout();
+            try
+            {
+                TahGenTreeNode node = (TahGenTreeNode)treeView.SelectedNode;
+                node.DoTvTreeSelect();
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.Message);
+            }
+            HilightTreeNode(treeView.SelectedNode);
+            LookupModRefServer();
+            ResumeLayout();
+        }
+
+        private void treeViewZips_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            TreeView_AfterSelect(sender, e);
+        }
+
+        private void treeViewArcs_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            TreeView_AfterSelect(sender, e);
+        }
+
+        private void treeViewInstalled_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            TreeView_AfterSelect(sender, e);
+        }
+
+        private void treeViewCollision_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            TreeView_AfterSelect(sender, e);
+        }
+
+        private void treeViewArcs_Enter(object sender, EventArgs e)
+        {
+            TreeViewForcusEnter(sender, e);
+        }
+
+        private void treeViewZips_Enter(object sender, EventArgs e)
+        {
+            TreeViewForcusEnter(sender, e);
+        }
+
+        private void treeViewInstalled_Enter(object sender, EventArgs e)
+        {
+            TreeViewForcusEnter(sender, e);
+        }
+
+        private void treeViewCollision_Enter(object sender, EventArgs e)
+        {
+            TreeViewForcusEnter(sender, e);
+        }
+
+        private void treeViewArcs_Leave(object sender, EventArgs e)
+        {
+            TrewViewForcusLeave(sender, e);
+        }
+
+        private void treeViewZips_Leave(object sender, EventArgs e)
+        {
+            TrewViewForcusLeave(sender, e);
+        }
+
+        private void treeViewInstalled_Leave(object sender, EventArgs e)
+        {
+            TrewViewForcusLeave(sender, e);
+        }
+
+        private void treeViewCollision_Leave(object sender, EventArgs e)
+        {
+            TrewViewForcusLeave(sender, e);
+        }
+
+        private void listBoxMainListBox_MouseEnter(object sender, EventArgs e)
+        {
+            Control obj = (Control)sender;
+            obj.Focus();
+        }
+
+        private void TreeViewArcs_MouseEnter(object sender, EventArgs e)
+        {
+            Control obj = (Control)sender;
+            obj.Focus();
+        }
+
+        private void treeViewZips_MouseEnter(object sender, EventArgs e)
+        {
+            Control obj = (Control)sender;
+            obj.Focus();
+        }
+
+        private void treeViewInstalled_MouseEnter(object sender, EventArgs e)
+        {
+            Control obj = (Control)sender;
+            obj.Focus();
+        }
+
+        private void treeViewCollision_MouseEnter(object sender, EventArgs e)
+        {
+            Control obj = (Control)sender;
+            obj.Focus();
+        }
+
+        private void ExtractPreferZipToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ZipTreeNode node = (ZipTreeNode)lastSelectTreeNode;
+                TDCGExplorer.InstallPreferZip(node);
+            }
+            catch (System.InvalidCastException ex)
+            {
+                MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
+                Debug.WriteLine(ex.Message);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show("Error occured.", "Extract", MessageBoxButtons.OK);
+                Debug.WriteLine(exception.Message);
+            }
+        }
+
+        private void ExtractPreferZipMainMenuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ExtractPreferZipToolStripMenuItem_Click(sender, e);
+        }
+
+        private void downloadLatestArcsnameszipToolStripMenuItem_Click_1(object sender, EventArgs e)
+        {
+            if (threadCheck() == true) return;
+            if (TDCGExplorer.DownloadArcNamesZipFromServer() == true)
+            {
+                TDCGExplorer.GetArcNamesZipInfo();
+                //TDCGExplorer.DisplayArcsDB(treeViewArcs);
+                DisplayDB();
+                MessageBox.Show("ARCSNAME.ZIPをダウンロードしました", "ダウンロード", MessageBoxButtons.OK);
+            }
+            else
+            {
+                MessageBox.Show("Internet access failure. Please check firewall.", "Download", MessageBoxButtons.OK);
+            }
         }
     }
 }

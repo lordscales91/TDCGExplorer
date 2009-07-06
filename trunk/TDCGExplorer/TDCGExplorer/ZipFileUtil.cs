@@ -20,6 +20,7 @@ namespace TDCGExplorer
                 foreach (IArchiveEntry entry in arc)
                 {
                     if (entry.IsDirectory) continue;
+                    if (Path.GetFileName(entry.FileName) == "") continue;
                     using (MemoryStream ms = new MemoryStream((int)entry.Size))
                     {
                         arc.Extract(entry, ms);

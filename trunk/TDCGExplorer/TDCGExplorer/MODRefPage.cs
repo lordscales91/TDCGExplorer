@@ -3,35 +3,168 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Serialization;
 using System.Diagnostics;
+using System.Threading;
 
 namespace TDCGExplorer
 {
-    class MODRefPage : TabPage
+    public class MODRefPage : TabPage
     {
         private WebBrowser webBrowser;
         private ArcsZipArcEntry zipEntry;
-    
+
         public MODRefPage(int zipid)
         {
+            TDCGExplorer.SetToolTips("Databaseに問い合わせ中...");
+
             zipEntry = TDCGExplorer.GetArcsDatabase().GetZip(zipid);
             InitializeComponent();
-            Text = zipEntry.GetDisplayPath();
 
+            MODRefPageThread workerObject = new MODRefPageThread(zipEntry,this);
+            Thread workerThread = new Thread(workerObject.DoWorkerThread);
+
+            workerThread.Start();
+
+            Text = zipEntry.GetDisplayPath();
+        }
+
+        private void InitializeComponent()
+        {
+            this.webBrowser = new System.Windows.Forms.WebBrowser();
+            this.SuspendLayout();
+            // 
+            // webBrowser
+            // 
+            this.webBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.webBrowser.Location = new System.Drawing.Point(0, 0);
+            this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser.Name = "webBrowser";
+            this.webBrowser.Size = new System.Drawing.Size(50, 150);
+            this.webBrowser.TabIndex = 0;
+            this.webBrowser.DocumentText = 
+                "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\""+
+                "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"+
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"ja\" lang=\"ja\">"+
+                "<head>"+
+                "  <meta http-equiv=\"content-type\" content=\"text/html;charset=Shift_JIS\" />"+
+                "  <title>3DCG mods reference</title>"+
+                "  <link href=\"" + TDCGExplorer.GetSystemDatabase().moddb_url + "/stylesheets/application.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />" +
+                "</head>"+
+                "<body>"+
+                "<div id=\"wrapper\">"+
+                "  <div id=\"top-menu\">"+
+                "    <div id=\"account\">"+
+                "      <a href=\"/rails/\">Home</a>"+
+                "      <a href=\"/rails/session/new\">Login</a>"+
+                "    </div>"+
+                "  </div>"+
+                "  <div id=\"header\">"+
+                "    <h1>3DCG mods reference</h1>"+
+                "    <div id=\"main-menu\">"+
+                "      <ul>"+
+                "        <li><a href=\"/rails/arcs\" class=\"selected\">書庫</a></li>"+
+                "        <li><a href=\"/rails/tahs\">tah</a></li>"+
+                "        <li><a href=\"/rails/tsos\">tso</a></li>"+
+                "        <li><a href=\"/rails/tags\">タグ</a></li>"+
+                "      </ul>"+
+                "    </div>"+
+                "  </div>"+
+                "  <div id=\"main\" class=\"nosidebar\">"+
+                "    <div id=\"content\">"+
+                "    <h2>"+
+                "      <b>Code: Now Loading</b>"+
+                "    </h2>"+
+                "    </div>"+
+                "  </div>"+
+                "</body>"+
+                "</html>";
+
+            // 
+            // MODRefPage
+            // 
+            this.Controls.Add(this.webBrowser);
+            this.Size = new System.Drawing.Size(0, 0);
+            this.Resize += new System.EventHandler(this.MODRefPage_Resize);
+            this.MouseEnter += new System.EventHandler(this.MODRefPage_MouseEnter);
+            this.ResumeLayout(false);
+
+        }
+
+        private void MODRefPage_Resize(object sender, EventArgs e)
+        {
+            webBrowser.Size = Size;
+        }
+
+        private void MODRefPage_MouseEnter(object sender, EventArgs e)
+        {
+            webBrowser.Focus();
+        }
+
+        // invokeの為のdelegate
+        private delegate void displayFromArcsHander(string text);
+#if false
+        // 非同期で呼び出されるメソッド
+        private void asyncDlgDisplayFromArcs(string text)
+        {
+            webBrowser.DocumentText = text;
+        }
+#endif
+        // 非同期で呼び出されるメソッド
+        private void asyncDlgDisplayFromArcs(string text)
+        {
+            webBrowser.Url = new Uri(text);
+            TDCGExplorer.SetToolTips(text);
+        }
+
+        // 非同期でツリー表示を更新する.
+        public void asyncDisplayFromArcs(string text)
+        {
+            try
+            {
+                Invoke(new displayFromArcsHander(asyncDlgDisplayFromArcs), text);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+            }
+        }
+    }
+#if false
+    public class MODRefPageThread
+    {
+        MODRefPage page;
+        ArcsZipArcEntry zipEntry;
+
+        public MODRefPageThread(ArcsZipArcEntry zipentry,MODRefPage self)
+        {
+            zipEntry = zipentry;
+            page = self;
+        }
+
+        public void DoWorkerThread()
+        {
             string moddb = TDCGExplorer.GetSystemDatabase().moddb_url;
             string relurl;
             ArcRels relationships;
 
-            string msg = "<html><body><h2>MOD Archive code:"+zipEntry.code+"</h2>";
+            string msg = "<html><body>";
 
-            Cursor.Current = Cursors.WaitCursor;
+            int count = 0;
+
+            //            Cursor.Current = Cursors.WaitCursor;
             try
             {
 
                 relurl = moddb + "arcs/code/" + zipEntry.code + "/rels.xml";
+                TDCGExplorer.SetToolTips(relurl);
                 relationships = ArcRels.Load(relurl);
+
+                Arc thisarc = Arc.Load(moddb + "arcs/code/" + zipEntry.code + ".xml");
+
+                msg += "<h2><a href=" + moddb + "arcs/" + thisarc.Id + ">" + "MOD Archive code:" + zipEntry.code + "</a></h2>";
+
                 if (relationships != null)
                 {
                     if (relationships.Relationships != null)
@@ -39,7 +172,7 @@ namespace TDCGExplorer
                         foreach (Relationship relation in relationships.Relationships)
                         {
                             string arcurl = moddb + "arcs/" + relation.ToId.ToString() + ".xml";
-                            string[] kindstr = { "0", "1", "新版", "前提" };
+                            string[] kindstr = { "0", "同一内容", "新版", "前提" };
                             try
                             {
                                 Arc arc = Arc.Load(arcurl);
@@ -53,6 +186,7 @@ namespace TDCGExplorer
                                     msg += "拡張子:" + arc.Extname + "<br/>";
                                     msg += "所在:" + arc.Location + "<br/>";
                                     msg += "</pre>";
+                                    count++;
                                 }
                             }
                             catch (Exception ex)
@@ -87,6 +221,7 @@ namespace TDCGExplorer
                                     msg += "拡張子:" + arc.Extname + "<br/>";
                                     msg += "所在:" + arc.Location + "<br/>";
                                     msg += "</pre>";
+                                    count++;
                                 }
                             }
                             catch (Exception ex)
@@ -101,114 +236,45 @@ namespace TDCGExplorer
             {
                 Debug.WriteLine(ex.Message);
             }
-            Cursor.Current = Cursors.Default;
+            //            Cursor.Current = Cursors.Default;
 
+            if (count == 0)
+            {
+                msg += "<p>関連情報がありません</p>";
+            }
             msg += "</body></html>";
-            webBrowser.DocumentText = msg;
-        }
-
-        private void InitializeComponent()
-        {
-            this.webBrowser = new System.Windows.Forms.WebBrowser();
-            this.SuspendLayout();
-            // 
-            // webBrowser
-            // 
-            this.webBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                        | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.webBrowser.Location = new System.Drawing.Point(0, 0);
-            this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser.Name = "webBrowser";
-            this.webBrowser.Size = new System.Drawing.Size(250, 250);
-            this.webBrowser.TabIndex = 0;
-            // 
-            // MODRefPage
-            // 
-            this.Controls.Add(this.webBrowser);
-            this.Resize += new System.EventHandler(this.MODRefPage_Resize);
-            this.ResumeLayout(false);
-
-        }
-
-        private void MODRefPage_Resize(object sender, EventArgs e)
-        {
-            webBrowser.Size = Size;
+            page.asyncDisplayFromArcs(msg);
         }
     }
+#endif
 
-    [XmlRoot("relationship")]
-    public class Relationship
+    public class MODRefPageThread
     {
-        [XmlElement("id")]
-        public int Id { get; set; }
-        [XmlElement("from-id")]
-        public int FromId { get; set; }
-        [XmlElement("to-id")]
-        public int ToId { get; set; }
-        [XmlElement("kind")]
-        public int Kind { get; set; }
-    }
-    [XmlRoot("relationships")]
-    public class ArcRels
-    {
-        public Relationship[] Relationships { get; set; }
-        public static ArcRels Load(string source_file)
+        MODRefPage page;
+        ArcsZipArcEntry zipEntry;
+
+        public MODRefPageThread(ArcsZipArcEntry zipentry, MODRefPage self)
         {
-            XmlAttributeOverrides attrOverrides = new XmlAttributeOverrides();
-            XmlAttributes attrs = new XmlAttributes();
-            XmlElementAttribute attr = new XmlElementAttribute();
-            attr.ElementName = "relationship";
-            attr.Type = typeof(Relationship);
-            attrs.XmlElements.Add(attr);
-            attrOverrides.Add(typeof(ArcRels), "Relationships", attrs);
-            XmlReader reader = XmlReader.Create(source_file);
-            XmlSerializer serializer = new XmlSerializer(typeof(ArcRels), attrOverrides);
-            ArcRels rels = serializer.Deserialize(reader) as ArcRels;
-            reader.Close();
-            return rels;
+            zipEntry = zipentry;
+            page = self;
         }
-    }
 
-    [XmlRoot("tah")]
-    public class Tah
-    {
-        [XmlElement("arc-id")]
-        public int Arcid { get; set; }
-        [XmlElement("id")]
-        public int Id { get; set; }
-        [XmlElement("path")]
-        public string Path { get; set; }
-        [XmlElement("position")]
-        public int Position { get; set; }
-    }
-
-    [XmlRoot("arc")]
-    public class Arc
-    {
-        [XmlElement("code")]
-        public string Code { get; set; }
-        [XmlElement("extname")]
-        public string Extname { get; set; }
-        [XmlElement("id")]
-        public int Id { get; set; }
-        [XmlElement("location")]
-        public string Location { get; set; }
-        [XmlElement("origname")]
-        public string Origname { get; set; }
-        [XmlElement("summary")]
-        public string Summary { get; set; }
-        [XmlArray("tahs")]
-        [XmlArrayItem("tah", typeof(Tah))]
-        public Tah[] Tahs { get; set; }
-
-        public static Arc Load(string source_file)
+        public void DoWorkerThread()
         {
-            XmlReader reader = XmlReader.Create(source_file);
-            XmlSerializer serializer = new XmlSerializer(typeof(Arc));
-            Arc arc = serializer.Deserialize(reader) as Arc;
-            reader.Close();
-            return arc;
+            string moddb = TDCGExplorer.GetSystemDatabase().moddb_url;
+            string url;
+            try
+            {
+                Arc thisarc = Arc.Load(moddb + "arcs/code/" + zipEntry.code + ".xml");
+                url = moddb + "arcs/" + thisarc.Id;
+                page.asyncDisplayFromArcs(url);
+
+            }
+            catch (Exception ex)
+            {
+                page.asyncDisplayFromArcs(moddb);
+                Debug.WriteLine(ex.Message);
+            }
         }
     }
 }

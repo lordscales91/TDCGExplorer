@@ -18,6 +18,7 @@ namespace TDCGExplorer
         {
             InitializeComponent();
             ExtractFile();
+            TDCGExplorer.SetToolTips(tahInfo.path);
         }
 
         private void InitializeComponent()
@@ -36,6 +37,7 @@ namespace TDCGExplorer
             this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
+            this.pictureBox.MouseEnter += new System.EventHandler(this.pictureBox_MouseEnter);
             // 
             // panel
             // 
@@ -46,12 +48,13 @@ namespace TDCGExplorer
             this.panel.Controls.Add(this.pictureBox);
             this.panel.Location = new System.Drawing.Point(0, 0);
             this.panel.Name = "panel";
-            this.panel.Size = new System.Drawing.Size(200, 100);
+            this.panel.Size = new System.Drawing.Size(0, 0);
             this.panel.TabIndex = 0;
             // 
             // ImagePage
             // 
             this.Controls.Add(this.panel);
+            this.Size = new System.Drawing.Size(0, 0);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.panel.ResumeLayout(false);
             this.panel.PerformLayout();
@@ -64,6 +67,12 @@ namespace TDCGExplorer
             // 全部読み出す.
             Bitmap bitmap = new Bitmap(ms);
             pictureBox.Image = (Image)bitmap;
+        }
+
+        private void pictureBox_MouseEnter(object sender, EventArgs e)
+        {
+            Control obj = (Control)sender;
+            obj.Focus();
         }
     }
 }
