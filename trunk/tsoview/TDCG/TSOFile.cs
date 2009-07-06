@@ -41,11 +41,19 @@ namespace TDCG
         /// </summary>
         public int maxPalettes;
 
+        /// <summary>
+        /// ボーン数
+        /// </summary>
         public int NumberBones
         {
             get { return bone_index_LUT.Count; }
         }
 
+        /// <summary>
+        /// 指定indexにあるボーンを得ます。
+        /// </summary>
+        /// <param name="i">index</param>
+        /// <returns>ボーン</returns>
         public TSONode GetBone(int i)
         {
             return bone_LUT[i];
@@ -70,6 +78,10 @@ namespace TDCG
         ar.VertexCount = 0;
         */
 
+        /// <summary>
+        /// 頂点をDirect3Dバッファに書き込みます。
+        /// </summary>
+        /// <param name="device">device</param>
         public void LoadMesh(Device device)
         {
             int numVertices = vertices.Length;

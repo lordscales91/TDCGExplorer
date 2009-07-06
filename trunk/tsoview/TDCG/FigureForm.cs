@@ -20,8 +20,9 @@ public class FigureForm : Form
     ListView lv_fig;
     ListView lv;
     DataGridView dg;
+
     /// <summary>
-    /// フィギュア情報フォームを生成する。
+    /// フィギュア情報フォームを生成します。
     /// </summary>
     public FigureForm()
     {
@@ -82,6 +83,11 @@ public class FigureForm : Form
         this.Controls.Add(dg);
     }
 
+    /// <summary>
+    /// フォームを閉じるとき破棄せずに隠します。
+    /// </summary>
+    /// <param name="sender">sender</param>
+    /// <param name="e">イベント引数</param>
     protected void form_FormClosing(object sender, FormClosingEventArgs e)
     {
         if (e.CloseReason != CloseReason.FormOwnerClosing)

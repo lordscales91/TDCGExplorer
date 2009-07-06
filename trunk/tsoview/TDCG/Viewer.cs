@@ -41,6 +41,9 @@ public class Viewer : IDisposable
     internal Surface dev_surface = null;
     internal Surface dev_zbuf = null;
 
+    /// <summary>
+    /// viewerが保持しているフィギュアリスト
+    /// </summary>
     public List<Figure> FigureList = new List<Figure>();
 
     // ライト方向
