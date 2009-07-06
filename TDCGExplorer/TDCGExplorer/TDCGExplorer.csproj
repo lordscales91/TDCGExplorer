@@ -66,6 +66,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Archivers\ArchiveLib.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.Direct3DX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -144,6 +146,9 @@
     <Compile Include="TAHUtil.cs" />
     <Compile Include="TDCGExplorer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="CollisionTahPage.resx">
+      <DependentUpon>CollisionTahPage.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="EditSystemDatabase.resx">
       <DependentUpon>EditSystemDatabase.cs</DependentUpon>
     </EmbeddedResource>
@@ -153,8 +158,14 @@
     <EmbeddedResource Include="FindDialog.resx">
       <DependentUpon>FindDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="ImagePage.resx">
+      <DependentUpon>ImagePage.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MODRefPage.resx">
+      <DependentUpon>MODRefPage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -163,6 +174,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TAHPage.resx">
       <DependentUpon>TAHPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TextPage.resx">
+      <DependentUpon>TextPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ZipFilePage.resx">
+      <DependentUpon>ZipFilePage.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -187,6 +204,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TreeNode.cs" />
+    <Compile Include="XML.cs" />
     <Compile Include="ZipFilePage.cs">
       <SubType>Component</SubType>
     </Compile>

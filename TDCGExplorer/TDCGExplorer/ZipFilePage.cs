@@ -26,6 +26,13 @@ namespace TDCGExplorer
 
         private void InitializeComponent()
         {
+            this.SuspendLayout();
+            // 
+            // ZipFilePage
+            // 
+            this.Size = new System.Drawing.Size(0, 0);
+            this.ResumeLayout(false);
+
         }
 
         public void ExtractFile()

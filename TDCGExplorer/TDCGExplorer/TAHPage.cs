@@ -7,6 +7,10 @@ using ArchiveLib;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Data;
+using TDCG;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
+using Direct3D = Microsoft.DirectX.Direct3D;
 
 namespace TDCGExplorer
 {
@@ -14,7 +18,7 @@ namespace TDCGExplorer
     {
         List<ArcsTahFilesEntry> filesEntries;
         private DataGridView dataGridView;
-        private System.ComponentModel.IContainer components;
+        //private System.ComponentModel.IContainer components;
         GenTahInfo info;
 
         public TAHPage(GenTahInfo entryinfo, List<ArcsTahFilesEntry> filesentries)
@@ -38,12 +42,18 @@ namespace TDCGExplorer
                 data.Rows.Add(row);
             }
             dataGridView.DataSource = data;
+
             foreach (DataGridViewColumn col in dataGridView.Columns)
             {
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             dataGridView.ReadOnly = true;
+            dataGridView.MultiSelect = false;
+            dataGridView.AllowUserToAddRows = false;
+
+            TDCGExplorer.SetToolTips(info.shortname + " : tsoクリックで単体表示,ctrlキー+tsoクリックで複数表示,tmoでポーズ・アニメーションを設定");
         }
 
         private void InitializeComponent()
@@ -60,155 +70,245 @@ namespace TDCGExplorer
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView.Location = new System.Drawing.Point(0, 0);
             this.dataGridView.Name = "dataGridView";
-            this.dataGridView.Size = new System.Drawing.Size(240, 150);
+            this.dataGridView.Size = new System.Drawing.Size(0, 0);
             this.dataGridView.TabIndex = 0;
-            this.dataGridView.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentDoubleClick);
+            this.dataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellClick);
             this.dataGridView.Resize += new System.EventHandler(this.dataGridView_Resize);
+            this.dataGridView.MouseEnter += new System.EventHandler(this.dataGridView_MouseEnter);
             // 
             // TAHPage
             // 
             this.Controls.Add(this.dataGridView);
+            this.Size = new System.Drawing.Size(0, 0);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
 
         }
 
-        private void dataGridView_CellContentDoubleClick(object sender, DataGridViewCellEventArgs e)
+        private void dataGridView_Resize(object sender, EventArgs e)
+        {
+            dataGridView.Size = Size;
+        }
+
+        internal char current_row = 'A';
+
+        private void SetCurrentTSOFileName(string filename)
+        {
+            string basename = Path.GetFileNameWithoutExtension(filename);
+            if (basename.Length == 12)
+                current_row = basename.ToUpper()[9];
+            else
+                current_row = 'A';
+        }
+
+        private int GetCenterBoneType()
+        {
+            switch (current_row)
+            {
+                case 'S'://手首
+                case 'X'://腕装備(手甲など)
+                case 'Z'://手持ちの小物
+                    return 1;
+                case 'W'://タイツ・ガーター
+                case 'I'://靴下
+                    return 2;
+                case 'O'://靴
+                    return 3;
+                default:
+                    return 0;
+            }
+        }
+ 
+        private string GetCenterBoneName()
+        {
+            switch (current_row)
+            {
+                case 'A'://身体
+                    return "W_Neck";
+                case 'E'://瞳
+                case 'D'://頭皮(生え際)
+                case 'B'://前髪
+                case 'C'://後髪
+                case 'U'://アホ毛類
+                    return "Kami_Oya";
+                case 'Q'://眼鏡
+                case 'V'://眼帯
+                case 'Y'://リボン
+                case 'P'://頭部装備(帽子等)
+                    return "face_oya";
+                case '3'://イヤリング類
+                case '0'://眉毛
+                case '2'://ほくろ
+                case '1'://八重歯
+                    return "Head";
+                case 'R'://首輪
+                    return "W_Neck";
+                case 'F'://ブラ
+                case 'J'://上衣(シャツ等)
+                case 'T'://背中(羽など)
+                case 'L'://上着オプション(エプロン等)
+                    return "W_Spine3";
+                case 'G'://全身下着・水着
+                case 'K'://全身衣装(ナース服等)
+                    return "W_Spine1";
+                case 'S'://手首
+                case 'X'://腕装備(手甲など)
+                case 'Z'://手持ちの小物
+                    return "W_Hips";//not reached
+                case 'H'://パンツ
+                case 'M'://下衣(スカート等)
+                case 'N'://尻尾
+                    return "W_Hips";
+                case 'W'://タイツ・ガーター
+                case 'I'://靴下
+                    return "W_Hips";//not reached
+                case 'O'://靴
+                    return "W_Hips";//not reached
+                default:
+                    return "W_Hips";
+            }
+        }
+
+        private void UpdateCenterPosition(string tsoname)
+        {
+            Vector3 position;
+
+            TSOFile tso = TDCGExplorer.GetMainForm().Viewer.FigureList[0].TSOList[0];
+
+            Dictionary<string, TSONode> nodemap = new Dictionary<string, TSONode>();
+            foreach (TSONode node in tso.nodes)
+            {
+                if(nodemap.ContainsKey(node.ShortName)==false)
+                    nodemap.Add(node.ShortName, node);
+            }
+
+
+            SetCurrentTSOFileName(tsoname);
+
+            switch (GetCenterBoneType())
+            {
+                case 1://Hand
+                    {
+                        TSONode tso_nodeR;
+                        TSONode tso_nodeL;
+                        string boneR = "W_RightHand";
+                        string boneL = "W_LeftHand";
+                        if (nodemap.TryGetValue(boneR, out tso_nodeR) && nodemap.TryGetValue(boneL, out tso_nodeL))
+                        {
+                            Matrix mR = tso_nodeR.combined_matrix;
+                            Matrix mL = tso_nodeL.combined_matrix;
+                            position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, -(mR.M43 + mL.M43) / 2.0f);
+                            TDCGExplorer.GetMainForm().Viewer.Camera.Reset();
+                            TDCGExplorer.GetMainForm().Viewer.Camera.SetCenter(position);
+                        }
+                    }
+                    break;
+                case 2://Leg
+                    {
+                        TSONode tso_nodeR;
+                        TSONode tso_nodeL;
+                        string boneR = "W_RightLeg";
+                        string boneL = "W_LeftLeg";
+                        if (nodemap.TryGetValue(boneR, out tso_nodeR) && nodemap.TryGetValue(boneL, out tso_nodeL))
+                        {
+                            Matrix mR = tso_nodeR.combined_matrix;
+                            Matrix mL = tso_nodeL.combined_matrix;
+                            position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, -(mR.M43 + mL.M43) / 2.0f);
+                            TDCGExplorer.GetMainForm().Viewer.Camera.Reset();
+                            TDCGExplorer.GetMainForm().Viewer.Camera.SetCenter(position);
+                        }
+                    }
+                    break;
+                case 3://Foot
+                    {
+                        TSONode tso_nodeR;
+                        TSONode tso_nodeL;
+                        string boneR = "W_RightFoot";
+                        string boneL = "W_LeftFoot";
+                        if (nodemap.TryGetValue(boneR, out tso_nodeR) && nodemap.TryGetValue(boneL, out tso_nodeL))
+                        {
+                            Matrix mR = tso_nodeR.combined_matrix;
+                            Matrix mL = tso_nodeL.combined_matrix;
+                            position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, -(mR.M43 + mL.M43) / 2.0f);
+                            TDCGExplorer.GetMainForm().Viewer.Camera.Reset();
+                            TDCGExplorer.GetMainForm().Viewer.Camera.SetCenter(position);
+                        }
+                    }
+                    break;
+                default:
+                    {
+                        TSONode tso_node;
+                        string bone = GetCenterBoneName();
+                        if (nodemap.TryGetValue(bone, out tso_node))
+                        {
+                            Matrix m = tso_node.combined_matrix;
+                            position = new Vector3(m.M41, m.M42, -m.M43);
+                            TDCGExplorer.GetMainForm().Viewer.Camera.Reset();
+                            TDCGExplorer.GetMainForm().Viewer.Camera.SetCenter(position);
+                        }
+                    }
+                    break;
+            }
+            
+        }
+
+        private void dataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
             try
             {
-                int index = e.RowIndex;
+                if (e.RowIndex < 0) return;
+
+                System.Windows.Forms.DataGridViewRow dgr = this.dataGridView.CurrentRow;
+                System.Data.DataRowView drv = (System.Data.DataRowView)dgr.DataBoundItem;
+                System.Data.DataRow dr = (System.Data.DataRow)drv.Row;
+                int index = int.Parse(dr.ItemArray[0].ToString());
+
                 if (index >= 0)
                 {
                     string ext = Path.GetExtension(filesEntries[index].path).ToLower();
                     if (ext == ".tso" || ext == ".tmo")
                     {
-#if false
-                        ArcsTahFilesEntry tsoInfo = filesEntries[index];
-                        // zipファイルの中か?
-                        if (info.zipid != -1)
-                        {
-                            IArchive archive;
-                            ArcsZipArcEntry zip = TDCGExplorer.GetArcsDatabase().GetZip(info.zipid);
-                            string zippath = Path.Combine(TDCGExplorer.GetSystemDatabase().zips_path, zip.path);
-                            switch (Path.GetExtension(zip.path).ToLower())
-                            {
-                                case ".zip":
-                                    archive = new ZipArchive();
-                                    break;
-                                case ".lzh":
-                                    archive = new LzhArchive();
-                                    break;
-                                case ".rar":
-                                    archive = new RarArchive();
-                                    break;
-                                default:
-                                    MessageBox.Show("Not Implemented", "Not Implemented", MessageBoxButtons.OK);
-                                    return;
-                            }
-                            archive.Open(zippath);
-                            if (archive == null) return;
-
-                            // 
-                            foreach (IArchiveEntry entry in archive)
-                            {
-                                // ディレクトリのみの場合はスキップする.
-                                if (entry.IsDirectory == true) continue;
-                                // マッチするファイルを見つけた.
-                                if (entry.FileName == info.path)
-                                {
-                                    using (MemoryStream ms = new MemoryStream((int)entry.Size))
-                                    {
-                                        archive.Extract(entry, ms);
-                                        ms.Seek(0, SeekOrigin.Begin);
-                                        TAHFile tah = new TAHFile(ms);
-                                        tah.LoadEntries();
-                                        int tahentry = 0;
-                                        foreach (TAHEntry ent in tah.EntrySet.Entries)
-                                        {
-                                            // 該当ファイルを見つけた.
-                                            if (tahentry == tsoInfo.tahentry)
-                                            {
-                                                byte[] data = TAHUtil.ReadEntryData(tah.Reader, ent);
-                                                // 
-                                                Cursor.Current = Cursors.WaitCursor;
-                                                using (MemoryStream ims = new MemoryStream(data))
-                                                {
-
-                                                    TDCGExplorer.GetMainForm().makeTSOViwer();
-                                                    if (ext == ".tso")
-                                                    {
-                                                        TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(ims);
-                                                        TDCGExplorer.GetMainForm().doInitialTmoLoad(); // 初期tmoを読み込む.
-                                                    }
-                                                    else if (ext == ".tmo") TDCGExplorer.GetMainForm().Viewer.LoadTMOFile(ims);
-                                                }
-                                                Cursor.Current = Cursors.Default;
-                                            }
-                                            tahentry++;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            string source = Path.Combine(TDCGExplorer.GetSystemDatabase().arcs_path, info.path);
-                            TAHFile tah = new TAHFile(source);
-                            tah.LoadEntries();
-                            int tahentry = 0;
-                            foreach (TAHEntry ent in tah.EntrySet.Entries)
-                            {
-                                // 該当ファイルを見つけた.
-                                if (tahentry == tsoInfo.tahentry)
-                                {
-                                    byte[] data = TAHUtil.ReadEntryData(tah.Reader, ent);
-                                    // 
-                                    using (MemoryStream ims = new MemoryStream(data))
-                                    {
-                                        Cursor.Current = Cursors.WaitCursor;
-                                        TDCGExplorer.GetMainForm().makeTSOViwer();
-                                        if (ext == ".tso")
-                                        {
-                                            TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(ims);
-                                            TDCGExplorer.GetMainForm().doInitialTmoLoad(); // 初期tmoを読み込む.
-                                        }
-                                        else if (ext == ".tmo") TDCGExplorer.GetMainForm().Viewer.LoadTMOFile(ims);
-                                        Cursor.Current = Cursors.Default;
-                                    }
-                                }
-                                tahentry++;
-                            }
-                        }
-#endif
                         using (TAHStream tahstream = new TAHStream(info, filesEntries[index]))
                         {
                             Cursor.Current = Cursors.WaitCursor;
                             TDCGExplorer.GetMainForm().makeTSOViwer();
                             if (ext == ".tso")
                             {
-                                TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(tahstream.stream);
-                                TDCGExplorer.GetMainForm().doInitialTmoLoad(); // 初期tmoを読み込む.
+                                if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
+                                {
+                                    TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(tahstream.stream);
+                                    TDCGExplorer.GetMainForm().doInitialTmoLoad(); // 初期tmoを読み込む.
+                                }
+                                else
+                                {
+                                    TDCGExplorer.GetMainForm().Viewer.ClearFigureList();
+                                    TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(tahstream.stream);
+                                    TDCGExplorer.GetMainForm().Viewer.LoadTMOFile("default.tmo");
+                                    UpdateCenterPosition(Path.GetFileName(filesEntries[index].path).ToUpper());
+                                }
                             }
                             else if (ext == ".tmo") TDCGExplorer.GetMainForm().Viewer.LoadTMOFile(tahstream.stream);
                             Cursor.Current = Cursors.Default;
                         }
                     }
+#if false
                     else
                     {
                         MessageBox.Show("TAH INFO:\n" + filesEntries[index].id + "," + filesEntries[index].path + "," + filesEntries[index].hash.ToString("x8"), "Not Implemented", MessageBoxButtons.OK);
                     }
+#endif
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error occured:"+ex.Message, "Error", MessageBoxButtons.OK);
+                MessageBox.Show("Error occured:" + ex.Message, "Error", MessageBoxButtons.OK);
             }
         }
 
-        private void dataGridView_Resize(object sender, EventArgs e)
+        private void dataGridView_MouseEnter(object sender, EventArgs e)
         {
-            dataGridView.Size = Size;
+            Control obj = (Control)sender;
+            obj.Focus();
         }
     }
 }

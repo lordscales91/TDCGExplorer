@@ -420,7 +420,7 @@ namespace TDCGExplorer
             {
                 using (SQLiteCommand cmd = cnn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT ID,PATH,SHORTNAME,EXIST,TAHVERSION,DATETIME FROM TahEntry";
+                    cmd.CommandText = "SELECT ID,PATH,SHORTNAME,EXIST,TAHVERSION,DATETIME FROM TahEntry ORDER BY PATH";
                     using (SQLiteDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
@@ -604,7 +604,7 @@ namespace TDCGExplorer
             List<ArcsZipArcEntry> list = new List<ArcsZipArcEntry>();
             using (SQLiteCommand cmd = cnn.CreateCommand())
             {
-                cmd.CommandText = "SELECT ID,PATH,CODE,EXIST,DATETIME FROM ZipEntry";
+                cmd.CommandText = "SELECT ID,PATH,CODE,EXIST,DATETIME FROM ZipEntry ORDER BY PATH";
                 using (SQLiteDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
@@ -655,6 +655,31 @@ namespace TDCGExplorer
             {
                 cmd.CommandText = "SELECT ID,PATH,CODE,EXIST,DATETIME FROM ZipEntry WHERE PATH=@path";
                 cmd.Parameters.AddWithValue("path", path);
+                using (SQLiteDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        entry = new ArcsZipArcEntry();
+                        entry.id = int.Parse(reader[0].ToString());
+                        entry.path = reader[1].ToString();
+                        entry.code = reader[2].ToString();
+                        entry.exist = int.Parse(reader[3].ToString());
+                        entry.datetime = DateTime.Parse(reader[4].ToString());
+                        break;
+                    }
+                }
+            }
+            return entry;
+        }
+
+        // ZIPエントリを取得する.
+        public ArcsZipArcEntry GetZipByCode(string code)
+        {
+            ArcsZipArcEntry entry = null;
+            using (SQLiteCommand cmd = cnn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT ID,PATH,CODE,EXIST,DATETIME FROM ZipEntry WHERE CODE=@code";
+                cmd.Parameters.AddWithValue("code", code);
                 using (SQLiteDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
@@ -922,7 +947,7 @@ namespace TDCGExplorer
 
             using (SQLiteCommand cmd = cnn.CreateCommand())
             {
-                cmd.CommandText = "SELECT ZipEntry.ID,ZipEntry.PATH,ZipEntry.CODE,ZipEntry.EXIST FROM ZipEntry INNER JOIN InstalledZipEntry ON ZipEntry.ID=InstalledZipEntry.ZIPID";
+                cmd.CommandText = "SELECT ZipEntry.ID,ZipEntry.PATH,ZipEntry.CODE,ZipEntry.EXIST FROM ZipEntry INNER JOIN InstalledZipEntry ON ZipEntry.ID=InstalledZipEntry.ZIPID ORDER BY ZipEntry.PATH";
                 using (SQLiteDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())

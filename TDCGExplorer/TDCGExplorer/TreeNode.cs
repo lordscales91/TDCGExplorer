@@ -80,9 +80,11 @@ namespace TDCGExplorer
         // MOD Refサーバに問い合わせる.
         public override void DoLookupServer()
         {
+            TabPage lastTab = TDCGExplorer.GetMainForm().TabControlMainView.SelectedTab;
             MODRefPage modprefpage = new MODRefPage(zipid);
             TDCGExplorer.GetMainForm().TabControlMainView.Controls.Add(modprefpage);
             TDCGExplorer.GetMainForm().TabControlMainView.SelectTab(TDCGExplorer.GetMainForm().TabControlMainView.Controls.Count - 1);
+            if (lastTab != null) lastTab.Dispose();
         }
         // アノテーションを入力する.
         public override void DoEditAnnotation()

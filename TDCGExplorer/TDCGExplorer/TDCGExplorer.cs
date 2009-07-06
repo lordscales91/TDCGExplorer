@@ -1,4 +1,4 @@
-﻿//
+﻿
 // TDCGExplorer Framework by Konoa.
 //
 
@@ -149,7 +149,7 @@ namespace TDCGExplorer
 
         public static void MakeArcsTreeView(ArcsDatabase db, TreeView tvTree)
         {
-            FilesTreeNode arcs = new FilesTreeNode("arcs");
+            FilesTreeNode arcs = new FilesTreeNode(GetSystemDatabase().arcs_path);
             tvTree.Nodes.Add(arcs);
             // tahを展開する.
             List<ArcsTahEntry> list = db.GetTahs();
@@ -191,11 +191,12 @@ namespace TDCGExplorer
                     currentNode.Entries.Add(entry);
                 }
             }
+            arcs.Expand();
         }
 
         public static void MakeZipsTreeView(ArcsDatabase db, TreeView tvTree)
         {
-            TreeNode zips = tvTree.Nodes.Add("zips");
+            TreeNode zips = tvTree.Nodes.Add(GetSystemDatabase().zips_path);
             Dictionary<int, int> installedZip = db.GetInstalledZips();
             // tahを展開する.
             List<ArcsZipArcEntry> list = db.GetZips();
@@ -250,11 +251,12 @@ namespace TDCGExplorer
                     }
                 }
             }
+            zips.Expand();
         }
 
         public static void MakeCollisionTreeView(ArcsDatabase db, TreeView tvTree)
         {
-            CollisionTahNode arcs = new CollisionTahNode("collision");
+            CollisionTahNode arcs = new CollisionTahNode(GetSystemDatabase().arcs_path);
             tvTree.Nodes.Add(arcs);
             // tahを展開する.
             List<ArcsTahEntry> list = db.GetTahs();
@@ -305,13 +307,14 @@ namespace TDCGExplorer
                     currentNode.Entries.Add(item);
                 }
             }
+            arcs.Expand();
         }
 
         // TODO:ArcsTahEntryをArcsZipArcEntryにする
         public static void MakeInstalledArcsTreeView(ArcsDatabase db, TreeView tvTree)
         {
             //GetInstalledZipFiles
-            TreeNode zips = tvTree.Nodes.Add("installed");
+            TreeNode zips = tvTree.Nodes.Add(GetSystemDatabase().zips_path);
             // tahを展開する.
             List<ArcsZipArcEntry> list = db.GetInstalledZipFiles();
             foreach (ArcsZipArcEntry entry in list)
@@ -359,8 +362,9 @@ namespace TDCGExplorer
                     //subnode.Entry = entry.id;
                 }
             }
+            zips.Expand();
         }
-
+#if dalse
         // arcs.dbをツリーに展開する(完全なツリー階層を展開すると非現実的に遅いので妥協).
         public static void DisplayArcsDB(TreeView tvTree)
         {
@@ -369,7 +373,8 @@ namespace TDCGExplorer
                 ArcsDatabase db = GetArcsDatabase();
 
                 // 全ノードを消去する.
-                tvTree.Nodes.Clear();
+                //tvTree.Nodes.Clear();
+                GetMainForm().ClearTreeBox();
                 MakeArcsTreeView(db, tvTree);
                 MakeZipsTreeView(db, tvTree);
                 MakeCollisionTreeView(db, tvTree);
@@ -381,11 +386,13 @@ namespace TDCGExplorer
                 TDCGExplorer.SetToolTips("Error occured : " + e.Message);
             }
         }
+#endif
 
         // データベースがビルド済みならツリーを展開する.
-        public static void IfReadyDbDisplayArcsDB(TreeView tvTree)
+        public static void IfReadyDbDisplayArcsDB()
         {
-            if (GetSystemDatabase().database_build != "") DisplayArcsDB(tvTree);
+            if (GetSystemDatabase().database_build != "") //DisplayArcsDB(tvTree);
+                GetMainForm().DisplayDB();
         }
 
         public static bool InstallZipFile(TahGenTreeNode sender)
@@ -398,6 +405,10 @@ namespace TDCGExplorer
             {
                 // サマリ文字列を自動的に追加しておく.
                 destpath = Path.Combine(destpath, zipentry.code) + " " + arcNames.entry[zipentry.code].summary;
+            }
+            else
+            {
+                destpath = Path.Combine(destpath, zipentry.code);
             }
             // 展開に成功したらzipのノードの色を変える.
             if (ZipFileUtil.ExtractZipFile(zipsource, destpath) == true)
@@ -422,7 +433,7 @@ namespace TDCGExplorer
             }
         }
 
-        private static void FindTreeNode(TreeNode node, string key)
+        public static void FindTreeNode(TreeNode node, string key)
         {
             if (HasString(node.Text.ToLower(), key.ToLower()) == true)
             {
@@ -444,11 +455,104 @@ namespace TDCGExplorer
             }
         }
 
+        public static void InstallPreferZip(ZipTreeNode zipNode)
+        {
+            ArcsZipArcEntry zipentry =  GetArcsDatabase().GetZip(zipNode.Entry);
+
+            // mod REF Serverに問い合わせる.
+
+            string moddb = GetSystemDatabase().moddb_url;
+            string relurl;
+            ArcRels relationships;
+
+            Dictionary<int, int> installedZip = GetArcsDatabase().GetInstalledZips();
+
+            int misscount = 0, installedcount = 0;
+
+            relurl = moddb + "arcs/code/" + zipentry.code + "/rels.xml";
+            TDCGExplorer.SetToolTips(relurl);
+            relationships = ArcRels.Load(relurl);
+            if (relationships != null)
+            {
+                if (relationships.Relationships != null)
+                {
+                    foreach (Relationship relation in relationships.Relationships)
+                    {
+                        string arcurl = moddb + "arcs/" + relation.ToId.ToString() + ".xml";
+                        try
+                        {
+                            // 前提MODを見つけたら
+                            if (relation.Kind == 3)
+                            {
+                                Arc arc = Arc.Load(arcurl);
+                                if (arc != null)
+                                {
+                                    // zipファイルのコードを特定する.
+                                    ArcsZipArcEntry ziparc = TDCGExplorer.GetArcsDatabase().GetZipByCode(arc.Code);
+                                    if (ziparc != null)
+                                    {
+                                        // 既にインストールされている物は展開しない.
+                                        if (installedZip.ContainsKey(ziparc.id) == true) continue;
+                                            
+                                        string zipsource = Path.Combine(TDCGExplorer.GetSystemDatabase().zips_path, ziparc.path);
+                                        string destpath = GetSystemDatabase().work_path;
+                                        if (arcNames.entry.ContainsKey(ziparc.code) == true)
+                                        {
+                                            // サマリ文字列を自動的に追加しておく.
+                                            destpath = Path.Combine(destpath, "Required "+zipentry.code);
+                                            destpath=Path.Combine(destpath,ziparc.code) + " " + arcNames.entry[ziparc.code].summary;
+                                        }
+                                        else
+                                        {
+                                            destpath = Path.Combine(destpath, "Required " + zipentry.code);
+                                            destpath = Path.Combine(destpath, ziparc.code);
+                                        }
+                                        // 展開に成功したらzipのノードの色を変える.
+                                        try
+                                        {
+                                            if (ZipFileUtil.ExtractZipFile(zipsource, destpath) == true)
+                                            {
+                                                // カウントを増やす.
+                                                installedcount++;
+                                            }
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            Debug.WriteLine(ex.Message);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        misscount++;
+                                    }
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine(ex.Message);
+                        }
+                    }
+                }
+            }
+            if (misscount > 0)
+            {
+                MessageBox.Show(installedcount.ToString() + "個のzipを展開しました。\n" +
+                    misscount.ToString() + "個のzipが見つかりませんでした。", "展開", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            else
+            {
+                MessageBox.Show(installedcount.ToString() + "個のzipを展開しました。", "展開", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+
+#if false
         public static void FindNode(string key)
         {
             foreach(TreeNode node in GetMainForm().TabTreeMainView.Nodes)
                 FindTreeNode(node, key);
         }
+#endif
     }
 
     public class CreateArcsDatabaseThread
