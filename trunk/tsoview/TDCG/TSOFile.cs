@@ -705,6 +705,12 @@ namespace TDCG
                 return;
             current_shader = shader;
 
+            if (! techmap.ContainsKey(shader.technique))
+            {
+                Console.WriteLine("Error: shader technique not found. " + shader.technique);
+                return;
+            }
+
             foreach (ShaderParameter p in shader.shader_parameters)
             {
                 switch (p.type)

@@ -250,6 +250,16 @@ public class Camera
         LookAt(eye, center, new Vector3(0.0f, 1.0f, 0.0f));
     }
 
+    public Vector3 GetCamZAxis()
+    {
+        return new Vector3(camPoseMat.M31, camPoseMat.M32, camPoseMat.M33);
+    }
+
+    public Vector3 GetCamYAxis()
+    {
+        return new Vector3(camPoseMat.M21, camPoseMat.M22, camPoseMat.M23);
+    }
+
     /// <summary>
     /// カメラの位置と姿勢を更新します。
     /// </summary>
@@ -265,15 +275,16 @@ public class Camera
         Vector3 dL = Vector3.TransformCoordinate(camDirDef, camPoseMat);
         if (dL.X != 0.0f || dL.Y != 0.0f || dL.Z != 0.0f)
         {
-            Vector3 camZAxis = new Vector3(camPoseMat.M31, camPoseMat.M32, camPoseMat.M33);
+            //カメラ位置を更新
+            Vector3 camZAxis = GetCamZAxis();
             Vector3 rotAxis = Vector3.Cross(dL, camZAxis);
             Quaternion q = Quaternion.RotationAxis(rotAxis, camAngleUnit * camDirDef.Length());
             Matrix rotMat = Matrix.RotationQuaternion(q);
             camPosL = Vector3.TransformCoordinate(camPosL, rotMat);
 
-            // 移動後カメラ姿勢を更新
+            //カメラ姿勢を更新
             Vector3 z = Vector3.Normalize(-camPosL);
-            Vector3 y = new Vector3(camPoseMat.M21, camPoseMat.M22, camPoseMat.M23);
+            Vector3 y = GetCamYAxis();
             Vector3 x = Vector3.Normalize(Vector3.Cross(y, z));
             y = Vector3.Normalize(Vector3.Cross(z, x));
             {
@@ -291,8 +302,8 @@ public class Camera
             }
         }
 
-        // 奥行オフセットを更新
-        if (camPosL.Length() - offsetZ > 0)
+        //奥行オフセットを更新
+        if (offsetZ != 0.0f && camPosL.Length() - offsetZ > 0)
         {
             Vector3 z = Vector3.Normalize(-camPosL);
             camPosL += offsetZ * z;
