@@ -81,6 +81,6 @@ class String
   end
 
   def to_xs
-    gsub(/[&<>]/) { XChar::PREDEFINED[$1[0]] }
+    gsub(/[&<>]/) { Builder::XChar::PREDEFINED[$&[0]] }
   end
 end
