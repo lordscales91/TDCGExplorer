@@ -53,12 +53,32 @@ namespace TDCG
         private float f3;
         private float f4;
 
+        /// <summary>
+        /// パラメータの名称
+        /// </summary>
         public string Name { get { return name; } set { name = value; } }
+        /// <summary>
+        /// float値1
+        /// </summary>
         public float F1 { get { return f1; } set { f1 = value; } }
+        /// <summary>
+        /// float値2
+        /// </summary>
         public float F2 { get { return f2; } set { f2 = value; } }
+        /// <summary>
+        /// float値3
+        /// </summary>
         public float F3 { get { return f3; } set { f3 = value; } }
+        /// <summary>
+        /// float値4
+        /// </summary>
         public float F4 { get { return f4; } set { f4 = value; } }
 
+        /// <summary>
+        /// シェーダ設定ファイルの行を解析してシェーダ設定パラメータを生成します。
+        /// </summary>
+        /// <param name="line">シェーダ設定ファイルの行</param>
+        /// <returns>シェーダ設定パラメータ</returns>
         public static ShaderParameter Parse(string line)
         {
             int m = line.IndexOf('='); if (m < 0) throw new ArgumentException();
@@ -71,10 +91,19 @@ namespace TDCG
             return new ShaderParameter(type, name, value);
         }
 
+        /// <summary>
+        /// シェーダ設定パラメータを生成します。
+        /// </summary>
         public ShaderParameter()
         {
         }
 
+        /// <summary>
+        /// シェーダ設定パラメータを生成します。
+        /// </summary>
+        /// <param name="type_string">型名</param>
+        /// <param name="name">名称</param>
+        /// <param name="value">値</param>
         public ShaderParameter(string type_string, string name, string value)
         {
             this.name = name;

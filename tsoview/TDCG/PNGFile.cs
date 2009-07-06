@@ -57,12 +57,32 @@ namespace TDCG
             bw.Close();
         }
 
+        /// <summary>
+        /// pngヘッダを処理するのに用いるデリゲート型
+        /// </summary>
+        /// <param name="header">ヘッダ</param>
         public delegate void PngHeaderHandler(byte[] header);
+        /// <summary>
+        /// pngデータを処理するのに用いるデリゲート型
+        /// </summary>
+        /// <param name="data">データ</param>
         public delegate void PngDataHandler(byte[] data);
 
+        /// <summary>
+        /// pngヘッダを処理するハンドラ
+        /// </summary>
         public PngHeaderHandler Header;
+        /// <summary>
+        /// IHDRチャンクのデータを処理するハンドラ
+        /// </summary>
         public PngDataHandler Ihdr;
+        /// <summary>
+        /// IDATチャンクのデータを処理するハンドラ
+        /// </summary>
         public PngDataHandler Idat;
+        /// <summary>
+        /// IENDチャンクのデータを処理するハンドラ
+        /// </summary>
         public PngDataHandler Iend;
 
         /// <summary>

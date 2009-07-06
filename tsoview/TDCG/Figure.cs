@@ -16,6 +16,9 @@ namespace TDCG
     /// </summary>
 public class Figure : IDisposable
 {
+    /// <summary>
+    /// フィギュアが保持しているtsoリスト
+    /// </summary>
     public List<TSOFile> TSOList = new List<TSOFile>();
     internal TMOFile tmo = null;
 
@@ -37,6 +40,9 @@ public class Figure : IDisposable
         get { return translation; }
     }
 
+    /// <summary>
+    /// tmo
+    /// </summary>
     public TMOFile Tmo
     {
         get { return tmo; }
