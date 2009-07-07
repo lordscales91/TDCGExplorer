@@ -73,6 +73,7 @@
             this.listBoxMainListBox = new System.Windows.Forms.ListBox();
             this.ListBoxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.NewTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.関連アーカイブを調べるToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.cmContextMenu.SuspendLayout();
             this.StatusStrip.SuspendLayout();
@@ -110,6 +111,7 @@
             // 
             this.tDCGExplorerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.extractZipFileToolStripMenuItem1,
+            this.関連アーカイブを調べるToolStripMenuItem,
             this.前提アーカイブファイルを展開ToolStripMenuItem,
             this.FindDialogToolStripMenuItem,
             this.EditAnnotationToolStripMenuItem1,
@@ -543,6 +545,13 @@
             this.NewTabToolStripMenuItem.Text = "新しいタブで開く";
             this.NewTabToolStripMenuItem.Click += new System.EventHandler(this.NewTabPageToolStripMenuItem_Click);
             // 
+            // 関連アーカイブを調べるToolStripMenuItem
+            // 
+            this.関連アーカイブを調べるToolStripMenuItem.Name = "関連アーカイブを調べるToolStripMenuItem";
+            this.関連アーカイブを調べるToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.関連アーカイブを調べるToolStripMenuItem.Text = "関連アーカイブを調べる";
+            this.関連アーカイブを調べるToolStripMenuItem.Click += new System.EventHandler(this.LookupMODRefToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -627,6 +636,7 @@
         private System.Windows.Forms.ToolStripMenuItem 未インストールの前提アーカイブを展開ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 前提アーカイブファイルを展開ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadLatestArcsnameszipToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 関連アーカイブを調べるToolStripMenuItem;
 
     }
 }

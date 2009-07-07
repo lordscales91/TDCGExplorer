@@ -27,13 +27,7 @@ namespace TDCGExplorer
             get { return tabMainView; }
             set { }
         }
-#if false
-        public TreeView TabTreeMainView
-        {
-            get { return treeViewArcs; }
-            set { }
-        }
-#endif
+
         public ListBox ListBoxMainView
         {
             get { return listBoxMainListBox; }
@@ -325,15 +319,6 @@ namespace TDCGExplorer
             SuspendLayout();
             try
             {
-                /*
-                int index = listBoxMainListBox.SelectedIndex;
-                if (index >= 0)
-                {
-                    LbGenItem item = (LbGenItem)listBoxMainListBox.Items[index];
-                    item.DoClick(tabMainView, true);
-                    listBoxMainListBox.Focus();
-                }
-                */
                 TabPage tabPage = new TabPage();
                 tabPage.Text = "新しいタブ";
                 tabMainView.Controls.Add(tabPage);
@@ -366,8 +351,10 @@ namespace TDCGExplorer
             control.ClientSize = currentPage.Size;
             currentPage.SuspendLayout();
             currentPage.Text = control.Text;
-            currentPage.Controls.Clear();
+            Control lastControl = null;
+            if (currentPage.Controls.Count > 0) lastControl = currentPage.Controls[0];
             currentPage.Controls.Add(control);
+            if (lastControl != null) lastControl.Dispose();
             currentPage.ResumeLayout();
             tabMainView.ResumeLayout();
         }
@@ -619,6 +606,24 @@ namespace TDCGExplorer
             else
             {
                 MessageBox.Show("Internet access failure. Please check firewall.", "Download", MessageBoxButtons.OK);
+            }
+        }
+
+        private void LookupMODRefToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                ZipTreeNode node = (ZipTreeNode) lastSelectTreeNode;
+                AssignTagPageControl(new MODRefPage(node.Entry));
+            }
+            catch (System.InvalidCastException ex)
+            {
+                MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
+                Debug.WriteLine(ex.Message);
+            }
+            catch (Exception exception)
+            {
+                Debug.WriteLine(exception.Message);
             }
         }
     }
