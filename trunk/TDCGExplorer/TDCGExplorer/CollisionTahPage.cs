@@ -3,25 +3,26 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+//using System.Windows.Forms;
 using System.Data;
+using TDCGExplorer;
 
-namespace TDCGExplorer
+namespace System.Windows.Forms
 {
-    class CollisionTahPage : TabPage
+    class CollisionTahPageControl : Control
     {
         private SplitContainer splitContainer;
         private WebBrowser webBrowser;
         private DataGridView dataGridView;
         CollisionItem collisionEntry;
 
-        public CollisionTahPage(CollisionItem argCollisionEntry)
+        public CollisionTahPageControl(CollisionItem argCollisionEntry)
         {
             InitializeComponent();
             collisionEntry = argCollisionEntry;
             Text = Path.GetFileName(collisionEntry.tah.path);
 
-            TDCGExplorer.SetToolTips(Text);
+            TDCGExplorer.TDCGExplorer.SetToolTips(Text);
 
             DataTable data = new DataTable();
             data.Columns.Add("衝突元", Type.GetType("System.String"));
@@ -29,7 +30,7 @@ namespace TDCGExplorer
             data.Columns.Add("衝突先TAH", Type.GetType("System.String"));
             foreach (ArcsCollisionRecord col in collisionEntry.entries)
             {
-                ArcsDatabase db = TDCGExplorer.GetArcsDatabase();
+                ArcsDatabase db = TDCGExplorer.TDCGExplorer.GetArcsDatabase();
                 // 衝突した先のtahを取得する.
                 ArcsTahEntry to = db.GetTah(col.toTahID);
                 // 既に同じ名前で追加していないか調べる.
@@ -90,7 +91,7 @@ namespace TDCGExplorer
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView.Location = new System.Drawing.Point(0, 0);
             this.dataGridView.Name = "dataGridView";
-            this.dataGridView.Size = new System.Drawing.Size(90, 150);
+            this.dataGridView.Size = new System.Drawing.Size(0, 150);
             this.dataGridView.TabIndex = 0;
             this.dataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentClick);
             this.dataGridView.MouseEnter += new System.EventHandler(this.dataGridView_MouseEnter);
@@ -103,13 +104,15 @@ namespace TDCGExplorer
             this.webBrowser.Location = new System.Drawing.Point(0, 0);
             this.webBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.webBrowser.Name = "webBrowser";
-            this.webBrowser.Size = new System.Drawing.Size(100, 250);
+            this.webBrowser.Size = new System.Drawing.Size(20, 250);
             this.webBrowser.TabIndex = 0;
             // 
-            // CollisionTahPage
+            // CollisionTahPageControl
             // 
+            this.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.Controls.Add(this.splitContainer);
-            this.Size = new System.Drawing.Size(0, 0);
             this.Layout += new System.Windows.Forms.LayoutEventHandler(this.CollisionTahPage_Layout);
             this.Resize += new System.EventHandler(this.CollisionTahPage_Resize);
             this.splitContainer.Panel1.ResumeLayout(false);
@@ -131,7 +134,7 @@ namespace TDCGExplorer
         {
             ArcsCollisionRecord col = collisionEntry.entries[index];
 
-            ArcsDatabase db = TDCGExplorer.GetArcsDatabase();
+            ArcsDatabase db = TDCGExplorer.TDCGExplorer.GetArcsDatabase();
             // 衝突した先のtahを取得する.
             ArcsTahEntry from = db.GetTah(col.fromTahID);
             ArcsTahEntry to = db.GetTah(col.toTahID);

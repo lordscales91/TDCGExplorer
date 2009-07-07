@@ -2,23 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
+//using System.Windows.Forms;
 using System.IO;
 using ArchiveLib;
 using System.Drawing;
+using TDCGExplorer;
 
-namespace TDCGExplorer
+namespace System.Windows.Forms
 {
-    class ImagePage : ZipFilePage
+    class ImagePageControl : ZipFilePageControl
     {
         private Panel panel;
         private PictureBox pictureBox;
 
-        public ImagePage(GenTahInfo tahInfo) : base(tahInfo)
+        public ImagePageControl(GenTahInfo tahInfo) : base(tahInfo)
         {
             InitializeComponent();
             ExtractFile();
-            TDCGExplorer.SetToolTips(tahInfo.path);
+            TDCGExplorer.TDCGExplorer.SetToolTips(tahInfo.path);
         }
 
         private void InitializeComponent()
@@ -51,10 +52,12 @@ namespace TDCGExplorer
             this.panel.Size = new System.Drawing.Size(0, 0);
             this.panel.TabIndex = 0;
             // 
-            // ImagePage
+            // ImagePageControl
             // 
+            this.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.Controls.Add(this.panel);
-            this.Size = new System.Drawing.Size(0, 0);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.panel.ResumeLayout(false);
             this.panel.PerformLayout();

@@ -178,8 +178,8 @@
     <EmbeddedResource Include="TextPage.resx">
       <DependentUpon>TextPage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ZipFilePage.resx">
-      <DependentUpon>ZipFilePage.cs</DependentUpon>
+    <EmbeddedResource Include="ZipFilePageControl.resx">
+      <DependentUpon>ZipFilePageControl.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -205,7 +205,7 @@
     </Compile>
     <Compile Include="TreeNode.cs" />
     <Compile Include="XML.cs" />
-    <Compile Include="ZipFilePage.cs">
+    <Compile Include="ZipFilePageControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ZipFileUtil.cs" />

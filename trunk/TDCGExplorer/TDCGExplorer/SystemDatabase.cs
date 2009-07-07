@@ -12,6 +12,8 @@ namespace TDCGExplorer
     {
         private SQLiteConnection cnn;
 
+        Dictionary<string,string> cache = new Dictionary<string,string>();
+
         // dbを置く場所を準備する.
         public SystemDatabase()
         {
@@ -56,6 +58,10 @@ namespace TDCGExplorer
         // システムデータベースから値を読み出す.
         public string GetSqlValue(string id,string defval)
         {
+            // キャッシュに値が存在するならそれを返す.
+            if (cache.ContainsKey(id) == true)
+                return cache[id];
+
             string value = defval;
             try
             {
@@ -93,6 +99,8 @@ namespace TDCGExplorer
                     cmd.Parameters.AddWithValue("id", id);
                     cmd.Parameters.AddWithValue("value", value);
                     cmd.ExecuteNonQuery();
+                    // キャッシュを更新する.
+                    cache[id] = value;
                 }
             }
             catch (Exception e)
@@ -112,6 +120,7 @@ namespace TDCGExplorer
             splitter_distance = splitter_distance;
             arcnames_server = arcnames_server;
             work_path = work_path;
+            modrefpage_enable = modrefpage_enable;
         }
 
         // arcpathの取得・設定.
@@ -166,5 +175,12 @@ namespace TDCGExplorer
             get { return GetSqlValue("workpath", Path.Combine(GetSystemDatabasePath(), "work")); }
             set { SetSqlValue("workpath", value); }
         }
+        // MODREFサーバページの表示ON/OFF
+        public string modrefpage_enable
+        {
+            get { return GetSqlValue("modrefpage_enable", "true"); }
+            set { SetSqlValue("modrefpage_enable", value); }
+        }
+
     }
 }

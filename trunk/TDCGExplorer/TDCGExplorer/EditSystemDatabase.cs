@@ -51,5 +51,11 @@ namespace TDCGExplorer
             get { return tbWorkPath.Text; }
             set { tbWorkPath.Text = value; }
         }
+
+        public bool lookupmodref
+        {
+            get { return checkBoxLookupModRef.Checked; }
+            set { checkBoxLookupModRef.Checked = value; }
+        }
     }
 }

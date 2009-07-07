@@ -134,6 +134,7 @@ namespace TDCGExplorer
             edit.textZipRegexp = GetSystemDatabase().zip_regexp;
             edit.textArcnamesServer = GetSystemDatabase().arcnames_server;
             edit.textWorkPath = GetSystemDatabase().work_path;
+            edit.lookupmodref = GetSystemDatabase().modrefpage_enable=="true";
             
             if (edit.ShowDialog() == DialogResult.OK)
             {
@@ -144,6 +145,8 @@ namespace TDCGExplorer
                 GetSystemDatabase().zip_regexp = edit.textZipRegexp;
                 GetSystemDatabase().arcnames_server = edit.textArcnamesServer;
                 GetSystemDatabase().work_path = edit.textWorkPath;
+                if (edit.lookupmodref == true) GetSystemDatabase().modrefpage_enable = "true";
+                else GetSystemDatabase().modrefpage_enable = "false";
             }
         }
 

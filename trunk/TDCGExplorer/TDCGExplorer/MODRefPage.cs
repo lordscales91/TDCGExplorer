@@ -2,26 +2,64 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using System.Diagnostics;
 using System.Threading;
+using TDCGExplorer;
 
-namespace TDCGExplorer
+namespace System.Windows.Forms
 {
-    public class MODRefPage : TabPage
+    public class MODRefPage : Control
     {
         private WebBrowser webBrowser;
         private ArcsZipArcEntry zipEntry;
 
         public MODRefPage(int zipid)
         {
-            TDCGExplorer.SetToolTips("Databaseに問い合わせ中...");
+            TDCGExplorer.TDCGExplorer.SetToolTips("Databaseに問い合わせ中...");
 
-            zipEntry = TDCGExplorer.GetArcsDatabase().GetZip(zipid);
+            zipEntry = TDCGExplorer.TDCGExplorer.GetArcsDatabase().GetZip(zipid);
             InitializeComponent();
 
             MODRefPageThread workerObject = new MODRefPageThread(zipEntry,this);
             Thread workerThread = new Thread(workerObject.DoWorkerThread);
+
+            webBrowser.DocumentText =
+    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"" +
+    "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">" +
+    "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"ja\" lang=\"ja\">" +
+    "<head>" +
+    "  <meta http-equiv=\"content-type\" content=\"text/html;charset=Shift_JIS\" />" +
+    "  <title>3DCG mods reference</title>" +
+    "  <link href=\"" + TDCGExplorer.TDCGExplorer.GetSystemDatabase().moddb_url + "/stylesheets/application.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />" +
+    "</head>" +
+    "<body>" +
+    "<div id=\"wrapper\">" +
+    "  <div id=\"top-menu\">" +
+    "    <div id=\"account\">" +
+    "      <a href=\"/rails/\">Home</a>" +
+    "      <a href=\"/rails/session/new\">Login</a>" +
+    "    </div>" +
+    "  </div>" +
+    "  <div id=\"header\">" +
+    "    <h1>3DCG mods reference</h1>" +
+    "    <div id=\"main-menu\">" +
+    "      <ul>" +
+    "        <li><a href=\"/rails/arcs\" class=\"selected\">書庫</a></li>" +
+    "        <li><a href=\"/rails/tahs\">tah</a></li>" +
+    "        <li><a href=\"/rails/tsos\">tso</a></li>" +
+    "        <li><a href=\"/rails/tags\">タグ</a></li>" +
+    "      </ul>" +
+    "    </div>" +
+    "  </div>" +
+    "  <div id=\"main\" class=\"nosidebar\">" +
+    "    <div id=\"content\">" +
+    "    <h2>" +
+    "      <b>Loading....</b>" +
+    "    </h2>" +
+    "    </div>" +
+    "  </div>" +
+    "</body>" +
+    "</html>";
 
             workerThread.Start();
 
@@ -43,49 +81,13 @@ namespace TDCGExplorer
             this.webBrowser.Name = "webBrowser";
             this.webBrowser.Size = new System.Drawing.Size(50, 150);
             this.webBrowser.TabIndex = 0;
-            this.webBrowser.DocumentText = 
-                "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\""+
-                "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">"+
-                "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"ja\" lang=\"ja\">"+
-                "<head>"+
-                "  <meta http-equiv=\"content-type\" content=\"text/html;charset=Shift_JIS\" />"+
-                "  <title>3DCG mods reference</title>"+
-                "  <link href=\"" + TDCGExplorer.GetSystemDatabase().moddb_url + "/stylesheets/application.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />" +
-                "</head>"+
-                "<body>"+
-                "<div id=\"wrapper\">"+
-                "  <div id=\"top-menu\">"+
-                "    <div id=\"account\">"+
-                "      <a href=\"/rails/\">Home</a>"+
-                "      <a href=\"/rails/session/new\">Login</a>"+
-                "    </div>"+
-                "  </div>"+
-                "  <div id=\"header\">"+
-                "    <h1>3DCG mods reference</h1>"+
-                "    <div id=\"main-menu\">"+
-                "      <ul>"+
-                "        <li><a href=\"/rails/arcs\" class=\"selected\">書庫</a></li>"+
-                "        <li><a href=\"/rails/tahs\">tah</a></li>"+
-                "        <li><a href=\"/rails/tsos\">tso</a></li>"+
-                "        <li><a href=\"/rails/tags\">タグ</a></li>"+
-                "      </ul>"+
-                "    </div>"+
-                "  </div>"+
-                "  <div id=\"main\" class=\"nosidebar\">"+
-                "    <div id=\"content\">"+
-                "    <h2>"+
-                "      <b>Code: Now Loading</b>"+
-                "    </h2>"+
-                "    </div>"+
-                "  </div>"+
-                "</body>"+
-                "</html>";
-
             // 
             // MODRefPage
             // 
+            this.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.Controls.Add(this.webBrowser);
-            this.Size = new System.Drawing.Size(0, 0);
             this.Resize += new System.EventHandler(this.MODRefPage_Resize);
             this.MouseEnter += new System.EventHandler(this.MODRefPage_MouseEnter);
             this.ResumeLayout(false);
@@ -114,8 +116,51 @@ namespace TDCGExplorer
         // 非同期で呼び出されるメソッド
         private void asyncDlgDisplayFromArcs(string text)
         {
-            webBrowser.Url = new Uri(text);
-            TDCGExplorer.SetToolTips(text);
+            if (text != "")
+            {
+                webBrowser.Url = new Uri(text);
+                TDCGExplorer.TDCGExplorer.SetToolTips(text);
+            }
+            else
+            {
+                this.webBrowser.DocumentText =
+                    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"" +
+                    "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">" +
+                    "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"ja\" lang=\"ja\">" +
+                    "<head>" +
+                    "  <meta http-equiv=\"content-type\" content=\"text/html;charset=Shift_JIS\" />" +
+                    "  <title>3DCG mods reference</title>" +
+                    "  <link href=\"" + TDCGExplorer.TDCGExplorer.GetSystemDatabase().moddb_url + "/stylesheets/application.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />" +
+                    "</head>" +
+                    "<body>" +
+                    "<div id=\"wrapper\">" +
+                    "  <div id=\"top-menu\">" +
+                    "    <div id=\"account\">" +
+                    "      <a href=\"/rails/\">Home</a>" +
+                    "      <a href=\"/rails/session/new\">Login</a>" +
+                    "    </div>" +
+                    "  </div>" +
+                    "  <div id=\"header\">" +
+                    "    <h1>3DCG mods reference</h1>" +
+                    "    <div id=\"main-menu\">" +
+                    "      <ul>" +
+                    "        <li><a href=\"/rails/arcs\" class=\"selected\">書庫</a></li>" +
+                    "        <li><a href=\"/rails/tahs\">tah</a></li>" +
+                    "        <li><a href=\"/rails/tsos\">tso</a></li>" +
+                    "        <li><a href=\"/rails/tags\">タグ</a></li>" +
+                    "      </ul>" +
+                    "    </div>" +
+                    "  </div>" +
+                    "  <div id=\"main\" class=\"nosidebar\">" +
+                    "    <div id=\"content\">" +
+                    "    <h2>" +
+                    "      <b>このアーカイブは登録されていません。</b>" +
+                    "    </h2>" +
+                    "    </div>" +
+                    "  </div>" +
+                    "</body>" +
+                    "</html>";
+            }
         }
 
         // 非同期でツリー表示を更新する.
@@ -261,7 +306,7 @@ namespace TDCGExplorer
 
         public void DoWorkerThread()
         {
-            string moddb = TDCGExplorer.GetSystemDatabase().moddb_url;
+            string moddb = TDCGExplorer.TDCGExplorer.GetSystemDatabase().moddb_url;
             string url;
             try
             {
@@ -272,7 +317,7 @@ namespace TDCGExplorer
             }
             catch (Exception ex)
             {
-                page.asyncDisplayFromArcs(moddb);
+                page.asyncDisplayFromArcs("");
                 Debug.WriteLine(ex.Message);
             }
         }

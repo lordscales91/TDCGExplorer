@@ -60,7 +60,7 @@
             this.tabContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainerV = new System.Windows.Forms.SplitContainer();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabControlTreeContainor = new System.Windows.Forms.TabControl();
             this.tabPageArcs = new System.Windows.Forms.TabPage();
             this.tabPageZips = new System.Windows.Forms.TabPage();
             this.treeViewZips = new System.Windows.Forms.TreeView();
@@ -80,7 +80,7 @@
             this.splitContainerV.Panel1.SuspendLayout();
             this.splitContainerV.Panel2.SuspendLayout();
             this.splitContainerV.SuspendLayout();
-            this.tabControl1.SuspendLayout();
+            this.tabControlTreeContainor.SuspendLayout();
             this.tabPageArcs.SuspendLayout();
             this.tabPageZips.SuspendLayout();
             this.tabPageIntalled.SuspendLayout();
@@ -322,6 +322,7 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.tabMainView.ContextMenuStrip = this.tabContextMenuStrip;
             this.tabMainView.Location = new System.Drawing.Point(0, 0);
+            this.tabMainView.Multiline = true;
             this.tabMainView.Name = "tabMainView";
             this.tabMainView.SelectedIndex = 0;
             this.tabMainView.Size = new System.Drawing.Size(622, 236);
@@ -353,7 +354,7 @@
             // 
             // splitContainerV.Panel1
             // 
-            this.splitContainerV.Panel1.Controls.Add(this.tabControl1);
+            this.splitContainerV.Panel1.Controls.Add(this.tabControlTreeContainor);
             // 
             // splitContainerV.Panel2
             // 
@@ -363,20 +364,20 @@
             this.splitContainerV.SplitterWidth = 8;
             this.splitContainerV.TabIndex = 6;
             // 
-            // tabControl1
+            // tabControlTreeContainor
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.tabControlTreeContainor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.tabPageArcs);
-            this.tabControl1.Controls.Add(this.tabPageZips);
-            this.tabControl1.Controls.Add(this.tabPageIntalled);
-            this.tabControl1.Controls.Add(this.tabPageCollsion);
-            this.tabControl1.Location = new System.Drawing.Point(3, 3);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(173, 399);
-            this.tabControl1.TabIndex = 4;
+            this.tabControlTreeContainor.Controls.Add(this.tabPageArcs);
+            this.tabControlTreeContainor.Controls.Add(this.tabPageZips);
+            this.tabControlTreeContainor.Controls.Add(this.tabPageIntalled);
+            this.tabControlTreeContainor.Controls.Add(this.tabPageCollsion);
+            this.tabControlTreeContainor.Location = new System.Drawing.Point(3, 3);
+            this.tabControlTreeContainor.Name = "tabControlTreeContainor";
+            this.tabControlTreeContainor.SelectedIndex = 0;
+            this.tabControlTreeContainor.Size = new System.Drawing.Size(173, 399);
+            this.tabControlTreeContainor.TabIndex = 4;
             // 
             // tabPageArcs
             // 
@@ -564,7 +565,7 @@
             this.splitContainerV.Panel1.ResumeLayout(false);
             this.splitContainerV.Panel2.ResumeLayout(false);
             this.splitContainerV.ResumeLayout(false);
-            this.tabControl1.ResumeLayout(false);
+            this.tabControlTreeContainor.ResumeLayout(false);
             this.tabPageArcs.ResumeLayout(false);
             this.tabPageZips.ResumeLayout(false);
             this.tabPageIntalled.ResumeLayout(false);
@@ -615,7 +616,7 @@
         private System.Windows.Forms.ToolStripMenuItem ExpandTreeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem NewTabToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem CloseTabToolStripMenuItem;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tabControlTreeContainor;
         private System.Windows.Forms.TabPage tabPageArcs;
         private System.Windows.Forms.TabPage tabPageZips;
         private System.Windows.Forms.TabPage tabPageIntalled;
