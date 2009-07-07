@@ -149,20 +149,74 @@ namespace TDCG
             reader.Close();
         }
 
+        /// <summary>
+        /// Typeチャンクを読み込むのに用いるデリゲート型
+        /// </summary>
+        /// <param name="type">type</param>
         public delegate void TaobTypeHandler(string type);
+        /// <summary>
+        /// Camiチャンクを読み込むのに用いるデリゲート型
+        /// </summary>
+        /// <param name="stream">ストリーム</param>
+        /// <param name="length">データ長さ</param>
         public delegate void TaobCamiHandler(Stream stream, int length);
+        /// <summary>
+        /// Lgtaチャンクを読み込むのに用いるデリゲート型
+        /// </summary>
+        /// <param name="stream">ストリーム</param>
+        /// <param name="length">データ長さ</param>
         public delegate void TaobLgtaHandler(Stream stream, int length);
+        /// <summary>
+        /// Figuチャンクを読み込むのに用いるデリゲート型
+        /// </summary>
+        /// <param name="stream">ストリーム</param>
+        /// <param name="length">データ長さ</param>
         public delegate void TaobFiguHandler(Stream stream, int length);
+        /// <summary>
+        /// Ftmoチャンクを読み込むのに用いるデリゲート型
+        /// </summary>
+        /// <param name="stream">ストリーム</param>
+        /// <param name="length">データ長さ</param>
         public delegate void TaobFtmoHandler(Stream stream, int length);
+        /// <summary>
+        /// Ftsoチャンクを読み込むのに用いるデリゲート型
+        /// </summary>
+        /// <param name="stream">ストリーム</param>
+        /// <param name="length">データ長さ</param>
+        /// <param name="opt1">opt1</param>
         public delegate void TaobFtsoHandler(Stream stream, int length, byte[] opt1);
 
+        /// <summary>
+        /// Hsavチャンクのデータを処理するハンドラ
+        /// </summary>
         public TaobTypeHandler Hsav;
+        /// <summary>
+        /// Poseチャンクのデータを処理するハンドラ
+        /// </summary>
         public TaobTypeHandler Pose;
+        /// <summary>
+        /// Scneチャンクのデータを処理するハンドラ
+        /// </summary>
         public TaobTypeHandler Scne;
+        /// <summary>
+        /// Camiチャンクのデータを処理するハンドラ
+        /// </summary>
         public TaobCamiHandler Cami;
+        /// <summary>
+        /// Lgtaチャンクのデータを処理するハンドラ
+        /// </summary>
         public TaobLgtaHandler Lgta;
+        /// <summary>
+        /// Figuチャンクのデータを処理するハンドラ
+        /// </summary>
         public TaobFiguHandler Figu;
+        /// <summary>
+        /// Ftmoチャンクのデータを処理するハンドラ
+        /// </summary>
         public TaobFtmoHandler Ftmo;
+        /// <summary>
+        /// Ftsoチャンクのデータを処理するハンドラ
+        /// </summary>
         public TaobFtsoHandler Ftso;
 
         protected void ReadTaOb(byte[] chunk_data)
