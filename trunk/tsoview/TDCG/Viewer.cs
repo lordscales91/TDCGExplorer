@@ -41,6 +41,8 @@ public class Viewer : IDisposable
     internal Surface dev_surface = null;
     internal Surface dev_zbuf = null;
 
+    internal Mesh sphere = null;
+
     /// <summary>
     /// viewerが保持しているフィギュアリスト
     /// </summary>
@@ -49,6 +51,7 @@ public class Viewer : IDisposable
     // ライト方向
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
 
+    // マウスポイントしているスクリーン座標
     private Point lastScreenPoint = Point.Empty;
 
     private void control_OnSizeChanged(object sender, EventArgs e)
@@ -66,7 +69,7 @@ public class Viewer : IDisposable
         {
         case MouseButtons.Left:
             if (Control.ModifierKeys == Keys.Control)
-                lightDir = ScreenToVector(e.X, e.Y);
+                lightDir = ScreenToOrientation(e.X, e.Y);
             break;
         }
 
@@ -83,7 +86,7 @@ public class Viewer : IDisposable
         {
         case MouseButtons.Left:
             if (Control.ModifierKeys == Keys.Control)
-                lightDir = ScreenToVector(e.X, e.Y);
+                lightDir = ScreenToOrientation(e.X, e.Y);
             else
                 camera.Move(-dx, dy, 0.0f);
             break;
@@ -99,8 +102,10 @@ public class Viewer : IDisposable
         lastScreenPoint.Y = e.Y;
     }
 
+    // 選択フィギュアindex
     int figureIndex = 0;
 
+    // スクリーンの中心座標
     private float screenCenterX = 800 / 2.0f;
     private float screenCenterY = 600 / 2.0f;
 
@@ -116,12 +121,12 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// スクリーン座標を射影座標に変換します。
+    /// 指定スクリーン座標からスクリーン中心へ向かうベクトルを得ます。
     /// </summary>
     /// <param name="screenPointX">スクリーンX座標</param>
     /// <param name="screenPointY">スクリーンY座標</param>
-    /// <returns></returns>
-    public Vector3 ScreenToVector(float screenPointX, float screenPointY)
+    /// <returns>方向ベクトル</returns>
+    public Vector3 ScreenToOrientation(float screenPointX, float screenPointY)
     {
         float radius = 1.0f;
         float x = -(screenPointX - screenCenterX) / (radius * screenCenterX);
@@ -139,6 +144,52 @@ public class Viewer : IDisposable
             z = (float)Math.Sqrt(1.0f - mag);
 
         return new Vector3(x, y, z);
+    }
+
+    /// 球とレイの衝突を見つけます。
+    public bool DetectSphereRayCollision(float sphereRadius, ref Vector3 sphereCenter, ref Vector3 rayStart, ref Vector3 rayOrientation, out Vector3 collisionPoint, out float collisionTime)
+    {
+        collisionTime = 0.0f;
+        collisionPoint = Vector3.Empty;
+
+        Vector3 u = rayStart - sphereCenter;
+        float a = Vector3.Dot(rayOrientation, rayOrientation);
+        float b = Vector3.Dot(rayOrientation, u);
+        float c = Vector3.Dot(u, u) - sphereRadius*sphereRadius;
+        if (a <= float.Epsilon)
+            //誤差
+            return false;
+        float d = b*b - a*c;
+        if (d < 0.0f)
+            //衝突しない
+            return false;
+        collisionTime = (-b - (float)Math.Sqrt(d))/a;
+        collisionPoint = rayStart + rayOrientation*collisionTime;
+        return true;
+    }
+
+    /// スクリーン位置をワールド座標へ変換します。
+    public Vector3 ScreenToWorld(float screenX, float screenY, float z, ref Matrix view, ref Matrix proj)
+    {
+        //viewport行列を作成
+        Matrix m = Matrix.Identity;
+        Viewport vp = device.Viewport;
+        m.M11 = (float)vp.Width/2;
+        m.M22 = -1.0f*(float)vp.Height/2;
+        m.M33 = (float)vp.MaxZ - (float)vp.MinZ;
+        m.M41 = (float)(vp.X + vp.Width/2);
+        m.M42 = (float)(vp.Y + vp.Height/2);
+        m.M43 = vp.MinZ;
+
+        //スクリーン位置
+        Vector3 v = new Vector3(screenX, screenY,  z);
+
+        Matrix inv_m = Matrix.Invert(m);
+        Matrix inv_proj = Matrix.Invert(proj);
+        Matrix inv_view = Matrix.Invert(view);
+
+        //スクリーン位置をワールド座標へ変換
+        return Vector3.TransformCoordinate(v, inv_m * inv_proj * inv_view);
     }
 
     /// <summary>
@@ -507,6 +558,7 @@ public class Viewer : IDisposable
 
             sprite = new Sprite(device);
         }
+        sphere = Mesh.Sphere(device, 1.0f, 8, 6);
         camera.Update();
         OnDeviceReset(device, null);
 
@@ -811,16 +863,46 @@ public class Viewer : IDisposable
             tso.EndRender();
         }
 
+        device.RenderState.AlphaBlendEnable = false;
+
     if (shadowMapEnabled && SpriteShown)
     {
         sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
         Rectangle rect = new Rectangle(0, 0, ztexw, ztexh);
 
-        device.RenderState.AlphaBlendEnable = false;
-
         sprite.Begin(0);
         sprite.Draw(ztex, rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
         sprite.End();
+    }
+
+    {
+        Figure fig;
+
+        if (TryGetFigure(out fig))
+        {
+            TSONode bone = fig.TSOList[0].nodemap[sphere_bone_name];
+
+            effect.Technique = "BONE";
+
+            Matrix wld = bone.combined_matrix * world_matrix;
+            Matrix wv = wld * Transform_View;
+            Matrix wvp = wv * Transform_Projection;
+
+            effect.SetValue("wld", wld);
+            effect.SetValue("wv", wv);
+            effect.SetValue("wvp", wvp);
+
+            effect.SetValue("ManColor", GetBoneColor(bone));
+
+            int npass = effect.Begin(0);
+            for (int ipass = 0; ipass < npass; ipass++)
+            {
+                effect.BeginPass(ipass);
+                sphere.DrawSubset(0);
+                effect.EndPass();
+            }
+            effect.End();
+        }
     }
 
         device.EndScene();
@@ -847,10 +929,45 @@ public class Viewer : IDisposable
         Thread.Sleep(30);
     }
 
+    public string sphere_bone_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck";
+
+    public Vector4 GetBoneColor(TSONode node)
+    {
+        if (FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y))
+            return new Vector4(1,1,0,1);
+        else
+            return new Vector4(1,0,0,1);
+    }
+
+    private bool FindBoneOnScreenPoint(float x, float y)
+    {
+        Figure fig;
+
+        if (TryGetFigure(out fig))
+        {
+            TSONode bone = fig.TSOList[0].nodemap[sphere_bone_name];
+            Matrix m = bone.combined_matrix * world_matrix;
+
+            float sphereRadius = 1.0f;
+            Vector3 sphereCenter = new Vector3(m.M41, m.M42, m.M43);
+            Vector3 rayStart = ScreenToWorld(x, y, 0.0f, ref Transform_View, ref Transform_Projection);
+            Vector3 rayEnd = ScreenToWorld(x, y, 1.0f, ref Transform_View, ref Transform_Projection);
+            Vector3 rayOrientation = rayEnd - rayStart;
+
+            Vector3 collisionPoint;
+            float collisionTime;
+
+            return DetectSphereRayCollision(sphereRadius, ref sphereCenter, ref rayStart, ref rayOrientation, out collisionPoint, out collisionTime);
+        }
+        return false;
+    }
+
     public void Dispose()
     {
         foreach (Figure fig in FigureList)
             fig.Dispose();
+        if (sphere != null)
+            sphere.Dispose();
         if (sprite != null)
             sprite.Dispose();
         if (ztex_zbuf != null)
