@@ -164,11 +164,11 @@
             // checkBoxLookupModRef
             // 
             this.checkBoxLookupModRef.AutoSize = true;
-            this.checkBoxLookupModRef.Location = new System.Drawing.Point(14, 174);
+            this.checkBoxLookupModRef.Location = new System.Drawing.Point(102, 168);
             this.checkBoxLookupModRef.Name = "checkBoxLookupModRef";
             this.checkBoxLookupModRef.Size = new System.Drawing.Size(177, 17);
             this.checkBoxLookupModRef.TabIndex = 14;
-            this.checkBoxLookupModRef.Text = "ZIP関連情報の自動紹介を行う";
+            this.checkBoxLookupModRef.Text = "ZIP関連情報の自動照会を行う";
             this.checkBoxLookupModRef.UseVisualStyleBackColor = true;
             // 
             // EditSystemDatabase
