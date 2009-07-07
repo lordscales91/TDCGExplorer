@@ -1052,6 +1052,18 @@ cVertexData2 cShadowVS( appdata IN )
 	return OUT;
 }
 
+cVertexData2 cBoneVS( cVertexData2 IN )
+{
+	cVertexData2 OUT;
+	OUT.Position = mul( IN.Position, wvp );
+	return OUT;
+}
+
+float4 cBonePS( cVertexData2 IN ) : COLOR
+{
+	return ColRate( ManColor );
+}
+
 float4 cTrnsPS( cVertexData IN ) : COLOR
 {
 	return ColRate( ManColor );
@@ -2005,6 +2017,22 @@ technique MOJI
 		VertexProgram	 = compile PROFILE_VS cMainVS();
 		FragmentProgram	 = compile PROFILE_PS cMainPS_Moji();
 	}
+}
+
+technique BONE
+{
+        pass p
+        {
+		DepthTestEnable  = false;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		AlphaFunc        = greaterequal;
+		StencilEnable	 = false;
+
+		VertexProgram	= compile PROFILE_VS cBoneVS();
+		FragmentProgram	= compile PROFILE_PS cBonePS();
+        }
 }
 
 technique POSEEDIT_UI
