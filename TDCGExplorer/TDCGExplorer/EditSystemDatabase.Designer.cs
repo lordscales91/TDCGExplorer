@@ -42,6 +42,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.tbWorkPath = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.checkBoxLookupModRef = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // OKButton
@@ -160,11 +161,22 @@
             this.label6.TabIndex = 12;
             this.label6.Text = "ZIP展開先";
             // 
+            // checkBoxLookupModRef
+            // 
+            this.checkBoxLookupModRef.AutoSize = true;
+            this.checkBoxLookupModRef.Location = new System.Drawing.Point(14, 174);
+            this.checkBoxLookupModRef.Name = "checkBoxLookupModRef";
+            this.checkBoxLookupModRef.Size = new System.Drawing.Size(177, 17);
+            this.checkBoxLookupModRef.TabIndex = 14;
+            this.checkBoxLookupModRef.Text = "ZIP関連情報の自動紹介を行う";
+            this.checkBoxLookupModRef.UseVisualStyleBackColor = true;
+            // 
             // EditSystemDatabase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(615, 203);
+            this.Controls.Add(this.checkBoxLookupModRef);
             this.Controls.Add(this.tbWorkPath);
             this.Controls.Add(this.label6);
             this.Controls.Add(this.tbArcnamesServer);
@@ -202,5 +214,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox tbWorkPath;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox checkBoxLookupModRef;
     }
 }

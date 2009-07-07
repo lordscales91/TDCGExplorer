@@ -154,17 +154,17 @@ namespace TDCGExplorer
         // ツリーを展開する.
         private void expandAllToolStripMenuItem1_Click(object sender, EventArgs e)
         {
+            SuspendLayout();
             try
             {
                 TreeNode node = (TreeNode)lastSelectTreeNode;
-                SuspendLayout();
                 node.ExpandAll();
-                ResumeLayout();
             }
             catch (Exception exception)
             {
                 Debug.WriteLine(exception.Message);
             }
+            ResumeLayout();
         }
 
         // タブを閉じる.
@@ -176,6 +176,7 @@ namespace TDCGExplorer
         // ZIPファイルを展開する
         private void extractZipToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             try
             {
                 ZipTreeNode node = (ZipTreeNode)lastSelectTreeNode;
@@ -195,9 +196,10 @@ namespace TDCGExplorer
             }
             catch (Exception exception)
             {
-                MessageBox.Show("Please select zip file.", "Extract", MessageBoxButtons.OK);
+                MessageBox.Show("Error occured:"+exception.Message, "Extract", MessageBoxButtons.OK);
                 Debug.WriteLine(exception.Message);
             }
+            Cursor.Current = Cursors.Default;
         }
 
         // TSOビューワをリセットする
@@ -252,20 +254,6 @@ namespace TDCGExplorer
             TDCGExplorer.EditSystemDatabase();
         }
 
-        // MODサーバに接続する.
-        private void LookupModRefServer()
-        {
-            try
-            {
-                ZipTreeNode node = (ZipTreeNode)lastSelectTreeNode;
-                node.DoLookupServer();
-            }
-            catch (Exception exception)
-            {
-                Debug.WriteLine(exception.Message);
-            }
-
-        }
         // アノテーションを編集.
         private void EditAnnotationToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -313,66 +301,103 @@ namespace TDCGExplorer
         // リストアイテムが選択された.
         private void listBoxMainListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            SuspendLayout();
             try
             {
                 int index = listBoxMainListBox.SelectedIndex;
                 if (index >= 0)
                 {
                     LbGenItem item = (LbGenItem)listBoxMainListBox.Items[index];
-                    SuspendLayout();
-                    item.DoClick(tabMainView,false);
+                    item.DoClick();
                     listBoxMainListBox.Focus();
-                    ResumeLayout();
                 }
             }
             catch (Exception exception)
             {
                 Debug.WriteLine(exception.Message);
             }
+            ResumeLayout();
         }
 
         // 新規タブでページを開く.
         private void NewTabPageToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            SuspendLayout();
             try
             {
+                /*
                 int index = listBoxMainListBox.SelectedIndex;
                 if (index >= 0)
                 {
                     LbGenItem item = (LbGenItem)listBoxMainListBox.Items[index];
-                    SuspendLayout();
                     item.DoClick(tabMainView, true);
                     listBoxMainListBox.Focus();
-                    ResumeLayout();
                 }
+                */
+                TabPage tabPage = new TabPage();
+                tabPage.Text = "新しいタブ";
+                tabMainView.Controls.Add(tabPage);
+                tabMainView.SelectTab(tabMainView.Controls.Count - 1);
             }
             catch (Exception exception)
             {
                 Debug.WriteLine(exception.Message);
             }
+            ResumeLayout();
         }
 
+        // タブを取得する。無い時は新規に作る.
+        private TabPage GetCurrentTagPage()
+        {
+            if (tabMainView.TabPages.Count == 0)
+            {
+                TabPage tabPage = new TabPage();
+                tabMainView.Controls.Add(tabPage);
+                tabMainView.SelectTab(tabMainView.Controls.Count - 1);
+            }
+            return tabMainView.SelectedTab;
+        }
+
+        // タブにコントロールを配置する.
+        public void AssignTagPageControl(Control control)
+        {
+            TabPage currentPage = GetCurrentTagPage();
+            tabMainView.SuspendLayout();
+            control.ClientSize = currentPage.Size;
+            currentPage.SuspendLayout();
+            currentPage.Text = control.Text;
+            currentPage.Controls.Clear();
+            currentPage.Controls.Add(control);
+            currentPage.ResumeLayout();
+            tabMainView.ResumeLayout();
+        }
+
+        // アノテーションを表示する
         private void EditAnnotationToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             EditAnnotationToolStripMenuItem_Click(sender, e);
         }
 
+        // ツリーを展開する
         private void ExpandTreeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             expandAllToolStripMenuItem1_Click(sender, e);
         }
 
+        // 新規タブを追加する.
         private void NewTabToolStripMenuItem1_Click(object sender, EventArgs e)
         {
             NewTabPageToolStripMenuItem_Click(sender, e);
         }
 
+        // タブを閉じる.
         private void CloseTabToolStripMenuItem_Click(object sender, EventArgs e)
         {
             TabPage tab = TabControlMainView.SelectedTab;
             if (tab != null) tab.Dispose();
         }
 
+        // ツリー表示をクリアする.
         public void ClearTreeBox()
         {
             lastSelectTreeNode = null;
@@ -384,15 +409,18 @@ namespace TDCGExplorer
             // リストボックスの中身を消去する.
             listBoxMainListBox.Items.Clear();
             // ページを消去する.
-            tabMainView.Controls.Clear();
+            tabMainView.TabPages.Clear();
+
         }
 
+        // フォーカスを失った時にハイライトするツリーノードを覚えておく.
         public void HilightTreeNode(TreeNode node)
         {
             lastSelectTreeNode = node;
             lastSelectTreeNodeColor = node.BackColor;
         }
 
+        // フォーカスが戻ったので色を戻す.
         private void TreeViewForcusEnter(object sender, EventArgs e)
         {
             // フォーカスが戻ったら色を戻す
@@ -400,6 +428,7 @@ namespace TDCGExplorer
                 lastSelectTreeNode.BackColor = lastSelectTreeNodeColor;
         }
 
+        // フォーカスを失ったのでハイライトする.
         private void TrewViewForcusLeave(object sender, EventArgs e)
         {
             // 選択中のノードの色を変える
@@ -407,23 +436,24 @@ namespace TDCGExplorer
                 lastSelectTreeNode.BackColor = Color.LightBlue;
         }
 
+        // データベースのツリー表示を構築する.
         public void DisplayDB()
         {
             try
             {
                 ArcsDatabase db = TDCGExplorer.GetArcsDatabase();
 
-                // 全ノードを消去する.
-                //tvTree.Nodes.Clear();
-                treeViewArcs.Nodes.Clear();
-                treeViewZips.Nodes.Clear();
-                treeViewCollision.Nodes.Clear();
-                treeViewInstalled.Nodes.Clear();
-
+                ClearTreeBox();
                 TDCGExplorer.MakeArcsTreeView(db, treeViewArcs );
                 TDCGExplorer.MakeZipsTreeView(db, treeViewZips);
                 TDCGExplorer.MakeCollisionTreeView(db, treeViewCollision);
                 TDCGExplorer.MakeInstalledArcsTreeView(db, treeViewInstalled);
+
+                // 初期表示に戻す
+                tabControlTreeContainor.SelectTab(0);
+                treeViewArcs.Focus();
+                treeViewArcs.SelectedNode = treeViewArcs.Nodes[0];
+                TreeView_AfterSelect(treeViewArcs, null);
             }
             catch (Exception e)
             {
@@ -447,30 +477,34 @@ namespace TDCGExplorer
                 Debug.WriteLine(exception.Message);
             }
             HilightTreeNode(treeView.SelectedNode);
-            LookupModRefServer();
             ResumeLayout();
         }
 
+        // ツリーで選択されたら.
         private void treeViewZips_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeView_AfterSelect(sender, e);
         }
 
+        // ツリーで選択されたら.
         private void treeViewArcs_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeView_AfterSelect(sender, e);
         }
 
+        // ツリーで選択されたら.
         private void treeViewInstalled_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeView_AfterSelect(sender, e);
         }
 
+        // ツリーで選択されたら.
         private void treeViewCollision_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeView_AfterSelect(sender, e);
         }
 
+        // フォーカスを獲得した場合（以下全部）
         private void treeViewArcs_Enter(object sender, EventArgs e)
         {
             TreeViewForcusEnter(sender, e);
@@ -491,6 +525,7 @@ namespace TDCGExplorer
             TreeViewForcusEnter(sender, e);
         }
 
+        // フォーカスを失った場合（以下全部）
         private void treeViewArcs_Leave(object sender, EventArgs e)
         {
             TrewViewForcusLeave(sender, e);
@@ -511,6 +546,7 @@ namespace TDCGExplorer
             TrewViewForcusLeave(sender, e);
         }
 
+        // マウスがコントロールにはったらフォーカスを設定する(以下全部)
         private void listBoxMainListBox_MouseEnter(object sender, EventArgs e)
         {
             Control obj = (Control)sender;
@@ -541,8 +577,10 @@ namespace TDCGExplorer
             obj.Focus();
         }
 
+        // 前提zipファイルを展開する.
         private void ExtractPreferZipToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
             try
             {
                 ZipTreeNode node = (ZipTreeNode)lastSelectTreeNode;
@@ -558,13 +596,16 @@ namespace TDCGExplorer
                 MessageBox.Show("Error occured.", "Extract", MessageBoxButtons.OK);
                 Debug.WriteLine(exception.Message);
             }
+            Cursor.Current = Cursors.Default;
         }
 
+        // 前提zipファイルを展開する.
         private void ExtractPreferZipMainMenuToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ExtractPreferZipToolStripMenuItem_Click(sender, e);
         }
 
+        // arcsnames.zipを取得する.
         private void downloadLatestArcsnameszipToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             if (threadCheck() == true) return;

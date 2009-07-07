@@ -12,22 +12,26 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D = Microsoft.DirectX.Direct3D;
 
-namespace TDCGExplorer
+//using System.Windows.Forms;
+using TDCGExplorer;
+
+namespace System.Windows.Forms
 {
-    class TAHPage : TabPage
+    class TAHPageControl : Control
     {
         List<ArcsTahFilesEntry> filesEntries;
         private DataGridView dataGridView;
         //private System.ComponentModel.IContainer components;
         GenTahInfo info;
 
-        public TAHPage(GenTahInfo entryinfo, List<ArcsTahFilesEntry> filesentries)
+        public TAHPageControl(GenTahInfo entryinfo, List<ArcsTahFilesEntry> filesentries)
         {
             InitializeComponent();
 
             info = entryinfo;
             Text = info.shortname;
             filesEntries = filesentries;
+
             DataTable data = new DataTable();
             data.Columns.Add("ID", Type.GetType("System.String"));
             data.Columns.Add("ファイル名", Type.GetType("System.String"));
@@ -48,12 +52,13 @@ namespace TDCGExplorer
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
 
-            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+
             dataGridView.ReadOnly = true;
             dataGridView.MultiSelect = false;
             dataGridView.AllowUserToAddRows = false;
 
-            TDCGExplorer.SetToolTips(info.shortname + " : tsoクリックで単体表示,ctrlキー+tsoクリックで複数表示,tmoでポーズ・アニメーションを設定");
+            TDCGExplorer.TDCGExplorer.SetToolTips(info.shortname + " : tsoクリックで単体表示,ctrlキー+tsoクリックで複数表示,tmoでポーズ・アニメーションを設定");
         }
 
         private void InitializeComponent()
@@ -76,10 +81,12 @@ namespace TDCGExplorer
             this.dataGridView.Resize += new System.EventHandler(this.dataGridView_Resize);
             this.dataGridView.MouseEnter += new System.EventHandler(this.dataGridView_MouseEnter);
             // 
-            // TAHPage
+            // TAHPageControl
             // 
+            this.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.Controls.Add(this.dataGridView);
-            this.Size = new System.Drawing.Size(0, 0);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
 
@@ -173,7 +180,8 @@ namespace TDCGExplorer
         {
             Vector3 position;
 
-            TSOFile tso = TDCGExplorer.GetMainForm().Viewer.FigureList[0].TSOList[0];
+            TSOFile tso = TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.FigureList[0].TSOList[0];
+            Viewer viewer = TDCGExplorer.TDCGExplorer.GetMainForm().Viewer;
 
             Dictionary<string, TSONode> nodemap = new Dictionary<string, TSONode>();
             foreach (TSONode node in tso.nodes)
@@ -198,8 +206,8 @@ namespace TDCGExplorer
                             Matrix mR = tso_nodeR.combined_matrix;
                             Matrix mL = tso_nodeL.combined_matrix;
                             position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, -(mR.M43 + mL.M43) / 2.0f);
-                            TDCGExplorer.GetMainForm().Viewer.Camera.Reset();
-                            TDCGExplorer.GetMainForm().Viewer.Camera.SetCenter(position);
+                            viewer.Camera.Reset();
+                            viewer.Camera.SetCenter(position);
                         }
                     }
                     break;
@@ -214,8 +222,8 @@ namespace TDCGExplorer
                             Matrix mR = tso_nodeR.combined_matrix;
                             Matrix mL = tso_nodeL.combined_matrix;
                             position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, -(mR.M43 + mL.M43) / 2.0f);
-                            TDCGExplorer.GetMainForm().Viewer.Camera.Reset();
-                            TDCGExplorer.GetMainForm().Viewer.Camera.SetCenter(position);
+                            viewer.Camera.Reset();
+                            viewer.Camera.SetCenter(position);
                         }
                     }
                     break;
@@ -230,8 +238,8 @@ namespace TDCGExplorer
                             Matrix mR = tso_nodeR.combined_matrix;
                             Matrix mL = tso_nodeL.combined_matrix;
                             position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, -(mR.M43 + mL.M43) / 2.0f);
-                            TDCGExplorer.GetMainForm().Viewer.Camera.Reset();
-                            TDCGExplorer.GetMainForm().Viewer.Camera.SetCenter(position);
+                            viewer.Camera.Reset();
+                            viewer.Camera.SetCenter(position);
                         }
                     }
                     break;
@@ -243,8 +251,8 @@ namespace TDCGExplorer
                         {
                             Matrix m = tso_node.combined_matrix;
                             position = new Vector3(m.M41, m.M42, -m.M43);
-                            TDCGExplorer.GetMainForm().Viewer.Camera.Reset();
-                            TDCGExplorer.GetMainForm().Viewer.Camera.SetCenter(position);
+                            viewer.Camera.Reset();
+                            viewer.Camera.SetCenter(position);
                         }
                     }
                     break;
@@ -271,23 +279,23 @@ namespace TDCGExplorer
                         using (TAHStream tahstream = new TAHStream(info, filesEntries[index]))
                         {
                             Cursor.Current = Cursors.WaitCursor;
-                            TDCGExplorer.GetMainForm().makeTSOViwer();
+                            TDCGExplorer.TDCGExplorer.GetMainForm().makeTSOViwer();
                             if (ext == ".tso")
                             {
                                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
                                 {
-                                    TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(tahstream.stream);
-                                    TDCGExplorer.GetMainForm().doInitialTmoLoad(); // 初期tmoを読み込む.
+                                    TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(tahstream.stream);
+                                    TDCGExplorer.TDCGExplorer.GetMainForm().doInitialTmoLoad(); // 初期tmoを読み込む.
                                 }
                                 else
                                 {
-                                    TDCGExplorer.GetMainForm().Viewer.ClearFigureList();
-                                    TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(tahstream.stream);
-                                    TDCGExplorer.GetMainForm().Viewer.LoadTMOFile("default.tmo");
+                                    TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.ClearFigureList();
+                                    TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(tahstream.stream);
+                                    TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.LoadTMOFile("default.tmo");
                                     UpdateCenterPosition(Path.GetFileName(filesEntries[index].path).ToUpper());
                                 }
                             }
-                            else if (ext == ".tmo") TDCGExplorer.GetMainForm().Viewer.LoadTMOFile(tahstream.stream);
+                            else if (ext == ".tmo") TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.LoadTMOFile(tahstream.stream);
                             Cursor.Current = Cursors.Default;
                         }
                     }

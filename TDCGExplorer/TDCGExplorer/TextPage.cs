@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-using System.Windows.Forms;
 
-namespace TDCGExplorer
+//using System.Windows.Forms;
+using TDCGExplorer;
+
+namespace System.Windows.Forms
 {
-    class TextPage : ZipFilePage
+    class TextPageControl : ZipFilePageControl
     {
         private System.Windows.Forms.TextBox textBox;
 
-        public TextPage(GenTahInfo tahInfo)
+        public TextPageControl(GenTahInfo tahInfo)
             : base(tahInfo)
         {
             InitializeComponent();
@@ -19,7 +21,7 @@ namespace TDCGExplorer
             textBox.SelectionStart = 0;
             textBox.SelectionLength = 0;
 
-            TDCGExplorer.SetToolTips(tahInfo.path);
+            TDCGExplorer.TDCGExplorer.SetToolTips(tahInfo.path);
         }
 
         private void InitializeComponent()
@@ -41,10 +43,12 @@ namespace TDCGExplorer
             this.textBox.Size = new System.Drawing.Size(0, 0);
             this.textBox.TabIndex = 0;
             // 
-            // TextPage
+            // TextPageControl
             // 
+            this.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.Controls.Add(this.textBox);
-            this.Size = new System.Drawing.Size(0, 0);
             this.Resize += new System.EventHandler(this.TextPage_Resize);
             this.ResumeLayout(false);
             this.PerformLayout();
