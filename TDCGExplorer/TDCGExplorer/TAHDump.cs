@@ -259,6 +259,48 @@ namespace TDCGExplorer
             string[] entries = Directory.GetDirectories(dir);
             foreach (string entry in entries)
             {
+                // 解凍済みMODを処理する.
+                string zipname = entry.Substring(zipspath.Length + 1);
+                ArcsZipArcEntry zip = db.GetZip(zipname);
+                if (zip != null)
+                {
+                    DateTime datetime = File.GetLastWriteTime(entry);
+                    if (zip.datetime.ToString() == datetime.ToString())
+                    {
+                        // 該当するエントリの存在フラグを立てる.
+                        TDCGExplorer.SetToolTips("Update " + zipname.Substring(zipspath.Length + 1));
+                        db.UpdateZipExistUp(zip.id);
+                        continue;
+                    }
+                }
+
+                // MOD名に一致するか調べる.
+                char[] separetor = { '\\', '/' };
+                string[] sublevel = zipname.Split(separetor);
+                string directory = sublevel[sublevel.Length - 1];
+
+                Regex regDirectAccess = new System.Text.RegularExpressions.Regex(TDCGExplorer.GetSystemDatabase().directaccess_signature);
+                Match m = regDirectAccess.Match(directory);
+                if (m.Success)
+                {
+                    Regex filter = new Regex(zipcoderegexp);
+                    Match match = filter.Match(directory);
+                    if (match.Success == true)
+                    {
+                        TDCGExplorer.SetToolTips("Processing " + directory);
+                        ArcsZipArcEntry ent = new ArcsZipArcEntry();
+                        ent.id = 0;
+                        ent.path = zipname;
+                        ent.code = match.Groups[1].ToString();
+                        ent.exist = 1;
+                        ent.datetime = File.GetLastWriteTime(entry);
+                        ent.id = db.SetZipEntry(ent);
+                        DumpArcEntries(db, entry, new DirectAccessArchive(), ent.id);
+                        continue;
+                    }
+                }
+
+                // 通常のディレクトリスキャン.
                 ZipsDumpDirEntries(entry, db);
             }
         }
@@ -287,7 +329,7 @@ namespace TDCGExplorer
                 TDCGExplorer.SetToolTips("Processing " + Path.GetFileName(zipname));
                 Regex filter = new Regex(zipcoderegexp);
                 Match match = filter.Match(Path.GetFileName(zipname));
-                while (match.Success)
+                if (match.Success)
                 {
                     DateTime datetime = File.GetLastWriteTime(zipname);
                     ArcsZipArcEntry entry = new ArcsZipArcEntry();
@@ -297,10 +339,7 @@ namespace TDCGExplorer
                     entry.exist = 1;
                     entry.datetime = datetime;
                     entry.id = db.SetZipEntry(entry);
-#if true
                     ZipDumpArcEntries(db, entry);
-#endif
-                    break;
                 }
             }
         }
@@ -362,7 +401,7 @@ namespace TDCGExplorer
                             catch (Exception ex)
                             {
                                 Debug.WriteLine("Error: " + ex);
-                                return;
+                                continue;
                             }
 
                             ArcsZipTahEntry ziptahentry = new ArcsZipTahEntry();

@@ -57,5 +57,11 @@ namespace TDCGExplorer
             get { return checkBoxLookupModRef.Checked; }
             set { checkBoxLookupModRef.Checked = value; }
         }
+
+        public string textModRegexp
+        {
+            get { return textBoxModRegexp.Text; }
+            set { textBoxModRegexp.Text = value; }
+        }
     }
 }

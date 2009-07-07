@@ -66,6 +66,10 @@ namespace System.Windows.Forms
                         }
                         break;
                     default:
+                        using (IArchive arc = new DirectAccessArchive())
+                        {
+                            ExtractFile(arc, zipsource);
+                        }
                         break;
                 }
             }
