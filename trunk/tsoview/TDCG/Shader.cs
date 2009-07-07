@@ -136,10 +136,18 @@ namespace TDCG
             }
         }
 
+        /// <summary>
+        /// 文字列を取得します。
+        /// </summary>
+        /// <returns>文字列</returns>
         public string GetString()
         {
             return str;
         }
+        /// <summary>
+        /// 文字列を設定します。
+        /// </summary>
+        /// <param name="value">文字列</param>
         public void SetString(string value)
         {
             str = value.Trim('"');
@@ -158,43 +166,78 @@ namespace TDCG
                 f4 = float.Parse(token[3].Trim());
         }
 
+        /// <summary>
+        /// float値を取得します。
+        /// </summary>
+        /// <returns>float値</returns>
         public float GetFloat()
         {
             return f1;
         }
+        /// <summary>
+        /// float値を設定します。
+        /// </summary>
+        /// <param name="value">float値</param>
         public void SetFloat(string value)
         {
             SetFloatDim(value, 1);
         }
 
+        /// <summary>
+        /// float3値を取得します。
+        /// </summary>
+        /// <returns>float3値</returns>
         public Vector3 GetFloat3()
         {
             return new Vector3(f1, f2, f3);
         }
+        /// <summary>
+        /// float3値を設定します。
+        /// </summary>
+        /// <param name="value">float3値</param>
         public void SetFloat3(string value)
         {
             SetFloatDim(value, 3);
         }
 
+        /// <summary>
+        /// float4値を取得します。
+        /// </summary>
+        /// <returns>float4値</returns>
         public Vector4 GetFloat4()
         {
             return new Vector4(f1, f2, f3, f4);
         }
+        /// <summary>
+        /// float4値を設定します。
+        /// </summary>
+        /// <param name="value">float4値</param>
         public void SetFloat4(string value)
         {
             SetFloatDim(value, 4);
         }
 
+        /// <summary>
+        /// テクスチャ名を取得します。
+        /// </summary>
+        /// <returns>テクスチャ名</returns>
         public string GetTexture()
         {
             return str;
         }
+        /// <summary>
+        /// テクスチャ名を設定します。
+        /// </summary>
+        /// <param name="value">テクスチャ名</param>
         public void SetTexture(string value)
         {
             str = value;
         }
     }
 
+    /// <summary>
+    /// シェーダ設定
+    /// </summary>
     public class Shader
     {
         internal ShaderParameter[] shader_parameters;

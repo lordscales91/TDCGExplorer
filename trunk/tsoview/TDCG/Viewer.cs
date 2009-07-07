@@ -104,6 +104,10 @@ public class Viewer : IDisposable
     private float screenCenterX = 800 / 2.0f;
     private float screenCenterY = 600 / 2.0f;
 
+    /// <summary>
+    /// controlを保持します。スクリーンの中心座標を更新します。
+    /// </summary>
+    /// <param name="control">control</param>
     protected void SetControl(Control control)
     {
         this.control = control;

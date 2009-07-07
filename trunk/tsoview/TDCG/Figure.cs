@@ -124,6 +124,9 @@ public class Figure : IDisposable
     private int frame_index = 0;
     private int current_frame_index = -1;
 
+    /// <summary>
+    /// フィギュアを生成します。
+    /// </summary>
     public Figure()
     {
         tmo = new TMOFile();

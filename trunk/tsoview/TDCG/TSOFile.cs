@@ -144,6 +144,9 @@ namespace TDCG
             }
         }
 
+        /// <summary>
+        /// Direct3DƒƒbƒVƒ…‚ğ”jŠü‚µ‚Ü‚·B
+        /// </summary>
         public void Dispose()
         {
             if (dm != null)

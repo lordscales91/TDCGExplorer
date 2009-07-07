@@ -97,11 +97,10 @@ public class FigureForm : Form
         }
     }
 
-    protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
-    {
-        //this.Render(); // Render on painting
-    }
-
+    /// <summary>
+    /// Escを押すと抜けます。
+    /// </summary>
+    /// <param name="e">イベント引数</param>
     protected override void OnKeyPress(System.Windows.Forms.KeyPressEventArgs e)
     {
         if ((int)(byte)e.KeyChar == (int)System.Windows.Forms.Keys.Escape)
@@ -112,6 +111,9 @@ public class FigureForm : Form
     private TSOFile tso = null;
     private Shader shader = null;
 
+    /// <summary>
+    /// フィギュア情報を削除します。
+    /// </summary>
     public void Clear()
     {
         dg.DataSource = null;
@@ -122,6 +124,10 @@ public class FigureForm : Form
         this.fig = null;
     }
 
+    /// <summary>
+    /// フィギュアをUIに設定します。
+    /// </summary>
+    /// <param name="fig">フィギュア</param>
     public void SetFigure(Figure fig)
     {
         this.fig = fig;
@@ -136,6 +142,10 @@ public class FigureForm : Form
         lv_fig.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
     }
 
+    /// <summary>
+    /// tsoをUIに設定します。
+    /// </summary>
+    /// <param name="tso">tso</param>
     public void SetTSOFile(TSOFile tso)
     {
         this.tso = tso;
@@ -150,6 +160,10 @@ public class FigureForm : Form
         lv.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
     }
 
+    /// <summary>
+    /// シェーダ設定をUIに設定します。
+    /// </summary>
+    /// <param name="shader">シェーダ設定</param>
     public void SetShader(Shader shader)
     {
         this.shader = shader;
