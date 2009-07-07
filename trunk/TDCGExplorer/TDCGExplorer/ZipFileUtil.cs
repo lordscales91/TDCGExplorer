@@ -74,8 +74,12 @@ namespace TDCGExplorer
                     {
                         return ExtractZip(arc, srcfile,destpath);
                     }
+                default:
+                    using (IArchive arc = new DirectAccessArchive())
+                    {
+                        return ExtractZip(arc, srcfile, destpath);
+                    }
             }
-            return false;
         }
     }
 }

@@ -89,7 +89,6 @@ namespace System.Windows.Forms
             this.Controls.Add(this.dataGridView);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
-
         }
 
         private void dataGridView_Resize(object sender, EventArgs e)
@@ -299,12 +298,6 @@ namespace System.Windows.Forms
                             Cursor.Current = Cursors.Default;
                         }
                     }
-#if false
-                    else
-                    {
-                        MessageBox.Show("TAH INFO:\n" + filesEntries[index].id + "," + filesEntries[index].path + "," + filesEntries[index].hash.ToString("x8"), "Not Implemented", MessageBoxButtons.OK);
-                    }
-#endif
                 }
             }
             catch (Exception ex)

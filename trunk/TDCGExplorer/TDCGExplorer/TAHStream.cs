@@ -36,8 +36,8 @@ namespace TDCGExplorer
                         archive = new RarArchive();
                         break;
                     default:
-                        //MessageBox.Show("Not Implemented", "Not Implemented", MessageBoxButtons.OK);
-                        throw new Exception("対応していないアーカイブフォーマットです");
+                        archive = new DirectAccessArchive();
+                        break;
 
                 }
                 archive.Open(zippath);

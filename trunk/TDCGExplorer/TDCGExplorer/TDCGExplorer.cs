@@ -135,6 +135,7 @@ namespace TDCGExplorer
             edit.textArcnamesServer = GetSystemDatabase().arcnames_server;
             edit.textWorkPath = GetSystemDatabase().work_path;
             edit.lookupmodref = GetSystemDatabase().modrefpage_enable=="true";
+            edit.textModRegexp = GetSystemDatabase().directaccess_signature;
             
             if (edit.ShowDialog() == DialogResult.OK)
             {
@@ -147,6 +148,7 @@ namespace TDCGExplorer
                 GetSystemDatabase().work_path = edit.textWorkPath;
                 if (edit.lookupmodref == true) GetSystemDatabase().modrefpage_enable = "true";
                 else GetSystemDatabase().modrefpage_enable = "false";
+                GetSystemDatabase().directaccess_signature = edit.textModRegexp;
             }
         }
 
@@ -545,7 +547,10 @@ namespace TDCGExplorer
             }
             else
             {
-                MessageBox.Show(installedcount.ToString() + "個のzipを展開しました。", "展開", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                if (installedcount > 0)
+                    MessageBox.Show(installedcount.ToString() + "個のzipを展開しました。", "展開", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                else
+                    MessageBox.Show("前提zipは全てインストール済みです", "展開", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
         }
 

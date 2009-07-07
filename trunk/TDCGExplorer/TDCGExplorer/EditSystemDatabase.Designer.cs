@@ -43,12 +43,15 @@
             this.tbWorkPath = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.checkBoxLookupModRef = new System.Windows.Forms.CheckBox();
+            this.textBoxModRegexp = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.checkBoxSafemode = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // OKButton
             // 
             this.OKButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OKButton.Location = new System.Drawing.Point(448, 168);
+            this.OKButton.Location = new System.Drawing.Point(448, 215);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
             this.OKButton.TabIndex = 0;
@@ -74,7 +77,7 @@
             // DialoogCancelButton
             // 
             this.DialoogCancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.DialoogCancelButton.Location = new System.Drawing.Point(529, 168);
+            this.DialoogCancelButton.Location = new System.Drawing.Point(529, 215);
             this.DialoogCancelButton.Name = "DialoogCancelButton";
             this.DialoogCancelButton.Size = new System.Drawing.Size(75, 23);
             this.DialoogCancelButton.TabIndex = 3;
@@ -164,18 +167,47 @@
             // checkBoxLookupModRef
             // 
             this.checkBoxLookupModRef.AutoSize = true;
-            this.checkBoxLookupModRef.Location = new System.Drawing.Point(102, 168);
+            this.checkBoxLookupModRef.Location = new System.Drawing.Point(102, 215);
             this.checkBoxLookupModRef.Name = "checkBoxLookupModRef";
             this.checkBoxLookupModRef.Size = new System.Drawing.Size(177, 17);
             this.checkBoxLookupModRef.TabIndex = 14;
             this.checkBoxLookupModRef.Text = "ZIP関連情報の自動照会を行う";
             this.checkBoxLookupModRef.UseVisualStyleBackColor = true;
             // 
+            // textBoxModRegexp
+            // 
+            this.textBoxModRegexp.Location = new System.Drawing.Point(102, 168);
+            this.textBoxModRegexp.Name = "textBoxModRegexp";
+            this.textBoxModRegexp.Size = new System.Drawing.Size(502, 20);
+            this.textBoxModRegexp.TabIndex = 16;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(12, 171);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(80, 13);
+            this.label7.TabIndex = 15;
+            this.label7.Text = "MOD正規表現";
+            // 
+            // checkBoxSafemode
+            // 
+            this.checkBoxSafemode.AutoSize = true;
+            this.checkBoxSafemode.Location = new System.Drawing.Point(286, 215);
+            this.checkBoxSafemode.Name = "checkBoxSafemode";
+            this.checkBoxSafemode.Size = new System.Drawing.Size(82, 17);
+            this.checkBoxSafemode.TabIndex = 17;
+            this.checkBoxSafemode.Text = "セーフモード";
+            this.checkBoxSafemode.UseVisualStyleBackColor = true;
+            // 
             // EditSystemDatabase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(615, 203);
+            this.ClientSize = new System.Drawing.Size(615, 250);
+            this.Controls.Add(this.checkBoxSafemode);
+            this.Controls.Add(this.textBoxModRegexp);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.checkBoxLookupModRef);
             this.Controls.Add(this.tbWorkPath);
             this.Controls.Add(this.label6);
@@ -215,5 +247,8 @@
         private System.Windows.Forms.TextBox tbWorkPath;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.CheckBox checkBoxLookupModRef;
+        private System.Windows.Forms.TextBox textBoxModRegexp;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.CheckBox checkBoxSafemode;
     }
 }

@@ -181,6 +181,12 @@ namespace TDCGExplorer
             get { return GetSqlValue("modrefpage_enable", "true"); }
             set { SetSqlValue("modrefpage_enable", value); }
         }
+        // DirectAccessArchiveクラス起動条件
+        public string directaccess_signature
+        {
+            get { return GetSqlValue("directaccess_signature", "(^TA[0-9]{4})|(^TA3CH[0-9]{4})|(^TA3DC[0-9]{4})|(^TAC[0-9]{4})|(^TAC[0-9]{5})|(^XPC[0-9]{5})|(^mod[0-9]{4})"); }
+            set { SetSqlValue("directaccess_signature", value); }
+        }
 
     }
 }
