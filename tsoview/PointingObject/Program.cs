@@ -59,6 +59,7 @@ public class ViewerForm : Form
 public class Viewer : IDisposable
 {
     internal Device device;
+    internal Effect effect;
 
     public bool InitializeApplication(Control control)
     {
@@ -95,23 +96,28 @@ public class Viewer : IDisposable
             return false;
         }
 
+        string effect_file = Path.Combine(Application.StartupPath, @"tmps.fx");
+        if (! File.Exists(effect_file))
+        {
+            Console.WriteLine("File not found: " + effect_file);
+            return false;
+        }
+        using (FileStream effect_stream = File.OpenRead(effect_file))
+        {
+            string compile_error;
+            effect = Effect.FromStream(device, effect_stream, null, ShaderFlags.None, null, out compile_error);
+            if (compile_error != null)
+            {
+                Console.WriteLine(compile_error);
+                return false;
+            }
+        }
+        effect.Technique = "PhongShader";
+
         device.RenderState.Lighting = true;
 
-        device.Lights[0].Type = LightType.Directional;
-        device.Lights[0].Diffuse = Color.White;
-        device.Lights[0].Direction = new Vector3(0,0,1);
-        device.Lights[0].Update();
-        device.Lights[0].Enabled = true;
-
-        for (int i = 0; i < 3; i++)
-        {
-            Material material = new Material();
-            material.Ambient = Color.White;
-            material.Diffuse = colors[i];
-            materials[i] = material;
-        }
-
-        view = Matrix.LookAtLH(new Vector3(0,0,-5), new Vector3(0,0,0), new Vector3(0,1,0));
+        eye = new Vector3(0,0,-5);
+        view = Matrix.LookAtLH( eye, new Vector3(0,0,0), new Vector3(0,1,0));
         proj = Matrix.PerspectiveFovLH( Geometry.DegreeToRadian(45), (float)device.Viewport.Width / (float)device.Viewport.Height, 1.0f, 1000.0f );
 
         device.Transform.View = view;
@@ -122,8 +128,12 @@ public class Viewer : IDisposable
         return true;
     }
 
-    Color[] colors = new Color[3]{ Color.Red, Color.Green, Color.Blue };
-    Material[] materials = new Material[3];
+    Vector4[] colors = new Vector4[3]{
+        new Vector4(1.0f, 0.0f, 0.0f, 1.0f),
+        new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
+        new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
+    };
+    private Vector3 eye;
     private Matrix view;
     private Matrix proj;
     private Mesh mesh = null;
@@ -144,10 +154,24 @@ public class Viewer : IDisposable
                 Matrix.RotationY(Geometry.DegreeToRadian(tick*(i+1)/2))*
                 Matrix.Translation( 8*(float)Math.Sin(rad + tick/100/(i+1)), 12*(float)Math.Cos(rad + tick/100/(i+1)), 50*(float)(1+Math.Sin(rad)));
 
-            device.Transform.World = world;
+            //device.Transform.World = world;
 
-            device.Material = materials[i];
-            mesh.DrawSubset(0);
+            Matrix wvp = world * view * proj;
+            effect.SetValue("g_mWorld", world);
+            effect.SetValue("g_mWorldIT", Matrix.TransposeMatrix(Matrix.Invert(world)));
+            effect.SetValue("g_vEyePos", new Vector4(eye.X, eye.Y, eye.Z, 1));
+            effect.SetValue("g_mWorldViewProj", wvp);
+
+            effect.SetValue("g_vSurfColor", colors[i]);
+
+            int npass = effect.Begin(0);
+            for (int ipass = 0; ipass < npass; ipass++)
+            {
+                effect.BeginPass(ipass);
+                mesh.DrawSubset(0);
+                effect.EndPass();
+            }
+            effect.End();
         }
         device.EndScene();
 
@@ -160,6 +184,8 @@ public class Viewer : IDisposable
     {
         if (mesh != null)
             mesh.Dispose();
+        if (effect != null)
+            effect.Dispose();
         if (device != null)
             device.Dispose();
     }
