@@ -45,13 +45,14 @@
             this.checkBoxLookupModRef = new System.Windows.Forms.CheckBox();
             this.textBoxModRegexp = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
-            this.checkBoxSafemode = new System.Windows.Forms.CheckBox();
+            this.textBoxTagNameServer = new System.Windows.Forms.TextBox();
+            this.label8 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // OKButton
             // 
             this.OKButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OKButton.Location = new System.Drawing.Point(448, 215);
+            this.OKButton.Location = new System.Drawing.Point(448, 220);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
             this.OKButton.TabIndex = 0;
@@ -77,7 +78,7 @@
             // DialoogCancelButton
             // 
             this.DialoogCancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.DialoogCancelButton.Location = new System.Drawing.Point(529, 215);
+            this.DialoogCancelButton.Location = new System.Drawing.Point(529, 220);
             this.DialoogCancelButton.Name = "DialoogCancelButton";
             this.DialoogCancelButton.Size = new System.Drawing.Size(75, 23);
             this.DialoogCancelButton.TabIndex = 3;
@@ -118,7 +119,7 @@
             // 
             // tbZipRegexp
             // 
-            this.tbZipRegexp.Location = new System.Drawing.Point(102, 142);
+            this.tbZipRegexp.Location = new System.Drawing.Point(102, 168);
             this.tbZipRegexp.Name = "tbZipRegexp";
             this.tbZipRegexp.Size = new System.Drawing.Size(502, 20);
             this.tbZipRegexp.TabIndex = 9;
@@ -126,7 +127,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 145);
+            this.label4.Location = new System.Drawing.Point(12, 171);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(72, 13);
             this.label4.TabIndex = 8;
@@ -144,9 +145,9 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(11, 119);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(90, 13);
+            this.label5.Size = new System.Drawing.Size(85, 13);
             this.label5.TabIndex = 10;
-            this.label5.Text = "arcsnames server";
+            this.label5.Text = "arcnames server";
             // 
             // tbWorkPath
             // 
@@ -167,7 +168,7 @@
             // checkBoxLookupModRef
             // 
             this.checkBoxLookupModRef.AutoSize = true;
-            this.checkBoxLookupModRef.Location = new System.Drawing.Point(102, 215);
+            this.checkBoxLookupModRef.Location = new System.Drawing.Point(102, 220);
             this.checkBoxLookupModRef.Name = "checkBoxLookupModRef";
             this.checkBoxLookupModRef.Size = new System.Drawing.Size(177, 17);
             this.checkBoxLookupModRef.TabIndex = 14;
@@ -176,7 +177,7 @@
             // 
             // textBoxModRegexp
             // 
-            this.textBoxModRegexp.Location = new System.Drawing.Point(102, 168);
+            this.textBoxModRegexp.Location = new System.Drawing.Point(102, 194);
             this.textBoxModRegexp.Name = "textBoxModRegexp";
             this.textBoxModRegexp.Size = new System.Drawing.Size(502, 20);
             this.textBoxModRegexp.TabIndex = 16;
@@ -184,28 +185,35 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(12, 171);
+            this.label7.Location = new System.Drawing.Point(12, 197);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(80, 13);
             this.label7.TabIndex = 15;
             this.label7.Text = "MOD正規表現";
             // 
-            // checkBoxSafemode
+            // textBoxTagNameServer
             // 
-            this.checkBoxSafemode.AutoSize = true;
-            this.checkBoxSafemode.Location = new System.Drawing.Point(286, 215);
-            this.checkBoxSafemode.Name = "checkBoxSafemode";
-            this.checkBoxSafemode.Size = new System.Drawing.Size(82, 17);
-            this.checkBoxSafemode.TabIndex = 17;
-            this.checkBoxSafemode.Text = "セーフモード";
-            this.checkBoxSafemode.UseVisualStyleBackColor = true;
+            this.textBoxTagNameServer.Location = new System.Drawing.Point(101, 142);
+            this.textBoxTagNameServer.Name = "textBoxTagNameServer";
+            this.textBoxTagNameServer.Size = new System.Drawing.Size(502, 20);
+            this.textBoxTagNameServer.TabIndex = 19;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(11, 145);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(85, 13);
+            this.label8.TabIndex = 18;
+            this.label8.Text = "tagnames server";
             // 
             // EditSystemDatabase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(615, 250);
-            this.Controls.Add(this.checkBoxSafemode);
+            this.ClientSize = new System.Drawing.Size(615, 253);
+            this.Controls.Add(this.textBoxTagNameServer);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.textBoxModRegexp);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.checkBoxLookupModRef);
@@ -249,6 +257,7 @@
         private System.Windows.Forms.CheckBox checkBoxLookupModRef;
         private System.Windows.Forms.TextBox textBoxModRegexp;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.CheckBox checkBoxSafemode;
+        private System.Windows.Forms.TextBox textBoxTagNameServer;
+        private System.Windows.Forms.Label label8;
     }
 }

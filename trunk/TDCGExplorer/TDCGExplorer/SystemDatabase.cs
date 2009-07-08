@@ -116,9 +116,11 @@ namespace TDCGExplorer
             moddb_url = moddb_url;
             zip_regexp = zip_regexp;
             database_build = database_build;
+            database_version = database_version;
             window_rectangle = window_rectangle;
             splitter_distance = splitter_distance;
             arcnames_server = arcnames_server;
+            tagnames_server = tagnames_server;
             work_path = work_path;
             modrefpage_enable = modrefpage_enable;
         }
@@ -151,6 +153,12 @@ namespace TDCGExplorer
             get { return GetSqlValue("database-build", ""); }
             set { SetSqlValue("database-build", value); }
         }
+        // データベースバージョン.
+        public string database_version
+        {
+            get { return GetSqlValue("database-version", ""); }
+            set { SetSqlValue("database-version", value); }
+        }
         // ウインドウ位置
         public string window_rectangle
         {
@@ -168,6 +176,12 @@ namespace TDCGExplorer
         {
             get { return GetSqlValue("arcnames_server", "http://3dcustom.ath.cx/text/arcnames.zip"); }
             set { SetSqlValue("arcnames_server", value); }
+        }
+        // tagnames.zip取得先
+        public string tagnames_server
+        {
+            get { return GetSqlValue("tagnames_server", "http://3dcustom.ath.cx/text/tagnames.zip"); }
+            set { SetSqlValue("tagnames_server", value); }
         }
         // 作業フォルダのトップディレクトリ
         public string work_path
@@ -187,6 +201,5 @@ namespace TDCGExplorer
             get { return GetSqlValue("directaccess_signature", "(^TA[0-9]{4})|(^TA3CH[0-9]{4})|(^TA3DC[0-9]{4})|(^TAC[0-9]{4})|(^TAC[0-9]{5})|(^XPC[0-9]{5})|(^mod[0-9]{4})"); }
             set { SetSqlValue("directaccess_signature", value); }
         }
-
     }
 }

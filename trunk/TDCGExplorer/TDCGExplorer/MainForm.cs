@@ -282,6 +282,8 @@ namespace TDCGExplorer
                     TDCGExplorer.FindTreeNode(node, dialog.text);
                 foreach (TreeNode node in treeViewCollision.Nodes)
                     TDCGExplorer.FindTreeNode(node, dialog.text);
+                foreach (TreeNode node in treeViewTag.Nodes)
+                    TDCGExplorer.FindTreeNode(node, dialog.text);
                 Cursor.Current = Cursors.Default;
             }
         }
@@ -393,6 +395,7 @@ namespace TDCGExplorer
             treeViewCollision.Nodes.Clear();
             treeViewZips.Nodes.Clear();
             treeViewInstalled.Nodes.Clear();
+            treeViewTag.Nodes.Clear();
             // リストボックスの中身を消去する.
             listBoxMainListBox.Items.Clear();
             // ページを消去する.
@@ -428,13 +431,12 @@ namespace TDCGExplorer
         {
             try
             {
-                ArcsDatabase db = TDCGExplorer.GetArcsDatabase();
-
                 ClearTreeBox();
-                TDCGExplorer.MakeArcsTreeView(db, treeViewArcs );
-                TDCGExplorer.MakeZipsTreeView(db, treeViewZips);
-                TDCGExplorer.MakeCollisionTreeView(db, treeViewCollision);
-                TDCGExplorer.MakeInstalledArcsTreeView(db, treeViewInstalled);
+                TDCGExplorer.MakeArcsTreeView(treeViewArcs );
+                TDCGExplorer.MakeZipsTreeView(treeViewZips);
+                TDCGExplorer.MakeCollisionTreeView(treeViewCollision);
+                TDCGExplorer.MakeInstalledArcsTreeView(treeViewInstalled);
+                TDCGExplorer.MakeTagTreeView(treeViewTag);
 
                 // 初期表示に戻す
                 tabControlTreeContainor.SelectTab(0);
@@ -491,44 +493,68 @@ namespace TDCGExplorer
             TreeView_AfterSelect(sender, e);
         }
 
-        // フォーカスを獲得した場合（以下全部）
+        // ツリーで選択されたら.
+        private void treeViewTag_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            TreeView_AfterSelect(sender, e);
+        }
+
+        // フォーカスを獲得した場合
         private void treeViewArcs_Enter(object sender, EventArgs e)
         {
             TreeViewForcusEnter(sender, e);
         }
 
+        // フォーカスを獲得した場合
         private void treeViewZips_Enter(object sender, EventArgs e)
         {
             TreeViewForcusEnter(sender, e);
         }
 
+        // フォーカスを獲得した場合
         private void treeViewInstalled_Enter(object sender, EventArgs e)
         {
             TreeViewForcusEnter(sender, e);
         }
 
+        // フォーカスを獲得した場合
         private void treeViewCollision_Enter(object sender, EventArgs e)
         {
             TreeViewForcusEnter(sender, e);
         }
 
-        // フォーカスを失った場合（以下全部）
+        // フォーカスを獲得した場合
+        private void treeViewTag_Enter(object sender, EventArgs e)
+        {
+            TreeViewForcusEnter(sender, e);
+        }
+
+        // フォーカスを失った場合
         private void treeViewArcs_Leave(object sender, EventArgs e)
         {
             TrewViewForcusLeave(sender, e);
         }
 
+        // フォーカスを失った場合
         private void treeViewZips_Leave(object sender, EventArgs e)
         {
             TrewViewForcusLeave(sender, e);
         }
 
+        // フォーカスを失った場合
         private void treeViewInstalled_Leave(object sender, EventArgs e)
         {
             TrewViewForcusLeave(sender, e);
         }
 
+        // フォーカスを失った場合
         private void treeViewCollision_Leave(object sender, EventArgs e)
+        {
+            TrewViewForcusLeave(sender, e);
+        }
+
+        // フォーカスを失った場合
+        private void treeViewTag_Leave(object sender, EventArgs e)
         {
             TrewViewForcusLeave(sender, e);
         }
@@ -564,6 +590,12 @@ namespace TDCGExplorer
             obj.Focus();
         }
 
+        private void treeViewTag_MouseEnter(object sender, EventArgs e)
+        {
+            Control obj = (Control)sender;
+            obj.Focus();
+        }
+
         // 前提zipファイルを展開する.
         private void ExtractPreferZipToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -592,21 +624,32 @@ namespace TDCGExplorer
             ExtractPreferZipToolStripMenuItem_Click(sender, e);
         }
 
-        // arcsnames.zipを取得する.
-        private void downloadLatestArcsnameszipToolStripMenuItem_Click_1(object sender, EventArgs e)
+        // 関連情報を取得する.
+        private void downloadLatestDBZipToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
             if (threadCheck() == true) return;
             if (TDCGExplorer.DownloadArcNamesZipFromServer() == true)
             {
                 TDCGExplorer.GetArcNamesZipInfo();
-                //TDCGExplorer.DisplayArcsDB(treeViewArcs);
-                DisplayDB();
-                MessageBox.Show("ARCSNAME.ZIPをダウンロードしました", "ダウンロード", MessageBoxButtons.OK);
             }
             else
             {
                 MessageBox.Show("Internet access failure. Please check firewall.", "Download", MessageBoxButtons.OK);
+                return;
             }
+
+            if (TDCGExplorer.DownloadTagNamesZipFromServer() == true)
+            {
+                TDCGExplorer.GetTagNamesZipInfo();
+                DisplayDB();
+            }
+            else
+            {
+                MessageBox.Show("Internet access failure. Please check firewall.", "Download", MessageBoxButtons.OK);
+                return;
+            }
+            DisplayDB();
+            MessageBox.Show("3DCG MODS Referenceサーバから最新情報を取得しました", "Download", MessageBoxButtons.OK);
         }
 
         private void LookupMODRefToolStripMenuItem_Click(object sender, EventArgs e)

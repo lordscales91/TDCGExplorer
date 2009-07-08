@@ -268,7 +268,7 @@ namespace TDCGExplorer
                     if (zip.datetime.ToString() == datetime.ToString())
                     {
                         // 該当するエントリの存在フラグを立てる.
-                        TDCGExplorer.SetToolTips("Update " + zipname.Substring(zipspath.Length + 1));
+                        TDCGExplorer.SetToolTips("Update " + Path.GetFileName(zip.path));
                         db.UpdateZipExistUp(zip.id);
                         continue;
                     }

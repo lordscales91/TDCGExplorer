@@ -120,6 +120,7 @@
       <DependentUpon>FindDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="GenTahInfo.cs" />
+    <Compile Include="HttpUtil.cs" />
     <Compile Include="ImagePage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -137,6 +138,7 @@
     <Compile Include="mt19937.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SystemDatabase.cs" />
+    <Compile Include="TagNames.cs" />
     <Compile Include="TAHCryptStream.cs" />
     <Compile Include="TAHDump.cs" />
     <Compile Include="TAHFile.cs" />
