@@ -118,7 +118,7 @@ public class Solver
         return true;
     }
 
-    public bool getSwivel(ref float swivel, ref Vector3 vgoal, ref Vector3 vRyPos)
+    public bool GetSwivel(ref float swivel, ref Vector3 vgoal, ref Vector3 vRyPos)
     {
         // distance‚ª’Z‚­‚È‚é‚Æ‚«RyŠÖß‚ğˆÚ“®‚³‚¹‚é•ûŒüiŠî€À•WŒnj
         Vector3 va = new Vector3(-1.0f, 0.0f, 0.0f);
@@ -155,6 +155,12 @@ public class Solver
             swivel = -swivel;
         swivel = Geometry.RadianToDegree(swivel);
         return true;
+    }
+
+    public bool GetSwivel(ref float swivel, ref Matrix mgoal, ref Vector3 vRyPos)
+    {
+        Vector3 vgoal = new Vector3(mgoal.M41, mgoal.M42, mgoal.M43);
+        return GetSwivel(ref swivel, ref vgoal, ref vRyPos);
     }
 }
 }
