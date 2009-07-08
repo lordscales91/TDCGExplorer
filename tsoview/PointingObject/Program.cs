@@ -40,8 +40,12 @@ public class ViewerForm : Form
 {
     public ViewerForm()
     {
+        this.FormBorderStyle = FormBorderStyle.FixedSingle;
         this.ClientSize = new Size(640, 480);
         this.Text = "PointingObject";
+
+        this.MaximumSize = this.Size;
+        this.MinimumSize = this.Size;
     }
 
     protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
@@ -71,6 +75,7 @@ public class Viewer : IDisposable
     private int texh;
 
     internal Surface plain_surface;
+    internal Sprite sprite = null;
 
     // マウスポイントしているスクリーン座標
     private Point lastScreenPoint = Point.Empty;
@@ -111,6 +116,8 @@ public class Viewer : IDisposable
             if (caps.DeviceCaps.SupportsPureDevice)
                 flags |= CreateFlags.PureDevice;
             device = new Device(adapter_ordinal, DeviceType.Hardware, control.Handle, flags, pp);
+
+            device.DeviceResizing += new CancelEventHandler(CancelResize);
         }
         catch (DirectXException ex)
         {
@@ -150,6 +157,7 @@ public class Viewer : IDisposable
         Console.WriteLine("tex {0}x{1}", texw, texh);
 
         plain_surface = device.CreateOffscreenPlainSurface(texw, texh, Format.A8R8G8B8, Pool.SystemMemory);
+        sprite = new Sprite(device);
 
         device.RenderState.Lighting = true;
 
@@ -163,6 +171,12 @@ public class Viewer : IDisposable
         mesh = Mesh.Box(device, 10.0f, 10.0f, 10.0f);
 
         return true;
+    }
+
+    private void CancelResize(object sender, CancelEventArgs e)
+    {
+        Console.WriteLine("CancelResize");
+        e.Cancel = true;
     }
 
     Vector4[] colors = new Vector4[3]{
@@ -217,19 +231,24 @@ public class Viewer : IDisposable
 
         Point point = lastScreenPoint;
         //Console.WriteLine(point);
-        Rectangle rect = new Rectangle(point.X, point.Y, point.X, point.Y);
-        device.GetRenderTargetData(tex_surface, plain_surface);
         UInt32 hit_color_uint;
+        if (point.X >= 0 && point.X < 640 && point.Y >= 0 && point.Y < 480)
         {
-            int pitch;
-            GraphicsStream gs = plain_surface.LockRectangle(rect, LockFlags.None, out pitch);
+            Rectangle rect = new Rectangle(point.X, point.Y, point.X, point.Y);
+            device.GetRenderTargetData(tex_surface, plain_surface);
             {
-                //Console.WriteLine(pitch);
-                hit_color_uint = (UInt32)gs.Read(typeof(UInt32));
-                //Console.WriteLine("{0:X8} ", hit_color_uint);
+                int pitch;
+                GraphicsStream gs = plain_surface.LockRectangle(rect, LockFlags.None, out pitch);
+                {
+                    hit_color_uint = (UInt32)gs.Read(typeof(UInt32));
+                    //Console.WriteLine("{0:X8} ", hit_color_uint);
+                }
+                plain_surface.UnlockRectangle();
             }
-            plain_surface.UnlockRectangle();
         }
+        else
+            hit_color_uint = 0xffffffff;
+
         int hit_i = -1;
         if (hit_color_uint == 0xffff0000)
             hit_i = 0;
@@ -279,6 +298,16 @@ public class Viewer : IDisposable
             effect.End();
         }
 
+#if false
+        {
+            Rectangle rect = new Rectangle(0, 0, texw, texh);
+
+            sprite.Begin(0);
+            sprite.Draw(tex, rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
+            sprite.End();
+        }
+#endif
+
         device.EndScene();
 
         device.Present();
@@ -290,6 +319,8 @@ public class Viewer : IDisposable
     {
         if (mesh != null)
             mesh.Dispose();
+        if (sprite != null)
+            sprite.Dispose();
         if (plain_surface != null)
             plain_surface.Dispose();
         if (tex_surface != null)
