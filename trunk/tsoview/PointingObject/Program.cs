@@ -61,8 +61,30 @@ public class Viewer : IDisposable
     internal Device device;
     internal Effect effect;
 
+    internal Surface dev_surface;
+    private int devw;
+    private int devh;
+
+    internal Texture tex = null;
+    internal Surface tex_surface;
+    private int texw;
+    private int texh;
+
+    internal Surface plain_surface;
+
+    // マウスポイントしているスクリーン座標
+    private Point lastScreenPoint = Point.Empty;
+
+    private void form_OnMouseMove(object sender, MouseEventArgs e)
+    {
+        lastScreenPoint.X = e.X;
+        lastScreenPoint.Y = e.Y;
+    }
+
     public bool InitializeApplication(Control control)
     {
+        control.MouseMove += new MouseEventHandler(form_OnMouseMove);
+
         PresentParameters pp = new PresentParameters();
         try
         {
@@ -114,6 +136,21 @@ public class Viewer : IDisposable
         }
         effect.Technique = "PhongShader";
 
+        dev_surface = device.GetRenderTarget(0);
+        devw = dev_surface.Description.Width;
+        devh = dev_surface.Description.Height;
+        Console.WriteLine("dev {0}x{1}", devw, devh);
+
+        tex = new Texture(device, 640, 480, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+        tex_surface = tex.GetSurfaceLevel(0);
+        //Console.WriteLine(pp);
+        //tex_surface = device.CreateRenderTarget(devw, devh, Format.A8R8G8B8, pp.MultiSample, pp.MultiSampleQuality, false);
+        texw = tex_surface.Description.Width;
+        texh = tex_surface.Description.Height;
+        Console.WriteLine("tex {0}x{1}", texw, texh);
+
+        plain_surface = device.CreateOffscreenPlainSurface(texw, texh, Format.A8R8G8B8, Pool.SystemMemory);
+
         device.RenderState.Lighting = true;
 
         eye = new Vector3(0,0,-5);
@@ -133,6 +170,7 @@ public class Viewer : IDisposable
         new Vector4(0.0f, 1.0f, 0.0f, 1.0f),
         new Vector4(0.0f, 0.0f, 1.0f, 1.0f)
     };
+    Vector4 hit_color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
     private Vector3 eye;
     private Matrix view;
     private Matrix proj;
@@ -141,9 +179,12 @@ public class Viewer : IDisposable
 
     public void Render()
     {
-        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.CornflowerBlue, 1.0f, 0);
-
         device.BeginScene();
+
+        device.SetRenderTarget(0, tex_surface);
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
+
+        effect.Technique = "PlainShader";
 
         for (int i = 0; i < 3; i++)
         {
@@ -173,6 +214,71 @@ public class Viewer : IDisposable
             }
             effect.End();
         }
+
+        Point point = lastScreenPoint;
+        //Console.WriteLine(point);
+        Rectangle rect = new Rectangle(point.X, point.Y, point.X, point.Y);
+        device.GetRenderTargetData(tex_surface, plain_surface);
+        UInt32 hit_color_uint;
+        {
+            int pitch;
+            GraphicsStream gs = plain_surface.LockRectangle(rect, LockFlags.None, out pitch);
+            {
+                //Console.WriteLine(pitch);
+                hit_color_uint = (UInt32)gs.Read(typeof(UInt32));
+                //Console.WriteLine("{0:X8} ", hit_color_uint);
+            }
+            plain_surface.UnlockRectangle();
+        }
+        int hit_i = -1;
+        if (hit_color_uint == 0xffff0000)
+            hit_i = 0;
+        else
+        if (hit_color_uint == 0xff00ff00)
+            hit_i = 1;
+        else
+        if (hit_color_uint == 0xff0000ff)
+            hit_i = 2;
+
+        device.SetRenderTarget(0, dev_surface);
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.CornflowerBlue, 1.0f, 0);
+
+        effect.Technique = "PhongShader";
+
+        for (int i = 0; i < 3; i++)
+        {
+            float rad = Geometry.DegreeToRadian(i*50);
+
+            Matrix world = Matrix.Identity*
+                Matrix.RotationX(Geometry.DegreeToRadian(tick*(i+1)/3))*
+                Matrix.RotationY(Geometry.DegreeToRadian(tick*(i+1)/2))*
+                Matrix.Translation( 8*(float)Math.Sin(rad + tick/100/(i+1)), 12*(float)Math.Cos(rad + tick/100/(i+1)), 50*(float)(1+Math.Sin(rad)));
+
+            //device.Transform.World = world;
+
+            Matrix wvp = world * view * proj;
+            effect.SetValue("g_mWorld", world);
+            effect.SetValue("g_mWorldIT", Matrix.TransposeMatrix(Matrix.Invert(world)));
+            effect.SetValue("g_vEyePos", new Vector4(eye.X, eye.Y, eye.Z, 1));
+            effect.SetValue("g_mWorldViewProj", wvp);
+
+            Vector4 color;
+            if (i == hit_i)
+                color = hit_color;
+            else
+                color = colors[i];
+            effect.SetValue("g_vSurfColor", color);
+
+            int npass = effect.Begin(0);
+            for (int ipass = 0; ipass < npass; ipass++)
+            {
+                effect.BeginPass(ipass);
+                mesh.DrawSubset(0);
+                effect.EndPass();
+            }
+            effect.End();
+        }
+
         device.EndScene();
 
         device.Present();
@@ -184,6 +290,14 @@ public class Viewer : IDisposable
     {
         if (mesh != null)
             mesh.Dispose();
+        if (plain_surface != null)
+            plain_surface.Dispose();
+        if (tex_surface != null)
+            tex_surface.Dispose();
+        if (tex != null)
+            tex.Dispose();
+        if (dev_surface != null)
+            dev_surface.Dispose();
         if (effect != null)
             effect.Dispose();
         if (device != null)
