@@ -24,7 +24,13 @@ public static class Program
         {
             if (viewer.InitializeApplication(form))
             {
-                //form.Show();
+                form.Show();
+
+                while (form.Created)
+                {
+                    viewer.Render();
+                    Application.DoEvents();
+                }
             }
         }
     }
@@ -32,6 +38,12 @@ public static class Program
 
 public class ViewerForm : Form
 {
+    public ViewerForm()
+    {
+        this.ClientSize = new Size(640, 480);
+        this.Text = "PointingObject";
+    }
+
     protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
     {
         //this.Render(); // Render on painting
@@ -82,11 +94,63 @@ public class Viewer : IDisposable
             Console.WriteLine("Error: " + ex);
             return false;
         }
+
+        device.RenderState.Lighting = true;
+
+        device.Lights[0].Type = LightType.Directional;
+        device.Lights[0].Diffuse = Color.White;
+        device.Lights[0].Direction = new Vector3(0,0,1);
+        device.Lights[0].Update();
+        device.Lights[0].Enabled = true;
+
+        Material material = new Material();
+        material.Ambient = Color.White;
+        material.Diffuse = Color.Red;
+        device.Material = material;
+
+        view = Matrix.LookAtLH(new Vector3(0,0,-5), new Vector3(0,0,0), new Vector3(0,1,0));
+        proj = Matrix.PerspectiveFovLH((float)Math.PI / 4, 640.0f/480.0f, 1.0f, 100.0f);
+
+        device.Transform.View = view;
+        device.Transform.Projection = proj;
+
+        mesh = Mesh.Box(device, 10.0f, 10.0f, 10.0f);
+
         return true;
+    }
+
+    private Matrix view;
+    private Matrix proj;
+    private Mesh mesh = null;
+    private float tick = 0.0f;
+
+    public void Render()
+    {
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.CornflowerBlue, 1.0f, 0);
+
+        device.BeginScene();
+
+        float rad = Geometry.DegreeToRadian(50);
+
+        Matrix world = Matrix.Identity*
+            Matrix.RotationX(Geometry.DegreeToRadian(tick/3))*
+            Matrix.RotationY(Geometry.DegreeToRadian(tick/2))*
+            Matrix.Translation( 8*(float)Math.Sin(rad + tick/100), 12*(float)Math.Cos(rad + tick/100), 50*(float)(1+Math.Sin(rad)));
+
+        device.Transform.World = world;
+
+        mesh.DrawSubset(0);
+        device.EndScene();
+
+        device.Present();
+        Thread.Sleep(1);
+        tick += 1.0f;
     }
 
     public void Dispose()
     {
+        if (mesh != null)
+            mesh.Dispose();
         if (device != null)
             device.Dispose();
     }
