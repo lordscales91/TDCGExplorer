@@ -103,13 +103,16 @@ public class Viewer : IDisposable
         device.Lights[0].Update();
         device.Lights[0].Enabled = true;
 
-        Material material = new Material();
-        material.Ambient = Color.White;
-        material.Diffuse = Color.Red;
-        device.Material = material;
+        for (int i = 0; i < 3; i++)
+        {
+            Material material = new Material();
+            material.Ambient = Color.White;
+            material.Diffuse = colors[i];
+            materials[i] = material;
+        }
 
         view = Matrix.LookAtLH(new Vector3(0,0,-5), new Vector3(0,0,0), new Vector3(0,1,0));
-        proj = Matrix.PerspectiveFovLH((float)Math.PI / 4, 640.0f/480.0f, 1.0f, 100.0f);
+        proj = Matrix.PerspectiveFovLH( Geometry.DegreeToRadian(45), (float)device.Viewport.Width / (float)device.Viewport.Height, 1.0f, 1000.0f );
 
         device.Transform.View = view;
         device.Transform.Projection = proj;
@@ -119,6 +122,8 @@ public class Viewer : IDisposable
         return true;
     }
 
+    Color[] colors = new Color[3]{ Color.Red, Color.Green, Color.Blue };
+    Material[] materials = new Material[3];
     private Matrix view;
     private Matrix proj;
     private Mesh mesh = null;
@@ -130,16 +135,20 @@ public class Viewer : IDisposable
 
         device.BeginScene();
 
-        float rad = Geometry.DegreeToRadian(50);
+        for (int i = 0; i < 3; i++)
+        {
+            float rad = Geometry.DegreeToRadian(i*50);
 
-        Matrix world = Matrix.Identity*
-            Matrix.RotationX(Geometry.DegreeToRadian(tick/3))*
-            Matrix.RotationY(Geometry.DegreeToRadian(tick/2))*
-            Matrix.Translation( 8*(float)Math.Sin(rad + tick/100), 12*(float)Math.Cos(rad + tick/100), 50*(float)(1+Math.Sin(rad)));
+            Matrix world = Matrix.Identity*
+                Matrix.RotationX(Geometry.DegreeToRadian(tick*(i+1)/3))*
+                Matrix.RotationY(Geometry.DegreeToRadian(tick*(i+1)/2))*
+                Matrix.Translation( 8*(float)Math.Sin(rad + tick/100/(i+1)), 12*(float)Math.Cos(rad + tick/100/(i+1)), 50*(float)(1+Math.Sin(rad)));
 
-        device.Transform.World = world;
+            device.Transform.World = world;
 
-        mesh.DrawSubset(0);
+            device.Material = materials[i];
+            mesh.DrawSubset(0);
+        }
         device.EndScene();
 
         device.Present();
