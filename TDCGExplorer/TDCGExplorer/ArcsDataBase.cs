@@ -362,6 +362,23 @@ namespace TDCGExplorer
             }
         }
 
+        public void Vacuum()
+        {
+            try
+            {
+                using (SQLiteCommand cmd = cnn.CreateCommand())
+                {
+                    cmd.CommandText = "VACUUM";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+
         // 特定のtahを返す.
         public ArcsTahEntry GetTah(int tahid)
         {
@@ -461,9 +478,42 @@ namespace TDCGExplorer
             }
         }
 
+        private void makeTahTemporaryIndex()
+        {
+            try
+            {
+                using (SQLiteCommand cmd = cnn.CreateCommand())
+                {
+                    cmd.CommandText = "CREATE INDEX DeleteTemp_TAHID ON FilesEntry(TAHID)";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        private void dropTahTemporaryIndex()
+        {
+            try
+            {
+                using (SQLiteCommand cmd = cnn.CreateCommand())
+                {
+                    cmd.CommandText = "DROP INDEX DeleteTemp_TAHID";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
         // 存在しないエントリを削除する.
         public void DeleteNoExistentTah()
         {
+            makeTahTemporaryIndex();
             // tahファイル一覧を取得する.
             List<ArcsTahEntry> tahs = GetTahs();
             foreach (ArcsTahEntry tah in tahs)
@@ -474,6 +524,7 @@ namespace TDCGExplorer
                     DeleteTah(tah.id);
                 }
             }
+            dropTahTemporaryIndex();
         }
 
         // 全てのtahの存在フラグを落とす.
@@ -765,9 +816,66 @@ namespace TDCGExplorer
             }
         }
 
+        private void makeZipTemporaryIndex()
+        {
+            try
+            {
+                using (SQLiteCommand cmd = cnn.CreateCommand())
+                {
+                    cmd.CommandText = "CREATE INDEX DeleteTemp_TAHID ON ZipTahFilesEntry(TAHID)";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+            try
+            {
+                using (SQLiteCommand cmd = cnn.CreateCommand())
+                {
+                    cmd.CommandText = "CREATE INDEX DeleteTemp_TAHID2 ON ZipTahEntry(ZIPID)";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        private void dropZipTemporaryIndex()
+        {
+            try
+            {
+                using (SQLiteCommand cmd = cnn.CreateCommand())
+                {
+                    cmd.CommandText = "DROP INDEX DeleteTemp_TAHID";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+            try
+            {
+                using (SQLiteCommand cmd = cnn.CreateCommand())
+                {
+                    cmd.CommandText = "DROP INDEX DeleteTemp_TAHID2;";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
         // 存在しないエントリを削除する.
         public void DeleteNoExistentZip()
         {
+            makeZipTemporaryIndex();
             // tahファイル一覧を取得する.
             List<ArcsZipArcEntry> zips = GetZips();
             foreach (ArcsZipArcEntry zip in zips)
@@ -778,6 +886,7 @@ namespace TDCGExplorer
                     DeleteZip(zip.id);
                 }
             }
+            dropZipTemporaryIndex();
         }
 
         // ZIP中のtahファイルを追加する.       

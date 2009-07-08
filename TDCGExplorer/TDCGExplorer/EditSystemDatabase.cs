@@ -63,5 +63,11 @@ namespace TDCGExplorer
             get { return textBoxModRegexp.Text; }
             set { textBoxModRegexp.Text = value; }
         }
+
+        public string textTagnamesServer
+        {
+            get { return textBoxTagNameServer.Text; }
+            set { textBoxTagNameServer.Text = value; }
+        }
     }
 }

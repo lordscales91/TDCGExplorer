@@ -2,50 +2,46 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Net;
-using System.Web;
 using ArchiveLib;
 using System.IO;
 using System.Text.RegularExpressions;
 
 namespace TDCGExplorer
 {
-    public class ArcsNamesEntry
+    public class TagNamesEntry
     {
-        public string code;
-        public string location;
-        public string summary;
-        public string origname;
+        public string tag;
+        public List<string> code = new List<string>();
     }
 
-    class ArcNamesDictionary
+    class TagNamesDictionary
     {
-        private Dictionary<string, ArcsNamesEntry> arcsNames = new Dictionary<string,ArcsNamesEntry>();
+        private Dictionary<string, TagNamesEntry> TagNames = new Dictionary<string, TagNamesEntry>();
 
         public void Init()
         {
-            // arcsname.zipをダウンロードする.
-            if (File.Exists(zipArcLocalName()) == false)
+            // tagname.zipをダウンロードする.
+            if (File.Exists(zipTagLocalName()) == false)
             {
-                if (DownloadArcNamesZipFromServer() == false) return;
+                if (DownloadTagNamesZipFromServer() == false) return;
             }
-            GetArcNamesZipInfo();
+            GetTagNamesZipInfo();
         }
 
-        public string zipArcLocalName()
+        public string zipTagLocalName()
         {
             string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), TDCGExplorer.GetAppDataPath());
-            return Path.Combine(path,"arcsnames.zip");
+            return Path.Combine(path, "tagnames.zip");
         }
 
-        // arcsnames.zipをサーバからダウンロードする.
-        public bool DownloadArcNamesZipFromServer()
+        // tagnames.zipをサーバからダウンロードする.
+        public bool DownloadTagNamesZipFromServer()
         {
             bool status = false;
             try
             {
-                string uri = TDCGExplorer.GetSystemDatabase().arcnames_server;
-                string localfile = zipArcLocalName();
+                string uri = TDCGExplorer.GetSystemDatabase().tagnames_server;
+                string localfile = zipTagLocalName();
 
                 // サーバからダウンロードする.
                 HttpUtil.DownloadFile(uri, localfile);
@@ -59,12 +55,12 @@ namespace TDCGExplorer
         }
 
         // arcsnames.zipを解凍、展開する.
-        public void GetArcNamesZipInfo()
+        public void GetTagNamesZipInfo()
         {
             try
             {
-                string localfile = zipArcLocalName();
-                string arcname = "tmp/arcnames.txt";
+                string localfile = zipTagLocalName();
+                string arcname = "tmp/tagnames.txt";
 
                 // ZIPファイルを展開する.
                 IArchive arc = new ZipArchive();
@@ -75,13 +71,13 @@ namespace TDCGExplorer
                 {
                     if (entry.FileName == arcname)
                     {
-                        arcsNames.Clear();
+                        TagNames.Clear();
                         using (MemoryStream ms = new MemoryStream((int)entry.Size))
                         {
                             arc.Extract(entry, ms);
                             ms.Seek(0, SeekOrigin.Begin);
                             StreamReader reader = new StreamReader(ms, System.Text.Encoding.GetEncoding("Shift_JIS"));
-                            Regex regCsv = new System.Text.RegularExpressions.Regex("\\s*(\"(?:[^\"]|\"\")*\"|[^,]*)\\s*,\\s*(\"(?:[^\"]|\"\")*\"|[^,]*)\\s*,\\s*(\"(?:[^\"]|\"\")*\"|[^,]*)\\s*,\\s*(\"(?:[^\"]|\"\")*\"|[^,]*)\\s*", RegexOptions.None);
+                            Regex regCsv = new System.Text.RegularExpressions.Regex("\\s*(\"(?:[^\"]|\"\")*\"|[^,]*)\\s*,\\s*(\"(?:[^\"]|\"\")*\"|[^,]*)\\s*", RegexOptions.None);
 
                             // CSVファイルを展開してarcsNamesを構築する.
                             for (; ; )
@@ -89,7 +85,8 @@ namespace TDCGExplorer
                                 string line = reader.ReadLine();
                                 if (line == null) break;
                                 Match m = regCsv.Match(line);
-                                ArcsNamesEntry arcentry = new ArcsNamesEntry();
+                                //TagNamesEntry tagentry = new TagNamesEntry();
+                                string tag=null, code=null;
                                 while (m.Success)
                                 {
                                     for (int index = 1; index < 5; index++)
@@ -105,23 +102,22 @@ namespace TDCGExplorer
                                         switch (index)
                                         {
                                             case 1:
-                                                arcentry.code = field;
+                                                tag = field;
                                                 break;
                                             case 2:
-                                                arcentry.location = field;
-                                                break;
-                                            case 3:
-                                                arcentry.summary = field;
-                                                break;
-                                            case 4:
-                                                arcentry.origname = field;
+                                                code = field;
                                                 break;
                                         }
                                     }
                                     m = m.NextMatch();
                                 }
-                                if (arcsNames.ContainsKey(arcentry.code) == false)
-                                    arcsNames[arcentry.code] = arcentry;
+                                if (TagNames.ContainsKey(tag) == false)
+                                {
+                                    TagNamesEntry codeentry = new TagNamesEntry();
+                                    codeentry.tag = tag;
+                                    TagNames[tag] = codeentry;
+                                }
+                                TagNames[tag].code.Add(code);
                             }
                         }
                     }
@@ -133,9 +129,9 @@ namespace TDCGExplorer
             }
         }
 
-        public Dictionary<string, ArcsNamesEntry> entry
+        public Dictionary<string, TagNamesEntry> entry
         {
-            get { return arcsNames; }
+            get { return TagNames; }
             set { }
         }
     }
