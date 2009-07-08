@@ -24,6 +24,11 @@ struct PHONG_VS_OUTPUT
   float3 LightVec : TEXCOORD2;
 };
 
+struct PLAIN_VS_OUTPUT
+{
+  float4 vPos : POSITION;
+};
+
 PHONG_VS_OUTPUT PhongVS(VS_INPUT In)
 {
   PHONG_VS_OUTPUT Out = (PHONG_VS_OUTPUT)0;
@@ -49,11 +54,34 @@ float4 PhongPS(PHONG_VS_OUTPUT In) : COLOR0
   return diffContrib + specContrib;
 }
 
+PLAIN_VS_OUTPUT PlainVS(VS_INPUT In)
+{
+  PLAIN_VS_OUTPUT Out = (PLAIN_VS_OUTPUT)0;
+
+  Out.vPos = mul(In.Position, g_mWorldViewProj);
+  
+  return Out;
+}
+
+float4 PlainPS(PHONG_VS_OUTPUT In) : COLOR0
+{
+  return g_vSurfColor;
+}
+
 technique PhongShader
 {
   pass P0
   {
     VertexShader = compile vs_2_0 PhongVS();
     PixelShader = compile ps_2_0 PhongPS();
+  }
+}
+
+technique PlainShader
+{
+  pass P0
+  {
+    VertexShader = compile vs_2_0 PlainVS();
+    PixelShader = compile ps_2_0 PlainPS();
   }
 }
