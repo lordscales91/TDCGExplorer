@@ -51,6 +51,21 @@ public class Viewer : IDisposable
     // ライト方向
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
 
+    Vector3 target = new Vector3(5.0f, 10.0f, 0.0f);
+    float swivel = 0.0f;
+
+    public void MoveTarget(float dz, float dy, float dx)
+    {
+        target.X += dx;
+        target.Y += dy;
+        target.Z += dz;
+    }
+
+    public void MoveSwivel(float delta)
+    {
+        swivel += delta;
+    }
+
     // マウスポイントしているスクリーン座標
     private Point lastScreenPoint = Point.Empty;
 
@@ -881,28 +896,14 @@ public class Viewer : IDisposable
         if (TryGetFigure(out fig))
         {
             TSONode bone = fig.TSOList[0].nodemap[sphere_bone_name];
-
-            effect.Technique = "BONE";
-
-            Matrix wld = bone.combined_matrix * world_matrix;
-            Matrix wv = wld * Transform_View;
-            Matrix wvp = wv * Transform_Projection;
-
-            effect.SetValue("wld", wld);
-            effect.SetValue("wv", wv);
-            effect.SetValue("wvp", wvp);
-
-            effect.SetValue("ManColor", GetBoneColor(bone));
-
-            int npass = effect.Begin(0);
-            for (int ipass = 0; ipass < npass; ipass++)
-            {
-                effect.BeginPass(ipass);
-                sphere.DrawSubset(0);
-                effect.EndPass();
-            }
-            effect.End();
+            DrawMeshSub(sphere, bone.combined_matrix * world_matrix, GetBoneColor(bone));
         }
+    }
+    {
+        MatrixStack stack = new MatrixStack();
+        stack.LoadIdentity();
+        stack.Translate(target);
+        DrawMeshSub(sphere, stack.Top, new Vector4(1,1,0,1));
     }
 
         device.EndScene();
@@ -929,12 +930,35 @@ public class Viewer : IDisposable
         Thread.Sleep(30);
     }
 
+    public void DrawMeshSub(Mesh mesh, Matrix wld, Vector4 color)
+    {
+        effect.Technique = "BONE";
+
+        Matrix wv = wld * Transform_View;
+        Matrix wvp = wv * Transform_Projection;
+
+        effect.SetValue("wld", wld);
+        effect.SetValue("wv", wv);
+        effect.SetValue("wvp", wvp);
+
+        effect.SetValue("ManColor", color);
+
+        int npass = effect.Begin(0);
+        for (int ipass = 0; ipass < npass; ipass++)
+        {
+            effect.BeginPass(ipass);
+            mesh.DrawSubset(0);
+            effect.EndPass();
+        }
+        effect.End();
+    }
+
     public string sphere_bone_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck";
 
     public Vector4 GetBoneColor(TSONode node)
     {
         if (FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y))
-            return new Vector4(1,1,0,1);
+            return new Vector4(1,1,1,1);
         else
             return new Vector4(1,0,0,1);
     }

@@ -212,8 +212,8 @@ public class Viewer : IDisposable
 
         effect.SetValue("g_vEyePos", new Vector4(eye.X, eye.Y, eye.Z, 1));
 
-        cylinder = Mesh.Cylinder(device, 0.1f, 0.01f, 1.0f, 6, 8);
-        sphere = Mesh.Sphere(device, 0.12f, 6, 8);
+        cylinder = Mesh.Cylinder(device, 0.1f, 0.01f, 1.0f, 8, 6);
+        sphere = Mesh.Sphere(device, 0.12f, 8, 6);
 
         return true;
     }
@@ -268,11 +268,11 @@ public class Viewer : IDisposable
         stack.TranslateLocal(0.0f, 0.0f, 0.5f);
         DrawMeshSub(cylinder, stack.Top, new Vector4(0.0f, 0.0f, 0.5f, 1.0f));
 
-        device.EndScene();
-
         stack.LoadIdentity();
         stack.Translate(target);
         DrawMeshSub(sphere, stack.Top, new Vector4(0.5f, 0.5f, 0.0f, 1.0f));
+
+        device.EndScene();
 
         device.Present();
         Thread.Sleep(1);
