@@ -22,19 +22,29 @@ public class Program
     {
         Debug.Listeners.Add(new TextWriterTraceListener(Console.Out));
 
-        if (args.Length != 2)
+        if (args.Length < 1)
         {
-            Console.WriteLine("Usage: TSOBone <source file> <node name>");
+            Console.WriteLine("Usage: TSOBone <source file> <node name> <swivel>");
             return;
         }
         string source_file = args[0];
-        string node_name = args[1];
+        string node_name = "W_LeftShoulder";
+        if (args.Length > 1)
+        {
+            node_name = args[1];
+        }
+        float swivel = 0.0f;
+        if (args.Length > 2)
+        {
+            swivel = float.Parse(args[2]);
+        }
 
         TSOFile tso = new TSOFile();
         tso.Load(source_file);
 
         Program program = new Program(tso);
-        program.DumpNodeTree(node_name);
+        program.Solve(swivel);
+        //program.DumpNodeTree(node_name);
 
         using (Viewer viewer = new Viewer())
         using (ViewerForm form = new ViewerForm())
@@ -53,6 +63,7 @@ public class Program
                 }
             }
         }
+
     }
 
     internal TSOFile tso;
@@ -67,6 +78,88 @@ public class Program
             nodemap[node.ShortName] = node;
     }
 
+    public Vector3 GetTranslationFromMatrix(ref Matrix m)
+    {
+        return new Vector3(m.M41, m.M42, m.M43);
+    }
+
+    public void Solve(float swivel)
+    {
+        Matrix mR1 = nodemap["W_LeftArm"].transformation_matrix;
+        Vector3 vR1Pos = GetTranslationFromMatrix(ref mR1);
+
+        Matrix mR1RollLocal = nodemap["W_LeftArmRoll"].transformation_matrix;
+        Vector3 vR1RollLocalPos = GetTranslationFromMatrix(ref mR1RollLocal);
+        Matrix mRyLocal = nodemap["W_LeftForeArm"].transformation_matrix;
+        Vector3 vRyLocalPos = GetTranslationFromMatrix(ref mRyLocal);
+        Matrix mRy = mRyLocal * mR1RollLocal;
+        Vector3 vRyPos = GetTranslationFromMatrix(ref mRy);
+
+        Matrix mRyRollLocal = nodemap["W_LeftForeArmRoll"].transformation_matrix;
+        Vector3 vRyRollLocalPos = GetTranslationFromMatrix(ref mRyRollLocal);
+        Matrix mR2Local = nodemap["W_LeftHand"].transformation_matrix;
+        Matrix mR2 = mR2Local * mRyRollLocal * mRy;
+        Vector3 vR2Pos = GetTranslationFromMatrix(ref mR2);
+
+        Vector3 move = new Vector3(-1,0,0);
+        Vector3 target = vR2Pos + move;
+        Matrix target_m = mR2 * Matrix.Translation(move);
+
+        DumpVector3("vR1Pos", ref vR1Pos);
+        DumpVector3("vRyPos", ref vRyPos);
+        DumpVector3("vR2Pos", ref vR2Pos);
+        DumpVector3("target", ref target);
+
+        float upRollLen = Vector3.Length(vR1RollLocalPos);
+        float loRollLen = Vector3.Length(vRyRollLocalPos);
+        float upperLength = Vector3.Length(vRyPos);
+        float lowerLength = Vector3.Length(vR2Pos - vRyPos);
+
+        Console.WriteLine("upperLength {0:F2}", upperLength);
+        Console.WriteLine("lowerLength {0:F2}", lowerLength);
+
+        Limb.Solver solver = new Limb.Solver(upperLength, lowerLength);
+
+        Matrix R1;
+        Matrix Ry;
+        Matrix R2;
+
+        Console.WriteLine("swivel {0:F2}", swivel);
+
+        if (solver.Solve(out R1, out Ry, out R2, ref target_m, swivel))
+        {
+            DumpMatrix("R1", ref R1);
+            DumpMatrix("Ry", ref Ry);
+            DumpMatrix("R2", ref R2);
+
+            Matrix m;
+            m = R2 * Matrix.Translation(0,0,lowerLength) * Ry * Matrix.Translation(0,0,upperLength) * R1;
+            DumpMatrix("mgoal", ref m);
+
+            /*
+            Matrix m;
+            MatrixStack stack = new MatrixStack();
+
+            stack.LoadIdentity();
+
+            stack.MultiplyMatrixLocal(R1);
+            stack.TranslateLocal(0.0f, 0.0f, upperLength);
+
+            stack.MultiplyMatrixLocal(Ry);
+            stack.TranslateLocal(0.0f, 0.0f, lowerLength);
+
+            stack.MultiplyMatrixLocal(R2);
+            m = stack.Top;
+            DumpMatrix("mgoal", ref m);
+            */
+
+            nodemap["W_LeftArmRoll"].transformation_matrix = Matrix.Translation(0,0,upRollLen) * R1;
+            nodemap["W_LeftForeArm"].transformation_matrix = Matrix.Translation(0,0,upperLength-upRollLen);
+            nodemap["W_LeftForeArmRoll"].transformation_matrix = Matrix.Translation(0,0,loRollLen) * Ry;
+            nodemap["W_LeftHand"].transformation_matrix = R2 * Matrix.Translation(0,0,lowerLength-loRollLen);
+        }
+    }
+
     public void DumpNodeTree(string node_name)
     {
         TSONode node;
@@ -79,14 +172,20 @@ public class Program
 
     public void DumpNode(TSONode node)
     {
-        Console.WriteLine("node {0}", node.ShortName);
-        DumpMatrix(ref node.transformation_matrix);
+        DumpMatrix(node.ShortName, ref node.transformation_matrix);
         foreach (TSONode node_child in node.child_nodes)
             DumpNode(node_child);
     }
 
-    public void DumpMatrix(ref Matrix m)
+    public void DumpVector3(string name, ref Vector3 v)
     {
+        Console.WriteLine("v {0}", name);
+        Console.WriteLine("[ {0:F2}, {1:F2}, {2:F2} ]", v.X, v.Y, v.Z);
+    }
+
+    public void DumpMatrix(string name, ref Matrix m)
+    {
+        Console.WriteLine("m {0}", name);
         Console.WriteLine("[ [ {0:F2}, {1:F2}, {2:F2}, {3:F2} ], ", m.M11, m.M12, m.M13, m.M14);
         Console.WriteLine("  [ {0:F2}, {1:F2}, {2:F2}, {3:F2} ], ", m.M21, m.M22, m.M23, m.M24);
         Console.WriteLine("  [ {0:F2}, {1:F2}, {2:F2}, {3:F2} ], ", m.M31, m.M32, m.M33, m.M34);
