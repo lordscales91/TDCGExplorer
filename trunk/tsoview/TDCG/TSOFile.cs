@@ -298,7 +298,7 @@ namespace TDCG
         internal string name;
         internal string sname;
         public Matrix transformation_matrix;
-        internal List<TSONode> child_nodes = new List<TSONode>();
+        public List<TSONode> child_nodes = new List<TSONode>();
         public TSONode parent;
         public Matrix offset_matrix;
         public Matrix combined_matrix;
