@@ -228,7 +228,7 @@ public class Viewer : IDisposable
         //device.Transform.View = view;
         //device.Transform.Projection = proj;
 
-        mesh = Mesh.Box(device, 0.2f, 0.2f, 0.2f);
+        box = Mesh.Box(device, 0.2f, 0.2f, 0.2f);
         matrix_stack = new MatrixStack();
 
         return true;
@@ -236,7 +236,7 @@ public class Viewer : IDisposable
 
     private Matrix view;
     private Matrix proj;
-    private Mesh mesh = null;
+    private Mesh box = null;
     private MatrixStack matrix_stack = null;
     private Camera camera = null;
 
@@ -267,6 +267,7 @@ public class Viewer : IDisposable
         if (nodemap.TryGetValue(node_name, out node))
         {
             matrix_stack.LoadIdentity();
+            DrawBox(matrix_stack.Top, new Vector4(1.0f, 1.0f, 0.0f, 1.0f));
             DumpNode(node);
         }
     }
@@ -275,6 +276,15 @@ public class Viewer : IDisposable
     {
         matrix_stack.Push();
         //Console.WriteLine("node {0}", node.ShortName);
+        matrix_stack.MultiplyMatrixLocal(node.transformation_matrix);
+        DrawBox(matrix_stack.Top, GetNodeColor(node));
+        foreach (TSONode child_node in node.child_nodes)
+            DumpNode(child_node);
+        matrix_stack.Pop();
+    }
+
+    public Vector4 GetNodeColor(TSONode node)
+    {
         Vector4 color;
         if (node.ShortName == "W_LeftArm")
             color = new Vector4(1.0f, 0.0f, 0.0f, 1.0f);
@@ -286,17 +296,11 @@ public class Viewer : IDisposable
             color = new Vector4(0.0f, 0.0f, 1.0f, 1.0f);
         else
             color = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-        DumpMatrix(ref node.transformation_matrix, ref color);
-        foreach (TSONode child_node in node.child_nodes)
-            DumpNode(child_node);
-        matrix_stack.Pop();
+        return color;
     }
 
-    public void DumpMatrix(ref Matrix m, ref Vector4 color)
+    public void DrawBox(Matrix world, Vector4 color)
     {
-        matrix_stack.MultiplyMatrixLocal(m);
-        Matrix world = matrix_stack.Top;
-
         Matrix wvp = world * view * proj;
         effect.SetValue("g_mWorld", world);
         effect.SetValue("g_mWorldIT", Matrix.TransposeMatrix(Matrix.Invert(world)));
@@ -308,7 +312,7 @@ public class Viewer : IDisposable
         for (int ipass = 0; ipass < npass; ipass++)
         {
             effect.BeginPass(ipass);
-            mesh.DrawSubset(0);
+            box.DrawSubset(0);
             effect.EndPass();
         }
         effect.End();
@@ -316,8 +320,8 @@ public class Viewer : IDisposable
 
     public void Dispose()
     {
-        if (mesh != null)
-            mesh.Dispose();
+        if (box != null)
+            box.Dispose();
         if (effect != null)
             effect.Dispose();
         if (device != null)
