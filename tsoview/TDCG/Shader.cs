@@ -147,12 +147,17 @@ namespace TDCG
         /// <summary>
         /// 文字列を設定します。
         /// </summary>
-        /// <param name="value">文字列</param>
+        /// <param name="value">文字列表現</param>
         public void SetString(string value)
         {
             str = value.Trim('"');
         }
 
+        /// <summary>
+        /// float値の配列を設定します。
+        /// </summary>
+        /// <param name="value">float配列値の文字列表現</param>
+        /// <param name="dim">要素数</param>
         public void SetFloatDim(string value, int dim)
         {
             string[] token = value.Trim('[', ']', ' ').Split(',');
@@ -177,7 +182,7 @@ namespace TDCG
         /// <summary>
         /// float値を設定します。
         /// </summary>
-        /// <param name="value">float値</param>
+        /// <param name="value">float値の文字列表現</param>
         public void SetFloat(string value)
         {
             SetFloatDim(value, 1);
@@ -194,7 +199,7 @@ namespace TDCG
         /// <summary>
         /// float3値を設定します。
         /// </summary>
-        /// <param name="value">float3値</param>
+        /// <param name="value">float3値の文字列表現</param>
         public void SetFloat3(string value)
         {
             SetFloatDim(value, 3);
@@ -211,7 +216,7 @@ namespace TDCG
         /// <summary>
         /// float4値を設定します。
         /// </summary>
-        /// <param name="value">float4値</param>
+        /// <param name="value">float4値の文字列表現</param>
         public void SetFloat4(string value)
         {
             SetFloatDim(value, 4);
