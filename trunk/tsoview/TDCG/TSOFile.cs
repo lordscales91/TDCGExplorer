@@ -297,7 +297,11 @@ namespace TDCG
         internal int id;
         internal string name;
         internal string sname;
-        private Matrix transformation_matrix;
+        private Vector3 translation;
+        public Vector3 Translation { get { return translation; } set { translation = value; } }
+        private Quaternion rotation;
+        public Quaternion Rotation { get { return rotation; } set { rotation = value; } }
+
         public List<TSONode> child_nodes = new List<TSONode>();
         public TSONode parent;
         public Matrix offset_matrix;
@@ -312,7 +316,7 @@ namespace TDCG
             Matrix m = Matrix.Identity;
             while (bone != null)
             {
-                m.Multiply(bone.transformation_matrix);
+                m.Multiply(bone.TransformationMatrix);
                 bone = bone.parent;
             }
             return Matrix.Invert(m);
@@ -332,7 +336,7 @@ namespace TDCG
             Vector3 v = Vector3.Empty;
             while (bone != null)
             {
-                v = Vector3.TransformCoordinate(v, bone.transformation_matrix);
+                v = Vector3.TransformCoordinate(v, bone.TransformationMatrix);
                 bone = bone.parent;
             }
             return v;
@@ -344,19 +348,35 @@ namespace TDCG
             Matrix m = Matrix.Identity;
             while (bone != null)
             {
-                m.Multiply(bone.transformation_matrix);
+                m.Multiply(bone.TransformationMatrix);
                 bone = bone.parent;
             }
             return m;
         }
 
+        public Matrix RotationMatrix
+        {
+            get {
+                return Matrix.RotationQuaternion(rotation);
+            }
+        }
+
+        public Matrix TranslationMatrix
+        {
+            get {
+                return Matrix.Translation(translation);
+            }
+        }
+
         public Matrix TransformationMatrix
         {
             get {
-                return transformation_matrix;
+                return RotationMatrix * TranslationMatrix;
             }
             set {
-                transformation_matrix= value;
+                Matrix m = value;
+                translation = TMOMat.DecomposeMatrix(ref m);
+                rotation = Quaternion.RotationMatrix(m);
             }
         }
     }
