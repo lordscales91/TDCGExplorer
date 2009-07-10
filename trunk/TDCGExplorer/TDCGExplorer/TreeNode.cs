@@ -40,7 +40,7 @@ namespace TDCGExplorer
 
         public override void DoTvTreeSelect()
         {
-            TDCGExplorer.GetMainForm().ListBoxMainView.Items.Clear();
+            TDCGExplorer.GetMainForm().ListBoxClear();
             foreach (ArcsTahEntry file in Entries)
             {
                 TDCGExplorer.GetMainForm().ListBoxMainView.Items.Add(new LbFileItem(file));
@@ -66,17 +66,77 @@ namespace TDCGExplorer
 
         public override void DoTvTreeSelect()
         {
-            TDCGExplorer.GetMainForm().ListBoxMainView.Items.Clear();
+            TDCGExplorer.GetMainForm().ListBoxClear();
             //セレクトされたときにSQLに問い合わせる.
             List<ArcsZipTahEntry> files = TDCGExplorer.GetArcsDatabase().GetZipTahs(zipid);
             foreach (ArcsZipTahEntry file in files)
             {
                 TDCGExplorer.GetMainForm().ListBoxMainView.Items.Add(new LbZipFileItem(file));
             }
+#if false
             // MODREFサーバに問い合わせる.
-            if (TDCGExplorer.GetSystemDatabase().modrefpage_enable == "true")
+            if (TDCGExplorer.GetSystemDatabase().modrefserver_alwaysenable == "true")
             {
                 TDCGExplorer.GetMainForm().AssignTagPageControl(new MODRefPage(zipid));
+            }
+#endif
+            // ZIPページを開いた時の動作を指定する (none:なにもしない server:サーバにアクセス image:画像表示 text:テキスト表示)
+            // public string zippage_behavior
+            switch (TDCGExplorer.GetSystemDatabase().zippage_behavior)
+            {
+                case "server":
+                    {
+                        TDCGExplorer.GetMainForm().AssignTagPageControl(new MODRefPage(zipid));
+                    }
+                    return;
+                case "image":
+                    foreach (ArcsZipTahEntry entry in files)
+                    {
+                        string ext = Path.GetExtension(entry.path).ToLower();
+                        if (ext == ".bmp" || ext == ".png" || ext == ".jpg" || ext == ".gif" || ext == ".tif")
+                        {
+                            string savefilpath = entry.path.ToLower();
+                            if (savefilpath.EndsWith(".tdcgsav.png") || savefilpath.EndsWith(".tdcgsav.bmp")) continue;
+
+                            TDCGExplorer.GetMainForm().AssignTagPageControl(new ImagePageControl(new ZipTahInfo(entry)));
+                            return;
+                        }
+                    }
+                    foreach (ArcsZipTahEntry entry in files)
+                    {
+                        string ext = Path.GetExtension(entry.path).ToLower();
+                        if (ext == ".txt" || ext == ".doc" || ext == ".xml")
+                        {
+                            TDCGExplorer.GetMainForm().AssignTagPageControl(new TextPageControl(new ZipTahInfo(entry)));
+                            return;
+                        }
+                    }
+                    break;
+                case "text":
+                    foreach (ArcsZipTahEntry entry in files)
+                    {
+                        string ext = Path.GetExtension(entry.path).ToLower();
+                        if (ext == ".txt" || ext == ".doc" || ext == ".xml")
+                        {
+                            TDCGExplorer.GetMainForm().AssignTagPageControl(new TextPageControl(new ZipTahInfo(entry)));
+                            return;
+                        }
+                    }
+                    foreach (ArcsZipTahEntry entry in files)
+                    {
+                        string ext = Path.GetExtension(entry.path).ToLower();
+                        if (ext == ".bmp" || ext == ".png" || ext == ".jpg" || ext == ".gif" || ext == ".tif")
+                        {
+                            string savefilpath = entry.path.ToLower();
+                            if (savefilpath.EndsWith(".tdcgsav.png") || savefilpath.EndsWith(".tdcgsav.bmp")) continue;
+
+                            TDCGExplorer.GetMainForm().AssignTagPageControl(new ImagePageControl(new ZipTahInfo(entry)));
+                            return;
+                        }
+                    }
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -115,7 +175,7 @@ namespace TDCGExplorer
 
         public override void DoTvTreeSelect()
         {
-            TDCGExplorer.GetMainForm().ListBoxMainView.Items.Clear();
+            TDCGExplorer.GetMainForm().ListBoxClear();
             foreach (CollisionItem file in entries)
             {
                 TDCGExplorer.GetMainForm().ListBoxMainView.Items.Add(new LbCollisionItem(file));
@@ -123,4 +183,34 @@ namespace TDCGExplorer
         }
     }
 
+    public class SavefileNode : TahGenTreeNode
+    {
+        List<string> Files = new List<string>();
+
+        public SavefileNode(string text,string directory) : base( text )
+        {
+            string[] files = Directory.GetFiles(directory, "*.*");
+            foreach (string file in files)
+            {
+                if (file.EndsWith(".tdcgsav.png") || file.EndsWith(".tdcgsav.bmp"))
+                {
+                    Files.Add(file);
+                }
+            }
+        }
+
+        public override void DoTvTreeSelect()
+        {
+            TDCGExplorer.GetMainForm().ListBoxClear();
+            foreach (string file in Files)
+            {
+                TDCGExplorer.GetMainForm().ListBoxMainView.Items.Add(new LbSaveFileItem(file));
+            }
+        }
+
+        public int Count
+        {
+            get { return Files.Count; }
+        }
+    }
 }

@@ -237,6 +237,15 @@ namespace TDCGExplorer
                 }
                 try
                 {
+                    cmd.CommandText = "CREATE INDEX ZipTahFilesEntry_Hash ON ZipTahFilesEntry(HASH)";
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                try
+                {
                     cmd.CommandText = "CREATE INDEX FilesEntry_Path ON FilesEntry(PATH)";
                     cmd.ExecuteNonQuery();
                 }
@@ -289,6 +298,15 @@ namespace TDCGExplorer
                 {
                     Debug.WriteLine(e.Message);
                 }
+                try
+                {
+                    cmd.CommandText = "CREATE INDEX ZipTahFilesEntry_Path ON ZipTahFilesEntry(PATH)";
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
             }
         }
 
@@ -299,6 +317,15 @@ namespace TDCGExplorer
                 try
                 {
                     cmd.CommandText = "DROP INDEX FilesEntry_Hash";
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                try
+                {
+                    cmd.CommandText = "DROP INDEX ZipTahFilesEntry_Hash";
                     cmd.ExecuteNonQuery();
                 }
                 catch (Exception e)
@@ -353,6 +380,15 @@ namespace TDCGExplorer
                 try
                 {
                     cmd.CommandText = "DROP INDEX ZipTahEntry_SHORTNAME";
+                    cmd.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                try
+                {
+                    cmd.CommandText = "DROP INDEX ZipTahFilesEntry_Path";
                     cmd.ExecuteNonQuery();
                 }
                 catch (Exception e)
@@ -972,6 +1008,31 @@ namespace TDCGExplorer
             return list;
         }
 
+
+        // ZIP中の指定したTAHを取得する.
+        public ArcsZipTahEntry GetZipTah(int tahid)
+        {
+            ArcsZipTahEntry entry = new ArcsZipTahEntry();
+            using (SQLiteCommand cmd = cnn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT ID,PATH,SHORTNAME,TAHVERSION,ZIPID FROM ZipTahEntry WHERE ID=@tahid";
+                cmd.Parameters.AddWithValue("tahid", tahid.ToString());
+                using (SQLiteDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        entry.id = int.Parse(reader[0].ToString());
+                        entry.path = reader[1].ToString();
+                        entry.shortname = reader[2].ToString();
+                        entry.version = int.Parse(reader[3].ToString());
+                        entry.zipid = int.Parse(reader[4].ToString());
+                        break;
+                    }
+                }
+            }
+            return entry;
+        }
+
         // 指定したtahに含まれるファイルを取得する.
         public List<ArcsTahFilesEntry> GetZipTahFilesEntries(int tahid)
         {
@@ -998,7 +1059,33 @@ namespace TDCGExplorer
             return value;
         }
 
-        // 指定したtahに含まれるファイルを取得する.
+        // 指定したファイルを取得する.
+        public List<ArcsTahFilesEntry> GetZipTahFilesEntries(uint hash)
+        {
+            List<ArcsTahFilesEntry> list = new List<ArcsTahFilesEntry>();
+            using (SQLiteCommand cmd = cnn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT ID,TAHID,TAHENTRY,PATH,HASH,LENGTH FROM ZipTahFilesEntry WHERE HASH=@hash";
+                cmd.Parameters.AddWithValue("hash", (int)hash);
+                using (SQLiteDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ArcsTahFilesEntry entry = new ArcsTahFilesEntry();
+                        entry.id = int.Parse(reader[0].ToString());
+                        entry.tahid = int.Parse(reader[1].ToString());
+                        entry.tahentry = int.Parse(reader[2].ToString());
+                        entry.path = reader[3].ToString();
+                        entry.hash = int.Parse(reader[4].ToString());
+                        entry.length = int.Parse(reader[5].ToString());
+                        list.Add(entry);
+                    }
+                }
+            }
+            return list;
+        }
+
+        // 指定したIDのファイルを取得する.
         public ArcsTahFilesEntry GetTahFilesEntry(int filesid)
         {
             ArcsTahFilesEntry entry = null;
@@ -1022,6 +1109,33 @@ namespace TDCGExplorer
                 }
             }
             return entry;
+        }
+
+        // 指定したファイル名のtahファイルを取得する.
+        public List<ArcsTahFilesEntry> GetTahFilesEntry(uint hash)
+        {
+            List<ArcsTahFilesEntry> list = new List<ArcsTahFilesEntry>();
+            using (SQLiteCommand cmd = cnn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT ID,TAHID,TAHENTRY,PATH,HASH,LENGTH FROM FilesEntry WHERE HASH=@hash";
+                cmd.Parameters.AddWithValue("hash", (int)hash);
+                using (SQLiteDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ArcsTahFilesEntry entry = null;
+                        entry = new ArcsTahFilesEntry();
+                        entry.id = int.Parse(reader[0].ToString());
+                        entry.tahid = int.Parse(reader[1].ToString());
+                        entry.tahentry = int.Parse(reader[2].ToString());
+                        entry.path = reader[3].ToString();
+                        entry.hash = int.Parse(reader[4].ToString());
+                        entry.length = int.Parse(reader[5].ToString());
+                        list.Add(entry);
+                    }
+                }
+            }
+            return list;
         }
 
 

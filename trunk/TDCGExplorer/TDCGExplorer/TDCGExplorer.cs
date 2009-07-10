@@ -11,6 +11,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Drawing;
 using System.Data.SQLite;
+using ArchiveLib;
 
 namespace TDCGExplorer
 {
@@ -152,9 +153,11 @@ namespace TDCGExplorer
             edit.textZipRegexp = GetSystemDatabase().zip_regexp;
             edit.textArcnamesServer = GetSystemDatabase().arcnames_server;
             edit.textWorkPath = GetSystemDatabase().work_path;
-            edit.lookupmodref = GetSystemDatabase().modrefpage_enable=="true";
+            edit.lookupmodref = GetSystemDatabase().modrefserver_alwaysenable=="true";
             edit.textModRegexp = GetSystemDatabase().directaccess_signature;
             edit.textTagnamesServer = GetSystemDatabase().tagnames_server;
+            edit.uiBehavior = GetSystemDatabase().zippage_behavior;
+            edit.saveDirectory = GetSystemDatabase().savefile_directory;
             
             if (edit.ShowDialog() == DialogResult.OK)
             {
@@ -165,10 +168,12 @@ namespace TDCGExplorer
                 GetSystemDatabase().zip_regexp = edit.textZipRegexp;
                 GetSystemDatabase().arcnames_server = edit.textArcnamesServer;
                 GetSystemDatabase().work_path = edit.textWorkPath;
-                if (edit.lookupmodref == true) GetSystemDatabase().modrefpage_enable = "true";
-                else GetSystemDatabase().modrefpage_enable = "false";
+                if (edit.lookupmodref == true) GetSystemDatabase().modrefserver_alwaysenable = "true";
+                else GetSystemDatabase().modrefserver_alwaysenable = "false";
                 GetSystemDatabase().directaccess_signature = edit.textModRegexp;
                 GetSystemDatabase().tagnames_server = edit.textTagnamesServer;
+                GetSystemDatabase().zippage_behavior = edit.uiBehavior;
+                GetSystemDatabase().savefile_directory = edit.saveDirectory;
             }
         }
 
@@ -457,6 +462,76 @@ namespace TDCGExplorer
                     }
                 }
             }
+        }
+
+        // サブディレクトリを再帰的に調べる.
+        private static void iterSubDirectory(List<string> directories, string directory,string except)
+        {
+            // 自分自身はスキャンしない.
+            if (directory == except) return;
+            // ディレクトリを追加する.
+            directories.Add(directory);
+            string[] entries = Directory.GetDirectories(directory);
+            foreach (string entry in entries)
+            {
+                iterSubDirectory(directories, entry,except);
+            }
+        }
+
+        public static void MakeSavefileTreeView(TreeView tvTree)
+        {
+            string savedir = GetSystemDatabase().savefile_directory;
+            List<string> directories = new List<string>();
+            iterSubDirectory(directories, savedir, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), TDCGExplorer.GetAppDataPath()));
+
+            SavefileNode savenode = new SavefileNode(savedir,savedir);
+            tvTree.Nodes.Add(savenode);
+            // tahを展開する.
+            foreach (string dir in directories)
+            {
+                if (dir == savedir) continue;
+
+                SavefileNode node = new SavefileNode(Path.GetFileName(dir), dir);
+                if (node.Count == 0) continue;
+
+                char[] separetor = { '\\', '/' };
+                string entry = dir.Substring(savedir.Length + 1);
+                string[] toplevel = entry.Split(separetor);
+
+                // tahエントリを持つsubnodeを作る.
+                if (toplevel.Length == 1)
+                {
+                    savenode.Nodes.Add(node);
+                }
+                else
+                {
+                    SavefileNode currentNode = null;
+                    SavefileNode parentNode = savenode;
+                    int count = 1;
+                    foreach (string sublevel in toplevel)
+                    {
+                        currentNode = null;
+                        foreach (SavefileNode nodes in parentNode.Nodes)
+                        {
+                            if (nodes.Text == sublevel)
+                            {
+                                currentNode = nodes;
+                                break;
+                            }
+                        }
+                        if (currentNode == null)
+                        {
+                            currentNode = new SavefileNode(sublevel,dir);//parentNode.Nodes.Add(sublevel);
+                            parentNode.Nodes.Add(currentNode);
+                        }
+                        parentNode = currentNode;
+                        if (++count == toplevel.Length) break; // 末端ノードの一つ前で止める.
+                    }
+                    // 末端レベルにファイル情報を格納する.
+                    currentNode.Nodes.Add(node);
+                }
+            }
+            savenode.Expand();
         }
 
         // データベースがビルド済みならツリーを展開する.

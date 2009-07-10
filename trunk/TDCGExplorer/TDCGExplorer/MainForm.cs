@@ -241,6 +241,15 @@ namespace TDCGExplorer
             }
         }
 
+        public void clearTSOViewer()
+        {
+            if (viewer != null)
+            {
+                viewer.ClearFigureList();
+                fInitialTmoLoad = false;
+            }
+        }
+
         // 初期設定を行う.
         private void editSystemDatabaseToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
@@ -283,6 +292,8 @@ namespace TDCGExplorer
                 foreach (TreeNode node in treeViewCollision.Nodes)
                     TDCGExplorer.FindTreeNode(node, dialog.text);
                 foreach (TreeNode node in treeViewTag.Nodes)
+                    TDCGExplorer.FindTreeNode(node, dialog.text);
+                foreach (TreeNode node in treeViewSaveFile.Nodes)
                     TDCGExplorer.FindTreeNode(node, dialog.text);
                 Cursor.Current = Cursors.Default;
             }
@@ -396,11 +407,17 @@ namespace TDCGExplorer
             treeViewZips.Nodes.Clear();
             treeViewInstalled.Nodes.Clear();
             treeViewTag.Nodes.Clear();
+            treeViewSaveFile.Nodes.Clear();
             // リストボックスの中身を消去する.
-            listBoxMainListBox.Items.Clear();
+            ListBoxClear();
             // ページを消去する.
             tabMainView.TabPages.Clear();
+        }
 
+        // リストボックスを消去する.
+        public void ListBoxClear()
+        {
+            listBoxMainListBox.Items.Clear();
         }
 
         // フォーカスを失った時にハイライトするツリーノードを覚えておく.
@@ -437,6 +454,7 @@ namespace TDCGExplorer
                 TDCGExplorer.MakeCollisionTreeView(treeViewCollision);
                 TDCGExplorer.MakeInstalledArcsTreeView(treeViewInstalled);
                 TDCGExplorer.MakeTagTreeView(treeViewTag);
+                TDCGExplorer.MakeSavefileTreeView(treeViewSaveFile);
 
                 // 初期表示に戻す
                 tabControlTreeContainor.SelectTab(0);
@@ -668,6 +686,28 @@ namespace TDCGExplorer
             {
                 Debug.WriteLine(exception.Message);
             }
+        }
+
+        // セーブファイルツリー
+        private void treeViewSaveFile_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            TreeView_AfterSelect(sender, e);
+        }
+
+        private void treeViewSaveFile_Enter(object sender, EventArgs e)
+        {
+            TreeViewForcusEnter(sender, e);
+        }
+
+        private void treeViewSaveFile_Leave(object sender, EventArgs e)
+        {
+            TrewViewForcusLeave(sender, e);
+        }
+
+        private void treeViewSaveFile_MouseEnter(object sender, EventArgs e)
+        {
+            Control obj = (Control)sender;
+            obj.Focus();
         }
     }
 }

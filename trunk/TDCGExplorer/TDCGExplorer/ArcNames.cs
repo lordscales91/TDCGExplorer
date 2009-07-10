@@ -24,10 +24,18 @@ namespace TDCGExplorer
 
         public void Init()
         {
-            // arcsname.zipをダウンロードする.
-            if (File.Exists(zipArcLocalName()) == false)
+            if (TDCGExplorer.GetSystemDatabase().modrefserver_alwaysenable == "true")
             {
+                // 毎回とりにいく.
                 if (DownloadArcNamesZipFromServer() == false) return;
+            }
+            else
+            {
+                // arcsname.zipをダウンロードする.
+                if (File.Exists(zipArcLocalName()) == false)
+                {
+                    if (DownloadArcNamesZipFromServer() == false) return;
+                }
             }
             GetArcNamesZipInfo();
         }
