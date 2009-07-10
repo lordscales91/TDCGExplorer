@@ -297,7 +297,7 @@ namespace TDCG
         internal int id;
         internal string name;
         internal string sname;
-        public Matrix transformation_matrix;
+        private Matrix transformation_matrix;
         public List<TSONode> child_nodes = new List<TSONode>();
         public TSONode parent;
         public Matrix offset_matrix;
@@ -348,6 +348,16 @@ namespace TDCG
                 bone = bone.parent;
             }
             return m;
+        }
+
+        public Matrix TransformationMatrix
+        {
+            get {
+                return transformation_matrix;
+            }
+            set {
+                transformation_matrix= value;
+            }
         }
     }
 
@@ -562,9 +572,11 @@ namespace TDCG
             }
 
             int node_matrix_count = reader.ReadInt32();
+            Matrix m = Matrix.Identity;
             for (int i = 0; i < node_matrix_count; i++)
             {
-                ReadMatrix(ref nodes[i].transformation_matrix);
+                ReadMatrix(ref m);
+                nodes[i].TransformationMatrix = m;
             }
             for (int i = 0; i < node_matrix_count; i++)
             {

@@ -234,7 +234,7 @@ public class Figure : IDisposable
     {
         matrixStack.Push();
 
-        matrixStack.MultiplyMatrixLocal(tso_node.transformation_matrix);
+        matrixStack.MultiplyMatrixLocal(tso_node.TransformationMatrix);
         tso_node.combined_matrix = matrixStack.Top;
 
         foreach (TSONode child_node in tso_node.child_nodes)
@@ -252,10 +252,10 @@ public class Figure : IDisposable
             // TMO animation
             TMONode tmo_node;
             if (nodemap.TryGetValue(tso_node, out tmo_node))
-                tso_node.transformation_matrix = tmo_frame.matrices[tmo_node.ID].m;
+                tso_node.TransformationMatrix = tmo_frame.matrices[tmo_node.ID].m;
         }
 
-        matrixStack.MultiplyMatrixLocal(tso_node.transformation_matrix);
+        matrixStack.MultiplyMatrixLocal(tso_node.TransformationMatrix);
         tso_node.combined_matrix = matrixStack.Top;
 
         foreach (TSONode child_node in tso_node.child_nodes)
