@@ -397,6 +397,7 @@
             this.tabControlTreeContainor.SelectedIndex = 0;
             this.tabControlTreeContainor.Size = new System.Drawing.Size(173, 399);
             this.tabControlTreeContainor.TabIndex = 4;
+            this.tabControlTreeContainor.SelectedIndexChanged += new System.EventHandler(this.tabControlTreeContainor_SelectedIndexChanged);
             // 
             // tabPageArcs
             // 
@@ -608,7 +609,7 @@
             this.NewTabToolStripMenuItem,
             this.ファイルを展開するToolStripMenuItem});
             this.ListBoxContextMenuStrip.Name = "contextMenuStrip1";
-            this.ListBoxContextMenuStrip.Size = new System.Drawing.Size(183, 70);
+            this.ListBoxContextMenuStrip.Size = new System.Drawing.Size(183, 48);
             // 
             // NewTabToolStripMenuItem
             // 

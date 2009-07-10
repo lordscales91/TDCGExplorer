@@ -120,6 +120,7 @@ namespace TDCGExplorer
             {
                 viewer.Dispose();
                 viewer = null;
+                TDCGExplorer.SetToolTips("error:" + ex.Message);
                 Debug.WriteLine(ex.Message);
             }
         }
@@ -148,7 +149,6 @@ namespace TDCGExplorer
         // ツリーを展開する.
         private void expandAllToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            SuspendLayout();
             try
             {
                 TreeNode node = (TreeNode)lastSelectTreeNode;
@@ -156,9 +156,9 @@ namespace TDCGExplorer
             }
             catch (Exception exception)
             {
+                TDCGExplorer.SetToolTips("error:" + exception.Message);
                 Debug.WriteLine(exception.Message);
             }
-            ResumeLayout();
         }
 
         // タブを閉じる.
@@ -190,7 +190,7 @@ namespace TDCGExplorer
             }
             catch (Exception exception)
             {
-                MessageBox.Show("Error occured:"+exception.Message, "Extract", MessageBoxButtons.OK);
+                TDCGExplorer.SetToolTips("error:" + exception.Message);
                 Debug.WriteLine(exception.Message);
             }
             Cursor.Current = Cursors.Default;
@@ -272,6 +272,7 @@ namespace TDCGExplorer
             }
             catch (Exception exception)
             {
+                TDCGExplorer.SetToolTips("error:" + exception.Message);
                 Debug.WriteLine(exception.Message);
             }
         }
@@ -309,7 +310,6 @@ namespace TDCGExplorer
         // リストアイテムが選択された.
         private void listBoxMainListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            SuspendLayout();
             try
             {
                 int index = listBoxMainListBox.SelectedIndex;
@@ -322,15 +322,14 @@ namespace TDCGExplorer
             }
             catch (Exception exception)
             {
+                TDCGExplorer.SetToolTips("error:" + exception.Message);
                 Debug.WriteLine(exception.Message);
             }
-            ResumeLayout();
         }
 
         // 新規タブでページを開く.
         private void NewTabPageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            SuspendLayout();
             try
             {
                 TabPage tabPage = new TabPage();
@@ -340,9 +339,9 @@ namespace TDCGExplorer
             }
             catch (Exception exception)
             {
+                TDCGExplorer.SetToolTips("error:" + exception.Message);
                 Debug.WriteLine(exception.Message);
             }
-            ResumeLayout();
         }
 
         // タブを取得する。無い時は新規に作る.
@@ -361,16 +360,12 @@ namespace TDCGExplorer
         public void AssignTagPageControl(Control control)
         {
             TabPage currentPage = GetCurrentTagPage();
-            tabMainView.SuspendLayout();
             control.ClientSize = currentPage.Size;
-            currentPage.SuspendLayout();
             currentPage.Text = control.Text;
             Control lastControl = null;
             if (currentPage.Controls.Count > 0) lastControl = currentPage.Controls[0];
             currentPage.Controls.Add(control);
             if (lastControl != null) lastControl.Dispose();
-            currentPage.ResumeLayout();
-            tabMainView.ResumeLayout();
         }
 
         // アノテーションを表示する
@@ -474,7 +469,6 @@ namespace TDCGExplorer
         private void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeView treeView = (TreeView)sender;
-            SuspendLayout();
             try
             {
                 TahGenTreeNode node = (TahGenTreeNode)treeView.SelectedNode;
@@ -485,7 +479,6 @@ namespace TDCGExplorer
                 Debug.WriteLine(exception.Message);
             }
             HilightTreeNode(treeView.SelectedNode);
-            ResumeLayout();
         }
 
         // ツリーで選択されたら.
@@ -631,7 +624,7 @@ namespace TDCGExplorer
             }
             catch (Exception exception)
             {
-                MessageBox.Show("Error occured.", "Extract", MessageBoxButtons.OK);
+                TDCGExplorer.SetToolTips("error:" + exception.Message);
                 Debug.WriteLine(exception.Message);
             }
             Cursor.Current = Cursors.Default;
@@ -685,6 +678,7 @@ namespace TDCGExplorer
             }
             catch (Exception exception)
             {
+                TDCGExplorer.SetToolTips("error:" + exception.Message);
                 Debug.WriteLine(exception.Message);
             }
         }
@@ -726,6 +720,67 @@ namespace TDCGExplorer
             catch (Exception exception)
             {
                 MessageBox.Show("ファイル展開エラー:"+exception.Message, "エラー", MessageBoxButtons.OK);
+            }
+        }
+
+        // タブが切り替わったら選択中の内容を復元する.
+        private void tabControlTreeContainor_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TreeView [] nodeArray = { treeViewArcs,
+                                      treeViewZips,
+                                      treeViewInstalled,
+                                      treeViewCollision,
+                                      treeViewTag,
+                                      treeViewSaveFile };
+
+            int index = tabControlTreeContainor.SelectedIndex;
+
+            TreeNode node = null;
+
+            if (index >= 0 && index <= 5)
+            {
+                node = nodeArray[index].SelectedNode;
+                if (node != null)
+                {
+                    if (lastSelectTreeNode != null)
+                        lastSelectTreeNode.BackColor = lastSelectTreeNodeColor;
+                    node.BackColor = Color.LightBlue;
+                    lastSelectTreeNode = node;
+                    try
+                    {
+                        ((TahGenTreeNode)node).DoTvTreeSelect();
+                    }
+                    catch (Exception ex)
+                    {
+                        ListBoxClear();
+                        Debug.WriteLine(ex.Message);
+                    }
+                }
+                else
+                {
+                    node = nodeArray[index].Nodes[0];
+                    if (node != null)
+                    {
+                        nodeArray[index].SelectedNode = node;
+                        if (lastSelectTreeNode != null)
+                            lastSelectTreeNode.BackColor = lastSelectTreeNodeColor;
+                        node.BackColor = Color.LightBlue;
+                        lastSelectTreeNode = node;
+                        try
+                        {
+                            ((TahGenTreeNode)node).DoTvTreeSelect();
+                        }
+                        catch (Exception ex)
+                        {
+                            ListBoxClear();
+                            Debug.WriteLine(ex.Message);
+                        }
+                    }
+                    else
+                    {
+                        ListBoxClear();
+                    }
+                }
             }
         }
     }
