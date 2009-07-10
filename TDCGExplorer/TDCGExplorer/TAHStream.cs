@@ -17,8 +17,6 @@ namespace TDCGExplorer
 
         public TAHStream(GenTahInfo info, ArcsTahFilesEntry tsoInfo)
         {
-            //string ext = Path.GetExtension(tsoInfo.path).ToLower();
-
             // zipファイルの中か?
             if (info.zipid != -1)
             {

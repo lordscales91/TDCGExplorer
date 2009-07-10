@@ -300,6 +300,10 @@ namespace TDCGExplorer
             if (output.Length == 0)
                 return;
 
+            // add konoa:tahdecryptorのバグ回避.
+            if (input.Length == 0)
+                return;
+
             TAHUtil.Decrypt(input, output);
             //TAHdecrypt.Decrypter.decrypt(ref input, (uint)input.Length, ref output, (uint)output.Length);
 
