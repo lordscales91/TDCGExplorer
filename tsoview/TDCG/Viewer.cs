@@ -1043,13 +1043,13 @@ public class Viewer : IDisposable
         {
             Vector3 rotAxis = Vector3.Cross(toEffector, toTarget);
             Quaternion q = Quaternion.RotationAxis(rotAxis, rotAngle);
-            Matrix m = node.transformation_matrix;
+            Matrix m = node.TransformationMatrix;
             Vector3 v = TMOMat.DecomposeMatrix(ref m);
             m *= Matrix.RotationQuaternion(q);
             m.M41 = v.X;
             m.M42 = v.Y;
             m.M43 = v.Z;
-            node.transformation_matrix = m;
+            node.TransformationMatrix = m;
         }
         if ((localEffectorP - localTargetP).LengthSq() < 0.1f)
             solved = true;
