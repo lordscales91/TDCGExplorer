@@ -212,17 +212,17 @@ public class TSOForm : Form
         float keyZRol = 0.0f;
 
         if (keys[(int)Keys.Left])
-            keyL = 0.2f;
+            keyL = 0.1f;
         if (keys[(int)Keys.Right])
-            keyR = 0.2f;
+            keyR = 0.1f;
         if (keys[(int)Keys.PageUp])
-            keyU = 0.2f;
+            keyU = 0.1f;
         if (keys[(int)Keys.PageDown])
-            keyD = 0.2f;
+            keyD = 0.1f;
         if (keys[(int)Keys.Up])
-            keyPush = 0.2f;
+            keyPush = 0.1f;
         if (keys[(int)Keys.Down])
-            keyPull = 0.2f;
+            keyPull = 0.1f;
         if (keys[(int)Keys.A])
             keyZRol = -2.0f;
         if (keys[(int)Keys.D])
