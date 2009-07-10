@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
-using TAHdecrypt;
+using TMOTool;
 
-namespace TDCG.TMOTool.Command
+namespace TMOTool.Command
 {
     public class Ika : ITMOCommand
     {

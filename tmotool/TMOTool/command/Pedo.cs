@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
-using TAHdecrypt;
+using TMOTool;
 
-namespace TDCG.TMOTool.Command
+namespace TMOTool.Command
 {
     public class Pedo : ITMOCommand
     {
-        Dictionary<string, TMONode> nodes;
-        public Dictionary<string, TMONode> Nodes { set { nodes = value; }}
+        Dictionary<string, TDCG.TMONode> nodes;
+        public Dictionary<string, TDCG.TMONode> Nodes { set { nodes = value; }}
 
         static float DegreeToRadian(float angle)
         {
@@ -19,7 +19,7 @@ namespace TDCG.TMOTool.Command
 
         public void Execute()
         {
-            TMONode node;
+            TDCG.TMONode node;
 node = nodes["W_Hips"];
 node.Scale1(0.93F, 0.75F, 0.85F);
 node = nodes["W_LeftUpLeg"];

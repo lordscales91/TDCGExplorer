@@ -2,15 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace TAHdecrypt
+namespace TMODom
 {
     public interface ITMOCommand
     {
-        Dictionary<string, TMONode> Nodes { set; }
+        Dictionary<string, TDCG.TMONode> Nodes { set; }
         void Execute();
     }
 
-    class TMODom
+    class Program
     {
         static void Main(string[] args) 
         {
@@ -23,7 +23,7 @@ namespace TAHdecrypt
             string source_file = args[0];
             string dest_file = source_file + ".tmp";
 
-            TMOFile tmo = new TMOFile();
+            TDCG.TMOFile tmo = new TDCG.TMOFile();
             try
             {
                 tmo.Load(source_file);
@@ -39,9 +39,9 @@ namespace TAHdecrypt
                 return;
             }
 
-            Dictionary<string, TMONode> nodes = new Dictionary<string, TMONode>();
+            Dictionary<string, TDCG.TMONode> nodes = new Dictionary<string, TDCG.TMONode>();
 
-            foreach(TMONode node in tmo.nodes)
+            foreach (TDCG.TMONode node in tmo.nodes)
             try {
                 nodes.Add(node.ShortName, node);
             } catch (ArgumentException) {
@@ -49,7 +49,7 @@ namespace TAHdecrypt
             }
 
             try {
-                ITMOCommand command = new TDCG.TMOTool.Command.Dom();
+                TMOTool.ITMOCommand command = new TMOTool.Command.Dom();
                 command.Nodes = nodes;
                 command.Execute();
             } catch (KeyNotFoundException) {

@@ -4,8 +4,9 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
 using CSScriptLibrary;
+using TDCG;
 
-namespace TAHdecrypt
+namespace TMOTool
 {
     public interface ITMOCommand
     {
@@ -13,7 +14,7 @@ namespace TAHdecrypt
         void Execute();
     }
 
-    public class TMOTool
+    public class Program
     {
         static Regex re;
         static List<string> script_names = new List<string>();
@@ -111,7 +112,7 @@ namespace TAHdecrypt
                 foreach (string script_name in script_names)
                 {
                     string script_file = Path.Combine(GetCommandPath(), script_name + ".cs");
-                    var script = CSScript.Load(script_file).CreateInstance("TDCG.TMOTool.Command." + script_name).AlignToInterface<ITMOCommand>();
+                    var script = CSScript.Load(script_file).CreateInstance("TMOTool.Command." + script_name).AlignToInterface<ITMOCommand>();
                     script.Nodes = nodes;
                     script.Execute();
                 }
