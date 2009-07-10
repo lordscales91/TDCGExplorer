@@ -78,28 +78,24 @@ namespace TDCGExplorer
             return retval;
         }
 
-        // システムデータベースの取得.
-        public static SystemDatabase GetSystemDatabase()
+        public static SystemDatabase SystemDB
         {
-            return systemDatabase;
+            get { return systemDatabase; }
         }
 
-        // arcsデータベースの取得.
-        public static ArcsDatabase GetArcsDatabase()
+        public static ArcsDatabase ArcsDB
         {
-            return arcsDatabase;
+            get { return arcsDatabase; }
         }
 
-        // 注訳DBの取得.
-        public static AnnotationDB GetAnnoDatabase()
+        public static AnnotationDB AnnDB
         {
-            return annotationDatabase;
+            get { return annotationDatabase; }
         }
 
-        // formの取得.
-        public static MainForm GetMainForm()
+        public static MainForm MainFormWindow
         {
-            return form;
+            get { return form; }
         }
 
         public static bool DownloadArcNamesZipFromServer()
@@ -122,14 +118,14 @@ namespace TDCGExplorer
             tagNames.GetTagNamesZipInfo();
         }
 
-        public static Dictionary<string, ArcsNamesEntry> getArcsnames()
+        public static Dictionary<string, ArcsNamesEntry> Arcsnames
         {
-            return arcNames.entry;
+            get { return arcNames.entry; }
         }
 
-        public static Dictionary<string, TagNamesEntry> getTagnames()
+        public static Dictionary<string, TagNamesEntry> Tagnames
         {
-            return tagNames.entry;
+            get { return tagNames.entry; }
         }
 
         // データベース生成.
@@ -147,40 +143,40 @@ namespace TDCGExplorer
         {
             if (fThreadRun == true) return;
             EditSystemDatabase edit = new EditSystemDatabase();
-            edit.textArcPath = GetSystemDatabase().arcs_path;
-            edit.textZipPath = GetSystemDatabase().zips_path;
-            edit.textModDbUrl = GetSystemDatabase().moddb_url;
-            edit.textZipRegexp = GetSystemDatabase().zip_regexp;
-            edit.textArcnamesServer = GetSystemDatabase().arcnames_server;
-            edit.textWorkPath = GetSystemDatabase().work_path;
-            edit.lookupmodref = GetSystemDatabase().modrefserver_alwaysenable=="true";
-            edit.textModRegexp = GetSystemDatabase().directaccess_signature;
-            edit.textTagnamesServer = GetSystemDatabase().tagnames_server;
-            edit.uiBehavior = GetSystemDatabase().zippage_behavior;
-            edit.saveDirectory = GetSystemDatabase().savefile_directory;
-            edit.Owner = GetMainForm();
+            edit.textArcPath = SystemDB.arcs_path;
+            edit.textZipPath = SystemDB.zips_path;
+            edit.textModDbUrl = SystemDB.moddb_url;
+            edit.textZipRegexp = SystemDB.zip_regexp;
+            edit.textArcnamesServer = SystemDB.arcnames_server;
+            edit.textWorkPath = SystemDB.work_path;
+            edit.lookupmodref = SystemDB.modrefserver_alwaysenable == "true";
+            edit.textModRegexp = SystemDB.directaccess_signature;
+            edit.textTagnamesServer = SystemDB.tagnames_server;
+            edit.uiBehavior = SystemDB.zippage_behavior;
+            edit.saveDirectory = SystemDB.savefile_directory;
+            edit.Owner = MainFormWindow;
             if (edit.ShowDialog() == DialogResult.OK)
             {
                 // ダイアログに設定されたパラメータを ~/TDCG/TDCDEXplorer/system.dbに書き出す.
-                GetSystemDatabase().arcs_path = edit.textArcPath;
-                GetSystemDatabase().zips_path = edit.textZipPath;
-                GetSystemDatabase().moddb_url = edit.textModDbUrl;
-                GetSystemDatabase().zip_regexp = edit.textZipRegexp;
-                GetSystemDatabase().arcnames_server = edit.textArcnamesServer;
-                GetSystemDatabase().work_path = edit.textWorkPath;
-                if (edit.lookupmodref == true) GetSystemDatabase().modrefserver_alwaysenable = "true";
-                else GetSystemDatabase().modrefserver_alwaysenable = "false";
-                GetSystemDatabase().directaccess_signature = edit.textModRegexp;
-                GetSystemDatabase().tagnames_server = edit.textTagnamesServer;
-                GetSystemDatabase().zippage_behavior = edit.uiBehavior;
-                GetSystemDatabase().savefile_directory = edit.saveDirectory;
+                SystemDB.arcs_path = edit.textArcPath;
+                SystemDB.zips_path = edit.textZipPath;
+                SystemDB.moddb_url = edit.textModDbUrl;
+                SystemDB.zip_regexp = edit.textZipRegexp;
+                SystemDB.arcnames_server = edit.textArcnamesServer;
+                SystemDB.work_path = edit.textWorkPath;
+                if (edit.lookupmodref == true) SystemDB.modrefserver_alwaysenable = "true";
+                else SystemDB.modrefserver_alwaysenable = "false";
+                SystemDB.directaccess_signature = edit.textModRegexp;
+                SystemDB.tagnames_server = edit.textTagnamesServer;
+                SystemDB.zippage_behavior = edit.uiBehavior;
+                SystemDB.savefile_directory = edit.saveDirectory;
             }
         }
 
         public static void MakeArcsTreeView(TreeView tvTree)
         {
-            ArcsDatabase db = GetArcsDatabase();
-            FilesTreeNode arcs = new FilesTreeNode(GetSystemDatabase().arcs_path);
+            ArcsDatabase db = ArcsDB;
+            FilesTreeNode arcs = new FilesTreeNode(SystemDB.arcs_path);
             tvTree.Nodes.Add(arcs);
             // tahを展開する.
             List<ArcsTahEntry> list = db.GetTahs();
@@ -227,8 +223,8 @@ namespace TDCGExplorer
 
         public static void MakeZipsTreeView(TreeView tvTree)
         {
-            ArcsDatabase db = GetArcsDatabase();
-            TreeNode zips = tvTree.Nodes.Add(GetSystemDatabase().zips_path);
+            ArcsDatabase db = ArcsDB;
+            TreeNode zips = tvTree.Nodes.Add(SystemDB.zips_path);
             Dictionary<int, int> installedZip = db.GetInstalledZips();
             // tahを展開する.
             List<ArcsZipArcEntry> list = db.GetZips();
@@ -282,8 +278,8 @@ namespace TDCGExplorer
 
         public static void MakeCollisionTreeView(TreeView tvTree)
         {
-            ArcsDatabase db = GetArcsDatabase();
-            CollisionTahNode arcs = new CollisionTahNode(GetSystemDatabase().arcs_path);
+            ArcsDatabase db = ArcsDB;
+            CollisionTahNode arcs = new CollisionTahNode(SystemDB.arcs_path);
             tvTree.Nodes.Add(arcs);
             // tahを展開する.
             List<ArcsTahEntry> list = db.GetTahs();
@@ -339,9 +335,9 @@ namespace TDCGExplorer
 
         public static void MakeInstalledArcsTreeView(TreeView tvTree)
         {
-            ArcsDatabase db = GetArcsDatabase();
+            ArcsDatabase db = ArcsDB;
             //GetInstalledZipFiles
-            TreeNode zips = tvTree.Nodes.Add(GetSystemDatabase().zips_path);
+            TreeNode zips = tvTree.Nodes.Add(SystemDB.zips_path);
             // tahを展開する.
             List<ArcsZipArcEntry> list = db.GetInstalledZipFiles();
             foreach (ArcsZipArcEntry entry in list)
@@ -388,9 +384,9 @@ namespace TDCGExplorer
 
         public static void MakeTagTreeView(TreeView tvTree)
         {
-            ArcsDatabase db = GetArcsDatabase();
+            ArcsDatabase db = ArcsDB;
             // 各種変数
-            Dictionary<string, TagNamesEntry> tagList = getTagnames();
+            Dictionary<string, TagNamesEntry> tagList = Tagnames;
             Dictionary<string, List<ArcsZipArcEntry>> zipDictionary = new Dictionary<string,List<ArcsZipArcEntry>>();
             Dictionary<int, int> installedZip = db.GetInstalledZips();
 
@@ -480,7 +476,7 @@ namespace TDCGExplorer
 
         public static void MakeSavefileTreeView(TreeView tvTree)
         {
-            string savedir = GetSystemDatabase().savefile_directory;
+            string savedir = SystemDB.savefile_directory;
             List<string> directories = new List<string>();
             iterSubDirectory(directories, savedir, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), TDCGExplorer.GetAppDataPath()));
 
@@ -537,16 +533,16 @@ namespace TDCGExplorer
         // データベースがビルド済みならツリーを展開する.
         public static void IfReadyDbDisplayArcsDB()
         {
-            if (GetSystemDatabase().database_build != "") //DisplayArcsDB(tvTree);
-                GetMainForm().DisplayDB();
+            if (SystemDB.database_build != "") //DisplayArcsDB(tvTree);
+                MainFormWindow.DisplayDB();
         }
 
         public static bool InstallZipFile(TahGenTreeNode sender)
         {
             ZipTreeNode zipNode = (ZipTreeNode)sender;
-            ArcsZipArcEntry zipentry = GetArcsDatabase().GetZip(zipNode.Entry);
-            string zipsource = Path.Combine(TDCGExplorer.GetSystemDatabase().zips_path, zipentry.path);
-            string destpath = GetSystemDatabase().work_path;
+            ArcsZipArcEntry zipentry = ArcsDB.GetZip(zipNode.Entry);
+            string zipsource = Path.Combine(TDCGExplorer.SystemDB.zips_path, zipentry.path);
+            string destpath = SystemDB.work_path;
             if (arcNames.entry.ContainsKey(zipentry.code) == true)
             {
                 // サマリ文字列を自動的に追加しておく.
@@ -603,15 +599,15 @@ namespace TDCGExplorer
 
         public static void InstallPreferZip(ZipTreeNode zipNode)
         {
-            ArcsZipArcEntry zipentry =  GetArcsDatabase().GetZip(zipNode.Entry);
+            ArcsZipArcEntry zipentry = ArcsDB.GetZip(zipNode.Entry);
 
             // mod REF Serverに問い合わせる.
 
-            string moddb = GetSystemDatabase().moddb_url;
+            string moddb = SystemDB.moddb_url;
             string relurl;
             ArcRels relationships;
 
-            Dictionary<int, int> installedZip = GetArcsDatabase().GetInstalledZips();
+            Dictionary<int, int> installedZip = ArcsDB.GetInstalledZips();
 
             int misscount = 0, installedcount = 0;
 
@@ -634,14 +630,14 @@ namespace TDCGExplorer
                                 if (arc != null)
                                 {
                                     // zipファイルのコードを特定する.
-                                    ArcsZipArcEntry ziparc = TDCGExplorer.GetArcsDatabase().GetZipByCode(arc.Code);
+                                    ArcsZipArcEntry ziparc = TDCGExplorer.ArcsDB.GetZipByCode(arc.Code);
                                     if (ziparc != null)
                                     {
                                         // 既にインストールされている物は展開しない.
                                         if (installedZip.ContainsKey(ziparc.id) == true) continue;
-                                            
-                                        string zipsource = Path.Combine(TDCGExplorer.GetSystemDatabase().zips_path, ziparc.path);
-                                        string destpath = GetSystemDatabase().work_path;
+
+                                        string zipsource = Path.Combine(TDCGExplorer.SystemDB.zips_path, ziparc.path);
+                                        string destpath = SystemDB.work_path;
                                         if (arcNames.entry.ContainsKey(ziparc.code) == true)
                                         {
                                             // サマリ文字列を自動的に追加しておく.
@@ -697,7 +693,7 @@ namespace TDCGExplorer
 
         public static void TAHDecrypt(GenTahInfo entry)
         {
-            string destpath = Path.Combine(GetSystemDatabase().work_path, Path.GetFileNameWithoutExtension(entry.shortname));
+            string destpath = Path.Combine(SystemDB.work_path, Path.GetFileNameWithoutExtension(entry.shortname));
             TAHStream stream = new TAHStream(entry, null);
             TAHFile tah = stream.tahfile;
             if (tah != null)
@@ -742,14 +738,14 @@ namespace TDCGExplorer
         public void Run()
         {
             try{
-                string arcpath = TDCGExplorer.GetSystemDatabase().arcs_path;
-                string zippath = TDCGExplorer.GetSystemDatabase().zips_path;
+                string arcpath = TDCGExplorer.SystemDB.arcs_path;
+                string zippath = TDCGExplorer.SystemDB.zips_path;
 #if false
                 // クローンを作る.
                 ArcsDatabase arcs = new ArcsDatabase(TDCGExplorer.GetArcsDatabase());
 #else
                 // クローンだとかえって動作がおかしい.
-                ArcsDatabase arcs = TDCGExplorer.GetArcsDatabase();
+                ArcsDatabase arcs = TDCGExplorer.ArcsDB;
 #endif
                 using (SQLiteTransaction transacion = arcs.BeginTransaction())
                 {
@@ -770,11 +766,11 @@ namespace TDCGExplorer
 
                     arcs.Vacuum();
 
-                    TDCGExplorer.GetMainForm().asyncDisplayFromArcs(); // 表示更新.
+                    TDCGExplorer.MainFormWindow.asyncDisplayFromArcs(); // 表示更新.
 
                     TDCGExplorer.fThreadRun = false;
                     TDCGExplorer.SetToolTips("Database build complete");
-                    TDCGExplorer.GetSystemDatabase().database_build = "yes";
+                    TDCGExplorer.SystemDB.database_build = "yes";
                 }
             }
             catch(Exception e)

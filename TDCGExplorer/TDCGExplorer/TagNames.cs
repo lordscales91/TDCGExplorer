@@ -20,7 +20,7 @@ namespace TDCGExplorer
 
         public void Init()
         {
-            if (TDCGExplorer.GetSystemDatabase().modrefserver_alwaysenable == "true")
+            if (TDCGExplorer.SystemDB.modrefserver_alwaysenable == "true")
             {
                 if (DownloadTagNamesZipFromServer() == false) return;
             }
@@ -47,7 +47,7 @@ namespace TDCGExplorer
             bool status = false;
             try
             {
-                string uri = TDCGExplorer.GetSystemDatabase().tagnames_server;
+                string uri = TDCGExplorer.SystemDB.tagnames_server;
                 string localfile = zipTagLocalName();
 
                 // サーバからダウンロードする.

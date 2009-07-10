@@ -15,7 +15,9 @@ namespace TDCGExplorer
         private Viewer viewer = null;
         private bool fInitialTmoLoad = false;
         private TreeNode lastSelectTreeNode = null;
+
         private Color lastSelectTreeNodeColor = Color.Transparent;
+        private TreeNode lastSelectTreeNodeForColor = null;
 
         public MainForm()
         {
@@ -70,13 +72,13 @@ namespace TDCGExplorer
         {
             TDCGExplorer.IfReadyDbDisplayArcsDB();
 
-            string windowRect = TDCGExplorer.GetSystemDatabase().window_rectangle;
+            string windowRect = TDCGExplorer.SystemDB.window_rectangle;
             string[] rect = windowRect.Split(',');
             Left = int.Parse(rect[0]);
             Top = int.Parse(rect[1]);
             Size = new Size( int.Parse(rect[2]) , int.Parse(rect[3]));
 
-            string splitterDistance = TDCGExplorer.GetSystemDatabase().splitter_distance;
+            string splitterDistance = TDCGExplorer.SystemDB.splitter_distance;
             string[] distance = splitterDistance.Split(',');
             splitContainerV.SplitterDistance = int.Parse(distance[0]);
             splitContainerH.SplitterDistance = int.Parse(distance[1]);
@@ -132,12 +134,12 @@ namespace TDCGExplorer
                 e.Cancel = true;
             }
             string widnowRect = Left.ToString() + "," + Top.ToString() + "," + Size.Width.ToString() + ","+Size.Height.ToString();
-            TDCGExplorer.GetSystemDatabase().window_rectangle = widnowRect;
+            TDCGExplorer.SystemDB.window_rectangle = widnowRect;
 
             string splitterDistance = splitContainerV.SplitterDistance.ToString()+","+
                 splitContainerH.SplitterDistance.ToString()+","+
                 splitContainerWithView.SplitterDistance.ToString();
-            TDCGExplorer.GetSystemDatabase().splitter_distance = splitterDistance;
+            TDCGExplorer.SystemDB.splitter_distance = splitterDistance;
 
             if (viewer != null)
             {
@@ -417,26 +419,21 @@ namespace TDCGExplorer
         }
 
         // フォーカスを失った時にハイライトするツリーノードを覚えておく.
-        public void HilightTreeNode(TreeNode node)
+        public void SetSelectedNode(TreeNode node)
         {
             lastSelectTreeNode = node;
-            lastSelectTreeNodeColor = node.BackColor;
         }
 
         // フォーカスが戻ったので色を戻す.
         private void TreeViewForcusEnter(object sender, EventArgs e)
         {
-            // フォーカスが戻ったら色を戻す
-            if(lastSelectTreeNode!=null)
-                lastSelectTreeNode.BackColor = lastSelectTreeNodeColor;
+            ResetColor();
         }
 
         // フォーカスを失ったのでハイライトする.
         private void TrewViewForcusLeave(object sender, EventArgs e)
         {
-            // 選択中のノードの色を変える
-            if (lastSelectTreeNode != null)
-                lastSelectTreeNode.BackColor = Color.LightBlue;
+            SetColor(lastSelectTreeNode);
         }
 
         // データベースのツリー表示を構築する.
@@ -453,7 +450,7 @@ namespace TDCGExplorer
                 TDCGExplorer.MakeSavefileTreeView(treeViewSaveFile);
 
                 // 初期表示に戻す
-                tabControlTreeContainor.SelectTab(0);
+                tabControlTreeView.SelectTab(0);
                 treeViewArcs.Focus();
                 treeViewArcs.SelectedNode = treeViewArcs.Nodes[0];
                 TreeView_AfterSelect(treeViewArcs, null);
@@ -462,6 +459,29 @@ namespace TDCGExplorer
             {
                 TDCGExplorer.fThreadRun = false;
                 TDCGExplorer.SetToolTips("Error occured : " + e.Message);
+            }
+        }
+
+        private void SetColor(TreeNode node)
+        {
+            // 以前に設定していた色は戻す.
+            ResetColor();
+            if (node != null)
+            {
+                // 新しい場所の色を覚えておく.
+                lastSelectTreeNodeForColor = node;
+                lastSelectTreeNodeColor = node.BackColor;
+
+                node.BackColor = Color.LightBlue;
+            }
+        }
+
+        private void ResetColor()
+        {
+            if (lastSelectTreeNodeForColor != null)
+            {
+                lastSelectTreeNodeForColor.BackColor = lastSelectTreeNodeColor;
+                lastSelectTreeNodeForColor = null;
             }
         }
 
@@ -476,9 +496,10 @@ namespace TDCGExplorer
             }
             catch (Exception exception)
             {
+                ListBoxClear();
                 Debug.WriteLine(exception.Message);
             }
-            HilightTreeNode(treeView.SelectedNode);
+            SetSelectedNode(treeView.SelectedNode);
         }
 
         // ツリーで選択されたら.
@@ -507,6 +528,12 @@ namespace TDCGExplorer
 
         // ツリーで選択されたら.
         private void treeViewTag_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            TreeView_AfterSelect(sender, e);
+        }
+
+        // セーブファイルツリー
+        private void treeViewSaveFile_AfterSelect(object sender, TreeViewEventArgs e)
         {
             TreeView_AfterSelect(sender, e);
         }
@@ -541,6 +568,11 @@ namespace TDCGExplorer
             TreeViewForcusEnter(sender, e);
         }
 
+        private void treeViewSaveFile_Enter(object sender, EventArgs e)
+        {
+            TreeViewForcusEnter(sender, e);
+        }
+
         // フォーカスを失った場合
         private void treeViewArcs_Leave(object sender, EventArgs e)
         {
@@ -567,6 +599,11 @@ namespace TDCGExplorer
 
         // フォーカスを失った場合
         private void treeViewTag_Leave(object sender, EventArgs e)
+        {
+            TrewViewForcusLeave(sender, e);
+        }
+
+        private void treeViewSaveFile_Leave(object sender, EventArgs e)
         {
             TrewViewForcusLeave(sender, e);
         }
@@ -603,6 +640,12 @@ namespace TDCGExplorer
         }
 
         private void treeViewTag_MouseEnter(object sender, EventArgs e)
+        {
+            Control obj = (Control)sender;
+            obj.Focus();
+        }
+
+        private void treeViewSaveFile_MouseEnter(object sender, EventArgs e)
         {
             Control obj = (Control)sender;
             obj.Focus();
@@ -683,28 +726,6 @@ namespace TDCGExplorer
             }
         }
 
-        // セーブファイルツリー
-        private void treeViewSaveFile_AfterSelect(object sender, TreeViewEventArgs e)
-        {
-            TreeView_AfterSelect(sender, e);
-        }
-
-        private void treeViewSaveFile_Enter(object sender, EventArgs e)
-        {
-            TreeViewForcusEnter(sender, e);
-        }
-
-        private void treeViewSaveFile_Leave(object sender, EventArgs e)
-        {
-            TrewViewForcusLeave(sender, e);
-        }
-
-        private void treeViewSaveFile_MouseEnter(object sender, EventArgs e)
-        {
-            Control obj = (Control)sender;
-            obj.Focus();
-        }
-
         private void TahDecryptToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
@@ -733,7 +754,7 @@ namespace TDCGExplorer
                                       treeViewTag,
                                       treeViewSaveFile };
 
-            int index = tabControlTreeContainor.SelectedIndex;
+            int index = tabControlTreeView.SelectedIndex;
 
             TreeNode node = null;
 
@@ -742,10 +763,9 @@ namespace TDCGExplorer
                 node = nodeArray[index].SelectedNode;
                 if (node != null)
                 {
-                    if (lastSelectTreeNode != null)
-                        lastSelectTreeNode.BackColor = lastSelectTreeNodeColor;
-                    node.BackColor = Color.LightBlue;
-                    lastSelectTreeNode = node;
+                    ResetColor();
+                    SetSelectedNode(node);
+                    SetColor(node);
                     try
                     {
                         ((TahGenTreeNode)node).DoTvTreeSelect();
@@ -761,20 +781,9 @@ namespace TDCGExplorer
                     node = nodeArray[index].Nodes[0];
                     if (node != null)
                     {
+                        ResetColor();
                         nodeArray[index].SelectedNode = node;
-                        if (lastSelectTreeNode != null)
-                            lastSelectTreeNode.BackColor = lastSelectTreeNodeColor;
-                        node.BackColor = Color.LightBlue;
-                        lastSelectTreeNode = node;
-                        try
-                        {
-                            ((TahGenTreeNode)node).DoTvTreeSelect();
-                        }
-                        catch (Exception ex)
-                        {
-                            ListBoxClear();
-                            Debug.WriteLine(ex.Message);
-                        }
+                        SetColor(node);
                     }
                     else
                     {

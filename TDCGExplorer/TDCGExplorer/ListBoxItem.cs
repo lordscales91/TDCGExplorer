@@ -36,7 +36,7 @@ namespace TDCGExplorer
             switch (Path.GetExtension(entry.shortname))
             {
                 case ".tah":
-                    TDCGExplorer.GetMainForm().AssignTagPageControl(new TAHPageControl(new TahInfo(entry), TDCGExplorer.GetArcsDatabase().GetTahFilesPath(entry.id)));
+                    TDCGExplorer.MainFormWindow.AssignTagPageControl(new TAHPageControl(new TahInfo(entry), TDCGExplorer.ArcsDB.GetTahFilesPath(entry.id)));
                     break;
             }
         }
@@ -71,7 +71,7 @@ namespace TDCGExplorer
             switch (Path.GetExtension(entry.tah.shortname))
             {
                 case ".tah":
-                    TDCGExplorer.GetMainForm().AssignTagPageControl(new CollisionTahPageControl(entry));
+                    TDCGExplorer.MainFormWindow.AssignTagPageControl(new CollisionTahPageControl(entry));
                     break;
             }
         }
@@ -96,7 +96,7 @@ namespace TDCGExplorer
             {
                 // 既に実行中の時は操作禁止
                 if(SaveFilePage.Busy==false)
-                    TDCGExplorer.GetMainForm().AssignTagPageControl(new SaveFilePage(new ZipTahInfo(entry)));
+                    TDCGExplorer.MainFormWindow.AssignTagPageControl(new SaveFilePage(new ZipTahInfo(entry)));
                 else
                     SystemSounds.Exclamation.Play();
                 return;
@@ -105,20 +105,20 @@ namespace TDCGExplorer
             switch (Path.GetExtension(entry.path.ToLower()))
             {
                 case ".tah":
-                    TDCGExplorer.GetMainForm().AssignTagPageControl(new TAHPageControl(new ZipTahInfo(entry), TDCGExplorer.GetArcsDatabase().GetZipTahFilesEntries(entry.id)));
+                    TDCGExplorer.MainFormWindow.AssignTagPageControl(new TAHPageControl(new ZipTahInfo(entry), TDCGExplorer.ArcsDB.GetZipTahFilesEntries(entry.id)));
                     break;
                 case ".bmp":
                 case ".png":
                 case ".jpg":
                 case ".gif":
                 case ".tif":
-                    TDCGExplorer.GetMainForm().AssignTagPageControl(new ImagePageControl(new ZipTahInfo(entry)));
+                    TDCGExplorer.MainFormWindow.AssignTagPageControl(new ImagePageControl(new ZipTahInfo(entry)));
                     break;
 
                 case ".txt":
                 case ".doc":
                 case ".xml":
-                    TDCGExplorer.GetMainForm().AssignTagPageControl(new TextPageControl(new ZipTahInfo(entry)));
+                    TDCGExplorer.MainFormWindow.AssignTagPageControl(new TextPageControl(new ZipTahInfo(entry)));
                     break;
             }
         }
@@ -153,7 +153,7 @@ namespace TDCGExplorer
         {
             // 既に実行中の時は操作禁止
             if(SaveFilePage.Busy==false)
-                TDCGExplorer.GetMainForm().AssignTagPageControl(new SaveFilePage(path));
+                TDCGExplorer.MainFormWindow.AssignTagPageControl(new SaveFilePage(path));
             else
                 SystemSounds.Exclamation.Play();
         }

@@ -124,8 +124,8 @@ namespace System.Windows.Forms
             Application.DoEvents();
 
             // TSOビューワをリセットする
-            TDCGExplorer.TDCGExplorer.GetMainForm().makeTSOViwer();
-            TDCGExplorer.TDCGExplorer.GetMainForm().clearTSOViewer();
+            TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
+            TDCGExplorer.TDCGExplorer.MainFormWindow.clearTSOViewer();
 
             for (int i = 0; i < TDCGSaveFileInfo.PARTS_SIZE; ++i)
             {
@@ -136,7 +136,7 @@ namespace System.Windows.Forms
                 {
                     {
                         // まずarcsからさがしてみる.
-                        List<ArcsTahFilesEntry> files = TDCGExplorer.TDCGExplorer.GetArcsDatabase().GetTahFilesEntry(TAHUtil.CalcHash("data/model/" + partsname.Substring(6) + ".tso"));
+                        List<ArcsTahFilesEntry> files = TDCGExplorer.TDCGExplorer.ArcsDB.GetTahFilesEntry(TAHUtil.CalcHash("data/model/" + partsname.Substring(6) + ".tso"));
                         if (files.Count > 0)
                         {
                             ArcsTahFilesEntry file = null;
@@ -144,7 +144,7 @@ namespace System.Windows.Forms
                             int pastVersion = -1;
                             foreach (ArcsTahFilesEntry subfile in files)
                             {
-                                ArcsTahEntry subtah = TDCGExplorer.TDCGExplorer.GetArcsDatabase().GetTah(subfile.tahid);
+                                ArcsTahEntry subtah = TDCGExplorer.TDCGExplorer.ArcsDB.GetTah(subfile.tahid);
                                 if (subtah.version > pastVersion)
                                 {
                                     file = subfile;
@@ -162,11 +162,11 @@ namespace System.Windows.Forms
                                     TahInfo info = new TahInfo(tah);
                                     using (TAHStream tahstream = new TAHStream(info, file))
                                     {
-                                        TDCGExplorer.TDCGExplorer.GetMainForm().makeTSOViwer();
-                                        TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(tahstream.stream);
-                                        TDCGExplorer.TDCGExplorer.GetMainForm().doInitialTmoLoad();
-                                        TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.FrameMove();
-                                        TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.Render();
+                                        TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
+                                        TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
+                                        TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
+                                        TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
+                                        TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
                                         Application.DoEvents();
                                     }
                                 }
@@ -180,7 +180,7 @@ namespace System.Windows.Forms
                     // arcsに無かったら全zipから探す.
                     if (partfile[2] == "")
                     {
-                        List<ArcsTahFilesEntry> files = TDCGExplorer.TDCGExplorer.GetArcsDatabase().GetZipTahFilesEntries(TAHUtil.CalcHash("data/model/" + partsname.Substring(6) + ".tso"));
+                        List<ArcsTahFilesEntry> files = TDCGExplorer.TDCGExplorer.ArcsDB.GetZipTahFilesEntries(TAHUtil.CalcHash("data/model/" + partsname.Substring(6) + ".tso"));
                         if (files.Count>0)
                         {
                             ArcsTahFilesEntry file = null;
@@ -188,7 +188,7 @@ namespace System.Windows.Forms
                             int pastVersion = -1;
                             foreach (ArcsTahFilesEntry subfile in files)
                             {
-                                ArcsZipTahEntry subtah = TDCGExplorer.TDCGExplorer.GetArcsDatabase().GetZipTah(subfile.tahid);
+                                ArcsZipTahEntry subtah = TDCGExplorer.TDCGExplorer.ArcsDB.GetZipTah(subfile.tahid);
                                 if (subtah.version > pastVersion)
                                 {
                                     file = subfile;
@@ -199,7 +199,7 @@ namespace System.Windows.Forms
                             }
                             if (tah != null)
                             {
-                                ArcsZipArcEntry zip = TDCGExplorer.TDCGExplorer.GetArcsDatabase().GetZip(tah.zipid);
+                                ArcsZipArcEntry zip = TDCGExplorer.TDCGExplorer.ArcsDB.GetZip(tah.zipid);
                                 if (zip != null)
                                 {
                                     partfile[2] = zip.path + "\\" + tah.path;
@@ -210,11 +210,11 @@ namespace System.Windows.Forms
                                         ZipTahInfo info = new ZipTahInfo(tah);
                                         using (TAHStream tahstream = new TAHStream(info, file))
                                         {
-                                            TDCGExplorer.TDCGExplorer.GetMainForm().makeTSOViwer();
-                                            TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(tahstream.stream);
-                                            TDCGExplorer.TDCGExplorer.GetMainForm().doInitialTmoLoad();
-                                            TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.FrameMove();
-                                            TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.Render();
+                                            TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
+                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
+                                            TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
+                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
+                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
                                             Application.DoEvents();
                                         }
                                     }
@@ -227,7 +227,7 @@ namespace System.Windows.Forms
                         }
                     }
                 }
-                TDCGExplorer.TDCGExplorer.GetMainForm().doInitialTmoLoad(); // 初期tmoを読み込む.
+                TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad(); // 初期tmoを読み込む.
 
                 DataRow row = data.NewRow();
                 row.ItemArray = partfile;

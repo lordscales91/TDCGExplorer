@@ -47,17 +47,17 @@ namespace TDCGExplorer
         public string GetDisplayPath()
         {
             // アノテーションが入力されているならそれを表示する.
-            if (TDCGExplorer.GetAnnoDatabase().annotation.ContainsKey(code)==true)
+            if (TDCGExplorer.AnnDB.annotation.ContainsKey(code) == true)
             {
-                return TDCGExplorer.GetAnnoDatabase().annotation[code];
+                return TDCGExplorer.AnnDB.annotation[code];
             }
             // リネームされていない場合で.
             if (Path.GetFileNameWithoutExtension(path) == code)
             {
                 // arcsnamesに登録がある場合
-                if (TDCGExplorer.getArcsnames().ContainsKey(code) == true)
+                if (TDCGExplorer.Arcsnames.ContainsKey(code) == true)
                 {
-                    ArcsNamesEntry arc = TDCGExplorer.getArcsnames()[code];
+                    ArcsNamesEntry arc = TDCGExplorer.Arcsnames[code];
                     return arc.code + " " + arc.summary + " <" + arc.origname + ":" + arc.location + ">";
                 }
             }
