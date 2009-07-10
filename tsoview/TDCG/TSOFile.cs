@@ -297,10 +297,31 @@ namespace TDCG
         internal int id;
         internal string name;
         internal string sname;
+
+        private Matrix transformation_matrix;
+        private bool need_update_transformation;
+
         private Vector3 translation;
-        public Vector3 Translation { get { return translation; } set { translation = value; } }
+        public Vector3 Translation {
+            get {
+                return translation;
+            }
+            set {
+                translation = value;
+                need_update_transformation = true;
+            }
+        }
+
         private Quaternion rotation;
-        public Quaternion Rotation { get { return rotation; } set { rotation = value; } }
+        public Quaternion Rotation {
+            get {
+                return rotation;
+            }
+            set {
+                rotation = value;
+                need_update_transformation = true;
+            }
+        }
 
         public List<TSONode> child_nodes = new List<TSONode>();
         public TSONode parent;
@@ -371,10 +392,16 @@ namespace TDCG
         public Matrix TransformationMatrix
         {
             get {
-                return RotationMatrix * TranslationMatrix;
+                if (need_update_transformation)
+                {
+                    transformation_matrix = RotationMatrix * TranslationMatrix;
+                    need_update_transformation = false;
+                }
+                return transformation_matrix;
             }
             set {
-                Matrix m = value;
+                transformation_matrix = value;
+                Matrix m = transformation_matrix;
                 translation = TMOMat.DecomposeMatrix(ref m);
                 rotation = Quaternion.RotationMatrix(m);
             }
