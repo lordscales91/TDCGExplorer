@@ -58,8 +58,12 @@ namespace TDCG
 
             bw.Write(items.Length);
 
-            foreach(var i in items)
-                Write(bw, ref i.transformation_matrix);
+            Matrix m = Matrix.Identity;
+            foreach (var i in items)
+            {
+                m = i.TransformationMatrix;
+                Write(bw, ref m);
+            }
         }
 
         /// <summary>
