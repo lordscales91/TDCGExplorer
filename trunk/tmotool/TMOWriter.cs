@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
-namespace TAHdecrypt
+namespace TDCG
 {
     public class TMOWriter
     {

@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
-using TAHdecrypt;
+using TMOTool;
 
-namespace TDCG.TMOTool.Command
+namespace TMOTool.Command
 {
     public class Dom : ITMOCommand
     {
-        Dictionary<string, TMONode> nodes;
-        public Dictionary<string, TMONode> Nodes { set { nodes = value; }}
+        Dictionary<string, TDCG.TMONode> nodes;
+        public Dictionary<string, TDCG.TMONode> Nodes { set { nodes = value; }}
 
         public void Execute()
         {
-            TMONode node;
+            TDCG.TMONode node;
 
             node = nodes["W_Hips"];
             node.Scale1(1.3F, 1.0F, 1.4F);

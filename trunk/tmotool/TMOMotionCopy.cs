@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace TAHdecrypt
+namespace TDCG
 {
     class TMOMotionCopy
     {
