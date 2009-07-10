@@ -19,7 +19,7 @@ namespace System.Windows.Forms
         {
             InitializeComponent();
             ExtractFile();
-            TDCGExplorer.TDCGExplorer.SetToolTips(tahInfo.path);
+            TDCGExplorer.TDCGExplorer.SetToolTips(tahInfo.path+" : クリックで拡大縮小");
         }
 
         private void InitializeComponent()
@@ -35,9 +35,10 @@ namespace System.Windows.Forms
             this.pictureBox.Location = new System.Drawing.Point(0, 0);
             this.pictureBox.Name = "pictureBox";
             this.pictureBox.Size = new System.Drawing.Size(100, 100);
-            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox.TabIndex = 0;
             this.pictureBox.TabStop = false;
+            this.pictureBox.Click += new System.EventHandler(this.pictureBox_Click);
             this.pictureBox.MouseEnter += new System.EventHandler(this.pictureBox_MouseEnter);
             // 
             // panel
@@ -58,9 +59,9 @@ namespace System.Windows.Forms
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.Controls.Add(this.panel);
+            this.Resize += new System.EventHandler(this.ImagePageControl_Resize);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).EndInit();
             this.panel.ResumeLayout(false);
-            this.panel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -76,6 +77,33 @@ namespace System.Windows.Forms
         {
             Control obj = (Control)sender;
             obj.Focus();
+        }
+
+        private void pictureBox_Click(object sender, EventArgs e)
+        {
+            if (pictureBox.SizeMode == PictureBoxSizeMode.Zoom)
+            {
+                pictureBox.SizeMode = PictureBoxSizeMode.AutoSize;
+                pictureBox.Size = new Size(pictureBox.Image.Width, pictureBox.Image.Height);
+            }
+            else
+            {
+                pictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+                pictureBox.Size = new Size(ClientRectangle.Width, ClientRectangle.Height);
+            }
+        }
+
+        private void ImagePageControl_Resize(object sender, EventArgs e)
+        {
+            if (pictureBox.SizeMode == PictureBoxSizeMode.Zoom)
+            {
+                pictureBox.Size = new Size(ClientRectangle.Width, ClientRectangle.Height);
+            }
+            else
+            {
+                pictureBox.Size = new Size(pictureBox.Image.Width, pictureBox.Image.Height);
+            }
+
         }
     }
 }

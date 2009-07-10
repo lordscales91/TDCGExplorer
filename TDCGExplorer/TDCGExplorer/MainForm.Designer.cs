@@ -71,6 +71,8 @@
             this.treeViewCollision = new System.Windows.Forms.TreeView();
             this.tabPageTag = new System.Windows.Forms.TabPage();
             this.treeViewTag = new System.Windows.Forms.TreeView();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.treeViewSaveFile = new System.Windows.Forms.TreeView();
             this.splitContainerH = new System.Windows.Forms.SplitContainer();
             this.splitContainerWithView = new System.Windows.Forms.SplitContainer();
             this.listBoxMainListBox = new System.Windows.Forms.ListBox();
@@ -89,6 +91,7 @@
             this.tabPageIntalled.SuspendLayout();
             this.tabPageCollsion.SuspendLayout();
             this.tabPageTag.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.splitContainerH.Panel1.SuspendLayout();
             this.splitContainerH.Panel2.SuspendLayout();
             this.splitContainerH.SuspendLayout();
@@ -259,7 +262,7 @@
             this.treeViewArcs.Location = new System.Drawing.Point(3, 3);
             this.treeViewArcs.Margin = new System.Windows.Forms.Padding(0);
             this.treeViewArcs.Name = "treeViewArcs";
-            this.treeViewArcs.Size = new System.Drawing.Size(159, 367);
+            this.treeViewArcs.Size = new System.Drawing.Size(159, 331);
             this.treeViewArcs.TabIndex = 3;
             this.treeViewArcs.Enter += new System.EventHandler(this.treeViewArcs_Enter);
             this.treeViewArcs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewArcs_AfterSelect);
@@ -386,7 +389,9 @@
             this.tabControlTreeContainor.Controls.Add(this.tabPageIntalled);
             this.tabControlTreeContainor.Controls.Add(this.tabPageCollsion);
             this.tabControlTreeContainor.Controls.Add(this.tabPageTag);
+            this.tabControlTreeContainor.Controls.Add(this.tabPage1);
             this.tabControlTreeContainor.Location = new System.Drawing.Point(3, 3);
+            this.tabControlTreeContainor.Multiline = true;
             this.tabControlTreeContainor.Name = "tabControlTreeContainor";
             this.tabControlTreeContainor.SelectedIndex = 0;
             this.tabControlTreeContainor.Size = new System.Drawing.Size(173, 399);
@@ -395,10 +400,10 @@
             // tabPageArcs
             // 
             this.tabPageArcs.Controls.Add(this.treeViewArcs);
-            this.tabPageArcs.Location = new System.Drawing.Point(4, 22);
+            this.tabPageArcs.Location = new System.Drawing.Point(4, 58);
             this.tabPageArcs.Name = "tabPageArcs";
             this.tabPageArcs.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageArcs.Size = new System.Drawing.Size(165, 373);
+            this.tabPageArcs.Size = new System.Drawing.Size(165, 337);
             this.tabPageArcs.TabIndex = 0;
             this.tabPageArcs.Text = "Arcs";
             this.tabPageArcs.UseVisualStyleBackColor = true;
@@ -406,10 +411,10 @@
             // tabPageZips
             // 
             this.tabPageZips.Controls.Add(this.treeViewZips);
-            this.tabPageZips.Location = new System.Drawing.Point(4, 22);
+            this.tabPageZips.Location = new System.Drawing.Point(4, 58);
             this.tabPageZips.Name = "tabPageZips";
             this.tabPageZips.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageZips.Size = new System.Drawing.Size(165, 373);
+            this.tabPageZips.Size = new System.Drawing.Size(165, 337);
             this.tabPageZips.TabIndex = 1;
             this.tabPageZips.Text = "アーカイブ";
             this.tabPageZips.UseVisualStyleBackColor = true;
@@ -423,7 +428,7 @@
             this.treeViewZips.Location = new System.Drawing.Point(3, 3);
             this.treeViewZips.Margin = new System.Windows.Forms.Padding(0);
             this.treeViewZips.Name = "treeViewZips";
-            this.treeViewZips.Size = new System.Drawing.Size(159, 367);
+            this.treeViewZips.Size = new System.Drawing.Size(159, 331);
             this.treeViewZips.TabIndex = 4;
             this.treeViewZips.Enter += new System.EventHandler(this.treeViewZips_Enter);
             this.treeViewZips.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewZips_AfterSelect);
@@ -433,10 +438,10 @@
             // tabPageIntalled
             // 
             this.tabPageIntalled.Controls.Add(this.treeViewInstalled);
-            this.tabPageIntalled.Location = new System.Drawing.Point(4, 22);
+            this.tabPageIntalled.Location = new System.Drawing.Point(4, 40);
             this.tabPageIntalled.Name = "tabPageIntalled";
             this.tabPageIntalled.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageIntalled.Size = new System.Drawing.Size(165, 373);
+            this.tabPageIntalled.Size = new System.Drawing.Size(165, 355);
             this.tabPageIntalled.TabIndex = 2;
             this.tabPageIntalled.Text = "インストール済み";
             this.tabPageIntalled.UseVisualStyleBackColor = true;
@@ -450,7 +455,7 @@
             this.treeViewInstalled.Location = new System.Drawing.Point(3, 3);
             this.treeViewInstalled.Margin = new System.Windows.Forms.Padding(0);
             this.treeViewInstalled.Name = "treeViewInstalled";
-            this.treeViewInstalled.Size = new System.Drawing.Size(159, 367);
+            this.treeViewInstalled.Size = new System.Drawing.Size(159, 349);
             this.treeViewInstalled.TabIndex = 4;
             this.treeViewInstalled.Enter += new System.EventHandler(this.treeViewInstalled_Enter);
             this.treeViewInstalled.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewInstalled_AfterSelect);
@@ -460,10 +465,10 @@
             // tabPageCollsion
             // 
             this.tabPageCollsion.Controls.Add(this.treeViewCollision);
-            this.tabPageCollsion.Location = new System.Drawing.Point(4, 22);
+            this.tabPageCollsion.Location = new System.Drawing.Point(4, 40);
             this.tabPageCollsion.Name = "tabPageCollsion";
             this.tabPageCollsion.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCollsion.Size = new System.Drawing.Size(165, 373);
+            this.tabPageCollsion.Size = new System.Drawing.Size(165, 355);
             this.tabPageCollsion.TabIndex = 3;
             this.tabPageCollsion.Text = "衝突";
             this.tabPageCollsion.UseVisualStyleBackColor = true;
@@ -477,7 +482,7 @@
             this.treeViewCollision.Location = new System.Drawing.Point(3, 3);
             this.treeViewCollision.Margin = new System.Windows.Forms.Padding(0);
             this.treeViewCollision.Name = "treeViewCollision";
-            this.treeViewCollision.Size = new System.Drawing.Size(159, 367);
+            this.treeViewCollision.Size = new System.Drawing.Size(159, 349);
             this.treeViewCollision.TabIndex = 4;
             this.treeViewCollision.Enter += new System.EventHandler(this.treeViewCollision_Enter);
             this.treeViewCollision.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewCollision_AfterSelect);
@@ -487,10 +492,10 @@
             // tabPageTag
             // 
             this.tabPageTag.Controls.Add(this.treeViewTag);
-            this.tabPageTag.Location = new System.Drawing.Point(4, 22);
+            this.tabPageTag.Location = new System.Drawing.Point(4, 58);
             this.tabPageTag.Name = "tabPageTag";
             this.tabPageTag.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageTag.Size = new System.Drawing.Size(165, 373);
+            this.tabPageTag.Size = new System.Drawing.Size(165, 337);
             this.tabPageTag.TabIndex = 4;
             this.tabPageTag.Text = "タグ";
             this.tabPageTag.UseVisualStyleBackColor = true;
@@ -504,12 +509,39 @@
             this.treeViewTag.Location = new System.Drawing.Point(3, 3);
             this.treeViewTag.Margin = new System.Windows.Forms.Padding(0);
             this.treeViewTag.Name = "treeViewTag";
-            this.treeViewTag.Size = new System.Drawing.Size(159, 367);
+            this.treeViewTag.Size = new System.Drawing.Size(159, 331);
             this.treeViewTag.TabIndex = 5;
             this.treeViewTag.Enter += new System.EventHandler(this.treeViewTag_Enter);
             this.treeViewTag.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewTag_AfterSelect);
             this.treeViewTag.MouseEnter += new System.EventHandler(this.treeViewTag_MouseEnter);
             this.treeViewTag.Leave += new System.EventHandler(this.treeViewTag_Leave);
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.treeViewSaveFile);
+            this.tabPage1.Location = new System.Drawing.Point(4, 58);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(165, 337);
+            this.tabPage1.TabIndex = 5;
+            this.tabPage1.Text = "セーブファイル";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // treeViewSaveFile
+            // 
+            this.treeViewSaveFile.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeViewSaveFile.ContextMenuStrip = this.cmContextMenu;
+            this.treeViewSaveFile.Location = new System.Drawing.Point(3, 3);
+            this.treeViewSaveFile.Margin = new System.Windows.Forms.Padding(0);
+            this.treeViewSaveFile.Name = "treeViewSaveFile";
+            this.treeViewSaveFile.Size = new System.Drawing.Size(159, 331);
+            this.treeViewSaveFile.TabIndex = 6;
+            this.treeViewSaveFile.Enter += new System.EventHandler(this.treeViewSaveFile_Enter);
+            this.treeViewSaveFile.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewSaveFile_AfterSelect);
+            this.treeViewSaveFile.MouseEnter += new System.EventHandler(this.treeViewSaveFile_MouseEnter);
+            this.treeViewSaveFile.Leave += new System.EventHandler(this.treeViewSaveFile_Leave);
             // 
             // splitContainerH
             // 
@@ -611,6 +643,7 @@
             this.tabPageIntalled.ResumeLayout(false);
             this.tabPageCollsion.ResumeLayout(false);
             this.tabPageTag.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
             this.splitContainerH.Panel1.ResumeLayout(false);
             this.splitContainerH.Panel2.ResumeLayout(false);
             this.splitContainerH.ResumeLayout(false);
@@ -671,6 +704,8 @@
         private System.Windows.Forms.ToolStripMenuItem 関連アーカイブを調べるToolStripMenuItem;
         private System.Windows.Forms.TabPage tabPageTag;
         private System.Windows.Forms.TreeView treeViewTag;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TreeView treeViewSaveFile;
 
     }
 }

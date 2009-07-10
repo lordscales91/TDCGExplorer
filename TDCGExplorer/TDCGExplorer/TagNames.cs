@@ -20,10 +20,17 @@ namespace TDCGExplorer
 
         public void Init()
         {
-            // tagname.zipをダウンロードする.
-            if (File.Exists(zipTagLocalName()) == false)
+            if (TDCGExplorer.GetSystemDatabase().modrefserver_alwaysenable == "true")
             {
                 if (DownloadTagNamesZipFromServer() == false) return;
+            }
+            else
+            {
+                // tagname.zipをダウンロードする.
+                if (File.Exists(zipTagLocalName()) == false)
+                {
+                    if (DownloadTagNamesZipFromServer() == false) return;
+                }
             }
             GetTagNamesZipInfo();
         }

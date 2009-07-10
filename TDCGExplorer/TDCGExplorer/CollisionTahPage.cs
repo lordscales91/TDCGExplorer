@@ -42,10 +42,6 @@ namespace System.Windows.Forms
                 data.Rows.Add(row);
             }
             dataGridView.DataSource = data;
-            foreach (DataGridViewColumn col in dataGridView.Columns)
-            {
-                col.SortMode = DataGridViewColumnSortMode.NotSortable;
-            }
             dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             dataGridView.ReadOnly = true;
             dataGridView.AllowUserToAddRows = false;
@@ -172,6 +168,15 @@ namespace System.Windows.Forms
         private void CollisionTahPage_Layout(object sender, LayoutEventArgs e)
         {
             splitContainer.SplitterDistance = ClientSize.Height/3;
+        }
+
+        protected override void InitLayout()
+        {
+            base.InitLayout();
+            foreach (DataGridViewColumn col in dataGridView.Columns)
+            {
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
         }
     }
 }

@@ -69,5 +69,39 @@ namespace TDCGExplorer
             get { return textBoxTagNameServer.Text; }
             set { textBoxTagNameServer.Text = value; }
         }
+
+        public string uiBehavior
+        {
+            get
+            {
+                if (radioButtonBehaviorServer.Checked) return "server";
+                if (radioButtonBehaviorImage.Checked) return "image";
+                if (radioButtonBehaviorText.Checked) return "text";
+                return "none";
+            }
+            set
+            {
+                switch(value)
+                {
+                    case "server":
+                        radioButtonBehaviorServer.Checked=true;
+                        break;
+                    case "image":
+                        radioButtonBehaviorImage.Checked=true;
+                        break;
+                    case "text":
+                        radioButtonBehaviorText.Checked=true;
+                        break;
+                    case "none":
+                        radioButtonBehaviorNone.Checked = true;
+                        break;
+                }
+            }
+        }
+        public string saveDirectory
+        {
+            get { return textBoxSaveFile.Text; }
+            set { textBoxSaveFile.Text = value; }
+        }
     }
 }

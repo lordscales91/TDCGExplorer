@@ -122,7 +122,9 @@ namespace TDCGExplorer
             arcnames_server = arcnames_server;
             tagnames_server = tagnames_server;
             work_path = work_path;
-            modrefpage_enable = modrefpage_enable;
+            modrefserver_alwaysenable = modrefserver_alwaysenable;
+            zippage_behavior = zippage_behavior;
+            directaccess_signature = directaccess_signature;
         }
 
         // arcpathの取得・設定.
@@ -190,16 +192,28 @@ namespace TDCGExplorer
             set { SetSqlValue("workpath", value); }
         }
         // MODREFサーバページの表示ON/OFF
-        public string modrefpage_enable
+        public string modrefserver_alwaysenable
         {
-            get { return GetSqlValue("modrefpage_enable", "true"); }
-            set { SetSqlValue("modrefpage_enable", value); }
+            get { return GetSqlValue("modrefserver_alwaysenable", "false"); }
+            set { SetSqlValue("modrefserver_alwaysenable", value); }
         }
         // DirectAccessArchiveクラス起動条件
         public string directaccess_signature
         {
             get { return GetSqlValue("directaccess_signature", "(^TA[0-9]{4})|(^TA3CH[0-9]{4})|(^TA3DC[0-9]{4})|(^TAC[0-9]{4})|(^TAC[0-9]{5})|(^XPC[0-9]{5})|(^mod[0-9]{4})"); }
             set { SetSqlValue("directaccess_signature", value); }
+        }
+        // ZIPページを開いた時の動作を指定する (none:なにもしない server:サーバにアクセス image:画像表示 text:テキスト表示)
+        public string zippage_behavior
+        {
+            get { return GetSqlValue("zippage_behavior", "none"); }
+            set { SetSqlValue("zippage_behavior", value); }
+        }
+        // セーブファイルのあるフォルダを指定する.
+        public string savefile_directory
+        {
+            get { return GetSqlValue("savefile_directory", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "TechArts3D\\TDCG")); }
+            set { SetSqlValue("savefile_directory", value); }
         }
     }
 }

@@ -46,7 +46,7 @@ namespace TDCGExplorer
 
         private string GetAnnotationDatabaseName()
         {
-            return Path.Combine(GetAnnotationDatabasePath(), "anotation.db");
+            return Path.Combine(GetAnnotationDatabasePath(), "annotation.db");
         }
 
         public string GetSqlValue(string id, string defval)

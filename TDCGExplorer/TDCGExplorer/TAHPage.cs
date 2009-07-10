@@ -21,7 +21,6 @@ namespace System.Windows.Forms
     {
         List<ArcsTahFilesEntry> filesEntries;
         private DataGridView dataGridView;
-        //private System.ComponentModel.IContainer components;
         GenTahInfo info;
 
         public TAHPageControl(GenTahInfo entryinfo, List<ArcsTahFilesEntry> filesentries)
@@ -47,12 +46,7 @@ namespace System.Windows.Forms
             }
             dataGridView.DataSource = data;
 
-            foreach (DataGridViewColumn col in dataGridView.Columns)
-            {
-                col.SortMode = DataGridViewColumnSortMode.NotSortable;
-            }
-
-            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCells;
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
 
             dataGridView.ReadOnly = true;
             dataGridView.MultiSelect = false;
@@ -89,6 +83,7 @@ namespace System.Windows.Forms
             this.Controls.Add(this.dataGridView);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
             this.ResumeLayout(false);
+
         }
 
         private void dataGridView_Resize(object sender, EventArgs e)
@@ -288,9 +283,9 @@ namespace System.Windows.Forms
                                 }
                                 else
                                 {
-                                    TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.ClearFigureList();
+                                    TDCGExplorer.TDCGExplorer.GetMainForm().clearTSOViewer();
                                     TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(tahstream.stream);
-                                    TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.LoadTMOFile("default.tmo");
+                                    TDCGExplorer.TDCGExplorer.GetMainForm().doInitialTmoLoad(); // 初期tmoを読み込む.
                                     UpdateCenterPosition(Path.GetFileName(filesEntries[index].path).ToUpper());
                                 }
                             }
@@ -310,6 +305,15 @@ namespace System.Windows.Forms
         {
             Control obj = (Control)sender;
             obj.Focus();
+        }
+
+        protected override void InitLayout()
+        {
+            base.InitLayout();
+            foreach (DataGridViewColumn col in dataGridView.Columns)
+            {
+                col.SortMode = DataGridViewColumnSortMode.NotSortable;
+            }
         }
     }
 }

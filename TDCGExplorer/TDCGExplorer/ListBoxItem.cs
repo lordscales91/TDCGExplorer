@@ -72,6 +72,15 @@ namespace TDCGExplorer
         }
         public override void DoClick()
         {
+            // セーブファイルか?
+            string savefilpath = entry.path.ToLower();
+            if (savefilpath.EndsWith(".tdcgsav.png") || savefilpath.EndsWith(".tdcgsav.bmp"))
+            {
+                // 既に実行中の時は操作禁止
+                if(SaveFilePage.Busy==false)
+                    TDCGExplorer.GetMainForm().AssignTagPageControl(new SaveFilePage(new ZipTahInfo(entry)));
+                return;
+            }
             // TAHファイル内容に関するフォームを追加する.
             switch (Path.GetExtension(entry.path.ToLower()))
             {
@@ -83,7 +92,6 @@ namespace TDCGExplorer
                 case ".jpg":
                 case ".gif":
                 case ".tif":
-                case ".tga":
                     TDCGExplorer.GetMainForm().AssignTagPageControl(new ImagePageControl(new ZipTahInfo(entry)));
                     break;
 
@@ -95,4 +103,24 @@ namespace TDCGExplorer
             }
         }
     }
+    // セーブファイル専用リストボックスアイテム.
+    public class LbSaveFileItem : LbGenItem
+    {
+        string path;
+        public LbSaveFileItem(string itpath)
+        {
+            path = itpath;
+        }
+        public override string ToString()
+        {
+            return Path.GetFileName(path);
+        }
+        public override void DoClick()
+        {
+            // 既に実行中の時は操作禁止
+            if(SaveFilePage.Busy==false)
+                TDCGExplorer.GetMainForm().AssignTagPageControl(new SaveFilePage(path));
+        }
+    }
+
 }
