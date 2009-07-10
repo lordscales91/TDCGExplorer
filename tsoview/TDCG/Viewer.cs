@@ -579,7 +579,7 @@ public class Viewer : IDisposable
 
             sprite = new Sprite(device);
         }
-        sphere = Mesh.Sphere(device, 1.0f, 8, 6);
+        sphere = Mesh.Sphere(device, 0.12f, 8, 6);
         camera.Update();
         OnDeviceReset(device, null);
 
@@ -908,7 +908,9 @@ public class Viewer : IDisposable
         sprite.Draw(ztex, rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
         sprite.End();
     }
-
+ 
+    //è’ìÀîªíË
+    /*
     {
         Figure fig;
 
@@ -918,11 +920,10 @@ public class Viewer : IDisposable
             DrawMeshSub(sphere, bone.combined_matrix * world_matrix, GetBoneColor(bone));
         }
     }
+    */
+
     {
-        MatrixStack stack = new MatrixStack();
-        stack.LoadIdentity();
-        stack.Translate(target);
-        DrawMeshSub(sphere, stack.Top, new Vector4(1,1,0,1));
+        DrawMeshSub(sphere, Matrix.Translation(target), new Vector4(1,1,0,1));
     }
 
         device.EndScene();
