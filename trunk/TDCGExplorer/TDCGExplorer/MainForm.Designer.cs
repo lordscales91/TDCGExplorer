@@ -78,6 +78,7 @@
             this.listBoxMainListBox = new System.Windows.Forms.ListBox();
             this.ListBoxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.NewTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ファイルを展開するToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.cmContextMenu.SuspendLayout();
             this.StatusStrip.SuspendLayout();
@@ -438,10 +439,10 @@
             // tabPageIntalled
             // 
             this.tabPageIntalled.Controls.Add(this.treeViewInstalled);
-            this.tabPageIntalled.Location = new System.Drawing.Point(4, 40);
+            this.tabPageIntalled.Location = new System.Drawing.Point(4, 58);
             this.tabPageIntalled.Name = "tabPageIntalled";
             this.tabPageIntalled.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageIntalled.Size = new System.Drawing.Size(165, 355);
+            this.tabPageIntalled.Size = new System.Drawing.Size(165, 337);
             this.tabPageIntalled.TabIndex = 2;
             this.tabPageIntalled.Text = "インストール済み";
             this.tabPageIntalled.UseVisualStyleBackColor = true;
@@ -455,7 +456,7 @@
             this.treeViewInstalled.Location = new System.Drawing.Point(3, 3);
             this.treeViewInstalled.Margin = new System.Windows.Forms.Padding(0);
             this.treeViewInstalled.Name = "treeViewInstalled";
-            this.treeViewInstalled.Size = new System.Drawing.Size(159, 349);
+            this.treeViewInstalled.Size = new System.Drawing.Size(159, 331);
             this.treeViewInstalled.TabIndex = 4;
             this.treeViewInstalled.Enter += new System.EventHandler(this.treeViewInstalled_Enter);
             this.treeViewInstalled.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewInstalled_AfterSelect);
@@ -465,10 +466,10 @@
             // tabPageCollsion
             // 
             this.tabPageCollsion.Controls.Add(this.treeViewCollision);
-            this.tabPageCollsion.Location = new System.Drawing.Point(4, 40);
+            this.tabPageCollsion.Location = new System.Drawing.Point(4, 58);
             this.tabPageCollsion.Name = "tabPageCollsion";
             this.tabPageCollsion.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCollsion.Size = new System.Drawing.Size(165, 355);
+            this.tabPageCollsion.Size = new System.Drawing.Size(165, 337);
             this.tabPageCollsion.TabIndex = 3;
             this.tabPageCollsion.Text = "衝突";
             this.tabPageCollsion.UseVisualStyleBackColor = true;
@@ -482,7 +483,7 @@
             this.treeViewCollision.Location = new System.Drawing.Point(3, 3);
             this.treeViewCollision.Margin = new System.Windows.Forms.Padding(0);
             this.treeViewCollision.Name = "treeViewCollision";
-            this.treeViewCollision.Size = new System.Drawing.Size(159, 349);
+            this.treeViewCollision.Size = new System.Drawing.Size(159, 331);
             this.treeViewCollision.TabIndex = 4;
             this.treeViewCollision.Enter += new System.EventHandler(this.treeViewCollision_Enter);
             this.treeViewCollision.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewCollision_AfterSelect);
@@ -604,16 +605,24 @@
             // ListBoxContextMenuStrip
             // 
             this.ListBoxContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.NewTabToolStripMenuItem});
+            this.NewTabToolStripMenuItem,
+            this.ファイルを展開するToolStripMenuItem});
             this.ListBoxContextMenuStrip.Name = "contextMenuStrip1";
-            this.ListBoxContextMenuStrip.Size = new System.Drawing.Size(171, 26);
+            this.ListBoxContextMenuStrip.Size = new System.Drawing.Size(183, 70);
             // 
             // NewTabToolStripMenuItem
             // 
             this.NewTabToolStripMenuItem.Name = "NewTabToolStripMenuItem";
-            this.NewTabToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.NewTabToolStripMenuItem.Text = "新しいタブで開く";
+            this.NewTabToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.NewTabToolStripMenuItem.Text = "新しいタブを開く";
             this.NewTabToolStripMenuItem.Click += new System.EventHandler(this.NewTabPageToolStripMenuItem_Click);
+            // 
+            // ファイルを展開するToolStripMenuItem
+            // 
+            this.ファイルを展開するToolStripMenuItem.Name = "ファイルを展開するToolStripMenuItem";
+            this.ファイルを展開するToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.ファイルを展開するToolStripMenuItem.Text = "ファイルを展開する";
+            this.ファイルを展開するToolStripMenuItem.Click += new System.EventHandler(this.TahDecryptToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -706,6 +715,7 @@
         private System.Windows.Forms.TreeView treeViewTag;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TreeView treeViewSaveFile;
+        private System.Windows.Forms.ToolStripMenuItem ファイルを展開するToolStripMenuItem;
 
     }
 }

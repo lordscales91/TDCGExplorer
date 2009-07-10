@@ -4,12 +4,17 @@ using System.Linq;
 using System.Text;
 using System.IO;
 using System.Windows.Forms;
+using System.Media;
 
 namespace TDCGExplorer
 {
     public class LbGenItem : Object
     {
         public virtual void DoClick()
+        {
+        }
+
+        public virtual void DoExtract()
         {
         }
     }
@@ -33,6 +38,19 @@ namespace TDCGExplorer
                 case ".tah":
                     TDCGExplorer.GetMainForm().AssignTagPageControl(new TAHPageControl(new TahInfo(entry), TDCGExplorer.GetArcsDatabase().GetTahFilesPath(entry.id)));
                     break;
+            }
+        }
+        public override void DoExtract()
+        {
+            // TAHファイル内容に関するフォームを追加する.
+            switch (Path.GetExtension(entry.shortname))
+            {
+                case ".tah":
+                    TDCGExplorer.TAHDecrypt(new TahInfo(entry));
+                    break;
+                default:
+                    MessageBox.Show("TAHファイル以外は展開できません.", "TAHDecrypt", MessageBoxButtons.OK);
+                    return;
             }
         }
     }
@@ -79,6 +97,8 @@ namespace TDCGExplorer
                 // 既に実行中の時は操作禁止
                 if(SaveFilePage.Busy==false)
                     TDCGExplorer.GetMainForm().AssignTagPageControl(new SaveFilePage(new ZipTahInfo(entry)));
+                else
+                    SystemSounds.Exclamation.Play();
                 return;
             }
             // TAHファイル内容に関するフォームを追加する.
@@ -102,6 +122,20 @@ namespace TDCGExplorer
                     break;
             }
         }
+        public override void DoExtract()
+        {
+            // TAHファイル内容に関するフォームを追加する.
+            switch (Path.GetExtension(entry.shortname))
+            {
+                case ".tah":
+                    TDCGExplorer.TAHDecrypt(new ZipTahInfo(entry));
+                    break;
+                default:
+                    MessageBox.Show("TAHファイル以外は展開できません.", "TAHDecrypt", MessageBoxButtons.OK);
+                    return;
+            }
+        }
+
     }
     // セーブファイル専用リストボックスアイテム.
     public class LbSaveFileItem : LbGenItem
@@ -120,6 +154,8 @@ namespace TDCGExplorer
             // 既に実行中の時は操作禁止
             if(SaveFilePage.Busy==false)
                 TDCGExplorer.GetMainForm().AssignTagPageControl(new SaveFilePage(path));
+            else
+                SystemSounds.Exclamation.Play();
         }
     }
 

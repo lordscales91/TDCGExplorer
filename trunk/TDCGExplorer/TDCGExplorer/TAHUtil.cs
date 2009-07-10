@@ -137,7 +137,7 @@ namespace TDCGExplorer
                 throw;
             }
         }
-
+#if false
         public static void DecryptOld(byte[] input, byte[] output)
         {
             //const UInt32 win_size   = 4096;
@@ -247,7 +247,7 @@ namespace TDCGExplorer
                     input[i] = (byte)(input[i] ^ rnd[seed + i & 1023]);
             }
         }
-
+#endif
         [System.Diagnostics.Conditional("DECRYPT_DEBUG")]
         public static void DbgPrint(string s)
         {

@@ -158,7 +158,7 @@ namespace TDCGExplorer
             edit.textTagnamesServer = GetSystemDatabase().tagnames_server;
             edit.uiBehavior = GetSystemDatabase().zippage_behavior;
             edit.saveDirectory = GetSystemDatabase().savefile_directory;
-            
+            edit.Owner = GetMainForm();
             if (edit.ShowDialog() == DialogResult.OK)
             {
                 // ダイアログに設定されたパラメータを ~/TDCG/TDCDEXplorer/system.dbに書き出す.
@@ -468,7 +468,7 @@ namespace TDCGExplorer
         private static void iterSubDirectory(List<string> directories, string directory,string except)
         {
             // 自分自身はスキャンしない.
-            if (directory == except) return;
+            if (directory.ToLower() == except.ToLower()) return;
             // ディレクトリを追加する.
             directories.Add(directory);
             string[] entries = Directory.GetDirectories(directory);
@@ -692,6 +692,39 @@ namespace TDCGExplorer
                     MessageBox.Show(installedcount.ToString() + "個のzipを展開しました。", "展開", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 else
                     MessageBox.Show("前提zipは全てインストール済みです", "展開", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+        }
+
+        public static void TAHDecrypt(GenTahInfo entry)
+        {
+            string destpath = Path.Combine(GetSystemDatabase().work_path, Path.GetFileNameWithoutExtension(entry.shortname));
+            TAHStream stream = new TAHStream(entry, null);
+            TAHFile tah = stream.tahfile;
+            if (tah != null)
+            {
+                int id = 0;
+                foreach (TAHEntry ent in tah.EntrySet.Entries)
+                {
+                    string filename;
+                    if (ent.FileName == null)
+                    {
+                        filename = Path.Combine(destpath,id.ToString("d8") + "_" + ent.Hash.ToString("x8"));
+                    }
+                    else
+                    {
+                        filename = Path.Combine(destpath, ent.FileName);
+                    }
+                    Directory.CreateDirectory(Path.GetDirectoryName(filename));
+                    File.Delete(filename);
+                    byte[] data = TAHUtil.ReadEntryData(tah.Reader, ent);
+                    using (Stream writefile = File.OpenWrite(filename))
+                    {
+                        writefile.Write(data, 0, data.Length);
+                        writefile.Flush();
+                        writefile.Close();
+                    }
+                    id++;
+                }
             }
         }
 

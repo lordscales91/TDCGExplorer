@@ -277,6 +277,11 @@
             フィギュア
             </summary>
         </member>
+        <member name="F:TDCG.Figure.TSOList">
+            <summary>
+            フィギュアが保持しているtsoリスト
+            </summary>
+        </member>
         <member name="M:TDCG.Figure.Move(System.Single,System.Single,System.Single)">
             <summary>
             フィギュアを移動します（相対座標）。
@@ -308,6 +313,11 @@
             TSOFileに対するnodemapを追加します。
             </summary>
             <param name="tso">tso</param>
+        </member>
+        <member name="M:TDCG.Figure.#ctor">
+            <summary>
+            フィギュアを生成します。
+            </summary>
         </member>
         <member name="M:TDCG.Figure.UpdateTMO">
             TMOFileを変更したときに呼ぶ必要があります。
@@ -368,6 +378,11 @@
             移動変位
             </summary>
         </member>
+        <member name="P:TDCG.Figure.Tmo">
+            <summary>
+            tmo
+            </summary>
+        </member>
         <member name="P:TDCG.Figure.Motion">
             <summary>
             フィギュアモーション
@@ -380,8 +395,44 @@
         </member>
         <member name="M:TDCG.FigureForm.#ctor">
             <summary>
-            フィギュア情報フォームを生成する。
+            フィギュア情報フォームを生成します。
             </summary>
+        </member>
+        <member name="M:TDCG.FigureForm.form_FormClosing(System.Object,System.Windows.Forms.FormClosingEventArgs)">
+            <summary>
+            フォームを閉じるとき破棄せずに隠します。
+            </summary>
+            <param name="sender">sender</param>
+            <param name="e">イベント引数</param>
+        </member>
+        <member name="M:TDCG.FigureForm.OnKeyPress(System.Windows.Forms.KeyPressEventArgs)">
+            <summary>
+            Escを押すと抜けます。
+            </summary>
+            <param name="e">イベント引数</param>
+        </member>
+        <member name="M:TDCG.FigureForm.Clear">
+            <summary>
+            フィギュア情報を削除します。
+            </summary>
+        </member>
+        <member name="M:TDCG.FigureForm.SetFigure(TDCG.Figure)">
+            <summary>
+            フィギュアをUIに設定します。
+            </summary>
+            <param name="fig">フィギュア</param>
+        </member>
+        <member name="M:TDCG.FigureForm.SetTSOFile(TDCG.TSOFile)">
+            <summary>
+            tsoをUIに設定します。
+            </summary>
+            <param name="tso">tso</param>
+        </member>
+        <member name="M:TDCG.FigureForm.SetShader(TDCG.Shader)">
+            <summary>
+            シェーダ設定をUIに設定します。
+            </summary>
+            <param name="shader">シェーダ設定</param>
         </member>
         <member name="T:TDCG.FigureAction">
             <summary>
@@ -454,17 +505,131 @@
             </summary>
             <param name="dest_file">パス</param>
         </member>
+        <member name="F:TDCG.PNGFile.Header">
+            <summary>
+            pngヘッダを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Ihdr">
+            <summary>
+            IHDRチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Idat">
+            <summary>
+            IDATチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Iend">
+            <summary>
+            IENDチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
         <member name="M:TDCG.PNGFile.Load(System.String)">
             <summary>
             指定パスから読み込みます。
             </summary>
             <param name="source_file">パス</param>
         </member>
+        <member name="F:TDCG.PNGFile.Hsav">
+            <summary>
+            Hsavチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Pose">
+            <summary>
+            Poseチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Scne">
+            <summary>
+            Scneチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Cami">
+            <summary>
+            Camiチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Lgta">
+            <summary>
+            Lgtaチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Figu">
+            <summary>
+            Figuチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Ftmo">
+            <summary>
+            Ftmoチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Ftso">
+            <summary>
+            Ftsoチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
         <member name="T:TDCG.PNGFile.BinaryWriterHandler">
             <summary>
             バイナリ書き込みに用いるデリゲート型
             </summary>
             <param name="bw"></param>
+        </member>
+        <member name="T:TDCG.PNGFile.PngHeaderHandler">
+            <summary>
+            pngヘッダを処理するのに用いるデリゲート型
+            </summary>
+            <param name="header">ヘッダ</param>
+        </member>
+        <member name="T:TDCG.PNGFile.PngDataHandler">
+            <summary>
+            pngデータを処理するのに用いるデリゲート型
+            </summary>
+            <param name="data">データ</param>
+        </member>
+        <member name="T:TDCG.PNGFile.TaobTypeHandler">
+            <summary>
+            Typeチャンクを読み込むのに用いるデリゲート型
+            </summary>
+            <param name="type">type</param>
+        </member>
+        <member name="T:TDCG.PNGFile.TaobCamiHandler">
+            <summary>
+            Camiチャンクを読み込むのに用いるデリゲート型
+            </summary>
+            <param name="stream">ストリーム</param>
+            <param name="length">データ長さ</param>
+        </member>
+        <member name="T:TDCG.PNGFile.TaobLgtaHandler">
+            <summary>
+            Lgtaチャンクを読み込むのに用いるデリゲート型
+            </summary>
+            <param name="stream">ストリーム</param>
+            <param name="length">データ長さ</param>
+        </member>
+        <member name="T:TDCG.PNGFile.TaobFiguHandler">
+            <summary>
+            Figuチャンクを読み込むのに用いるデリゲート型
+            </summary>
+            <param name="stream">ストリーム</param>
+            <param name="length">データ長さ</param>
+        </member>
+        <member name="T:TDCG.PNGFile.TaobFtmoHandler">
+            <summary>
+            Ftmoチャンクを読み込むのに用いるデリゲート型
+            </summary>
+            <param name="stream">ストリーム</param>
+            <param name="length">データ長さ</param>
+        </member>
+        <member name="T:TDCG.PNGFile.TaobFtsoHandler">
+            <summary>
+            Ftsoチャンクを読み込むのに用いるデリゲート型
+            </summary>
+            <param name="stream">ストリーム</param>
+            <param name="length">データ長さ</param>
+            <param name="opt1">opt1</param>
         </member>
         <member name="T:TDCG.PNGWriter">
             <summary>
@@ -516,6 +681,118 @@
             シェーダ設定パラメータ
             </summary>
         </member>
+        <member name="M:TDCG.ShaderParameter.Parse(System.String)">
+            <summary>
+            シェーダ設定ファイルの行を解析してシェーダ設定パラメータを生成します。
+            </summary>
+            <param name="line">シェーダ設定ファイルの行</param>
+            <returns>シェーダ設定パラメータ</returns>
+        </member>
+        <member name="M:TDCG.ShaderParameter.#ctor">
+            <summary>
+            シェーダ設定パラメータを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.ShaderParameter.#ctor(System.String,System.String,System.String)">
+            <summary>
+            シェーダ設定パラメータを生成します。
+            </summary>
+            <param name="type_string">型名</param>
+            <param name="name">名称</param>
+            <param name="value">値</param>
+        </member>
+        <member name="M:TDCG.ShaderParameter.GetString">
+            <summary>
+            文字列を取得します。
+            </summary>
+            <returns>文字列</returns>
+        </member>
+        <member name="M:TDCG.ShaderParameter.SetString(System.String)">
+            <summary>
+            文字列を設定します。
+            </summary>
+            <param name="value">文字列表現</param>
+        </member>
+        <member name="M:TDCG.ShaderParameter.SetFloatDim(System.String,System.Int32)">
+            <summary>
+            float値の配列を設定します。
+            </summary>
+            <param name="value">float配列値の文字列表現</param>
+            <param name="dim">要素数</param>
+        </member>
+        <member name="M:TDCG.ShaderParameter.GetFloat">
+            <summary>
+            float値を取得します。
+            </summary>
+            <returns>float値</returns>
+        </member>
+        <member name="M:TDCG.ShaderParameter.SetFloat(System.String)">
+            <summary>
+            float値を設定します。
+            </summary>
+            <param name="value">float値の文字列表現</param>
+        </member>
+        <member name="M:TDCG.ShaderParameter.GetFloat3">
+            <summary>
+            float3値を取得します。
+            </summary>
+            <returns>float3値</returns>
+        </member>
+        <member name="M:TDCG.ShaderParameter.SetFloat3(System.String)">
+            <summary>
+            float3値を設定します。
+            </summary>
+            <param name="value">float3値の文字列表現</param>
+        </member>
+        <member name="M:TDCG.ShaderParameter.GetFloat4">
+            <summary>
+            float4値を取得します。
+            </summary>
+            <returns>float4値</returns>
+        </member>
+        <member name="M:TDCG.ShaderParameter.SetFloat4(System.String)">
+            <summary>
+            float4値を設定します。
+            </summary>
+            <param name="value">float4値の文字列表現</param>
+        </member>
+        <member name="M:TDCG.ShaderParameter.GetTexture">
+            <summary>
+            テクスチャ名を取得します。
+            </summary>
+            <returns>テクスチャ名</returns>
+        </member>
+        <member name="M:TDCG.ShaderParameter.SetTexture(System.String)">
+            <summary>
+            テクスチャ名を設定します。
+            </summary>
+            <param name="value">テクスチャ名</param>
+        </member>
+        <member name="P:TDCG.ShaderParameter.Name">
+            <summary>
+            パラメータの名称
+            </summary>
+        </member>
+        <member name="P:TDCG.ShaderParameter.F1">
+            <summary>
+            float値1
+            </summary>
+        </member>
+        <member name="P:TDCG.ShaderParameter.F2">
+            <summary>
+            float値2
+            </summary>
+        </member>
+        <member name="P:TDCG.ShaderParameter.F3">
+            <summary>
+            float値3
+            </summary>
+        </member>
+        <member name="P:TDCG.ShaderParameter.F4">
+            <summary>
+            float値4
+            </summary>
+        </member>
         <member name="T:TDCG.ShaderParameter.Type">
             <summary>
             シェーダ設定の型名
@@ -549,6 +826,11 @@
         <member name="F:TDCG.ShaderParameter.Type.Texture">
             <summary>
             テクスチャ
+            </summary>
+        </member>
+        <member name="T:TDCG.Shader">
+            <summary>
+            シェーダ設定
             </summary>
         </member>
         <member name="T:TDCG.TMOFile">
@@ -796,6 +1078,29 @@
             パレット長さ
             </summary>
         </member>
+        <member name="M:TDCG.TSOSubMesh.GetBone(System.Int32)">
+            <summary>
+            指定indexにあるボーンを得ます。
+            </summary>
+            <param name="i">index</param>
+            <returns>ボーン</returns>
+        </member>
+        <member name="M:TDCG.TSOSubMesh.LoadMesh(Microsoft.DirectX.Direct3D.Device)">
+            <summary>
+            頂点をDirect3Dバッファに書き込みます。
+            </summary>
+            <param name="device">device</param>
+        </member>
+        <member name="M:TDCG.TSOSubMesh.Dispose">
+            <summary>
+            Direct3Dメッシュを破棄します。
+            </summary>
+        </member>
+        <member name="P:TDCG.TSOSubMesh.NumberBones">
+            <summary>
+            ボーン数
+            </summary>
+        </member>
         <member name="T:TDCG.TSOMesh">
             <summary>
             メッシュ
@@ -955,13 +1260,24 @@
             TSOFileをDirect3D上でレンダリングします。
             </summary>
         </member>
-        <member name="M:TDCG.Viewer.ScreenToVector(System.Single,System.Single)">
+        <member name="F:TDCG.Viewer.FigureList">
             <summary>
-            スクリーン座標を射影座標に変換します。
+            viewerが保持しているフィギュアリスト
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.SetControl(System.Windows.Forms.Control)">
+            <summary>
+            controlを保持します。スクリーンの中心座標を更新します。
+            </summary>
+            <param name="control">control</param>
+        </member>
+        <member name="M:TDCG.Viewer.ScreenToOrientation(System.Single,System.Single)">
+            <summary>
+            指定スクリーン座標からスクリーン中心へ向かうベクトルを得ます。
             </summary>
             <param name="screenPointX">スクリーンX座標</param>
             <param name="screenPointY">スクリーンY座標</param>
-            <returns></returns>
+            <returns>方向ベクトル</returns>
         </member>
         <member name="M:TDCG.Viewer.LoadAnyFile(System.String)">
             <summary>

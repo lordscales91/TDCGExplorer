@@ -280,6 +280,7 @@ namespace TDCGExplorer
         private void FindItemToolStripMenuItem_Click(object sender, EventArgs e)
         {
             FindDialog dialog = new FindDialog();
+            dialog.Owner = this;
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 Cursor.Current = Cursors.WaitCursor;
@@ -708,6 +709,24 @@ namespace TDCGExplorer
         {
             Control obj = (Control)sender;
             obj.Focus();
+        }
+
+        private void TahDecryptToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                int index = listBoxMainListBox.SelectedIndex;
+                if (index >= 0)
+                {
+                    LbGenItem item = (LbGenItem)listBoxMainListBox.Items[index];
+                    item.DoExtract();
+                    listBoxMainListBox.Focus();
+                }
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show("ファイル展開エラー:"+exception.Message, "エラー", MessageBoxButtons.OK);
+            }
         }
     }
 }
