@@ -58,9 +58,9 @@ public class Viewer : IDisposable
     {
         if (dx == 0 && dy == 0 && dz == 0)
             return;
-        target.X += dx;
-        target.Y += dy;
-        target.Z += dz;
+        target.X -= dx;
+        target.Y -= dy;
+        target.Z -= dz;
         solved = false;
     }
 
@@ -1042,14 +1042,9 @@ public class Viewer : IDisposable
         if (rotAngle > float.Epsilon)
         {
             Vector3 rotAxis = Vector3.Cross(toEffector, toTarget);
+            rotAxis.Normalize();
             Quaternion q = Quaternion.RotationAxis(rotAxis, rotAngle);
-            Matrix m = node.TransformationMatrix;
-            Vector3 v = TMOMat.DecomposeMatrix(ref m);
-            m *= Matrix.RotationQuaternion(q);
-            m.M41 = v.X;
-            m.M42 = v.Y;
-            m.M43 = v.Z;
-            node.TransformationMatrix = m;
+            node.Rotation = q * node.Rotation;
         }
         if ((localEffectorP - localTargetP).LengthSq() < 0.1f)
             solved = true;
