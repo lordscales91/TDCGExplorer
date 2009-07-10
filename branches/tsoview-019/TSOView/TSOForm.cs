@@ -212,24 +212,24 @@ public class TSOForm : Form
         float keyZRol = 0.0f;
 
         if (keys[(int)Keys.Left])
-            keyL = 0.1f;
+            keyL = 1.0f;
         if (keys[(int)Keys.Right])
-            keyR = 0.1f;
+            keyR = 1.0f;
         if (keys[(int)Keys.PageUp])
-            keyU = 0.1f;
+            keyU = 1.0f;
         if (keys[(int)Keys.PageDown])
-            keyD = 0.1f;
+            keyD = 1.0f;
         if (keys[(int)Keys.Up])
-            keyPush = 0.1f;
+            keyPush = 1.0f;
         if (keys[(int)Keys.Down])
-            keyPull = 0.1f;
+            keyPull = 1.0f;
         if (keys[(int)Keys.A])
-            keyZRol = -2.0f;
+            keyZRol = -1.0f;
         if (keys[(int)Keys.D])
-            keyZRol = +2.0f;
+            keyZRol = +1.0f;
 
-        viewer.MoveTarget(keyL - keyR, keyD - keyU, keyPush - keyPull);
-        viewer.MoveSwivel(DegreeToRadian(keyZRol));
+        camera.Move(keyL - keyR, keyD - keyU, keyPush - keyPull);
+        camera.RotZ(DegreeToRadian(keyZRol));
     }
 
     private void form_OnDragEnter(object sender, DragEventArgs e)

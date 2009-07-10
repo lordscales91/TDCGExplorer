@@ -41,8 +41,6 @@ public class Viewer : IDisposable
     internal Surface dev_surface = null;
     internal Surface dev_zbuf = null;
 
-    internal Mesh sphere = null;
-
     /// <summary>
     /// viewerが保持しているフィギュアリスト
     /// </summary>
@@ -50,27 +48,6 @@ public class Viewer : IDisposable
 
     // ライト方向
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
-
-    Vector3 target = new Vector3(5.0f, 10.0f, 0.0f);
-    float swivel = 0.0f;
-
-    public void MoveTarget(float dx, float dy, float dz)
-    {
-        if (dx == 0 && dy == 0 && dz == 0)
-            return;
-        target.X -= dx;
-        target.Y -= dy;
-        target.Z -= dz;
-        solved = false;
-    }
-
-    public void MoveSwivel(float delta)
-    {
-        if (delta == 0)
-            return;
-        swivel += delta;
-        solved = false;
-    }
 
     // マウスポイントしているスクリーン座標
     private Point lastScreenPoint = Point.Empty;
@@ -165,52 +142,6 @@ public class Viewer : IDisposable
             z = (float)Math.Sqrt(1.0f - mag);
 
         return new Vector3(x, y, z);
-    }
-
-    /// 球とレイの衝突を見つけます。
-    public bool DetectSphereRayCollision(float sphereRadius, ref Vector3 sphereCenter, ref Vector3 rayStart, ref Vector3 rayOrientation, out Vector3 collisionPoint, out float collisionTime)
-    {
-        collisionTime = 0.0f;
-        collisionPoint = Vector3.Empty;
-
-        Vector3 u = rayStart - sphereCenter;
-        float a = Vector3.Dot(rayOrientation, rayOrientation);
-        float b = Vector3.Dot(rayOrientation, u);
-        float c = Vector3.Dot(u, u) - sphereRadius*sphereRadius;
-        if (a <= float.Epsilon)
-            //誤差
-            return false;
-        float d = b*b - a*c;
-        if (d < 0.0f)
-            //衝突しない
-            return false;
-        collisionTime = (-b - (float)Math.Sqrt(d))/a;
-        collisionPoint = rayStart + rayOrientation*collisionTime;
-        return true;
-    }
-
-    /// スクリーン位置をワールド座標へ変換します。
-    public Vector3 ScreenToWorld(float screenX, float screenY, float z, ref Matrix view, ref Matrix proj)
-    {
-        //viewport行列を作成
-        Matrix m = Matrix.Identity;
-        Viewport vp = device.Viewport;
-        m.M11 = (float)vp.Width/2;
-        m.M22 = -1.0f*(float)vp.Height/2;
-        m.M33 = (float)vp.MaxZ - (float)vp.MinZ;
-        m.M41 = (float)(vp.X + vp.Width/2);
-        m.M42 = (float)(vp.Y + vp.Height/2);
-        m.M43 = vp.MinZ;
-
-        //スクリーン位置
-        Vector3 v = new Vector3(screenX, screenY,  z);
-
-        Matrix inv_m = Matrix.Invert(m);
-        Matrix inv_proj = Matrix.Invert(proj);
-        Matrix inv_view = Matrix.Invert(view);
-
-        //スクリーン位置をワールド座標へ変換
-        return Vector3.TransformCoordinate(v, inv_m * inv_proj * inv_view);
     }
 
     /// <summary>
@@ -579,7 +510,6 @@ public class Viewer : IDisposable
 
             sprite = new Sprite(device);
         }
-        sphere = Mesh.Sphere(device, 0.12f, 8, 6);
         camera.Update();
         OnDeviceReset(device, null);
 
@@ -770,21 +700,9 @@ public class Viewer : IDisposable
         foreach (TSOFile tso in fig.TSOList)
             tso.lightDir = lightDir;
 
-        if (! motionEnabled && ! solved)
-        {
-            foreach (Figure fig in FigureList)
-            {
-                foreach (TSOFile tso in fig.TSOList)
-                    Solve(tso);
-                fig.UpdateBoneMatricesWithoutTMO();
-            }
-        }
-        else
-        {
-            //device.Transform.World = world_matrix;
-            foreach (Figure fig in FigureList)
-                fig.UpdateBoneMatrices();
-        }
+        //device.Transform.World = world_matrix;
+        foreach (Figure fig in FigureList)
+            fig.UpdateBoneMatrices();
 
         if (motionEnabled)
         {
@@ -909,23 +827,6 @@ public class Viewer : IDisposable
         sprite.End();
     }
  
-    //衝突判定
-    /*
-    {
-        Figure fig;
-
-        if (TryGetFigure(out fig))
-        {
-            TSONode bone = fig.TSOList[0].nodemap[sphere_bone_name];
-            DrawMeshSub(sphere, bone.combined_matrix * world_matrix, GetBoneColor(bone));
-        }
-    }
-    */
-
-    {
-        DrawMeshSub(sphere, Matrix.Translation(target), new Vector4(1,1,0,1));
-    }
-
         device.EndScene();
         {
             int ret;
@@ -950,113 +851,10 @@ public class Viewer : IDisposable
         Thread.Sleep(30);
     }
 
-    public void DrawMeshSub(Mesh mesh, Matrix wld, Vector4 color)
-    {
-        effect.Technique = "BONE";
-
-        Matrix wv = wld * Transform_View;
-        Matrix wvp = wv * Transform_Projection;
-
-        effect.SetValue("wld", wld);
-        effect.SetValue("wv", wv);
-        effect.SetValue("wvp", wvp);
-
-        effect.SetValue("ManColor", color);
-
-        int npass = effect.Begin(0);
-        for (int ipass = 0; ipass < npass; ipass++)
-        {
-            effect.BeginPass(ipass);
-            mesh.DrawSubset(0);
-            effect.EndPass();
-        }
-        effect.End();
-    }
-
-    public string sphere_bone_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck";
-
-    public Vector4 GetBoneColor(TSONode node)
-    {
-        if (FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y))
-            return new Vector4(1,1,1,1);
-        else
-            return new Vector4(1,0,0,1);
-    }
-
-    private bool FindBoneOnScreenPoint(float x, float y)
-    {
-        Figure fig;
-
-        if (TryGetFigure(out fig))
-        {
-            TSONode bone = fig.TSOList[0].nodemap[sphere_bone_name];
-            Matrix m = bone.combined_matrix * world_matrix;
-
-            float sphereRadius = 1.0f;
-            Vector3 sphereCenter = new Vector3(m.M41, m.M42, m.M43);
-            Vector3 rayStart = ScreenToWorld(x, y, 0.0f, ref Transform_View, ref Transform_Projection);
-            Vector3 rayEnd = ScreenToWorld(x, y, 1.0f, ref Transform_View, ref Transform_Projection);
-            Vector3 rayOrientation = rayEnd - rayStart;
-
-            Vector3 collisionPoint;
-            float collisionTime;
-
-            return DetectSphereRayCollision(sphereRadius, ref sphereCenter, ref rayStart, ref rayOrientation, out collisionPoint, out collisionTime);
-        }
-        return false;
-    }
-
-    private void Solve(TSOFile tso)
-    {
-        string effector_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand";
-        TSONode effector = tso.nodemap[effector_name];
-
-        string node_name;
-        TSONode node;
-
-        node_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm";
-        node = tso.nodemap[node_name];
-        Solve(effector, node);
-
-        node_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm";
-        node = tso.nodemap[node_name];
-        Solve(effector, node);
-    }
-
-    // Cyclic-Coordinate-Descent (CCD) 法
-    private void Solve(TSONode effector, TSONode node)
-    {
-        Vector3 worldTargetP = target;
-
-        Vector3 worldEffectorP = effector.GetWorldPosition();
-        Vector3 worldNodeP = node.GetWorldPosition();
-
-        Matrix invCoord = Matrix.Invert(node.GetWorldCoordinate());
-        Vector3 localEffectorP = Vector3.TransformCoordinate(worldEffectorP, invCoord);
-        Vector3 localTargetP = Vector3.TransformCoordinate(worldTargetP, invCoord);
-
-        Vector3 toEffector = Vector3.Normalize(localEffectorP);
-        Vector3 toTarget = Vector3.Normalize(localTargetP);
-
-        float rotDotProduct = Vector3.Dot(toEffector, toTarget);
-        float rotAngle = (float)Math.Acos(rotDotProduct);
-        if (rotAngle > float.Epsilon)
-        {
-            Vector3 rotAxis = Vector3.Cross(toEffector, toTarget);
-            rotAxis.Normalize();
-            Quaternion q = Quaternion.RotationAxis(rotAxis, rotAngle);
-            node.Rotation = q * node.Rotation;
-        }
-        if ((localEffectorP - localTargetP).LengthSq() < 0.1f)
-            solved = true;
-    }
-
     public void Dispose()
     {
         foreach (Figure fig in FigureList)
             fig.Dispose();
-        if (sphere != null)
-            sphere.Dispose();
         if (sprite != null)
             sprite.Dispose();
         if (ztex_zbuf != null)
