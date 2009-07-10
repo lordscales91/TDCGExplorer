@@ -24,7 +24,7 @@ namespace TDCGExplorer
 
         public void Init()
         {
-            if (TDCGExplorer.GetSystemDatabase().modrefserver_alwaysenable == "true")
+            if (TDCGExplorer.SystemDB.modrefserver_alwaysenable == "true")
             {
                 // 毎回とりにいく.
                 if (DownloadArcNamesZipFromServer() == false) return;
@@ -52,7 +52,7 @@ namespace TDCGExplorer
             bool status = false;
             try
             {
-                string uri = TDCGExplorer.GetSystemDatabase().arcnames_server;
+                string uri = TDCGExplorer.SystemDB.arcnames_server;
                 string localfile = zipArcLocalName();
 
                 // サーバからダウンロードする.

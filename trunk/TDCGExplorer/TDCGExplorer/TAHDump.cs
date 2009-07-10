@@ -141,7 +141,7 @@ namespace TDCGExplorer
 
         public static void ArcsDumpTahFilesEntries(ArcsDatabase db,ArcsTahEntry entry)
         {
-            string source = Path.Combine(TDCGExplorer.GetSystemDatabase().arcs_path, entry.path);
+            string source = Path.Combine(TDCGExplorer.SystemDB.arcs_path, entry.path);
 
             TAHFile tah = new TAHFile(source);
             try
@@ -220,7 +220,7 @@ namespace TDCGExplorer
             zipspath = dir;
             if (Directory.Exists(dir) == true)
             {
-                zipcoderegexp = TDCGExplorer.GetSystemDatabase().zip_regexp;
+                zipcoderegexp = TDCGExplorer.SystemDB.zip_regexp;
                 // 存在フラグを全て落とす.
                 TDCGExplorer.SetToolTips("Setup database");
                 db.UpdateZipExistDown();
@@ -279,7 +279,7 @@ namespace TDCGExplorer
                 string[] sublevel = zipname.Split(separetor);
                 string directory = sublevel[sublevel.Length - 1];
 
-                Regex regDirectAccess = new System.Text.RegularExpressions.Regex(TDCGExplorer.GetSystemDatabase().directaccess_signature);
+                Regex regDirectAccess = new System.Text.RegularExpressions.Regex(TDCGExplorer.SystemDB.directaccess_signature);
                 Match m = regDirectAccess.Match(directory);
                 if (m.Success)
                 {
@@ -352,19 +352,19 @@ namespace TDCGExplorer
                 case ".zip":
                     using (IArchive arc = new ZipArchive())
                     {
-                        DumpArcEntries(db, Path.Combine(TDCGExplorer.GetSystemDatabase().zips_path, entry.path), arc, entry.id);
+                        DumpArcEntries(db, Path.Combine(TDCGExplorer.SystemDB.zips_path, entry.path), arc, entry.id);
                     }
                     break;
                 case ".rar":
                     using (IArchive arc = new RarArchive())
                     {
-                        DumpArcEntries(db, Path.Combine(TDCGExplorer.GetSystemDatabase().zips_path, entry.path), arc, entry.id);
+                        DumpArcEntries(db, Path.Combine(TDCGExplorer.SystemDB.zips_path, entry.path), arc, entry.id);
                     }
                     break;
                 case ".lzh":
                     using (IArchive arc = new LzhArchive())
                     {
-                        DumpArcEntries(db, Path.Combine(TDCGExplorer.GetSystemDatabase().zips_path, entry.path), arc, entry.id);
+                        DumpArcEntries(db, Path.Combine(TDCGExplorer.SystemDB.zips_path, entry.path), arc, entry.id);
                     }
                     break;
                 default:

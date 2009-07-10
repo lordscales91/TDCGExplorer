@@ -32,8 +32,8 @@
             this.MainMenu = new System.Windows.Forms.MenuStrip();
             this.tDCGExplorerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractZipFileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.関連アーカイブを調べるToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.前提アーカイブファイルを展開ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ResearchAssumptionArchiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.InstallPreferredModsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FindDialogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditAnnotationToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -52,7 +52,7 @@
             this.cmContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.extractZipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.未インストールの前提アーカイブを展開ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.InstallPreferredModToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditAnnotationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -61,7 +61,7 @@
             this.tabContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.closeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainerV = new System.Windows.Forms.SplitContainer();
-            this.tabControlTreeContainor = new System.Windows.Forms.TabControl();
+            this.tabControlTreeView = new System.Windows.Forms.TabControl();
             this.tabPageArcs = new System.Windows.Forms.TabPage();
             this.tabPageZips = new System.Windows.Forms.TabPage();
             this.treeViewZips = new System.Windows.Forms.TreeView();
@@ -78,7 +78,7 @@
             this.listBoxMainListBox = new System.Windows.Forms.ListBox();
             this.ListBoxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.NewTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ファイルを展開するToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExpandTahFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.cmContextMenu.SuspendLayout();
             this.StatusStrip.SuspendLayout();
@@ -86,7 +86,7 @@
             this.splitContainerV.Panel1.SuspendLayout();
             this.splitContainerV.Panel2.SuspendLayout();
             this.splitContainerV.SuspendLayout();
-            this.tabControlTreeContainor.SuspendLayout();
+            this.tabControlTreeView.SuspendLayout();
             this.tabPageArcs.SuspendLayout();
             this.tabPageZips.SuspendLayout();
             this.tabPageIntalled.SuspendLayout();
@@ -118,8 +118,8 @@
             // 
             this.tDCGExplorerToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.extractZipFileToolStripMenuItem1,
-            this.関連アーカイブを調べるToolStripMenuItem,
-            this.前提アーカイブファイルを展開ToolStripMenuItem,
+            this.ResearchAssumptionArchiveToolStripMenuItem,
+            this.InstallPreferredModsToolStripMenuItem,
             this.FindDialogToolStripMenuItem,
             this.EditAnnotationToolStripMenuItem1,
             this.exitToolStripMenuItem});
@@ -136,17 +136,17 @@
             // 
             // 関連アーカイブを調べるToolStripMenuItem
             // 
-            this.関連アーカイブを調べるToolStripMenuItem.Name = "関連アーカイブを調べるToolStripMenuItem";
-            this.関連アーカイブを調べるToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.関連アーカイブを調べるToolStripMenuItem.Text = "関連アーカイブを調べる";
-            this.関連アーカイブを調べるToolStripMenuItem.Click += new System.EventHandler(this.LookupMODRefToolStripMenuItem_Click);
+            this.ResearchAssumptionArchiveToolStripMenuItem.Name = "関連アーカイブを調べるToolStripMenuItem";
+            this.ResearchAssumptionArchiveToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.ResearchAssumptionArchiveToolStripMenuItem.Text = "関連アーカイブを調べる";
+            this.ResearchAssumptionArchiveToolStripMenuItem.Click += new System.EventHandler(this.LookupMODRefToolStripMenuItem_Click);
             // 
             // 前提アーカイブファイルを展開ToolStripMenuItem
             // 
-            this.前提アーカイブファイルを展開ToolStripMenuItem.Name = "前提アーカイブファイルを展開ToolStripMenuItem";
-            this.前提アーカイブファイルを展開ToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.前提アーカイブファイルを展開ToolStripMenuItem.Text = "前提アーカイブファイルを展開";
-            this.前提アーカイブファイルを展開ToolStripMenuItem.Click += new System.EventHandler(this.ExtractPreferZipMainMenuToolStripMenuItem_Click);
+            this.InstallPreferredModsToolStripMenuItem.Name = "前提アーカイブファイルを展開ToolStripMenuItem";
+            this.InstallPreferredModsToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.InstallPreferredModsToolStripMenuItem.Text = "前提アーカイブファイルを展開";
+            this.InstallPreferredModsToolStripMenuItem.Click += new System.EventHandler(this.ExtractPreferZipMainMenuToolStripMenuItem_Click);
             // 
             // FindDialogToolStripMenuItem
             // 
@@ -275,7 +275,7 @@
             this.cmContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.expandAllToolStripMenuItem,
             this.extractZipToolStripMenuItem,
-            this.未インストールの前提アーカイブを展開ToolStripMenuItem,
+            this.InstallPreferredModToolStripMenuItem,
             this.EditAnnotationToolStripMenuItem});
             this.cmContextMenu.Name = "cmContextMenu";
             this.cmContextMenu.Size = new System.Drawing.Size(243, 92);
@@ -296,10 +296,10 @@
             // 
             // 未インストールの前提アーカイブを展開ToolStripMenuItem
             // 
-            this.未インストールの前提アーカイブを展開ToolStripMenuItem.Name = "未インストールの前提アーカイブを展開ToolStripMenuItem";
-            this.未インストールの前提アーカイブを展開ToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.未インストールの前提アーカイブを展開ToolStripMenuItem.Text = "前提アーカイブファイルを展開";
-            this.未インストールの前提アーカイブを展開ToolStripMenuItem.Click += new System.EventHandler(this.ExtractPreferZipToolStripMenuItem_Click);
+            this.InstallPreferredModToolStripMenuItem.Name = "未インストールの前提アーカイブを展開ToolStripMenuItem";
+            this.InstallPreferredModToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.InstallPreferredModToolStripMenuItem.Text = "前提アーカイブファイルを展開";
+            this.InstallPreferredModToolStripMenuItem.Click += new System.EventHandler(this.ExtractPreferZipToolStripMenuItem_Click);
             // 
             // EditAnnotationToolStripMenuItem
             // 
@@ -370,7 +370,7 @@
             // 
             // splitContainerV.Panel1
             // 
-            this.splitContainerV.Panel1.Controls.Add(this.tabControlTreeContainor);
+            this.splitContainerV.Panel1.Controls.Add(this.tabControlTreeView);
             // 
             // splitContainerV.Panel2
             // 
@@ -382,22 +382,22 @@
             // 
             // tabControlTreeContainor
             // 
-            this.tabControlTreeContainor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.tabControlTreeView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControlTreeContainor.Controls.Add(this.tabPageArcs);
-            this.tabControlTreeContainor.Controls.Add(this.tabPageZips);
-            this.tabControlTreeContainor.Controls.Add(this.tabPageIntalled);
-            this.tabControlTreeContainor.Controls.Add(this.tabPageCollsion);
-            this.tabControlTreeContainor.Controls.Add(this.tabPageTag);
-            this.tabControlTreeContainor.Controls.Add(this.tabPage1);
-            this.tabControlTreeContainor.Location = new System.Drawing.Point(3, 3);
-            this.tabControlTreeContainor.Multiline = true;
-            this.tabControlTreeContainor.Name = "tabControlTreeContainor";
-            this.tabControlTreeContainor.SelectedIndex = 0;
-            this.tabControlTreeContainor.Size = new System.Drawing.Size(173, 399);
-            this.tabControlTreeContainor.TabIndex = 4;
-            this.tabControlTreeContainor.SelectedIndexChanged += new System.EventHandler(this.tabControlTreeContainor_SelectedIndexChanged);
+            this.tabControlTreeView.Controls.Add(this.tabPageArcs);
+            this.tabControlTreeView.Controls.Add(this.tabPageZips);
+            this.tabControlTreeView.Controls.Add(this.tabPageIntalled);
+            this.tabControlTreeView.Controls.Add(this.tabPageCollsion);
+            this.tabControlTreeView.Controls.Add(this.tabPageTag);
+            this.tabControlTreeView.Controls.Add(this.tabPage1);
+            this.tabControlTreeView.Location = new System.Drawing.Point(3, 3);
+            this.tabControlTreeView.Multiline = true;
+            this.tabControlTreeView.Name = "tabControlTreeContainor";
+            this.tabControlTreeView.SelectedIndex = 0;
+            this.tabControlTreeView.Size = new System.Drawing.Size(173, 399);
+            this.tabControlTreeView.TabIndex = 4;
+            this.tabControlTreeView.SelectedIndexChanged += new System.EventHandler(this.tabControlTreeContainor_SelectedIndexChanged);
             // 
             // tabPageArcs
             // 
@@ -607,7 +607,7 @@
             // 
             this.ListBoxContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewTabToolStripMenuItem,
-            this.ファイルを展開するToolStripMenuItem});
+            this.ExpandTahFileToolStripMenuItem});
             this.ListBoxContextMenuStrip.Name = "contextMenuStrip1";
             this.ListBoxContextMenuStrip.Size = new System.Drawing.Size(183, 48);
             // 
@@ -620,10 +620,10 @@
             // 
             // ファイルを展開するToolStripMenuItem
             // 
-            this.ファイルを展開するToolStripMenuItem.Name = "ファイルを展開するToolStripMenuItem";
-            this.ファイルを展開するToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-            this.ファイルを展開するToolStripMenuItem.Text = "ファイルを展開する";
-            this.ファイルを展開するToolStripMenuItem.Click += new System.EventHandler(this.TahDecryptToolStripMenuItem_Click);
+            this.ExpandTahFileToolStripMenuItem.Name = "ファイルを展開するToolStripMenuItem";
+            this.ExpandTahFileToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.ExpandTahFileToolStripMenuItem.Text = "ファイルを展開する";
+            this.ExpandTahFileToolStripMenuItem.Click += new System.EventHandler(this.TahDecryptToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -647,7 +647,7 @@
             this.splitContainerV.Panel1.ResumeLayout(false);
             this.splitContainerV.Panel2.ResumeLayout(false);
             this.splitContainerV.ResumeLayout(false);
-            this.tabControlTreeContainor.ResumeLayout(false);
+            this.tabControlTreeView.ResumeLayout(false);
             this.tabPageArcs.ResumeLayout(false);
             this.tabPageZips.ResumeLayout(false);
             this.tabPageIntalled.ResumeLayout(false);
@@ -700,7 +700,7 @@
         private System.Windows.Forms.ToolStripMenuItem ExpandTreeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem NewTabToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem CloseTabToolStripMenuItem;
-        private System.Windows.Forms.TabControl tabControlTreeContainor;
+        private System.Windows.Forms.TabControl tabControlTreeView;
         private System.Windows.Forms.TabPage tabPageArcs;
         private System.Windows.Forms.TabPage tabPageZips;
         private System.Windows.Forms.TabPage tabPageIntalled;
@@ -708,15 +708,15 @@
         private System.Windows.Forms.TreeView treeViewZips;
         private System.Windows.Forms.TreeView treeViewInstalled;
         private System.Windows.Forms.TreeView treeViewCollision;
-        private System.Windows.Forms.ToolStripMenuItem 未インストールの前提アーカイブを展開ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 前提アーカイブファイルを展開ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem InstallPreferredModToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem InstallPreferredModsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem downloadLatestArcsnameszipToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 関連アーカイブを調べるToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ResearchAssumptionArchiveToolStripMenuItem;
         private System.Windows.Forms.TabPage tabPageTag;
         private System.Windows.Forms.TreeView treeViewTag;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TreeView treeViewSaveFile;
-        private System.Windows.Forms.ToolStripMenuItem ファイルを展開するToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ExpandTahFileToolStripMenuItem;
 
     }
 }

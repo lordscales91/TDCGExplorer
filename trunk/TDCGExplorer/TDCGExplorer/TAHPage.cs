@@ -28,7 +28,7 @@ namespace System.Windows.Forms
             InitializeComponent();
 
             info = entryinfo;
-            Text = info.shortname;
+            Text = info.shortname+" version "+entryinfo.version.ToString();
             filesEntries = filesentries;
 
             DataTable data = new DataTable();
@@ -174,8 +174,8 @@ namespace System.Windows.Forms
         {
             Vector3 position;
 
-            TSOFile tso = TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.FigureList[0].TSOList[0];
-            Viewer viewer = TDCGExplorer.TDCGExplorer.GetMainForm().Viewer;
+            TSOFile tso = TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FigureList[0].TSOList[0];
+            Viewer viewer = TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer;
 
             Dictionary<string, TSONode> nodemap = new Dictionary<string, TSONode>();
             foreach (TSONode node in tso.nodes)
@@ -273,23 +273,23 @@ namespace System.Windows.Forms
                         using (TAHStream tahstream = new TAHStream(info, filesEntries[index]))
                         {
                             Cursor.Current = Cursors.WaitCursor;
-                            TDCGExplorer.TDCGExplorer.GetMainForm().makeTSOViwer();
+                            TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
                             if (ext == ".tso")
                             {
                                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
                                 {
-                                    TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(tahstream.stream);
-                                    TDCGExplorer.TDCGExplorer.GetMainForm().doInitialTmoLoad(); // 初期tmoを読み込む.
+                                    TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
+                                    TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad(); // 初期tmoを読み込む.
                                 }
                                 else
                                 {
-                                    TDCGExplorer.TDCGExplorer.GetMainForm().clearTSOViewer();
-                                    TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.LoadTSOFile(tahstream.stream);
-                                    TDCGExplorer.TDCGExplorer.GetMainForm().doInitialTmoLoad(); // 初期tmoを読み込む.
+                                    TDCGExplorer.TDCGExplorer.MainFormWindow.clearTSOViewer();
+                                    TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
+                                    TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad(); // 初期tmoを読み込む.
                                     UpdateCenterPosition(Path.GetFileName(filesEntries[index].path).ToUpper());
                                 }
                             }
-                            else if (ext == ".tmo") TDCGExplorer.TDCGExplorer.GetMainForm().Viewer.LoadTMOFile(tahstream.stream);
+                            else if (ext == ".tmo") TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTMOFile(tahstream.stream);
                             Cursor.Current = Cursors.Default;
                         }
                     }

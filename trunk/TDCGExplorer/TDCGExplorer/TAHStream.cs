@@ -20,8 +20,8 @@ namespace TDCGExplorer
             // zipファイルの中か?
             if (info.zipid != -1)
             {
-                ArcsZipArcEntry zip = TDCGExplorer.GetArcsDatabase().GetZip(info.zipid);
-                string zippath = Path.Combine(TDCGExplorer.GetSystemDatabase().zips_path, zip.path);
+                ArcsZipArcEntry zip = TDCGExplorer.ArcsDB.GetZip(info.zipid);
+                string zippath = Path.Combine(TDCGExplorer.SystemDB.zips_path, zip.path);
                 switch (Path.GetExtension(zip.path).ToLower())
                 {
                     case ".zip":
@@ -78,7 +78,7 @@ namespace TDCGExplorer
             }
             else
             {
-                string source = Path.Combine(TDCGExplorer.GetSystemDatabase().arcs_path, info.path);
+                string source = Path.Combine(TDCGExplorer.SystemDB.arcs_path, info.path);
                 tah = new TAHFile(source);
                 tah.LoadEntries();
                 if (tsoInfo == null) return;

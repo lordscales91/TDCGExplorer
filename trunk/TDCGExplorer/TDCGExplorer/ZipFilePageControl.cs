@@ -43,8 +43,8 @@ namespace System.Windows.Forms
         {
             if (info.zipid != -1)
             {
-                ArcsZipArcEntry zipEntry = TDCGExplorer.TDCGExplorer.GetArcsDatabase().GetZip(info.zipid);
-                string zipsource = Path.Combine(TDCGExplorer.TDCGExplorer.GetSystemDatabase().zips_path, zipEntry.path);
+                ArcsZipArcEntry zipEntry = TDCGExplorer.TDCGExplorer.ArcsDB.GetZip(info.zipid);
+                string zipsource = Path.Combine(TDCGExplorer.TDCGExplorer.SystemDB.zips_path, zipEntry.path);
                 switch (Path.GetExtension(zipEntry.path.ToLower()))
                 {
                     case ".zip":

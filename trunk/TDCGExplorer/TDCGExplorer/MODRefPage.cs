@@ -17,7 +17,7 @@ namespace System.Windows.Forms
         {
             TDCGExplorer.TDCGExplorer.SetToolTips("Databaseに問い合わせ中...");
 
-            zipEntry = TDCGExplorer.TDCGExplorer.GetArcsDatabase().GetZip(zipid);
+            zipEntry = TDCGExplorer.TDCGExplorer.ArcsDB.GetZip(zipid);
             InitializeComponent();
 
             MODRefPageThread workerObject = new MODRefPageThread(zipEntry,this);
@@ -30,7 +30,7 @@ namespace System.Windows.Forms
     "<head>" +
     "  <meta http-equiv=\"content-type\" content=\"text/html;charset=Shift_JIS\" />" +
     "  <title>3DCG mods reference</title>" +
-    "  <link href=\"" + TDCGExplorer.TDCGExplorer.GetSystemDatabase().moddb_url + "/stylesheets/application.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />" +
+    "  <link href=\"" + TDCGExplorer.TDCGExplorer.SystemDB.moddb_url + "/stylesheets/application.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />" +
     "</head>" +
     "<body>" +
     "<div id=\"wrapper\">" +
@@ -130,7 +130,7 @@ namespace System.Windows.Forms
                     "<head>" +
                     "  <meta http-equiv=\"content-type\" content=\"text/html;charset=Shift_JIS\" />" +
                     "  <title>3DCG mods reference</title>" +
-                    "  <link href=\"" + TDCGExplorer.TDCGExplorer.GetSystemDatabase().moddb_url + "/stylesheets/application.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />" +
+                    "  <link href=\"" + TDCGExplorer.TDCGExplorer.SystemDB.moddb_url + "/stylesheets/application.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />" +
                     "</head>" +
                     "<body>" +
                     "<div id=\"wrapper\">" +
@@ -306,7 +306,7 @@ namespace System.Windows.Forms
 
         public void DoWorkerThread()
         {
-            string moddb = TDCGExplorer.TDCGExplorer.GetSystemDatabase().moddb_url;
+            string moddb = TDCGExplorer.TDCGExplorer.SystemDB.moddb_url;
             string url;
             try
             {

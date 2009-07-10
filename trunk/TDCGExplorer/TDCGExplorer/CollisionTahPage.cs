@@ -30,7 +30,7 @@ namespace System.Windows.Forms
             data.Columns.Add("衝突先TAH", Type.GetType("System.String"));
             foreach (ArcsCollisionRecord col in collisionEntry.entries)
             {
-                ArcsDatabase db = TDCGExplorer.TDCGExplorer.GetArcsDatabase();
+                ArcsDatabase db = TDCGExplorer.TDCGExplorer.ArcsDB;
                 // 衝突した先のtahを取得する.
                 ArcsTahEntry to = db.GetTah(col.toTahID);
                 // 既に同じ名前で追加していないか調べる.
@@ -130,7 +130,7 @@ namespace System.Windows.Forms
         {
             ArcsCollisionRecord col = collisionEntry.entries[index];
 
-            ArcsDatabase db = TDCGExplorer.TDCGExplorer.GetArcsDatabase();
+            ArcsDatabase db = TDCGExplorer.TDCGExplorer.ArcsDB;
             // 衝突した先のtahを取得する.
             ArcsTahEntry from = db.GetTah(col.fromTahID);
             ArcsTahEntry to = db.GetTah(col.toTahID);
