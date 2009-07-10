@@ -452,11 +452,17 @@ public class Viewer : IDisposable
             pp.BackBufferFormat = Format.X8R8G8B8;
             pp.BackBufferCount = 1;
             pp.EnableAutoDepthStencil = true;
-            pp.AutoDepthStencilFormat = DepthFormat.D16;
 
             int adapter_ordinal = Manager.Adapters.Default.Adapter;
+            DisplayMode display_mode = Manager.Adapters.Default.CurrentDisplayMode;
 
-            int ret, quality;
+            int ret;
+            if (Manager.CheckDepthStencilMatch(adapter_ordinal, DeviceType.Hardware, display_mode.Format, pp.BackBufferFormat, DepthFormat.D24X8, out ret))
+                pp.AutoDepthStencilFormat = DepthFormat.D24X8;
+            else
+                pp.AutoDepthStencilFormat = DepthFormat.D16;
+
+            int quality;
             if (Manager.CheckDeviceMultiSampleType(adapter_ordinal, DeviceType.Hardware, pp.BackBufferFormat, pp.Windowed, MultiSampleType.FourSamples, out ret, out quality))
             {
                 pp.MultiSample = MultiSampleType.FourSamples;
