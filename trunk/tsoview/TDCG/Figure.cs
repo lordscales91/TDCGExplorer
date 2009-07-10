@@ -204,6 +204,12 @@ public class Figure : IDisposable
             UpdateBoneMatrices(tso, tmo_frame);
     }
     
+    public void UpdateBoneMatricesWithoutTMO()
+    {
+        foreach (TSOFile tso in TSOList)
+            UpdateBoneMatrices(tso);
+    }
+    
     /// <summary>
     /// bone行列を更新します。
     /// </summary>
@@ -212,31 +218,44 @@ public class Figure : IDisposable
         UpdateBoneMatrices(false);
     }
 
+    protected void UpdateBoneMatrices(TSOFile tso)
+    {
+        matrixStack.LoadMatrix(Matrix.Translation(translation));
+        UpdateBoneMatrices(tso.nodes[0]);
+    }
+
     protected void UpdateBoneMatrices(TSOFile tso, TMOFrame tmo_frame)
     {
         matrixStack.LoadMatrix(Matrix.Translation(translation));
         UpdateBoneMatrices(tso.nodes[0], tmo_frame);
     }
 
-    protected void UpdateBoneMatrices(TSONode tso_node, TMOFrame tmo_frame)
+    protected void UpdateBoneMatrices(TSONode tso_node)
     {
         matrixStack.Push();
 
-        Matrix transform;
+        matrixStack.MultiplyMatrixLocal(tso_node.transformation_matrix);
+        tso_node.combined_matrix = matrixStack.Top;
+
+        foreach (TSONode child_node in tso_node.child_nodes)
+            UpdateBoneMatrices(child_node);
+
+        matrixStack.Pop();
+    }
+
+    protected void UpdateBoneMatrices(TSONode tso_node, TMOFrame tmo_frame)
+    {
+        matrixStack.Push();
 
         if (tmo_frame != null)
         {
             // TMO animation
             TMONode tmo_node;
             if (nodemap.TryGetValue(tso_node, out tmo_node))
-                transform = tmo_frame.matrices[tmo_node.ID].m;
-            else
-                transform = tso_node.transformation_matrix;
+                tso_node.transformation_matrix = tmo_frame.matrices[tmo_node.ID].m;
         }
-        else
-            transform = tso_node.transformation_matrix;
 
-        matrixStack.MultiplyMatrixLocal(transform);
+        matrixStack.MultiplyMatrixLocal(tso_node.transformation_matrix);
         tso_node.combined_matrix = matrixStack.Top;
 
         foreach (TSONode child_node in tso_node.child_nodes)
