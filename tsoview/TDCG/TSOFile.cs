@@ -309,13 +309,13 @@ namespace TDCG
 
         public static Matrix GetBoneOffsetMatrix(TSONode bone)
         {
-            Matrix mat = Matrix.Identity;
+            Matrix m = Matrix.Identity;
             while (bone != null)
             {
-                mat.Multiply(bone.transformation_matrix);
+                m.Multiply(bone.transformation_matrix);
                 bone = bone.parent;
             }
-            return Matrix.Invert(mat);
+            return Matrix.Invert(m);
         }
         public void ComputeOffsetMatrix()
         {
@@ -324,6 +324,30 @@ namespace TDCG
         public Matrix GetOffsetMatrix()
         {
             return offset_matrix;
+        }
+
+        public Vector3 GetWorldPosition()
+        {
+            TSONode bone = this;
+            Vector3 v = Vector3.Empty;
+            while (bone != null)
+            {
+                v = Vector3.TransformCoordinate(v, bone.transformation_matrix);
+                bone = bone.parent;
+            }
+            return v;
+        }
+
+        public Matrix GetWorldCoordinate()
+        {
+            TSONode bone = this;
+            Matrix m = Matrix.Identity;
+            while (bone != null)
+            {
+                m.Multiply(bone.transformation_matrix);
+                bone = bone.parent;
+            }
+            return m;
         }
     }
 

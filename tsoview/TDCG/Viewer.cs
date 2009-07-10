@@ -54,16 +54,22 @@ public class Viewer : IDisposable
     Vector3 target = new Vector3(5.0f, 10.0f, 0.0f);
     float swivel = 0.0f;
 
-    public void MoveTarget(float dz, float dy, float dx)
+    public void MoveTarget(float dx, float dy, float dz)
     {
+        if (dx == 0 && dy == 0 && dz == 0)
+            return;
         target.X += dx;
         target.Y += dy;
         target.Z += dz;
+        solved = false;
     }
 
     public void MoveSwivel(float delta)
     {
+        if (delta == 0)
+            return;
         swivel += delta;
+        solved = false;
     }
 
     // マウスポイントしているスクリーン座標
@@ -764,9 +770,21 @@ public class Viewer : IDisposable
         foreach (TSOFile tso in fig.TSOList)
             tso.lightDir = lightDir;
 
-        //device.Transform.World = world_matrix;
-        foreach (Figure fig in FigureList)
-            fig.UpdateBoneMatrices();
+        if (! motionEnabled && ! solved)
+        {
+            foreach (Figure fig in FigureList)
+            {
+                foreach (TSOFile tso in fig.TSOList)
+                    Solve(tso);
+                fig.UpdateBoneMatricesWithoutTMO();
+            }
+        }
+        else
+        {
+            //device.Transform.World = world_matrix;
+            foreach (Figure fig in FigureList)
+                fig.UpdateBoneMatrices();
+        }
 
         if (motionEnabled)
         {
@@ -774,6 +792,7 @@ public class Viewer : IDisposable
                 fig.NextTMOFrame();
         }
     }
+    bool solved = false;
 
     /// <summary>
     /// シーンをレンダリングします。
@@ -984,6 +1003,56 @@ public class Viewer : IDisposable
             return DetectSphereRayCollision(sphereRadius, ref sphereCenter, ref rayStart, ref rayOrientation, out collisionPoint, out collisionTime);
         }
         return false;
+    }
+
+    private void Solve(TSOFile tso)
+    {
+        string effector_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand";
+        TSONode effector = tso.nodemap[effector_name];
+
+        string node_name;
+        TSONode node;
+
+        node_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm";
+        node = tso.nodemap[node_name];
+        Solve(effector, node);
+
+        node_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm";
+        node = tso.nodemap[node_name];
+        Solve(effector, node);
+    }
+
+    // Cyclic-Coordinate-Descent (CCD) 法
+    private void Solve(TSONode effector, TSONode node)
+    {
+        Vector3 worldTargetP = target;
+
+        Vector3 worldEffectorP = effector.GetWorldPosition();
+        Vector3 worldNodeP = node.GetWorldPosition();
+
+        Matrix invCoord = Matrix.Invert(node.GetWorldCoordinate());
+        Vector3 localEffectorP = Vector3.TransformCoordinate(worldEffectorP, invCoord);
+        Vector3 localTargetP = Vector3.TransformCoordinate(worldTargetP, invCoord);
+
+        Vector3 toEffector = Vector3.Normalize(localEffectorP);
+        Vector3 toTarget = Vector3.Normalize(localTargetP);
+
+        float rotDotProduct = Vector3.Dot(toEffector, toTarget);
+        float rotAngle = (float)Math.Acos(rotDotProduct);
+        if (rotAngle > float.Epsilon)
+        {
+            Vector3 rotAxis = Vector3.Cross(toEffector, toTarget);
+            Quaternion q = Quaternion.RotationAxis(rotAxis, rotAngle);
+            Matrix m = node.transformation_matrix;
+            Vector3 v = TMOMat.DecomposeMatrix(ref m);
+            m *= Matrix.RotationQuaternion(q);
+            m.M41 = v.X;
+            m.M42 = v.Y;
+            m.M43 = v.Z;
+            node.transformation_matrix = m;
+        }
+        if ((localEffectorP - localTargetP).LengthSq() < 0.1f)
+            solved = true;
     }
 
     public void Dispose()
