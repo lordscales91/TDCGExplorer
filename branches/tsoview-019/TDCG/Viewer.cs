@@ -716,7 +716,6 @@ public class Viewer : IDisposable
                 fig.NextTMOFrame();
         }
     }
-    bool solved = false;
 
     /// <summary>
     /// シーンをレンダリングします。
