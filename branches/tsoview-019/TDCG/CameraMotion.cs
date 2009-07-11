@@ -127,6 +127,14 @@ public class CameraMotion
     }
 
     /// <summary>
+    /// 指定モーションフレームに進みます。
+    /// </summary>
+    public void SetFrameIndex(int frame_index)
+    {
+        //not impl
+    }
+
+    /// <summary>
     /// 現在のカメラアクションを得ます。
     /// </summary>
     /// <returns></returns>

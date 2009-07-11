@@ -267,6 +267,12 @@ public class TSOForm : Form
         }
     }
 
+    private void timer1_Tick(object sender, EventArgs e)
+    {
+        viewer.FrameMove();
+        viewer.Render();
+    }
+
     public void Render()
     {
         /*

@@ -312,6 +312,19 @@ public class Figure : IDisposable
         }
     }
 
+    /// <summary>
+    /// 指定モーションフレームに進みます。
+    /// </summary>
+    public void SetFrameIndex(int frame_index)
+    {
+        if (tmo.frames != null)
+        {
+            this.frame_index = frame_index;
+            if (this.frame_index >= tmo.frames.Length)
+                this.frame_index = 0;
+        }
+    }
+
     public void Dispose()
     {
         foreach (TSOFile tso in TSOList)

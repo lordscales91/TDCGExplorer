@@ -670,11 +670,7 @@ public class Viewer : IDisposable
     /// </summary>
     public void FrameMove()
     {
-        foreach (Figure fig in FigureList)
-        {
-            fig.NextFrame();
-        }
-        camera.NextFrame();
+        camera.SetFrameIndex(frame_index);
 
         camera.Update();
 
@@ -712,9 +708,29 @@ public class Viewer : IDisposable
 
         if (motionEnabled)
         {
+            //フレーム番号を通知する。
             foreach (Figure fig in FigureList)
-                fig.NextTMOFrame();
+                fig.SetFrameIndex(frame_index);
         }
+
+        //TODO: 時計から増分を求める。
+        if (frame_index > GetMaxFrameLength())
+            frame_index = 0;
+        else
+            frame_index++;
+    }
+
+    //フレーム番号
+    private int frame_index = 0;
+
+    //tmo file中で最大のフレーム長さを得ます。
+    public int GetMaxFrameLength()
+    {
+        int max = 0;
+        foreach (Figure fig in FigureList)
+            if (fig.Tmo.frames != null && max < fig.Tmo.frames.Length)
+                max = fig.Tmo.frames.Length;
+        return max;
     }
 
     /// <summary>
