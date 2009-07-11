@@ -154,6 +154,8 @@ namespace TDCG
             str = value.Trim('"', ' ', '\t');
         }
 
+        static Regex re_float_array = new Regex(@"\s+|\s*,\s*");
+
         /// <summary>
         /// float値の配列を設定します。
         /// </summary>
@@ -161,7 +163,7 @@ namespace TDCG
         /// <param name="dim">要素数</param>
         public void SetFloatDim(string value, int dim)
         {
-            string[] token = Regex.Split(value.Trim('[', ']', ' ', '\t'), @"\s+|\s*,\s*");
+            string[] token = re_float_array.Split(value.Trim('[', ']', ' ', '\t'));
             if (dim > 0)
                 f1 = float.Parse(token[0].Trim());
             if (dim > 1)
