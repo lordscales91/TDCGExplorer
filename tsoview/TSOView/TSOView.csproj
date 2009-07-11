@@ -68,4 +68,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="TSOForm.resx">
+      <DependentUpon>TSOForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>

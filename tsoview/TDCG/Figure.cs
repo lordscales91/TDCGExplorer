@@ -170,7 +170,10 @@ public class Figure : IDisposable
     protected TMOFrame GetTMOFrame()
     {
         if (tmo.frames != null)
+        {
+            Debug.Assert(current_frame_index >= 0 && current_frame_index < tmo.frames.Length);
             return tmo.frames[current_frame_index];
+        }
         return null;
     }
 
@@ -309,6 +312,21 @@ public class Figure : IDisposable
                 UpdateNodeMapAndBoneMatrices();
             }
             motion.NextFrame();
+        }
+    }
+
+    /// <summary>
+    /// 指定モーションフレームに進みます。
+    /// </summary>
+    public void SetFrameIndex(int frame_index)
+    {
+        Debug.Assert(frame_index >= 0);
+        if (tmo.frames != null)
+        {
+            if (frame_index >= tmo.frames.Length)
+                this.frame_index = 0;
+            else
+                this.frame_index = frame_index;
         }
     }
 
