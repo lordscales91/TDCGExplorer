@@ -69,6 +69,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Archivers\ArchiveLib.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Archivers\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="Microsoft.DirectX.Direct3DX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System" />
@@ -139,6 +143,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="mt19937.cs" />
+    <Compile Include="PNGFile.cs" />
+    <Compile Include="PNGStream.cs" />
     <Compile Include="SaveFilePage.cs">
       <SubType>Component</SubType>
     </Compile>

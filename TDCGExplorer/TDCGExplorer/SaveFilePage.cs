@@ -114,7 +114,13 @@ namespace System.Windows.Forms
 
         public override void BindingStream(MemoryStream ms)
         {
+            ms.Seek(0, SeekOrigin.Begin);
             savefile = new TDCGSaveFileInfo((Stream)ms);
+
+            // ヘビーセーブとして読み込んでみる.
+            PNGStream pngstream = new PNGStream();
+            ms.Seek(0, SeekOrigin.Begin);
+            pngstream.LoadPNGFile(ms);
 
             DataTable data = new DataTable();
             data.Columns.Add("パーツ", Type.GetType("System.String"));
@@ -126,6 +132,20 @@ namespace System.Windows.Forms
             // TSOビューワをリセットする
             TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
             TDCGExplorer.TDCGExplorer.MainFormWindow.clearTSOViewer();
+
+            // ヘビーセーブか?
+            if (pngstream.count > 0)
+            {
+                // ヘビーセーブデータをロードする.
+                foreach (PNGTsoData tso in pngstream.get)
+                {
+                    TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(new MemoryStream(tso.tsodata));
+                    TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
+                    TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
+                    TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
+                    Application.DoEvents();
+                }
+            }
 
             for (int i = 0; i < TDCGSaveFileInfo.PARTS_SIZE; ++i)
             {
@@ -156,23 +176,25 @@ namespace System.Windows.Forms
                             if (tah != null)
                             {
                                 partfile[2] = tah.path;
-                                try
+                                if (pngstream.count == 0) // 通常セーブなら
                                 {
-                                    // TSOを読み込む
-                                    TahInfo info = new TahInfo(tah);
-                                    using (TAHStream tahstream = new TAHStream(info, file))
+                                    try
                                     {
-                                        TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
-                                        TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
-                                        TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
-                                        TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
-                                        TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
-                                        Application.DoEvents();
+                                        // TSOを読み込む
+                                        TahInfo info = new TahInfo(tah);
+                                        using (TAHStream tahstream = new TAHStream(info, file))
+                                        {
+                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
+                                            TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
+                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
+                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
+                                            Application.DoEvents();
+                                        }
                                     }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Debug.WriteLine("Error: " + ex);
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine("Error: " + ex);
+                                    }
                                 }
                             }
                         }
@@ -204,23 +226,25 @@ namespace System.Windows.Forms
                                 {
                                     partfile[2] = zip.path + "\\" + tah.path;
 
-                                    try
-                                    {
-                                        // TSOを読み込む
-                                        ZipTahInfo info = new ZipTahInfo(tah);
-                                        using (TAHStream tahstream = new TAHStream(info, file))
+                                    if (pngstream.count == 0)// 通常セーブなら
+                                    { 
+                                        try
                                         {
-                                            TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
-                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
-                                            TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
-                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
-                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
-                                            Application.DoEvents();
+                                            // TSOを読み込む
+                                            ZipTahInfo info = new ZipTahInfo(tah);
+                                            using (TAHStream tahstream = new TAHStream(info, file))
+                                            {
+                                                TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
+                                                TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
+                                                TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
+                                                TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
+                                                Application.DoEvents();
+                                            }
                                         }
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Debug.WriteLine("Error: " + ex);
+                                        catch (Exception ex)
+                                        {
+                                            Debug.WriteLine("Error: " + ex);
+                                        }
                                     }
                                 }
                             }
