@@ -817,10 +817,9 @@ namespace TDCG
                     effect.SetValue(p.name, p.GetString());
                     break;
                 case ShaderParameter.Type.Float:
-                    effect.SetValue(p.name, p.GetFloat());
-                    break;
+                case ShaderParameter.Type.Float3:
                 case ShaderParameter.Type.Float4:
-                    effect.SetValue(p.name, p.GetFloat4());
+                    effect.SetValue(p.name, new float[]{ p.F1, p.F2, p.F3, p.F4 });
                     break;
                     /*
                 case ShaderParameter.Type.Texture:
