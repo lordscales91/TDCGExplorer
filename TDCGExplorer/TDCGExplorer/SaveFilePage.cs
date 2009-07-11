@@ -55,9 +55,9 @@ namespace System.Windows.Forms
                 TDCGExplorer.TDCGExplorer.SetToolTips("データベース検索中...");
                 Text = Path.GetFileName(path);
                 FileStream fs = File.OpenRead(path);
-                byte[] buffer = new byte[fs.Length];
-                fs.Read(buffer, 0, (int)fs.Length);
-                fs.Close();
+                Byte[] buffer;
+                BinaryReader reader = new BinaryReader(fs, System.Text.Encoding.Default);
+                buffer = reader.ReadBytes((int)fs.Length);
                 using (MemoryStream ms = new MemoryStream(buffer))
                 {
                     BindingStream(ms);
