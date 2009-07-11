@@ -647,7 +647,15 @@ public class Viewer : IDisposable
     public void SwitchMotionEnabled()
     {
         motionEnabled = ! motionEnabled;
+
+        if (motionEnabled)
+        {
+            start_ticks = DateTime.Now.Ticks;
+            start_frame_index = frame_index;
+        }
     }
+    long start_ticks = 0;
+    int start_frame_index = 0;
 
     /// <summary>
     /// シャドウマップの有無を切り替えます。
@@ -670,7 +678,21 @@ public class Viewer : IDisposable
     /// </summary>
     public void FrameMove()
     {
-        camera.SetFrameIndex(frame_index);
+        if (motionEnabled)
+        {
+            int frame_len = GetMaxFrameLength();
+            if (frame_len > 0)
+            {
+                long dt = DateTime.Now.Ticks - start_ticks;
+                int new_frame_index = (int)((start_frame_index + dt / wait) % frame_len);
+                Debug.Assert(new_frame_index >= 0);
+                Debug.Assert(new_frame_index < frame_len);
+                frame_index = new_frame_index;
+            }
+
+            //フレーム番号を通知する。
+            camera.SetFrameIndex(frame_index);
+        }
 
         camera.Update();
 
@@ -702,23 +724,15 @@ public class Viewer : IDisposable
         foreach (TSOFile tso in fig.TSOList)
             tso.lightDir = lightDir;
 
-        //device.Transform.World = world_matrix;
-        foreach (Figure fig in FigureList)
-            fig.UpdateBoneMatrices();
-
         if (motionEnabled)
         {
+            //device.Transform.World = world_matrix;
+            foreach (Figure fig in FigureList)
+                fig.UpdateBoneMatrices();
+
             //フレーム番号を通知する。
             foreach (Figure fig in FigureList)
                 fig.SetFrameIndex(frame_index);
-        }
-
-        int frame_len = GetMaxFrameLength();
-        if (frame_len > 0)
-        {
-            frame_index = (int)((DateTime.Now.Ticks / wait) % (long)frame_len);
-            if (frame_index > frame_len)
-                frame_index = 0;
         }
     }
     long wait = (long)(10000000.0f / 60.0f);
