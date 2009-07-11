@@ -145,7 +145,7 @@ namespace System.Windows.Forms
                             foreach (ArcsTahFilesEntry subfile in files)
                             {
                                 ArcsTahEntry subtah = TDCGExplorer.TDCGExplorer.ArcsDB.GetTah(subfile.tahid);
-                                if (subtah.version > pastVersion)
+                                if (subtah.version >= pastVersion)
                                 {
                                     file = subfile;
                                     tah = subtah;
@@ -189,7 +189,7 @@ namespace System.Windows.Forms
                             foreach (ArcsTahFilesEntry subfile in files)
                             {
                                 ArcsZipTahEntry subtah = TDCGExplorer.TDCGExplorer.ArcsDB.GetZipTah(subfile.tahid);
-                                if (subtah.version > pastVersion)
+                                if (subtah.version >= pastVersion)
                                 {
                                     file = subfile;
                                     tah = subtah;

@@ -103,5 +103,6 @@ namespace TDCGExplorer
             get { return textBoxSaveFile.Text; }
             set { textBoxSaveFile.Text = value; }
         }
+
     }
 }

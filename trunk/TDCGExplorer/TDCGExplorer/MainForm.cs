@@ -792,5 +792,10 @@ namespace TDCGExplorer
                 }
             }
         }
+
+        private void LookupModRefToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LookupMODRefToolStripMenuItem_Click(sender, e);
+        }
     }
 }

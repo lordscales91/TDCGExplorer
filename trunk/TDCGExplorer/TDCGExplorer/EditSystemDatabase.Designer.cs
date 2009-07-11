@@ -179,9 +179,9 @@
             this.checkBoxLookupModRef.AutoSize = true;
             this.checkBoxLookupModRef.Location = new System.Drawing.Point(109, 370);
             this.checkBoxLookupModRef.Name = "checkBoxLookupModRef";
-            this.checkBoxLookupModRef.Size = new System.Drawing.Size(309, 17);
+            this.checkBoxLookupModRef.Size = new System.Drawing.Size(310, 17);
             this.checkBoxLookupModRef.TabIndex = 14;
-            this.checkBoxLookupModRef.Text = "常に3DCG Mods Reference サーバから最新情報を取得する";
+            this.checkBoxLookupModRef.Text = "常に3DCG Mods Reference Serverから最新情報を取得する";
             this.checkBoxLookupModRef.UseVisualStyleBackColor = true;
             // 
             // textBoxTagNameServer
