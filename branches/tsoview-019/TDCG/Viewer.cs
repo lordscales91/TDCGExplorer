@@ -150,18 +150,32 @@ public class Viewer : IDisposable
     /// <param name="source_file">任意のパス</param>
     public void LoadAnyFile(string source_file)
     {
+        LoadAnyFile(source_file, false);
+    }
+
+    /// <summary>
+    /// 任意のファイルを読み込みます。
+    /// </summary>
+    /// <param name="source_file">任意のパス</param>
+    /// <param name="append">FigureListを消去せずに追加するか</param>
+    public void LoadAnyFile(string source_file, bool append)
+    {
         switch (Path.GetExtension(source_file).ToUpper())
         {
         case ".TSO":
+            if (! append)
+                ClearFigureList();
             LoadTSOFile(source_file);
             break;
         case ".TMO":
             LoadTMOFile(source_file);
             break;
         case ".PNG":
-            AddFigureFromPNGFile(source_file);
+            AddFigureFromPNGFile(source_file, append);
             break;
         default:
+            if (! append)
+                ClearFigureList();
             if (Directory.Exists(source_file))
                 AddFigureFromTSODirectory(source_file);
             break;
@@ -255,20 +269,8 @@ public class Viewer : IDisposable
     /// <param name="source_file">パス</param>
     public void LoadTSOFile(string source_file)
     {
-        Figure fig = GetSelectedOrCreateFigure();
-        try
-        {
-            TSOFile tso = new TSOFile();
-            tso.Load(source_file);
-            tso.Open(device, effect);
-            fig.AddTSO(tso);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error: " + ex);
-        }
-        if (FigureEvent != null)
-            FigureEvent(this, EventArgs.Empty);
+        using (Stream source_stream = File.OpenRead(source_file))
+            LoadTSOFile(source_stream);
     }
 
     /// <summary>
@@ -366,7 +368,8 @@ public class Viewer : IDisposable
     /// 指定パスからPNGFileを読み込みフィギュアを作成して追加します。
     /// </summary>
     /// <param name="source_file">PNGFile のパス</param>
-    public void AddFigureFromPNGFile(string source_file)
+    /// <param name="append">FigureListを消去せずに追加するか</param>
+    public void AddFigureFromPNGFile(string source_file, bool append)
     {
         List<Figure> fig_list = LoadPNGFile(source_file);
         if (fig_list.Count != 0) //taOb png
@@ -382,6 +385,9 @@ public class Viewer : IDisposable
         }
         else
         {
+            if (! append)
+                ClearFigureList();
+
             int idx = FigureList.Count;
             foreach (Figure fig in fig_list)
             {
