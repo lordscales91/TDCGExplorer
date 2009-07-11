@@ -232,11 +232,20 @@ public class TSOForm : Form
         camera.RotZ(DegreeToRadian(keyZRol));
     }
 
+    private bool IsTmoFiles(string[] source_files)
+    {
+        return source_files.Length > 0 && Path.GetExtension(source_files[0]).ToUpper() == ".TMO";
+    }
+
     private void form_OnDragOver(object sender, DragEventArgs e)
     {
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
-            if ((e.KeyState & 8) == 8)
+            string[] source_files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            //Ctrl keyを押したら追加する。
+            //Ctrl keyを押さなかったなら置き換える。
+            //tmo fileならCtrl keyを押さなくても追加する。
+            if ((e.KeyState & 8) == 8 || IsTmoFiles(source_files))
                 e.Effect = DragDropEffects.Copy;
             else
                 e.Effect = DragDropEffects.Move;
@@ -247,9 +256,13 @@ public class TSOForm : Form
     {
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
-            if ((e.KeyState & 8) != 8)
+            string[] source_files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            //Ctrl keyを押したら追加する。
+            //Ctrl keyを押さなかったなら置き換える。
+            //tmo fileならCtrl keyを押さなくても追加する。
+            if ((e.KeyState & 8) != 8 && ! IsTmoFiles(source_files))
                 viewer.ClearFigureList();
-            foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
+            foreach (string src in source_files)
                 viewer.LoadAnyFile(src);
         }
     }
