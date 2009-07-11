@@ -139,11 +139,19 @@ namespace System.Windows.Forms
                 // ヘビーセーブデータをロードする.
                 foreach (PNGTsoData tso in pngstream.get)
                 {
-                    TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(new MemoryStream(tso.tsodata));
-                    TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
-                    TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
-                    TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
-                    Application.DoEvents();
+                    try
+                    {
+                        if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
+                        TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(new MemoryStream(tso.tsodata));
+                        TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
+                        TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
+                        TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
+                        Application.DoEvents();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Error: " + ex);
+                    }
                 }
             }
 
@@ -184,6 +192,7 @@ namespace System.Windows.Forms
                                         TahInfo info = new TahInfo(tah);
                                         using (TAHStream tahstream = new TAHStream(info, file))
                                         {
+                                            if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
                                             TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
                                             TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
                                             TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
@@ -234,6 +243,7 @@ namespace System.Windows.Forms
                                             ZipTahInfo info = new ZipTahInfo(tah);
                                             using (TAHStream tahstream = new TAHStream(info, file))
                                             {
+                                                if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
                                                 TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
                                                 TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
                                                 TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
