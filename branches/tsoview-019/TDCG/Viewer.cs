@@ -713,12 +713,15 @@ public class Viewer : IDisposable
                 fig.SetFrameIndex(frame_index);
         }
 
-        //TODO: 時計から増分を求める。
-        if (frame_index > GetMaxFrameLength())
-            frame_index = 0;
-        else
-            frame_index++;
+        int frame_len = GetMaxFrameLength();
+        if (frame_len > 0)
+        {
+            frame_index = (int)((DateTime.Now.Ticks / wait) % (long)frame_len);
+            if (frame_index > frame_len)
+                frame_index = 0;
+        }
     }
+    long wait = (long)(10000000.0f / 60.0f);
 
     //フレーム番号
     private int frame_index = 0;

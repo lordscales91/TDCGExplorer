@@ -6,6 +6,7 @@ using System.Diagnostics;
 //using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
+using CSScriptLibrary;
 using TDCG;
 
 namespace TSOView
@@ -44,11 +45,14 @@ public class TSOForm : Form
 
     private Camera cam1 = null;
     private Camera cam2 = null;
+    private Timer timer1;
+    private System.ComponentModel.IContainer components;
 
     private int cam_frame_index = 0;
 
-    public TSOForm(TSOConfig config)
+    public TSOForm(TSOConfig config, string[] args)
     {
+        InitializeComponent();
         this.ClientSize = config.ClientSize;
         this.Text = "TSOView";
         this.AllowDrop = true;
@@ -62,6 +66,29 @@ public class TSOForm : Form
 
         this.DragDrop += new DragEventHandler(form_OnDragDrop);
         this.DragOver += new DragEventHandler(form_OnDragOver);
+        Viewer viewer = new Viewer();
+        FigureForm fig_form = new FigureForm();
+        this.fig_form = fig_form;
+        this.viewer = viewer;
+
+        if (viewer.InitializeApplication(this, true))
+        {
+            viewer.FigureEvent += delegate(object sender, EventArgs e)
+            {
+                Figure fig;
+                if (viewer.TryGetFigure(out fig))
+                    fig_form.SetFigure(fig);
+                else
+                    fig_form.Clear();
+            };
+            foreach (string arg in args)
+                viewer.LoadAnyFile(arg);
+
+            var script = CSScript.Load(Path.Combine(Application.StartupPath, "Script.cs")).CreateInstance("TDCG.Script").AlignToInterface<IScript>();
+            script.Hello(viewer);
+
+            this.timer1.Enabled = true;
+        }
     }
 
     private void form_OnKeyDown(object sender, KeyEventArgs e)
@@ -269,6 +296,7 @@ public class TSOForm : Form
 
     private void timer1_Tick(object sender, EventArgs e)
     {
+        this.FrameMove();
         viewer.FrameMove();
         viewer.Render();
     }
@@ -297,6 +325,38 @@ public class TSOForm : Form
     {
         if ((int)(byte)e.KeyChar == (int)System.Windows.Forms.Keys.Escape)
             this.Dispose(); // Esc was pressed
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            viewer.Dispose();
+        }
+        if (disposing && (components != null))
+        {
+            components.Dispose();
+        }
+        base.Dispose(disposing);
+    }
+
+    private void InitializeComponent()
+    {
+        this.components = new System.ComponentModel.Container();
+        this.timer1 = new System.Windows.Forms.Timer(this.components);
+        this.SuspendLayout();
+        // 
+        // timer1
+        // 
+        this.timer1.Interval = 16;
+        this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+        // 
+        // TSOForm
+        // 
+        this.ClientSize = new System.Drawing.Size(284, 263);
+        this.Name = "TSOForm";
+        this.ResumeLayout(false);
+
     }
 }
 }
