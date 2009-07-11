@@ -53,6 +53,7 @@ namespace TDCG
         private float f2;
         private float f3;
         private float f4;
+        private int dim = 0;
 
         /// <summary>
         /// パラメータの名称
@@ -74,6 +75,10 @@ namespace TDCG
         /// float値4
         /// </summary>
         public float F4 { get { return f4; } set { f4 = value; } }
+        /// <summary>
+        /// float次元数
+        /// </summary>
+        public int Dimension { get { return dim; } }
 
         /// <summary>
         /// シェーダ設定ファイルの行を解析してシェーダ設定パラメータを生成します。
@@ -154,14 +159,17 @@ namespace TDCG
             str = value.Trim('"', ' ', '\t');
         }
 
+        static Regex re_float_array = new Regex(@"\s+|\s*,\s*");
+
         /// <summary>
         /// float値の配列を設定します。
         /// </summary>
         /// <param name="value">float配列値の文字列表現</param>
-        /// <param name="dim">要素数</param>
+        /// <param name="dim">次元数</param>
         public void SetFloatDim(string value, int dim)
         {
-            string[] token = Regex.Split(value.Trim('[', ']', ' ', '\t'), @"\s+|\s*,\s*");
+            string[] token = re_float_array.Split(value.Trim('[', ']', ' ', '\t'));
+            this.dim = dim;
             if (dim > 0)
                 f1 = float.Parse(token[0].Trim());
             if (dim > 1)

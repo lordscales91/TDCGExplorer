@@ -440,13 +440,13 @@ public class Camera
     }
 
     /// <summary>
-    /// 次のモーションフレームに進みます。
+    /// 指定モーションフレームに進みます。
     /// </summary>
-    public void NextFrame()
+    public void SetFrameIndex(int frame_index)
     {
         if (motion.Count != 0)
         {
-            motion.NextFrame();
+            motion.SetFrameIndex(frame_index);
         }
     }
 }

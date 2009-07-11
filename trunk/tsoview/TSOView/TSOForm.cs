@@ -6,6 +6,7 @@ using System.Diagnostics;
 //using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
+using CSScriptLibrary;
 using TDCG;
 
 namespace TSOView
@@ -44,11 +45,14 @@ public class TSOForm : Form
 
     private Camera cam1 = null;
     private Camera cam2 = null;
+    private Timer timer1;
+    private System.ComponentModel.IContainer components;
 
     private int cam_frame_index = 0;
 
-    public TSOForm(TSOConfig config)
+    public TSOForm(TSOConfig config, string[] args)
     {
+        InitializeComponent();
         this.ClientSize = config.ClientSize;
         this.Text = "TSOView";
         this.AllowDrop = true;
@@ -61,7 +65,30 @@ public class TSOForm : Form
         this.KeyUp += new KeyEventHandler(form_OnKeyUp);
 
         this.DragDrop += new DragEventHandler(form_OnDragDrop);
-        this.DragEnter += new DragEventHandler(form_OnDragEnter);
+        this.DragOver += new DragEventHandler(form_OnDragOver);
+        Viewer viewer = new Viewer();
+        FigureForm fig_form = new FigureForm();
+        this.fig_form = fig_form;
+        this.viewer = viewer;
+
+        if (viewer.InitializeApplication(this, true))
+        {
+            viewer.FigureEvent += delegate(object sender, EventArgs e)
+            {
+                Figure fig;
+                if (viewer.TryGetFigure(out fig))
+                    fig_form.SetFigure(fig);
+                else
+                    fig_form.Clear();
+            };
+            foreach (string arg in args)
+                viewer.LoadAnyFile(arg);
+
+            var script = CSScript.Load(Path.Combine(Application.StartupPath, "Script.cs")).CreateInstance("TDCG.Script").AlignToInterface<IScript>();
+            script.Hello(viewer);
+
+            this.timer1.Enabled = true;
+        }
     }
 
     private void form_OnKeyDown(object sender, KeyEventArgs e)
@@ -232,11 +259,23 @@ public class TSOForm : Form
         viewer.MoveSwivel(DegreeToRadian(keyZRol));
     }
 
-    private void form_OnDragEnter(object sender, DragEventArgs e)
+    private bool IsTmoFiles(string[] source_files)
+    {
+        return source_files.Length > 0 && Path.GetExtension(source_files[0]).ToUpper() == ".TMO";
+    }
+
+    private void form_OnDragOver(object sender, DragEventArgs e)
     {
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
-            e.Effect = DragDropEffects.Copy;
+            string[] source_files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            //Ctrl keyを押したら追加する。
+            //Ctrl keyを押さなかったなら置き換える。
+            //tmo fileならCtrl keyを押さなくても追加する。
+            if ((e.KeyState & 8) == 8 || IsTmoFiles(source_files))
+                e.Effect = DragDropEffects.Copy;
+            else
+                e.Effect = DragDropEffects.Move;
         }
     }
 
@@ -244,9 +283,22 @@ public class TSOForm : Form
     {
         if (e.Data.GetDataPresent(DataFormats.FileDrop))
         {
-            foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
+            string[] source_files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            //Ctrl keyを押したら追加する。
+            //Ctrl keyを押さなかったなら置き換える。
+            //tmo fileならCtrl keyを押さなくても追加する。
+            if ((e.KeyState & 8) != 8 && ! IsTmoFiles(source_files))
+                viewer.ClearFigureList();
+            foreach (string src in source_files)
                 viewer.LoadAnyFile(src);
         }
+    }
+
+    private void timer1_Tick(object sender, EventArgs e)
+    {
+        this.FrameMove();
+        viewer.FrameMove();
+        viewer.Render();
     }
 
     public void Render()
@@ -273,6 +325,38 @@ public class TSOForm : Form
     {
         if ((int)(byte)e.KeyChar == (int)System.Windows.Forms.Keys.Escape)
             this.Dispose(); // Esc was pressed
+    }
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            viewer.Dispose();
+        }
+        if (disposing && (components != null))
+        {
+            components.Dispose();
+        }
+        base.Dispose(disposing);
+    }
+
+    private void InitializeComponent()
+    {
+        this.components = new System.ComponentModel.Container();
+        this.timer1 = new System.Windows.Forms.Timer(this.components);
+        this.SuspendLayout();
+        // 
+        // timer1
+        // 
+        this.timer1.Interval = 16;
+        this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
+        // 
+        // TSOForm
+        // 
+        this.ClientSize = new System.Drawing.Size(284, 263);
+        this.Name = "TSOForm";
+        this.ResumeLayout(false);
+
     }
 }
 }
