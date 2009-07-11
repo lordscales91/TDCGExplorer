@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.ComponentModel;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
@@ -150,7 +151,7 @@ namespace TDCG
         /// <param name="value">ï∂éöóÒï\åª</param>
         public void SetString(string value)
         {
-            str = value.Trim('"');
+            str = value.Trim('"', ' ', '\t');
         }
 
         /// <summary>
@@ -160,7 +161,7 @@ namespace TDCG
         /// <param name="dim">óvëfêî</param>
         public void SetFloatDim(string value, int dim)
         {
-            string[] token = value.Trim('[', ']', ' ').Split(',');
+            string[] token = Regex.Split(value.Trim('[', ']', ' ', '\t'), @"\s+|\s*,\s*");
             if (dim > 0)
                 f1 = float.Parse(token[0].Trim());
             if (dim > 1)
