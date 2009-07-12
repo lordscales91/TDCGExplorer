@@ -262,7 +262,6 @@ namespace System.Windows.Forms
                         }
                     }
                 }
-                TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad(); // 初期tmoを読み込む.
 
                 DataRow row = data.NewRow();
                 row.ItemArray = partfile;
