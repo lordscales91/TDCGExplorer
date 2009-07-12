@@ -132,7 +132,7 @@ namespace TDCG
         /// <summary>
         /// node idのペアを作成します。
         /// ペアのキーはnode id
-        /// ペアの値はもうひとつのtmoにおいてShortNameが一致するnode idになります。
+        /// ペアの値はもうひとつのtmoにおいて名称（短い形式）が一致するnode idになります。
         /// </summary>
         /// <param name="motion">もうひとつのtmo</param>
         /// <returns>tmo frame indexのペア</returns>
@@ -169,6 +169,10 @@ namespace TDCG
             return index_pair;
         }
 
+        /// <summary>
+        /// 指定tmoからフレームを追加します。
+        /// </summary>
+        /// <param name="motion">tmo</param>
         public void AppendFrameFrom(TMOFile motion)
         {
             int[] id_pair = CreateNodeIdPair(motion);
@@ -185,6 +189,11 @@ namespace TDCG
             this.opt0 = frames.Length-1;
         }
 
+        /// <summary>
+        /// 指定tmoへフレームを補間します。
+        /// </summary>
+        /// <param name="motion">tmo</param>
+        /// <param name="append_length">補間するフレーム長さ</param>
         public void SlerpFrameEndTo(TMOFile motion, int append_length)
         {
             int i0 = ( frames.Length > 1 ) ? frames.Length-1-1 : 0;
@@ -204,11 +213,19 @@ namespace TDCG
             this.opt0 = frames.Length-1;
         }
 
+        /// <summary>
+        /// 指定tmoへフレームを補間します。
+        /// </summary>
+        /// <param name="motion">tmo</param>
         public void SlerpFrameEndTo(TMOFile motion)
         {
             SlerpFrameEndTo(motion, 200);
         }
 
+        /// <summary>
+        /// フレームを指定indexのみに切り詰めます。
+        /// </summary>
+        /// <param name="frame_index">index</param>
         public void TruncateFrame(int frame_index)
         {
             if (frame_index < 0)
@@ -221,6 +238,11 @@ namespace TDCG
             this.opt0 = 1;
         }
 
+        /// <summary>
+        /// 指定名称（短い形式）を持つnodeを検索します。
+        /// </summary>
+        /// <param name="sname">node名称（短い形式）</param>
+        /// <returns></returns>
         public TMONode FindNodeByShortName(string sname)
         {
             foreach(TMONode node in nodes)
@@ -229,6 +251,10 @@ namespace TDCG
             return null;
         }
 
+        /// <summary>
+        /// 指定tmoのモーション（開始フレームからの変位）を複写します。
+        /// </summary>
+        /// <param name="motion">tmo</param>
         public void CopyMotionFrom(TMOFile motion)
         {
             int[] id_pair = CreateNodeIdPair(motion);
@@ -246,6 +272,11 @@ namespace TDCG
             this.opt0 = frames.Length-1;
         }
 
+        /// <summary>
+        /// 指定tmoにある指定名称（短い形式）のnodeを同じ名称のnodeに複写します。
+        /// </summary>
+        /// <param name="motion">tmo</param>
+        /// <param name="sname">node名称（短い形式）</param>
         public void CopyNodeFrom(TMOFile motion, string sname)
         {
             TMONode node = this.FindNodeByShortName( sname );
@@ -257,6 +288,11 @@ namespace TDCG
             node.CopyMatFrom(motion_node);
         }
 
+        /// <summary>
+        /// 指定tmoと同じnode treeを持つか。
+        /// </summary>
+        /// <param name="motion">tmo</param>
+        /// <returns></returns>
         public bool IsSameNodeTree(TMOFile motion) {
             if (nodes.Length != motion.nodes.Length) {
                 //Console.WriteLine("nodes length mismatch {0} {1}", nodes.Length, motion.nodes.Length);
@@ -313,6 +349,9 @@ namespace TDCG
         }
     }
 
+    /// <summary>
+    /// Direct3D Matrixのラッパ
+    /// </summary>
     public class TMOMat
     {
         internal Matrix m;
@@ -437,7 +476,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 指定角度でworld座標上でY軸回転します。
+        /// ワールド座標系において指定角度でY軸回転します。
         /// </summary>
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateWorldY(float angle)
@@ -509,11 +548,23 @@ namespace TDCG
         }
     }
 
+    /// <summary>
+    /// フレームを扱います。
+    /// </summary>
     public class TMOFrame
     {
         internal int id;
         internal TMOMat[] matrices;
 
+        /// <summary>
+        /// フレームを補間します。
+        /// </summary>
+        /// <param name="frame0"></param>
+        /// <param name="frame1"></param>
+        /// <param name="frame2"></param>
+        /// <param name="frame3"></param>
+        /// <param name="length"></param>
+        /// <returns></returns>
         public static TMOFrame[] Slerp(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, TMOFrame frame3, int length)
         {
             TMOFrame[] frames = new TMOFrame[length];
@@ -539,6 +590,14 @@ namespace TDCG
             return frames;
         }
 
+        /// <summary>
+        /// frame1の行列で構成された新たなframeを得ます。
+        /// 新たなframeはframe0と同じnode並びとなります。
+        /// </summary>
+        /// <param name="frame0"></param>
+        /// <param name="frame1"></param>
+        /// <param name="index_pair">node idのペア</param>
+        /// <returns>新たなframe</returns>
         public static TMOFrame Select(TMOFrame frame0, TMOFrame frame1, int[] index_pair)
         {
             TMOFrame ret = new TMOFrame();
@@ -550,6 +609,15 @@ namespace TDCG
             return ret;
         }
 
+        /// <summary>
+        /// 加減算の結果として新たなframeを得ます。
+        /// 新たなframeはframe0と同じnode並びとなります。
+        /// </summary>
+        /// <param name="frame0">frame0</param>
+        /// <param name="frame1">frame1</param>
+        /// <param name="frame2">frame2</param>
+        /// <param name="index_pair">node idのペア</param>
+        /// <returns>新たなframe</returns>
         public static TMOFrame AddSub(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, int[] index_pair)
         {
             TMOFrame ret = new TMOFrame();
@@ -562,6 +630,9 @@ namespace TDCG
         }
     }
 
+    /// <summary>
+    /// boneを扱います。
+    /// </summary>
     public class TMONode
     {
         internal int id;
@@ -571,10 +642,24 @@ namespace TDCG
         internal TMONode parent;
         internal List<TMOMat> frame_matrices = new List<TMOMat>();
 
+        /// <summary>
+        /// ID
+        /// </summary>
         public int ID { get { return id; } }
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string Name { get { return name; } }
+        /// <summary>
+        /// 名称の短い形式。これはTMOFile中で重複する可能性があります。
+        /// </summary>
         public string ShortName { get { return sname; } }
 
+        /// <summary>
+        /// 指定名称（短い形式）を持つ子nodeを検索します。
+        /// </summary>
+        /// <param name="sname">名称（短い形式）</param>
+        /// <returns></returns>
         public TMONode FindChildByShortName(string sname)
         {
             foreach(TMONode child in children)
@@ -583,6 +668,10 @@ namespace TDCG
             return null;
         }
 
+        /// <summary>
+        /// 指定nodeから行列を複写します。
+        /// </summary>
+        /// <param name="motion">node</param>
         public void CopyMatFrom(TMONode motion)
         {
             //Console.WriteLine("copy mat {0} {1}", sname, motion.ShortName);
@@ -596,6 +685,12 @@ namespace TDCG
             }
         }
 
+        /// <summary>
+        /// 指定変位だけ移動します。
+        /// </summary>
+        /// <param name="x">X軸変位</param>
+        /// <param name="y">Y軸変位</param>
+        /// <param name="z">Z軸変位</param>
         public void Move(float x, float y, float z)
         {
             Vector3 translation = new Vector3(x, y, z);
@@ -604,6 +699,12 @@ namespace TDCG
                 i.Move(translation);
         }
 
+        /// <summary>
+        /// 指定変位だけ拡大します。
+        /// </summary>
+        /// <param name="x">X軸変位</param>
+        /// <param name="y">Y軸変位</param>
+        /// <param name="z">Z軸変位</param>
         public void Scale(float x, float y, float z)
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
@@ -612,6 +713,12 @@ namespace TDCG
                 i.Scale(scaling);
         }
 
+        /// <summary>
+        /// 指定変位だけ縮小します。
+        /// </summary>
+        /// <param name="x">X軸変位</param>
+        /// <param name="y">Y軸変位</param>
+        /// <param name="z">Z軸変位</param>
         public void Scale0(float x, float y, float z)
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
@@ -620,6 +727,12 @@ namespace TDCG
                 i.Scale0(scaling);
         }
 
+        /// <summary>
+        /// 指定変位だけ拡大します。さらに各子nodeを縮小します。
+        /// </summary>
+        /// <param name="x">X軸変位</param>
+        /// <param name="y">Y軸変位</param>
+        /// <param name="z">Z軸変位</param>
         public void Scale1(float x, float y, float z)
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
@@ -631,18 +744,30 @@ namespace TDCG
                 child.Scale0(x, y, z);
         }
 
+        /// <summary>
+        /// 指定角度でX軸回転します。
+        /// </summary>
+        /// <param name="angle">角度（ラジアン）</param>
         public void RotateX(float angle)
         {
             foreach(TMOMat i in frame_matrices)
                 i.RotateX(angle);
         }
 
+        /// <summary>
+        /// 指定角度でY軸回転します。
+        /// </summary>
+        /// <param name="angle">角度（ラジアン）</param>
         public void RotateY(float angle)
         {
             foreach(TMOMat i in frame_matrices)
                 i.RotateY(angle);
         }
 
+        /// <summary>
+        /// ワールド座標系において指定角度でY軸回転します。
+        /// </summary>
+        /// <param name="angle">角度（ラジアン）</param>
         public void RotateWorldY(float angle)
         {
             foreach(TMOMat i in frame_matrices)
