@@ -221,14 +221,11 @@ namespace TDCGExplorer
                 {
                     if (TDCGExplorer.SystemDB.initialize_camera == true || fNeedCameraReset == true)
                     {
-                        viewer.Camera.Reset();
+                        doResetCamera();
                     }
                     viewer.LoadTMOFile(TDCGExplorer.defaultpose);
                     if (TDCGExplorer.SystemDB.initialize_camera == true || fNeedCameraReset == true)
                     {
-                        doResetCamera();
-                        TSOCameraAutoCenter camera = new TSOCameraAutoCenter(viewer);
-                        camera.SelectBone("W_Neck");
                         fNeedCameraReset = false;
                     }
                     fInitialTmoLoad = true;
@@ -248,6 +245,7 @@ namespace TDCGExplorer
                 viewer.Camera.Reset();
                 TSOCameraAutoCenter camera = new TSOCameraAutoCenter(viewer);
                 camera.SetCenter("W_Hips");
+                camera.TranslateToBone("W_Hips", "W_Neck");
             }
         }
 

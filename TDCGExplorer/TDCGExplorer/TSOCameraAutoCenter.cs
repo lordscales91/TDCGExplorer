@@ -100,7 +100,7 @@ namespace TDCGExplorer
 
         public void UpdateCenterPosition(string tsoname)
         {
-            Vector3 position = new Vector3(0,0,0);
+            Vector3 position = new Vector3(0,10,0);
 
             TSOFile tso = viewer.FigureList[0].TSOList[0];
 
@@ -174,9 +174,13 @@ namespace TDCGExplorer
             viewer.Camera.SetCenter(position);
         }
 
-        public void SelectBone(string bone)
+        public void TranslateToBone(string origin,string bone)
         {
-            Vector3 position;
+            Vector3 position_origin = new Vector3(0,0,0);
+            Vector3 position_bone = new Vector3(0,0,0);
+
+            TSONode tso_node;
+            Matrix m;
 
             TSOFile tso = viewer.FigureList[0].TSOList[0];
 
@@ -187,13 +191,17 @@ namespace TDCGExplorer
                     nodemap.Add(node.ShortName, node);
             }
 
-            TSONode tso_node;
-            if (nodemap.TryGetValue(bone, out tso_node))
+            if (nodemap.TryGetValue(origin, out tso_node))
             {
-                Matrix m = tso_node.combined_matrix;
-                position = new Vector3(m.M41, m.M42, -m.M43);
-                viewer.Camera.Reset();
-                viewer.Camera.SetTranslation(position);
+                m = tso_node.combined_matrix;
+                position_origin = new Vector3(m.M41, m.M42, -m.M43);
+                if (nodemap.TryGetValue(bone, out tso_node))
+                {
+                    m = tso_node.combined_matrix;
+                    position_bone = new Vector3(m.M41, m.M42, -m.M43);
+
+                    viewer.Camera.SetTranslation(position_bone - position_origin);
+                }
             }
         }
 
@@ -215,10 +223,8 @@ namespace TDCGExplorer
             {
                 Matrix m = tso_node.combined_matrix;
                 position = new Vector3(m.M41, m.M42, -m.M43);
-                viewer.Camera.Reset();
                 viewer.Camera.SetCenter(position);
             }
         }
-
     }
 }
