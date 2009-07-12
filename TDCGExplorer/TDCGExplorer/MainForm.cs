@@ -14,7 +14,7 @@ namespace TDCGExplorer
     {
         private Viewer viewer = null;
         private bool fInitialTmoLoad = false;
-        private bool fNeedCameraReset = false;
+        private bool fNeedCameraReset = true;
         private TreeNode lastSelectTreeNode = null;
 
         private Color lastSelectTreeNodeColor = Color.Transparent;
@@ -219,13 +219,10 @@ namespace TDCGExplorer
             {
                 if (fInitialTmoLoad == false)
                 {
-                    if (TDCGExplorer.SystemDB.initialize_camera == true || fNeedCameraReset == true)
-                    {
-                        doResetCamera();
-                    }
                     viewer.LoadTMOFile(TDCGExplorer.defaultpose);
                     if (TDCGExplorer.SystemDB.initialize_camera == true || fNeedCameraReset == true)
                     {
+                        doResetCamera();
                         fNeedCameraReset = false;
                     }
                     fInitialTmoLoad = true;
@@ -244,8 +241,8 @@ namespace TDCGExplorer
             {
                 viewer.Camera.Reset();
                 TSOCameraAutoCenter camera = new TSOCameraAutoCenter(viewer);
-                camera.SetCenter("W_Hips");
-                camera.TranslateToBone("W_Hips", "W_Neck");
+                camera.SetCenter(TDCGExplorer.SystemDB.cameracenter);
+                camera.TranslateToBone(TDCGExplorer.SystemDB.cameracenter,TDCGExplorer.SystemDB.translateto);
             }
         }
 
@@ -266,6 +263,8 @@ namespace TDCGExplorer
                 viewer = new Viewer();
                 viewer.InitializeApplication(splitContainerWithView.Panel2);
                 fInitialTmoLoad = false;
+                // 次回カメラをリセットする.
+                fNeedCameraReset = true;
             }
         }
 

@@ -269,6 +269,8 @@ namespace TDCGExplorer
             edit.uiBehavior = SystemDB.zippage_behavior;
             edit.saveDirectory = SystemDB.savefile_directory;
             edit.initializeCamera = SystemDB.initialize_camera;
+            edit.translateBone = SystemDB.translateto;
+            edit.centerBone = SystemDB.cameracenter;
             edit.Owner = MainFormWindow;
             if (edit.ShowDialog() == DialogResult.OK)
             {
@@ -285,12 +287,9 @@ namespace TDCGExplorer
                 SystemDB.tagnames_server = edit.textTagnamesServer;
                 SystemDB.zippage_behavior = edit.uiBehavior;
                 SystemDB.savefile_directory = edit.saveDirectory;
-                if (SystemDB.initialize_camera != edit.initializeCamera)
-                {
-                    // 設定を変更したらカメラをリセットする.
-                    MainFormWindow.doResetCamera();
-                }
                 SystemDB.initialize_camera = edit.initializeCamera;
+                SystemDB.translateto = edit.translateBone;
+                SystemDB.cameracenter = edit.centerBone;
             }
         }
 

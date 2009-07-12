@@ -108,5 +108,15 @@ namespace TDCGExplorer
             get { return checkBoxCameraReset.Checked; }
             set { checkBoxCameraReset.Checked = value; }
         }
+        public string centerBone
+        {
+            get { return textBoxCenterBone.Text; }
+            set { textBoxCenterBone.Text = value; }
+        }
+        public string translateBone
+        {
+            get { return textBoxTranslateBone.Text; }
+            set { textBoxTranslateBone.Text = value; }
+        }
     }
 }

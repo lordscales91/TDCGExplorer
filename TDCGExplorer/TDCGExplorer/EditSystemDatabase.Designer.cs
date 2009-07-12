@@ -57,13 +57,17 @@
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.checkBoxCameraReset = new System.Windows.Forms.CheckBox();
+            this.textBoxCenterBone = new System.Windows.Forms.TextBox();
+            this.textBoxTranslateBone = new System.Windows.Forms.TextBox();
+            this.label12 = new System.Windows.Forms.Label();
+            this.label13 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // OKButton
             // 
             this.OKButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OKButton.Location = new System.Drawing.Point(447, 384);
+            this.OKButton.Location = new System.Drawing.Point(448, 439);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
             this.OKButton.TabIndex = 0;
@@ -89,7 +93,7 @@
             // DialoogCancelButton
             // 
             this.DialoogCancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.DialoogCancelButton.Location = new System.Drawing.Point(528, 384);
+            this.DialoogCancelButton.Location = new System.Drawing.Point(529, 439);
             this.DialoogCancelButton.Name = "DialoogCancelButton";
             this.DialoogCancelButton.Size = new System.Drawing.Size(75, 23);
             this.DialoogCancelButton.TabIndex = 3;
@@ -319,11 +323,47 @@
             this.checkBoxCameraReset.Text = "新規TSOロード時、カメラ設定をリセットする";
             this.checkBoxCameraReset.UseVisualStyleBackColor = true;
             // 
+            // textBoxCenterBone
+            // 
+            this.textBoxCenterBone.Location = new System.Drawing.Point(175, 416);
+            this.textBoxCenterBone.Name = "textBoxCenterBone";
+            this.textBoxCenterBone.Size = new System.Drawing.Size(178, 20);
+            this.textBoxCenterBone.TabIndex = 26;
+            // 
+            // textBoxTranslateBone
+            // 
+            this.textBoxTranslateBone.Location = new System.Drawing.Point(175, 442);
+            this.textBoxTranslateBone.Name = "textBoxTranslateBone";
+            this.textBoxTranslateBone.Size = new System.Drawing.Size(178, 20);
+            this.textBoxTranslateBone.TabIndex = 27;
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(106, 419);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(55, 13);
+            this.label12.TabIndex = 28;
+            this.label12.Text = "回転中心";
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(106, 445);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(55, 13);
+            this.label13.TabIndex = 29;
+            this.label13.Text = "初期視点";
+            // 
             // EditSystemDatabase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(615, 419);
+            this.ClientSize = new System.Drawing.Size(615, 471);
+            this.Controls.Add(this.label13);
+            this.Controls.Add(this.label12);
+            this.Controls.Add(this.textBoxTranslateBone);
+            this.Controls.Add(this.textBoxCenterBone);
             this.Controls.Add(this.label11);
             this.Controls.Add(this.checkBoxCameraReset);
             this.Controls.Add(this.textBoxSaveFile);
@@ -390,5 +430,9 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.CheckBox checkBoxCameraReset;
+        private System.Windows.Forms.TextBox textBoxCenterBone;
+        private System.Windows.Forms.TextBox textBoxTranslateBone;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.Label label13;
     }
 }
