@@ -219,6 +219,10 @@ namespace TDCGExplorer
             {
                 if (fInitialTmoLoad == false)
                 {
+                    if (TDCGExplorer.SystemDB.initialize_camera == true || fNeedCameraReset == true)
+                    {
+                        viewer.Camera.Reset();
+                    }
                     viewer.LoadTMOFile(TDCGExplorer.defaultpose);
                     if (TDCGExplorer.SystemDB.initialize_camera == true || fNeedCameraReset == true)
                     {
