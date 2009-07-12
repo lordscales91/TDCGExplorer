@@ -962,7 +962,7 @@ namespace TDCG
         internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
 
         /// <summary>
-        /// 光源ベクトルを得ます。
+        /// 光源方向ベクトルを得ます。
         /// </summary>
         /// <returns></returns>
         public Vector4 LightDirForced()
