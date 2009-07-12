@@ -84,8 +84,12 @@ public class TSOForm : Form
             foreach (string arg in args)
                 viewer.LoadAnyFile(arg, true);
 
-            var script = CSScript.Load(Path.Combine(Application.StartupPath, "Script.cs")).CreateInstance("TDCG.Script").AlignToInterface<IScript>();
-            script.Hello(viewer);
+            string script_path = Path.Combine(Application.StartupPath, "Script.cs");
+            if (File.Exists(script_path))
+            {
+                var script = CSScript.Load(script_path).CreateInstance("TDCG.Script").AlignToInterface<IScript>();
+                script.Hello(viewer);
+            }
 
             this.timer1.Enabled = true;
         }
