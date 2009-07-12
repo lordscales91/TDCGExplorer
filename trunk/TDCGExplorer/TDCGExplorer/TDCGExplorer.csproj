@@ -223,6 +223,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="TreeNode.cs" />
+    <Compile Include="TSOCameraAutoCenter.cs" />
     <Compile Include="XML.cs" />
     <Compile Include="ZipFilePageControl.cs">
       <SubType>Component</SubType>

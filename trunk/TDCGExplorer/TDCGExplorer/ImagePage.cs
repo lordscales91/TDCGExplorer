@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-//using System.Windows.Forms;
 using System.IO;
 using ArchiveLib;
 using System.Drawing;
@@ -68,9 +67,16 @@ namespace System.Windows.Forms
 
         public override void BindingStream(MemoryStream ms)
         {
-            // 全部読み出す.
-            Bitmap bitmap = new Bitmap(ms);
-            pictureBox.Image = (Image)bitmap;
+            try
+            {
+                // 全部読み出す.
+                Bitmap bitmap = new Bitmap(ms);
+                pictureBox.Image = (Image)bitmap;
+            }
+            catch (Exception e)
+            {
+                TDCGExplorer.TDCGExplorer.SetToolTips("error: " + e.Message);
+            }
         }
 
         private void pictureBox_MouseEnter(object sender, EventArgs e)

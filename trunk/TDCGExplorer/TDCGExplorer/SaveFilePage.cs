@@ -54,6 +54,7 @@ namespace System.Windows.Forms
                 InitializeComponent();
                 TDCGExplorer.TDCGExplorer.SetToolTips("データベース検索中...");
                 Text = Path.GetFileName(path);
+                TDCGExplorer.TDCGExplorer.SetLastAccessFile = path;
                 FileStream fs = File.OpenRead(path);
                 Byte[] buffer;
                 BinaryReader reader = new BinaryReader(fs, System.Text.Encoding.Default);

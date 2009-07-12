@@ -28,6 +28,7 @@ namespace TDCGExplorer
         public TAHFile(string filename)
         {
             FileName = filename;
+            TDCGExplorer.SetLastAccessFile = filename;
             Stream = File.OpenRead(FileName);
             Reader = new BinaryReader(Stream);
         }
