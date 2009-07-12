@@ -100,7 +100,7 @@ namespace TDCGExplorer
 
         public void UpdateCenterPosition(string tsoname)
         {
-            Vector3 position;
+            Vector3 position = new Vector3(0,0,0);
 
             TSOFile tso = viewer.FigureList[0].TSOList[0];
 
@@ -127,8 +127,6 @@ namespace TDCGExplorer
                             Matrix mR = tso_nodeR.combined_matrix;
                             Matrix mL = tso_nodeL.combined_matrix;
                             position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, -(mR.M43 + mL.M43) / 2.0f);
-                            viewer.Camera.Reset();
-                            viewer.Camera.SetCenter(position);
                         }
                     }
                     break;
@@ -143,8 +141,6 @@ namespace TDCGExplorer
                             Matrix mR = tso_nodeR.combined_matrix;
                             Matrix mL = tso_nodeL.combined_matrix;
                             position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, -(mR.M43 + mL.M43) / 2.0f);
-                            viewer.Camera.Reset();
-                            viewer.Camera.SetCenter(position);
                         }
                     }
                     break;
@@ -159,8 +155,6 @@ namespace TDCGExplorer
                             Matrix mR = tso_nodeR.combined_matrix;
                             Matrix mL = tso_nodeL.combined_matrix;
                             position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, -(mR.M43 + mL.M43) / 2.0f);
-                            viewer.Camera.Reset();
-                            viewer.Camera.SetCenter(position);
                         }
                     }
                     break;
@@ -172,12 +166,12 @@ namespace TDCGExplorer
                         {
                             Matrix m = tso_node.combined_matrix;
                             position = new Vector3(m.M41, m.M42, -m.M43);
-                            viewer.Camera.Reset();
-                            viewer.Camera.SetCenter(position);
                         }
                     }
                     break;
             }
+            viewer.Camera.Reset();
+            viewer.Camera.SetCenter(position);
         }
 
         public void SelectBone(string bone)
@@ -199,8 +193,32 @@ namespace TDCGExplorer
                 Matrix m = tso_node.combined_matrix;
                 position = new Vector3(m.M41, m.M42, -m.M43);
                 viewer.Camera.Reset();
+                viewer.Camera.SetTranslation(position);
+            }
+        }
+
+        public void SetCenter(string bone)
+        {
+            Vector3 position;
+
+            TSOFile tso = viewer.FigureList[0].TSOList[0];
+
+            Dictionary<string, TSONode> nodemap = new Dictionary<string, TSONode>();
+            foreach (TSONode node in tso.nodes)
+            {
+                if (nodemap.ContainsKey(node.ShortName) == false)
+                    nodemap.Add(node.ShortName, node);
+            }
+
+            TSONode tso_node;
+            if (nodemap.TryGetValue(bone, out tso_node))
+            {
+                Matrix m = tso_node.combined_matrix;
+                position = new Vector3(m.M41, m.M42, -m.M43);
+                viewer.Camera.Reset();
                 viewer.Camera.SetCenter(position);
             }
         }
+
     }
 }

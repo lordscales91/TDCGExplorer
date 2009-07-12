@@ -14,6 +14,7 @@ namespace TDCGExplorer
     {
         private Viewer viewer = null;
         private bool fInitialTmoLoad = false;
+        private bool fNeedCameraReset = false;
         private TreeNode lastSelectTreeNode = null;
 
         private Color lastSelectTreeNodeColor = Color.Transparent;
@@ -219,13 +220,30 @@ namespace TDCGExplorer
                 if (fInitialTmoLoad == false)
                 {
                     viewer.LoadTMOFile(TDCGExplorer.defaultpose);
-                    if (TDCGExplorer.SystemDB.initialize_camera == true)
+                    if (TDCGExplorer.SystemDB.initialize_camera == true || fNeedCameraReset == true)
                     {
+                        doResetCamera();
                         TSOCameraAutoCenter camera = new TSOCameraAutoCenter(viewer);
                         camera.SelectBone("W_Neck");
+                        fNeedCameraReset = false;
                     }
                     fInitialTmoLoad = true;
                 }
+            }
+        }
+
+        public void setNeedCameraReset()
+        {
+            fNeedCameraReset = true;
+        }
+
+        public void doResetCamera()
+        {
+            if (viewer != null)
+            {
+                viewer.Camera.Reset();
+                TSOCameraAutoCenter camera = new TSOCameraAutoCenter(viewer);
+                camera.SetCenter("W_Hips");
             }
         }
 

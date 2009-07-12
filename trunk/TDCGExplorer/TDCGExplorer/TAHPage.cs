@@ -122,6 +122,8 @@ namespace System.Windows.Forms
                                     // カメラをセンター位置に.
                                     TSOCameraAutoCenter camera = new TSOCameraAutoCenter(TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer);
                                     camera.UpdateCenterPosition(Path.GetFileName(filesEntries[index].path).ToUpper());
+                                    // 次回カメラが必ずリセットされる様にする.
+                                    TDCGExplorer.TDCGExplorer.MainFormWindow.setNeedCameraReset();
                                 }
                             }
                             else if (ext == ".tmo")

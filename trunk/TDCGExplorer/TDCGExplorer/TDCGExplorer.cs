@@ -285,6 +285,11 @@ namespace TDCGExplorer
                 SystemDB.tagnames_server = edit.textTagnamesServer;
                 SystemDB.zippage_behavior = edit.uiBehavior;
                 SystemDB.savefile_directory = edit.saveDirectory;
+                if (SystemDB.initialize_camera != edit.initializeCamera)
+                {
+                    // 設定を変更したらカメラをリセットする.
+                    MainFormWindow.doResetCamera();
+                }
                 SystemDB.initialize_camera = edit.initializeCamera;
             }
         }
