@@ -260,7 +260,7 @@ public class TSOForm : Form
             keyZRol = +2.0f;
 
         viewer.MoveTarget(keyL - keyR, keyD - keyU, keyPush - keyPull);
-        viewer.MoveSwivel(DegreeToRadian(keyZRol));
+        camera.RotZ(DegreeToRadian(keyZRol));
     }
 
     private void form_OnDragOver(object sender, DragEventArgs e)

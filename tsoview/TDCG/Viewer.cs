@@ -52,7 +52,6 @@ public class Viewer : IDisposable
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
 
     Vector3 target = new Vector3(5.0f, 10.0f, 0.0f);
-    float swivel = 0.0f;
 
     public void MoveTarget(float dx, float dy, float dz)
     {
@@ -61,14 +60,6 @@ public class Viewer : IDisposable
         target.X -= dx;
         target.Y -= dy;
         target.Z -= dz;
-        solved = false;
-    }
-
-    public void MoveSwivel(float delta)
-    {
-        if (delta == 0)
-            return;
-        swivel += delta;
         solved = false;
     }
 
@@ -970,6 +961,7 @@ public class Viewer : IDisposable
     }
     */
 
+        //逆運動学における目標を描画
     {
         DrawMeshSub(sphere, Matrix.Translation(target), new Vector4(1,1,0,1));
     }
@@ -998,6 +990,12 @@ public class Viewer : IDisposable
         Thread.Sleep(30);
     }
 
+    /// <summary>
+    /// Direct3Dメッシュを描画します。
+    /// </summary>
+    /// <param name="mesh">メッシュ</param>
+    /// <param name="wld">ワールド変換行列</param>
+    /// <param name="color">描画色</param>
     public void DrawMeshSub(Mesh mesh, Matrix wld, Vector4 color)
     {
         effect.Technique = "BONE";
@@ -1021,9 +1019,9 @@ public class Viewer : IDisposable
         effect.End();
     }
 
-    public string sphere_bone_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck";
+    private string sphere_bone_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck";
 
-    public Vector4 GetBoneColor(TSONode node)
+    private Vector4 GetBoneColor(TSONode node)
     {
         if (FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y))
             return new Vector4(1,1,1,1);
@@ -1054,6 +1052,10 @@ public class Viewer : IDisposable
         return false;
     }
 
+    /// <summary>
+    /// 逆運動学による解を得ます。
+    /// </summary>
+    /// <param name="tso"></param>
     private void Solve(TSOFile tso)
     {
         string effector_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand";
@@ -1071,8 +1073,12 @@ public class Viewer : IDisposable
         Solve(effector, node);
     }
 
-    // Cyclic-Coordinate-Descent (CCD) 法
-    private void Solve(TSONode effector, TSONode node)
+    /// <summary>
+    /// Cyclic-Coordinate-Descent (CCD) 法による逆運動学の実装です。
+    /// </summary>
+    /// <param name="effector">エフェクタnode</param>
+    /// <param name="node">対象node</param>
+    public void Solve(TSONode effector, TSONode node)
     {
         Vector3 worldTargetP = target;
 
