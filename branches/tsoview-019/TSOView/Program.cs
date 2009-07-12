@@ -25,8 +25,9 @@ static class Program
 
         TSOConfig config;
 
-        if (File.Exists(@"config.xml"))
-            config = TSOConfig.Load(@"config.xml");
+        string config_file = Path.Combine(Application.StartupPath, @"config.xml");
+        if (File.Exists(config_file))
+            config = TSOConfig.Load(config_file);
         else
             config = new TSOConfig();
 

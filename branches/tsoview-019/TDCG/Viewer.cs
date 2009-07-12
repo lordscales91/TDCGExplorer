@@ -558,10 +558,18 @@ public class Viewer : IDisposable
         }
         Console.WriteLine("dev {0}x{1}", devw, devh);
 
+        int dev_zbufw = 0;
+        int dev_zbufh = 0;
         dev_zbuf = device.DepthStencilSurface;
+        {
+            dev_zbufw = dev_surface.Description.Width;
+            dev_zbufh = dev_surface.Description.Height;
+        }
+        Console.WriteLine("dev_zbuf {0}x{1}", dev_zbufw, dev_zbufh);
+
         if (shadowMapEnabled)
         {
-            ztex = new Texture(device, 1024, 1024, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+            ztex = new Texture(device, dev_zbufw, dev_zbufh, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
             effect.SetValue("texShadowMap", ztex);
             ztex_surface = ztex.GetSurfaceLevel(0);
             {
