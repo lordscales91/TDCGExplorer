@@ -218,7 +218,7 @@ namespace TDCGExplorer
         // カメラ位置をリセットするか?
         public bool initialize_camera
         {
-            get { return GetSqlValue("initialize_camera", "true") == "true"; }
+            get { return GetSqlValue("initialize_camera", "false") == "true"; }
             set
             {
                 if (value == true) SetSqlValue("initialize_camera", "true");
