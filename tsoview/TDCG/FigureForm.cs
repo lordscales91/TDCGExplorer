@@ -170,6 +170,11 @@ public class FigureForm : Form
         dg.DataSource = shader.shader_parameters;
     }
 
+    /// <summary>
+    /// btn1をクリックしたときに呼び出されます。
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void btn1_Click(object sender, EventArgs e)
     {
         if (shader == null)
@@ -179,6 +184,11 @@ public class FigureForm : Form
             Console.WriteLine("Name {0} F1 {1} F2 {2} F3 {3} F4 {4}", param.Name, param.F1, param.F2, param.F3, param.F4);
     }
 
+    /// <summary>
+    /// btnUpをクリックしたときに呼び出されます。
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void btnUp_Click(object sender, EventArgs e)
     {
         if (lv_fig.SelectedItems.Count == 0)
@@ -193,6 +203,11 @@ public class FigureForm : Form
         li.Selected = true;
     }
 
+    /// <summary>
+    /// btnDownをクリックしたときに呼び出されます。
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void btnDown_Click(object sender, EventArgs e)
     {
         if (lv_fig.SelectedItems.Count == 0)
@@ -207,6 +222,11 @@ public class FigureForm : Form
         li.Selected = true;
     }
 
+    /// <summary>
+    /// lv_figの選択インデックスが変更されたときに呼び出されます。
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void lv_fig_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (lv_fig.SelectedItems.Count == 0)
@@ -216,6 +236,11 @@ public class FigureForm : Form
         SetTSOFile(tso);
     }
 
+    /// <summary>
+    /// lvの選択インデックスが変更されたときに呼び出されます。
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void lv_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (lv.SelectedItems.Count == 0)

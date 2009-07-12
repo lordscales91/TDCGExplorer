@@ -250,11 +250,19 @@ public class Camera
         LookAt(eye, center, new Vector3(0.0f, 1.0f, 0.0f));
     }
 
+    /// <summary>
+    /// カメラのZ軸方向を得ます。
+    /// </summary>
+    /// <returns></returns>
     public Vector3 GetCamZAxis()
     {
         return new Vector3(camPoseMat.M31, camPoseMat.M32, camPoseMat.M33);
     }
 
+    /// <summary>
+    /// カメラのY軸方向を得ます。
+    /// </summary>
+    /// <returns></returns>
     public Vector3 GetCamYAxis()
     {
         return new Vector3(camPoseMat.M21, camPoseMat.M22, camPoseMat.M23);

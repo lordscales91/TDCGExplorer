@@ -251,6 +251,9 @@ public class Viewer : IDisposable
         }
     }
 
+    /// <summary>
+    /// フィギュア選択時に呼び出されるハンドラ
+    /// </summary>
     public event EventHandler FigureEvent;
 
     /// <summary>
@@ -826,7 +829,10 @@ public class Viewer : IDisposable
     //フレーム番号
     private int frame_index = 0;
 
-    //tmo file中で最大のフレーム長さを得ます。
+    /// <summary>
+    /// tmo file中で最大のフレーム長さを得ます。
+    /// </summary>
+    /// <returns>フレーム長さ</returns>
     public int GetMaxFrameLength()
     {
         int max = 0;
@@ -1093,6 +1099,9 @@ public class Viewer : IDisposable
             solved = true;
     }
 
+    /// <summary>
+    /// 内部objectを破棄します。
+    /// </summary>
     public void Dispose()
     {
         foreach (Figure fig in FigureList)

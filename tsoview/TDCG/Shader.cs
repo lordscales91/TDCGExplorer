@@ -275,11 +275,18 @@ namespace TDCG
         //internal float      shadeBlend;      // = [10]
         //internal float      highLightPower;  // = [100]
 
+        /// <summary>
+        /// 光源方向ベクトル
+        /// </summary>
         public Vector4 LightDir
         {
             get { return new Vector4(lightDirX, lightDirY, lightDirZ, lightDirW); }
         }
 
+        /// <summary>
+        /// シェーダ設定を読み込みます。
+        /// </summary>
+        /// <param name="lines">テキスト行配列</param>
         public void Load(string[] lines)
         {
             shader_parameters = new ShaderParameter[lines.Length];
