@@ -159,12 +159,27 @@ namespace TDCG
     /// </summary>
     public class TSOMesh : IDisposable
     {
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string name;
+        /// <summary>
+        /// 変形行列
+        /// </summary>
         public Matrix transform_matrix;
+        /// <summary>
+        /// unknown1
+        /// </summary>
         public UInt32 unknown1;
-        public UInt32 sub_mesh_count;
+        //public UInt32 sub_mesh_count;
+        /// <summary>
+        /// サブメッシュ配列
+        /// </summary>
         public TSOSubMesh[] sub_meshes;
 
+        /// <summary>
+        /// 内部objectを破棄します。
+        /// </summary>
         public void Dispose()
         {
             if (sub_meshes != null)
@@ -178,11 +193,29 @@ namespace TDCG
     /// </summary>
     public struct vertex_field
     {
+        /// <summary>
+        /// 位置
+        /// </summary>
         public Vector3 position;
+        /// <summary>
+        /// 法線
+        /// </summary>
         public Vector3 normal;
+        /// <summary>
+        /// テクスチャU座標
+        /// </summary>
         public Single u;
+        /// <summary>
+        /// テクスチャV座標
+        /// </summary>
         public Single v;
+        /// <summary>
+        /// スキンウェイト配列
+        /// </summary>
         public SkinWeight[] skin_weights;
+        /// <summary>
+        /// ボーンインデックス
+        /// </summary>
         public UInt32 skin_weight_indices;
     }
 
@@ -191,13 +224,29 @@ namespace TDCG
     /// </summary>
     public class SkinWeight : IComparable
     {
+        /// <summary>
+        /// ウェイト
+        /// </summary>
         public Single weight;
+        /// <summary>
+        /// ボーンインデックス
+        /// </summary>
         public UInt32 index;
+        /// <summary>
+        /// スキンウェイトを生成します。
+        /// </summary>
+        /// <param name="weight"></param>
+        /// <param name="index"></param>
         public SkinWeight(Single weight, UInt32 index)
         {
             this.weight = weight;
             this.index = index;
         }
+        /// <summary>
+        /// 比較関数
+        /// </summary>
+        /// <param name="obj">比較対象スキンウェイト</param>
+        /// <returns>比較結果</returns>
         public int CompareTo(object obj)
         {
             return -weight.CompareTo(((SkinWeight)obj).weight);
@@ -209,7 +258,13 @@ namespace TDCG
     /// </summary>
     public class TSOScript
     {
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string name;
+        /// <summary>
+        /// テキスト行配列
+        /// </summary>
         public string[] script_data;
     }
 
@@ -221,10 +276,19 @@ namespace TDCG
     {
         internal string name;
         internal string file;
+        /// <summary>
+        /// テキスト行配列
+        /// </summary>
         public string[] script_data;
         internal Shader shader = null;
 
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string Name { get { return name; } set { name = value; } }
+        /// <summary>
+        /// ファイル名
+        /// </summary>
         public string File { get { return file; } set { file = value; } }
     }
 
@@ -233,15 +297,37 @@ namespace TDCG
     /// </summary>
     public class TSOTex : IDisposable
     {
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string name;
+        /// <summary>
+        /// ファイル名
+        /// </summary>
         public string file;
+        /// <summary>
+        /// 幅
+        /// </summary>
         public int width;
+        /// <summary>
+        /// 高さ
+        /// </summary>
         public int height;
+        /// <summary>
+        /// 色深度
+        /// </summary>
         public int depth;
+        /// <summary>
+        /// ビットマップ配列
+        /// </summary>
         public byte[] data;
 
         internal Texture tex;
 
+        /// <summary>
+        /// 指定deviceで開きます。
+        /// </summary>
+        /// <param name="device">device</param>
         public void Open(Device device)
         {
             if (file.Trim('"') == "")
@@ -282,6 +368,9 @@ namespace TDCG
             }
         }
 
+        /// <summary>
+        /// Direct3Dテクスチャを破棄します。
+        /// </summary>
         public void Dispose()
         {
             if (tex != null)
@@ -302,7 +391,11 @@ namespace TDCG
         private bool need_update_transformation;
 
         private Vector3 translation;
-        public Vector3 Translation {
+        /// <summary>
+        /// 位置変位
+        /// </summary>
+        public Vector3 Translation
+        {
             get {
                 return translation;
             }
@@ -313,7 +406,11 @@ namespace TDCG
         }
 
         private Quaternion rotation;
-        public Quaternion Rotation {
+        /// <summary>
+        /// 回転変位
+        /// </summary>
+        public Quaternion Rotation
+        {
             get {
                 return rotation;
             }
@@ -323,15 +420,45 @@ namespace TDCG
             }
         }
 
+        /// <summary>
+        /// 子nodeリスト
+        /// </summary>
         public List<TSONode> child_nodes = new List<TSONode>();
+
+        /// <summary>
+        /// 親node
+        /// </summary>
         public TSONode parent;
+
+        /// <summary>
+        /// オフセット行列。これはワールド座標系をboneローカル座標系に変換します。
+        /// </summary>
         public Matrix offset_matrix;
+
+        /// <summary>
+        /// ワールド座標系での位置と向きを表します。これはviewerから更新されます。
+        /// </summary>
         public Matrix combined_matrix;
 
+        /// <summary>
+        /// ID
+        /// </summary>
         public int ID { get { return id; } }
+        
+        /// <summary>
+        /// 名称
+        /// </summary>
         public string Name { get { return name; } }
+
+        /// <summary>
+        /// 名称の短い形式。これはTSOFile中で重複する可能性があります。
+        /// </summary>
         public string ShortName { get { return sname; } }
 
+        /// <summary>
+        /// 指定boneに対するオフセット行列を計算します。
+        /// </summary>
+        /// <param name="bone">bone</param>
         public static Matrix GetBoneOffsetMatrix(TSONode bone)
         {
             Matrix m = Matrix.Identity;
@@ -342,15 +469,28 @@ namespace TDCG
             }
             return Matrix.Invert(m);
         }
+
+        /// <summary>
+        /// オフセット行列を計算します。
+        /// </summary>
         public void ComputeOffsetMatrix()
         {
             offset_matrix = TSONode.GetBoneOffsetMatrix(this);
         }
+
+        /// <summary>
+        /// オフセット行列を得ます。
+        /// </summary>
+        /// <returns></returns>
         public Matrix GetOffsetMatrix()
         {
             return offset_matrix;
         }
 
+        /// <summary>
+        /// ワールド座標系での位置を得ます。
+        /// </summary>
+        /// <returns></returns>
         public Vector3 GetWorldPosition()
         {
             TSONode bone = this;
@@ -363,6 +503,10 @@ namespace TDCG
             return v;
         }
 
+        /// <summary>
+        /// ワールド座標系での位置と向きを得ます。
+        /// </summary>
+        /// <returns></returns>
         public Matrix GetWorldCoordinate()
         {
             TSONode bone = this;
@@ -375,6 +519,9 @@ namespace TDCG
             return m;
         }
 
+        /// <summary>
+        /// 回転行列
+        /// </summary>
         public Matrix RotationMatrix
         {
             get {
@@ -382,6 +529,9 @@ namespace TDCG
             }
         }
 
+        /// <summary>
+        /// 位置行列
+        /// </summary>
         public Matrix TranslationMatrix
         {
             get {
@@ -389,6 +539,9 @@ namespace TDCG
             }
         }
 
+        /// <summary>
+        /// 変形行列。これは 回転行列 x 位置行列 です。
+        /// </summary>
         public Matrix TransformationMatrix
         {
             get {
@@ -442,7 +595,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// TMOMeshを読みとります。
+        /// TSOMeshを読みとります。
         /// </summary>
         /// <returns>TSOMesh</returns>
         public TSOMesh ReadMesh()
@@ -453,10 +606,10 @@ namespace TDCG
             mesh.name = mesh.name.Replace(":", "_colon_").Replace("#", "_sharp_"); //should be compatible with directx naming conventions 
             ReadMatrix(ref mesh.transform_matrix);
             mesh.unknown1 = reader.ReadUInt32();
-            mesh.sub_mesh_count = reader.ReadUInt32();
-            mesh.sub_meshes = new TSOSubMesh[mesh.sub_mesh_count];
+            UInt32 sub_mesh_count = reader.ReadUInt32();
+            mesh.sub_meshes = new TSOSubMesh[sub_mesh_count];
 
-            for (int a = 0; a < mesh.sub_mesh_count; a++)
+            for (int a = 0; a < sub_mesh_count; a++)
             {
                 TSOSubMesh act_mesh = new TSOSubMesh();
                 mesh.sub_meshes[a] = act_mesh;
@@ -482,7 +635,7 @@ namespace TDCG
                 }
             }
 
-            for (int a = 0; a < mesh.sub_mesh_count; a++)
+            for (int a = 0; a < sub_mesh_count; a++)
             {
                 TSOSubMesh sub_mesh = mesh.sub_meshes[a];
 
@@ -634,21 +787,21 @@ namespace TDCG
             textures = new TSOTex[texture_count];
             for (int i = 0; i < texture_count; i++)
             {
-                textures[i] = read_texture();
+                textures[i] = ReadTexture();
             }
 
             UInt32 script_count = reader.ReadUInt32();
             scripts = new TSOScript[script_count];
             for (int i = 0; i < script_count; i++)
             {
-                scripts[i] = read_script();
+                scripts[i] = ReadScript();
             }
 
             UInt32 sub_script_count = reader.ReadUInt32();
             sub_scripts = new TSOSubScript[sub_script_count];
             for (int i = 0; i < sub_script_count; i++)
             {
-                sub_scripts[i] = read_sub_script();
+                sub_scripts[i] = ReadSubScript();
             }
 
             UInt32 mesh_count = reader.ReadUInt32();
@@ -662,7 +815,11 @@ namespace TDCG
             }
         }
 
-        public TSOScript read_script()
+        /// <summary>
+        /// スクリプトを読み込みます。
+        /// </summary>
+        /// <returns></returns>
+        public TSOScript ReadScript()
         {
             TSOScript script = new TSOScript();
             script.name = ReadString();
@@ -677,7 +834,11 @@ namespace TDCG
             return script;
         }
 
-        public TSOSubScript read_sub_script()
+        /// <summary>
+        /// サブスクリプトを読み込みます。
+        /// </summary>
+        /// <returns></returns>
+        public TSOSubScript ReadSubScript()
         {
             TSOSubScript sub_script = new TSOSubScript();
             sub_script.name = ReadString();
@@ -697,7 +858,11 @@ namespace TDCG
             return sub_script;
         }
 
-        public TSOTex read_texture()
+        /// <summary>
+        /// テクスチャを読み込みます。
+        /// </summary>
+        /// <returns></returns>
+        public TSOTex ReadTexture()
         {
             TSOTex tex = new TSOTex();
 
@@ -781,22 +946,37 @@ namespace TDCG
         internal Shader current_shader = null;
         internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
 
+        /// <summary>
+        /// 光源ベクトルを得ます。
+        /// </summary>
+        /// <returns></returns>
         public Vector4 LightDirForced()
         {
             return new Vector4(lightDir.X, lightDir.Y, -lightDir.Z, 0.0f);
         }
 
+        /// <summary>
+        /// UVSCR値を得ます。
+        /// </summary>
+        /// <returns></returns>
         public Vector4 UVSCR()
         {
             float x = Environment.TickCount * 0.000002f;
             return new Vector4(x, 0.0f, 0.0f, 0.0f);
         }
 
+        /// <summary>
+        /// レンダリング開始時に呼びます。
+        /// </summary>
         public void BeginRender()
         {
             current_shader = null;
         }
 
+        /// <summary>
+        /// シェーダ設定を切り替えます。
+        /// </summary>
+        /// <param name="shader">シェーダ設定</param>
         public void SwitchShader(Shader shader)
         {
             if (shader == current_shader)
@@ -844,16 +1024,26 @@ namespace TDCG
             effect.ValidateTechnique(effect.Technique);
         }
 
+        /// <summary>
+        /// シェーダ設定を切り替えます。
+        /// </summary>
+        /// <param name="tm_sub">切り替え対象となるサブメッシュ</param>
         public void SwitchShader(TSOSubMesh tm_sub)
         {
             SwitchShader(sub_scripts[tm_sub.spec].shader);
         }
 
+        /// <summary>
+        /// レンダリング終了時に呼びます。
+        /// </summary>
         public void EndRender()
         {
             current_shader = null;
         }
 
+        /// <summary>
+        /// 内部objectを破棄します。
+        /// </summary>
         public void Dispose()
         {
             foreach (TSOMesh tm in meshes)
