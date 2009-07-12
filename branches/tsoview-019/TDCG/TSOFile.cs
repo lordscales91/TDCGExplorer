@@ -571,10 +571,25 @@ namespace TDCG
         /// </summary>
         protected BinaryReader reader;
 
+        /// <summary>
+        /// bone配列
+        /// </summary>
         public TSONode[] nodes;
+        /// <summary>
+        /// テクスチャ配列
+        /// </summary>
         public TSOTex[] textures;
+        /// <summary>
+        /// スクリプト配列
+        /// </summary>
         public TSOScript[] scripts;
+        /// <summary>
+        /// サブスクリプト配列
+        /// </summary>
         public TSOSubScript[] sub_scripts;
+        /// <summary>
+        /// メッシュ配列
+        /// </summary>
         public TSOMesh[] meshes;
 
         internal Dictionary<string, TSONode> nodemap;
