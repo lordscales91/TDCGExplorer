@@ -207,6 +207,7 @@ namespace TDCGExplorer
                 viewer.Render();
                 viewer.Dispose();
                 viewer = null;
+                TDCGExplorer.ResetDefaultPose(); // ポーズをデフォルトに戻す.
             }
         }
 
@@ -217,7 +218,12 @@ namespace TDCGExplorer
             {
                 if (fInitialTmoLoad == false)
                 {
-                    viewer.LoadTMOFile("default.tmo");
+                    viewer.LoadTMOFile(TDCGExplorer.defaultpose);
+                    if (TDCGExplorer.SystemDB.initialize_camera == true)
+                    {
+                        TSOCameraAutoCenter camera = new TSOCameraAutoCenter(viewer);
+                        camera.SelectBone("W_Neck");
+                    }
                     fInitialTmoLoad = true;
                 }
             }

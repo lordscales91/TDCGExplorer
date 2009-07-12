@@ -23,6 +23,8 @@ namespace TDCGExplorer
         private static ArcNamesDictionary arcNames;
         private static TagNamesDictionary tagNames;
         private static MainForm form;
+        private static Byte[] defaultTMO;
+        private static string lastAccessFile = null;
 
         public static volatile bool fThreadRun = false;
         private static volatile string toolTipsMessage = "";
@@ -46,14 +48,126 @@ namespace TDCGExplorer
             arcNames.Init();
             tagNames.Init();
 
+            ResetDefaultPose();
+
             SetToolTips("Copyright © 2009 3DCG Craftsmen's Guild.");
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(form = new MainForm());
+            try
+            {
+                Application.Run(form = new MainForm());
+            }
+            catch (Exception ex)
+            {
+                if (ex.Message != null && ex.Message == "A generic error occurred in GDI+.")
+                {
+                    MessageBox.Show("大変申し訳ありません。\n\n" +
+                                     "プログラムはWindowsのバグによって終了しました。\n" +
+                                     "デバッグ情報を" + GetAppDataPath() + "に保存します。\n"+
+                                     "このエラーはMicrosoftにお問い合わせ下さい。",
+                                     "Windowsサブシステムでエラーが発生しました", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+                else
+                {
+                    MessageBox.Show("大変申し訳ありません。\n\n" +
+                                     "プログラムは予期せぬ例外によって終了しました。\n" +
+                                     "デバッグ情報を" + GetAppDataPath() + "に保存します。",
+                                     "深刻なエラーが発生しました。", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                }
+
+                string savepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), TDCGExplorer.GetAppDataPath());
+                savepath = Path.Combine(savepath, "デバッグ情報.txt");
+                File.Delete(savepath);
+                using (Stream stream = File.OpenWrite(savepath))
+                {
+                    StreamWriter writer = new StreamWriter(stream);
+
+                    if (lastAccessFile != null)
+                    {
+                        writer.WriteLine("最後にアクセスしたファイル:");
+                        writer.WriteLine(lastAccessFile);
+                    }
+                    if (ex.Message != null)
+                    {
+                        writer.WriteLine("Message:");
+                        writer.WriteLine(ex.Message);
+                    }
+                    if (ex.Source != null)
+                    {
+                        writer.WriteLine("Source:");
+                        writer.WriteLine(ex.Source);
+                    }
+                    if (ex.HelpLink != null)
+                    {
+                        writer.WriteLine("HelpLink:");
+                        writer.WriteLine(ex.HelpLink);
+                    }
+                    if (ex.InnerException != null)
+                    {
+                        writer.WriteLine("InnerException:");
+                        writer.WriteLine(ex.InnerException);
+                    }
+                    if (ex.StackTrace != null)
+                    {
+                        writer.WriteLine("StackTrace:");
+                        writer.WriteLine(ex.StackTrace);
+                    }
+                    if (ex.TargetSite != null)
+                    {
+                        writer.WriteLine("TargetSite:");
+                        writer.WriteLine(ex.TargetSite);
+                    }
+                    if (ex.Data != null)
+                    {
+                        writer.WriteLine("Data:");
+                        writer.WriteLine(ex.Data);
+                    }
+                    writer.Close();
+                    stream.Close();
+                }
+            }
 
             arcsDatabase.Dispose();
             systemDatabase.Dispose();
+        }
+
+        public static string SetLastAccessFile
+        {
+            set { lastAccessFile = value; }
+        }
+
+        private static Byte[] LoadTMO(string path)
+        {
+            //TDCGExplorer.SetLastAccessFile = path;
+            FileStream fs = File.OpenRead(path);
+            BinaryReader reader = new BinaryReader(fs, System.Text.Encoding.Default);
+            return reader.ReadBytes((int)fs.Length);
+        }
+
+        public static void ResetDefaultPose()
+        {
+            defaultTMO = LoadTMO("default.tmo");
+        }
+
+        public static Stream defaultpose
+        {
+            get { return new MemoryStream(defaultTMO); }
+            set
+            {
+                try
+                {
+                    Stream fs = value;
+                    BinaryReader reader = new BinaryReader(fs, System.Text.Encoding.Default);
+                    fs.Seek(0, SeekOrigin.Begin);
+                    Byte[] buffer = reader.ReadBytes((int)fs.Length);
+                    defaultTMO = buffer;
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                }
+            }
         }
 
         public static string GetAppDataPath()
@@ -154,6 +268,7 @@ namespace TDCGExplorer
             edit.textTagnamesServer = SystemDB.tagnames_server;
             edit.uiBehavior = SystemDB.zippage_behavior;
             edit.saveDirectory = SystemDB.savefile_directory;
+            edit.initializeCamera = SystemDB.initialize_camera;
             edit.Owner = MainFormWindow;
             if (edit.ShowDialog() == DialogResult.OK)
             {
@@ -170,6 +285,7 @@ namespace TDCGExplorer
                 SystemDB.tagnames_server = edit.textTagnamesServer;
                 SystemDB.zippage_behavior = edit.uiBehavior;
                 SystemDB.savefile_directory = edit.saveDirectory;
+                SystemDB.initialize_camera = edit.initializeCamera;
             }
         }
 

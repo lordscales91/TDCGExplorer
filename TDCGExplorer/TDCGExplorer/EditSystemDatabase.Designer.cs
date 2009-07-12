@@ -55,13 +55,15 @@
             this.textBoxModRegexp = new System.Windows.Forms.TextBox();
             this.textBoxSaveFile = new System.Windows.Forms.TextBox();
             this.label10 = new System.Windows.Forms.Label();
+            this.label11 = new System.Windows.Forms.Label();
+            this.checkBoxCameraReset = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // OKButton
             // 
             this.OKButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OKButton.Location = new System.Drawing.Point(447, 366);
+            this.OKButton.Location = new System.Drawing.Point(447, 384);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
             this.OKButton.TabIndex = 0;
@@ -87,7 +89,7 @@
             // DialoogCancelButton
             // 
             this.DialoogCancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.DialoogCancelButton.Location = new System.Drawing.Point(528, 366);
+            this.DialoogCancelButton.Location = new System.Drawing.Point(528, 384);
             this.DialoogCancelButton.Name = "DialoogCancelButton";
             this.DialoogCancelButton.Size = new System.Drawing.Size(75, 23);
             this.DialoogCancelButton.TabIndex = 3;
@@ -298,11 +300,32 @@
             this.label10.TabIndex = 22;
             this.label10.Text = "TDCGディレクトリ";
             // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(12, 394);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(56, 13);
+            this.label11.TabIndex = 25;
+            this.label11.Text = "カメラ設定";
+            // 
+            // checkBoxCameraReset
+            // 
+            this.checkBoxCameraReset.AutoSize = true;
+            this.checkBoxCameraReset.Location = new System.Drawing.Point(109, 393);
+            this.checkBoxCameraReset.Name = "checkBoxCameraReset";
+            this.checkBoxCameraReset.Size = new System.Drawing.Size(229, 17);
+            this.checkBoxCameraReset.TabIndex = 24;
+            this.checkBoxCameraReset.Text = "新規TSOロード時、カメラ設定をリセットする";
+            this.checkBoxCameraReset.UseVisualStyleBackColor = true;
+            // 
             // EditSystemDatabase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(615, 401);
+            this.ClientSize = new System.Drawing.Size(615, 419);
+            this.Controls.Add(this.label11);
+            this.Controls.Add(this.checkBoxCameraReset);
             this.Controls.Add(this.textBoxSaveFile);
             this.Controls.Add(this.label10);
             this.Controls.Add(this.label9);
@@ -365,5 +388,7 @@
         private System.Windows.Forms.TextBox textBoxModRegexp;
         private System.Windows.Forms.TextBox textBoxSaveFile;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.CheckBox checkBoxCameraReset;
     }
 }

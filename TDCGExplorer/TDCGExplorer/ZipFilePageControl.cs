@@ -76,6 +76,7 @@ namespace System.Windows.Forms
         }
         private void ExtractFile(IArchive arc, string source_file)
         {
+            TDCGExplorer.TDCGExplorer.SetLastAccessFile = source_file;
             arc.Open(source_file);
             if (arc == null)
                 return;

@@ -38,6 +38,7 @@ namespace TDCGExplorer
                         break;
 
                 }
+                TDCGExplorer.SetLastAccessFile=zippath;
                 archive.Open(zippath);
                 if (archive == null)
                 {

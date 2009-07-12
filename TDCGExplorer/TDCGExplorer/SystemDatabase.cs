@@ -215,5 +215,15 @@ namespace TDCGExplorer
             get { return GetSqlValue("savefile_directory", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "TechArts3D\\TDCG")); }
             set { SetSqlValue("savefile_directory", value); }
         }
+        // カメラ位置をリセットするか?
+        public bool initialize_camera
+        {
+            get { return GetSqlValue("initialize_camera", "true") == "true"; }
+            set
+            {
+                if (value == true) SetSqlValue("initialize_camera", "true");
+                else SetSqlValue("initialize_camera", "false");
+            }
+        }
     }
 }

@@ -103,6 +103,10 @@ namespace TDCGExplorer
             get { return textBoxSaveFile.Text; }
             set { textBoxSaveFile.Text = value; }
         }
-
+        public bool initializeCamera
+        {
+            get { return checkBoxCameraReset.Checked; }
+            set { checkBoxCameraReset.Checked = value; }
+        }
     }
 }

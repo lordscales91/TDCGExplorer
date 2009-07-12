@@ -96,7 +96,7 @@ namespace TDCGExplorer
                         if (ext == ".bmp" || ext == ".png" || ext == ".jpg" || ext == ".gif" || ext == ".tif")
                         {
                             string savefilpath = entry.path.ToLower();
-                            if (savefilpath.EndsWith(".tdcgsav.png") || savefilpath.EndsWith(".tdcgsav.bmp")) continue;
+                            if (savefilpath.EndsWith(".tdcgsav.png") || savefilpath.EndsWith(".tdcgsav.bmp") || savefilpath.EndsWith(".tdcgpose.png")) continue;
 
                             TDCGExplorer.MainFormWindow.AssignTagPageControl(new ImagePageControl(new ZipTahInfo(entry)));
                             return;
@@ -128,7 +128,7 @@ namespace TDCGExplorer
                         if (ext == ".bmp" || ext == ".png" || ext == ".jpg" || ext == ".gif" || ext == ".tif")
                         {
                             string savefilpath = entry.path.ToLower();
-                            if (savefilpath.EndsWith(".tdcgsav.png") || savefilpath.EndsWith(".tdcgsav.bmp")) continue;
+                            if (savefilpath.EndsWith(".tdcgsav.png") || savefilpath.EndsWith(".tdcgsav.bmp") || savefilpath.EndsWith(".tdcgpose.png")) continue;
 
                             TDCGExplorer.MainFormWindow.AssignTagPageControl(new ImagePageControl(new ZipTahInfo(entry)));
                             return;
