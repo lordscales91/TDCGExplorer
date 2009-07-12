@@ -225,5 +225,15 @@ namespace TDCGExplorer
                 else SetSqlValue("initialize_camera", "false");
             }
         }
+        public string cameracenter
+        {
+            get { return GetSqlValue("cameracenter", "W_Hips"); }
+            set { SetSqlValue("cameracenter", value); }
+        }
+        public string translateto
+        {
+            get { return GetSqlValue("translateto", "W_Neck"); }
+            set { SetSqlValue("translateto", value); }
+        }
     }
 }
