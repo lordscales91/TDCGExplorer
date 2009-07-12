@@ -53,6 +53,9 @@ public class Viewer : IDisposable
 
     Vector3 target = new Vector3(5.0f, 10.0f, 0.0f);
 
+    /// <summary>
+    /// ‹t‰^“®Šw‚É‚¨‚¯‚é–Ú•W‚ğˆÚ“®‚µ‚Ü‚·B
+    /// </summary>
     public void MoveTarget(float dx, float dy, float dz)
     {
         if (dx == 0 && dy == 0 && dz == 0)
