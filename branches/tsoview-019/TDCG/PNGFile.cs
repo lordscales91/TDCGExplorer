@@ -219,6 +219,10 @@ namespace TDCG
         /// </summary>
         public TaobFtsoHandler Ftso;
 
+        /// <summary>
+        /// TaObチャンクを読みとります。
+        /// </summary>
+        /// <param name="chunk_data">チャンク</param>
         protected void ReadTaOb(byte[] chunk_data)
         {
             String type = System.Text.Encoding.ASCII.GetString(chunk_data, 0, 4);

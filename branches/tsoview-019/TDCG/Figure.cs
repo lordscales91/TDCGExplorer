@@ -194,8 +194,27 @@ public class Figure : IDisposable
         TSOList.Add(tso);
     }
 
+    /// <summary>
+    /// bone行列を更新します。ただしtmoを無視します。
+    /// </summary>
+    public void UpdateBoneMatricesWithoutTMO()
+    {
+        foreach (TSOFile tso in TSOList)
+            UpdateBoneMatricesWithoutTMO(tso);
+    }
+
+    /// <summary>
     /// bone行列を更新します。
-    /// forcedがfalseの場合frame indexに変更なければ更新しません。
+    /// </summary>
+    public void UpdateBoneMatrices()
+    {
+        UpdateBoneMatrices(false);
+    }
+
+    /// <summary>
+    /// bone行列を更新します。
+    /// </summary>
+    /// <param name="forced">falseの場合frame indexに変更なければ更新しません。</param>
     public void UpdateBoneMatrices(bool forced)
     {
         if (!forced && frame_index == current_frame_index)
@@ -207,33 +226,28 @@ public class Figure : IDisposable
             UpdateBoneMatrices(tso, tmo_frame);
     }
     
-    public void UpdateBoneMatricesWithoutTMO()
+    /// <summary>
+    /// bone行列を更新します。ただしtmoを無視します。
+    /// </summary>
+    protected void UpdateBoneMatricesWithoutTMO(TSOFile tso)
     {
-        foreach (TSOFile tso in TSOList)
-            UpdateBoneMatrices(tso);
+        matrixStack.LoadMatrix(Matrix.Translation(translation));
+        UpdateBoneMatricesWithoutTMO(tso.nodes[0]);
     }
-    
+
     /// <summary>
     /// bone行列を更新します。
     /// </summary>
-    public void UpdateBoneMatrices()
-    {
-        UpdateBoneMatrices(false);
-    }
-
-    protected void UpdateBoneMatrices(TSOFile tso)
-    {
-        matrixStack.LoadMatrix(Matrix.Translation(translation));
-        UpdateBoneMatrices(tso.nodes[0]);
-    }
-
     protected void UpdateBoneMatrices(TSOFile tso, TMOFrame tmo_frame)
     {
         matrixStack.LoadMatrix(Matrix.Translation(translation));
         UpdateBoneMatrices(tso.nodes[0], tmo_frame);
     }
 
-    protected void UpdateBoneMatrices(TSONode tso_node)
+    /// <summary>
+    /// bone行列を更新します。ただしtmoを無視します。
+    /// </summary>
+    protected void UpdateBoneMatricesWithoutTMO(TSONode tso_node)
     {
         matrixStack.Push();
 
@@ -241,11 +255,14 @@ public class Figure : IDisposable
         tso_node.combined_matrix = matrixStack.Top;
 
         foreach (TSONode child_node in tso_node.child_nodes)
-            UpdateBoneMatrices(child_node);
+            UpdateBoneMatricesWithoutTMO(child_node);
 
         matrixStack.Pop();
     }
 
+    /// <summary>
+    /// bone行列を更新します。
+    /// </summary>
     protected void UpdateBoneMatrices(TSONode tso_node, TMOFrame tmo_frame)
     {
         matrixStack.Push();
@@ -330,6 +347,9 @@ public class Figure : IDisposable
         }
     }
 
+    /// <summary>
+    /// 内部objectを破棄します。
+    /// </summary>
     public void Dispose()
     {
         foreach (TSOFile tso in TSOList)
