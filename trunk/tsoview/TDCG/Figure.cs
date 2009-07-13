@@ -21,6 +21,7 @@ public class Figure : IDisposable
     /// </summary>
     public List<TSOFile> TSOList = new List<TSOFile>();
     internal TMOFile tmo = null;
+    internal TPOFile tpo = new TPOFile();
 
     internal Vector3 center = Vector3.Empty;
     /// <summary>
@@ -49,7 +50,21 @@ public class Figure : IDisposable
         set
         {
             tmo = value;
+            tpo.Tmo = tmo;
             UpdateTMO();
+        }
+    }
+
+    /// <summary>
+    /// tpo
+    /// </summary>
+    public TPOFile Tpo
+    {
+        get { return tpo; }
+        set
+        {
+            tpo = value;
+            tpo.Tmo = tmo;
         }
     }
 
@@ -145,8 +160,9 @@ public class Figure : IDisposable
         TMONode tmo_node;
         if (tmo.nodemap.TryGetValue("|W_Hips", out tmo_node))
         {
+            Debug.Assert(tmo_node.frame_matrices.Count > 0);
             Matrix m = tmo_node.frame_matrices[0].m;
-            center = new Vector3(m.M41, m.M42, -m.M43) + translation;
+            center = new Vector3(m.M41, m.M42, -m.M43);
         }
     }
 
@@ -345,6 +361,27 @@ public class Figure : IDisposable
             else
                 this.frame_index = frame_index;
         }
+    }
+
+    public void MakeProportion()
+    {
+        Proportion.Zoom proportion = new Proportion.Zoom();
+        //Tpo.nodesはTpo.Tmoを変更したら置き換わる。
+        //Tpo.Tmoを変更したら体型変更をやり直す必要がある。
+        Dictionary<string, TPONode> nodemap = new Dictionary<string, TPONode>();
+        foreach (TPONode node in Tpo.nodes)
+            nodemap[node.ShortName] = node;
+        proportion.Nodes = nodemap;
+        //TPONodeに変形係数を設定する。
+        proportion.Execute();
+    }
+
+    public void Transform(float ratio)
+    {
+        //TPONodeの変形係数に乗ずる変形比率
+        Tpo.Ratio = ratio;
+        //TPONodeの変形係数に従ってTpo.Tmoのモーション行列値を変形する。
+        Tpo.Transform();
     }
 
     /// <summary>
