@@ -107,6 +107,11 @@ namespace TDCG
             reader.Close();
         }
 
+        public TMOMat GetTMOMat(string name, int frame_index)
+        {
+            return frames[frame_index].matrices[nodemap[name].id];
+        }
+
         public int[] CreateFrameIndexPair(TMOFile motion)
         {
             Dictionary<string, TMONode> source_nodes = new Dictionary<string, TMONode>();
@@ -401,6 +406,41 @@ namespace TDCG
             m.M42 = 0;
             m.M43 = 0;
             return t;
+        }
+
+        public static Vector3 DecomposeMatrix(ref Matrix m, out Vector3 scaling)
+        {
+            Vector3 vx = new Vector3(m.M11, m.M12, m.M13);
+            Vector3 vy = new Vector3(m.M21, m.M22, m.M23);
+            Vector3 vz = new Vector3(m.M31, m.M32, m.M33);
+            Vector3 vt = new Vector3(m.M41, m.M42, m.M43);
+            float scax = vx.Length();
+            float scay = vy.Length();
+            float scaz = vz.Length();
+            scaling = new Vector3(scax, scay, scaz);
+            vx.Normalize();
+            vy.Normalize();
+            vz.Normalize();
+            m.M11 = vx.X;
+            m.M12 = vx.Y;
+            m.M13 = vx.Z;
+            m.M21 = vy.X;
+            m.M22 = vy.Y;
+            m.M23 = vy.Z;
+            m.M31 = vz.X;
+            m.M32 = vz.Y;
+            m.M33 = vz.Z;
+            m.M41 = 0;
+            m.M42 = 0;
+            m.M43 = 0;
+            return vt;
+        }
+
+        public static Vector3 DecomposeMatrix(ref Matrix m, out Vector3 scaling, out Quaternion rotation)
+        {
+            Vector3 translation = DecomposeMatrix(ref m, out scaling);
+            rotation = Quaternion.RotationMatrix(m);
+            return translation;
         }
 
         public static TMOMat AddSub(TMOMat mat0, TMOMat mat1, TMOMat mat2)

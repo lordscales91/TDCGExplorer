@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
-using TMOTool;
+using TDCG;
 
 namespace TMOTool.Command
 {
-    public class Boin : ITMOCommand
+    public class Boin : IProportion
     {
-        Dictionary<string, TDCG.TMONode> nodes;
-        public Dictionary<string, TDCG.TMONode> Nodes { set { nodes = value; }}
+        Dictionary<string, TDCG.TPONode> nodes;
+        public Dictionary<string, TDCG.TPONode> Nodes { set { nodes = value; }}
 
         static float DegreeToRadian(float angle)
         {
@@ -19,7 +19,7 @@ namespace TMOTool.Command
 
         public void Execute()
         {
-            TDCG.TMONode node;
+            TDCG.TPONode node;
 
             node = nodes["Chichi_Right1"];
             node.RotateY(DegreeToRadian(-5));

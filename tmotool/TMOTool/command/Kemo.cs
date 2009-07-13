@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
-using TMOTool;
+using TDCG;
 
-namespace TDCG.TMOTool.Command
+namespace TMOTool.Command
 {
-    public class Kemo : ITMOCommand
+    public class Kemo : IProportion
     {
-        Dictionary<string, TMONode> nodes;
-        public Dictionary<string, TMONode> Nodes { set { nodes = value; }}
+        Dictionary<string, TPONode> nodes;
+        public Dictionary<string, TPONode> Nodes { set { nodes = value; }}
 
         static float DegreeToRadian(float angle)
         {
@@ -19,7 +19,7 @@ namespace TDCG.TMOTool.Command
 
         public void Execute()
         {
-                TMONode node;
+                TPONode node;
 
                 node = nodes["W_Hips"];
                 node.Scale1(0.964F, 0.94F, 0.94F);

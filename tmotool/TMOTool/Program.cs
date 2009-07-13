@@ -99,9 +99,12 @@ namespace TMOTool
                 return;
             }
 
-            Dictionary<string, TMONode> nodes = new Dictionary<string, TMONode>();
+            TPOFile tpo = new TPOFile();
+            tpo.Tmo = tmo;
 
-            foreach(TMONode node in tmo.nodes)
+            Dictionary<string, TPONode> nodes = new Dictionary<string, TPONode>();
+
+            foreach(TPONode node in tpo.nodes)
             try {
                 nodes.Add(node.ShortName, node);
             } catch (ArgumentException) {
@@ -112,13 +115,14 @@ namespace TMOTool
                 foreach (string script_name in script_names)
                 {
                     string script_file = Path.Combine(GetCommandPath(), script_name + ".cs");
-                    var script = CSScript.Load(script_file).CreateInstance("TMOTool.Command." + script_name).AlignToInterface<ITMOCommand>();
+                    var script = CSScript.Load(script_file).CreateInstance("TMOTool.Command." + script_name).AlignToInterface<IProportion>();
                     script.Nodes = nodes;
                     script.Execute();
                 }
-            } catch (KeyNotFoundException) {
-                Console.WriteLine("node not found.");
+            } catch (KeyNotFoundException ex) {
+                Console.WriteLine("node not found. " + ex.Message);
             }
+            tpo.Transform();
 
             tmo.Save(dest_file);
             Console.WriteLine("saved " + dest_file);
