@@ -178,6 +178,11 @@ public class Figure : IDisposable
         return null;
     }
 
+    public int GetFrameIndex()
+    {
+        return current_frame_index;
+    }
+
     /// <summary>
     /// TSOFile‚ğTSOList‚É’Ç‰Á‚µ‚Ü‚·B
     /// </summary>

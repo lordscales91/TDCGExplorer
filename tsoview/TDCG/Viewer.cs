@@ -387,23 +387,8 @@ public class Viewer : IDisposable
     /// <param name="source_file">ƒpƒX</param>
     public void LoadTMOFile(string source_file)
     {
-        Figure fig;
-        if (TryGetFigure(out fig))
-        {
-            if (File.Exists(source_file))
-            try
-            {
-                TMOFile tmo = new TMOFile();
-                tmo.Load(source_file);
-                fig.Tmo = tmo;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error: " + ex);
-            }
-            fig.UpdateNodeMapAndBoneMatrices();
-            camera.SetCenter(fig.Center);
-        }
+        using (Stream source_stream = File.OpenRead(source_file))
+            LoadTMOFile(source_stream);
     }
 
     /// <summary>
@@ -426,6 +411,8 @@ public class Viewer : IDisposable
                 Console.WriteLine("Error: " + ex);
             }
             fig.UpdateNodeMapAndBoneMatrices();
+            if (FigureEvent != null)
+                FigureEvent(this, EventArgs.Empty);
             camera.SetCenter(fig.Center);
         }
     }
@@ -447,6 +434,8 @@ public class Viewer : IDisposable
             {
                 fig.Tmo = tmo;
                 fig.UpdateNodeMapAndBoneMatrices();
+                if (FigureEvent != null)
+                    FigureEvent(this, EventArgs.Empty);
             }
         }
         else
