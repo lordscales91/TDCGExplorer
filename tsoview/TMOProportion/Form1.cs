@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using CSScriptLibrary;
 using TDCG;
 
 namespace TMOProportion
@@ -15,6 +17,11 @@ namespace TMOProportion
         internal Viewer viewer = null;
         List<IProportion> pro_list = new List<IProportion>();
         List<TrackBar> bar_list = new List<TrackBar>();
+
+        public string GetProportionPath()
+        {
+            return Path.Combine(Application.StartupPath, @"Proportion");
+        }
 
         public Form1()
         {
@@ -31,7 +38,13 @@ namespace TMOProportion
                 timer1.Enabled = true;
             }
 
-            pro_list.Add(new TDCG.Proportion.Zoom());
+            string[] script_files = Directory.GetFiles(GetProportionPath(), "*.cs");
+            foreach (string script_file in script_files)
+            {
+                string class_name = "TDCG.Proportion." + Path.GetFileNameWithoutExtension(script_file);
+                var script = CSScript.Load(script_file).CreateInstance(class_name).AlignToInterface<IProportion>();
+                pro_list.Add(script);
+            }
 
             foreach (IProportion pro in pro_list)
             {
