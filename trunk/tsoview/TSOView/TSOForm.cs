@@ -82,6 +82,14 @@ public class TSOForm : Form
                 else
                     fig_form.Clear();
             };
+            viewer.FigureEvent += delegate(object sender, EventArgs e)
+            {
+                Figure fig;
+                if (viewer.TryGetFigure(out fig))
+                    fig_form.SetFigure(fig);
+                else
+                    fig_form.Clear();
+            };
             foreach (string arg in args)
                 viewer.LoadAnyFile(arg, true);
 
@@ -96,26 +104,26 @@ public class TSOForm : Form
             this.timer1.Enabled = true;
         }
 
-        trackBars = new TrackBar[proportions.Length];
+        pro_list.Add(new TDCG.Proportion.Zoom());
 
-        for (int i = 0; i < proportions.Length; i++)
+        foreach (IProportion pro in pro_list)
         {
             TrackBar trackBar = new TrackBar();
-            trackBar.Location = new System.Drawing.Point(10, 60 + i * 50);
+            trackBar.Location = new System.Drawing.Point(10, 60 + bar_list.Count * 50);
             trackBar.Maximum = 20;
-            trackBar.Name = "ProportionTrackBar" + i.ToString();
+            trackBar.Name = "ProportionTrackBar" + (bar_list.Count + 1).ToString();
             trackBar.Size = new System.Drawing.Size(262, 45);
-            trackBar.TabIndex = i;
+            trackBar.TabIndex = bar_list.Count + 1;
             trackBar.ValueChanged += new System.EventHandler(this.proportionTrackBar_ValueChanged);
             this.Controls.Add(trackBar);
 
-            trackBars[i] = trackBar;
+            bar_list.Add(trackBar);
         }
 
     }
 
-    IProportion[] proportions = { new TDCG.Proportion.Zoom() };
-    TrackBar[] trackBars = null;
+    List<IProportion> pro_list = new List<IProportion>();
+    List<TrackBar> bar_list = new List<TrackBar>();
     
     private void form_OnKeyDown(object sender, KeyEventArgs e)
     {
@@ -398,23 +406,30 @@ public class TSOForm : Form
         Figure fig;
         if (viewer.TryGetFigure(out fig))
         {
-            fig.Transform();
+            tpo_list.Transform();
             fig.UpdateBoneMatrices(true);
         }
     }
 
+    TPOFileList tpo_list = new TPOFileList();
+
     private void makeProportionButton_Click(object sender, EventArgs e)
+    {
+        UpdateTpoList();
+    }
+
+    private void UpdateTpoList()
     {
         Figure fig;
         if (viewer.TryGetFigure(out fig))
         {
-            for (int i = 0; i < proportions.Length; i++)
-            {
-                TPOFile tpo = new TPOFile();
-                tpo.Proportion = proportions[i];
-                fig.TPOList.Add(tpo);
+            tpo_list.Tmo = fig.Tmo;
+            tpo_list.SetProportionList(pro_list);
 
-                trackBars[i].Tag = tpo;
+            for (int i = 0; i < tpo_list.Count; i++)
+            {
+                TPOFile tpo = tpo_list[i];
+                bar_list[i].Tag = tpo;
             }
         }
     }

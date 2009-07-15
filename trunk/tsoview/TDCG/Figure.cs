@@ -21,7 +21,6 @@ public class Figure : IDisposable
     /// </summary>
     public List<TSOFile> TSOList = new List<TSOFile>();
     internal TMOFile tmo = null;
-    internal TPOList tpo_list = new TPOList();
 
     internal Vector3 center = Vector3.Empty;
     /// <summary>
@@ -50,21 +49,7 @@ public class Figure : IDisposable
         set
         {
             tmo = value;
-            tpo_list.Tmo = tmo;
             UpdateTMO();
-        }
-    }
-
-    /// <summary>
-    /// tpo_list
-    /// </summary>
-    public TPOList TPOList
-    {
-        get { return tpo_list; }
-        set
-        {
-            tpo_list = value;
-            tpo_list.Tmo = tmo;
         }
     }
 
@@ -361,11 +346,6 @@ public class Figure : IDisposable
             else
                 this.frame_index = frame_index;
         }
-    }
-
-    public void Transform()
-    {
-        TPOList.Transform();
     }
 
     /// <summary>
