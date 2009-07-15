@@ -8,9 +8,14 @@ using Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
 
-public class TPOList
+public class TPOFileList
 {
     List<TPOFile> list = new List<TPOFile>();
+
+    public TPOFile this[int i]
+    {
+        get { return list[i]; }
+    }
 
     public int Count
     {
@@ -21,6 +26,22 @@ public class TPOList
     {
         tpo.Tmo = tmo;
         list.Add(tpo);
+    }
+
+    public void Clear()
+    {
+        list.Clear();
+    }
+
+    public void SetProportionList(List<IProportion> pro_list)
+    {
+        Clear();
+        foreach (IProportion pro in pro_list)
+        {
+            TPOFile tpo = new TPOFile();
+            tpo.Proportion = pro;
+            Add(tpo);
+        }
     }
 
     public void Transform()
@@ -47,24 +68,26 @@ public class TPOList
             foreach (TPOFile tpo in list)
                 tpo.Tmo = tmo;
 
-            int node_count = tmo.nodes.Length;
-
-            //初期モーション行列値を保持する領域を確保する。
-            int frame_count = tmo.frames.Length;
-            frames = new TMOFrame[frame_count];
-            for (int i = 0; i < frame_count; i++)
-            {
-                int matrix_count = tmo.frames[i].matrices.Length;
-                frames[i] = new TMOFrame();
-                frames[i].id = i;
-                frames[i].matrices = new TMOMat[matrix_count];
-                for (int j = 0; j < matrix_count; j++)
-                {
-                    frames[i].matrices[j] = new TMOMat();
-                }
-            }
-
+            CreateFrames();
             SaveMatrix();
+        }
+    }
+
+    //初期モーション行列値を保持する領域を確保する。
+    private void CreateFrames()
+    {
+        int frame_count = tmo.frames.Length;
+        frames = new TMOFrame[frame_count];
+        for (int i = 0; i < frame_count; i++)
+        {
+            int matrix_count = tmo.frames[i].matrices.Length;
+            frames[i] = new TMOFrame();
+            frames[i].id = i;
+            frames[i].matrices = new TMOMat[matrix_count];
+            for (int j = 0; j < matrix_count; j++)
+            {
+                frames[i].matrices[j] = new TMOMat();
+            }
         }
     }
 
