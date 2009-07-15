@@ -47,7 +47,7 @@ public class TSOForm : Form
     private Camera cam2 = null;
     private Timer timer1;
     private System.ComponentModel.IContainer components;
-    private Button makeProportionButton;
+    private Button motionButton;
 
     private int cam_frame_index = 0;
 
@@ -96,7 +96,6 @@ public class TSOForm : Form
                 script.Hello(viewer);
             }
 
-            viewer.SwitchMotionEnabled();
             this.timer1.Enabled = true;
         }
 
@@ -116,6 +115,7 @@ public class TSOForm : Form
             bar_list.Add(trackBar);
         }
 
+        UpdateTpoList();
     }
 
     List<IProportion> pro_list = new List<IProportion>();
@@ -359,7 +359,7 @@ public class TSOForm : Form
     {
         this.components = new System.ComponentModel.Container();
         this.timer1 = new System.Windows.Forms.Timer(this.components);
-        this.makeProportionButton = new System.Windows.Forms.Button();
+        this.motionButton = new System.Windows.Forms.Button();
         this.SuspendLayout();
         // 
         // timer1
@@ -367,20 +367,20 @@ public class TSOForm : Form
         this.timer1.Interval = 16;
         this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
         // 
-        // makeProportionButton
+        // motionButton
         // 
-        this.makeProportionButton.Location = new System.Drawing.Point(10, 12);
-        this.makeProportionButton.Name = "makeProportionButton";
-        this.makeProportionButton.Size = new System.Drawing.Size(262, 23);
-        this.makeProportionButton.TabIndex = 1;
-        this.makeProportionButton.Text = "&Make proportion";
-        this.makeProportionButton.UseVisualStyleBackColor = true;
-        this.makeProportionButton.Click += new System.EventHandler(this.makeProportionButton_Click);
+        this.motionButton.Location = new System.Drawing.Point(10, 12);
+        this.motionButton.Name = "motionButton";
+        this.motionButton.Size = new System.Drawing.Size(262, 23);
+        this.motionButton.TabIndex = 2;
+        this.motionButton.Text = "switch &motion";
+        this.motionButton.UseVisualStyleBackColor = true;
+        this.motionButton.Click += new System.EventHandler(this.motionButton_Click);
         // 
         // TSOForm
         // 
         this.ClientSize = new System.Drawing.Size(284, 263);
-        this.Controls.Add(this.makeProportionButton);
+        this.Controls.Add(this.motionButton);
         this.Name = "TSOForm";
         this.ResumeLayout(false);
 
@@ -402,7 +402,7 @@ public class TSOForm : Form
         Figure fig;
         if (viewer.TryGetFigure(out fig))
         {
-            tpo_list.Transform();
+            tpo_list.Transform(fig.GetFrameIndex());
             fig.UpdateBoneMatrices(true);
         }
     }
@@ -428,6 +428,11 @@ public class TSOForm : Form
                 bar_list[i].Tag = tpo;
             }
         }
+    }
+
+    private void motionButton_Click(object sender, EventArgs e)
+    {
+        viewer.SwitchMotionEnabled();
     }
 }
 }

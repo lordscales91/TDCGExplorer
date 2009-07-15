@@ -52,12 +52,16 @@ public class TPOFileList
 
     public void Transform()
     {
-        if (frames == null)
-            return;
-
         LoadMatrix();
         foreach (TPOFile tpo in list)
             tpo.Transform();
+    }
+
+    public void Transform(int i)
+    {
+        LoadMatrix();
+        foreach (TPOFile tpo in list)
+            tpo.Transform(i);
     }
 
     //初期モーション行列値を保持するフレーム配列
@@ -85,6 +89,9 @@ public class TPOFileList
     //初期モーション行列値を保持する領域を確保する。
     private void CreateFrames()
     {
+        if (tmo.frames == null)
+            return;
+
         int frame_count = tmo.frames.Length;
         frames = new TMOFrame[frame_count];
         for (int i = 0; i < frame_count; i++)
@@ -102,6 +109,9 @@ public class TPOFileList
 
     public void LoadMatrix()
     {
+        if (frames == null)
+            return;
+
         int frame_count = frames.Length;
         for (int i = 0; i < frame_count; i++)
         {
@@ -113,6 +123,9 @@ public class TPOFileList
 
     public void SaveMatrix()
     {
+        if (frames == null)
+            return;
+
         int frame_count = frames.Length;
         for (int i = 0; i < frame_count; i++)
         {
@@ -132,7 +145,7 @@ public class TPOFile
     {
         get { return ratio; } set { ratio = value; }
     }
-    internal Dictionary<string, TPONode> nodemap;
+    internal Dictionary<string, TPONode> nodemap = new Dictionary<string, TPONode>();
 
     internal TMOFile tmo = null;
     public TMOFile Tmo
@@ -146,9 +159,15 @@ public class TPOFile
         {
             tmo = value;
 
+            if (tmo.nodes == null)
+            {
+                nodemap.Clear();
+                nodes = null;
+                return;
+            }
+
             int node_count = tmo.nodes.Length;
             nodes = new TPONode[node_count];
-            nodemap = new Dictionary<string, TPONode>();
 
             //tmo nodeからnameを得て設定する。
             //そしてnodemapに追加する。
@@ -201,37 +220,48 @@ public class TPOFile
 
     public void Transform()
     {
+        if (tmo.frames == null)
+            return;
+
         int frame_count = tmo.frames.Length;
         for (int i = 0; i < frame_count; i++)
         {
-            int matrix_count = tmo.frames[i].matrices.Length;
-            for (int j = 0; j < matrix_count; j++)
-            {
-                TPONode node = nodes[j];
-                TMOMat mat = tmo.frames[i].matrices[j];//変形対象モーション行列
+            Transform(i);
+        }
+    }
 
-                Matrix m = mat.m;
+    public void Transform(int i)
+    {
+        if (tmo.frames == null)
+            return;
 
-                Vector3 v = node.ScalingVector3(ratio);
-                m.M11 *= v.X;
-                m.M12 *= v.X;
-                m.M13 *= v.X;
-                m.M21 *= v.Y;
-                m.M22 *= v.Y;
-                m.M23 *= v.Y;
-                m.M31 *= v.Z;
-                m.M32 *= v.Z;
-                m.M33 *= v.Z;
-                
-                m = m * node.RotationMatrix(m, ratio);
+        int matrix_count = tmo.frames[i].matrices.Length;
+        for (int j = 0; j < matrix_count; j++)
+        {
+            TPONode node = nodes[j];
+            TMOMat mat = tmo.frames[i].matrices[j];//変形対象モーション行列
 
-                Vector3 t = node.Translation;
-                m.M41 += t.X;
-                m.M42 += t.X;
-                m.M43 += t.X;
+            Matrix m = mat.m;
 
-                mat.m = m;
-            }
+            Vector3 v = node.ScalingVector3(ratio);
+            m.M11 *= v.X;
+            m.M12 *= v.X;
+            m.M13 *= v.X;
+            m.M21 *= v.Y;
+            m.M22 *= v.Y;
+            m.M23 *= v.Y;
+            m.M31 *= v.Z;
+            m.M32 *= v.Z;
+            m.M33 *= v.Z;
+
+            m = m * node.RotationMatrix(m, ratio);
+
+            Vector3 t = node.Translation;
+            m.M41 += t.X;
+            m.M42 += t.X;
+            m.M43 += t.X;
+
+            mat.m = m;
         }
     }
 }
