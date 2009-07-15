@@ -13,7 +13,7 @@ namespace System.Windows.Forms
     {
         private System.Windows.Forms.TextBox textBox;
 
-        public TextPageControl(GenTahInfo tahInfo)
+        public TextPageControl(GenericTahInfo tahInfo)
             : base(tahInfo)
         {
             InitializeComponent();

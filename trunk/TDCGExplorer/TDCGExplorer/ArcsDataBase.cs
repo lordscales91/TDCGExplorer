@@ -115,7 +115,12 @@ namespace TDCGExplorer
 
         public void Dispose()
         {
-            cnn.Close();
+            if (cnn != null)
+            {
+                cnn.Close();
+                cnn.Dispose();
+                cnn = null;
+            }
         }
         //TAHテーブル
         public void CreateTahDatabase()

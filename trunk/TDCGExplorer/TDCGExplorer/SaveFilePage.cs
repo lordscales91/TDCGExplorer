@@ -14,17 +14,10 @@ namespace System.Windows.Forms
     {
         TDCGSaveFileInfo savefile;
         private DataGridView dataGridView;
-        private static volatile bool busy = false;
-
-        public static bool Busy
-        {
-            get { return busy; }
-        }
 
         // zipファイルの中から
-        public SaveFilePage(GenTahInfo tahInfo) : base(tahInfo)
+        public SaveFilePage(GenericTahInfo tahInfo) : base(tahInfo)
         {
-            busy = true;
             Cursor.Current = Cursors.WaitCursor;
             try
             {
@@ -34,6 +27,7 @@ namespace System.Windows.Forms
                 dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                 dataGridView.ReadOnly = true;
                 dataGridView.MultiSelect = false;
+                dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
                 dataGridView.AllowUserToAddRows = false;
                 TDCGExplorer.TDCGExplorer.SetToolTips(Text);
             }
@@ -42,12 +36,10 @@ namespace System.Windows.Forms
                 Debug.WriteLine(ex.Message);
             }
             Cursor.Current = Cursors.Default;
-            busy = false;
         }
         // ファイルから直接読み出す.
         public SaveFilePage(string path)
         {
-            busy = true;
             Cursor.Current = Cursors.WaitCursor;
             try
             {
@@ -66,6 +58,7 @@ namespace System.Windows.Forms
                 dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                 dataGridView.ReadOnly = true;
                 dataGridView.MultiSelect = false;
+                dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
                 dataGridView.AllowUserToAddRows = false;
                 TDCGExplorer.TDCGExplorer.SetToolTips(Text);
             }
@@ -74,7 +67,6 @@ namespace System.Windows.Forms
                 Debug.WriteLine(ex.Message);
             }
             Cursor.Current = Cursors.Default;
-            busy = false;
         }
 
         private void InitializeComponent()
@@ -128,7 +120,9 @@ namespace System.Windows.Forms
             data.Columns.Add("属性", Type.GetType("System.String"));
             data.Columns.Add("TAHファイル", Type.GetType("System.String"));
 
+            TDCGExplorer.TDCGExplorer.IncBusy();
             Application.DoEvents();
+            TDCGExplorer.TDCGExplorer.DecBusy();
 
             // TSOビューワをリセットする
             TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
@@ -147,7 +141,10 @@ namespace System.Windows.Forms
                         TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
                         TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
                         TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
+
+                        TDCGExplorer.TDCGExplorer.IncBusy();
                         Application.DoEvents();
+                        TDCGExplorer.TDCGExplorer.DecBusy();
                     }
                     catch (Exception ex)
                     {
@@ -180,7 +177,10 @@ namespace System.Windows.Forms
                                     tah = subtah;
                                     pastVersion = subtah.version;
                                 }
+                                TDCGExplorer.TDCGExplorer.IncBusy();
                                 Application.DoEvents();
+                                TDCGExplorer.TDCGExplorer.DecBusy();
+
                             }
                             if (tah != null)
                             {
@@ -190,15 +190,18 @@ namespace System.Windows.Forms
                                     try
                                     {
                                         // TSOを読み込む
-                                        TahInfo info = new TahInfo(tah);
-                                        using (TAHStream tahstream = new TAHStream(info, file))
+                                        GenericArcsTahInfo info = new GenericArcsTahInfo(tah);
+                                        using (GenericTAHStream tahstream = new GenericTAHStream(info, file))
                                         {
                                             if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
                                             TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
                                             TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
                                             TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
                                             TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
+
+                                            TDCGExplorer.TDCGExplorer.IncBusy();
                                             Application.DoEvents();
+                                            TDCGExplorer.TDCGExplorer.DecBusy();
                                         }
                                     }
                                     catch (Exception ex)
@@ -227,7 +230,9 @@ namespace System.Windows.Forms
                                     tah = subtah;
                                     pastVersion = subtah.version;
                                 }
+                                TDCGExplorer.TDCGExplorer.IncBusy();
                                 Application.DoEvents();
+                                TDCGExplorer.TDCGExplorer.DecBusy();
                             }
                             if (tah != null)
                             {
@@ -241,14 +246,18 @@ namespace System.Windows.Forms
                                         try
                                         {
                                             // TSOを読み込む
-                                            ZipTahInfo info = new ZipTahInfo(tah);
-                                            using (TAHStream tahstream = new TAHStream(info, file))
+                                            GenericZipsTahInfo info = new GenericZipsTahInfo(tah);
+                                            using (GenericTAHStream tahstream = new GenericTAHStream(info, file))
                                             {
                                                 if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
                                                 TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
                                                 TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
                                                 TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
                                                 TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
+
+                                                TDCGExplorer.TDCGExplorer.IncBusy();
+                                                Application.DoEvents();
+                                                TDCGExplorer.TDCGExplorer.DecBusy();
                                                 Application.DoEvents();
                                             }
                                         }

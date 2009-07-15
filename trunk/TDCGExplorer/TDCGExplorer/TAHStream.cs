@@ -8,14 +8,14 @@ using System.Windows.Forms;
 
 namespace TDCGExplorer
 {
-    public class TAHStream : IDisposable
+    public class GenericTAHStream : IDisposable
     {
         private IArchive archive = null;
         private MemoryStream ms = null;
         private TAHFile tah = null;
         private MemoryStream ims = null;
 
-        public TAHStream(GenTahInfo info, ArcsTahFilesEntry tsoInfo)
+        public GenericTAHStream(GenericTahInfo info, ArcsTahFilesEntry tsoInfo)
         {
             // zipファイルの中か?
             if (info.zipid != -1)

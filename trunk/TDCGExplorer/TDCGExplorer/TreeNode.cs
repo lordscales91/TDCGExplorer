@@ -8,9 +8,9 @@ using System.Drawing;
 
 namespace TDCGExplorer
 {
-    public class TahGenTreeNode : System.Windows.Forms.TreeNode
+    public class GenericTahTreeNode : System.Windows.Forms.TreeNode
     {
-        public TahGenTreeNode(string text)
+        public GenericTahTreeNode(string text)
             : base(text)
         {
         }
@@ -23,11 +23,11 @@ namespace TDCGExplorer
     }
 
     // ファイル個別情報のファイルツリーノード.
-    public class FilesTreeNode : TahGenTreeNode
+    public class GenericFilesTreeNode : GenericTahTreeNode
     {
         private List<ArcsTahEntry> entries = new List<ArcsTahEntry>();
 
-        public FilesTreeNode(string text)
+        public GenericFilesTreeNode(string text)
             : base(text)
         {
         }
@@ -48,11 +48,11 @@ namespace TDCGExplorer
         }
     }
     // ArcsZipFileEntryを保持するTreeNode
-    public class ZipTreeNode : TahGenTreeNode
+    public class GenericZipTreeNode : GenericTahTreeNode
     {
         int zipid;
 
-        public ZipTreeNode(string text, int zipid)
+        public GenericZipTreeNode(string text, int zipid)
             : base(text)
         {
             this.zipid = zipid;
@@ -98,7 +98,7 @@ namespace TDCGExplorer
                             string savefilpath = entry.path.ToLower();
                             if (savefilpath.EndsWith(".tdcgsav.png") || savefilpath.EndsWith(".tdcgsav.bmp") || savefilpath.EndsWith(".tdcgpose.png")) continue;
 
-                            TDCGExplorer.MainFormWindow.AssignTagPageControl(new ImagePageControl(new ZipTahInfo(entry)));
+                            TDCGExplorer.MainFormWindow.AssignTagPageControl(new ImagePageControl(new GenericZipsTahInfo(entry)));
                             return;
                         }
                     }
@@ -107,7 +107,7 @@ namespace TDCGExplorer
                         string ext = Path.GetExtension(entry.path).ToLower();
                         if (ext == ".txt" || ext == ".doc" || ext == ".xml")
                         {
-                            TDCGExplorer.MainFormWindow.AssignTagPageControl(new TextPageControl(new ZipTahInfo(entry)));
+                            TDCGExplorer.MainFormWindow.AssignTagPageControl(new TextPageControl(new GenericZipsTahInfo(entry)));
                             return;
                         }
                     }
@@ -118,7 +118,7 @@ namespace TDCGExplorer
                         string ext = Path.GetExtension(entry.path).ToLower();
                         if (ext == ".txt" || ext == ".doc" || ext == ".xml")
                         {
-                            TDCGExplorer.MainFormWindow.AssignTagPageControl(new TextPageControl(new ZipTahInfo(entry)));
+                            TDCGExplorer.MainFormWindow.AssignTagPageControl(new TextPageControl(new GenericZipsTahInfo(entry)));
                             return;
                         }
                     }
@@ -130,7 +130,7 @@ namespace TDCGExplorer
                             string savefilpath = entry.path.ToLower();
                             if (savefilpath.EndsWith(".tdcgsav.png") || savefilpath.EndsWith(".tdcgsav.bmp") || savefilpath.EndsWith(".tdcgpose.png")) continue;
 
-                            TDCGExplorer.MainFormWindow.AssignTagPageControl(new ImagePageControl(new ZipTahInfo(entry)));
+                            TDCGExplorer.MainFormWindow.AssignTagPageControl(new ImagePageControl(new GenericZipsTahInfo(entry)));
                             return;
                         }
                     }
@@ -157,11 +157,11 @@ namespace TDCGExplorer
         }
     }
 
-    public class CollisionTahNode : TahGenTreeNode
+    public class GenericCollisionTahNode : GenericTahTreeNode
     {
         List<CollisionItem> entries = new List<CollisionItem>();
 
-        public CollisionTahNode(string text)
+        public GenericCollisionTahNode(string text)
             : base(text)
         {
         }
@@ -183,11 +183,11 @@ namespace TDCGExplorer
         }
     }
 
-    public class SavefileNode : TahGenTreeNode
+    public class GenericSavefileTreeNode : GenericTahTreeNode
     {
         List<string> Files = new List<string>();
 
-        public SavefileNode(string text,string directory) : base( text )
+        public GenericSavefileTreeNode(string text,string directory) : base( text )
         {
             string[] files = Directory.GetFiles(directory, "*.*");
             foreach (string file in files)

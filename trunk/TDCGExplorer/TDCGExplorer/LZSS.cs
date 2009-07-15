@@ -1,19 +1,18 @@
-﻿using System;
+﻿// based on TDCGMan
+// Modified by N765/Konoa
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Diagnostics;
 
 namespace TDCGExplorer
 {
     public class LZSSWindow
     {
-#if true
         public const int WINDOW_BITS = 12;
         public const int LENGTH_BITS = 4;
-#else        
-        public const int    WINDOW_BITS = 13;
-        public const int    LENGTH_BITS = 3;
-#endif
         public const int WINDOW_MAX = 1 << WINDOW_BITS;
         public const int WINDOW_MASK = WINDOW_MAX - 1;
         public const int LENGTH_MASK = (1 << LENGTH_BITS) - 1;
@@ -31,8 +30,6 @@ namespace TDCGExplorer
             fill = 0;
         }
 
-        //public int FillCount    { get { return fill; } }
-
         public byte CurrentByte
         {
             get { return window[current]; }
@@ -48,17 +45,6 @@ namespace TDCGExplorer
         public byte GetAbs(int index)
         {
             return window[index & WINDOW_MASK];
-        }
-
-        public virtual void Reset()
-        {
-#if false
-			window.Fill(0);
-#else
-            Array.Clear(window, 0, window.Length);
-#endif
-            current = 0;
-            fill = 0;
         }
 
         public void Advance()
@@ -80,25 +66,9 @@ namespace TDCGExplorer
         // 24ビットを12ビットに圧縮
         public static int CalcHash(int b1, int b2, int b3)
         {
-#if true
-
             b2 <<= 4;
             b3 = ((b3 & 15) << 8) | (b3 >> 4);
             int hash = b1 ^ b2 ^ b3;
-#else
-            int hash=(  b1               << 4)
-                  ^  (((b2 +  53) & 255) << 2)
-                  ^  (((b3 + 149) & 255) << 0);
-		  
-#endif
-            /*
-            System.Diagnostics.Debug.WriteLine(
-                string.Format("{0} {1} {2} hash: {3}",
-                    b1.ToString("X").PadLeft(2, '0'),
-                    b2.ToString("X").PadLeft(2, '0'),
-                    b3.ToString("X").PadLeft(2, '0'),
-                    hash.ToString("X")));
-            */
             return hash;
         }
 
@@ -112,44 +82,7 @@ namespace TDCGExplorer
         {
             this[offset] = b;
         }
-
-        public void Dump()
-        {
-            Dump(window);
-        }
-
-        public static void Dump(byte[] b)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            for (int i = 0; i < b.Length; ++i)
-            {
-                switch (i & 15)
-                {
-#if false
-				case 0: sb.Append(i.ToFormattedString("X", 3, '0') + ": " + b[i].ToString("X").PadLeft(2, '0')); break;
-#else
-                    case 0: sb.Append(String.Format("{0:X3}", i) + ": " + b[i].ToString("X").PadLeft(2, '0')); break;
-#endif
-                    case 15: sb.AppendLine(" " + b[i].ToString("X").PadLeft(2, '0')); break;
-                    default: sb.Append(" " + b[i].ToString("X").PadLeft(2, '0')); break;
-                }
-
-                if (sb.Length > 480)
-                {
-                    System.Diagnostics.Debug.Write(sb.ToString());
-                    sb.Length = 0;
-                }
-            }
-
-            if (sb.Length > 0)
-            {
-                System.Diagnostics.Debug.Write(sb.ToString());
-                sb.Length = 0;
-            }
-        }
     }
-
     public class LZSSDeflateWindow : LZSSWindow
     {
         public const int HASH_MAX = 4096;
@@ -164,26 +97,6 @@ namespace TDCGExplorer
 
             for (int i = 0; i < WINDOW_MAX; ++i)
                 nodes[i] = new LinkedListNode<int>(i);
-        }
-
-        public override void Reset()
-        {
-#if false
-			foreach (var i in nodes)
-				i.Remove();
-#else
-            foreach (LinkedListNode<int> i in nodes)
-            {
-                LinkedList<int> list = i.List;
-                list.Remove(i);
-            }
-#endif
-            base.Reset();
-        }
-
-        public LinkedListNode<int> CurrentNode
-        {
-            get { return nodes[current]; }
         }
 
         public LinkedListNode<int> GetNode(int off)
@@ -206,14 +119,8 @@ namespace TDCGExplorer
 
         public void UpdateHash(int off)
         {
-#if false
-			GetNode(off).Remove();
-#else
             LinkedListNode<int> node = GetNode(off);
-            node.List.Remove(node);
-#endif
-            //System.Diagnostics.Debug.Write("Rehash: ");
-            //GetHashedList(CalcHash(off)).AddFirst(GetNode(off));
+            if(node.List!=null) node.List.Remove(node); // まだリンクされていないnodeの場合null参照になる.
             GetHashedList(CalcHash(off)).AddLast(GetNode(off));
         }
 
@@ -255,51 +162,53 @@ namespace TDCGExplorer
 
         public bool FindMatch(byte[] data, int begin, int length, ref int matchoff, ref int matchlen)
         {
-            if (length < 3)
+            if (length < LENGTH_MIN)
                 return false;
 
             // ハッシュを計算して先頭３バイトが一致するか確認する
-            //System.Diagnostics.Debug.Write("Source: ");
-
             int hash = CalcHash(data[begin + 0], data[begin + 1], data[begin + 2]);
-            LinkedList<int> ll = FindHashedList(hash);
+            LinkedList<int> hashLinkedList = FindHashedList(hash);
 
             // ハッシュが無い、空の場合一致なしとする
-            if (ll == null || ll.Count == 0)
+            if (hashLinkedList == null || hashLinkedList.Count == 0)
                 return false;
 
             // 最長マッチを求める
-            int mpos = 0;
-            int mlen = LENGTH_MIN - 1;
-            int l = Math.Min(length, LENGTH_MAX);
+            int matchPosition = 0;
+            int matchLength = LENGTH_MIN - 1;
+            int matchLimitLength = Math.Min(length, LENGTH_MAX);
 
-            foreach (int i in ll)
+            foreach (int hashSpecifiedOffset in hashLinkedList)
             {
-                int off = i, j = 0;
+                int j = 0;
 
-                if (window[(off + mlen) & WINDOW_MASK] != data[begin + mlen])
+                if (window[(hashSpecifiedOffset + matchLength) & WINDOW_MASK] != data[begin + matchLength])
                     continue;
 
-                for (j = 0; j < l; ++j)
-                    if (j + off >= fill || window[(j + off) & WINDOW_MASK] != data[begin + j])
+                for (j = 0; j < matchLimitLength; ++j)
+                    if (j + hashSpecifiedOffset >= fill || window[(j + hashSpecifiedOffset) & WINDOW_MASK] != data[begin + j])
                         break;
 
-                if (j > mlen)
-                {
-                    mpos = off;
-                    mlen = j;
+                // N765/Konoa 辞書を上書きするオフセットはスキップする
+                int distance = (current - hashSpecifiedOffset) & WINDOW_MASK;
+                if (distance <= j) continue;
 
-                    if (mlen == l)
+                if (j > matchLength)
+                {
+                    matchPosition = hashSpecifiedOffset;
+                    matchLength = j;
+
+                    if (matchLength == matchLimitLength)
                         break;
                 }
             }
 
-            if (mlen < LENGTH_MIN)
+            if (matchLength < LENGTH_MIN)
                 return false;
 
-            matchoff = (mpos - 16) & WINDOW_MASK;
+            matchoff = (matchPosition - 16) & WINDOW_MASK;
             //matchoff    = (current - mpos) & WINDOW_MASK;
-            matchlen = mlen;
+            matchlen = matchLength;
 
             return true;
         }
@@ -312,28 +221,10 @@ namespace TDCGExplorer
         //private MemoryStream        ms;
         private Stream s;
 
-        public LZSSDeflate()
-        {
-            //ms      = new MemoryStream();
-            s = new MemoryStream();
-        }
-
-        //public LZSSDeflate(MemoryStream ms)
         public LZSSDeflate(Stream s)
         {
             //this.ms = ms;
             this.s = s;
-        }
-
-        public void Reset()
-        {
-            window.Reset();
-            //ms.SetLength(0);
-            //ms.SetLength(0);
-        }
-
-        private void PushLiteral()
-        {
         }
 
         public void Deflate(byte[] data)
@@ -349,7 +240,7 @@ namespace TDCGExplorer
             {
                 if (window.FindMatch(data, i, ref off, ref len))
                 {   // マッチ
-#if true            // さらに最適なマッチがないか１バイト先をマッチさせて見る
+#if true           // さらに最適なマッチがないか１バイト先をマッチさせて見る
                     int off2 = 0;
                     int len2 = 0;
 
@@ -367,31 +258,9 @@ namespace TDCGExplorer
 
                     window.Back(old);
 #endif
-                    if (TAHUtil.debug)
-                    {
-                        window.Dump();
-                        System.Diagnostics.Debug.WriteLine("Match: offset=" + ((off + 16) & 4095) + ", length=" + len);
-                        System.Diagnostics.Debug.WriteLine("Position: " + i);
 
-                        for (int j = 0; j < len; ++j)
-                            System.Diagnostics.Debug.Write(" " + data[i + j].ToString("X").PadLeft(2, '0'));
-
-                        System.Diagnostics.Debug.WriteLine("");
-                    }
-
-                    //elemdata|=1 << elems;
-#if false
-                    int bits= (off << LZSSWindow.LENGTH_BITS) + (len - LZSSWindow.LENGTH_MIN);
-
-                    s.WriteByte((byte)(bits & 255));
-                    s.WriteByte((byte)(bits >> 8));
-#else
                     s.WriteByte((byte)(off & 255));
                     s.WriteByte((byte)(((off & 0x0F00) >> 4) | ((byte)(len - 3))));
-#endif
-
-                    //for(int j= 0; j < len; ++j)
-                    //    System.Diagnostics.Debug.Write((char)window[-off+j]);
 
                     window.Push(data, i, len);
                     i += len;
@@ -426,11 +295,6 @@ namespace TDCGExplorer
             s.Flush();
         }
 
-        public byte[] GetDeflatedBytes()
-        {
-            return s is MemoryStream ? (s as MemoryStream).ToArray() : null;
-        }
-
         public long FlushElem(long pos, int elem)
         {
             long save = s.Position;
@@ -446,15 +310,8 @@ namespace TDCGExplorer
     {
         private MemoryStream ms;
         private LZSSWindow window = new LZSSWindow();
-        //private int             inflated_size   = 0;
 
-        //public int InflatedSize { get { return inflated_size; } }
         public int InflatedSize { get { return (int)ms.Position; } }
-
-        public LZSSInflate()
-        {
-            this.ms = new MemoryStream();
-        }
 
         public LZSSInflate(MemoryStream ms)
         {
@@ -463,126 +320,68 @@ namespace TDCGExplorer
 
         public void Inflate(Stream s)
         {
-            BinaryReader br = new BinaryReader(s);
-            int elemdata = br.ReadByte();
-            int elems = 0;
-            byte[] buf = new byte[LZSSWindow.LENGTH_MAX + 1];
-            byte b;
-
-            try
+            using (BinaryReader br = new BinaryReader(s))
             {
-                for (; ; )
+                int elemdata = br.ReadByte();
+                int elems = 0;
+
+                byte b;
+
+                try
                 {
-                    if ((elemdata & (1 << elems)) == 0)
-                    {   // マッチ
-                        int off = br.ReadByte();
-                        int len = br.ReadByte();
-                        off |= (len & 0xF0) << 4;
-                        len = (len & 15) + 3;
-                        //bits    |=br.ReadByte() << 8;
-                        //int off = LZSSWindow.WINDOW_MAX - (bits >> LZSSWindow.LENGTH_BITS);
-                        //int len = (bits & LZSSWindow.LENGTH_MASK) + LZSSWindow.LENGTH_MIN;
-
-                        if (TAHUtil.debug)
-                        {
-                            System.Diagnostics.Debug.WriteLine("Match: offset=" + off + ", length=" + len);
-                            System.Diagnostics.Debug.WriteLine("Position: " + ms.Position);
-                        }
-
-                        //off = 4096 - off;
-                        off += 16;
-
-#if false
-                        for(int j= 0; j < len; ++j)
-                            ms.WriteByte(buf[j]= window.GetAbs(off+j));
-                          //ms.WriteByte(buf[j]= window[off+j]);
-
-                        for(int j= 0; j < len; ++j)
-                            window.Push(buf[j]);
-#else
-                        for (int j = 0; j < len; ++j)
-                        {
-                            ms.WriteByte(buf[j] = window.GetAbs(off + j));
-                            window.Push(buf[j]);
-
-                            if (ms.Length == ms.Position)
-                                break;
-                        }
-#endif
-                    }
-                    else
-                    {   // リテラル
-                        ms.WriteByte(b = br.ReadByte());
-                        window.Push(b);
-
-                        if (TAHUtil.debug)
-                            System.Diagnostics.Debug.WriteLine("Literal:" + b.ToString("X").PadLeft(2, '0'));
-                    }
-
-                    if (ms.Position == ms.Length)
-                        break;
-
-                    ++elems;
-
-                    if (elems == 8)
+                    for (; ; )
                     {
-                        elems = 0;
-                        elemdata = br.ReadByte();
+                        if ((elemdata & (1 << elems)) == 0)
+                        {   // マッチ
+                            int off = br.ReadByte();
+                            int len = br.ReadByte();
+                            off |= (len & 0xF0) << 4;
+                            len = (len & 15) + 3;
+
+                            off += 16;
+
+                            for (int j = 0; j < len; ++j)
+                            {
+                                ms.WriteByte(b = window.GetAbs(off + j));
+                                window.Push(b);
+
+                                if (ms.Length == ms.Position)
+                                    break;
+                            }
+                        }
+                        else
+                        {   // リテラル
+                            ms.WriteByte(b = br.ReadByte());
+                            window.Push(b);
+
+                            if (TAHUtil.debug)
+                                System.Diagnostics.Debug.WriteLine("Literal:" + b.ToString("X").PadLeft(2, '0'));
+                        }
+
+                        if (ms.Position == ms.Length)
+                            break;
+
+                        ++elems;
+
+                        if (elems == 8)
+                        {
+                            elems = 0;
+                            elemdata = br.ReadByte();
+                        }
                     }
                 }
-            }
-            catch (EndOfStreamException)
-            {
-                /*            } finally
-                            {
-                                inflated_size   = (int)ms.Position;
-                */
+                catch (EndOfStreamException)
+                {
+                }
             }
         }
 
         public void Inflate(byte[] data)
         {
-#if true
-            Inflate(new MemoryStream(data, false));
-#else
-            int     elemdata= data[0];
-            int     elems   = 0;
-            byte[]  buf     = new byte[LZSSWindow.LENGTH_MAX + 1];
-
-            for(int i= 1; i < data.Length; )
+            using (MemoryStream stream = new MemoryStream(data, false))
             {
-                if((elemdata & (1 << elems)) == 0)
-                {   // リテラル
-                    ms.WriteByte(data[i]);
-                    window.Push(data[i++]);
-                } else
-                {   // マッチ
-                    int bits= data[i+0] | (data[i+1] << 8);
-                    int off = LZSSWindow.WINDOW_MAX - (bits >> LZSSWindow.LENGTH_BITS);
-                    int len = (bits & LZSSWindow.LENGTH_MASK) + LZSSWindow.LENGTH_MIN;
-                    i       +=2;
-
-                    for(int j= 0; j < len; ++j)
-                        ms.WriteByte(buf[j]= window[off+j]);
-
-                    for(int j= 0; j < len; ++j)
-                        window.Push(buf[j]);
-                }
-
-                ++elems;
-
-                if(elems == 8 && i < data.Length)
-                {
-                    elems   = 0;
-                    elemdata= data[i++];
-                }
+                Inflate(stream);
             }
-#endif
-        }
-
-        public byte[] GetInflatedBytes()
-        {
-            return ms.ToArray();
         }
     }
 }

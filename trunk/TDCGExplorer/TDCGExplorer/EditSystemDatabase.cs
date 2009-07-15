@@ -118,5 +118,10 @@ namespace TDCGExplorer
             get { return textBoxTranslateBone.Text; }
             set { textBoxTranslateBone.Text = value; }
         }
+        public string tahEditorPath
+        {
+            get { return textBoxTahEditor.Text; }
+            set { textBoxTahEditor.Text = value; }
+        }
     }
 }
