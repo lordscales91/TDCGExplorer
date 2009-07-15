@@ -26,9 +26,28 @@ namespace TDCGExplorer
         private static Byte[] defaultTMO;
         private static string lastAccessFile = null;
 
-        public static volatile bool fThreadRun = false;
+//        public static volatile bool fThreadRun = false;
         private static volatile string toolTipsMessage = "";
         private static volatile object lockObject = new Object();
+
+        public static volatile int BusyCount=0;
+        public static void IncBusy()
+        {
+            BusyCount++;
+        }
+        public static void DecBusy()
+        {
+            BusyCount--;
+        }
+        public static bool BusyTest()
+        {
+            if (BusyCount > 0)
+            {
+                System.Media.SystemSounds.Exclamation.Play();
+                return true;
+            }
+            return false;
+        }
 
         /// <summary>
         /// アプリケーションのメイン エントリ ポイントです。
@@ -246,16 +265,13 @@ namespace TDCGExplorer
         public static void CreateNewArcsDatabase()
         {
             // 二重起動防止.
-            if (fThreadRun == true) return;
             CreateArcsDatabaseThread cdb = new CreateArcsDatabaseThread();
             Thread thread = new Thread(new ThreadStart(cdb.Run));
-            fThreadRun = true;
             thread.Start();
         }
         // システムデータベースの編集.
         public static void EditSystemDatabase()
         {
-            if (fThreadRun == true) return;
             EditSystemDatabase edit = new EditSystemDatabase();
             edit.textArcPath = SystemDB.arcs_path;
             edit.textZipPath = SystemDB.zips_path;
@@ -271,6 +287,7 @@ namespace TDCGExplorer
             edit.initializeCamera = SystemDB.initialize_camera;
             edit.translateBone = SystemDB.translateto;
             edit.centerBone = SystemDB.cameracenter;
+            edit.tahEditorPath = SystemDB.tahpath;
             edit.Owner = MainFormWindow;
             if (edit.ShowDialog() == DialogResult.OK)
             {
@@ -290,13 +307,14 @@ namespace TDCGExplorer
                 SystemDB.initialize_camera = edit.initializeCamera;
                 SystemDB.translateto = edit.translateBone;
                 SystemDB.cameracenter = edit.centerBone;
+                SystemDB.tahpath = edit.tahEditorPath;
             }
         }
 
         public static void MakeArcsTreeView(TreeView tvTree)
         {
             ArcsDatabase db = ArcsDB;
-            FilesTreeNode arcs = new FilesTreeNode(SystemDB.arcs_path);
+            GenericFilesTreeNode arcs = new GenericFilesTreeNode(SystemDB.arcs_path);
             tvTree.Nodes.Add(arcs);
             // tahを展開する.
             List<ArcsTahEntry> list = db.GetTahs();
@@ -312,13 +330,13 @@ namespace TDCGExplorer
                 }
                 else
                 {
-                    FilesTreeNode currentNode = null;
-                    FilesTreeNode parentNode = arcs;
+                    GenericFilesTreeNode currentNode = null;
+                    GenericFilesTreeNode parentNode = arcs;
                     int count = 1;
                     foreach (string sublevel in toplevel)
                     {
                         currentNode = null;
-                        foreach (FilesTreeNode nodes in parentNode.Nodes)
+                        foreach (GenericFilesTreeNode nodes in parentNode.Nodes)
                         {
                             if (nodes.Text == sublevel)
                             {
@@ -328,7 +346,7 @@ namespace TDCGExplorer
                         }
                         if (currentNode == null)
                         {
-                            currentNode = new FilesTreeNode(sublevel);//parentNode.Nodes.Add(sublevel);
+                            currentNode = new GenericFilesTreeNode(sublevel);//parentNode.Nodes.Add(sublevel);
                             parentNode.Nodes.Add(currentNode);
                         }
                         parentNode = currentNode;
@@ -356,7 +374,7 @@ namespace TDCGExplorer
                 if (toplevel.Length == 1)
                 {
                     // tahエントリを持つsubnodeを作る.
-                    ZipTreeNode subnode = new ZipTreeNode(entry.GetDisplayPath(),entry.id);
+                    GenericZipTreeNode subnode = new GenericZipTreeNode(entry.GetDisplayPath(),entry.id);
                     zips.Nodes.Add(subnode);
                 }
                 else
@@ -383,7 +401,7 @@ namespace TDCGExplorer
                         if (++count == toplevel.Length) break; // 末端ノードの一つ前で止める.
                     }
                     // tahエントリを持つsubnodeを作る.
-                    ZipTreeNode subnode = new ZipTreeNode(entry.GetDisplayPath(),entry.id);
+                    GenericZipTreeNode subnode = new GenericZipTreeNode(entry.GetDisplayPath(),entry.id);
                     parentNode.Nodes.Add(subnode);
 
                     //インストール済みのZIPは青色に.
@@ -399,7 +417,7 @@ namespace TDCGExplorer
         public static void MakeCollisionTreeView(TreeView tvTree)
         {
             ArcsDatabase db = ArcsDB;
-            CollisionTahNode arcs = new CollisionTahNode(SystemDB.arcs_path);
+            GenericCollisionTahNode arcs = new GenericCollisionTahNode(SystemDB.arcs_path);
             tvTree.Nodes.Add(arcs);
             // tahを展開する.
             List<ArcsTahEntry> list = db.GetTahs();
@@ -421,13 +439,13 @@ namespace TDCGExplorer
                 }
                 else
                 {
-                    CollisionTahNode currentNode = null;
-                    CollisionTahNode parentNode = arcs;
+                    GenericCollisionTahNode currentNode = null;
+                    GenericCollisionTahNode parentNode = arcs;
                     int count = 1;
                     foreach (string sublevel in toplevel)
                     {
                         currentNode = null;
-                        foreach (CollisionTahNode nodes in parentNode.Nodes)
+                        foreach (GenericCollisionTahNode nodes in parentNode.Nodes)
                         {
                             if (nodes.Text == sublevel)
                             {
@@ -437,7 +455,7 @@ namespace TDCGExplorer
                         }
                         if (currentNode == null)
                         {
-                            currentNode = new CollisionTahNode(sublevel);//parentNode.Nodes.Add(sublevel);
+                            currentNode = new GenericCollisionTahNode(sublevel);//parentNode.Nodes.Add(sublevel);
                             parentNode.Nodes.Add(currentNode);
                         }
                         parentNode = currentNode;
@@ -468,7 +486,7 @@ namespace TDCGExplorer
                 if (toplevel.Length == 1)
                 {
                     // tahエントリを持つsubnodeを作る.
-                    ZipTreeNode subnode = new ZipTreeNode(entry.GetDisplayPath(),entry.id);
+                    GenericZipTreeNode subnode = new GenericZipTreeNode(entry.GetDisplayPath(),entry.id);
                     zips.Nodes.Add(subnode);
                 }
                 else
@@ -495,7 +513,7 @@ namespace TDCGExplorer
                         if (++count == toplevel.Length) break; // 末端ノードの一つ前で止める.
                     }
                     // tahエントリを持つsubnodeを作る.
-                    ZipTreeNode subnode = new ZipTreeNode(entry.GetDisplayPath(),entry.id);
+                    GenericZipTreeNode subnode = new GenericZipTreeNode(entry.GetDisplayPath(),entry.id);
                     parentNode.Nodes.Add(subnode);
                 }
             }
@@ -539,7 +557,7 @@ namespace TDCGExplorer
                         if (toplevel.Length == 1)
                         {
                             // tahエントリを持つsubnodeを作る.
-                            ZipTreeNode subnode = new ZipTreeNode(entry.GetDisplayPath(), entry.id);
+                            GenericZipTreeNode subnode = new GenericZipTreeNode(entry.GetDisplayPath(), entry.id);
                             zips.Nodes.Add(subnode);
                         }
                         else
@@ -566,7 +584,7 @@ namespace TDCGExplorer
                                 if (++count == toplevel.Length) break; // 末端ノードの一つ前で止める.
                             }
                             // tahエントリを持つsubnodeを作る.
-                            ZipTreeNode subnode = new ZipTreeNode(entry.GetDisplayPath(), entry.id);
+                            GenericZipTreeNode subnode = new GenericZipTreeNode(entry.GetDisplayPath(), entry.id);
                             parentNode.Nodes.Add(subnode);
 
                             //インストール済みのZIPは青色に.
@@ -600,14 +618,14 @@ namespace TDCGExplorer
             List<string> directories = new List<string>();
             iterSubDirectory(directories, savedir, Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), TDCGExplorer.GetAppDataPath()));
 
-            SavefileNode savenode = new SavefileNode(savedir,savedir);
+            GenericSavefileTreeNode savenode = new GenericSavefileTreeNode(savedir,savedir);
             tvTree.Nodes.Add(savenode);
             // tahを展開する.
             foreach (string dir in directories)
             {
                 if (dir == savedir) continue;
 
-                SavefileNode node = new SavefileNode(Path.GetFileName(dir), dir);
+                GenericSavefileTreeNode node = new GenericSavefileTreeNode(Path.GetFileName(dir), dir);
                 if (node.Count == 0) continue;
 
                 char[] separetor = { '\\', '/' };
@@ -621,13 +639,13 @@ namespace TDCGExplorer
                 }
                 else
                 {
-                    SavefileNode currentNode = null;
-                    SavefileNode parentNode = savenode;
+                    GenericSavefileTreeNode currentNode = null;
+                    GenericSavefileTreeNode parentNode = savenode;
                     int count = 1;
                     foreach (string sublevel in toplevel)
                     {
                         currentNode = null;
-                        foreach (SavefileNode nodes in parentNode.Nodes)
+                        foreach (GenericSavefileTreeNode nodes in parentNode.Nodes)
                         {
                             if (nodes.Text == sublevel)
                             {
@@ -637,7 +655,7 @@ namespace TDCGExplorer
                         }
                         if (currentNode == null)
                         {
-                            currentNode = new SavefileNode(sublevel,dir);//parentNode.Nodes.Add(sublevel);
+                            currentNode = new GenericSavefileTreeNode(sublevel,dir);//parentNode.Nodes.Add(sublevel);
                             parentNode.Nodes.Add(currentNode);
                         }
                         parentNode = currentNode;
@@ -657,9 +675,9 @@ namespace TDCGExplorer
                 MainFormWindow.DisplayDB();
         }
 
-        public static bool InstallZipFile(TahGenTreeNode sender)
+        public static bool InstallZipFile(GenericTahTreeNode sender)
         {
-            ZipTreeNode zipNode = (ZipTreeNode)sender;
+            GenericZipTreeNode zipNode = (GenericZipTreeNode)sender;
             ArcsZipArcEntry zipentry = ArcsDB.GetZip(zipNode.Entry);
             string zipsource = Path.Combine(TDCGExplorer.SystemDB.zips_path, zipentry.path);
             string destpath = SystemDB.work_path;
@@ -717,7 +735,7 @@ namespace TDCGExplorer
             }
         }
 
-        public static void InstallPreferZip(ZipTreeNode zipNode)
+        public static void InstallPreferZip(GenericZipTreeNode zipNode)
         {
             ArcsZipArcEntry zipentry = ArcsDB.GetZip(zipNode.Entry);
 
@@ -811,10 +829,10 @@ namespace TDCGExplorer
             }
         }
 
-        public static void TAHDecrypt(GenTahInfo entry)
+        public static void TAHDecrypt(GenericTahInfo entry)
         {
-            string destpath = Path.Combine(SystemDB.work_path, Path.GetFileNameWithoutExtension(entry.shortname));
-            TAHStream stream = new TAHStream(entry, null);
+            string destpath = Path.Combine(SystemDB.tahpath, Path.GetFileNameWithoutExtension(entry.shortname));
+            GenericTAHStream stream = new GenericTAHStream(entry, null);
             TAHFile tah = stream.tahfile;
             if (tah != null)
             {
@@ -857,46 +875,51 @@ namespace TDCGExplorer
     {
         public void Run()
         {
-            try{
-                string arcpath = TDCGExplorer.SystemDB.arcs_path;
-                string zippath = TDCGExplorer.SystemDB.zips_path;
-#if false
-                // クローンを作る.
-                ArcsDatabase arcs = new ArcsDatabase(TDCGExplorer.GetArcsDatabase());
-#else
-                // クローンだとかえって動作がおかしい.
-                ArcsDatabase arcs = TDCGExplorer.ArcsDB;
-#endif
-                using (SQLiteTransaction transacion = arcs.BeginTransaction())
-                {
-                    arcs.CreateTahDatabase();
-                    arcs.CreateFilesDatabase();
-                    arcs.CreateZipDatabase();
-                    arcs.CreateZipTahDatabase();
-                    arcs.CreateZipTahFilesDatabase();
-                    arcs.CreateInstalledZipTable();
-                    arcs.DropIndex(); // 一旦インデックスを削除する.
-                    TAHDump.ArcsDumpDirEntriesMain(arcpath, arcs);
-                    TAHDump.ZipsDumpDirEntriesMain(zippath, arcs);
-                    // インストール済みZIPの表を作成する.
-                    TDCGExplorer.SetToolTips("Execute SQL Trsansactions");
-                    arcs.CreateIndex(); // インデックスを作成する.
-                    arcs.CreateInstalledZips();
-                    transacion.Commit();
-
-                    arcs.Vacuum();
-
-                    TDCGExplorer.MainFormWindow.asyncDisplayFromArcs(); // 表示更新.
-
-                    TDCGExplorer.fThreadRun = false;
-                    TDCGExplorer.SetToolTips("Database build complete");
-                    TDCGExplorer.SystemDB.database_build = "yes";
-                }
-            }
-            catch(Exception e)
+            // busyでないなら.
+            if (TDCGExplorer.BusyCount == 0)
             {
-                TDCGExplorer.fThreadRun = false;
-                TDCGExplorer.SetToolTips("Error occured : " + e.Message);
+                TDCGExplorer.IncBusy();
+                try
+                {
+                    string arcpath = TDCGExplorer.SystemDB.arcs_path;
+                    string zippath = TDCGExplorer.SystemDB.zips_path;
+#if false
+                    // クローンを作る.
+                    ArcsDatabase arcs = new ArcsDatabase(TDCGExplorer.GetArcsDatabase());
+#else
+                    // クローンだとかえって動作がおかしい.
+                    ArcsDatabase arcs = TDCGExplorer.ArcsDB;
+#endif
+                    using (SQLiteTransaction transacion = arcs.BeginTransaction())
+                    {
+                        arcs.CreateTahDatabase();
+                        arcs.CreateFilesDatabase();
+                        arcs.CreateZipDatabase();
+                        arcs.CreateZipTahDatabase();
+                        arcs.CreateZipTahFilesDatabase();
+                        arcs.CreateInstalledZipTable();
+                        arcs.DropIndex(); // 一旦インデックスを削除する.
+                        TDCGTAHDump.ArcsDumpDirEntriesMain(arcpath, arcs);
+                        TDCGTAHDump.ZipsDumpDirEntriesMain(zippath, arcs);
+                        // インストール済みZIPの表を作成する.
+                        TDCGExplorer.SetToolTips("Execute SQL Trsansactions");
+                        arcs.CreateIndex(); // インデックスを作成する.
+                        arcs.CreateInstalledZips();
+                        transacion.Commit();
+
+                        arcs.Vacuum();
+
+                        TDCGExplorer.MainFormWindow.asyncDisplayFromArcs(); // 表示更新.
+
+                        TDCGExplorer.SetToolTips("Database build complete");
+                        TDCGExplorer.SystemDB.database_build = "yes";
+                    }
+                }
+                catch (Exception e)
+                {
+                    TDCGExplorer.SetToolTips("Error occured : " + e.Message);
+                }
+                TDCGExplorer.DecBusy();
             }
         }
     }

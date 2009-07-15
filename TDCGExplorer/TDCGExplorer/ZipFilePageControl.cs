@@ -12,14 +12,14 @@ namespace System.Windows.Forms
 {
     class ZipFilePageControl : Control
     {
-        GenTahInfo info;
+        GenericTahInfo info;
 
         public ZipFilePageControl()
         {
             info = null;
         }
 
-        public ZipFilePageControl(GenTahInfo tahInfo)
+        public ZipFilePageControl(GenericTahInfo tahInfo)
         {
             info = tahInfo;
             InitializeComponent();

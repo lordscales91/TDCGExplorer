@@ -11,7 +11,7 @@ using System.Data.SQLite;
 
 namespace TDCGExplorer
 {
-    public static class TAHDump
+    public static class TDCGTAHDump
     {
         public static string arcspath;
         public static string zipspath;
@@ -101,29 +101,31 @@ namespace TDCGExplorer
         public static void ArcsDumpTAHEntries(Stream source, ArcsDatabase db,string tahname)
         {
             TDCGExplorer.SetToolTips("Processing " + Path.GetFileName(tahname));
-            TAHFile tah = new TAHFile(source);
-            try
+            using (TAHFile tah = new TAHFile(source))
             {
-                tah.LoadEntries();
+                try
+                {
+                    tah.LoadEntries();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine("Error: " + ex);
+                    return;
+                }
+
+                DateTime datetime = File.GetLastWriteTime(tahname);
+
+                ArcsTahEntry entry = new ArcsTahEntry();
+                entry.path = tahname.Substring(arcspath.Length + 1);
+                entry.shortname = Path.GetFileName(tahname).ToLower();
+                entry.version = (int)tah.Header.Version;
+                entry.id = 0;
+                entry.exist = 1;
+                entry.datetime = datetime;
+
+                entry.id = db.SetTahEntry(entry);
+                ArcsDumpTahFilesEntries(db, entry, tah);
             }
-            catch (Exception ex)
-            {
-                Debug.WriteLine("Error: " + ex);
-                return;
-            }
-
-            DateTime datetime = File.GetLastWriteTime(tahname);
-
-            ArcsTahEntry entry = new ArcsTahEntry();
-            entry.path = tahname.Substring(arcspath.Length + 1);
-            entry.shortname = Path.GetFileName(tahname).ToLower();
-            entry.version = (int)tah.Header.Version;
-            entry.id = 0;
-            entry.exist = 1;
-            entry.datetime = datetime;
-
-            entry.id = db.SetTahEntry(entry);
-            ArcsDumpTahFilesEntries(db, entry);
 #if false
             // 衝突クラスタを構築する.
             int count = 0;
@@ -140,10 +142,10 @@ namespace TDCGExplorer
 #endif
         }
 
-        public static void ArcsDumpTahFilesEntries(ArcsDatabase db,ArcsTahEntry entry)
+        public static void ArcsDumpTahFilesEntries(ArcsDatabase db, ArcsTahEntry entry, TAHFile tah)
         {
             string source = Path.Combine(TDCGExplorer.SystemDB.arcs_path, entry.path);
-
+#if false
             TAHFile tah = new TAHFile(source);
             try
             {
@@ -154,7 +156,7 @@ namespace TDCGExplorer
                 Debug.WriteLine("Error: " + ex);
                 return;
             }
-
+#endif
             int tahentry = 0;
             foreach (TAHEntry ent in tah.EntrySet.Entries)
             {
@@ -395,36 +397,37 @@ namespace TDCGExplorer
                             arc.Extract(entry, ms);
                             ms.Seek(0, SeekOrigin.Begin);
 
-                            TAHFile tah = new TAHFile(ms);
-                            try
+                            using (TAHFile tah = new TAHFile(ms))
                             {
-                                tah.LoadEntries();
-                            }
-                            catch (Exception ex)
-                            {
-                                Debug.WriteLine("Error: " + ex);
-                                continue;
-                            }
-
-                            ArcsZipTahEntry ziptahentry = new ArcsZipTahEntry();
-                            ziptahentry.id = 0;
-                            ziptahentry.path = entry.FileName;
-                            ziptahentry.shortname = Path.GetFileName(entry.FileName).ToLower();
-                            ziptahentry.version = (int)tah.Header.Version;
-                            ziptahentry.zipid = id;
-                            int tahid = db.SetZipTahEntry(ziptahentry);
-
-                            int tahentry = 0;
-                            foreach (TAHEntry ent in tah.EntrySet.Entries)
-                            {
-                                if (ent.FileName == null)
+                                try
                                 {
-                                    TDCGExplorer.SetToolTips("Dump " + ent.Hash.ToString("x8") + " file");
+                                    tah.LoadEntries();
                                 }
-                                else
+                                catch (Exception ex)
                                 {
-                                    TDCGExplorer.SetToolTips("Dump " + Path.GetFileName(ent.FileName) + " file");
+                                    Debug.WriteLine("Error: " + ex);
+                                    continue;
                                 }
+
+                                ArcsZipTahEntry ziptahentry = new ArcsZipTahEntry();
+                                ziptahentry.id = 0;
+                                ziptahentry.path = entry.FileName;
+                                ziptahentry.shortname = Path.GetFileName(entry.FileName).ToLower();
+                                ziptahentry.version = (int)tah.Header.Version;
+                                ziptahentry.zipid = id;
+                                int tahid = db.SetZipTahEntry(ziptahentry);
+
+                                int tahentry = 0;
+                                foreach (TAHEntry ent in tah.EntrySet.Entries)
+                                {
+                                    if (ent.FileName == null)
+                                    {
+                                        TDCGExplorer.SetToolTips("Dump " + ent.Hash.ToString("x8") + " file");
+                                    }
+                                    else
+                                    {
+                                        TDCGExplorer.SetToolTips("Dump " + Path.GetFileName(ent.FileName) + " file");
+                                    }
 #if false
                                 // TSOだけ実体化してmd5sumを計算する.
                                 if (ent.FileName != null && Path.GetExtension(ent.FileName).ToLower() == ".tso")
@@ -459,17 +462,18 @@ namespace TDCGExplorer
                                     db.SetZipTahFilesPath(fileentry);
                                 }
 #endif
-                                ArcsTahFilesEntry fileentry = new ArcsTahFilesEntry();
-                                fileentry.id = 0;
-                                fileentry.tahid = tahid;
-                                fileentry.tahentry = tahentry++;
-                                fileentry.path = ent.FileName;
-                                if (fileentry.path == null) fileentry.path = "";
-                                //fileentry.md5sum = "";
-                                fileentry.hash = (int)ent.Hash;
-                                fileentry.length = (int)ent.Length;
-                                db.SetZipTahFilesPath(fileentry);
+                                    ArcsTahFilesEntry fileentry = new ArcsTahFilesEntry();
+                                    fileentry.id = 0;
+                                    fileentry.tahid = tahid;
+                                    fileentry.tahentry = tahentry++;
+                                    fileentry.path = ent.FileName;
+                                    if (fileentry.path == null) fileentry.path = "";
+                                    //fileentry.md5sum = "";
+                                    fileentry.hash = (int)ent.Hash;
+                                    fileentry.length = (int)ent.Length;
+                                    db.SetZipTahFilesPath(fileentry);
 
+                                }
                             }
                         }
                     }

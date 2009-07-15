@@ -46,11 +46,7 @@ namespace TDCGExplorer
         // スレッド実行時はエラーにする.
         private bool threadCheck()
         {
-            if (TDCGExplorer.fThreadRun == true)
-            {
-                MessageBox.Show("Database Processing Now!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return true;
-            }
+            if (TDCGExplorer.BusyTest()) return true;
             return false;
         }
 
@@ -167,6 +163,7 @@ namespace TDCGExplorer
         // タブを閉じる.
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (TDCGExplorer.BusyTest()) return;
             if (tabMainView.SelectedTab != null) tabMainView.SelectedTab.Dispose();
         }
 
@@ -176,7 +173,7 @@ namespace TDCGExplorer
             Cursor.Current = Cursors.WaitCursor;
             try
             {
-                ZipTreeNode node = (ZipTreeNode)lastSelectTreeNode;
+                GenericZipTreeNode node = (GenericZipTreeNode)lastSelectTreeNode;
                 if (TDCGExplorer.InstallZipFile(node))
                 {
                     //MessageBox.Show("Extracted on work directory", "Extract", MessageBoxButtons.OK);
@@ -289,7 +286,7 @@ namespace TDCGExplorer
         {
             try
             {
-                ZipTreeNode node = (ZipTreeNode)lastSelectTreeNode;
+                GenericZipTreeNode node = (GenericZipTreeNode)lastSelectTreeNode;
                 node.DoEditAnnotation();
             }
             catch (System.InvalidCastException ex)
@@ -337,14 +334,19 @@ namespace TDCGExplorer
         // リストアイテムが選択された.
         private void listBoxMainListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (TDCGExplorer.BusyTest()) return;
+
             try
             {
                 int index = listBoxMainListBox.SelectedIndex;
                 if (index >= 0)
                 {
-                    LbGenItem item = (LbGenItem)listBoxMainListBox.Items[index];
-                    item.DoClick();
-                    listBoxMainListBox.Focus();
+                    LbGenItem item = listBoxMainListBox.Items[index] as LbGenItem;
+                    if (item != null)
+                    {
+                        item.DoClick();
+                        listBoxMainListBox.Focus();
+                    }
                 }
             }
             catch (Exception exception)
@@ -482,7 +484,6 @@ namespace TDCGExplorer
             }
             catch (Exception e)
             {
-                TDCGExplorer.fThreadRun = false;
                 TDCGExplorer.SetToolTips("Error occured : " + e.Message);
             }
         }
@@ -516,7 +517,7 @@ namespace TDCGExplorer
             TreeView treeView = (TreeView)sender;
             try
             {
-                TahGenTreeNode node = (TahGenTreeNode)treeView.SelectedNode;
+                GenericTahTreeNode node = (GenericTahTreeNode)treeView.SelectedNode;
                 node.DoTvTreeSelect();
             }
             catch (Exception exception)
@@ -682,7 +683,7 @@ namespace TDCGExplorer
             Cursor.Current = Cursors.WaitCursor;
             try
             {
-                ZipTreeNode node = (ZipTreeNode)lastSelectTreeNode;
+                GenericZipTreeNode node = (GenericZipTreeNode)lastSelectTreeNode;
                 TDCGExplorer.InstallPreferZip(node);
             }
             catch (System.InvalidCastException ex)
@@ -734,9 +735,11 @@ namespace TDCGExplorer
 
         private void LookupMODRefToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (TDCGExplorer.BusyTest()) return;
+
             try
             {
-                ZipTreeNode node = (ZipTreeNode) lastSelectTreeNode;
+                GenericZipTreeNode node = (GenericZipTreeNode) lastSelectTreeNode;
                 AssignTagPageControl(new MODRefPage(node.Entry));
             }
             catch (System.InvalidCastException ex)
@@ -753,14 +756,19 @@ namespace TDCGExplorer
 
         private void TahDecryptToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (TDCGExplorer.BusyTest()) return;
+
             try
             {
                 int index = listBoxMainListBox.SelectedIndex;
                 if (index >= 0)
                 {
-                    LbGenItem item = (LbGenItem)listBoxMainListBox.Items[index];
-                    item.DoExtract();
-                    listBoxMainListBox.Focus();
+                    LbGenItem item = listBoxMainListBox.Items[index] as LbGenItem;
+                    if (item != null)
+                    {
+                        item.DoTahEdit();
+                        listBoxMainListBox.Focus();
+                    }
                 }
             }
             catch (Exception exception)
@@ -793,7 +801,7 @@ namespace TDCGExplorer
                     SetColor(node);
                     try
                     {
-                        ((TahGenTreeNode)node).DoTvTreeSelect();
+                        ((GenericTahTreeNode)node).DoTvTreeSelect();
                     }
                     catch (Exception ex)
                     {
@@ -821,6 +829,56 @@ namespace TDCGExplorer
         private void LookupModRefToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LookupMODRefToolStripMenuItem_Click(sender, e);
+        }
+
+        // TAHファイルを直接展開する.
+        private void ExtractTahFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (TDCGExplorer.BusyTest()) return;
+
+            try
+            {
+                int index = listBoxMainListBox.SelectedIndex;
+                if (index >= 0)
+                {
+                    LbGenItem item = listBoxMainListBox.Items[index] as LbGenItem;
+                    if (item != null)
+                    {
+                        item.DoDecrypt();
+                        listBoxMainListBox.Focus();
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                TDCGExplorer.SetToolTips("error:" + exception.Message);
+                Debug.WriteLine(exception.Message);
+            }
+        }
+
+        private void deleteTahEditorFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (TDCGExplorer.BusyTest()) return;
+
+            try
+            {
+                int index = listBoxMainListBox.SelectedIndex;
+                if (index >= 0)
+                {
+                    LbGenItem item = listBoxMainListBox.Items[index] as LbGenItem;
+                    if (item != null)
+                    {
+                        item.DoDeleteTahEdit();
+                        listBoxMainListBox.Focus();
+                    }
+                }
+            }
+            catch (Exception exception)
+            {
+                TDCGExplorer.SetToolTips("error:" + exception.Message);
+                Debug.WriteLine(exception.Message);
+            }
+
         }
     }
 }

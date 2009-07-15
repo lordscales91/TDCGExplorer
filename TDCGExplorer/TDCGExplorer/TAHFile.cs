@@ -159,13 +159,16 @@ namespace TDCGExplorer
 
     public class TAHEntry
     {
+#if false
         private TAHFile Owner_;
+#endif
         private uint Hash_;
         private uint DataOffset_;
         private int Length_;
         private string FileName_;
-
+#if false
         public TAHFile Owner { get { return Owner_; } set { Owner_ = value; } }
+#endif
         public uint Hash { get { return Hash_; } set { Hash_ = value; } }
         public uint DataOffset { get { return DataOffset_; } set { DataOffset_ = value; } }
         public int Length { get { return Length_; } set { Length_ = value; } }
@@ -229,7 +232,9 @@ namespace TDCGExplorer
             Hash = br.ReadUInt32();
             FileName = FindExternalFileName(Hash);
             DataOffset = br.ReadUInt32();
+#if false
             Owner = file;
+#endif
         }
 
         public void Write(BinaryWriter bw)
@@ -261,6 +266,12 @@ namespace TDCGExplorer
         public string this[int index]
         {
             get { return Files[index]; }
+        }
+
+        // デフォルトコンストラクタ
+        public TAHDirectories()
+        {
+            Files_ = new List<string>();
         }
 
         public static TAHDirectories Load(BinaryReader br, TAHFile file)

@@ -17,9 +17,13 @@ namespace System.Windows.Forms
     {
         List<ArcsTahFilesEntry> filesEntries;
         private DataGridView dataGridView;
-        GenTahInfo info;
+        private ContextMenuStrip contextMenuStrip;
+        private System.ComponentModel.IContainer components;
+        private ToolStripMenuItem toolStripMenuItemClose;
+        private ToolStripMenuItem toolStripMenuItemEditMode;
+        GenericTahInfo info;
 
-        public TAHPageControl(GenTahInfo entryinfo, List<ArcsTahFilesEntry> filesentries)
+        public TAHPageControl(GenericTahInfo entryinfo, List<ArcsTahFilesEntry> filesentries)
         {
             InitializeComponent();
 
@@ -46,6 +50,7 @@ namespace System.Windows.Forms
 
             dataGridView.ReadOnly = true;
             dataGridView.MultiSelect = false;
+            dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView.AllowUserToAddRows = false;
 
             TDCGExplorer.TDCGExplorer.SetToolTips(info.shortname + " : tsoクリックで単体表示,ctrlキー+tsoクリックで複数表示,tmoでポーズ・アニメーションを設定");
@@ -53,8 +58,13 @@ namespace System.Windows.Forms
 
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemEditMode = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridView
@@ -63,6 +73,7 @@ namespace System.Windows.Forms
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView.ContextMenuStrip = this.contextMenuStrip;
             this.dataGridView.Location = new System.Drawing.Point(0, 0);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.Size = new System.Drawing.Size(0, 0);
@@ -71,6 +82,28 @@ namespace System.Windows.Forms
             this.dataGridView.Resize += new System.EventHandler(this.dataGridView_Resize);
             this.dataGridView.MouseEnter += new System.EventHandler(this.dataGridView_MouseEnter);
             // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemEditMode,
+            this.toolStripMenuItemClose});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(123, 48);
+            // 
+            // toolStripMenuItemClose
+            // 
+            this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
+            this.toolStripMenuItemClose.Size = new System.Drawing.Size(122, 22);
+            this.toolStripMenuItemClose.Text = "閉じる";
+            this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
+            // 
+            // toolStripMenuItemEditMode
+            // 
+            this.toolStripMenuItemEditMode.Name = "toolStripMenuItemEditMode";
+            this.toolStripMenuItemEditMode.Size = new System.Drawing.Size(122, 22);
+            this.toolStripMenuItemEditMode.Text = "編集する";
+            this.toolStripMenuItemEditMode.Click += new System.EventHandler(this.toolStripMenuItemEditMode_Click);
+            // 
             // TAHPageControl
             // 
             this.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -78,6 +111,7 @@ namespace System.Windows.Forms
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.Controls.Add(this.dataGridView);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -103,7 +137,7 @@ namespace System.Windows.Forms
                     string ext = Path.GetExtension(filesEntries[index].path).ToLower();
                     if (ext == ".tso" || ext == ".tmo")
                     {
-                        using (TAHStream tahstream = new TAHStream(info, filesEntries[index]))
+                        using (GenericTAHStream tahstream = new GenericTAHStream(info, filesEntries[index]))
                         {
                             Cursor.Current = Cursors.WaitCursor;
                             TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
@@ -155,6 +189,19 @@ namespace System.Windows.Forms
             {
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+        }
+
+        // ページを閉じる
+        private void toolStripMenuItemClose_Click(object sender, EventArgs e)
+        {
+            Parent.Dispose();
+        }
+
+        // 編集モードに切り替える
+        private void toolStripMenuItemEditMode_Click(object sender, EventArgs e)
+        {
+            if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
+            LBFileTahUtl.OpenTahEditor(info);
         }
     }
 }

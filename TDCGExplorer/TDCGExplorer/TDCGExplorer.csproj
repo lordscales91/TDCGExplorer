@@ -103,6 +103,7 @@
     <Compile Include="AnnotationDB.cs" />
     <Compile Include="ArcNames.cs" />
     <Compile Include="ArcsDataBase.cs" />
+    <Compile Include="TAHWriter.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="CollisionTahPage.cs">
       <SubType>Component</SubType>
@@ -152,7 +153,11 @@
     <Compile Include="SystemDatabase.cs" />
     <Compile Include="TagNames.cs" />
     <Compile Include="TAHCryptStream.cs" />
+    <Compile Include="TAHDataBase.cs" />
     <Compile Include="TAHDump.cs" />
+    <Compile Include="TAHEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="TAHFile.cs" />
     <Compile Include="TAHPage.cs">
       <SubType>Component</SubType>
@@ -190,6 +195,9 @@
     <EmbeddedResource Include="SaveFilePage.resx">
       <DependentUpon>SaveFilePage.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TAHEditor.resx">
+      <DependentUpon>TAHEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TAHPage.resx">
       <DependentUpon>TAHPage.cs</DependentUpon>
     </EmbeddedResource>
@@ -219,6 +227,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="TDCGSaveFile.cs" />
+    <Compile Include="TDCGTbn.cs" />
     <Compile Include="TextPage.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -14,7 +14,7 @@ namespace System.Windows.Forms
         private Panel panel;
         private PictureBox pictureBox;
 
-        public ImagePageControl(GenTahInfo tahInfo) : base(tahInfo)
+        public ImagePageControl(GenericTahInfo tahInfo) : base(tahInfo)
         {
             InitializeComponent();
             ExtractFile();

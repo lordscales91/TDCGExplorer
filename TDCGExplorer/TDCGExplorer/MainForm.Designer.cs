@@ -39,8 +39,8 @@
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createFromArcsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.editSystemDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadLatestArcsnameszipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.editSystemDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tSOViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetTSOViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.switchToMortionEnabledToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -54,6 +54,7 @@
             this.extractZipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.InstallPreferredModToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditAnnotationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.LookUpModrefToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainTimer = new System.Windows.Forms.Timer(this.components);
@@ -79,7 +80,8 @@
             this.ListBoxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.NewTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExpandTahFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.LookUpModrefToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ExtractTahFileDirectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.deleteTahEditorFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.cmContextMenu.SuspendLayout();
             this.StatusStrip.SuspendLayout();
@@ -187,19 +189,19 @@
             this.createFromArcsToolStripMenuItem.Text = "データベースの構築・更新";
             this.createFromArcsToolStripMenuItem.Click += new System.EventHandler(this.createFromArcsToolStripMenuItem_Click);
             // 
-            // editSystemDatabaseToolStripMenuItem
-            // 
-            this.editSystemDatabaseToolStripMenuItem.Name = "editSystemDatabaseToolStripMenuItem";
-            this.editSystemDatabaseToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.editSystemDatabaseToolStripMenuItem.Text = "初期設定";
-            this.editSystemDatabaseToolStripMenuItem.Click += new System.EventHandler(this.editSystemDatabaseToolStripMenuItem_Click_1);
-            // 
             // downloadLatestArcsnameszipToolStripMenuItem
             // 
             this.downloadLatestArcsnameszipToolStripMenuItem.Name = "downloadLatestArcsnameszipToolStripMenuItem";
             this.downloadLatestArcsnameszipToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.downloadLatestArcsnameszipToolStripMenuItem.Text = "最新のデータベース情報を取得";
             this.downloadLatestArcsnameszipToolStripMenuItem.Click += new System.EventHandler(this.downloadLatestDBZipToolStripMenuItem_Click_1);
+            // 
+            // editSystemDatabaseToolStripMenuItem
+            // 
+            this.editSystemDatabaseToolStripMenuItem.Name = "editSystemDatabaseToolStripMenuItem";
+            this.editSystemDatabaseToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.editSystemDatabaseToolStripMenuItem.Text = "初期設定";
+            this.editSystemDatabaseToolStripMenuItem.Click += new System.EventHandler(this.editSystemDatabaseToolStripMenuItem_Click_1);
             // 
             // tSOViewToolStripMenuItem
             // 
@@ -280,7 +282,7 @@
             this.EditAnnotationToolStripMenuItem,
             this.LookUpModrefToolStripMenuItem});
             this.cmContextMenu.Name = "cmContextMenu";
-            this.cmContextMenu.Size = new System.Drawing.Size(243, 136);
+            this.cmContextMenu.Size = new System.Drawing.Size(243, 114);
             // 
             // expandAllToolStripMenuItem
             // 
@@ -309,6 +311,13 @@
             this.EditAnnotationToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.EditAnnotationToolStripMenuItem.Text = "注訳を入力";
             this.EditAnnotationToolStripMenuItem.Click += new System.EventHandler(this.EditAnnotationToolStripMenuItem_Click);
+            // 
+            // LookUpModrefToolStripMenuItem
+            // 
+            this.LookUpModrefToolStripMenuItem.Name = "LookUpModrefToolStripMenuItem";
+            this.LookUpModrefToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.LookUpModrefToolStripMenuItem.Text = "関連アーカイブを調べる";
+            this.LookUpModrefToolStripMenuItem.Click += new System.EventHandler(this.LookupModRefToolStripMenuItem_Click);
             // 
             // StatusStrip
             // 
@@ -351,13 +360,13 @@
             this.tabContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.closeToolStripMenuItem});
             this.tabContextMenuStrip.Name = "tabContextMenuStrip";
-            this.tabContextMenuStrip.Size = new System.Drawing.Size(104, 26);
+            this.tabContextMenuStrip.Size = new System.Drawing.Size(111, 26);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(103, 22);
-            this.closeToolStripMenuItem.Text = "Close";
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
+            this.closeToolStripMenuItem.Text = "閉じる";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // splitContainerV
@@ -609,30 +618,39 @@
             // 
             this.ListBoxContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewTabToolStripMenuItem,
-            this.ExpandTahFileToolStripMenuItem});
+            this.ExpandTahFileToolStripMenuItem,
+            this.deleteTahEditorFileToolStripMenuItem,
+            this.ExtractTahFileDirectToolStripMenuItem});
             this.ListBoxContextMenuStrip.Name = "contextMenuStrip1";
-            this.ListBoxContextMenuStrip.Size = new System.Drawing.Size(183, 48);
+            this.ListBoxContextMenuStrip.Size = new System.Drawing.Size(231, 92);
             // 
             // NewTabToolStripMenuItem
             // 
             this.NewTabToolStripMenuItem.Name = "NewTabToolStripMenuItem";
-            this.NewTabToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
+            this.NewTabToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
             this.NewTabToolStripMenuItem.Text = "新しいタブを開く";
             this.NewTabToolStripMenuItem.Click += new System.EventHandler(this.NewTabPageToolStripMenuItem_Click);
             // 
             // ExpandTahFileToolStripMenuItem
             // 
             this.ExpandTahFileToolStripMenuItem.Name = "ExpandTahFileToolStripMenuItem";
-            this.ExpandTahFileToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-            this.ExpandTahFileToolStripMenuItem.Text = "ファイルを展開する";
+            this.ExpandTahFileToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.ExpandTahFileToolStripMenuItem.Text = "TAHファイルを編集する";
             this.ExpandTahFileToolStripMenuItem.Click += new System.EventHandler(this.TahDecryptToolStripMenuItem_Click);
             // 
-            // 関連アーカイブを調べるToolStripMenuItem
+            // tAHファイルを展開するToolStripMenuItem
             // 
-            this.LookUpModrefToolStripMenuItem.Name = "関連アーカイブを調べるToolStripMenuItem";
-            this.LookUpModrefToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.LookUpModrefToolStripMenuItem.Text = "関連アーカイブを調べる";
-            this.LookUpModrefToolStripMenuItem.Click += new System.EventHandler(this.LookupModRefToolStripMenuItem_Click);
+            this.ExtractTahFileDirectToolStripMenuItem.Name = "tAHファイルを展開するToolStripMenuItem";
+            this.ExtractTahFileDirectToolStripMenuItem.Size = new System.Drawing.Size(206, 22);
+            this.ExtractTahFileDirectToolStripMenuItem.Text = "TAHファイルを展開する";
+            this.ExtractTahFileDirectToolStripMenuItem.Click += new System.EventHandler(this.ExtractTahFileToolStripMenuItem_Click);
+            // 
+            // deleteTahEditorFileToolStripMenuItem
+            // 
+            this.deleteTahEditorFileToolStripMenuItem.Name = "deleteTahEditorFileToolStripMenuItem";
+            this.deleteTahEditorFileToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
+            this.deleteTahEditorFileToolStripMenuItem.Text = "TAH編集ファイルを削除する";
+            this.deleteTahEditorFileToolStripMenuItem.Click += new System.EventHandler(this.deleteTahEditorFileToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -727,6 +745,8 @@
         private System.Windows.Forms.TreeView treeViewSaveFile;
         private System.Windows.Forms.ToolStripMenuItem ExpandTahFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LookUpModrefToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ExtractTahFileDirectToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteTahEditorFileToolStripMenuItem;
 
     }
 }

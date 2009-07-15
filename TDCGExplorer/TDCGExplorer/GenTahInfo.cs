@@ -6,7 +6,7 @@ using System.Text;
 namespace TDCGExplorer
 {
     // TAH情報を抽象化する.
-    public class GenTahInfo
+    public class GenericTahInfo
     {
         public virtual int id
         {
@@ -35,10 +35,10 @@ namespace TDCGExplorer
         }
     }
 
-    public class TahInfo : GenTahInfo
+    public class GenericArcsTahInfo : GenericTahInfo
     {
         private ArcsTahEntry tahEntry;
-        public TahInfo(ArcsTahEntry entry)
+        public GenericArcsTahInfo(ArcsTahEntry entry)
         {
             tahEntry = entry;
         }
@@ -63,12 +63,21 @@ namespace TDCGExplorer
             set { }
         }
     }
-    public class ZipTahInfo : GenTahInfo
+    public class GenericZipsTahInfo : GenericTahInfo
     {
         private ArcsZipTahEntry tahEntry;
-        public ZipTahInfo(ArcsZipTahEntry entry)
+        public GenericZipsTahInfo(ArcsZipTahEntry entry)
         {
             tahEntry = entry;
+        }
+        public GenericZipsTahInfo(GenericTahInfo info)
+        {
+            tahEntry = new ArcsZipTahEntry();
+            tahEntry.id=info.id;
+            tahEntry.path=info.path;
+            tahEntry.shortname=info.shortname;
+            tahEntry.version=info.version;
+            tahEntry.zipid = info.zipid;
         }
         public override int id
         {

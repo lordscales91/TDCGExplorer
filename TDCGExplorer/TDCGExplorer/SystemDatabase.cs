@@ -39,7 +39,12 @@ namespace TDCGExplorer
 
         public void Dispose()
         {
-            cnn.Close();
+            if (cnn != null)
+            {
+                cnn.Close();
+                cnn.Dispose();
+                cnn = null;
+            }
         }
 
         // システムデータベースのパスを求める.
@@ -125,6 +130,10 @@ namespace TDCGExplorer
             modrefserver_alwaysenable = modrefserver_alwaysenable;
             zippage_behavior = zippage_behavior;
             directaccess_signature = directaccess_signature;
+            initialize_camera = initialize_camera;
+            cameracenter = cameracenter;
+            translateto = translateto;
+            tahpath = tahpath;
         }
 
         // arcpathの取得・設定.
@@ -225,15 +234,23 @@ namespace TDCGExplorer
                 else SetSqlValue("initialize_camera", "false");
             }
         }
+        // カメラセンターボーン
         public string cameracenter
         {
             get { return GetSqlValue("cameracenter", "W_Hips"); }
             set { SetSqlValue("cameracenter", value); }
         }
+        // 初期視点
         public string translateto
         {
-            get { return GetSqlValue("translateto", "W_Neck"); }
+            get { return GetSqlValue("translateto", "face_oya"); }
             set { SetSqlValue("translateto", value); }
+        }
+        // TAH作業フォルダのトップディレクトリ
+        public string tahpath
+        {
+            get { return GetSqlValue("tahpath", Path.Combine(GetSystemDatabasePath(), "taheditor")); }
+            set { SetSqlValue("tahpath", value); }
         }
     }
 }
