@@ -14,12 +14,18 @@ public class TPOFileList
 
     public TPOFile this[int i]
     {
-        get { return list[i]; }
+        get
+        {
+            return list[i];
+        }
     }
 
     public int Count
     {
-        get { return list.Count; }
+        get
+        {
+            return list.Count;
+        }
     }
     
     public void Add(TPOFile tpo)
@@ -46,6 +52,9 @@ public class TPOFileList
 
     public void Transform()
     {
+        if (frames == null)
+            return;
+
         LoadMatrix();
         foreach (TPOFile tpo in list)
             tpo.Transform();
@@ -128,10 +137,13 @@ public class TPOFile
     internal TMOFile tmo = null;
     public TMOFile Tmo
     {
-        get {
+        get
+        {
             return tmo;
         }
-        set {
+
+        set
+        {
             tmo = value;
 
             int node_count = tmo.nodes.Length;
