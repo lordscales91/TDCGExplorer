@@ -67,10 +67,9 @@ public class TSOForm : Form
 
         this.DragDrop += new DragEventHandler(form_OnDragDrop);
         this.DragOver += new DragEventHandler(form_OnDragOver);
-        Viewer viewer = new Viewer();
-        FigureForm fig_form = new FigureForm();
-        this.fig_form = fig_form;
-        this.viewer = viewer;
+
+        this.viewer = new Viewer();
+        this.fig_form = new FigureForm();
 
         if (viewer.InitializeApplication(this, true))
         {
