@@ -72,7 +72,6 @@
     <Compile Include="TSOFile.cs" />
     <Compile Include="TSOWriter.cs" />
     <Compile Include="Viewer.cs" />
-    <Compile Include="Zoom.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">

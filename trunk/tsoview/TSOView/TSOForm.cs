@@ -47,12 +47,8 @@ public class TSOForm : Form
     private Camera cam2 = null;
     private Timer timer1;
     private System.ComponentModel.IContainer components;
-    private Button motionButton;
 
     private int cam_frame_index = 0;
-
-    List<IProportion> pro_list = new List<IProportion>();
-    List<TrackBar> bar_list = new List<TrackBar>();
 
     public TSOForm(TSOConfig config, string[] args)
     {
@@ -84,10 +80,6 @@ public class TSOForm : Form
                 else
                     fig_form.Clear();
             };
-            viewer.FigureEvent += delegate(object sender, EventArgs e)
-            {
-                UpdateTpoList();
-            };
             foreach (string arg in args)
                 viewer.LoadAnyFile(arg, true);
 
@@ -100,24 +92,6 @@ public class TSOForm : Form
 
             this.timer1.Enabled = true;
         }
-
-        pro_list.Add(new TDCG.Proportion.Zoom());
-
-        foreach (IProportion pro in pro_list)
-        {
-            TrackBar trackBar = new TrackBar();
-            trackBar.Location = new System.Drawing.Point(10, 60 + bar_list.Count * 50);
-            trackBar.Maximum = 20;
-            trackBar.Name = "ProportionTrackBar" + (bar_list.Count + 1).ToString();
-            trackBar.Size = new System.Drawing.Size(262, 45);
-            trackBar.TabIndex = bar_list.Count + 1;
-            trackBar.ValueChanged += new System.EventHandler(this.proportionTrackBar_ValueChanged);
-            this.Controls.Add(trackBar);
-
-            bar_list.Add(trackBar);
-        }
-
-        UpdateTpoList();
     }
 
     private void form_OnKeyDown(object sender, KeyEventArgs e)
@@ -358,7 +332,6 @@ public class TSOForm : Form
     {
         this.components = new System.ComponentModel.Container();
         this.timer1 = new System.Windows.Forms.Timer(this.components);
-        this.motionButton = new System.Windows.Forms.Button();
         this.SuspendLayout();
         // 
         // timer1
@@ -366,63 +339,12 @@ public class TSOForm : Form
         this.timer1.Interval = 16;
         this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
         // 
-        // motionButton
-        // 
-        this.motionButton.Location = new System.Drawing.Point(10, 12);
-        this.motionButton.Name = "motionButton";
-        this.motionButton.Size = new System.Drawing.Size(262, 23);
-        this.motionButton.TabIndex = 2;
-        this.motionButton.Text = "switch &motion";
-        this.motionButton.UseVisualStyleBackColor = true;
-        this.motionButton.Click += new System.EventHandler(this.motionButton_Click);
-        // 
         // TSOForm
         // 
         this.ClientSize = new System.Drawing.Size(284, 263);
-        this.Controls.Add(this.motionButton);
         this.Name = "TSOForm";
         this.ResumeLayout(false);
 
-    }
-
-    private void proportionTrackBar_ValueChanged(object sender, EventArgs e)
-    {
-        TrackBar trackBar = sender as TrackBar;
-        {
-            TPOFile tpo = trackBar.Tag as TPOFile;
-            if (tpo != null)
-                tpo.Ratio = trackBar.Value * 0.1f;
-        }
-
-        Figure fig;
-        if (viewer.TryGetFigure(out fig))
-        {
-            tpo_list.Transform(fig.GetFrameIndex());
-            fig.UpdateBoneMatrices(true);
-        }
-    }
-
-    TPOFileList tpo_list = new TPOFileList();
-
-    private void UpdateTpoList()
-    {
-        Figure fig;
-        if (viewer.TryGetFigure(out fig))
-        {
-            tpo_list.Tmo = fig.Tmo;
-            tpo_list.SetProportionList(pro_list);
-
-            for (int i = 0; i < tpo_list.Count; i++)
-            {
-                TPOFile tpo = tpo_list[i];
-                bar_list[i].Tag = tpo;
-            }
-        }
-    }
-
-    private void motionButton_Click(object sender, EventArgs e)
-    {
-        viewer.SwitchMotionEnabled();
     }
 }
 }
