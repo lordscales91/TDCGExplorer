@@ -112,6 +112,9 @@ public class TPOFileList
         if (frames == null)
             return;
 
+        if (tmo.frames == null)
+            return;
+
         int frame_count = frames.Length;
         for (int i = 0; i < frame_count; i++)
         {
@@ -124,6 +127,9 @@ public class TPOFileList
     public void SaveMatrix()
     {
         if (frames == null)
+            return;
+
+        if (tmo.frames == null)
             return;
 
         int frame_count = frames.Length;

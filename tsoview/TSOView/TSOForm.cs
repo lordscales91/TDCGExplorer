@@ -32,7 +32,7 @@ public class TSOForm : Form
 
     internal Viewer viewer = null;
     internal FigureForm fig_form = null;
-
+    
     private Camera camera
     {
         get {
@@ -50,6 +50,9 @@ public class TSOForm : Form
     private Button motionButton;
 
     private int cam_frame_index = 0;
+
+    List<IProportion> pro_list = new List<IProportion>();
+    List<TrackBar> bar_list = new List<TrackBar>();
 
     public TSOForm(TSOConfig config, string[] args)
     {
@@ -117,9 +120,6 @@ public class TSOForm : Form
         UpdateTpoList();
     }
 
-    List<IProportion> pro_list = new List<IProportion>();
-    List<TrackBar> bar_list = new List<TrackBar>();
-    
     private void form_OnKeyDown(object sender, KeyEventArgs e)
     {
         if ((int)e.KeyCode < keys.Length)
@@ -385,10 +385,6 @@ public class TSOForm : Form
 
     }
 
-    private void trackBar1_ValueChanged(object sender, EventArgs e)
-    {
-    }
-
     private void proportionTrackBar_ValueChanged(object sender, EventArgs e)
     {
         TrackBar trackBar = sender as TrackBar;
@@ -407,11 +403,6 @@ public class TSOForm : Form
     }
 
     TPOFileList tpo_list = new TPOFileList();
-
-    private void makeProportionButton_Click(object sender, EventArgs e)
-    {
-        UpdateTpoList();
-    }
 
     private void UpdateTpoList()
     {
