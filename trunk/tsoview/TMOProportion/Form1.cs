@@ -16,7 +16,7 @@ namespace TMOProportion
     {
         internal Viewer viewer = null;
         List<IProportion> pro_list = new List<IProportion>();
-        List<TrackBar> bar_list = new List<TrackBar>();
+        List<ProportionSlider> bar_list = new List<ProportionSlider>();
 
         public string GetProportionPath()
         {
@@ -48,16 +48,13 @@ namespace TMOProportion
 
             foreach (IProportion pro in pro_list)
             {
-                TrackBar trackBar = new TrackBar();
-                trackBar.Location = new System.Drawing.Point(10, 60 + bar_list.Count * 50);
-                trackBar.Maximum = 20;
-                trackBar.Name = "ProportionTrackBar" + (bar_list.Count + 1).ToString();
-                trackBar.Size = new System.Drawing.Size(262, 45);
-                trackBar.TabIndex = bar_list.Count + 1;
-                trackBar.ValueChanged += new System.EventHandler(this.proportionTrackBar_ValueChanged);
-                this.Controls.Add(trackBar);
+                ProportionSlider slider = new ProportionSlider();
+                slider.label.Text = pro.ToString();
+                slider.Location = new System.Drawing.Point(10, 10 + bar_list.Count * 95);
+                slider.trackBar.ValueChanged += new System.EventHandler(this.proportionTrackBar_ValueChanged);
+                this.Controls.Add(slider);
 
-                bar_list.Add(trackBar);
+                bar_list.Add(slider);
             }
 
             UpdateTpoList();
@@ -99,7 +96,7 @@ namespace TMOProportion
                 for (int i = 0; i < tpo_list.Count; i++)
                 {
                     TPOFile tpo = tpo_list[i];
-                    bar_list[i].Tag = tpo;
+                    bar_list[i].trackBar.Tag = tpo;
                 }
             }
         }
