@@ -47,7 +47,6 @@ public class TSOForm : Form
     private Camera cam2 = null;
     private Timer timer1;
     private System.ComponentModel.IContainer components;
-    private TrackBar trackBar1;
     private Button makeProportionButton;
 
     private int cam_frame_index = 0;
@@ -96,8 +95,28 @@ public class TSOForm : Form
             viewer.SwitchMotionEnabled();
             this.timer1.Enabled = true;
         }
+
+        trackBars = new TrackBar[proportions.Length];
+
+        for (int i = 0; i < proportions.Length; i++)
+        {
+            TrackBar trackBar = new TrackBar();
+            trackBar.Location = new System.Drawing.Point(10, 60 + i * 50);
+            trackBar.Maximum = 20;
+            trackBar.Name = "ProportionTrackBar" + i.ToString();
+            trackBar.Size = new System.Drawing.Size(262, 45);
+            trackBar.TabIndex = i;
+            trackBar.ValueChanged += new System.EventHandler(this.proportionTrackBar_ValueChanged);
+            this.Controls.Add(trackBar);
+
+            trackBars[i] = trackBar;
+        }
+
     }
 
+    IProportion[] proportions = { new TDCG.Proportion.Zoom() };
+    TrackBar[] trackBars = null;
+    
     private void form_OnKeyDown(object sender, KeyEventArgs e)
     {
         if ((int)e.KeyCode < keys.Length)
@@ -336,9 +355,7 @@ public class TSOForm : Form
     {
         this.components = new System.ComponentModel.Container();
         this.timer1 = new System.Windows.Forms.Timer(this.components);
-        this.trackBar1 = new System.Windows.Forms.TrackBar();
         this.makeProportionButton = new System.Windows.Forms.Button();
-        ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
         this.SuspendLayout();
         // 
         // timer1
@@ -346,18 +363,9 @@ public class TSOForm : Form
         this.timer1.Interval = 16;
         this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
         // 
-        // trackBar1
-        // 
-        this.trackBar1.Location = new System.Drawing.Point(10, 10);
-        this.trackBar1.Maximum = 20;
-        this.trackBar1.Name = "trackBar1";
-        this.trackBar1.Size = new System.Drawing.Size(262, 45);
-        this.trackBar1.TabIndex = 0;
-        this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
-        // 
         // makeProportionButton
         // 
-        this.makeProportionButton.Location = new System.Drawing.Point(10, 55);
+        this.makeProportionButton.Location = new System.Drawing.Point(10, 12);
         this.makeProportionButton.Name = "makeProportionButton";
         this.makeProportionButton.Size = new System.Drawing.Size(262, 23);
         this.makeProportionButton.TabIndex = 1;
@@ -369,20 +377,28 @@ public class TSOForm : Form
         // 
         this.ClientSize = new System.Drawing.Size(284, 263);
         this.Controls.Add(this.makeProportionButton);
-        this.Controls.Add(this.trackBar1);
         this.Name = "TSOForm";
-        ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
         this.ResumeLayout(false);
-        this.PerformLayout();
 
     }
 
     private void trackBar1_ValueChanged(object sender, EventArgs e)
     {
+    }
+
+    private void proportionTrackBar_ValueChanged(object sender, EventArgs e)
+    {
+        TrackBar trackBar = sender as TrackBar;
+        {
+            TPOFile tpo = trackBar.Tag as TPOFile;
+            if (tpo != null)
+                tpo.Ratio = trackBar.Value * 0.1f;
+        }
+
         Figure fig;
         if (viewer.TryGetFigure(out fig))
         {
-            fig.Transform(trackBar1.Value * 0.1f);
+            fig.Transform();
             fig.UpdateBoneMatrices(true);
         }
     }
@@ -392,7 +408,14 @@ public class TSOForm : Form
         Figure fig;
         if (viewer.TryGetFigure(out fig))
         {
-            fig.MakeProportion();
+            for (int i = 0; i < proportions.Length; i++)
+            {
+                TPOFile tpo = new TPOFile();
+                tpo.Proportion = proportions[i];
+                fig.TPOList.Add(tpo);
+
+                trackBars[i].Tag = tpo;
+            }
         }
     }
 }

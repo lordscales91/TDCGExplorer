@@ -21,7 +21,7 @@ public class Figure : IDisposable
     /// </summary>
     public List<TSOFile> TSOList = new List<TSOFile>();
     internal TMOFile tmo = null;
-    internal TPOFile tpo = new TPOFile();
+    internal TPOList tpo_list = new TPOList();
 
     internal Vector3 center = Vector3.Empty;
     /// <summary>
@@ -50,21 +50,21 @@ public class Figure : IDisposable
         set
         {
             tmo = value;
-            tpo.Tmo = tmo;
+            tpo_list.Tmo = tmo;
             UpdateTMO();
         }
     }
 
     /// <summary>
-    /// tpo
+    /// tpo_list
     /// </summary>
-    public TPOFile Tpo
+    public TPOList TPOList
     {
-        get { return tpo; }
+        get { return tpo_list; }
         set
         {
-            tpo = value;
-            tpo.Tmo = tmo;
+            tpo_list = value;
+            tpo_list.Tmo = tmo;
         }
     }
 
@@ -363,25 +363,9 @@ public class Figure : IDisposable
         }
     }
 
-    public void MakeProportion()
+    public void Transform()
     {
-        Proportion.Zoom proportion = new Proportion.Zoom();
-        //Tpo.nodesはTpo.Tmoを変更したら置き換わる。
-        //Tpo.Tmoを変更したら体型変更をやり直す必要がある。
-        Dictionary<string, TPONode> nodemap = new Dictionary<string, TPONode>();
-        foreach (TPONode node in Tpo.nodes)
-            nodemap[node.ShortName] = node;
-        proportion.Nodes = nodemap;
-        //TPONodeに変形係数を設定する。
-        proportion.Execute();
-    }
-
-    public void Transform(float ratio)
-    {
-        //TPONodeの変形係数に乗ずる変形比率
-        Tpo.Ratio = ratio;
-        //TPONodeの変形係数に従ってTpo.Tmoのモーション行列値を変形する。
-        Tpo.Transform();
+        TPOList.Transform();
     }
 
     /// <summary>
