@@ -84,11 +84,7 @@ public class TSOForm : Form
             };
             viewer.FigureEvent += delegate(object sender, EventArgs e)
             {
-                Figure fig;
-                if (viewer.TryGetFigure(out fig))
-                    fig_form.SetFigure(fig);
-                else
-                    fig_form.Clear();
+                UpdateTpoList();
             };
             foreach (string arg in args)
                 viewer.LoadAnyFile(arg, true);
