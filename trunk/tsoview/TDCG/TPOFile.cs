@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using Microsoft.DirectX;
@@ -163,14 +164,13 @@ public class TPOFile
 
         set
         {
+            nodemap.Clear();
+            nodes = null;
+
             tmo = value;
 
             if (tmo.nodes == null)
-            {
-                nodemap.Clear();
-                nodes = null;
                 return;
-            }
 
             int node_count = tmo.nodes.Length;
             nodes = new TPONode[node_count];
@@ -245,6 +245,7 @@ public class TPOFile
         for (int j = 0; j < matrix_count; j++)
         {
             TPONode node = nodes[j];
+            Debug.Assert(node != null, "node should not be null j=" + j.ToString());
             TMOMat mat = tmo.frames[i].matrices[j];//変形対象モーション行列
 
             Matrix m = mat.m;
