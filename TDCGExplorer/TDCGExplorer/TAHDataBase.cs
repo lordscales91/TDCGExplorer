@@ -189,6 +189,19 @@ namespace TDCGExplorer
             return entry;
         }
 
+        // データを更新するする
+        public void UpdateData(TAHLocalDBDataEntry entry)
+        {
+            using (SQLiteCommand cmd = cnn.CreateCommand())
+            {
+                cmd.CommandText = "UPDATE Data SET DATA=@data WHERE DATAID=@id";
+                cmd.Parameters.AddWithValue("id", entry.dataid.ToString());
+                cmd.Parameters.AddWithValue("data", entry.data);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+
         // エントリを削除する.
         public void DeleteEntry(string path)
         {

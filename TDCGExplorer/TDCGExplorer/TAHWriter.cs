@@ -104,7 +104,6 @@ namespace TDCGExplorer
                     {
                         pathfragment.Add(fullpath.ToLower(), 1);
                         directory.Files.Add(fullpath);
-                        Debug.WriteLine(fullpath);
                         // 大文字小文字は無視する
                         foreach (string subfilename in files)
                         {
@@ -116,7 +115,6 @@ namespace TDCGExplorer
                             if (subpath.ToLower() == fullpath.ToLower())
                             {
                                 directory.Files.Add(subpathelement[subpathelement.Length - 1]);
-                                Debug.WriteLine(subfilename + " : " + subpathelement[subpathelement.Length - 1]);
                             }
                         }
                     }

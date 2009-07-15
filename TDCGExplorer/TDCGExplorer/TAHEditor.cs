@@ -22,6 +22,7 @@ namespace System.Windows.Forms
         private ToolStripMenuItem toolStripMenuItemEditIdentify;
         private ToolStripMenuItem toolStripMenuItemEditCategory;
         private ToolStripMenuItem toolStripMenuItemSaveTAHFile;
+        private ToolStripMenuItem toolStripMenuItemTAHInfoEdit;
         private string tahdbpath;
 
         public TAHEditor(string dbpath, GenericTahInfo info)
@@ -156,6 +157,7 @@ namespace System.Windows.Forms
             this.components = new System.ComponentModel.Container();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemTAHInfoEdit = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSaveSelectFile = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemEditIdentify = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemEditCategory = new System.Windows.Forms.ToolStripMenuItem();
@@ -183,13 +185,21 @@ namespace System.Windows.Forms
             // contextMenuStrip
             // 
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemTAHInfoEdit,
             this.toolStripMenuItemSaveSelectFile,
             this.toolStripMenuItemEditIdentify,
             this.toolStripMenuItemEditCategory,
             this.toolStripMenuItemSaveTAHFile,
             this.toolStripMenuItemClose});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(291, 114);
+            this.contextMenuStrip.Size = new System.Drawing.Size(291, 136);
+            // 
+            // toolStripMenuItemTAHInfoEdit
+            // 
+            this.toolStripMenuItemTAHInfoEdit.Name = "toolStripMenuItemTAHInfoEdit";
+            this.toolStripMenuItemTAHInfoEdit.Size = new System.Drawing.Size(290, 22);
+            this.toolStripMenuItemTAHInfoEdit.Text = "TAH情報を変更する";
+            this.toolStripMenuItemTAHInfoEdit.Click += new System.EventHandler(this.toolStripMenuItemTAHInfoEdit_Click);
             // 
             // toolStripMenuItemSaveSelectFile
             // 
@@ -249,11 +259,6 @@ namespace System.Windows.Forms
             obj.Focus();
         }
 
-        protected override void InitLayout()
-        {
-            base.InitLayout();
-        }
-
         // クローズが選択された.
         private void toolStripMenuItemClose_Click(object sender, EventArgs e)
         {
@@ -299,16 +304,70 @@ namespace System.Windows.Forms
             }
         }
 
+        // ファイル名の置換
+        private void ReplaceFileName(string newname)
+        {
+            foreach (DataGridViewRow viewrow in dataGridView.SelectedRows)
+            {
+                DataRowView vrow = viewrow.DataBoundItem as DataRowView;
+                DataRow row = null;
+                if (vrow != null)
+                {
+                    row = vrow.Row;
+                    if (row != null)
+                    {
+                        Object[] entry = row.ItemArray;
+                        if (entry != null)
+                        {
+                            // 新しい名前を作る
+                            string orgpath = entry[0].ToString() + entry[1].ToString();
+                            string newpath = entry[0].ToString() + newname + entry[1].ToString().Substring(newname.Length);
+                            // ファイル名を書き換える
+                            TAHLocalDbEntry tahentry = database.GetEntry(orgpath);
+                            database.DeleteEntry(orgpath);
+                            tahentry.path=newpath;
+                            database.AddContent(tahentry);
+                            Debug.WriteLine(newpath);
+                            // TBNなら中身も書き換える
+                            if(Path.GetExtension(orgpath).ToLower()==".tbn"){
+                                TAHLocalDBDataEntry dataentry = database.GetData(tahentry.dataid);
+                                string orgtsoepath = TDCGTbnUtil.GetTsoName(dataentry.data);
+                                string[] pathelement = orgtsoepath.Split('/');
+                                string tsopath = "";
+                                for(int i=0;i<(pathelement.Length-1);i++)
+                                    tsopath+=pathelement[i]+"/";
+                                string newtsopath = tsopath + newname + pathelement[pathelement.Length - 1].Substring(newname.Length);
+                                TDCGTbnUtil.SetTsoName(dataentry.data,newtsopath);
+                                database.UpdateData(dataentry);
+                                Debug.WriteLine("tbn:" + orgtsoepath + ">" + TDCGTbnUtil.GetTsoName(dataentry.data));
+                            }
+                            // データグリッドを更新する.
+                            string[] newitem = { entry[0].ToString(), newname + entry[1].ToString().Substring(newname.Length), entry[2].ToString() };
+                            row.ItemArray = newitem;
+                        }
+                    }
+                }
+            }
+        }
+
         // 選択しているファイルの名前を変更する
         private void toolStripMenuItemEditIdentify_Click(object sender, EventArgs e)
         {
             if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
+
+            ReplaceDialog dialog = new ReplaceDialog();
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                ReplaceFileName(dialog.textTo);
+            }
         }
 
         // 選択しているファイルのカテゴリを変更する
         private void toolStripMenuItemEditCategory_Click(object sender, EventArgs e)
         {
             if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
+
+            MessageBox.Show("次のバージョンでやるから待って", "エラー", MessageBoxButtons.OK);
         }
 
         // TAHファイルを保存する
@@ -366,6 +425,22 @@ namespace System.Windows.Forms
             }
             TDCGExplorer.TDCGExplorer.SetToolTips("梱包完了");
 
+        }
+
+        // TAHの情報を変更する.
+        private void toolStripMenuItemTAHInfoEdit_Click(object sender, EventArgs e)
+        {
+            TAHInfoDialog dialog = new TAHInfoDialog();
+            dialog.tahVersion = int.Parse(database["version"]);
+            dialog.tahSource = database["source"];
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                database["version"] = dialog.tahVersion.ToString();
+                database["source"] = dialog.tahSource;
+                // 情報を表示する.
+                setText();
+                Parent.Text = Text;
+            }
         }
 
 #if false

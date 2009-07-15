@@ -73,6 +73,9 @@ namespace TDCGExplorer
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+#if true
+            Application.Run(form = new MainForm());
+#else
             try
             {
                 Application.Run(form = new MainForm());
@@ -146,7 +149,7 @@ namespace TDCGExplorer
                     stream.Close();
                 }
             }
-
+#endif
             arcsDatabase.Dispose();
             systemDatabase.Dispose();
         }
