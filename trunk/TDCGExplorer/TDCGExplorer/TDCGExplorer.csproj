@@ -103,6 +103,18 @@
     <Compile Include="AnnotationDB.cs" />
     <Compile Include="ArcNames.cs" />
     <Compile Include="ArcsDataBase.cs" />
+    <Compile Include="ReplaceDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ReplaceDialog.Designer.cs">
+      <DependentUpon>ReplaceDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TAHInfoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TAHInfoDialog.Designer.cs">
+      <DependentUpon>TAHInfoDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="TAHWriter.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="CollisionTahPage.cs">
@@ -192,11 +204,17 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="ReplaceDialog.resx">
+      <DependentUpon>ReplaceDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SaveFilePage.resx">
       <DependentUpon>SaveFilePage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TAHEditor.resx">
       <DependentUpon>TAHEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TAHInfoDialog.resx">
+      <DependentUpon>TAHInfoDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TAHPage.resx">
       <DependentUpon>TAHPage.cs</DependentUpon>
