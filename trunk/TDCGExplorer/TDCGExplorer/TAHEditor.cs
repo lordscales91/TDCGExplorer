@@ -64,6 +64,9 @@ namespace System.Windows.Forms
             {
                 database.Dispose();
                 database = null;
+
+                if(MessageBox.Show("作業用データベースファイルを削除しますか？\nこのファイルは次回編集時に再利用できます。", "DBの削除", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                    File.Delete(tahdbpath);
             }
             base.Dispose(disposing);
         }
@@ -589,6 +592,34 @@ namespace System.Windows.Forms
                 setText();
                 Parent.Text = Text;
             }
+        }
+
+        // データを追加する.
+        public void AddItem(string path, byte[] bytedata)
+        {
+            // データベースにデータを追加する.
+            TAHLocalDBDataEntry tahdata = new TAHLocalDBDataEntry();
+            tahdata.data = bytedata;
+            tahdata.dataid = database.AddData(tahdata);
+            TAHLocalDbEntry tahentry = new TAHLocalDbEntry();
+            tahentry.dataid = tahdata.dataid;
+            tahentry.path = path;
+            database.AddContent(tahentry);
+
+            DataTable data = dataGridView.DataSource as DataTable;
+            if (data != null)
+            {
+                DataRow row = data.NewRow();
+                row.ItemArray = getDataEntity(path);
+                data.Rows.Add(row);
+            }
+        }
+
+        public void SetInformation(string filename, int version)
+        {
+            database["version"] = version.ToString();
+            database["source"] = filename;
+            setText();
         }
 
 #if false
