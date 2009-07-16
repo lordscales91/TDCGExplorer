@@ -123,5 +123,18 @@ namespace TDCGExplorer
             get { return textBoxTahEditor.Text; }
             set { textBoxTahEditor.Text = value; }
         }
+        public string collisionDetectLevel
+        {
+            get
+            {
+                if (checkBoxDuplicate.Checked) return "duplicate";
+                else return "collision";
+            }
+            set
+            {
+                if (value == "duplicate") checkBoxDuplicate.Checked = true;
+                else checkBoxDuplicate.Checked = false;
+            }
+        }
     }
 }

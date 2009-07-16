@@ -63,13 +63,15 @@
             this.label13 = new System.Windows.Forms.Label();
             this.textBoxTahEditor = new System.Windows.Forms.TextBox();
             this.label14 = new System.Windows.Forms.Label();
+            this.label15 = new System.Windows.Forms.Label();
+            this.checkBoxDuplicate = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // OKButton
             // 
             this.OKButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OKButton.Location = new System.Drawing.Point(448, 465);
+            this.OKButton.Location = new System.Drawing.Point(448, 485);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
             this.OKButton.TabIndex = 0;
@@ -95,7 +97,7 @@
             // DialoogCancelButton
             // 
             this.DialoogCancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.DialoogCancelButton.Location = new System.Drawing.Point(529, 465);
+            this.DialoogCancelButton.Location = new System.Drawing.Point(529, 485);
             this.DialoogCancelButton.Name = "DialoogCancelButton";
             this.DialoogCancelButton.Size = new System.Drawing.Size(75, 23);
             this.DialoogCancelButton.TabIndex = 3;
@@ -373,11 +375,32 @@
             this.label14.TabIndex = 30;
             this.label14.Text = "TAH編集先";
             // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(12, 495);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(55, 13);
+            this.label15.TabIndex = 33;
+            this.label15.Text = "衝突検出";
+            // 
+            // checkBoxDuplicate
+            // 
+            this.checkBoxDuplicate.AutoSize = true;
+            this.checkBoxDuplicate.Location = new System.Drawing.Point(109, 494);
+            this.checkBoxDuplicate.Name = "checkBoxDuplicate";
+            this.checkBoxDuplicate.Size = new System.Drawing.Size(209, 17);
+            this.checkBoxDuplicate.TabIndex = 32;
+            this.checkBoxDuplicate.Text = "ファイル名が一致する物も衝突とみなす";
+            this.checkBoxDuplicate.UseVisualStyleBackColor = true;
+            // 
             // EditSystemDatabase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(615, 497);
+            this.ClientSize = new System.Drawing.Size(615, 521);
+            this.Controls.Add(this.label15);
+            this.Controls.Add(this.checkBoxDuplicate);
             this.Controls.Add(this.textBoxTahEditor);
             this.Controls.Add(this.label14);
             this.Controls.Add(this.label13);
@@ -456,5 +479,7 @@
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.TextBox textBoxTahEditor;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.CheckBox checkBoxDuplicate;
     }
 }

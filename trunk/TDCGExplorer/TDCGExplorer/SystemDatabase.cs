@@ -134,6 +134,7 @@ namespace TDCGExplorer
             cameracenter = cameracenter;
             translateto = translateto;
             tahpath = tahpath;
+            collisionchecklebel = collisionchecklebel;
         }
 
         // arcpathの取得・設定.
@@ -251,6 +252,12 @@ namespace TDCGExplorer
         {
             get { return GetSqlValue("tahpath", Path.Combine(GetSystemDatabasePath(), "taheditor")); }
             set { SetSqlValue("tahpath", value); }
+        }
+        // 衝突チェックレベル
+        public string collisionchecklebel
+        {
+            get { return GetSqlValue("collisionchecklebel", Path.Combine(GetSystemDatabasePath(), "collision")); }
+            set { SetSqlValue("collisionchecklebel", value); }
         }
     }
 }

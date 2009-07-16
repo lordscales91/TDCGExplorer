@@ -44,6 +44,11 @@ namespace TDCGExplorer
             categoryTable[29] = new TBNCategoryData('3', "イヤリング類", 0x1D, 0x95, 0x94);
         }
 
+        public static TBNCategoryData[] CategoryData
+        {
+            get { return categoryTable; }
+        }
+ 
         public static void SetTsoName(byte[] tbndata, string tsoname)
         {
             int offset=-1;

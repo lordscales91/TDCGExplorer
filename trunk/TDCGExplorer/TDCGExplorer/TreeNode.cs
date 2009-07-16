@@ -148,6 +148,7 @@ namespace TDCGExplorer
             Dictionary<string, string> annon = TDCGExplorer.AnnDB.annotation;
             edit.text = zip.GetDisplayPath();
             edit.code = zip.code;
+            edit.Owner = TDCGExplorer.MainFormWindow;
             // エディットがOKなら書き換える.
             if (edit.ShowDialog() == DialogResult.OK)
             {
