@@ -148,6 +148,9 @@ public class TPOFile
     public TPONode[] nodes;
 
     internal float ratio = 0.0f;
+    /// <summary>
+    /// TPONodeの変形係数に乗ずる変形比率
+    /// </summary>
     public float Ratio
     {
         get { return ratio; } set { ratio = value; }
@@ -224,6 +227,9 @@ public class TPOFile
         proportion.Execute();
     }
 
+    /// <summary>
+    /// TPONodeの変形係数に従ってTpo.Tmoのモーション行列値を変形する。
+    /// </summary>
     public void Transform()
     {
         if (tmo.frames == null)
