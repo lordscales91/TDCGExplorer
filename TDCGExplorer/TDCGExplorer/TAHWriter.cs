@@ -175,6 +175,7 @@ namespace TDCGExplorer
                         content.Entry.Write(binarywriter);
                     // バッファをフラッシュして完了.
                     binarywriter.Flush();
+                    binarywriter.Close();
                     stream.Flush();
                 }
             }

@@ -307,45 +307,70 @@ namespace System.Windows.Forms
         // ファイル名の置換
         private void ReplaceFileName(string newname)
         {
-            foreach (DataGridViewRow viewrow in dataGridView.SelectedRows)
+            using (SQLiteTransaction transaction = database.BeginTransaction())
             {
-                DataRowView vrow = viewrow.DataBoundItem as DataRowView;
-                DataRow row = null;
-                if (vrow != null)
+                try
                 {
-                    row = vrow.Row;
-                    if (row != null)
+                    foreach (DataGridViewRow viewrow in dataGridView.SelectedRows)
                     {
-                        Object[] entry = row.ItemArray;
-                        if (entry != null)
+                        DataRowView vrow = viewrow.DataBoundItem as DataRowView;
+                        DataRow row = null;
+                        if (vrow != null)
                         {
-                            // 新しい名前を作る
-                            string orgpath = entry[0].ToString() + entry[1].ToString();
-                            string newpath = entry[0].ToString() + newname + entry[1].ToString().Substring(newname.Length);
-                            // ファイル名を書き換える
-                            TAHLocalDbEntry tahentry = database.GetEntry(orgpath);
-                            database.DeleteEntry(orgpath);
-                            tahentry.path=newpath;
-                            database.AddContent(tahentry);
-                            Debug.WriteLine(newpath);
-                            // TBNなら中身も書き換える
-                            if(Path.GetExtension(orgpath).ToLower()==".tbn"){
-                                TAHLocalDBDataEntry dataentry = database.GetData(tahentry.dataid);
-                                string orgtsoepath = TDCGTbnUtil.GetTsoName(dataentry.data);
-                                string[] pathelement = orgtsoepath.Split('/');
-                                string tsopath = "";
-                                for(int i=0;i<(pathelement.Length-1);i++)
-                                    tsopath+=pathelement[i]+"/";
-                                string newtsopath = tsopath + newname + pathelement[pathelement.Length - 1].Substring(newname.Length);
-                                TDCGTbnUtil.SetTsoName(dataentry.data,newtsopath);
-                                database.UpdateData(dataentry);
-                                Debug.WriteLine("tbn:" + orgtsoepath + ">" + TDCGTbnUtil.GetTsoName(dataentry.data));
+                            row = vrow.Row;
+                            if (row != null)
+                            {
+                                Object[] entry = row.ItemArray;
+                                if (entry != null)
+                                {
+                                    // 新しい名前を作る
+                                    string orgpath = entry[0].ToString() + entry[1].ToString();
+                                    string newfilename = newname + entry[1].ToString().Substring(newname.Length);
+                                    string newpath = entry[0].ToString() + newfilename;
+                                    // ファイル名を書き換える
+                                    TAHLocalDbEntry tahentry = database.GetEntry(orgpath);
+                                    database.DeleteEntry(orgpath);
+                                    tahentry.path = newpath;
+                                    database.AddContent(tahentry);
+                                    Debug.WriteLine(newpath);
+                                    // TBNなら中身も書き換える
+                                    if (Path.GetExtension(orgpath).ToLower() == ".tbn")
+                                    {
+                                        TAHLocalDBDataEntry dataentry = database.GetData(tahentry.dataid);
+                                        string orgtsoepath = TDCGTbnUtil.GetTsoName(dataentry.data);
+                                        string[] pathelement = orgtsoepath.Split('/');
+                                        string tsopath = "";
+                                        for (int i = 0; i < (pathelement.Length - 1); i++)
+                                            tsopath += pathelement[i] + "/";
+                                        string newtsopath = tsopath + newname + pathelement[pathelement.Length - 1].Substring(newname.Length);
+                                        TDCGTbnUtil.SetTsoName(dataentry.data, newtsopath);
+                                        database.UpdateData(dataentry);
+                                        Debug.WriteLine("tbn:" + orgtsoepath + ">" + TDCGTbnUtil.GetTsoName(dataentry.data));
+                                    }
+                                    // データグリッドを更新する.
+                                    string[] newitem = { entry[0].ToString(), newfilename, entry[2].ToString() };
+                                    row.ItemArray = newitem;
+                                }
                             }
-                            // データグリッドを更新する.
-                            string[] newitem = { entry[0].ToString(), newname + entry[1].ToString().Substring(newname.Length), entry[2].ToString() };
-                            row.ItemArray = newitem;
                         }
                     }
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+
+                    // データセットを元に戻す.
+                    DataTable data = newDataTable();
+                    List<string> directory = database.GetDirectory();
+                    foreach (string file in directory)
+                    {
+                        DataRow row = data.NewRow();
+                        row.ItemArray = getDataEntity(file);
+                        data.Rows.Add(row);
+                    }
+                    dataGridView.DataSource = data;
+                    throw ex;
                 }
             }
         }
@@ -354,11 +379,106 @@ namespace System.Windows.Forms
         private void toolStripMenuItemEditIdentify_Click(object sender, EventArgs e)
         {
             if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
-
-            ReplaceDialog dialog = new ReplaceDialog();
+            SimpleTextDialog dialog = new SimpleTextDialog();
+            dialog.labeltext = "新しい名前";
+            dialog.dialogtext = "ファイル名の変更";
+            dialog.Owner = TDCGExplorer.TDCGExplorer.MainFormWindow;
             if (dialog.ShowDialog() == DialogResult.OK)
             {
-                ReplaceFileName(dialog.textTo);
+                string textto = dialog.textfield;
+                if (textto.Length > 16)
+                {
+                    MessageBox.Show("文字数が長すぎます", "エラー", MessageBoxButtons.OK);
+                    return;
+                }
+                try
+                {
+                    ReplaceFileName(textto);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("エラーが発生しました:"+ex.Message, "エラー", MessageBoxButtons.OK);
+                    Debug.WriteLine(ex);
+                }
+            }
+        }
+
+        // ファイル名の置換
+        private void ReplaceCategory(TBNCategoryData type)
+        {
+            using (SQLiteTransaction transaction = database.BeginTransaction())
+            {
+                try
+                {
+                    foreach (DataGridViewRow viewrow in dataGridView.SelectedRows)
+                    {
+                        DataRowView vrow = viewrow.DataBoundItem as DataRowView;
+                        DataRow row = null;
+                        if (vrow != null)
+                        {
+                            row = vrow.Row;
+                            if (row != null)
+                            {
+                                Object[] entry = row.ItemArray;
+                                if (entry != null)
+                                {
+                                    string dir = entry[0].ToString();
+                                    string filename = entry[1].ToString();
+                                    string ext = entry[2].ToString().ToLower();
+
+                                    string orgpath = dir + filename;
+                                    string newfilename = filename.Substring(0, 9) + type.symbol.ToString() + filename.Substring(10, 6);
+                                    string newpath = dir + newfilename;
+
+                                    // ファイル名を書き換える
+                                    TAHLocalDbEntry tahentry = database.GetEntry(orgpath);
+                                    database.DeleteEntry(orgpath);
+                                    tahentry.path = newpath;
+                                    database.AddContent(tahentry);
+                                    Debug.WriteLine(newpath);
+                                    // TBNなら中身も書き換える
+                                    if (ext == "tbn")
+                                    {
+                                        TAHLocalDBDataEntry dataentry = database.GetData(tahentry.dataid);
+                                        string orgtsoepath = TDCGTbnUtil.GetTsoName(dataentry.data);
+                                        string[] pathelement = orgtsoepath.Split('/');
+                                        string tsopath = "";
+                                        for (int i = 0; i < (pathelement.Length - 1); i++)
+                                            tsopath += pathelement[i] + "/";
+                                        string oldtsoname = pathelement[pathelement.Length - 1];
+                                        string newtsopath = tsopath + oldtsoname.Substring(0, 9) + type.symbol.ToString() + oldtsoname.Substring(10, 6);
+                                        // ファイル名を書き換える
+                                        TDCGTbnUtil.SetTsoName(dataentry.data, newtsopath);
+                                        // 属性値を書き換える
+                                        TDCGTbnUtil.SetTsoSignature(dataentry.data, type);
+                                        database.UpdateData(dataentry);
+                                        Debug.WriteLine("tbn:" + orgtsoepath + ">" + TDCGTbnUtil.GetTsoName(dataentry.data));
+                                    }
+                                    // データグリッドを更新する.
+                                    string[] newitem = { dir, newfilename, ext };
+                                    row.ItemArray = newitem;
+                                }
+                            }
+                        }
+                    }
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+
+                    // データセットを元に戻す.
+                    DataTable data = newDataTable();
+                    List<string> directory = database.GetDirectory();
+                    foreach (string file in directory)
+                    {
+                        DataRow row = data.NewRow();
+                        row.ItemArray = getDataEntity(file);
+                        data.Rows.Add(row);
+                    }
+                    dataGridView.DataSource = data;
+                    throw ex;
+                }
             }
         }
 
@@ -367,7 +487,34 @@ namespace System.Windows.Forms
         {
             if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
 
-            MessageBox.Show("次のバージョンでやるから待って", "エラー", MessageBoxButtons.OK);
+            SimpleDropDownDialog dialog = new SimpleDropDownDialog();
+            foreach (TBNCategoryData type in TDCGTbnUtil.CategoryData)
+            {
+                dialog.AddList(type.symbol.ToString()+" : "+type.name+" 属性値1:"+type.byte1.ToString("x2")+" 属性値2:"+type.byte2.ToString("x2")+" 属性値3:"+type.byte3.ToString("x2") );
+            }
+            dialog.labeltext = "TBNの属性";
+            dialog.dialogtext = "TBNの属性変更";
+            dialog.Owner = TDCGExplorer.TDCGExplorer.MainFormWindow;
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                int index = dialog.selectedIndex;
+                if (index >= 0)
+                {
+                    if (index == 25)
+                    {
+                        MessageBox.Show("手持ちアイテムに変更する事はできません。", "エラー", MessageBoxButtons.OK);
+                    }
+                    try
+                    {
+                        ReplaceCategory(TDCGTbnUtil.CategoryData[index]);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("エラーが発生しました:" + ex.Message, "エラー", MessageBoxButtons.OK);
+                        Debug.WriteLine(e);
+                    }
+                }
+            }
         }
 
         // TAHファイルを保存する
@@ -422,6 +569,7 @@ namespace System.Windows.Forms
                 };
                 // データを書き込む.
                 tah.Write(stream);
+                stream.Close();
             }
             TDCGExplorer.TDCGExplorer.SetToolTips("梱包完了");
 

@@ -291,6 +291,7 @@ namespace TDCGExplorer
             edit.translateBone = SystemDB.translateto;
             edit.centerBone = SystemDB.cameracenter;
             edit.tahEditorPath = SystemDB.tahpath;
+            edit.collisionDetectLevel = SystemDB.collisionchecklebel;
             edit.Owner = MainFormWindow;
             if (edit.ShowDialog() == DialogResult.OK)
             {
@@ -311,6 +312,7 @@ namespace TDCGExplorer
                 SystemDB.translateto = edit.translateBone;
                 SystemDB.cameracenter = edit.centerBone;
                 SystemDB.tahpath = edit.tahEditorPath;
+                SystemDB.collisionchecklebel = edit.collisionDetectLevel;
             }
         }
 
@@ -424,7 +426,15 @@ namespace TDCGExplorer
             tvTree.Nodes.Add(arcs);
             // tahを展開する.
             List<ArcsTahEntry> list = db.GetTahs();
-            Dictionary<int, List<ArcsCollisionRecord>> colldomain = db.GetCollisionDomain();
+            Dictionary<int, List<ArcsCollisionRecord>> colldomain;
+            if (SystemDB.collisionchecklebel == "collision")
+            {
+                colldomain = db.GetCollisionDomain();
+            }
+            else
+            {
+                colldomain = db.GetDuplicateDomain();
+            }
             foreach (ArcsTahEntry entry in list)
             {
                 if (colldomain.ContainsKey(entry.id) == false) continue;

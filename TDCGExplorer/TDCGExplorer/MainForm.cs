@@ -304,23 +304,26 @@ namespace TDCGExplorer
         // 検索
         private void FindItemToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            FindDialog dialog = new FindDialog();
+            SimpleTextDialog dialog = new SimpleTextDialog();
             dialog.Owner = this;
+            dialog.dialogtext = "検索";
+            dialog.labeltext = "検索文字列";
             if (dialog.ShowDialog() == DialogResult.OK)
             {
+                string text = dialog.textfield;
                 Cursor.Current = Cursors.WaitCursor;
                 foreach (TreeNode node in treeViewArcs.Nodes)
-                    TDCGExplorer.FindTreeNode(node, dialog.text);
+                    TDCGExplorer.FindTreeNode(node, text);
                 foreach (TreeNode node in treeViewZips.Nodes)
-                    TDCGExplorer.FindTreeNode(node, dialog.text);
+                    TDCGExplorer.FindTreeNode(node, text);
                 foreach (TreeNode node in treeViewInstalled.Nodes)
-                    TDCGExplorer.FindTreeNode(node, dialog.text);
+                    TDCGExplorer.FindTreeNode(node, text);
                 foreach (TreeNode node in treeViewCollision.Nodes)
-                    TDCGExplorer.FindTreeNode(node, dialog.text);
+                    TDCGExplorer.FindTreeNode(node, text);
                 foreach (TreeNode node in treeViewTag.Nodes)
-                    TDCGExplorer.FindTreeNode(node, dialog.text);
+                    TDCGExplorer.FindTreeNode(node, text);
                 foreach (TreeNode node in treeViewSaveFile.Nodes)
-                    TDCGExplorer.FindTreeNode(node, dialog.text);
+                    TDCGExplorer.FindTreeNode(node, text);
                 Cursor.Current = Cursors.Default;
             }
         }
@@ -879,6 +882,13 @@ namespace TDCGExplorer
                 Debug.WriteLine(exception.Message);
             }
 
+        }
+
+        // 最新の情報を表示する.
+        private void displayUpdateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (threadCheck() == true) return;
+            DisplayDB();
         }
     }
 }

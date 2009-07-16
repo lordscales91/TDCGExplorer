@@ -1239,6 +1239,33 @@ namespace TDCGExplorer
 
         //衝突しているTAHIDを列挙する.
         //SELECT A.TAHID AS TahID1 ,B.TAHID AS TahID2,A.ID AS FilesEntryID1, B.ID AS FilesEntryID2  from filesentry a left join filesentry b on a.hash=b.hash WHERE UPPER(a.path)<>UPPER(b.path);
+        public Dictionary<int, List<ArcsCollisionRecord>> GetDuplicateDomain()
+        {
+            Dictionary<int, List<ArcsCollisionRecord>> table = new Dictionary<int, List<ArcsCollisionRecord>>();
+
+            using (SQLiteCommand cmd = cnn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT A.TAHID AS TahID1 ,B.TAHID AS TahID2,A.ID AS FilesEntryID1, B.ID AS FilesEntryID2 FROM FilesEntry A LEFT JOIN FilesEntry B ON A.HASH=B.HASH WHERE A.TAHID<>B.TAHID;";
+                using (SQLiteDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ArcsCollisionRecord entry;
+                        entry = new ArcsCollisionRecord();
+                        entry.fromTahID = int.Parse(reader[0].ToString());
+                        entry.toTahID = int.Parse(reader[1].ToString());
+                        entry.fromFilesID = int.Parse(reader[2].ToString());
+                        entry.toFilesID = int.Parse(reader[3].ToString());
+                        if (table.ContainsKey(entry.fromTahID) == false) table[entry.fromTahID] = new List<ArcsCollisionRecord>();
+                        table[entry.fromTahID].Add(entry);
+                    }
+                }
+            }
+            return table;
+        }
+
+        //衝突しているTAHIDを列挙する.
+        //SELECT A.TAHID AS TahID1 ,B.TAHID AS TahID2,A.ID AS FilesEntryID1, B.ID AS FilesEntryID2  from filesentry a left join filesentry b on a.hash=b.hash WHERE UPPER(a.path)<>UPPER(b.path);
         public Dictionary<int, List<ArcsCollisionRecord>> GetCollisionDomain()
         {
             Dictionary<int, List<ArcsCollisionRecord>> table = new Dictionary<int, List<ArcsCollisionRecord>>();
@@ -1263,5 +1290,6 @@ namespace TDCGExplorer
             }
             return table;
         }
+
     }
 }

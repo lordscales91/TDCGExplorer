@@ -103,11 +103,11 @@
     <Compile Include="AnnotationDB.cs" />
     <Compile Include="ArcNames.cs" />
     <Compile Include="ArcsDataBase.cs" />
-    <Compile Include="ReplaceDialog.cs">
+    <Compile Include="SimpleDropDownDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ReplaceDialog.Designer.cs">
-      <DependentUpon>ReplaceDialog.cs</DependentUpon>
+    <Compile Include="SimpleDropDownDialog.Designer.cs">
+      <DependentUpon>SimpleDropDownDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="TAHInfoDialog.cs">
       <SubType>Form</SubType>
@@ -133,11 +133,11 @@
     <Compile Include="AnnotationEdit.Designer.cs">
       <DependentUpon>AnnotationEdit.cs</DependentUpon>
     </Compile>
-    <Compile Include="FindDialog.cs">
+    <Compile Include="SimpleTextDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FindDialog.Designer.cs">
-      <DependentUpon>FindDialog.cs</DependentUpon>
+    <Compile Include="SimpleTextDialog.Designer.cs">
+      <DependentUpon>SimpleTextDialog.cs</DependentUpon>
     </Compile>
     <Compile Include="GenTahInfo.cs" />
     <Compile Include="HttpUtil.cs" />
@@ -178,6 +178,9 @@
     <Compile Include="TAHUtil.cs" />
     <Compile Include="TDCGExplorer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="SimpleDropDownDialog.resx">
+      <DependentUpon>SimpleDropDownDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CollisionTahPage.resx">
       <DependentUpon>CollisionTahPage.cs</DependentUpon>
     </EmbeddedResource>
@@ -187,8 +190,8 @@
     <EmbeddedResource Include="AnnotationEdit.resx">
       <DependentUpon>AnnotationEdit.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FindDialog.resx">
-      <DependentUpon>FindDialog.cs</DependentUpon>
+    <EmbeddedResource Include="SimpleTextDialog.resx">
+      <DependentUpon>SimpleTextDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ImagePage.resx">
       <DependentUpon>ImagePage.cs</DependentUpon>
@@ -203,9 +206,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ReplaceDialog.resx">
-      <DependentUpon>ReplaceDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SaveFilePage.resx">
       <DependentUpon>SaveFilePage.cs</DependentUpon>
