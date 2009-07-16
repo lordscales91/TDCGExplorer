@@ -40,6 +40,7 @@
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createFromArcsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadLatestArcsnameszipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.displayUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.editSystemDatabaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tSOViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.resetTSOViewerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -82,7 +83,6 @@
             this.ExpandTahFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteTahEditorFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExtractTahFileDirectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.displayUpdateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.cmContextMenu.SuspendLayout();
             this.StatusStrip.SuspendLayout();
@@ -197,6 +197,13 @@
             this.downloadLatestArcsnameszipToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.downloadLatestArcsnameszipToolStripMenuItem.Text = "最新のデータベース情報を取得";
             this.downloadLatestArcsnameszipToolStripMenuItem.Click += new System.EventHandler(this.downloadLatestDBZipToolStripMenuItem_Click_1);
+            // 
+            // displayUpdateToolStripMenuItem
+            // 
+            this.displayUpdateToolStripMenuItem.Name = "displayUpdateToolStripMenuItem";
+            this.displayUpdateToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.displayUpdateToolStripMenuItem.Text = "最新の情報を表示";
+            this.displayUpdateToolStripMenuItem.Click += new System.EventHandler(this.displayUpdateToolStripMenuItem_Click);
             // 
             // editSystemDatabaseToolStripMenuItem
             // 
@@ -653,13 +660,6 @@
             this.ExtractTahFileDirectToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.ExtractTahFileDirectToolStripMenuItem.Text = "TAHファイルを展開する";
             this.ExtractTahFileDirectToolStripMenuItem.Click += new System.EventHandler(this.ExtractTahFileToolStripMenuItem_Click);
-            // 
-            // displayUpdateToolStripMenuItem
-            // 
-            this.displayUpdateToolStripMenuItem.Name = "displayUpdateToolStripMenuItem";
-            this.displayUpdateToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.displayUpdateToolStripMenuItem.Text = "最新の情報を表示";
-            this.displayUpdateToolStripMenuItem.Click += new System.EventHandler(this.displayUpdateToolStripMenuItem_Click);
             // 
             // MainForm
             // 

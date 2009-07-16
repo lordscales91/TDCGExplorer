@@ -84,6 +84,10 @@ namespace TDCGExplorer
         {
             return (Path.Combine(TDCGExplorer.SystemDB.tahpath, entry.shortname) + ".db").ToLower();
         }
+        public static string GetTahDbPath(string localpath)
+        {
+            return (Path.Combine(TDCGExplorer.SystemDB.tahpath, localpath) + ".db").ToLower();
+        }
     }
 
     public class LbFileItem : LbGenItem

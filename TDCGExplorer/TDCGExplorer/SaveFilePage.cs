@@ -13,7 +13,12 @@ namespace System.Windows.Forms
     class SaveFilePage : ZipFilePageControl
     {
         TDCGSaveFileInfo savefile;
+        private ContextMenuStrip contextMenuStripSaveData;
+        private System.ComponentModel.IContainer components;
+        private ToolStripMenuItem toolStripMenuItemMakeTah;
         private DataGridView dataGridView;
+        private List<PNGTsoData> tsoDataList = new List<PNGTsoData>();
+        private string filename;
 
         // zipファイルの中から
         public SaveFilePage(GenericTahInfo tahInfo) : base(tahInfo)
@@ -36,6 +41,7 @@ namespace System.Windows.Forms
                 Debug.WriteLine(ex.Message);
             }
             Cursor.Current = Cursors.Default;
+            filename = Path.GetFileName(tahInfo.path);
         }
         // ファイルから直接読み出す.
         public SaveFilePage(string path)
@@ -67,12 +73,17 @@ namespace System.Windows.Forms
                 Debug.WriteLine(ex.Message);
             }
             Cursor.Current = Cursors.Default;
+            filename = Path.GetFileName(path);
         }
 
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.contextMenuStripSaveData = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemMakeTah = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+            this.contextMenuStripSaveData.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridView
@@ -81,12 +92,27 @@ namespace System.Windows.Forms
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView.ContextMenuStrip = this.contextMenuStripSaveData;
             this.dataGridView.Location = new System.Drawing.Point(0, 0);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.Size = new System.Drawing.Size(0, 0);
             this.dataGridView.TabIndex = 0;
             this.dataGridView.Resize += new System.EventHandler(this.dataGridView_Resize);
             this.dataGridView.MouseEnter += new System.EventHandler(this.dataGridView_MouseEnter);
+            // 
+            // contextMenuStripSaveData
+            // 
+            this.contextMenuStripSaveData.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemMakeTah});
+            this.contextMenuStripSaveData.Name = "contextMenuStripSaveData";
+            this.contextMenuStripSaveData.Size = new System.Drawing.Size(207, 26);
+            this.contextMenuStripSaveData.Click += new System.EventHandler(this.contextMenuStripSaveData_Click);
+            // 
+            // toolStripMenuItemMakeTah
+            // 
+            this.toolStripMenuItemMakeTah.Name = "toolStripMenuItemMakeTah";
+            this.toolStripMenuItemMakeTah.Size = new System.Drawing.Size(206, 22);
+            this.toolStripMenuItemMakeTah.Text = "TAHファイルを作成する";
             // 
             // SaveFilePage
             // 
@@ -95,6 +121,7 @@ namespace System.Windows.Forms
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.Controls.Add(this.dataGridView);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+            this.contextMenuStripSaveData.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -141,6 +168,8 @@ namespace System.Windows.Forms
                         TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
                         TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
                         TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
+
+                        tsoDataList.Add(tso);
 
                         TDCGExplorer.TDCGExplorer.IncBusy();
                         Application.DoEvents();
@@ -199,6 +228,21 @@ namespace System.Windows.Forms
                                             TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
                                             TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
 
+                                            using (MemoryStream memorystream = new MemoryStream())
+                                            {
+                                                tahstream.stream.Seek(0, SeekOrigin.Begin);
+                                                byte[] buf = new byte[1024];
+                                                int len;
+                                                while ((len = tahstream.stream.Read(buf, 0, buf.Length)) > 0)
+                                                {
+                                                    memorystream.Write(buf, 0, len);
+                                                }
+                                                PNGTsoData tsodata = new PNGTsoData();
+                                                tsodata.tsoID = (uint)i;
+                                                tsodata.tsodata = memorystream.ToArray();
+                                                tsoDataList.Add(tsodata);
+                                            }
+
                                             TDCGExplorer.TDCGExplorer.IncBusy();
                                             Application.DoEvents();
                                             TDCGExplorer.TDCGExplorer.DecBusy();
@@ -255,6 +299,21 @@ namespace System.Windows.Forms
                                                 TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
                                                 TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
 
+                                                using (MemoryStream memorystream = new MemoryStream())
+                                                {
+                                                    tahstream.stream.Seek(0, SeekOrigin.Begin);
+                                                    byte[] buf = new byte[1024];
+                                                    int len;
+                                                    while ((len = tahstream.stream.Read(buf, 0, buf.Length)) > 0)
+                                                    {
+                                                        memorystream.Write(buf, 0, len);
+                                                    }
+                                                    PNGTsoData tsodata = new PNGTsoData();
+                                                    tsodata.tsoID = (uint)i;
+                                                    tsodata.tsodata = memorystream.ToArray();
+                                                    tsoDataList.Add(tsodata);
+                                                }
+
                                                 TDCGExplorer.TDCGExplorer.IncBusy();
                                                 Application.DoEvents();
                                                 TDCGExplorer.TDCGExplorer.DecBusy();
@@ -299,6 +358,226 @@ namespace System.Windows.Forms
         private void dataGridView_Resize(object sender, EventArgs e)
         {
             dataGridView.Size = Size;
+        }
+
+        // セーブデータからTAHを作成する.
+        private void contextMenuStripSaveData_Click(object sender, EventArgs e)
+        {
+            string dbfilename = LBFileTahUtl.GetTahDbPath(filename);
+            if (File.Exists(dbfilename))
+            {
+                MessageBox.Show("既にデータベースファイルがあります。\n" + dbfilename + "\n削除してから操作してください。", "エラー", MessageBoxButtons.OK);
+                return;
+            }
+
+            string[] tbnname = {    "script/items/n001body_a00.tbn",
+                                    "script/items/n001fhea_b00.tbn",
+                                    "script/items/n001bhea_c00.tbn",
+                                    "script/items/n001hskn_d00.tbn",
+                                    "script/items/n001eyes_e00.tbn",
+                                    "script/items/n001bura_f00.tbn",
+                                    "script/items/n002scho_g00.tbn",
+                                    "script/items/n001pant_h00.tbn",
+                                    "script/items/n001hsox_i00.tbn",
+                                    "script/items/n003sail_j00.tbn",
+                                    "script/items/n001nurs_k00.tbn",
+                                    "script/items/n001nksk_l00.tbn",
+                                    "script/items/n001sail_m00.tbn",
+                                    "script/items/n001tail_n00.tbn",
+                                    "script/items/n001rofr_o00.tbn",
+                                    "script/items/n001nek1_p00.tbn",
+                                    "script/items/n001mega_q00.tbn",
+                                    "script/items/n001neck_r00.tbn",
+                                    "script/items/n004cffs_s00.tbn",
+                                    "script/items/n001wing_t00.tbn",
+                                    "script/items/n001ahog_u00.tbn",
+                                    "script/items/n001gant_v00.tbn",
+                                    "script/items/n001loos_w00.tbn",
+                                    "script/items/n001cffs_x00.tbn",
+                                    "script/items/n001head_y00.tbn",
+                                    "script/items/n001obon_z00.tbn",
+                                    "script/items/n001mayu_000.tbn",
+                                    "script/items/n001kiba_100.tbn",
+                                    "script/items/n001hoku_200.tbn",
+                                    "script/items/n001head_300.tbn" };
+
+            string[] newtbnname = { "script/items/N999SAVE_A00.tbn",
+                                    "script/items/N999SAVE_B00.tbn",
+                                    "script/items/N999SAVE_C00.tbn",
+                                    "script/items/N999SAVE_D00.tbn",
+                                    "script/items/N999SAVE_E00.tbn",
+                                    "script/items/N999SAVE_F00.tbn",
+                                    "script/items/N999SAVE_G00.tbn",
+                                    "script/items/N999SAVE_H00.tbn",
+                                    "script/items/N999SAVE_I00.tbn",
+                                    "script/items/N999SAVE_J00.tbn",
+                                    "script/items/N999SAVE_K00.tbn",
+                                    "script/items/N999SAVE_L00.tbn",
+                                    "script/items/N999SAVE_M00.tbn",
+                                    "script/items/N999SAVE_N00.tbn",
+                                    "script/items/N999SAVE_O00.tbn",
+                                    "script/items/N999SAVE_P00.tbn",
+                                    "script/items/N999SAVE_Q00.tbn",
+                                    "script/items/N999SAVE_R00.tbn",
+                                    "script/items/N999SAVE_S00.tbn",
+                                    "script/items/N999SAVE_T00.tbn",
+                                    "script/items/N999SAVE_U00.tbn",
+                                    "script/items/N999SAVE_V00.tbn",
+                                    "script/items/N999SAVE_W00.tbn",
+                                    "script/items/N999SAVE_X00.tbn",
+                                    "script/items/N999SAVE_Y00.tbn",
+                                    "script/items/N999SAVE_Z00.tbn",
+                                    "script/items/N999SAVE_000.tbn",
+                                    "script/items/N999SAVE_100.tbn",
+                                    "script/items/N999SAVE_200.tbn",
+                                    "script/items/N999SAVE_300.tbn" };
+
+            string[] newtsoname = { "data/model/N999SAVE_A00.tso",
+                                    "data/model/N999SAVE_B00.tso",
+                                    "data/model/N999SAVE_C00.tso",
+                                    "data/model/N999SAVE_D00.tso",
+                                    "data/model/N999SAVE_E00.tso",
+                                    "data/model/N999SAVE_F00.tso",
+                                    "data/model/N999SAVE_G00.tso",
+                                    "data/model/N999SAVE_H00.tso",
+                                    "data/model/N999SAVE_I00.tso",
+                                    "data/model/N999SAVE_J00.tso",
+                                    "data/model/N999SAVE_K00.tso",
+                                    "data/model/N999SAVE_L00.tso",
+                                    "data/model/N999SAVE_M00.tso",
+                                    "data/model/N999SAVE_N00.tso",
+                                    "data/model/N999SAVE_O00.tso",
+                                    "data/model/N999SAVE_P00.tso",
+                                    "data/model/N999SAVE_Q00.tso",
+                                    "data/model/N999SAVE_R00.tso",
+                                    "data/model/N999SAVE_S00.tso",
+                                    "data/model/N999SAVE_T00.tso",
+                                    "data/model/N999SAVE_U00.tso",
+                                    "data/model/N999SAVE_V00.tso",
+                                    "data/model/N999SAVE_W00.tso",
+                                    "data/model/N999SAVE_X00.tso",
+                                    "data/model/N999SAVE_Y00.tso",
+                                    "data/model/N999SAVE_Z00.tso",
+                                    "data/model/N999SAVE_000.tso",
+                                    "data/model/N999SAVE_100.tso",
+                                    "data/model/N999SAVE_200.tso",
+                                    "data/model/N999SAVE_300.tso" };
+
+            string[] newpsdname = { "data/icon/items/N999SAVE_A00.psd",
+                                    "data/icon/items/N999SAVE_B00.psd",
+                                    "data/icon/items/N999SAVE_C00.psd",
+                                    "data/icon/items/N999SAVE_D00.psd",
+                                    "data/icon/items/N999SAVE_E00.psd",
+                                    "data/icon/items/N999SAVE_F00.psd",
+                                    "data/icon/items/N999SAVE_G00.psd",
+                                    "data/icon/items/N999SAVE_H00.psd",
+                                    "data/icon/items/N999SAVE_I00.psd",
+                                    "data/icon/items/N999SAVE_J00.psd",
+                                    "data/icon/items/N999SAVE_K00.psd",
+                                    "data/icon/items/N999SAVE_L00.psd",
+                                    "data/icon/items/N999SAVE_M00.psd",
+                                    "data/icon/items/N999SAVE_N00.psd",
+                                    "data/icon/items/N999SAVE_O00.psd",
+                                    "data/icon/items/N999SAVE_P00.psd",
+                                    "data/icon/items/N999SAVE_Q00.psd",
+                                    "data/icon/items/N999SAVE_R00.psd",
+                                    "data/icon/items/N999SAVE_S00.psd",
+                                    "data/icon/items/N999SAVE_T00.psd",
+                                    "data/icon/items/N999SAVE_U00.psd",
+                                    "data/icon/items/N999SAVE_V00.psd",
+                                    "data/icon/items/N999SAVE_W00.psd",
+                                    "data/icon/items/N999SAVE_X00.psd",
+                                    "data/icon/items/N999SAVE_Y00.psd",
+                                    "data/icon/items/N999SAVE_Z00.psd",
+                                    "data/icon/items/N999SAVE_000.psd",
+                                    "data/icon/items/N999SAVE_100.psd",
+                                    "data/icon/items/N999SAVE_200.psd",
+                                    "data/icon/items/N999SAVE_300.psd" };
+
+            // base.tahから手持ちアイテム以外のファイルを読み込む.
+            Dictionary<uint, byte[]> tbndata = new Dictionary<uint,byte[]>();
+            using (Stream file_stream = File.OpenRead(Path.Combine(TDCGExplorer.TDCGExplorer.SystemDB.arcs_path, "base.tah")))
+            {
+                TAHFile tah = new TAHFile(file_stream);
+                try
+                {
+                    tah.LoadEntries();
+                    foreach (TAHEntry ent in tah.EntrySet.Entries)
+                    {
+                        for(int id=0;id<tbnname.Length;id++){
+                            if (ent.FileName != null && ent.FileName.ToLower() == tbnname[id])
+                            {
+                                byte[] content = TAHUtil.ReadEntryData(tah.Reader, ent);
+                                TDCGTbnUtil.SetTsoName(content, newtsoname[id]);
+                                tbndata.Add((uint)id, content);
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("base.tahの読み込みでエラーが発生しました。", "エラー", MessageBoxButtons.OK);
+                    Debug.WriteLine("basetah.open.error");
+                }
+            }
+           
+            // 手持ちアイテムTBNを読み込む.
+            try
+            {
+                using (Stream stream = File.OpenRead("N001OBON_Z00.tbn"))
+                using (MemoryStream memorystream = new MemoryStream())
+                {
+                    byte[] buf = new byte[1024];
+                    int len;
+                    while ((len = stream.Read(buf, 0, buf.Length)) > 0)
+                    {
+                        memorystream.Write(buf, 0, len);
+                    }
+                    byte[] content = memorystream.ToArray();
+                    TDCGTbnUtil.SetTsoName(content, newtsoname[25]);
+                    tbndata.Add(25, content);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("tbnの読み込みでエラーが発生しました。", "エラー", MessageBoxButtons.OK);
+                Debug.WriteLine("tbn.open.error");
+            }
+
+            byte[] icondata = null;
+
+            // アイコンを読み込む
+            try
+            {
+                using (Stream stream = File.OpenRead("N999SAVE_A00.PSD"))
+                using (MemoryStream memorystream = new MemoryStream())
+                {
+                    byte[] buf = new byte[1024];
+                    int len;
+                    while ((len = stream.Read(buf, 0, buf.Length)) > 0)
+                    {
+                        memorystream.Write(buf, 0, len);
+                    }
+                    icondata = memorystream.ToArray();
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("PSDの読み込みでエラーが発生しました。", "エラー", MessageBoxButtons.OK);
+                Debug.WriteLine("PSD.open.error");
+            }
+
+            // 新規TAHを作成する.
+            // 常に新規タブで.
+            TAHEditor editor = new TAHEditor(dbfilename, null);
+            editor.SetInformation(filename + ".tah", 1);
+            foreach (PNGTsoData data in tsoDataList)
+            {
+                editor.AddItem(newtbnname[data.tsoID], tbndata[data.tsoID]);
+                editor.AddItem(newpsdname[data.tsoID], icondata);
+                editor.AddItem(newtsoname[data.tsoID], data.tsodata);
+            }
+            TDCGExplorer.TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
         }
     }
 }
