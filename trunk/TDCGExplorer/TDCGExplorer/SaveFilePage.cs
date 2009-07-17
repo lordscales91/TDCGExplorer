@@ -337,6 +337,78 @@ namespace System.Windows.Forms
                             }
                         }
                     }
+                    if (TDCGExplorer.TDCGExplorer.SystemDB.findziplevel == true && partfile[2] == "")
+                    {
+                        // まずarcsからさがしてみる.
+                        List<ArcsTahFilesEntry> files = TDCGExplorer.TDCGExplorer.ArcsDB.GetTahFilesEntry(TAHUtil.CalcHash("data/model/" + partsname.Substring(6) + ".tso"));
+                        if (files.Count > 0)
+                        {
+                            ArcsTahFilesEntry file = null;
+                            ArcsTahEntry tah = null;
+                            int pastVersion = -1;
+                            foreach (ArcsTahFilesEntry subfile in files)
+                            {
+                                ArcsTahEntry subtah = TDCGExplorer.TDCGExplorer.ArcsDB.GetTah(subfile.tahid);
+                                if (subtah.version >= pastVersion)
+                                {
+                                    file = subfile;
+                                    tah = subtah;
+                                    pastVersion = subtah.version;
+                                }
+                                TDCGExplorer.TDCGExplorer.IncBusy();
+                                Application.DoEvents();
+                                TDCGExplorer.TDCGExplorer.DecBusy();
+
+                            }
+                            if (tah != null)
+                            {
+                                partfile[2] = tah.path;
+                                if (pngstream.count == 0) // 通常セーブなら
+                                {
+                                    try
+                                    {
+                                        // TSOを読み込む
+                                        GenericArcsTahInfo info = new GenericArcsTahInfo(tah);
+                                        using (GenericTAHStream tahstream = new GenericTAHStream(info, file))
+                                        {
+                                            if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
+                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
+                                            TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
+                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
+                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
+
+                                            using (MemoryStream memorystream = new MemoryStream())
+                                            {
+                                                tahstream.stream.Seek(0, SeekOrigin.Begin);
+#if false
+                                                byte[] buf = new byte[1024];
+                                                int len;
+                                                while ((len = tahstream.stream.Read(buf, 0, buf.Length)) > 0)
+                                                {
+                                                    memorystream.Write(buf, 0, len);
+                                                }
+#endif
+                                                ZipFileUtil.CopyStream(tahstream.stream, memorystream);
+
+                                                PNGTsoData tsodata = new PNGTsoData();
+                                                tsodata.tsoID = (uint)i;
+                                                tsodata.tsodata = memorystream.ToArray();
+                                                tsoDataList.Add(tsodata);
+                                            }
+
+                                            TDCGExplorer.TDCGExplorer.IncBusy();
+                                            Application.DoEvents();
+                                            TDCGExplorer.TDCGExplorer.DecBusy();
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Debug.WriteLine("Error: " + ex);
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
 
                 DataRow row = data.NewRow();
