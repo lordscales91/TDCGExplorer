@@ -218,6 +218,8 @@ namespace System.Windows.Forms
                                 {
                                     try
                                     {
+                                        DisplayTso(new GenericArcsTahInfo(tah), file,i);
+#if false
                                         // TSOを読み込む
                                         GenericArcsTahInfo info = new GenericArcsTahInfo(tah);
                                         using (GenericTAHStream tahstream = new GenericTAHStream(info, file))
@@ -251,6 +253,7 @@ namespace System.Windows.Forms
                                             Application.DoEvents();
                                             TDCGExplorer.TDCGExplorer.DecBusy();
                                         }
+#endif
                                     }
                                     catch (Exception ex)
                                     {
@@ -293,6 +296,8 @@ namespace System.Windows.Forms
                                     { 
                                         try
                                         {
+                                            DisplayTso(new GenericZipsTahInfo(tah), file,i);
+#if false
                                             // TSOを読み込む
                                             GenericZipsTahInfo info = new GenericZipsTahInfo(tah);
                                             using (GenericTAHStream tahstream = new GenericTAHStream(info, file))
@@ -327,6 +332,7 @@ namespace System.Windows.Forms
                                                 TDCGExplorer.TDCGExplorer.DecBusy();
                                                 Application.DoEvents();
                                             }
+#endif
                                         }
                                         catch (Exception ex)
                                         {
@@ -367,6 +373,8 @@ namespace System.Windows.Forms
                                 {
                                     try
                                     {
+                                        DisplayTso(new GenericArcsTahInfo(tah), file,i);
+#if false
                                         // TSOを読み込む
                                         GenericArcsTahInfo info = new GenericArcsTahInfo(tah);
                                         using (GenericTAHStream tahstream = new GenericTAHStream(info, file))
@@ -400,6 +408,7 @@ namespace System.Windows.Forms
                                             Application.DoEvents();
                                             TDCGExplorer.TDCGExplorer.DecBusy();
                                         }
+#endif
                                     }
                                     catch (Exception ex)
                                     {
@@ -424,6 +433,34 @@ namespace System.Windows.Forms
             }
 
             dataGridView.DataSource = data;
+        }
+
+        private void DisplayTso(GenericTahInfo info, ArcsTahFilesEntry file,int id)
+        {
+            // TSOを読み込む
+            using (GenericTAHStream tahstream = new GenericTAHStream(info, file))
+            {
+                if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
+                TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
+                TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
+                TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
+                TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
+
+                using (MemoryStream memorystream = new MemoryStream())
+                {
+                    tahstream.stream.Seek(0, SeekOrigin.Begin);
+                    ZipFileUtil.CopyStream(tahstream.stream, memorystream);
+                    PNGTsoData tsodata = new PNGTsoData();
+                    tsodata.tsoID = (uint)id;
+                    tsodata.tsodata = memorystream.ToArray();
+                    tsoDataList.Add(tsodata);
+                }
+
+                TDCGExplorer.TDCGExplorer.IncBusy();
+                Application.DoEvents();
+                TDCGExplorer.TDCGExplorer.DecBusy();
+                Application.DoEvents();
+            }
         }
 
         protected override void InitLayout()

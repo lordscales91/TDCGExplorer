@@ -192,6 +192,7 @@ namespace TDCGExplorer
             if (savefilpath.EndsWith(".tdcgsav.png") || savefilpath.EndsWith(".tdcgsav.bmp"))
             {
                 TDCGExplorer.MainFormWindow.AssignTagPageControl(new SaveFilePage(new GenericZipsTahInfo(entry)));
+                return;
             }
             // TAHファイル内容に関するフォームを追加する.
             switch (Path.GetExtension(entry.path.ToLower()))
