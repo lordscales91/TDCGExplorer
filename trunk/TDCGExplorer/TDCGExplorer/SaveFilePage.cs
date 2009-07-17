@@ -219,41 +219,6 @@ namespace System.Windows.Forms
                                     try
                                     {
                                         DisplayTso(new GenericArcsTahInfo(tah), file,i);
-#if false
-                                        // TSOを読み込む
-                                        GenericArcsTahInfo info = new GenericArcsTahInfo(tah);
-                                        using (GenericTAHStream tahstream = new GenericTAHStream(info, file))
-                                        {
-                                            if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
-                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
-                                            TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
-                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
-                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
-
-                                            using (MemoryStream memorystream = new MemoryStream())
-                                            {
-                                                tahstream.stream.Seek(0, SeekOrigin.Begin);
-#if false
-                                                byte[] buf = new byte[1024];
-                                                int len;
-                                                while ((len = tahstream.stream.Read(buf, 0, buf.Length)) > 0)
-                                                {
-                                                    memorystream.Write(buf, 0, len);
-                                                }
-#endif
-                                                ZipFileUtil.CopyStream(tahstream.stream, memorystream);
-
-                                                PNGTsoData tsodata = new PNGTsoData();
-                                                tsodata.tsoID = (uint)i;
-                                                tsodata.tsodata = memorystream.ToArray();
-                                                tsoDataList.Add(tsodata);
-                                            }
-
-                                            TDCGExplorer.TDCGExplorer.IncBusy();
-                                            Application.DoEvents();
-                                            TDCGExplorer.TDCGExplorer.DecBusy();
-                                        }
-#endif
                                     }
                                     catch (Exception ex)
                                     {
@@ -297,42 +262,6 @@ namespace System.Windows.Forms
                                         try
                                         {
                                             DisplayTso(new GenericZipsTahInfo(tah), file,i);
-#if false
-                                            // TSOを読み込む
-                                            GenericZipsTahInfo info = new GenericZipsTahInfo(tah);
-                                            using (GenericTAHStream tahstream = new GenericTAHStream(info, file))
-                                            {
-                                                if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
-                                                TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
-                                                TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
-                                                TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
-                                                TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
-
-                                                using (MemoryStream memorystream = new MemoryStream())
-                                                {
-                                                    tahstream.stream.Seek(0, SeekOrigin.Begin);
-#if false
-                                                    byte[] buf = new byte[1024];
-                                                    int len;
-                                                    while ((len = tahstream.stream.Read(buf, 0, buf.Length)) > 0)
-                                                    {
-                                                        memorystream.Write(buf, 0, len);
-                                                    }
-#endif
-                                                    ZipFileUtil.CopyStream(tahstream.stream, memorystream);
-
-                                                    PNGTsoData tsodata = new PNGTsoData();
-                                                    tsodata.tsoID = (uint)i;
-                                                    tsodata.tsodata = memorystream.ToArray();
-                                                    tsoDataList.Add(tsodata);
-                                                }
-
-                                                TDCGExplorer.TDCGExplorer.IncBusy();
-                                                Application.DoEvents();
-                                                TDCGExplorer.TDCGExplorer.DecBusy();
-                                                Application.DoEvents();
-                                            }
-#endif
                                         }
                                         catch (Exception ex)
                                         {
@@ -374,41 +303,6 @@ namespace System.Windows.Forms
                                     try
                                     {
                                         DisplayTso(new GenericArcsTahInfo(tah), file,i);
-#if false
-                                        // TSOを読み込む
-                                        GenericArcsTahInfo info = new GenericArcsTahInfo(tah);
-                                        using (GenericTAHStream tahstream = new GenericTAHStream(info, file))
-                                        {
-                                            if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
-                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
-                                            TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
-                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
-                                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
-
-                                            using (MemoryStream memorystream = new MemoryStream())
-                                            {
-                                                tahstream.stream.Seek(0, SeekOrigin.Begin);
-#if false
-                                                byte[] buf = new byte[1024];
-                                                int len;
-                                                while ((len = tahstream.stream.Read(buf, 0, buf.Length)) > 0)
-                                                {
-                                                    memorystream.Write(buf, 0, len);
-                                                }
-#endif
-                                                ZipFileUtil.CopyStream(tahstream.stream, memorystream);
-
-                                                PNGTsoData tsodata = new PNGTsoData();
-                                                tsodata.tsoID = (uint)i;
-                                                tsodata.tsodata = memorystream.ToArray();
-                                                tsoDataList.Add(tsodata);
-                                            }
-
-                                            TDCGExplorer.TDCGExplorer.IncBusy();
-                                            Application.DoEvents();
-                                            TDCGExplorer.TDCGExplorer.DecBusy();
-                                        }
-#endif
                                     }
                                     catch (Exception ex)
                                     {
@@ -644,14 +538,6 @@ namespace System.Windows.Forms
                 using (Stream stream = File.OpenRead("N001OBON_Z00.tbn"))
                 using (MemoryStream memorystream = new MemoryStream())
                 {
-#if false
-                    byte[] buf = new byte[1024];
-                    int len;
-                    while ((len = stream.Read(buf, 0, buf.Length)) > 0)
-                    {
-                        memorystream.Write(buf, 0, len);
-                    }
-#endif
                     ZipFileUtil.CopyStream(stream, memorystream);
                     byte[] content = memorystream.ToArray();
                     TDCGTbnUtil.SetTsoName(content, newtsoname[25]);
@@ -672,14 +558,6 @@ namespace System.Windows.Forms
                 using (Stream stream = File.OpenRead("N999SAVE_A00.PSD"))
                 using (MemoryStream memorystream = new MemoryStream())
                 {
-#if false
-                    byte[] buf = new byte[1024];
-                    int len;
-                    while ((len = stream.Read(buf, 0, buf.Length)) > 0)
-                    {
-                        memorystream.Write(buf, 0, len);
-                    }
-#endif
                     ZipFileUtil.CopyStream(stream, memorystream);
                     icondata = memorystream.ToArray();
                 }
@@ -694,12 +572,14 @@ namespace System.Windows.Forms
             // 常に新規タブで.
             TAHEditor editor = new TAHEditor(dbfilename, null);
             editor.SetInformation(filename + ".tah", 1);
+            Object transaction = editor.BeginTransaction();
             foreach (PNGTsoData data in tsoDataList)
             {
                 editor.AddItem(newtbnname[data.tsoID], tbndata[data.tsoID]);
                 editor.AddItem(newpsdname[data.tsoID], icondata);
                 editor.AddItem(newtsoname[data.tsoID], data.tsodata);
             }
+            editor.Commit(transaction);
             TDCGExplorer.TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
         }
     }

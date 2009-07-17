@@ -78,11 +78,13 @@
             this.splitContainerH = new System.Windows.Forms.SplitContainer();
             this.splitContainerWithView = new System.Windows.Forms.SplitContainer();
             this.listBoxMainListBox = new System.Windows.Forms.ListBox();
-            this.ListBoxContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.ListBoxContextMenuStripTahFile = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.NewTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExpandTahFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteTahEditorFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExtractTahFileDirectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStripSaveFile = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.cmContextMenu.SuspendLayout();
             this.StatusStrip.SuspendLayout();
@@ -102,7 +104,8 @@
             this.splitContainerH.SuspendLayout();
             this.splitContainerWithView.Panel1.SuspendLayout();
             this.splitContainerWithView.SuspendLayout();
-            this.ListBoxContextMenuStrip.SuspendLayout();
+            this.ListBoxContextMenuStripTahFile.SuspendLayout();
+            this.contextMenuStripSaveFile.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainMenu
@@ -614,7 +617,7 @@
             this.listBoxMainListBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.listBoxMainListBox.ContextMenuStrip = this.ListBoxContextMenuStrip;
+            this.listBoxMainListBox.ContextMenuStrip = this.ListBoxContextMenuStripTahFile;
             this.listBoxMainListBox.FormattingEnabled = true;
             this.listBoxMainListBox.Location = new System.Drawing.Point(0, 3);
             this.listBoxMainListBox.Name = "listBoxMainListBox";
@@ -623,15 +626,15 @@
             this.listBoxMainListBox.SelectedIndexChanged += new System.EventHandler(this.listBoxMainListBox_SelectedIndexChanged);
             this.listBoxMainListBox.MouseEnter += new System.EventHandler(this.listBoxMainListBox_MouseEnter);
             // 
-            // ListBoxContextMenuStrip
+            // ListBoxContextMenuStripTahFile
             // 
-            this.ListBoxContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ListBoxContextMenuStripTahFile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewTabToolStripMenuItem,
             this.ExpandTahFileToolStripMenuItem,
             this.deleteTahEditorFileToolStripMenuItem,
             this.ExtractTahFileDirectToolStripMenuItem});
-            this.ListBoxContextMenuStrip.Name = "contextMenuStrip1";
-            this.ListBoxContextMenuStrip.Size = new System.Drawing.Size(231, 92);
+            this.ListBoxContextMenuStripTahFile.Name = "contextMenuStrip1";
+            this.ListBoxContextMenuStripTahFile.Size = new System.Drawing.Size(231, 92);
             // 
             // NewTabToolStripMenuItem
             // 
@@ -661,8 +664,23 @@
             this.ExtractTahFileDirectToolStripMenuItem.Text = "TAHファイルを展開する";
             this.ExtractTahFileDirectToolStripMenuItem.Click += new System.EventHandler(this.ExtractTahFileToolStripMenuItem_Click);
             // 
+            // contextMenuStripSaveFile
+            // 
+            this.contextMenuStripSaveFile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItem1});
+            this.contextMenuStripSaveFile.Name = "contextMenuStrip1";
+            this.contextMenuStripSaveFile.Size = new System.Drawing.Size(171, 26);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(170, 22);
+            this.toolStripMenuItem1.Text = "新しいタブを開く";
+            this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            // 
             // MainForm
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(817, 457);
@@ -673,6 +691,8 @@
             this.Name = "MainForm";
             this.Text = "TDCGExplorer";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainForm_DragEnter);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.MainMenu.ResumeLayout(false);
             this.MainMenu.PerformLayout();
@@ -695,7 +715,8 @@
             this.splitContainerH.ResumeLayout(false);
             this.splitContainerWithView.Panel1.ResumeLayout(false);
             this.splitContainerWithView.ResumeLayout(false);
-            this.ListBoxContextMenuStrip.ResumeLayout(false);
+            this.ListBoxContextMenuStripTahFile.ResumeLayout(false);
+            this.contextMenuStripSaveFile.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -729,7 +750,7 @@
         private System.Windows.Forms.ToolStripMenuItem editSystemDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem EditAnnotationToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem FindDialogToolStripMenuItem;
-        private System.Windows.Forms.ContextMenuStrip ListBoxContextMenuStrip;
+        private System.Windows.Forms.ContextMenuStrip ListBoxContextMenuStripTahFile;
         private System.Windows.Forms.ToolStripMenuItem NewTabToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem EditAnnotationToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem WindowMenuToolStripMenuItem;
@@ -757,6 +778,8 @@
         private System.Windows.Forms.ToolStripMenuItem ExtractTahFileDirectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem deleteTahEditorFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem displayUpdateToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripSaveFile;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
 
     }
 }

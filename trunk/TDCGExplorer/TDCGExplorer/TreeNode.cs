@@ -40,6 +40,7 @@ namespace TDCGExplorer
 
         public override void DoTvTreeSelect()
         {
+            TDCGExplorer.MainFormWindow.SetTahContextMenu(true); // TAH関連のメニューがあるcontext menu
             TDCGExplorer.MainFormWindow.ListBoxClear();
             foreach (ArcsTahEntry file in Entries)
             {
@@ -66,6 +67,7 @@ namespace TDCGExplorer
 
         public override void DoTvTreeSelect()
         {
+            TDCGExplorer.MainFormWindow.SetTahContextMenu(true); // TAH関連のメニューがあるcontext menu
             TDCGExplorer.MainFormWindow.ListBoxClear();
             //セレクトされたときにSQLに問い合わせる.
             List<ArcsZipTahEntry> files = TDCGExplorer.ArcsDB.GetZipTahs(zipid);
@@ -176,6 +178,7 @@ namespace TDCGExplorer
 
         public override void DoTvTreeSelect()
         {
+            TDCGExplorer.MainFormWindow.SetTahContextMenu(false); // TAH関連のメニューがないcontext menu
             TDCGExplorer.MainFormWindow.ListBoxClear();
             foreach (CollisionItem file in entries)
             {
@@ -202,6 +205,7 @@ namespace TDCGExplorer
 
         public override void DoTvTreeSelect()
         {
+            TDCGExplorer.MainFormWindow.SetTahContextMenu(false); // TAH関連のメニューがないcontext menu
             TDCGExplorer.MainFormWindow.ListBoxClear();
             foreach (string file in Files)
             {

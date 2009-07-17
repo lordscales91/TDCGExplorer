@@ -879,6 +879,104 @@ namespace TDCGExplorer
             }
         }
 
+        // ディレクトリの一覧を取得する.
+        private static void GetDirectories(List<string> directory,string path)
+        {
+            string[] files = Directory.GetFiles(path, "*");
+            foreach (string file in files)
+            {
+                directory.Add(file);
+            }
+            string[] directories = Directory.GetDirectories(path);
+            foreach (string dir in directories)
+            {
+                GetDirectories(directory, dir);
+            }
+        }
+
+        // TAHdecGUIクローンメイン部分.
+        // たったこれだけ.
+        public static void FileDrop(string[] files)
+        {
+            string basename = Path.GetFileNameWithoutExtension(files[0]);
+            string fullpath = files[0];
+            string filename = Path.GetFileName(files[0]);
+
+            // TAHファイルをドロップされた
+            if (Path.GetExtension(filename).ToLower() == ".tah")
+            {
+                try
+                {
+                    // TAHエディタを開いて、TAHファイルの中身をコピーする.
+                    TAHEditor editor = new TAHEditor(LBFileTahUtl.GetTahDbPath(basename), null);
+                    Object transaction = editor.BeginTransaction();
+                    using (Stream stream = File.OpenRead(fullpath))
+                    {
+                        using (TAHFile tah = new TAHFile(stream))
+                        {
+                            tah.LoadEntries();
+                            // TAHヘッダ情報を複製する.
+                            int index = 0;
+                            foreach (TAHEntry ent in tah.EntrySet.Entries)
+                            {
+                                string tahfile = ent.FileName;
+                                if (tahfile == null)
+                                {
+                                    tahfile = index.ToString("d8") + "_" + ent.Hash.ToString("x8");
+                                }
+                                SetToolTips("ファイル読み取り中:" + tahfile);
+                                byte[] tahdata = TAHUtil.ReadEntryData(tah.Reader, ent);
+                                editor.AddItem(tahfile, tahdata);
+                                IncBusy();
+                                Application.DoEvents();
+                                DecBusy();
+                            }
+                            editor.SetInformation(filename, (int)tah.Header.Version);
+                        }
+                    }
+                    TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show("TAHの読み取りでエラーが発生しました。\n"+exception.Message, "エラー", MessageBoxButtons.OK);
+                }
+            }
+            else
+            {
+                try
+                {
+                    List<string> dir = new List<string>();
+                    GetDirectories(dir, fullpath);
+
+                    // TAHエディタを開いて、TAHファイルの中身をコピーする.
+                    TAHEditor editor = new TAHEditor(LBFileTahUtl.GetTahDbPath(basename), null);
+                    Object transaction = editor.BeginTransaction();
+                    foreach (string file in dir)
+                    {
+                        using (Stream stream = File.OpenRead(file))
+                        {
+                            string newpath = file.Substring(fullpath.Length + 1).Replace('\\', '/');
+                            SetToolTips("ファイル読み取り中:" + newpath);
+                            MemoryStream ms = new MemoryStream();
+                            ZipFileUtil.CopyStream(stream, ms);
+                            byte[] tahdata = ms.ToArray();
+                            editor.AddItem(newpath, tahdata);
+                            IncBusy();
+                            Application.DoEvents();
+                            DecBusy();
+                        }
+                    }
+                    editor.SetInformation(basename + ".tah", 1);
+                    editor.Commit(transaction);
+                    TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show("ファイルの読み取りでエラーが発生しました。\n" + exception.Message, "エラー", MessageBoxButtons.OK);
+                }
+            }
+        }
+
 #if false
         public static void FindNode(string key)
         {

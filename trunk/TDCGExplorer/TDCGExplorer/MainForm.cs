@@ -890,5 +890,37 @@ namespace TDCGExplorer
             if (threadCheck() == true) return;
             DisplayDB();
         }
+
+        public void SetTahContextMenu(bool flagIsTah)
+        {
+            if (flagIsTah == true)
+            {
+                listBoxMainListBox.ContextMenuStrip = ListBoxContextMenuStripTahFile;
+            }
+            else
+            {
+                listBoxMainListBox.ContextMenuStrip = contextMenuStripSaveFile;
+            }
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            NewTabPageToolStripMenuItem_Click(sender, e);
+        }
+
+        // ファイルをドラッグドロップされた→TAHページを作成してTAH梱包の準備をする.
+        private void MainForm_DragDrop(object sender, DragEventArgs e)
+        {
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            if (files.Length == 0) return;
+
+            TDCGExplorer.FileDrop(files);
+        }
+
+        private void MainForm_DragEnter(object sender, DragEventArgs e)
+        {
+            if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+            e.Effect = DragDropEffects.Copy;
+       }
     }
 }

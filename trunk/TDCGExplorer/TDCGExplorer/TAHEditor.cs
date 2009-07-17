@@ -24,6 +24,7 @@ namespace System.Windows.Forms
         private ToolStripMenuItem toolStripMenuItemSaveTAHFile;
         private ToolStripMenuItem toolStripMenuItemTAHInfoEdit;
         private ToolStripMenuItem toolStripMenuItemChangeColor;
+        private ToolStripMenuItem toolStripMenuItemDeleteItem;
         private string tahdbpath;
 
         public TAHEditor(string dbpath, GenericTahInfo info)
@@ -57,6 +58,20 @@ namespace System.Windows.Forms
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView.AllowUserToAddRows = false;
             setText();
+        }
+
+        public Object BeginTransaction()
+        {
+            return database.BeginTransaction();
+        }
+
+        public void Commit(Object transactionobject)
+        {
+            SQLiteTransaction transaction = transactionobject as SQLiteTransaction;
+            if (transaction != null)
+            {
+                transaction.Commit();
+            }
         }
 
         protected override void Dispose(bool disposing)
@@ -176,6 +191,7 @@ namespace System.Windows.Forms
             this.toolStripMenuItemChangeColor = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSaveTAHFile = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemDeleteItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -203,10 +219,11 @@ namespace System.Windows.Forms
             this.toolStripMenuItemEditIdentify,
             this.toolStripMenuItemEditCategory,
             this.toolStripMenuItemChangeColor,
+            this.toolStripMenuItemDeleteItem,
             this.toolStripMenuItemSaveTAHFile,
             this.toolStripMenuItemClose});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(291, 158);
+            this.contextMenuStrip.Size = new System.Drawing.Size(291, 180);
             // 
             // toolStripMenuItemTAHInfoEdit
             // 
@@ -256,6 +273,13 @@ namespace System.Windows.Forms
             this.toolStripMenuItemClose.Size = new System.Drawing.Size(290, 22);
             this.toolStripMenuItemClose.Text = "閉じる";
             this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
+            // 
+            // toolStripMenuItemDeleteItem
+            // 
+            this.toolStripMenuItemDeleteItem.Name = "toolStripMenuItemDeleteItem";
+            this.toolStripMenuItemDeleteItem.Size = new System.Drawing.Size(290, 22);
+            this.toolStripMenuItemDeleteItem.Text = "選択したファイルの削除";
+            this.toolStripMenuItemDeleteItem.Click += new System.EventHandler(this.toolStripMenuItemDeleteItem_Click);
             // 
             // TAHEditor
             // 
@@ -586,7 +610,7 @@ namespace System.Windows.Forms
             SimpleDropDownDialog dialog = new SimpleDropDownDialog();
             foreach (TBNCategoryData type in TDCGTbnUtil.CategoryData)
             {
-                dialog.AddList(type.symbol.ToString()+" : "+type.name+" 属性値1:"+type.byte1.ToString("x2")+" 属性値2:"+type.byte2.ToString("x2")+" 属性値3:"+type.byte3.ToString("x2") );
+                dialog.AddList(type.symbol.ToString()+" : "+type.name);//+" 属性値1:"+type.byte1.ToString("x2")+" 属性値2:"+type.byte2.ToString("x2")+" 属性値3:"+type.byte3.ToString("x2") );
             }
             dialog.labeltext = "TBNの属性";
             dialog.dialogtext = "TBNの属性変更";
@@ -741,6 +765,57 @@ namespace System.Windows.Forms
                     Debug.WriteLine(ex);
                 }
             }
+        }
+
+        private void toolStripMenuItemDeleteItem_Click(object sender, EventArgs e)
+        {
+            using (SQLiteTransaction transaction = database.BeginTransaction())
+            {
+                try
+                {
+                    foreach (DataGridViewRow viewrow in dataGridView.SelectedRows)
+                    {
+                        DataRowView vrow = viewrow.DataBoundItem as DataRowView;
+                        DataRow row = null;
+                        if (vrow != null)
+                        {
+                            row = vrow.Row;
+                            if (row != null)
+                            {
+                                Object[] entry = row.ItemArray;
+                                if (entry != null)
+                                {
+                                    string dir = entry[0].ToString();
+                                    string filename = entry[1].ToString();
+                                    string orgpath = dir + filename;
+                                    TAHLocalDbEntry tahentry = database.GetEntry(orgpath);
+                                    database.DeleteEntry(orgpath);
+                                    database.DeleteData(tahentry.dataid);
+                                    row.Delete();
+                                }
+                            }
+                        }
+                    }
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+
+                    // データセットを元に戻す.
+                    DataTable data = newDataTable();
+                    List<string> directory = database.GetDirectory();
+                    foreach (string file in directory)
+                    {
+                        DataRow row = data.NewRow();
+                        row.ItemArray = getDataEntity(file);
+                        data.Rows.Add(row);
+                    }
+                    dataGridView.DataSource = data;
+                    throw ex;
+                }
+            }
+
         }
 
 #if false
