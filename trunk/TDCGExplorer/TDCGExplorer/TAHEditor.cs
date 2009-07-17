@@ -23,6 +23,7 @@ namespace System.Windows.Forms
         private ToolStripMenuItem toolStripMenuItemEditCategory;
         private ToolStripMenuItem toolStripMenuItemSaveTAHFile;
         private ToolStripMenuItem toolStripMenuItemTAHInfoEdit;
+        private ToolStripMenuItem toolStripMenuItemChangeColor;
         private string tahdbpath;
 
         public TAHEditor(string dbpath, GenericTahInfo info)
@@ -65,8 +66,16 @@ namespace System.Windows.Forms
                 database.Dispose();
                 database = null;
 
-                if(MessageBox.Show("作業用データベースファイルを削除しますか？\nこのファイルは次回編集時に再利用できます。", "DBの削除", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                // 必ず削除を指定していた時は常に消す
+                if (TDCGExplorer.TDCGExplorer.SystemDB.delete_tahcache == true)
+                {
                     File.Delete(tahdbpath);
+                }
+                else
+                {
+                    if (MessageBox.Show("作業用データベースファイルを削除しますか？\nこのファイルは次回編集時に再利用できます。", "DBの削除", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                        File.Delete(tahdbpath);
+                }
             }
             base.Dispose(disposing);
         }
@@ -164,6 +173,7 @@ namespace System.Windows.Forms
             this.toolStripMenuItemSaveSelectFile = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemEditIdentify = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemEditCategory = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemChangeColor = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSaveTAHFile = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
@@ -192,10 +202,11 @@ namespace System.Windows.Forms
             this.toolStripMenuItemSaveSelectFile,
             this.toolStripMenuItemEditIdentify,
             this.toolStripMenuItemEditCategory,
+            this.toolStripMenuItemChangeColor,
             this.toolStripMenuItemSaveTAHFile,
             this.toolStripMenuItemClose});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(291, 136);
+            this.contextMenuStrip.Size = new System.Drawing.Size(291, 158);
             // 
             // toolStripMenuItemTAHInfoEdit
             // 
@@ -225,11 +236,18 @@ namespace System.Windows.Forms
             this.toolStripMenuItemEditCategory.Text = "選択したファイルのカテゴリを変更する";
             this.toolStripMenuItemEditCategory.Click += new System.EventHandler(this.toolStripMenuItemEditCategory_Click);
             // 
+            // toolStripMenuItemChangeColor
+            // 
+            this.toolStripMenuItemChangeColor.Name = "toolStripMenuItemChangeColor";
+            this.toolStripMenuItemChangeColor.Size = new System.Drawing.Size(290, 22);
+            this.toolStripMenuItemChangeColor.Text = "選択した色番号を変更する";
+            this.toolStripMenuItemChangeColor.Click += new System.EventHandler(this.toolStripMenuItemChangeColor_Click);
+            // 
             // toolStripMenuItemSaveTAHFile
             // 
             this.toolStripMenuItemSaveTAHFile.Name = "toolStripMenuItemSaveTAHFile";
             this.toolStripMenuItemSaveTAHFile.Size = new System.Drawing.Size(290, 22);
-            this.toolStripMenuItemSaveTAHFile.Text = "TAHファイルを保存する";
+            this.toolStripMenuItemSaveTAHFile.Text = "選択したTAHファイルを保存する";
             this.toolStripMenuItemSaveTAHFile.Click += new System.EventHandler(this.toolStripMenuItemSaveTAHFile_Click);
             // 
             // toolStripMenuItemClose
@@ -377,6 +395,81 @@ namespace System.Windows.Forms
                 }
             }
         }
+
+        // ファイル名の置換
+        private void ChangeColorNo(string newcolor)
+        {
+            using (SQLiteTransaction transaction = database.BeginTransaction())
+            {
+                try
+                {
+                    foreach (DataGridViewRow viewrow in dataGridView.SelectedRows)
+                    {
+                        DataRowView vrow = viewrow.DataBoundItem as DataRowView;
+                        DataRow row = null;
+                        if (vrow != null)
+                        {
+                            row = vrow.Row;
+                            if (row != null)
+                            {
+                                Object[] entry = row.ItemArray;
+                                if (entry != null)
+                                {
+                                    // 新しい名前を作る
+                                    string orgpath = entry[0].ToString() + entry[1].ToString();
+                                    // N765BODY_X00.TSO
+                                    // 012345678901
+                                    //             1234
+                                    string newfilename = entry[1].ToString().Substring(0, 10) + newcolor + entry[1].ToString().Substring(12, 4);
+                                    string newpath = entry[0].ToString() + newfilename;
+                                    // ファイル名を書き換える
+                                    TAHLocalDbEntry tahentry = database.GetEntry(orgpath);
+                                    database.DeleteEntry(orgpath);
+                                    tahentry.path = newpath;
+                                    database.AddContent(tahentry);
+                                    Debug.WriteLine(newpath);
+                                    // TBNなら中身も書き換える
+                                    if (Path.GetExtension(orgpath).ToLower() == ".tbn")
+                                    {
+                                        TAHLocalDBDataEntry dataentry = database.GetData(tahentry.dataid);
+                                        string orgtsoepath = TDCGTbnUtil.GetTsoName(dataentry.data);
+                                        string[] pathelement = orgtsoepath.Split('/');
+                                        string tsopath = "";
+                                        for (int i = 0; i < (pathelement.Length - 1); i++)
+                                            tsopath += pathelement[i] + "/";
+                                        string newtsopath = tsopath + pathelement[pathelement.Length - 1].Substring(0, 10) + newcolor + pathelement[pathelement.Length - 1].Substring(12, 4);
+                                        TDCGTbnUtil.SetTsoName(dataentry.data, newtsopath);
+                                        database.UpdateData(dataentry);
+                                        Debug.WriteLine("tbn:" + orgtsoepath + ">" + TDCGTbnUtil.GetTsoName(dataentry.data));
+                                    }
+                                    // データグリッドを更新する.
+                                    string[] newitem = { entry[0].ToString(), newfilename, entry[2].ToString() };
+                                    row.ItemArray = newitem;
+                                }
+                            }
+                        }
+                    }
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+
+                    // データセットを元に戻す.
+                    DataTable data = newDataTable();
+                    List<string> directory = database.GetDirectory();
+                    foreach (string file in directory)
+                    {
+                        DataRow row = data.NewRow();
+                        row.ItemArray = getDataEntity(file);
+                        data.Rows.Add(row);
+                    }
+                    dataGridView.DataSource = data;
+                    throw ex;
+                }
+            }
+        }
+
 
         // 選択しているファイルの名前を変更する
         private void toolStripMenuItemEditIdentify_Click(object sender, EventArgs e)
@@ -620,6 +713,34 @@ namespace System.Windows.Forms
             database["version"] = version.ToString();
             database["source"] = filename;
             setText();
+        }
+
+        private void toolStripMenuItemChangeColor_Click(object sender, EventArgs e)
+        {
+
+            if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
+            SimpleTextDialog dialog = new SimpleTextDialog();
+            dialog.labeltext = "新しい色番号";
+            dialog.dialogtext = "色番号のへ工";
+            dialog.Owner = TDCGExplorer.TDCGExplorer.MainFormWindow;
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                string textto = dialog.textfield;
+                if (textto.Length != 2)
+                {
+                    MessageBox.Show("色番号は二文字で指定して下さい", "エラー", MessageBoxButtons.OK);
+                    return;
+                }
+                try
+                {
+                    ChangeColorNo(textto);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("エラーが発生しました:" + ex.Message, "エラー", MessageBoxButtons.OK);
+                    Debug.WriteLine(ex);
+                }
+            }
         }
 
 #if false

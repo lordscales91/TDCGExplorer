@@ -292,6 +292,8 @@ namespace TDCGExplorer
             edit.centerBone = SystemDB.cameracenter;
             edit.tahEditorPath = SystemDB.tahpath;
             edit.collisionDetectLevel = SystemDB.collisionchecklebel;
+            edit.findziplevel = SystemDB.findziplevel;
+            edit.delete_tahcache = SystemDB.delete_tahcache;
             edit.Owner = MainFormWindow;
             if (edit.ShowDialog() == DialogResult.OK)
             {
@@ -313,6 +315,8 @@ namespace TDCGExplorer
                 SystemDB.cameracenter = edit.centerBone;
                 SystemDB.tahpath = edit.tahEditorPath;
                 SystemDB.collisionchecklebel = edit.collisionDetectLevel;
+                SystemDB.findziplevel = edit.findziplevel;
+                SystemDB.delete_tahcache = edit.delete_tahcache;
             }
         }
 

@@ -135,6 +135,8 @@ namespace TDCGExplorer
             translateto = translateto;
             tahpath = tahpath;
             collisionchecklebel = collisionchecklebel;
+            findziplevel = findziplevel;
+            delete_tahcache = delete_tahcache;
         }
 
         // arcpathの取得・設定.
@@ -259,5 +261,26 @@ namespace TDCGExplorer
             get { return GetSqlValue("collisionchecklebel", Path.Combine(GetSystemDatabasePath(), "collision")); }
             set { SetSqlValue("collisionchecklebel", value); }
         }
+        // zip探索優先レベル設定
+        public bool findziplevel
+        {
+            get { return GetSqlValue("findziplevel", "false") == "true"; }
+            set
+            {
+                if (value == true) SetSqlValue("findziplevel", "true");
+                else SetSqlValue("findziplevel", "false");
+            }
+        }
+        // セーブファイル名の固定
+        public bool delete_tahcache
+        {
+            get { return GetSqlValue("delete_tahcache", "false") == "true"; }
+            set
+            {
+                if (value == true) SetSqlValue("delete_tahcache", "true");
+                else SetSqlValue("delete_tahcache", "false");
+            }
+        }
+
     }
 }

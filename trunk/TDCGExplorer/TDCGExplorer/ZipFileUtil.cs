@@ -33,13 +33,15 @@ namespace TDCGExplorer
 
                         BufferedStream bufferedDataStream = new BufferedStream(ms);
                         BufferedStream bufferedFileStream = new BufferedStream(fileStream);
-
+#if false
                         byte[] buf = new byte[1024];
                         int len;
                         while ((len = bufferedDataStream.Read(buf, 0, buf.Length)) > 0)
                         {
                             bufferedFileStream.Write(buf, 0, len);
                         }
+#endif
+                        CopyStream(bufferedDataStream, bufferedFileStream);
 
                         bufferedFileStream.Flush();
                         bufferedFileStream.Close();
@@ -53,6 +55,16 @@ namespace TDCGExplorer
                 Debug.WriteLine("Error: " + ex);
             }
             return false;
+        }
+
+        public static void CopyStream(Stream input, Stream output)
+        {
+            byte[] buf = new byte[1024];
+            int len;
+            while ((len = input.Read(buf, 0, buf.Length)) > 0)
+            {
+                output.Write(buf, 0, len);
+            }
         }
 
         // ZIPファイルを展開する.
