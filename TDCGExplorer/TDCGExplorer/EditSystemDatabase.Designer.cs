@@ -65,7 +65,13 @@
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.checkBoxDuplicate = new System.Windows.Forms.CheckBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.checkBoxFindZipLevel = new System.Windows.Forms.CheckBox();
+            this.checkBoxDeleteTahCache = new System.Windows.Forms.CheckBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // OKButton
@@ -394,11 +400,53 @@
             this.checkBoxDuplicate.Text = "ファイル名が一致する物も衝突とみなす";
             this.checkBoxDuplicate.UseVisualStyleBackColor = true;
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.checkBoxFindZipLevel);
+            this.groupBox2.Location = new System.Drawing.Point(378, 273);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(200, 44);
+            this.groupBox2.TabIndex = 34;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "セーブファイルビューア";
+            // 
+            // checkBoxFindZipLevel
+            // 
+            this.checkBoxFindZipLevel.AutoSize = true;
+            this.checkBoxFindZipLevel.Location = new System.Drawing.Point(7, 19);
+            this.checkBoxFindZipLevel.Name = "checkBoxFindZipLevel";
+            this.checkBoxFindZipLevel.Size = new System.Drawing.Size(128, 17);
+            this.checkBoxFindZipLevel.TabIndex = 0;
+            this.checkBoxFindZipLevel.Text = "ZIPを優先的に調べる";
+            this.checkBoxFindZipLevel.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxDeleteTahCache
+            // 
+            this.checkBoxDeleteTahCache.AutoSize = true;
+            this.checkBoxDeleteTahCache.Location = new System.Drawing.Point(7, 24);
+            this.checkBoxDeleteTahCache.Name = "checkBoxDeleteTahCache";
+            this.checkBoxDeleteTahCache.Size = new System.Drawing.Size(177, 17);
+            this.checkBoxDeleteTahCache.TabIndex = 1;
+            this.checkBoxDeleteTahCache.Text = "TAHキャッシュファイルを削除する";
+            this.checkBoxDeleteTahCache.UseVisualStyleBackColor = true;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.checkBoxDeleteTahCache);
+            this.groupBox3.Location = new System.Drawing.Point(378, 338);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(200, 52);
+            this.groupBox3.TabIndex = 35;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "TAHエディタ";
+            // 
             // EditSystemDatabase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(615, 521);
+            this.Controls.Add(this.groupBox3);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.label15);
             this.Controls.Add(this.checkBoxDuplicate);
             this.Controls.Add(this.textBoxTahEditor);
@@ -437,6 +485,10 @@
             this.Text = "初期設定";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -481,5 +533,9 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.CheckBox checkBoxDuplicate;
+        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.CheckBox checkBoxFindZipLevel;
+        private System.Windows.Forms.CheckBox checkBoxDeleteTahCache;
+        private System.Windows.Forms.GroupBox groupBox3;
     }
 }

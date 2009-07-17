@@ -189,7 +189,7 @@ namespace System.Windows.Forms
                 string partsname = savefile.GetPartsFileName(i);
                 if (partsname.StartsWith("items/")==true)
                 {
-                    {
+                    if(TDCGExplorer.TDCGExplorer.SystemDB.findziplevel==false){
                         // まずarcsからさがしてみる.
                         List<ArcsTahFilesEntry> files = TDCGExplorer.TDCGExplorer.ArcsDB.GetTahFilesEntry(TAHUtil.CalcHash("data/model/" + partsname.Substring(6) + ".tso"));
                         if (files.Count > 0)
@@ -231,12 +231,16 @@ namespace System.Windows.Forms
                                             using (MemoryStream memorystream = new MemoryStream())
                                             {
                                                 tahstream.stream.Seek(0, SeekOrigin.Begin);
+#if false
                                                 byte[] buf = new byte[1024];
                                                 int len;
                                                 while ((len = tahstream.stream.Read(buf, 0, buf.Length)) > 0)
                                                 {
                                                     memorystream.Write(buf, 0, len);
                                                 }
+#endif
+                                                ZipFileUtil.CopyStream(tahstream.stream, memorystream);
+
                                                 PNGTsoData tsodata = new PNGTsoData();
                                                 tsodata.tsoID = (uint)i;
                                                 tsodata.tsodata = memorystream.ToArray();
@@ -302,12 +306,16 @@ namespace System.Windows.Forms
                                                 using (MemoryStream memorystream = new MemoryStream())
                                                 {
                                                     tahstream.stream.Seek(0, SeekOrigin.Begin);
+#if false
                                                     byte[] buf = new byte[1024];
                                                     int len;
                                                     while ((len = tahstream.stream.Read(buf, 0, buf.Length)) > 0)
                                                     {
                                                         memorystream.Write(buf, 0, len);
                                                     }
+#endif
+                                                    ZipFileUtil.CopyStream(tahstream.stream, memorystream);
+
                                                     PNGTsoData tsodata = new PNGTsoData();
                                                     tsodata.tsoID = (uint)i;
                                                     tsodata.tsodata = memorystream.ToArray();
@@ -527,12 +535,15 @@ namespace System.Windows.Forms
                 using (Stream stream = File.OpenRead("N001OBON_Z00.tbn"))
                 using (MemoryStream memorystream = new MemoryStream())
                 {
+#if false
                     byte[] buf = new byte[1024];
                     int len;
                     while ((len = stream.Read(buf, 0, buf.Length)) > 0)
                     {
                         memorystream.Write(buf, 0, len);
                     }
+#endif
+                    ZipFileUtil.CopyStream(stream, memorystream);
                     byte[] content = memorystream.ToArray();
                     TDCGTbnUtil.SetTsoName(content, newtsoname[25]);
                     tbndata.Add(25, content);
@@ -552,12 +563,15 @@ namespace System.Windows.Forms
                 using (Stream stream = File.OpenRead("N999SAVE_A00.PSD"))
                 using (MemoryStream memorystream = new MemoryStream())
                 {
+#if false
                     byte[] buf = new byte[1024];
                     int len;
                     while ((len = stream.Read(buf, 0, buf.Length)) > 0)
                     {
                         memorystream.Write(buf, 0, len);
                     }
+#endif
+                    ZipFileUtil.CopyStream(stream, memorystream);
                     icondata = memorystream.ToArray();
                 }
             }

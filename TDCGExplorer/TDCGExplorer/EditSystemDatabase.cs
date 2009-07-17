@@ -136,5 +136,15 @@ namespace TDCGExplorer
                 else checkBoxDuplicate.Checked = false;
             }
         }
+        public bool findziplevel
+        {
+            get { return checkBoxFindZipLevel.Checked; }
+            set { checkBoxFindZipLevel.Checked = value; }
+        }
+        public bool delete_tahcache
+        {
+            get { return checkBoxDeleteTahCache.Checked; }
+            set { checkBoxDeleteTahCache.Checked = value; }
+        }
     }
 }
