@@ -353,7 +353,6 @@ namespace System.Windows.Forms
                 TDCGExplorer.TDCGExplorer.IncBusy();
                 Application.DoEvents();
                 TDCGExplorer.TDCGExplorer.DecBusy();
-                Application.DoEvents();
             }
         }
 
