@@ -215,6 +215,18 @@ namespace TDCGExplorer
         }
 
         // データを削除する.
+        public void DeleteData(int dataid)
+        {
+            using (SQLiteCommand cmd = cnn.CreateCommand())
+            {
+                // acpathを追加する.
+                cmd.CommandText = "DELETE FROM Data WHERE DATAID=@ID";
+                cmd.Parameters.AddWithValue("id", dataid.ToString());
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        // データを削除する.
 
         // 値を読み出す.
         private string GetInformationValue(string id)
