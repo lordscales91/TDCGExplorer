@@ -32,7 +32,7 @@ using System.IO;
                     //launch encrypt routine from here...
                     Encrypter myEncrypter = new Encrypter();
                     System.Console.Out.WriteLine(dest_path);
-                    return myEncrypter.encrypt_archive(file_name + ".tah", dest_path, source_file);
+                    return myEncrypter.encrypt_archive(source_file + ".tah", source_file);
                 }
                 return -1;
             }
@@ -346,10 +346,9 @@ using System.IO;
             return File.OpenRead(compressed_file.true_file_name);
         }
 
-        public int encrypt_archive(string file_name, string dest_path, string source_path)
+        public int encrypt_archive(string file_path_name, string source_path)
         {
             //check if file already exists... if yes rename it
-            string file_path_name = Path.Combine(dest_path, file_name);
             try
             {
                 if (File.Exists(file_path_name))
