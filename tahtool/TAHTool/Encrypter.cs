@@ -1,14 +1,11 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 
     class Encrypter
     {
         static void Main(string[] args)
         {
-            string source_file = "";
-            long last_key_event = System.DateTime.Now.Ticks;
-            System.Console.Out.WriteLine("Simply Drag and Drop a TAH file onto this decrypter.");
-            System.Console.Out.WriteLine("The uncrompressed data will then be written to a");
-            System.Console.Out.WriteLine("subfolder that is named like the TAH file.");
             if (args.Length > 0)
             {
                 if (decrypt_TAH_archive(args[0]) >= 0)
@@ -16,34 +13,8 @@ using System;
                     return;
                 }
             }
-            while (true)
-            {
-                ConsoleKeyInfo CKeyInfo = System.Console.ReadKey(true);
-                if (((source_file.Length == 1) && (last_key_event + 10000 < System.DateTime.Now.Ticks)) || (last_key_event + 10000000 < System.DateTime.Now.Ticks))
-                {
-                    //last event seems not to be Drag and Drop but user input
-                    source_file = "";
-                }
-                last_key_event = System.DateTime.Now.Ticks;
-                source_file += CKeyInfo.KeyChar;
-                if ((source_file.Length > 1) && source_file[source_file.Length - 1].Equals('"'))
-                {
-                    System.Console.Out.WriteLine(source_file.Substring(1, source_file.Length - 2));
-                    if (decrypt_TAH_archive(source_file) >= 0)
-                    {
-                        return;
-                    }
-                }
-                else if ((source_file.Length > 1) && !System.Console.KeyAvailable)
-                {
-                    System.Console.Out.WriteLine(source_file);
-                    if (decrypt_TAH_archive(source_file) >= 0)
-                    {
-                        return;
-                    }
-                }
-            }
         }
+
         static int decrypt_TAH_archive(string source_file)
         {
             string dest_path = "";
@@ -59,7 +30,7 @@ using System;
             else
             {
                 //encrypt to TAH archive
-                if (System.IO.Directory.Exists(source_file))
+                if (Directory.Exists(source_file))
                 {
                     //launch encrypt routine from here...
                     Encrypter myEncrypter = new Encrypter();
@@ -82,7 +53,7 @@ using System;
 
         static MT19937ar myMT19937ar = new MT19937ar();
 
-        System.IO.BinaryReader reader;
+        BinaryReader reader;
 
         static UInt32 MAX_PATH = 260;
 
@@ -200,77 +171,133 @@ using System;
             }
         }
 
-        public int encrypt_archive(string file_name, string dest_path, string source_path)
+        int read_files(string source_path, out string[] file_index, out tah_file tah_output_data, out UInt32 all_files_count)
         {
-            //check if file already exists... if yes rename it
-            string file_path_name = dest_path + file_name;
-            try
+            //全ディレクトリ名
+            string[] directories = Directory.GetDirectories(source_path, "*", SearchOption.AllDirectories);
+
             {
-                if (System.IO.File.Exists(file_path_name))
-                {
-                    System.IO.File.Move(file_path_name, file_path_name + ".bak");
-                }
+                string dirname = source_path;
+                string[] files = Directory.GetFiles(dirname);
+                foreach (string file in files)
+                    add_file(file);
             }
-            catch (Exception)
+            for (int i = 0; i < directories.Length; i++)
             {
-                System.Console.Out.WriteLine("Error: Could not rename existing TAH file. Possibly there is already a file with the '.bak' ending from a previous session. Please do something about it. TAHdecrypter will not overwrite existing data and therefore aborts here.");
-                return -1;
+                string dirname = directories[i];
+                string[] files = Directory.GetFiles(dirname);
+                foreach (string file in files)
+                    add_file(file);
             }
-            //read in files from source path, do not compress them now.
-            string[] directories = System.IO.Directory.GetDirectories(source_path, "*", System.IO.SearchOption.AllDirectories);
+            return build_file_indices(source_path, out file_index, out tah_output_data, out all_files_count);
+        }
+
+        List<string> files = new List<string>();
+
+        void add_file(string file)
+        {
+            files.Add(file);
+            //Console.WriteLine("add {0}", file);
+        }
+
+        int build_file_indices(string source_path, out string[] file_index, out tah_file tah_output_data, out UInt32 all_files_count)
+        {
+            Dictionary<string, List<string>> dir_entries = new Dictionary<string, List<string>>();
+
+            foreach (string file in files)
+            {
+                string dirname = Path.GetDirectoryName(file);
+                string basename = Path.GetFileName(file);
+                if (! dir_entries.ContainsKey(dirname))
+                    dir_entries[dirname] = new List<string>(); 
+                dir_entries[dirname].Add(basename);
+                //Console.WriteLine("dirname {0} basename {1}", dirname, basename);
+            }
+
+            //全ディレクトリ名
+            List<string> directories = new List<string>();
+
+            foreach (string dirname in dir_entries.Keys)
+            {
+                directories.Add(dirname);
+            }
+            if (directories.Contains(source_path))
+                directories.Remove(source_path);
+
+            //圧縮ディレクトリ名
+            //ただし idx=0 は source_path
+            /*
             string[] compress_directories = new string[directories.Length + 1];
             directories.CopyTo(compress_directories, 1);
             compress_directories[0] = source_path;
-            UInt32 all_files_count = 0;
-            for (int i = 0; i < compress_directories.Length; i++)
+            */
+
+            //全ファイル数
+            //all_files_count = (uint)files.Count;
+
+            all_files_count = 0;
+            if (dir_entries.ContainsKey(source_path))
             {
-                string[] str_files = System.IO.Directory.GetFiles(compress_directories[i]);
-                all_files_count += (UInt32)str_files.Length;
+                List<string> str_files = dir_entries[source_path];
+                all_files_count += (UInt32)str_files.Count;
             }
-            tah_file tah_output_data = new tah_file();
-            tah_output_data.all_compressed_files = new file_entry[all_files_count];
-            UInt32 act_file = 0;
-            string[] file_index = new string[all_files_count + compress_directories.Length - 1];
-            UInt32 index_pos = 0;
-            for (int i = 0; i < compress_directories.Length; i++)
+            for (int i = 0; i < directories.Count; i++)
             {
-                string[] str_files = System.IO.Directory.GetFiles(compress_directories[i]);
+                List<string> str_files = dir_entries[directories[i]];
+                all_files_count += (UInt32)str_files.Count;
+            }
+
+            tah_output_data = new tah_file();
+            tah_output_data.all_compressed_files = new file_entry[all_files_count];
+
+            //file entryを用意する
+            UInt32 act_file = 0;
+            //全ファイル数 + 全ディレクトリ数（source_path は除く）
+            file_index = new string[all_files_count + dir_entries.Count];
+
+            //現在のfile indexを指す idx
+            UInt32 index_pos = 0;
+
+            if (dir_entries.ContainsKey(source_path))
+            {
+                //int i = 0;
+
+                //現在のディレクトリ上にある全ファイル名（ディレクトリは含まない）
+                List<string> str_files = dir_entries[source_path];//Directory.GetFiles(compress_directories[i]);
                 string act_file_index_path = "";
-                if (i > 0)
+
+                //現在のディレクトリ上にある全ファイル名（ディレクトリは含まない）について繰り返す
+                for (int j = 0; j < str_files.Count; j++)
                 {
-                    file_index[index_pos] = compress_directories[i].Substring(source_path.Length + 1) + "\\";
-                    file_index[index_pos] = file_index[index_pos].Replace("\\", "/");
-                    act_file_index_path = file_index[index_pos];
-                    index_pos++;
-                }
-                for (int j = 0; j < str_files.Length; j++)
-                {
-                    if (i > 0)
                     {
-                        file_index[index_pos] = str_files[j].Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries)[str_files[j].Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Length - 1];
-                        tah_output_data.all_compressed_files[act_file].file_name = act_file_index_path + file_index[index_pos];
-                        index_pos++;
-                    }
-                    else
-                    {
+                        //名無し対応
                         try
                         {
-                            string fparts0 = str_files[j].Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries)[str_files[j].Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Length - 1];
-                            string fparts1 = fparts0.Split(new string[] { "_" }, StringSplitOptions.RemoveEmptyEntries)[fparts0.Split(new string[] { "_" }, StringSplitOptions.RemoveEmptyEntries).Length - 1];
-                            string fparts2 = fparts1.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries)[0];
+                            //名無しなのでファイル名はない
+                            //<idx>_<hash>.<ext>
+                            //string[] ary_0 = str_files[j].Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
+                            string fparts0 = str_files[j];//ary_0[ary_0.Length - 1];//= basename
+                            string[] ary_1 = fparts0.Split(new string[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
+                            string fparts1 = ary_1[ary_1.Length - 1];//= <hash>.<ext>
+                            string fparts2 = fparts1.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries)[0];//<hash> before dot
                             //this should be the string of the hash value
+                            //hash値を控える
                             tah_output_data.all_compressed_files[act_file].hash_value = System.UInt32.Parse(fparts2);
                         }
+                        //名無しでなかった
                         catch (Exception)
                         {
-                            file_index[index_pos] = str_files[j].Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries)[str_files[j].Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries).Length - 1];
+                            //string[] ary_0 = str_files[j].Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
+                            file_index[index_pos] = str_files[j];//ary_0[ary_0.Length - 1];//= basename
+                            //entry ファイル名を控える
                             tah_output_data.all_compressed_files[act_file].file_name = act_file_index_path + file_index[index_pos];
                             index_pos++;
                         }
                     }
                     try
                     {
-                        tah_output_data.all_compressed_files[act_file].true_file_name = str_files[j];
+                        //実ファイル名を控える
+                        tah_output_data.all_compressed_files[act_file].true_file_name = Path.Combine(source_path, str_files[j]);
                         act_file++;
                     }
                     catch (Exception ex)
@@ -280,17 +307,91 @@ using System;
                     }
                 }
             }
+
+            for (int i = 0; i < directories.Count; i++)
+            {
+                //現在のディレクトリ上にある全ファイル名（ディレクトリは含まない）
+                List<string> str_files = dir_entries[directories[i]];//Directory.GetFiles(compress_directories[i]);
+                string act_file_index_path = "";
+                {
+                    //ディレクトリ名を控える
+                    //ただし source_path + 1 文字飛ばす
+                    //いつも '/' で終わる
+                    file_index[index_pos] = directories[i].Substring(source_path.Length + 1) + "\\";
+                    file_index[index_pos] = file_index[index_pos].Replace("\\", "/");
+                    act_file_index_path = file_index[index_pos];
+                    index_pos++;
+                }
+                //現在のディレクトリ上にある全ファイル名（ディレクトリは含まない）について繰り返す
+                for (int j = 0; j < str_files.Count; j++)
+                {
+                    {
+                        //string[] ary_0 = str_files[j].Split(new string[] { "\\" }, StringSplitOptions.RemoveEmptyEntries);
+                        file_index[index_pos] = str_files[j];//ary_0[ary_0.Length - 1];//= basename
+                        //entry ファイル名を控える
+                        tah_output_data.all_compressed_files[act_file].file_name = act_file_index_path + file_index[index_pos];
+                        index_pos++;
+                    }
+                    try
+                    {
+                        //実ファイル名を控える
+                        tah_output_data.all_compressed_files[act_file].true_file_name = Path.Combine(directories[i], str_files[j]);
+                        act_file++;
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Console.Out.WriteLine(ex);
+                        return -1;
+                    }
+                }
+            }
+            return 0;
+        }
+
+        public Stream get_file_entry_stream(ref file_entry compressed_file)
+        {
+            return File.OpenRead(compressed_file.true_file_name);
+        }
+
+        public int encrypt_archive(string file_name, string dest_path, string source_path)
+        {
+            //check if file already exists... if yes rename it
+            string file_path_name = dest_path + file_name;
+            try
+            {
+                if (File.Exists(file_path_name))
+                {
+                    File.Move(file_path_name, file_path_name + ".bak");
+                }
+            }
+            catch (Exception)
+            {
+                System.Console.Out.WriteLine("Error: Could not rename existing TAH file. Possibly there is already a file with the '.bak' ending from a previous session. Please do something about it. TAHdecrypter will not overwrite existing data and therefore aborts here.");
+                return -1;
+            }
+
+            //read in files from source path, do not compress them now.
+            string[] file_index;
+            tah_file tah_output_data;
+            UInt32 all_files_count;
+            read_files(source_path, out file_index, out tah_output_data, out all_files_count);
+
+            //entry情報
+            //ディレクトリ名 ('/' 終端) + ファイル名 (basename) をnull終端で1列に格納する
             byte[] b_file_index;
+            //全entry情報長さ
             UInt32 b_file_index_count = 0;
             for (int i = 0; i < file_index.Length; i++)
             {
                 if (file_index[i] != null)
                 {
+                    //+1はnull終端
                     b_file_index_count += (UInt32)(file_index[i].Length + 1);
                 }
             }
             b_file_index = new byte[b_file_index_count + 3];//savety margin for encryption...
             b_file_index.Initialize();
+
             UInt32 b_file_index_pos = 0;
             for (int i = 0; i < file_index.Length; i++)
             {
@@ -298,45 +399,71 @@ using System;
                 {
                     byte[] partial_index = System.Text.Encoding.ASCII.GetBytes(file_index[i]);
                     Copy(partial_index, 0, b_file_index, (int)b_file_index_pos, partial_index.Length);
+                    //+1はnull終端
                     b_file_index_pos += (UInt32)(partial_index.Length + 1);
                 }
             }
+            //-- entry情報格納完了! --
+
+            //entry情報（圧縮後）
             byte[] compressed_file_index = null;
             UInt32 compressed_file_index_length = 0;
             encrypt(ref b_file_index, b_file_index_count, ref compressed_file_index, ref compressed_file_index_length);
+            //-- entry情報圧縮完了! --
+
+            //xxx: copyする必要はあるか???
             byte[] compressed_file_index_s = new byte[compressed_file_index_length];
             Copy(compressed_file_index, 0, compressed_file_index_s, 0, (int)compressed_file_index_length);
+
             //now everything is set up for writing the tah file...
-            System.IO.BinaryWriter writer = new System.IO.BinaryWriter(System.IO.File.Create(dest_path + "\\" + file_name));
+            BinaryWriter writer = new BinaryWriter(File.Create(dest_path + "\\" + file_name));
             writer.Write(System.Text.Encoding.ASCII.GetBytes("TAH2"));
             writer.Write(all_files_count);
-            writer.Write(((UInt32)1));
+            writer.Write(((UInt32)1));//TAH version
             writer.Write(((UInt32)0));
+
+            //+4は b_file_index_count (Uint32) 格納領域
             UInt32 offset = 16 + 8 * all_files_count + compressed_file_index_length + 4;
             //writer needs this defined offset for adding length lists of the compressed data later on
-            writer.BaseStream.Seek(offset, System.IO.SeekOrigin.Begin);
+            writer.BaseStream.Seek(offset, SeekOrigin.Begin);
+            //全ファイルについて繰り返し（ディレクトリは含まない）
             for (int i = 0; i < tah_output_data.all_compressed_files.Length; i++)
             {
                 try
                 {
-                    System.IO.BinaryReader reader = new System.IO.BinaryReader(System.IO.File.OpenRead(tah_output_data.all_compressed_files[i].true_file_name));
+                    //dataをファイルから読む
+                    Stream input_stream = get_file_entry_stream(ref tah_output_data.all_compressed_files[i]);
+                    BinaryReader reader = new BinaryReader(input_stream);
                     byte[] data_input = reader.ReadBytes((int)reader.BaseStream.Length);
+                    //圧縮前長さを控える
                     tah_output_data.all_compressed_files[i].uncompressed_length = (UInt32)reader.BaseStream.Length;
+                    reader.Close();
+                    //-- data読み込み完了! --
+
+                    ////xxx: copyする必要はあるか???
                     byte[] encrypt_data_input = new byte[data_input.Length + 3]; //with safety margin for encryption
                     Copy(data_input, 0, encrypt_data_input, 0, (int)data_input.Length);
                     byte[] compressed_data = null;
                     UInt32 compressed_length = 0;
                     encrypt(ref encrypt_data_input, (UInt32)data_input.Length, ref compressed_data, ref compressed_length);
+                    //-- data圧縮完了! --
+
+                    //圧縮後長さを控える
                     tah_output_data.all_compressed_files[i].compressed_length = compressed_length;
+                    ////xxx: copyする必要はあるか???
                     tah_output_data.all_compressed_files[i].compressed_data = new byte[compressed_length];
                     Copy(compressed_data, 0, tah_output_data.all_compressed_files[i].compressed_data, 0, (int)compressed_length);
+
                     System.Console.Out.WriteLine(String.Format("Compressing File: {0}", tah_output_data.all_compressed_files[i].true_file_name));
-                    reader.Close();
+
                     writer.Write(tah_output_data.all_compressed_files[i].uncompressed_length);
                     writer.Write(tah_output_data.all_compressed_files[i].compressed_data);
                     writer.Flush();
+                    //-- data書き出し完了! --
+
                     if (i > 0)
                     {
+                        //dataはもう不要なので削除
                         tah_output_data.all_compressed_files[i - 1].compressed_data = new byte[] { };
                     }
                 }
@@ -348,7 +475,7 @@ using System;
             }
             //now resetting file offset to write file index table
 
-            writer.BaseStream.Seek(16, System.IO.SeekOrigin.Begin);
+            writer.BaseStream.Seek(16, SeekOrigin.Begin);
 
             for (int i = 0; i < all_files_count; i++)
             {
