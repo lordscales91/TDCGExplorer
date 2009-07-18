@@ -346,11 +346,6 @@ using System.IO;
 
             build_file_indices(source_path, out file_index, out tah_output_data, out all_files_count);
             build_compressed_file_indices(file_index);
-
-            //xxx: copyする必要はあるか???
-            compressed_file_index_s = new byte[compressed_file_index_length];
-            Copy(compressed_file_index, 0, compressed_file_index_s, 0, (int)compressed_file_index_length);
-
             return write(file_path_name, ref tah_output_data, ref all_files_count);
         }
 
@@ -388,6 +383,11 @@ using System.IO;
 
             encrypt(ref b_file_index, b_file_index_count, ref compressed_file_index, ref compressed_file_index_length);
             //-- entry情報圧縮完了! --
+
+            //xxx: copyする必要はあるか???
+            compressed_file_index_s = new byte[compressed_file_index_length];
+            Copy(compressed_file_index, 0, compressed_file_index_s, 0, (int)compressed_file_index_length);
+
             return 0;
         }
 
