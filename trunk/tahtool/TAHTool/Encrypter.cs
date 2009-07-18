@@ -17,12 +17,9 @@ using System.IO;
 
         static int decrypt_TAH_archive(string source_file)
         {
-            string dest_path = "";
-            string[] sep = new string[1];
-            sep[0] = "\\";
-            string[] file_path = source_file.Split(sep, System.StringSplitOptions.RemoveEmptyEntries);
-            string file_name = file_path[file_path.Length - 1];
-            if (file_name.Substring(file_name.Length - 3, 3).ToLower().CompareTo("tah") == 0)
+            string dest_path = Path.GetDirectoryName(source_file);
+            string file_name = Path.GetFileName(source_file);
+            if (Path.GetExtension(file_name).ToLower() == ".tah")
             {
                 //decrypt TAH archive
                 return -1;
@@ -34,10 +31,6 @@ using System.IO;
                 {
                     //launch encrypt routine from here...
                     Encrypter myEncrypter = new Encrypter();
-                    for (int i = 0; i < file_path.Length - 1; i++)
-                    {
-                        dest_path += file_path[i] + "\\";
-                    }
                     System.Console.Out.WriteLine(dest_path);
                     return myEncrypter.encrypt_archive(file_name + ".tah", dest_path, source_file);
                 }
@@ -356,7 +349,7 @@ using System.IO;
         public int encrypt_archive(string file_name, string dest_path, string source_path)
         {
             //check if file already exists... if yes rename it
-            string file_path_name = dest_path + file_name;
+            string file_path_name = Path.Combine(dest_path, file_name);
             try
             {
                 if (File.Exists(file_path_name))
@@ -364,7 +357,7 @@ using System.IO;
                     File.Move(file_path_name, file_path_name + ".bak");
                 }
             }
-            catch (Exception)
+            catch (IOException)
             {
                 System.Console.Out.WriteLine("Error: Could not rename existing TAH file. Possibly there is already a file with the '.bak' ending from a previous session. Please do something about it. TAHdecrypter will not overwrite existing data and therefore aborts here.");
                 return -1;
@@ -416,7 +409,7 @@ using System.IO;
             Copy(compressed_file_index, 0, compressed_file_index_s, 0, (int)compressed_file_index_length);
 
             //now everything is set up for writing the tah file...
-            BinaryWriter writer = new BinaryWriter(File.Create(dest_path + "\\" + file_name));
+            BinaryWriter writer = new BinaryWriter(File.Create(file_path_name));
             writer.Write(System.Text.Encoding.ASCII.GetBytes("TAH2"));
             writer.Write(all_files_count);
             writer.Write(((UInt32)1));//TAH version
