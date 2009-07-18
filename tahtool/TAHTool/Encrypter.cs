@@ -297,6 +297,15 @@ using System.IO;
             return File.OpenRead(compressed_file.true_file_name);
         }
 
+        //entry情報
+        byte[] b_file_index = null;
+        UInt32 b_file_index_count = 0;
+        //entry情報（圧縮後）
+        byte[] compressed_file_index = null;
+        UInt32 compressed_file_index_length = 0;
+
+        byte[] compressed_file_index_s = null;
+
         public int encrypt_archive(string file_path_name, string source_path)
         {
             //check if file already exists... if yes rename it
@@ -314,10 +323,6 @@ using System.IO;
             }
 
             //read in files from source path, do not compress them now.
-            string[] file_index;
-            tah_file tah_output_data;
-            UInt32 all_files_count;
-
             //全ディレクトリ名
             string[] directories = Directory.GetDirectories(source_path, "*", SearchOption.AllDirectories);
 
@@ -334,11 +339,25 @@ using System.IO;
                 foreach (string file in files)
                     add_file(file);
             }
-            build_file_indices(source_path, out file_index, out tah_output_data, out all_files_count);
 
+            string[] file_index;
+            tah_file tah_output_data;
+            UInt32 all_files_count;
+
+            build_file_indices(source_path, out file_index, out tah_output_data, out all_files_count);
+            build_compressed_file_indices(file_index);
+
+            //xxx: copyする必要はあるか???
+            compressed_file_index_s = new byte[compressed_file_index_length];
+            Copy(compressed_file_index, 0, compressed_file_index_s, 0, (int)compressed_file_index_length);
+
+            return write(file_path_name, ref tah_output_data, ref all_files_count);
+        }
+
+        int build_compressed_file_indices(string[] file_index)
+        {
             //entry情報
-            //ディレクトリ名 ('/' 終端) + ファイル名 (basename) をnull終端で1列に格納する
-            byte[] b_file_index;
+
             //全entry情報長さ
             UInt32 b_file_index_count = 0;
             for (int i = 0; i < file_index.Length; i++)
@@ -349,6 +368,8 @@ using System.IO;
                     b_file_index_count += (UInt32)(file_index[i].Length + 1);
                 }
             }
+
+            //ディレクトリ名 ('/' 終端) + ファイル名 (basename) をnull終端で1列に格納する
             b_file_index = new byte[b_file_index_count + 3];//savety margin for encryption...
             b_file_index.Initialize();
 
@@ -365,16 +386,13 @@ using System.IO;
             }
             //-- entry情報格納完了! --
 
-            //entry情報（圧縮後）
-            byte[] compressed_file_index = null;
-            UInt32 compressed_file_index_length = 0;
             encrypt(ref b_file_index, b_file_index_count, ref compressed_file_index, ref compressed_file_index_length);
             //-- entry情報圧縮完了! --
+            return 0;
+        }
 
-            //xxx: copyする必要はあるか???
-            byte[] compressed_file_index_s = new byte[compressed_file_index_length];
-            Copy(compressed_file_index, 0, compressed_file_index_s, 0, (int)compressed_file_index_length);
-
+        int write(string file_path_name, ref tah_file tah_output_data, ref UInt32 all_files_count)
+        {
             //now everything is set up for writing the tah file...
             BinaryWriter writer = new BinaryWriter(File.Create(file_path_name));
             writer.Write(System.Text.Encoding.ASCII.GetBytes("TAH2"));
