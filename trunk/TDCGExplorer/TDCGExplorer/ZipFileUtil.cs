@@ -100,10 +100,10 @@ namespace TDCGExplorer
         {
             string node = Path.GetFileNameWithoutExtension(name);
             // ファイル名がnode名だけだった場合.
-            if(TDCGExplorer.Arcsnames.ContainsKey(node.ToUpper())==true)
+            if(TDCGExplorer.Arcsnames.ContainsKey(node)==true)
             {
                 char[] illegal = { '/', '\\', '*', ':', '?', '<', '>', '\"', '|' };
-                ArcsNamesEntry entry = TDCGExplorer.Arcsnames[node.ToUpper()];
+                ArcsNamesEntry entry = TDCGExplorer.Arcsnames[node];
                 string summary = entry.summary;
                 foreach (char illeagalchar in illegal)
                 {
