@@ -8,32 +8,14 @@ using System.IO;
         {
             if (args.Length > 0)
             {
-                if (decrypt_TAH_archive(args[0]) >= 0)
-                {
-                    return;
-                }
-            }
-        }
-
-        static int decrypt_TAH_archive(string source_file)
-        {
-            string dest_path = Path.GetDirectoryName(source_file);
-            string file_name = Path.GetFileName(source_file);
-            if (Path.GetExtension(file_name).ToLower() == ".tah")
-            {
-                //decrypt TAH archive
-                return -1;
-            }
-            else
-            {
+                string source_file = args[0];
                 //encrypt to TAH archive
                 if (Directory.Exists(source_file))
                 {
                     //launch encrypt routine from here...
                     Encrypter myEncrypter = new Encrypter();
-                    return myEncrypter.encrypt_archive(source_file + ".tah", source_file);
+                    myEncrypter.encrypt_archive(source_file + ".tah", source_file);
                 }
-                return -1;
             }
         }
 
@@ -75,12 +57,6 @@ using System.IO;
             public file_entry[] all_compressed_files;
         }
 
-        public struct ext_file_list
-        {
-            public string[] files;
-            public UInt32[] hashkeys;
-        }
-
         public struct file_entry
         {
             public byte[] compressed_data;
@@ -97,26 +73,6 @@ using System.IO;
             public UInt32 index_entry_count;
             public UInt32 unknown; //1
             public UInt32 reserved; //0
-        }
-
-        public struct index_entry
-        {
-            public UInt32 hash_name;
-            public UInt32 offset;
-        }
-
-        public struct entry_meta_info
-        {
-            public byte[] file_name;
-            public UInt32 offset;
-            public UInt32 length;
-            public UInt32 flag; //at bit 0x1: no path info in tah file 1 otherwise 0
-        }
-
-        public struct directory_meta_info
-        {
-            public UInt32 index_entry_count;
-            public entry_meta_info[] directory_meta_infos;
         }
 
         static unsafe void Copy(byte[] src, int srcIndex, byte[] dst, int dstIndex, int count)
@@ -354,7 +310,7 @@ using System.IO;
             //entryèÓïÒ
 
             //ëSentryèÓïÒí∑Ç≥
-            UInt32 b_file_index_count = 0;
+            b_file_index_count = 0;
             for (int i = 0; i < file_index.Length; i++)
             {
                 if (file_index[i] != null)
@@ -432,7 +388,7 @@ using System.IO;
                     tah_output_data.all_compressed_files[i].compressed_data = new byte[compressed_length];
                     Copy(compressed_data, 0, tah_output_data.all_compressed_files[i].compressed_data, 0, (int)compressed_length);
 
-                    System.Console.Out.WriteLine(String.Format("Compressing File: {0}", tah_output_data.all_compressed_files[i].true_file_name));
+                    System.Console.Out.WriteLine(String.Format("Compressing File: {0} {1}", tah_output_data.all_compressed_files[i].true_file_name, tah_output_data.all_compressed_files[i].uncompressed_length));
 
                     writer.Write(tah_output_data.all_compressed_files[i].uncompressed_length);
                     writer.Write(tah_output_data.all_compressed_files[i].compressed_data);
