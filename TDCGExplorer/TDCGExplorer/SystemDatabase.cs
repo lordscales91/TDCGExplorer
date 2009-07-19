@@ -137,6 +137,7 @@ namespace TDCGExplorer
             collisionchecklebel = collisionchecklebel;
             findziplevel = findziplevel;
             delete_tahcache = delete_tahcache;
+            taheditorpreview = taheditorpreview;
         }
 
         // arcpathの取得・設定.
@@ -271,7 +272,8 @@ namespace TDCGExplorer
                 else SetSqlValue("findziplevel", "false");
             }
         }
-        // セーブファイル名の固定
+
+        // tahキャッシュ削除設定
         public bool delete_tahcache
         {
             get { return GetSqlValue("delete_tahcache", "false") == "true"; }
@@ -279,6 +281,17 @@ namespace TDCGExplorer
             {
                 if (value == true) SetSqlValue("delete_tahcache", "true");
                 else SetSqlValue("delete_tahcache", "false");
+            }
+        }
+
+        // TAHエディタでのプレビュー表示設定
+        public bool taheditorpreview
+        {
+            get { return GetSqlValue("taheditorpreview", "false") == "true"; }
+            set
+            {
+                if (value == true) SetSqlValue("taheditorpreview", "true");
+                else SetSqlValue("taheditorpreview", "false");
             }
         }
 

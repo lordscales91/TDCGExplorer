@@ -21,23 +21,23 @@ TDCGExplorer 始めにお読み下さい
 
 ・ファイル構成
 
-	readme.txt						このファイルです
-	manuarl.rtf						取り扱い説明書
-	ArchiveLib.dll					圧縮関連コンポーネント
-	ICSharpCode.SharpZipLib.dll		圧縮関連コンポーネント
-	unrar.dll						圧縮関連コンポーネント
-	default.tmo						標準のポーズデータ
-	N001OBON_Z00.tbn				Zカテゴリ用TBNファイル
-	N999SAVE_A00.psd				デフォルトアイコン
-	names.txt						ハッシュ引き用ファイル一覧
-	screenshot.jpg					画面動作デモSS
-	source.zip						ソースコード
-	System.Data.SQLite.DLL			データベースエンジン
-	System.Data.SQLite.xml			データベースエンジン
-	TDCG.dll						TSOビューワ
-	TDCG.xml						TSOビューワ
-	toonshader.cgfx					TSOビューワ用Tooshader2
-	TDCGExplorer.exe				プログラム本体
+        readme.txt                              このファイルです
+        manuarl.rtf                             取り扱い説明書
+        ArchiveLib.dll                          圧縮関連コンポーネント
+        ICSharpCode.SharpZipLib.dll             圧縮関連コンポーネント
+        unrar.dll                               圧縮関連コンポーネント
+        default.tmo                             標準のポーズデータ
+        N001OBON_Z00.tbn                        Zカテゴリ用TBNファイル
+        N999SAVE_A00.psd                        デフォルトアイコン
+        names.txt                               ハッシュ引き用ファイル一覧
+        screenshot.jpg                          画面動作デモSS
+        source.zip                              ソースコード
+        System.Data.SQLite.DLL                  データベースエンジン
+        System.Data.SQLite.xml                  データベースエンジン
+        TDCG.dll                                TSOビューワ
+        TDCG.xml                                TSOビューワ
+        toonshader.cgfx                         TSOビューワ用Tooshader2
+        TDCGExplorer.exe                        プログラム本体
 
 ・注意事項
 
@@ -255,19 +255,19 @@ MODREFサーバ参照をON/OFF出来るようにしました。ページがちらつくバグを
 
 TA3ch系
 
-	(^TA[0-9]{4})		TA0000で始まる物
-	(^TA3CH[0-9]{4})	TA3CH0000で始まる物
-	(^TA3DC[0-9]{4})	TA3DC0000で始まる物
-	(^TAC[0-9]{4})		TAC0000で始まる物
+        (^TA[0-9]{4})           TA0000で始まる物
+        (^TA3CH[0-9]{4})        TA3CH0000で始まる物
+        (^TA3DC[0-9]{4})        TA3DC0000で始まる物
+        (^TAC[0-9]{4})          TAC0000で始まる物
 
 居酒屋系
 
-	(^TAC[0-9]{5})		TAC00000で始まる物
-	(^XPC[0-9]{5})		XPC00000で始まる物
+        (^TAC[0-9]{5})          TAC00000で始まる物
+        (^XPC[0-9]{5})          XPC00000で始まる物
 
 ふたば系
 
-	(^mod[0-9]{4})		mod0000等
+        (^mod[0-9]{4})          mod0000等
 
 大文字小文字は厳密に区別されます。MODのコード名に続けて英数字以外の文字で
 何か書いていても構いません。例えば、
@@ -284,7 +284,7 @@ ZIP正規表現とMOD正規表現をそろえて修正してください。
 様に追加してください。条件と条件の間は|記号でつなげて下さい。
 
 例
-	(^[nN][0-9]{3}[^0-9])
+        (^[nN][0-9]{3}[^0-9])
 
 正規表現フォーマットはPOSIX仕様になっています。
 
@@ -484,5 +484,9 @@ manual.rtfを追加しました。簡単な操作説明を記述しています。
 07-19 RC1.5
 
 manualをpdfに変更。TAHエディタでTSOが表示されない件を修正。
+
+07-19 RC1.6
+
+manualの一部抜けを修正。
 
 Konoa/N765

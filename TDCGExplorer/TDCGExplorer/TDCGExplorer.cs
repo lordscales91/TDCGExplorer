@@ -294,6 +294,7 @@ namespace TDCGExplorer
             edit.collisionDetectLevel = SystemDB.collisionchecklebel;
             edit.findziplevel = SystemDB.findziplevel;
             edit.delete_tahcache = SystemDB.delete_tahcache;
+            edit.taheditorprevire = SystemDB.taheditorpreview;
             edit.Owner = MainFormWindow;
             if (edit.ShowDialog() == DialogResult.OK)
             {
@@ -317,6 +318,7 @@ namespace TDCGExplorer
                 SystemDB.collisionchecklebel = edit.collisionDetectLevel;
                 SystemDB.findziplevel = edit.findziplevel;
                 SystemDB.delete_tahcache = edit.delete_tahcache;
+                SystemDB.taheditorpreview = edit.taheditorprevire;
             }
         }
 
