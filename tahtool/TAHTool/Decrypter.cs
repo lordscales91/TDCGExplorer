@@ -8,7 +8,8 @@ using System.IO;
         {
             if (args.Length > 0)
             {
-                DumpFiles(args[0]);
+                //DumpFiles(args[0]);
+                decrypt_TAH_archive(args[0]);
             }
         }
 
@@ -29,6 +30,34 @@ using System.IO;
                 byte[] data_output;
                 myDecrypter.ExtractResource(ref info, out data_output);
 
+                //flag & 0x1 = 1ならno path
+                if (info.flag % 2 == 1)
+                {
+                    string ext;
+                    string magic = System.Text.Encoding.ASCII.GetString(data_output, 0, 4);
+                    switch (magic)
+                    {
+                        case "8BPS":
+                            ext = ".psd";
+                            break;
+                        case "TMO1":
+                            ext = ".tmo";
+                            break;
+                        case "TSO1":
+                            ext = ".tso";
+                            break;
+                        case "OggS":
+                            ext = ".ogg";
+                            break;
+                        case "BBBB":
+                            ext = ".tbn";
+                            break;
+                        default:
+                            ext = ".cgfx";
+                            break;
+                    }
+                    file_name += ext;
+                }
                 string dest_file_name = Path.Combine(base_path, file_name);
                 Directory.CreateDirectory(Path.GetDirectoryName(dest_file_name));
 
@@ -693,15 +722,27 @@ using System.IO;
                 act_str_pos += 1;
             }
 
+            ext_file_list external_files;
+            build_ext_file_list(out external_files);
+
             for (UInt32 i = 0; i < tah_header.index_entry_count; i++)
             {
                 //file_nameが見つからなかった場合
                 if (directory_meta_info_buffer[i].file_name == null)
                 {
-                    //ファイル名の先頭はhash値にする
-                    directory_meta_info_buffer[i].file_name = System.Text.Encoding.ASCII.GetBytes(i.ToString("00000000") + "_" + index_buffer[i].hash_name.ToString());
-                    //file_nameが見つからなかったflag on
-                    directory_meta_info_buffer[i].flag ^= 0x1;
+                    //names.txt を検索
+                    int pos = Array.BinarySearch(external_files.hashkeys, index_buffer[i].hash_name);
+                    if (pos < 0) // not found
+                    {
+                        //ファイル名の先頭はhash値にする
+                        directory_meta_info_buffer[i].file_name = System.Text.Encoding.ASCII.GetBytes(i.ToString("00000000") + "_" + index_buffer[i].hash_name.ToString() );
+                        //file_nameが見つからなかったflag on
+                        directory_meta_info_buffer[i].flag ^= 0x1;
+                    }
+                    else
+                    {
+                        directory_meta_info_buffer[i].file_name = System.Text.Encoding.ASCII.GetBytes(external_files.files[pos]);
+                    }
                 }
                 //オフセットを設定
                 directory_meta_info_buffer[i].offset = index_buffer[i].offset;
@@ -841,9 +882,6 @@ using System.IO;
 
         static int extract_TAH_resource(ref BinaryReader file_reader, string dest_path, ref directory_meta_info dir_meta_info)
         {
-            ext_file_list external_files;
-            build_ext_file_list(out external_files);
-
             //now proceed with decrypting
             for (int i = 0; i < dir_meta_info.index_entry_count; i++)
             {
@@ -862,27 +900,12 @@ using System.IO;
                 write_file_str += "/" + System.Text.Encoding.ASCII.GetString(dir_meta_info.entry_meta_infos[i].file_name, 0, tcnt + 1);
                 //write_file_str =  write_file_str.Replace("/", "\\");
 
-                bool filename_found_in_list = false;
-
                 UInt32 hashkey = 0;
                 try
                 {
                     hashkey = UInt32.Parse(write_file_str.Substring(write_file_str.LastIndexOf("_") + 1));
                 }
                 catch (Exception) { }
-
-                //names.txt があるなら
-                if (external_files.files != null)
-                {
-                    //names.txt を検索
-                    int pos = Array.BinarySearch(external_files.hashkeys, hashkey);
-                    if (pos >= 0)
-                    {
-                        write_file_str = write_file_str.Substring(0, write_file_str.LastIndexOf("/"));
-                        write_file_str += "/" + external_files.files[pos];
-                        filename_found_in_list = true;
-                    }
-                }
 
                 try
                 {
@@ -918,38 +941,33 @@ using System.IO;
                     return -1;
                 }
 
-                //flag = 1ならno path
+                //flag & 0x1 = 1ならno path
                 if (dir_meta_info.entry_meta_infos[i].flag % 2 == 1)
                 {
-                    //had no path name encoded in tah file
-                    //names.txt で見つからなかった場合
-                    if (!filename_found_in_list)
+                    string ext;
+                    string magic = System.Text.Encoding.ASCII.GetString(data_output, 0, 4);
+                    switch (magic)
                     {
-                        if (System.Text.Encoding.ASCII.GetString(data_output, 0, 4).Contains("8BPS"))
-                        {
-                            write_file_str += ".psd";
-                        }
-                        else if (System.Text.Encoding.ASCII.GetString(data_output, 0, 4).Contains("TMO1"))
-                        {
-                            write_file_str += ".tmo";
-                        }
-                        else if (System.Text.Encoding.ASCII.GetString(data_output, 0, 4).Contains("TSO1"))
-                        {
-                            write_file_str += ".tso";
-                        }
-                        else if (System.Text.Encoding.ASCII.GetString(data_output, 0, 4).Contains("OggS"))
-                        {
-                            write_file_str += ".ogg";
-                        }
-                        else if (System.Text.Encoding.ASCII.GetString(data_output, 0, 4).Contains("BBBB"))
-                        {
-                            write_file_str += ".tbn";
-                        }
-                        else
-                        {
-                            write_file_str += ".cgfx";
-                        }
+                        case "8BPS":
+                            ext = ".psd";
+                            break;
+                        case "TMO1":
+                            ext = ".tmo";
+                            break;
+                        case "TSO1":
+                            ext = ".tso";
+                            break;
+                        case "OggS":
+                            ext = ".ogg";
+                            break;
+                        case "BBBB":
+                            ext = ".tbn";
+                            break;
+                        default:
+                            ext = ".cgfx";
+                            break;
                     }
+                    write_file_str += ext;
                 }
 
                 try
