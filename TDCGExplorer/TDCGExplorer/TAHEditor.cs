@@ -25,6 +25,7 @@ namespace System.Windows.Forms
         private ToolStripMenuItem toolStripMenuItemTAHInfoEdit;
         private ToolStripMenuItem toolStripMenuItemChangeColor;
         private ToolStripMenuItem toolStripMenuItemDeleteItem;
+        private EventHandler formTimer;
         private string tahdbpath;
 
         public TAHEditor(string dbpath, GenericTahInfo info)
@@ -32,6 +33,10 @@ namespace System.Windows.Forms
             tahdbpath = dbpath.ToLower();
 
             InitializeComponent();
+
+            // タイマーを登録する.
+            formTimer = new System.EventHandler(MainTimer_Tick);
+            TDCGExplorer.TDCGExplorer.MainFormWindow.AddTimer(formTimer);
 
             database = new TAHLocalDB();
             database.Open(dbpath);
@@ -76,6 +81,9 @@ namespace System.Windows.Forms
 
         protected override void Dispose(bool disposing)
         {
+            // タイマーを解除する.
+            TDCGExplorer.TDCGExplorer.MainFormWindow.DeleteTimer(formTimer);
+
             if (database != null)
             {
                 database.Dispose();
@@ -88,7 +96,7 @@ namespace System.Windows.Forms
                 }
                 else
                 {
-                    if (MessageBox.Show("作業用データベースファイルを削除しますか？\nこのファイルは次回編集時に再利用できます。", "DBの削除", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                    if (MessageBox.Show("作業用データベースファイルを削除しますか？\nこのファイルは次回編集時に再利用できます。\n(初期設定でこの表示をせず常に削除する事が出来ます)", "DBの削除", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                         File.Delete(tahdbpath);
                 }
             }
@@ -189,9 +197,9 @@ namespace System.Windows.Forms
             this.toolStripMenuItemEditIdentify = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemEditCategory = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemChangeColor = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemDeleteItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSaveTAHFile = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItemDeleteItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -209,6 +217,7 @@ namespace System.Windows.Forms
             this.dataGridView.Size = new System.Drawing.Size(0, 0);
             this.dataGridView.TabIndex = 0;
             this.dataGridView.Resize += new System.EventHandler(this.dataGridView_Resize);
+            this.dataGridView.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
             this.dataGridView.MouseEnter += new System.EventHandler(this.dataGridView_MouseEnter);
             // 
             // contextMenuStrip
@@ -260,6 +269,13 @@ namespace System.Windows.Forms
             this.toolStripMenuItemChangeColor.Text = "選択した色番号を変更する";
             this.toolStripMenuItemChangeColor.Click += new System.EventHandler(this.toolStripMenuItemChangeColor_Click);
             // 
+            // toolStripMenuItemDeleteItem
+            // 
+            this.toolStripMenuItemDeleteItem.Name = "toolStripMenuItemDeleteItem";
+            this.toolStripMenuItemDeleteItem.Size = new System.Drawing.Size(290, 22);
+            this.toolStripMenuItemDeleteItem.Text = "選択したファイルの削除";
+            this.toolStripMenuItemDeleteItem.Click += new System.EventHandler(this.toolStripMenuItemDeleteItem_Click);
+            // 
             // toolStripMenuItemSaveTAHFile
             // 
             this.toolStripMenuItemSaveTAHFile.Name = "toolStripMenuItemSaveTAHFile";
@@ -273,13 +289,6 @@ namespace System.Windows.Forms
             this.toolStripMenuItemClose.Size = new System.Drawing.Size(290, 22);
             this.toolStripMenuItemClose.Text = "閉じる";
             this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
-            // 
-            // toolStripMenuItemDeleteItem
-            // 
-            this.toolStripMenuItemDeleteItem.Name = "toolStripMenuItemDeleteItem";
-            this.toolStripMenuItemDeleteItem.Size = new System.Drawing.Size(290, 22);
-            this.toolStripMenuItemDeleteItem.Text = "選択したファイルの削除";
-            this.toolStripMenuItemDeleteItem.Click += new System.EventHandler(this.toolStripMenuItemDeleteItem_Click);
             // 
             // TAHEditor
             // 
@@ -820,6 +829,102 @@ namespace System.Windows.Forms
         public void SelectAll()
         {
             dataGridView.SelectAll();
+        }
+
+        private bool fChangedSelection = false;
+        private int viewChangeTimer = 0;
+
+        private void dataGridView_SelectionChanged(object sender, EventArgs e)
+        {
+            fChangedSelection = true;
+            viewChangeTimer = 5;
+        }
+
+        // タイマーで待って後から描画する.
+        private void MainTimer_Tick(object sender, EventArgs e)
+        {
+            if (fChangedSelection == true)
+            {
+                if (viewChangeTimer-- == 0)
+                {
+                    DrawSelectedTso();
+                    fChangedSelection = false;
+                }
+            }
+        }
+
+        private void DrawSelectedTso()
+        {
+            HashSet<string> tsoFileList = new HashSet<string>();
+            // 表示するTSOの一覧を取得する.
+            foreach (DataGridViewRow viewrow in dataGridView.SelectedRows)
+            {
+                DataRowView vrow = viewrow.DataBoundItem as DataRowView;
+                DataRow row = null;
+                if (vrow != null)
+                {
+                    row = vrow.Row;
+                    if (row != null)
+                    {
+                        Object[] entry = row.ItemArray;
+                        if (entry != null)
+                        {
+                            string dir = entry[0].ToString();
+                            string filename = entry[1].ToString();
+                            if (entry[2].ToString() == "tso")
+                            {
+                                tsoFileList.Add(dir + filename);
+                            }
+                            if (entry[2].ToString() == "tbn")
+                            {
+                                TAHLocalDbEntry tahentry = database.GetEntry(dir + filename);
+                                if (tahentry != null)
+                                {
+                                    TAHLocalDBDataEntry tahdata = database.GetData(tahentry.dataid);
+                                    try
+                                    {
+                                        string tsoname = TDCGTbnUtil.GetTsoName(tahdata.data);
+                                        tsoFileList.Add(tsoname);
+                                    }
+                                    catch (Exception)
+                                    {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            // TSOを描画する。あまりに数が多い時は描画しない.
+            if (tsoFileList.Count > 0 && tsoFileList.Count<31)
+            {
+                string thetsoname = "";
+                TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
+                TDCGExplorer.TDCGExplorer.MainFormWindow.clearTSOViewer();
+                foreach (string tsoname in tsoFileList)
+                {
+                    TAHLocalDbEntry entry = database.GetEntry(tsoname);
+                    if (entry != null)
+                    {
+                        TAHLocalDBDataEntry data = database.GetData(entry.dataid);
+                        using (MemoryStream ms = new MemoryStream(data.data))
+                        {
+                            TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(ms);
+                            thetsoname = tsoname;
+                        }
+                    }
+                }
+                TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad(); // 初期tmoを読み込む.
+                // 選んだアイテムが１個の時は自動センタリングする.
+                if (tsoFileList.Count == 1 && thetsoname != "")
+                {
+                    // カメラをセンター位置に.
+                    TSOCameraAutoCenter camera = new TSOCameraAutoCenter(TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer);
+                    camera.UpdateCenterPosition(Path.GetFileName(thetsoname).ToUpper());
+                    // 次回カメラが必ずリセットされる様にする.
+                    TDCGExplorer.TDCGExplorer.MainFormWindow.setNeedCameraReset();
+                }
+            }
         }
 
 #if false
