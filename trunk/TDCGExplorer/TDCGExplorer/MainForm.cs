@@ -928,6 +928,16 @@ namespace TDCGExplorer
         {
             if (!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
             e.Effect = DragDropEffects.Copy;
-       }
+        }
+
+        public void AddTimer(EventHandler handler)
+        {
+            MainTimer.Tick += handler;
+        }
+
+        public void DeleteTimer(EventHandler handler)
+        {
+            MainTimer.Tick -= handler;
+        }
     }
 }
