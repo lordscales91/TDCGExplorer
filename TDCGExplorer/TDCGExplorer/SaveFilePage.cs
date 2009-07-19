@@ -580,6 +580,7 @@ namespace System.Windows.Forms
             }
             editor.Commit(transaction);
             TDCGExplorer.TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
+            editor.SelectAll();
         }
     }
 }

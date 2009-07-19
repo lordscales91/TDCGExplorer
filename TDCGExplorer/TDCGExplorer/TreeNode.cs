@@ -82,6 +82,8 @@ namespace TDCGExplorer
                 TDCGExplorer.GetMainForm().AssignTagPageControl(new MODRefPage(zipid));
             }
 #endif
+            if (TDCGExplorer.BusyTest() == true) return;
+
             // ZIPページを開いた時の動作を指定する (none:なにもしない server:サーバにアクセス image:画像表示 text:テキスト表示)
             // public string zippage_behavior
             switch (TDCGExplorer.SystemDB.zippage_behavior)

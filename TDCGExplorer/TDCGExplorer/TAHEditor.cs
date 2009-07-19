@@ -815,7 +815,11 @@ namespace System.Windows.Forms
                     throw ex;
                 }
             }
+        }
 
+        public void SelectAll()
+        {
+            dataGridView.SelectAll();
         }
 
 #if false

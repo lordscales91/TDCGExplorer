@@ -62,11 +62,13 @@ namespace TDCGExplorer
                         // 新規作成する.
                         TAHEditor editor = new TAHEditor(tahdbpath,new GenericZipsTahInfo(entry));
                         TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
+                        editor.SelectAll();
                     }
                 }else{
                     // 既にあるファイルをオープンする.
                     TAHEditor editor = new TAHEditor(tahdbpath, null);
                     TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
+                    editor.SelectAll();
                 }
             }
             else
@@ -74,6 +76,7 @@ namespace TDCGExplorer
                 // 新規に作成する.
                 TAHEditor editor = new TAHEditor(tahdbpath, new GenericZipsTahInfo(entry));
                 TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
+                editor.SelectAll();
             }
         }
         public static void DeleteTahEditorFile(GenericTahInfo entry)

@@ -232,6 +232,9 @@
     <None Include="default.tmo">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="manuarl.rtf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="N001OBON_Z00.tbn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

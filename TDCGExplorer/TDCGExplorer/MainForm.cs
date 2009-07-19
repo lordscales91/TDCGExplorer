@@ -337,7 +337,7 @@ namespace TDCGExplorer
         // リストアイテムが選択された.
         private void listBoxMainListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (TDCGExplorer.BusyTest()) return;
+            if (TDCGExplorer.BusyTest()==true) return;
 
             try
             {
@@ -359,15 +359,20 @@ namespace TDCGExplorer
             }
         }
 
+        public void NewTab()
+        {
+            TabPage tabPage = new TabPage();
+            tabPage.Text = "新しいタブ";
+            tabMainView.Controls.Add(tabPage);
+            tabMainView.SelectTab(tabMainView.Controls.Count - 1);
+        }
+
         // 新規タブでページを開く.
         private void NewTabPageToolStripMenuItem_Click(object sender, EventArgs e)
         {
             try
             {
-                TabPage tabPage = new TabPage();
-                tabPage.Text = "新しいタブ";
-                tabMainView.Controls.Add(tabPage);
-                tabMainView.SelectTab(tabMainView.Controls.Count - 1);
+                NewTab();
             }
             catch (Exception exception)
             {
@@ -804,7 +809,7 @@ namespace TDCGExplorer
                     SetColor(node);
                     try
                     {
-                        ((GenericTahTreeNode)node).DoTvTreeSelect();
+                        if (threadCheck() == false) ((GenericTahTreeNode)node).DoTvTreeSelect();
                     }
                     catch (Exception ex)
                     {
@@ -911,6 +916,8 @@ namespace TDCGExplorer
         // ファイルをドラッグドロップされた→TAHページを作成してTAH梱包の準備をする.
         private void MainForm_DragDrop(object sender, DragEventArgs e)
         {
+            if (TDCGExplorer.BusyTest()) return;
+
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             if (files.Length == 0) return;
 
