@@ -146,5 +146,10 @@ namespace TDCGExplorer
             get { return checkBoxDeleteTahCache.Checked; }
             set { checkBoxDeleteTahCache.Checked = value; }
         }
+        public bool taheditorprevire
+        {
+            get { return checkBoxTahPreview.Checked; }
+            set { checkBoxTahPreview.Checked = value; }
+        }
     }
 }

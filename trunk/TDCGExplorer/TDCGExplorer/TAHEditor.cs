@@ -836,8 +836,11 @@ namespace System.Windows.Forms
 
         private void dataGridView_SelectionChanged(object sender, EventArgs e)
         {
-            fChangedSelection = true;
-            viewChangeTimer = 5;
+            if (TDCGExplorer.TDCGExplorer.SystemDB.taheditorpreview == true)
+            {
+                fChangedSelection = true;
+                viewChangeTimer = 5;
+            }
         }
 
         // タイマーで待って後から描画する.

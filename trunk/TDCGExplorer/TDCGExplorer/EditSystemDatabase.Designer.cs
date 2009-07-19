@@ -69,6 +69,7 @@
             this.checkBoxFindZipLevel = new System.Windows.Forms.CheckBox();
             this.checkBoxDeleteTahCache = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.checkBoxTahPreview = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -423,7 +424,7 @@
             // checkBoxDeleteTahCache
             // 
             this.checkBoxDeleteTahCache.AutoSize = true;
-            this.checkBoxDeleteTahCache.Location = new System.Drawing.Point(7, 24);
+            this.checkBoxDeleteTahCache.Location = new System.Drawing.Point(7, 21);
             this.checkBoxDeleteTahCache.Name = "checkBoxDeleteTahCache";
             this.checkBoxDeleteTahCache.Size = new System.Drawing.Size(177, 17);
             this.checkBoxDeleteTahCache.TabIndex = 1;
@@ -432,13 +433,24 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.checkBoxTahPreview);
             this.groupBox3.Controls.Add(this.checkBoxDeleteTahCache);
-            this.groupBox3.Location = new System.Drawing.Point(378, 338);
+            this.groupBox3.Location = new System.Drawing.Point(378, 320);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(200, 52);
+            this.groupBox3.Size = new System.Drawing.Size(200, 70);
             this.groupBox3.TabIndex = 35;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "TAHエディタ";
+            // 
+            // checkBoxTahPreview
+            // 
+            this.checkBoxTahPreview.AutoSize = true;
+            this.checkBoxTahPreview.Location = new System.Drawing.Point(7, 44);
+            this.checkBoxTahPreview.Name = "checkBoxTahPreview";
+            this.checkBoxTahPreview.Size = new System.Drawing.Size(144, 17);
+            this.checkBoxTahPreview.TabIndex = 2;
+            this.checkBoxTahPreview.Text = "TSOプレビューを表示する";
+            this.checkBoxTahPreview.UseVisualStyleBackColor = true;
             // 
             // EditSystemDatabase
             // 
@@ -537,5 +549,6 @@
         private System.Windows.Forms.CheckBox checkBoxFindZipLevel;
         private System.Windows.Forms.CheckBox checkBoxDeleteTahCache;
         private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.CheckBox checkBoxTahPreview;
     }
 }
