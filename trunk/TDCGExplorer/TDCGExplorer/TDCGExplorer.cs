@@ -813,7 +813,7 @@ namespace TDCGExplorer
                                         }
 #endif
                                         destpath = Path.Combine(destpath, "Required " + zipentry.code);
-                                        destpath = Path.Combine(destpath, ZipFileUtil.ZipName(zipentry.path));
+                                        destpath = Path.Combine(destpath, ZipFileUtil.ZipName(ziparc.path));
 
                                         // 展開に成功したらzipのノードの色を変える.
                                         try
