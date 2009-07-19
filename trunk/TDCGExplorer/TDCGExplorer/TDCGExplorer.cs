@@ -700,6 +700,7 @@ namespace TDCGExplorer
             ArcsZipArcEntry zipentry = ArcsDB.GetZip(zipNode.Entry);
             string zipsource = Path.Combine(TDCGExplorer.SystemDB.zips_path, zipentry.path);
             string destpath = SystemDB.work_path;
+#if false
             if (arcNames.entry.ContainsKey(zipentry.code) == true)
             {
                 // サマリ文字列を自動的に追加しておく.
@@ -709,6 +710,9 @@ namespace TDCGExplorer
             {
                 destpath = Path.Combine(destpath, zipentry.code);
             }
+#endif
+            destpath = Path.Combine(destpath, ZipFileUtil.ZipName(zipentry.path));
+            
             // 展開に成功したらzipのノードの色を変える.
             if (ZipFileUtil.ExtractZipFile(zipsource, destpath) == true)
             {
@@ -795,6 +799,7 @@ namespace TDCGExplorer
 
                                         string zipsource = Path.Combine(TDCGExplorer.SystemDB.zips_path, ziparc.path);
                                         string destpath = SystemDB.work_path;
+#if false
                                         if (arcNames.entry.ContainsKey(ziparc.code) == true)
                                         {
                                             // サマリ文字列を自動的に追加しておく.
@@ -806,6 +811,10 @@ namespace TDCGExplorer
                                             destpath = Path.Combine(destpath, "Required " + zipentry.code);
                                             destpath = Path.Combine(destpath, ziparc.code);
                                         }
+#endif
+                                        destpath = Path.Combine(destpath, "Required " + zipentry.code);
+                                        destpath = Path.Combine(destpath, ZipFileUtil.ZipName(zipentry.path));
+
                                         // 展開に成功したらzipのノードの色を変える.
                                         try
                                         {

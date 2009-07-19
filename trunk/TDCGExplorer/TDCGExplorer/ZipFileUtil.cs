@@ -94,5 +94,24 @@ namespace TDCGExplorer
                     }
             }
         }
+
+        // オリジナルのファイル名を尊重しつつサマリーを付加する.
+        public static string ZipName(string name)
+        {
+            string node = Path.GetFileNameWithoutExtension(name);
+            // ファイル名がnode名だけだった場合.
+            if(TDCGExplorer.Arcsnames.ContainsKey(node.ToUpper())==true)
+            {
+                char[] illegal = { '/', '\\', '*', ':', '?', '<', '>', '\"', '|' };
+                ArcsNamesEntry entry = TDCGExplorer.Arcsnames[node.ToUpper()];
+                string summary = entry.summary;
+                foreach (char illeagalchar in illegal)
+                {
+                    summary = summary.Replace(illeagalchar, ' ');
+                }
+                node = node + " " + summary;
+            }
+            return node;
+        }
     }
 }
