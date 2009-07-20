@@ -288,7 +288,7 @@ using System.IO;
                     int pos = Array.BinarySearch(external_files.hashkeys, index_buffer[i].hash_name);
                     if (pos < 0) // not found
                     {
-                        //ファイル名の先頭はhash値にする
+                        //ファイル名は <i>_<hash>にする
                         directory_meta_info_buffer[i].file_name = i.ToString("00000000") + "_" + index_buffer[i].hash_name.ToString();
                         //file_nameが見つからなかったflag on
                         directory_meta_info_buffer[i].flag ^= 0x1;
