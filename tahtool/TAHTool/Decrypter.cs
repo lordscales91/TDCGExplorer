@@ -4,7 +4,7 @@ using System.IO;
 
         public struct entry_meta_info
         {
-            public byte[] file_name;
+            public string file_name;
             public UInt32 offset;
             public UInt32 length;
             public UInt32 flag; //at bit 0x1: no path info in tah file 1 otherwise 0
@@ -234,7 +234,7 @@ using System.IO;
                     byte[] str_path = new byte[MAX_PATH];
 
                     //0x00の位置まで先頭から回す = ディレクトリ名
-                    uint str_path_offset = 0;
+                    int str_path_offset = 0;
                     while (file_path[str_path_offset] != 0x00)
                     {
                         str_path_offset++;
@@ -263,8 +263,11 @@ using System.IO;
                             if (hash_key == index_buffer[h].hash_name)
                             {
                                 //i + str_path_offset以降をfile_nameとしてcopy
-                                directory_meta_info_buffer[h].file_name = new byte[i + str_path_offset]; int k = 0;
-                                while (k < (i + str_path_offset)) { directory_meta_info_buffer[h].file_name[k] = str_path[k]; k++; }
+                                System.Text.StringBuilder sb = new System.Text.StringBuilder();
+                                sb.Capacity = i + str_path_offset;
+                                for (int k = 0; k < i + str_path_offset; k++)
+                                    sb.Append(str_path[k]);
+                                directory_meta_info_buffer[h].file_name = sb.ToString();
                                 break;
                             }
                         }
@@ -290,13 +293,13 @@ using System.IO;
                     if (pos < 0) // not found
                     {
                         //ファイル名の先頭はhash値にする
-                        directory_meta_info_buffer[i].file_name = System.Text.Encoding.ASCII.GetBytes(i.ToString("00000000") + "_" + index_buffer[i].hash_name.ToString() );
+                        directory_meta_info_buffer[i].file_name = i.ToString("00000000") + "_" + index_buffer[i].hash_name.ToString();
                         //file_nameが見つからなかったflag on
                         directory_meta_info_buffer[i].flag ^= 0x1;
                     }
                     else
                     {
-                        directory_meta_info_buffer[i].file_name = System.Text.Encoding.ASCII.GetBytes(external_files.files[pos]);
+                        directory_meta_info_buffer[i].file_name = external_files.files[pos];
                     }
                 }
                 //オフセットを設定
