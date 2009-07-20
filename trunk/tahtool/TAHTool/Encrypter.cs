@@ -54,7 +54,7 @@ using System.IO;
             //Console.WriteLine("add {0}", file);
         }
 
-        int build_file_indices(string source_path, out string[] file_index, out file_entry[] all_compressed_files, out UInt32 all_files_count)
+        int build_file_indices(string source_path, out string[] file_index, out file_entry[] all_compressed_files)
         {
             Dictionary<string, List<string>> dir_entries = new Dictionary<string, List<string>>();
 
@@ -79,7 +79,7 @@ using System.IO;
                 directories.Remove(source_path);
 
             //全ファイル数
-            all_files_count = (uint)files.Count;
+            int all_files_count = files.Count;
             all_compressed_files = new file_entry[all_files_count];
 
             //file entryを用意する
@@ -223,11 +223,10 @@ using System.IO;
 
             string[] file_index;
             file_entry[] all_compressed_files;
-            UInt32 all_files_count;
 
-            build_file_indices(source_path, out file_index, out all_compressed_files, out all_files_count);
+            build_file_indices(source_path, out file_index, out all_compressed_files);
             build_compressed_file_indices(file_index);
-            return write(file_path_name, ref all_compressed_files, ref all_files_count);
+            return write(file_path_name, all_compressed_files);
         }
 
         int build_compressed_file_indices(string[] file_index)
@@ -267,13 +266,15 @@ using System.IO;
 
             //xxx: copyする必要はあるか???
             compressed_file_index_s = new byte[compressed_file_index_length];
-            Array.Copy(compressed_file_index, 0, compressed_file_index_s, 0, (int)compressed_file_index_length);
+            Array.Copy(compressed_file_index, 0, compressed_file_index_s, 0, compressed_file_index_length);
 
             return 0;
         }
 
-        int write(string file_path_name, ref file_entry[] all_compressed_files, ref UInt32 all_files_count)
+        int write(string file_path_name, file_entry[] all_compressed_files)
         {
+            UInt32 all_files_count = (UInt32)all_compressed_files.Length;
+
             //now everything is set up for writing the tah file...
             BinaryWriter writer = new BinaryWriter(File.Create(file_path_name));
             writer.Write(System.Text.Encoding.ASCII.GetBytes("TAH2"));
