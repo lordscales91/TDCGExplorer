@@ -2,101 +2,22 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+        public struct entry_meta_info
+        {
+            public byte[] file_name;
+            public UInt32 offset;
+            public UInt32 length;
+            public UInt32 flag; //at bit 0x1: no path info in tah file 1 otherwise 0
+        }
+
+        public struct directory_meta_info
+        {
+            public UInt32 index_entry_count;
+            public entry_meta_info[] entry_meta_infos;
+        }
+
     class Decrypter
     {
-        static void Main(string[] args)
-        {
-            if (args.Length > 0)
-            {
-                //DumpFiles(args[0]);
-                decrypt_TAH_archive(args[0]);
-            }
-        }
-
-        static int DumpFiles(string source_file)
-        {
-            Decrypter myDecrypter = new Decrypter();
-            myDecrypter.Load(source_file);
-
-            string base_path = Path.GetFileNameWithoutExtension(source_file);
-
-            Console.WriteLine("file_name\toffset\tlength\tflag");
-            entry_meta_info info;
-            while (myDecrypter.FindNext(out info))
-            {
-                string file_name = System.Text.Encoding.ASCII.GetString(info.file_name);
-                Console.WriteLine("{0}\t{1}\t{2}\t{3}", file_name, info.offset, info.length, info.flag);
-
-                byte[] data_output;
-                myDecrypter.ExtractResource(ref info, out data_output);
-
-                //flag & 0x1 = 1‚È‚çno path
-                if (info.flag % 2 == 1)
-                {
-                    string ext;
-                    string magic = System.Text.Encoding.ASCII.GetString(data_output, 0, 4);
-                    switch (magic)
-                    {
-                        case "8BPS":
-                            ext = ".psd";
-                            break;
-                        case "TMO1":
-                            ext = ".tmo";
-                            break;
-                        case "TSO1":
-                            ext = ".tso";
-                            break;
-                        case "OggS":
-                            ext = ".ogg";
-                            break;
-                        case "BBBB":
-                            ext = ".tbn";
-                            break;
-                        default:
-                            ext = ".cgfx";
-                            break;
-                    }
-                    file_name += ext;
-                }
-                string dest_file_name = Path.Combine(base_path, file_name);
-                Directory.CreateDirectory(Path.GetDirectoryName(dest_file_name));
-
-                BinaryWriter file_writer = new BinaryWriter(File.Create(dest_file_name));
-                file_writer.Write(data_output);
-                file_writer.Close();
-            }
-            myDecrypter.Close();
-
-            return 0;
-        }
-
-        static int decrypt_TAH_archive(string source_file)
-        {
-            string dest_path = "";
-            string[] sep = new string[1];
-            sep[0] = "\\";
-            string[] file_path = source_file.Split(sep, System.StringSplitOptions.RemoveEmptyEntries);
-            string file_name = file_path[file_path.Length - 1];
-            if (file_name.Substring(file_name.Length - 3, 3).ToLower().CompareTo("tah") == 0)
-            {
-                //decrypt TAH archive
-                string folder_name = file_name.Substring(0, file_name.LastIndexOf("."));
-                for (int i = 0; i < file_path.Length - 1; i++)
-                {
-                    dest_path += file_path[i] + "\\";
-                }
-                dest_path += folder_name;
-                System.Console.Out.WriteLine(dest_path);
-                Decrypter myDecrypter = new Decrypter();
-                return myDecrypter.decrypt_archive(source_file, dest_path);
-            }
-            else
-            {
-                //encrypt to TAH archive
-                return -1;
-            }
-        }
-
         /*Many thanks to the author of the original TAH decrypter for crass.
          *I just ripped and converted parts of the code from C++ to C#.
          *I'ld like to contact and credit the author of this code but could
@@ -129,26 +50,10 @@ using System.IO;
         }
         public static LZSS_Hash[] m_HashTable;
 
-        public struct tah_file
-        {
-            public header tah_header;
-            public file_entry[] all_compressed_files;
-        }
-
         public struct ext_file_list
         {
             public string[] files;
             public UInt32[] hashkeys;
-        }
-
-        public struct file_entry
-        {
-            public byte[] compressed_data;
-            public string true_file_name;
-            public UInt32 compressed_length;
-            public UInt32 uncompressed_length;
-            public string file_name;
-            public UInt32 hash_value; //only for entries with file_name == null
         }
 
         public struct header
@@ -163,20 +68,6 @@ using System.IO;
         {
             public UInt32 hash_name;
             public UInt32 offset;
-        }
-
-        public struct entry_meta_info
-        {
-            public byte[] file_name;
-            public UInt32 offset;
-            public UInt32 length;
-            public UInt32 flag; //at bit 0x1: no path info in tah file 1 otherwise 0
-        }
-
-        public struct directory_meta_info
-        {
-            public UInt32 index_entry_count;
-            public entry_meta_info[] entry_meta_infos;
         }
 
         static unsafe void Copy(byte[] src, int srcIndex,
@@ -798,7 +689,7 @@ using System.IO;
             }
         }
 
-        int ExtractResource(ref entry_meta_info ent_meta_info, out byte[] data_output)
+        public int ExtractResource(ref entry_meta_info ent_meta_info, out byte[] data_output)
         {
             //data“Ç‚Ýž‚Ý’·‚³
             //-4‚Ídata‘‚«o‚µ’·‚³Ši”[—Ìˆæ (UInt32) ‚ðŒ¸‚¶‚Ä‚¢‚é
