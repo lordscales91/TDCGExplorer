@@ -819,17 +819,18 @@ namespace TDCGExplorer
                 }
                 else
                 {
-                    node = nodeArray[index].Nodes[0];
-                    if (node != null)
+                    if (nodeArray[index].Nodes.Count > 0)
                     {
-                        ResetColor();
-                        nodeArray[index].SelectedNode = node;
-                        SetColor(node);
+                        node = nodeArray[index].Nodes[0];
+                        if (node != null)
+                        {
+                            ResetColor();
+                            nodeArray[index].SelectedNode = node;
+                            SetColor(node);
+                            return;
+                        }
                     }
-                    else
-                    {
-                        ListBoxClear();
-                    }
+                    ListBoxClear();
                 }
             }
         }

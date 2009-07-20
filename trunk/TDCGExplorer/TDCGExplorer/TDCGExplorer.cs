@@ -55,51 +55,34 @@ namespace TDCGExplorer
         [STAThread]
         static void Main()
         {
-            Debug.WriteLine("SystemStart");
-
-            systemDatabase = new SystemDatabase();
-            arcsDatabase = new ArcsDatabase();
-            arcNames = new ArcNamesDictionary();
-            tagNames = new TagNamesDictionary();
-            annotationDatabase = new AnnotationDB();
-
-            TAHEntry.ReadExternalFileList();
-            arcNames.Init();
-            tagNames.Init();
-
-            ResetDefaultPose();
-
-            SetToolTips("Copyright © 2009 3DCG Craftsmen's Guild.");
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-#if true
-            Application.Run(form = new MainForm());
-#else
             try
             {
+                systemDatabase = new SystemDatabase();
+                arcsDatabase = new ArcsDatabase();
+                arcNames = new ArcNamesDictionary();
+                tagNames = new TagNamesDictionary();
+                annotationDatabase = new AnnotationDB();
+
+                TAHEntry.ReadExternalFileList();
+                arcNames.Init();
+                tagNames.Init();
+
+                ResetDefaultPose();
+
+                SetToolTips("Copyright © 2009 3DCG Craftsmen's Guild.");
+
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(form = new MainForm());
             }
             catch (Exception ex)
             {
-                if (ex.Message != null && ex.Message == "A generic error occurred in GDI+.")
-                {
-                    MessageBox.Show("大変申し訳ありません。\n\n" +
-                                     "プログラムはWindowsのバグによって終了しました。\n" +
-                                     "デバッグ情報を" + GetAppDataPath() + "に保存します。\n"+
-                                     "このエラーはMicrosoftにお問い合わせ下さい。",
-                                     "Windowsサブシステムでエラーが発生しました", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
-                else
-                {
-                    MessageBox.Show("大変申し訳ありません。\n\n" +
-                                     "プログラムは予期せぬ例外によって終了しました。\n" +
-                                     "デバッグ情報を" + GetAppDataPath() + "に保存します。",
-                                     "深刻なエラーが発生しました。", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                }
+                MessageBox.Show("大変申し訳ありません。\n\n" +
+                                 "プログラムは予期せぬ例外によって終了しました。\n" +
+                                 "デバッグ情報を保存します。",
+                                 "深刻なエラーが発生しました。", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-                string savepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), TDCGExplorer.GetAppDataPath());
-                savepath = Path.Combine(savepath, "デバッグ情報.txt");
+                string savepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "TDCGExplorer デバッグ情報.txt");
                 File.Delete(savepath);
                 using (Stream stream = File.OpenWrite(savepath))
                 {
@@ -149,7 +132,6 @@ namespace TDCGExplorer
                     stream.Close();
                 }
             }
-#endif
             arcsDatabase.Dispose();
             systemDatabase.Dispose();
         }
@@ -700,17 +682,6 @@ namespace TDCGExplorer
             ArcsZipArcEntry zipentry = ArcsDB.GetZip(zipNode.Entry);
             string zipsource = Path.Combine(TDCGExplorer.SystemDB.zips_path, zipentry.path);
             string destpath = SystemDB.work_path;
-#if false
-            if (arcNames.entry.ContainsKey(zipentry.code) == true)
-            {
-                // サマリ文字列を自動的に追加しておく.
-                destpath = Path.Combine(destpath, zipentry.code) + " " + arcNames.entry[zipentry.code].summary;
-            }
-            else
-            {
-                destpath = Path.Combine(destpath, zipentry.code);
-            }
-#endif
             destpath = Path.Combine(destpath, ZipFileUtil.ZipName(zipentry.path));
             
             // 展開に成功したらzipのノードの色を変える.
@@ -799,19 +770,6 @@ namespace TDCGExplorer
 
                                         string zipsource = Path.Combine(TDCGExplorer.SystemDB.zips_path, ziparc.path);
                                         string destpath = SystemDB.work_path;
-#if false
-                                        if (arcNames.entry.ContainsKey(ziparc.code) == true)
-                                        {
-                                            // サマリ文字列を自動的に追加しておく.
-                                            destpath = Path.Combine(destpath, "Required "+zipentry.code);
-                                            destpath=Path.Combine(destpath,ziparc.code) + " " + arcNames.entry[ziparc.code].summary;
-                                        }
-                                        else
-                                        {
-                                            destpath = Path.Combine(destpath, "Required " + zipentry.code);
-                                            destpath = Path.Combine(destpath, ziparc.code);
-                                        }
-#endif
                                         destpath = Path.Combine(destpath, "Required " + zipentry.code);
                                         destpath = Path.Combine(destpath, ZipFileUtil.ZipName(ziparc.path));
 
@@ -1008,13 +966,6 @@ namespace TDCGExplorer
                 }
             }
         }
-#if false
-        public static void FindNode(string key)
-        {
-            foreach(TreeNode node in GetMainForm().TabTreeMainView.Nodes)
-                FindTreeNode(node, key);
-        }
-#endif
     }
 
     public class CreateArcsDatabaseThread
