@@ -8,8 +8,8 @@ using System.IO;
         {
             if (args.Length > 0)
             {
-                //DumpFiles(args[0]);
-                decrypt_TAH_archive(args[0]);
+                DumpFiles(args[0]);
+                //decrypt_TAH_archive(args[0]);
             }
         }
 
