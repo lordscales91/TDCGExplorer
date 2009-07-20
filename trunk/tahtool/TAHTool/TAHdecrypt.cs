@@ -24,11 +24,12 @@ using System.IO;
             entry_meta_info info;
             while (decrypter.FindNext(out info))
             {
-                string file_name = System.Text.Encoding.ASCII.GetString(info.file_name);
-                Console.WriteLine("{0}\t{1}\t{2}\t{3}", file_name, info.offset, info.length, info.flag);
+                Console.WriteLine("{0}\t{1}\t{2}\t{3}", info.file_name, info.offset, info.length, info.flag);
 
                 byte[] data_output;
                 decrypter.ExtractResource(ref info, out data_output);
+
+                string file_name = info.file_name;
 
                 //flag & 0x1 = 1‚È‚çno path
                 if (info.flag % 2 == 1)
