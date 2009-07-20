@@ -262,7 +262,7 @@ using System.IO;
                             //hash‚ªˆê’v‚·‚é
                             if (hash_key == index_buffer[h].hash_name)
                             {
-                                //i + str_path_offsetˆÈ~‚ğfile_name‚Æ‚µ‚Äcopy
+                                //file_name‚Æ‚µ‚Äcopy
                                 directory_meta_info_buffer[h].file_name = System.Text.Encoding.GetEncoding(932).GetString(str_path, 0, i + str_path_offset);
                                 break;
                             }
