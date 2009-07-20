@@ -30,20 +30,6 @@ using System.IO;
 
         static UInt32 MAX_PATH = 260;
 
-        // Window sizing related stuff compressor
-        public static uint HS_LZSS_MINMATCHLEN = 3;
-        public static uint HS_LZSS_WINBITS = 12;
-        public static uint HS_LZSS_WINLEN = 4091; //otherwise there will be data loops
-        public static uint HS_LZSS_MATCHBITS = 4;
-        public static uint HS_LZSS_MATCHLEN = 18;
-        public static uint HS_LZSS_HASHTABLE_SIZE = 4096;
-        public static uint HS_LZSS_HASHTABLE_EMPTY_ENTRY = 0xFFFFFFFF;
-        public static byte HS_LZSS_OUTPUT_BUFFER = 0;
-        public static UInt32 HS_LZSS_OUTPUT_BUFFER_POS = 0;
-        public static byte HS_LZSS_OUTPUT_BUFFER_FLAG = 0;
-        public static UInt32 HS_LZSS_OUTPUT_BUFFER_FLAG_POS = 0;
-        public static UInt32 HS_LZSS_OUTPUT_BUFFER_FLAG_SEED = 0;
-
         public struct ext_file_list
         {
             public string[] files;

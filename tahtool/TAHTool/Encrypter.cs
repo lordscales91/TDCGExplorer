@@ -12,10 +12,6 @@ using System.IO;
 
         static MT19937ar myMT19937ar = new MT19937ar();
 
-        //BinaryReader reader;
-
-        //static UInt32 MAX_PATH = 260;
-
         // Window sizing related stuff compressor
         public static uint HS_LZSS_MINMATCHLEN = 3;
         public static uint HS_LZSS_WINBITS = 12;
