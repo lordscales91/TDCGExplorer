@@ -49,7 +49,7 @@ using System.IO;
             }
             entry_meta_info[] entry_meta_infos;
             int ret = 0;
-            ret = extract_TAH_directory(ref reader, out entry_meta_infos);
+            ret = extract_TAH_directory(out entry_meta_infos);
             if (ret >= 0)
             {
                 ret = extract_TAH_resource(ref reader, dest_path, ref entry_meta_infos);
@@ -91,15 +91,15 @@ using System.IO;
             }
         }
 
-        public static int extract_TAH_directory(ref BinaryReader file_reader, out entry_meta_info[] entry_meta_infos)
+        public int extract_TAH_directory(out entry_meta_info[] entry_meta_infos)
         {
             entry_meta_infos = null;
             header tah_header;
             UInt32 arc_size;
 
-            if (file_reader.BaseStream.Length > 16) //sizeof(header) == 16
+            if (reader.BaseStream.Length > 16) //sizeof(header) == 16
             {
-                arc_size = (UInt32)file_reader.BaseStream.Length;
+                arc_size = (UInt32)reader.BaseStream.Length;
             }
             else
             {
@@ -110,10 +110,10 @@ using System.IO;
 
             try
             {
-                tah_header.id = System.BitConverter.ToUInt32(file_reader.ReadBytes(4), 0);
-                tah_header.index_entry_count = System.BitConverter.ToUInt32(file_reader.ReadBytes(4), 0);
-                tah_header.unknown = System.BitConverter.ToUInt32(file_reader.ReadBytes(4), 0);
-                tah_header.reserved = System.BitConverter.ToUInt32(file_reader.ReadBytes(4), 0);
+                tah_header.id = reader.ReadUInt32();
+                tah_header.index_entry_count = reader.ReadUInt32();
+                tah_header.unknown = reader.ReadUInt32();
+                tah_header.reserved = reader.ReadUInt32();
             }
             catch (Exception)
             {
@@ -134,8 +134,8 @@ using System.IO;
             {
                 for (int i = 0; i < tah_header.index_entry_count; i++)
                 {
-                    index_buffer[i].hash_name = System.BitConverter.ToUInt32(file_reader.ReadBytes(4), 0);
-                    index_buffer[i].offset = System.BitConverter.ToUInt32(file_reader.ReadBytes(4), 0);
+                    index_buffer[i].hash_name = reader.ReadUInt32();
+                    index_buffer[i].offset = reader.ReadUInt32();
                 }
             }
             catch (Exception)
@@ -148,7 +148,7 @@ using System.IO;
 
             try
             {
-                output_length = System.BitConverter.ToUInt32(file_reader.ReadBytes(4), 0);
+                output_length = reader.ReadUInt32();
             }
             catch (Exception)
             {
@@ -163,7 +163,7 @@ using System.IO;
 
             try
             {
-                data_input = file_reader.ReadBytes((int)input_length);
+                data_input = reader.ReadBytes((int)input_length);
             }
             catch (Exception)
             {
@@ -364,7 +364,7 @@ using System.IO;
             try
             {
                 //data‘‚«o‚µ’·‚³
-                data_output_length = System.BitConverter.ToUInt32(reader.ReadBytes(4), 0);
+                data_output_length = reader.ReadUInt32();
                 data_input = reader.ReadBytes((int)data_input_length);
             }
             catch (Exception)
@@ -405,7 +405,7 @@ using System.IO;
             try
             {
                 //data‘‚«o‚µ’·‚³
-                data_output_length = System.BitConverter.ToUInt32(file_reader.ReadBytes(4), 0);
+                data_output_length = file_reader.ReadUInt32();
                 data_input = file_reader.ReadBytes((int)data_input_length);
             }
             catch (Exception)
@@ -551,7 +551,7 @@ using System.IO;
             }
             entry_meta_info[] entry_meta_infos;
             int ret = 0;
-            ret = extract_TAH_directory(ref reader, out entry_meta_infos);
+            ret = extract_TAH_directory(out entry_meta_infos);
             reader.Close();
             string[] files = new string[entry_meta_infos.Length];
             for (int count = 0; count < entry_meta_infos.Length; count++)
@@ -577,7 +577,7 @@ using System.IO;
                 return;
             }
             int ret = 0;
-            ret = extract_TAH_directory(ref reader, out m_entry_meta_infos);
+            ret = extract_TAH_directory(out m_entry_meta_infos);
         }
 
         public void Close()
