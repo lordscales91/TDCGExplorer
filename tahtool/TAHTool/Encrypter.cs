@@ -4,21 +4,6 @@ using System.IO;
 
     class Encrypter
     {
-        static void Main(string[] args)
-        {
-            if (args.Length > 0)
-            {
-                string source_file = args[0];
-                //encrypt to TAH archive
-                if (Directory.Exists(source_file))
-                {
-                    //launch encrypt routine from here...
-                    Encrypter myEncrypter = new Encrypter();
-                    myEncrypter.encrypt_archive(source_file + ".tah", source_file);
-                }
-            }
-        }
-
         /*Many thanks to the author of the original TAH decrypter for crass.
          *I just ripped and converted parts of the code from C++ to C#.
          *I'ld like to contact and credit the author of this code but could
@@ -27,9 +12,9 @@ using System.IO;
 
         static MT19937ar myMT19937ar = new MT19937ar();
 
-        BinaryReader reader;
+        //BinaryReader reader;
 
-        static UInt32 MAX_PATH = 260;
+        //static UInt32 MAX_PATH = 260;
 
         // Window sizing related stuff compressor
         public static uint HS_LZSS_MINMATCHLEN = 3;
@@ -51,12 +36,6 @@ using System.IO;
         }
         public static LZSS_Hash[] m_HashTable;
 
-        public struct tah_file
-        {
-            public header tah_header;
-            public file_entry[] all_compressed_files;
-        }
-
         public struct file_entry
         {
             public byte[] compressed_data;
@@ -65,14 +44,6 @@ using System.IO;
             public UInt32 uncompressed_length;
             public string file_name;
             public UInt32 hash_value; //only for entries with file_name == null
-        }
-
-        public struct header
-        {
-            public UInt32 id; //TAH2 (843596116)
-            public UInt32 index_entry_count;
-            public UInt32 unknown; //1
-            public UInt32 reserved; //0
         }
 
         static unsafe void Copy(byte[] src, int srcIndex, byte[] dst, int dstIndex, int count)
@@ -127,7 +98,7 @@ using System.IO;
             //Console.WriteLine("add {0}", file);
         }
 
-        int build_file_indices(string source_path, out string[] file_index, out tah_file tah_output_data, out UInt32 all_files_count)
+        int build_file_indices(string source_path, out string[] file_index, out file_entry[] all_compressed_files, out UInt32 all_files_count)
         {
             Dictionary<string, List<string>> dir_entries = new Dictionary<string, List<string>>();
 
@@ -153,9 +124,7 @@ using System.IO;
 
             //全ファイル数
             all_files_count = (uint)files.Count;
-
-            tah_output_data = new tah_file();
-            tah_output_data.all_compressed_files = new file_entry[all_files_count];
+            all_compressed_files = new file_entry[all_files_count];
 
             //file entryを用意する
             UInt32 act_file = 0;
@@ -186,21 +155,21 @@ using System.IO;
                             string fparts2 = fparts1.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries)[0];//<hash> before dot
                             //this should be the string of the hash value
                             //hash値を控える
-                            tah_output_data.all_compressed_files[act_file].hash_value = System.UInt32.Parse(fparts2);
+                            all_compressed_files[act_file].hash_value = System.UInt32.Parse(fparts2);
                         }
                         //名無しでなかった
                         catch (Exception)
                         {
                             file_index[index_pos] = file;
                             //entry ファイル名を控える
-                            tah_output_data.all_compressed_files[act_file].file_name = act_file_index_path + file_index[index_pos];
+                            all_compressed_files[act_file].file_name = act_file_index_path + file_index[index_pos];
                             index_pos++;
                         }
                     }
                     try
                     {
                         //実ファイル名を控える
-                        tah_output_data.all_compressed_files[act_file].true_file_name = Path.Combine(source_path, file);
+                        all_compressed_files[act_file].true_file_name = Path.Combine(source_path, file);
                         act_file++;
                     }
                     catch (Exception ex)
@@ -229,13 +198,13 @@ using System.IO;
                     {
                         file_index[index_pos] = file;
                         //entry ファイル名を控える
-                        tah_output_data.all_compressed_files[act_file].file_name = act_file_index_path + file_index[index_pos];
+                        all_compressed_files[act_file].file_name = act_file_index_path + file_index[index_pos];
                         index_pos++;
                     }
                     try
                     {
                         //実ファイル名を控える
-                        tah_output_data.all_compressed_files[act_file].true_file_name = Path.Combine(directories[i], file);
+                        all_compressed_files[act_file].true_file_name = Path.Combine(directories[i], file);
                         act_file++;
                     }
                     catch (Exception ex)
@@ -297,12 +266,12 @@ using System.IO;
             }
 
             string[] file_index;
-            tah_file tah_output_data;
+            file_entry[] all_compressed_files;
             UInt32 all_files_count;
 
-            build_file_indices(source_path, out file_index, out tah_output_data, out all_files_count);
+            build_file_indices(source_path, out file_index, out all_compressed_files, out all_files_count);
             build_compressed_file_indices(file_index);
-            return write(file_path_name, ref tah_output_data, ref all_files_count);
+            return write(file_path_name, ref all_compressed_files, ref all_files_count);
         }
 
         int build_compressed_file_indices(string[] file_index)
@@ -347,7 +316,7 @@ using System.IO;
             return 0;
         }
 
-        int write(string file_path_name, ref tah_file tah_output_data, ref UInt32 all_files_count)
+        int write(string file_path_name, ref file_entry[] all_compressed_files, ref UInt32 all_files_count)
         {
             //now everything is set up for writing the tah file...
             BinaryWriter writer = new BinaryWriter(File.Create(file_path_name));
@@ -361,16 +330,16 @@ using System.IO;
             //writer needs this defined offset for adding length lists of the compressed data later on
             writer.BaseStream.Seek(offset, SeekOrigin.Begin);
             //全ファイルについて繰り返し（ディレクトリは含まない）
-            for (int i = 0; i < tah_output_data.all_compressed_files.Length; i++)
+            for (int i = 0; i < all_compressed_files.Length; i++)
             {
                 try
                 {
                     //dataをファイルから読む
-                    Stream input_stream = get_file_entry_stream(ref tah_output_data.all_compressed_files[i]);
+                    Stream input_stream = get_file_entry_stream(ref all_compressed_files[i]);
                     BinaryReader reader = new BinaryReader(input_stream);
                     byte[] data_input = reader.ReadBytes((int)reader.BaseStream.Length);
                     //圧縮前長さを控える
-                    tah_output_data.all_compressed_files[i].uncompressed_length = (UInt32)reader.BaseStream.Length;
+                    all_compressed_files[i].uncompressed_length = (UInt32)reader.BaseStream.Length;
                     reader.Close();
                     //-- data読み込み完了! --
 
@@ -383,22 +352,22 @@ using System.IO;
                     //-- data圧縮完了! --
 
                     //圧縮後長さを控える
-                    tah_output_data.all_compressed_files[i].compressed_length = compressed_length;
+                    all_compressed_files[i].compressed_length = compressed_length;
                     ////xxx: copyする必要はあるか???
-                    tah_output_data.all_compressed_files[i].compressed_data = new byte[compressed_length];
-                    Copy(compressed_data, 0, tah_output_data.all_compressed_files[i].compressed_data, 0, (int)compressed_length);
+                    all_compressed_files[i].compressed_data = new byte[compressed_length];
+                    Copy(compressed_data, 0, all_compressed_files[i].compressed_data, 0, (int)compressed_length);
 
-                    System.Console.Out.WriteLine(String.Format("Compressing File: {0} {1}", tah_output_data.all_compressed_files[i].true_file_name, tah_output_data.all_compressed_files[i].uncompressed_length));
+                    System.Console.Out.WriteLine(String.Format("Compressing File: {0} {1}", all_compressed_files[i].true_file_name, all_compressed_files[i].uncompressed_length));
 
-                    writer.Write(tah_output_data.all_compressed_files[i].uncompressed_length);
-                    writer.Write(tah_output_data.all_compressed_files[i].compressed_data);
+                    writer.Write(all_compressed_files[i].uncompressed_length);
+                    writer.Write(all_compressed_files[i].compressed_data);
                     writer.Flush();
                     //-- data書き出し完了! --
 
                     if (i > 0)
                     {
                         //dataはもう不要なので削除
-                        tah_output_data.all_compressed_files[i - 1].compressed_data = new byte[] { };
+                        all_compressed_files[i - 1].compressed_data = new byte[] { };
                     }
                 }
                 catch (Exception ex)
@@ -413,20 +382,20 @@ using System.IO;
 
             for (int i = 0; i < all_files_count; i++)
             {
-                if (tah_output_data.all_compressed_files[i].file_name == null)
+                if (all_compressed_files[i].file_name == null)
                 {
-                    writer.Write(tah_output_data.all_compressed_files[i].hash_value);
+                    writer.Write(all_compressed_files[i].hash_value);
                 }
                 else
                 {
-                    byte[] fname = System.Text.Encoding.ASCII.GetBytes(tah_output_data.all_compressed_files[i].file_name);
+                    byte[] fname = System.Text.Encoding.ASCII.GetBytes(all_compressed_files[i].file_name);
                     byte[] fname2 = new byte[fname.Length + 1];
                     fname2.Initialize();
                     fname.CopyTo(fname2, 0);
                     writer.Write(gen_hash_key_for_string(ref fname2));
                 }
                 writer.Write(offset);
-                offset += tah_output_data.all_compressed_files[i].compressed_length + 4;
+                offset += all_compressed_files[i].compressed_length + 4;
             }
             writer.Write(b_file_index_count);
             writer.Write(compressed_file_index_s);
