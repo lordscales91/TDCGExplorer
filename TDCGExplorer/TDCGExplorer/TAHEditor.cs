@@ -392,14 +392,16 @@ namespace System.Windows.Forms
                                     {
                                         TAHLocalDBDataEntry dataentry = database.GetData(tahentry.dataid);
                                         string orgtsoepath = TDCGTbnUtil.GetTsoName(dataentry.data);
-                                        string[] pathelement = orgtsoepath.Split('/');
-                                        string tsopath = "";
-                                        for (int i = 0; i < (pathelement.Length - 1); i++)
-                                            tsopath += pathelement[i] + "/";
-                                        string newtsopath = tsopath + newname + pathelement[pathelement.Length - 1].Substring(newname.Length);
-                                        TDCGTbnUtil.SetTsoName(dataentry.data, newtsopath);
-                                        database.UpdateData(dataentry);
-                                        Debug.WriteLine("tbn:" + orgtsoepath + ">" + TDCGTbnUtil.GetTsoName(dataentry.data));
+                                        if (orgtsoepath != null)
+                                        {
+                                            string[] pathelement = orgtsoepath.Split('/');
+                                            string tsopath = "";
+                                            for (int i = 0; i < (pathelement.Length - 1); i++)
+                                                tsopath += pathelement[i] + "/";
+                                            string newtsopath = tsopath + newname + pathelement[pathelement.Length - 1].Substring(newname.Length);
+                                            TDCGTbnUtil.SetTsoName(dataentry.data, newtsopath);
+                                            database.UpdateData(dataentry);
+                                        }
                                     }
                                     // データグリッドを更新する.
                                     string[] newitem = { entry[0].ToString(), newfilename, entry[2].ToString() };
@@ -466,14 +468,16 @@ namespace System.Windows.Forms
                                     {
                                         TAHLocalDBDataEntry dataentry = database.GetData(tahentry.dataid);
                                         string orgtsoepath = TDCGTbnUtil.GetTsoName(dataentry.data);
-                                        string[] pathelement = orgtsoepath.Split('/');
-                                        string tsopath = "";
-                                        for (int i = 0; i < (pathelement.Length - 1); i++)
-                                            tsopath += pathelement[i] + "/";
-                                        string newtsopath = tsopath + pathelement[pathelement.Length - 1].Substring(0, 10) + newcolor + pathelement[pathelement.Length - 1].Substring(12, 4);
-                                        TDCGTbnUtil.SetTsoName(dataentry.data, newtsopath);
-                                        database.UpdateData(dataentry);
-                                        Debug.WriteLine("tbn:" + orgtsoepath + ">" + TDCGTbnUtil.GetTsoName(dataentry.data));
+                                        if (orgtsoepath != null)
+                                        {
+                                            string[] pathelement = orgtsoepath.Split('/');
+                                            string tsopath = "";
+                                            for (int i = 0; i < (pathelement.Length - 1); i++)
+                                                tsopath += pathelement[i] + "/";
+                                            string newtsopath = tsopath + pathelement[pathelement.Length - 1].Substring(0, 10) + newcolor + pathelement[pathelement.Length - 1].Substring(12, 4);
+                                            TDCGTbnUtil.SetTsoName(dataentry.data, newtsopath);
+                                            database.UpdateData(dataentry);
+                                        }
                                     }
                                     // データグリッドを更新する.
                                     string[] newitem = { entry[0].ToString(), newfilename, entry[2].ToString() };
@@ -570,18 +574,20 @@ namespace System.Windows.Forms
                                     {
                                         TAHLocalDBDataEntry dataentry = database.GetData(tahentry.dataid);
                                         string orgtsoepath = TDCGTbnUtil.GetTsoName(dataentry.data);
-                                        string[] pathelement = orgtsoepath.Split('/');
-                                        string tsopath = "";
-                                        for (int i = 0; i < (pathelement.Length - 1); i++)
-                                            tsopath += pathelement[i] + "/";
-                                        string oldtsoname = pathelement[pathelement.Length - 1];
-                                        string newtsopath = tsopath + oldtsoname.Substring(0, 9) + type.symbol.ToString() + oldtsoname.Substring(10, 6);
-                                        // ファイル名を書き換える
-                                        TDCGTbnUtil.SetTsoName(dataentry.data, newtsopath);
-                                        // 属性値を書き換える
-                                        TDCGTbnUtil.SetTsoSignature(dataentry.data, type);
-                                        database.UpdateData(dataentry);
-                                        Debug.WriteLine("tbn:" + orgtsoepath + ">" + TDCGTbnUtil.GetTsoName(dataentry.data));
+                                        if (orgtsoepath != null)
+                                        {
+                                            string[] pathelement = orgtsoepath.Split('/');
+                                            string tsopath = "";
+                                            for (int i = 0; i < (pathelement.Length - 1); i++)
+                                                tsopath += pathelement[i] + "/";
+                                            string oldtsoname = pathelement[pathelement.Length - 1];
+                                            string newtsopath = tsopath + oldtsoname.Substring(0, 9) + type.symbol.ToString() + oldtsoname.Substring(10, 6);
+                                            // ファイル名を書き換える
+                                            TDCGTbnUtil.SetTsoName(dataentry.data, newtsopath);
+                                            // 属性値を書き換える
+                                            TDCGTbnUtil.SetTsoSignature(dataentry.data, type);
+                                            database.UpdateData(dataentry);
+                                        }
                                     }
                                     // データグリッドを更新する.
                                     string[] newitem = { dir, newfilename, ext };
@@ -887,7 +893,7 @@ namespace System.Windows.Forms
                                     try
                                     {
                                         string tsoname = TDCGTbnUtil.GetTsoName(tahdata.data);
-                                        tsoFileList.Add(tsoname);
+                                        if(tsoname!=null) tsoFileList.Add(tsoname);
                                     }
                                     catch (Exception)
                                     {

@@ -67,6 +67,7 @@ namespace TDCGExplorer
                     offset = 0x22e8;
                     break;
             }
+            if (offset == -1) return;
             int index=0;
             foreach (char code in tsoname)
             {
@@ -93,6 +94,7 @@ namespace TDCGExplorer
                     offset = 0x22e8;
                     break;
             }
+            if (offset == -1) return null;
             string tsoname = "";
             for (int index = 0; tbndata[offset + index] != 0; index++)
             {
