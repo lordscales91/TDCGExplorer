@@ -16,11 +16,13 @@ using System.IO;
 
         List<string> files = new List<string>();
 
-        void add_file(string file)
+        public void Add(string file)
         {
             files.Add(file);
             //Console.WriteLine("add {0}", file);
         }
+
+        public string SourcePath { get; set; }
 
         int build_file_indices(string source_path, out string[] file_index, out file_entry[] all_compressed_files)
         {
@@ -141,10 +143,8 @@ using System.IO;
             return 0;
         }
 
-        public Stream get_file_entry_stream(ref file_entry compressed_file)
-        {
-            return File.OpenRead(compressed_file.true_file_name);
-        }
+        public delegate Stream GetFileEntryStreamHandler(string true_file_name);
+        public GetFileEntryStreamHandler GetFileEntryStream;
 
         //entry情報
         byte[] b_file_index = null;
@@ -154,48 +154,6 @@ using System.IO;
         UInt32 compressed_file_index_length = 0;
 
         byte[] compressed_file_index_s = null;
-
-        public int encrypt_archive(string file_path_name, string source_path)
-        {
-            //check if file already exists... if yes rename it
-            try
-            {
-                if (File.Exists(file_path_name))
-                {
-                    File.Move(file_path_name, file_path_name + ".bak");
-                }
-            }
-            catch (IOException)
-            {
-                System.Console.Out.WriteLine("Error: Could not rename existing TAH file. Possibly there is already a file with the '.bak' ending from a previous session. Please do something about it. TAHdecrypter will not overwrite existing data and therefore aborts here.");
-                return -1;
-            }
-
-            //read in files from source path, do not compress them now.
-            //全ディレクトリ名
-            string[] directories = Directory.GetDirectories(source_path, "*", SearchOption.AllDirectories);
-
-            {
-                string dirname = source_path;
-                string[] files = Directory.GetFiles(dirname);
-                foreach (string file in files)
-                    add_file(file);
-            }
-            for (int i = 0; i < directories.Length; i++)
-            {
-                string dirname = directories[i];
-                string[] files = Directory.GetFiles(dirname);
-                foreach (string file in files)
-                    add_file(file);
-            }
-
-            string[] file_index;
-            file_entry[] all_compressed_files;
-
-            build_file_indices(source_path, out file_index, out all_compressed_files);
-            build_compressed_file_indices(file_index);
-            return write(file_path_name, all_compressed_files);
-        }
 
         int build_compressed_file_indices(string[] file_index)
         {
@@ -239,8 +197,14 @@ using System.IO;
             return 0;
         }
 
-        int write(string file_path_name, file_entry[] all_compressed_files)
+        public int Save(string file_path_name)
         {
+            string[] file_index;
+            file_entry[] all_compressed_files;
+
+            build_file_indices(SourcePath, out file_index, out all_compressed_files);
+            build_compressed_file_indices(file_index);
+
             UInt32 all_files_count = (UInt32)all_compressed_files.Length;
 
             //now everything is set up for writing the tah file...
@@ -260,7 +224,7 @@ using System.IO;
                 try
                 {
                     //dataをファイルから読む
-                    Stream input_stream = get_file_entry_stream(ref all_compressed_files[i]);
+                    Stream input_stream = GetFileEntryStream(all_compressed_files[i].true_file_name);
                     BinaryReader reader = new BinaryReader(input_stream);
                     byte[] data_input = reader.ReadBytes((int)reader.BaseStream.Length);
                     //圧縮前長さを控える
