@@ -52,7 +52,7 @@ using System.IO;
             ret = extract_TAH_directory(out entry_meta_infos);
             if (ret >= 0)
             {
-                ret = extract_TAH_resource(ref reader, dest_path, ref entry_meta_infos);
+                ret = extract_TAH_resource(dest_path, ref entry_meta_infos);
             }
             reader.Close();
             return ret;
@@ -263,11 +263,7 @@ using System.IO;
                             if (hash_key == index_buffer[h].hash_name)
                             {
                                 //i + str_path_offset以降をfile_nameとしてcopy
-                                System.Text.StringBuilder sb = new System.Text.StringBuilder();
-                                sb.Capacity = i + str_path_offset;
-                                for (int k = 0; k < i + str_path_offset; k++)
-                                    sb.Append(str_path[k]);
-                                directory_meta_info_buffer[h].file_name = sb.ToString();
+                                directory_meta_info_buffer[h].file_name = System.Text.Encoding.GetEncoding(932).GetString(str_path, 0, i + str_path_offset);
                                 break;
                             }
                         }
@@ -394,7 +390,7 @@ using System.IO;
             return 0;
         }
 
-        static int extract_TAH_resource_0(ref BinaryReader file_reader, ref entry_meta_info ent_meta_info, out byte[] data_output)
+        int extract_TAH_resource_0(ref entry_meta_info ent_meta_info, out byte[] data_output)
         {
             //data読み込み長さ
             //-4はdata書き出し長さ格納領域 (UInt32) を減じている
@@ -403,13 +399,13 @@ using System.IO;
             byte[] data_input = new byte[data_input_length];
             UInt32 data_output_length;
 
-            file_reader.BaseStream.Position = ent_meta_info.offset;
+            reader.BaseStream.Position = ent_meta_info.offset;
 
             try
             {
                 //data書き出し長さ
-                data_output_length = file_reader.ReadUInt32();
-                data_input = file_reader.ReadBytes((int)data_input_length);
+                data_output_length = reader.ReadUInt32();
+                data_input = reader.ReadBytes((int)data_input_length);
             }
             catch (Exception)
             {
@@ -435,7 +431,7 @@ using System.IO;
             return 0;
         }
 
-        static int extract_TAH_resource(ref BinaryReader file_reader, string dest_path, ref entry_meta_info[] entry_meta_infos)
+        int extract_TAH_resource(string dest_path, ref entry_meta_info[] entry_meta_infos)
         {
             //now proceed with decrypting
             for (int i = 0; i < entry_meta_infos.Length; i++)
@@ -444,15 +440,13 @@ using System.IO;
                 byte[] data_output;
 
                 int ret;
-                ret = extract_TAH_resource_0(ref file_reader, ref entry_meta_infos[i], out data_output);
+                ret = extract_TAH_resource_0(ref entry_meta_infos[i], out data_output);
                 if (ret < 0)
                     return ret;
 
                 //書き出しファイル名
                 string write_file_str = dest_path;
-                int tcnt = 0;
-                while ((entry_meta_infos[i].file_name[tcnt] != 0x00) && (tcnt < (entry_meta_infos[i].file_name.Length - 1))) { tcnt++; }
-                write_file_str += "/" + System.Text.Encoding.ASCII.GetString(entry_meta_infos[i].file_name, 0, tcnt + 1);
+                write_file_str += "/" + entry_meta_infos[i].file_name;
                 //write_file_str =  write_file_str.Replace("/", "\\");
 
                 UInt32 hashkey = 0;
@@ -559,7 +553,7 @@ using System.IO;
             string[] files = new string[entry_meta_infos.Length];
             for (int count = 0; count < entry_meta_infos.Length; count++)
             {
-                files[count] = System.Text.Encoding.ASCII.GetString(entry_meta_infos[count].file_name);
+                files[count] = entry_meta_infos[count].file_name;
             }
             return files;
         }
