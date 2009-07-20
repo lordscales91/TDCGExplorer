@@ -10,12 +10,6 @@ using System.IO;
             public UInt32 flag; //at bit 0x1: no path info in tah file 1 otherwise 0
         }
 
-        public struct directory_meta_info
-        {
-            public UInt32 index_entry_count;
-            public entry_meta_info[] entry_meta_infos;
-        }
-
     class Decrypter
     {
         BinaryReader reader;
@@ -44,7 +38,6 @@ using System.IO;
 
         public int decrypt_archive(string source_file, string dest_path)
         {
-            directory_meta_info directory_meta_infos = new directory_meta_info();
             try
             {
                 reader = new BinaryReader(File.OpenRead(source_file));
@@ -54,11 +47,12 @@ using System.IO;
                 System.Console.Out.WriteLine("Error: This file cannot be read or does not exist.");
                 return -1;
             }
+            entry_meta_info[] entry_meta_infos;
             int ret = 0;
-            ret = extract_TAH_directory(ref reader, ref directory_meta_infos);
+            ret = extract_TAH_directory(ref reader, out entry_meta_infos);
             if (ret >= 0)
             {
-                ret = extract_TAH_resource(ref reader, dest_path, ref directory_meta_infos);
+                ret = extract_TAH_resource(ref reader, dest_path, ref entry_meta_infos);
             }
             reader.Close();
             return ret;
@@ -97,8 +91,9 @@ using System.IO;
             }
         }
 
-        public static int extract_TAH_directory(ref BinaryReader file_reader, ref directory_meta_info dir_meta_info)
+        public static int extract_TAH_directory(ref BinaryReader file_reader, out entry_meta_info[] entry_meta_infos)
         {
+            entry_meta_infos = null;
             header tah_header;
             UInt32 arc_size;
 
@@ -190,8 +185,7 @@ using System.IO;
             }
             //-- entry情報の復号完了! --
 
-            dir_meta_info.index_entry_count = tah_header.index_entry_count;
-            dir_meta_info.entry_meta_infos = build_entry_meta_infos(output_data, index_buffer, arc_size);
+            entry_meta_infos = build_entry_meta_infos(output_data, index_buffer, arc_size);
 
             return 0;
         }
@@ -438,24 +432,24 @@ using System.IO;
             return 0;
         }
 
-        static int extract_TAH_resource(ref BinaryReader file_reader, string dest_path, ref directory_meta_info dir_meta_info)
+        static int extract_TAH_resource(ref BinaryReader file_reader, string dest_path, ref entry_meta_info[] entry_meta_infos)
         {
             //now proceed with decrypting
-            for (int i = 0; i < dir_meta_info.index_entry_count; i++)
+            for (int i = 0; i < entry_meta_infos.Length; i++)
             {
                 //data書き出しバッファ
                 byte[] data_output;
 
                 int ret;
-                ret = extract_TAH_resource_0(ref file_reader, ref dir_meta_info.entry_meta_infos[i], out data_output);
+                ret = extract_TAH_resource_0(ref file_reader, ref entry_meta_infos[i], out data_output);
                 if (ret < 0)
                     return ret;
 
                 //書き出しファイル名
                 string write_file_str = dest_path;
                 int tcnt = 0;
-                while ((dir_meta_info.entry_meta_infos[i].file_name[tcnt] != 0x00) && (tcnt < (dir_meta_info.entry_meta_infos[i].file_name.Length - 1))) { tcnt++; }
-                write_file_str += "/" + System.Text.Encoding.ASCII.GetString(dir_meta_info.entry_meta_infos[i].file_name, 0, tcnt + 1);
+                while ((entry_meta_infos[i].file_name[tcnt] != 0x00) && (tcnt < (entry_meta_infos[i].file_name.Length - 1))) { tcnt++; }
+                write_file_str += "/" + System.Text.Encoding.ASCII.GetString(entry_meta_infos[i].file_name, 0, tcnt + 1);
                 //write_file_str =  write_file_str.Replace("/", "\\");
 
                 UInt32 hashkey = 0;
@@ -500,7 +494,7 @@ using System.IO;
                 }
 
                 //flag & 0x1 = 1ならno path
-                if (dir_meta_info.entry_meta_infos[i].flag % 2 == 1)
+                if (entry_meta_infos[i].flag % 2 == 1)
                 {
                     string ext;
                     string magic = System.Text.Encoding.ASCII.GetString(data_output, 0, 4);
@@ -546,7 +540,6 @@ using System.IO;
 
         public string[] GetFiles(string source_file)
         {
-            directory_meta_info directory_meta_infos = new directory_meta_info();
             try
             {
                 reader = new BinaryReader(File.OpenRead(source_file));
@@ -556,23 +549,23 @@ using System.IO;
                 System.Console.Out.WriteLine("Error: This file cannot be read or does not exist.");
                 return null;
             }
+            entry_meta_info[] entry_meta_infos;
             int ret = 0;
-            ret = extract_TAH_directory(ref reader, ref directory_meta_infos);
+            ret = extract_TAH_directory(ref reader, out entry_meta_infos);
             reader.Close();
-            string[] files = new string[directory_meta_infos.index_entry_count];
-            for (int count = 0; count < directory_meta_infos.index_entry_count; count++)
+            string[] files = new string[entry_meta_infos.Length];
+            for (int count = 0; count < entry_meta_infos.Length; count++)
             {
-                files[count] = System.Text.Encoding.ASCII.GetString(directory_meta_infos.entry_meta_infos[count].file_name);
+                files[count] = System.Text.Encoding.ASCII.GetString(entry_meta_infos[count].file_name);
             }
             return files;
         }
 
-        directory_meta_info m_directory_meta_infos;
+        entry_meta_info[] m_entry_meta_infos;
         int m_count = 0;
 
         public void Load(string source_file)
         {
-            m_directory_meta_infos = new directory_meta_info();
             m_count = 0;
             try
             {
@@ -584,7 +577,7 @@ using System.IO;
                 return;
             }
             int ret = 0;
-            ret = extract_TAH_directory(ref reader, ref m_directory_meta_infos);
+            ret = extract_TAH_directory(ref reader, out m_entry_meta_infos);
         }
 
         public void Close()
@@ -600,9 +593,9 @@ using System.IO;
 
         public bool FindNext(out entry_meta_info info)
         {
-            bool exist_p = m_count < m_directory_meta_infos.index_entry_count;
+            bool exist_p = m_count < m_entry_meta_infos.Length;
             if (exist_p)
-                info = m_directory_meta_infos.entry_meta_infos[m_count++];
+                info = m_entry_meta_infos[m_count++];
             else
                 info = new entry_meta_info();
             return exist_p;
