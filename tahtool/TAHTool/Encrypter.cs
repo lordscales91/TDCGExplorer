@@ -46,50 +46,6 @@ using System.IO;
             public UInt32 hash_value; //only for entries with file_name == null
         }
 
-        static unsafe void Copy(byte[] src, int srcIndex, byte[] dst, int dstIndex, int count)
-        {
-            if (src == null || srcIndex < 0 ||
-                dst == null || dstIndex < 0 || count < 0)
-            {
-                throw new ArgumentException();
-            }
-            int srcLen = src.Length;
-            int dstLen = dst.Length;
-            if (srcLen - srcIndex < count ||
-                dstLen - dstIndex < count)
-            {
-                throw new ArgumentException();
-            }
-
-
-            // The following fixed statement pins the location of
-            // the src and dst objects in memory so that they will
-            // not be moved by garbage collection.          
-            fixed (byte* pSrc = src, pDst = dst)
-            {
-                byte* ps = pSrc + srcIndex;
-                byte* pd = pDst + dstIndex;
-
-                // Loop over the count in blocks of 4 bytes, copying an
-                // integer (4 bytes) at a time:
-                for (int n = 0; n < count / 4; n++)
-                {
-                    *((int*)pd) = *((int*)ps);
-                    pd += 4;
-                    ps += 4;
-                }
-
-                // Complete the copy by moving any bytes that weren't
-                // moved in blocks of 4:
-                for (int n = 0; n < count % 4; n++)
-                {
-                    *pd = *ps;
-                    pd++;
-                    ps++;
-                }
-            }
-        }
-
         List<string> files = new List<string>();
 
         void add_file(string file)
@@ -299,7 +255,7 @@ using System.IO;
                 if (file_index[i] != null)
                 {
                     byte[] partial_index = System.Text.Encoding.ASCII.GetBytes(file_index[i]);
-                    Copy(partial_index, 0, b_file_index, (int)b_file_index_pos, partial_index.Length);
+                    Array.Copy(partial_index, 0, b_file_index, (int)b_file_index_pos, partial_index.Length);
                     //+1はnull終端
                     b_file_index_pos += (UInt32)(partial_index.Length + 1);
                 }
@@ -311,7 +267,7 @@ using System.IO;
 
             //xxx: copyする必要はあるか???
             compressed_file_index_s = new byte[compressed_file_index_length];
-            Copy(compressed_file_index, 0, compressed_file_index_s, 0, (int)compressed_file_index_length);
+            Array.Copy(compressed_file_index, 0, compressed_file_index_s, 0, (int)compressed_file_index_length);
 
             return 0;
         }
@@ -345,7 +301,7 @@ using System.IO;
 
                     ////xxx: copyする必要はあるか???
                     byte[] encrypt_data_input = new byte[data_input.Length + 3]; //with safety margin for encryption
-                    Copy(data_input, 0, encrypt_data_input, 0, (int)data_input.Length);
+                    Array.Copy(data_input, 0, encrypt_data_input, 0, (int)data_input.Length);
                     byte[] compressed_data = null;
                     UInt32 compressed_length = 0;
                     encrypt(ref encrypt_data_input, (UInt32)data_input.Length, ref compressed_data, ref compressed_length);
@@ -355,7 +311,7 @@ using System.IO;
                     all_compressed_files[i].compressed_length = compressed_length;
                     ////xxx: copyする必要はあるか???
                     all_compressed_files[i].compressed_data = new byte[compressed_length];
-                    Copy(compressed_data, 0, all_compressed_files[i].compressed_data, 0, (int)compressed_length);
+                    Array.Copy(compressed_data, 0, all_compressed_files[i].compressed_data, 0, (int)compressed_length);
 
                     System.Console.Out.WriteLine(String.Format("Compressing File: {0} {1}", all_compressed_files[i].true_file_name, all_compressed_files[i].uncompressed_length));
 
