@@ -277,10 +277,21 @@ using System.IO;
             }
             //-- entry情報の復号完了! --
 
-            entry_meta_info[] directory_meta_info_buffer = new entry_meta_info[tah_header.index_entry_count];
+            dir_meta_info.index_entry_count = tah_header.index_entry_count;
+            dir_meta_info.entry_meta_infos = build_entry_meta_infos(output_data, index_buffer, arc_size);
 
-            byte[] str_file_path = new byte[output_data.Length];
-            output_data.CopyTo(str_file_path, 0);//xxx: copyして持つ必要はあるか???
+            return 0;
+        }
+
+        public static entry_meta_info[] build_entry_meta_infos(byte[] output_data, index_entry[] index_buffer, UInt32 arc_size)
+        {
+            int index_entry_count = index_buffer.Length;
+
+            entry_meta_info[] directory_meta_info_buffer = new entry_meta_info[index_entry_count];
+
+            //byte[] str_file_path = new byte[output_data.Length];
+            //output_data.CopyTo(str_file_path, 0);//xxx: copyして持つ必要はあるか???
+            byte[] str_file_path = output_data;
 
             byte[] file_path = new byte[MAX_PATH];
             int act_str_pos = 0;
@@ -336,7 +347,7 @@ using System.IO;
 
                     //index entryでhashを先頭から検索
                     UInt32 h;
-                    for (h = 0; h < tah_header.index_entry_count; h++)
+                    for (h = 0; h < index_entry_count; h++)
                     {
                         //名無しで
                         if (directory_meta_info_buffer[h].file_name == null)
@@ -362,7 +373,7 @@ using System.IO;
             ext_file_list external_files;
             build_ext_file_list(out external_files);
 
-            for (UInt32 i = 0; i < tah_header.index_entry_count; i++)
+            for (UInt32 i = 0; i < index_entry_count; i++)
             {
                 //file_nameが見つからなかった場合
                 if (directory_meta_info_buffer[i].file_name == null)
@@ -385,19 +396,16 @@ using System.IO;
                 directory_meta_info_buffer[i].offset = index_buffer[i].offset;
             }
 
-            for (UInt32 i = 0; i < tah_header.index_entry_count - 1; i++)
+            for (UInt32 i = 0; i < index_entry_count - 1; i++)
             {
                 //data読み込み長さを設定
                 //読み込み長さは現在entryオフセットと次のentryオフセットとの差である
                 directory_meta_info_buffer[i].length = index_buffer[i + 1].offset - index_buffer[i].offset;
             }
             //最終entry data読み込み長さを設定
-            directory_meta_info_buffer[tah_header.index_entry_count - 1].length = arc_size - index_buffer[tah_header.index_entry_count - 1].offset;
+            directory_meta_info_buffer[index_entry_count - 1].length = arc_size - index_buffer[index_entry_count - 1].offset;
 
-            dir_meta_info.index_entry_count = tah_header.index_entry_count;
-            dir_meta_info.entry_meta_infos = directory_meta_info_buffer;
-
-            return 0;
+            return directory_meta_info_buffer;
         }
 
         static void build_ext_file_list(out ext_file_list external_files)
