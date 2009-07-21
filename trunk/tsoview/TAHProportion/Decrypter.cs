@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 
 namespace TAHTool
 {
@@ -217,11 +218,12 @@ namespace TAHTool
         {
             //read in names.txt file when it exists.
             external_files = new ext_file_list();
-            if (File.Exists("names.txt"))
+            string names_path = Path.Combine(Application.StartupPath, @"names.txt");
+            if (File.Exists(names_path))
             {
-                StreamReader reader = new StreamReader(File.OpenRead("names.txt"));
+                StreamReader reader = new StreamReader(File.OpenRead(names_path));
                 List<string> known_files = new List<string>();
-                System.Console.Out.WriteLine("Reading \"names.txt\" at " + System.Environment.CurrentDirectory.ToString() + ".");
+                System.Console.Out.WriteLine("Reading \"names.txt\" at " + Application.StartupPath + ".");
                 while (reader.BaseStream.Position < reader.BaseStream.Length)
                 {
                     known_files.Add(reader.ReadLine());
