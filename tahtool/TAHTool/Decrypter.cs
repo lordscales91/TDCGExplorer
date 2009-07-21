@@ -4,8 +4,9 @@ using System.IO;
 
     public class TAHEntry
     {
-        public string file_name;
+        public UInt32 hash_name;
         public UInt32 offset;
+        public string file_name;
         public UInt32 length;
         public UInt32 flag; //at bit 0x1: no path info in tah file 1 otherwise 0
     }
@@ -24,16 +25,9 @@ using System.IO;
 
         public struct header
         {
-            public UInt32 id; //TAH2 (843596116)
             public UInt32 index_entry_count;
             public UInt32 unknown; //1
             public UInt32 reserved; //0
-        }
-
-        public struct index_entry
-        {
-            public UInt32 hash_name;
-            public UInt32 offset;
         }
 
         public static UInt32 gen_hash_key_for_string(ref byte[] strg)
@@ -57,18 +51,6 @@ using System.IO;
 
         /* TAH Procedures*/
 
-        public static bool file_header_match_with_TAH(UInt32 id)
-        {
-            if (id == 843596116)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
         public void extract_TAH_directory()
         {
             Entries = null;
@@ -77,29 +59,33 @@ using System.IO;
 
             header tah_header = new header();
 
-            tah_header.id = reader.ReadUInt32();
+            byte[] magic = reader.ReadBytes(4);
+
+            if(magic[0] != (byte)'T'
+            || magic[1] != (byte)'A'
+            || magic[2] != (byte)'H'
+            || magic[3] != (byte)'2')
+                throw new Exception("File is not TAH");
+
             tah_header.index_entry_count = reader.ReadUInt32();
             tah_header.unknown = reader.ReadUInt32();
             tah_header.reserved = reader.ReadUInt32();
 
-            if (!file_header_match_with_TAH(tah_header.id))
-            {
-                throw new ApplicationException("Wrong file format. Please use a TAH archive as input file.");
-            }
-
             UInt32 index_buffer_size = tah_header.index_entry_count * 8; //sizeof(index_entry) == 8
-            index_entry[] index_buffer = new index_entry[tah_header.index_entry_count];
+            Entries = new TAHEntry[tah_header.index_entry_count];
 
             for (int i = 0; i < tah_header.index_entry_count; i++)
             {
-                index_buffer[i].hash_name = reader.ReadUInt32();
-                index_buffer[i].offset = reader.ReadUInt32();
+                Entries[i] = new TAHEntry();
+
+                Entries[i].hash_name = reader.ReadUInt32();
+                Entries[i].offset = reader.ReadUInt32();
             }
 
             UInt32 output_length = reader.ReadUInt32();
 
             //entry情報の読み出し長さ
-            UInt32 input_length = index_buffer[0].offset - /*sizeof(header)*/ 16 - index_buffer_size;
+            UInt32 input_length = Entries[0].offset - /*sizeof(header)*/ 16 - index_buffer_size;
             //entry情報の読み出しバッファ
             byte[] data_input = new byte[input_length];
 
@@ -111,15 +97,11 @@ using System.IO;
             Decompression.decrypt(ref data_input, input_length, ref output_data, output_length);
             //-- entry情報の復号完了! --
 
-            build_TAHEntrys(output_data, index_buffer, arc_size);
+            build_TAHEntries(output_data, arc_size);
         }
 
-        public void build_TAHEntrys(byte[] str_file_path, index_entry[] index_buffer, UInt32 arc_size)
+        public void build_TAHEntries(byte[] str_file_path, UInt32 arc_size)
         {
-            int index_entry_count = index_buffer.Length;
-
-            Entries = new TAHEntry[index_entry_count];
-
             byte[] file_path = new byte[MAX_PATH];
             int act_str_pos = 0;
             while (str_file_path.Length > act_str_pos)
@@ -174,13 +156,13 @@ using System.IO;
 
                     //index entryでhashを先頭から検索
                     UInt32 h;
-                    for (h = 0; h < index_entry_count; h++)
+                    for (h = 0; h < Entries.Length; h++)
                     {
                         //名無しで
                         if (Entries[h].file_name == null)
                         {
                             //hashが一致する
-                            if (hash_key == index_buffer[h].hash_name)
+                            if (hash_key == Entries[h].hash_name)
                             {
                                 //file_nameとしてcopy
                                 Entries[h].file_name = System.Text.Encoding.GetEncoding(932).GetString(str_path, 0, i + str_path_offset);
@@ -199,17 +181,17 @@ using System.IO;
             ext_file_list external_files;
             build_ext_file_list(out external_files);
 
-            for (UInt32 i = 0; i < index_entry_count; i++)
+            for (UInt32 i = 0; i < Entries.Length; i++)
             {
                 //file_nameが見つからなかった場合
                 if (Entries[i].file_name == null)
                 {
                     //names.txt を検索
-                    int pos = Array.BinarySearch(external_files.hashkeys, index_buffer[i].hash_name);
+                    int pos = Array.BinarySearch(external_files.hashkeys, Entries[i].hash_name);
                     if (pos < 0) // not found
                     {
                         //ファイル名は <i>_<hash>にする
-                        Entries[i].file_name = i.ToString("00000000") + "_" + index_buffer[i].hash_name.ToString();
+                        Entries[i].file_name = i.ToString("00000000") + "_" + Entries[i].hash_name.ToString();
                         //file_nameが見つからなかったflag on
                         Entries[i].flag ^= 0x1;
                     }
@@ -219,17 +201,17 @@ using System.IO;
                     }
                 }
                 //オフセットを設定
-                Entries[i].offset = index_buffer[i].offset;
+                //Entries[i].offset = index_buffer[i].offset;
             }
 
-            for (UInt32 i = 0; i < index_entry_count - 1; i++)
+            for (UInt32 i = 0; i < Entries.Length - 1; i++)
             {
                 //data読み込み長さを設定
                 //読み込み長さは現在entryオフセットと次のentryオフセットとの差である
-                Entries[i].length = index_buffer[i + 1].offset - index_buffer[i].offset;
+                Entries[i].length = Entries[i + 1].offset - Entries[i].offset;
             }
             //最終entry data読み込み長さを設定
-            Entries[index_entry_count - 1].length = arc_size - index_buffer[index_entry_count - 1].offset;
+            Entries[Entries.Length - 1].length = arc_size - Entries[Entries.Length - 1].offset;
         }
 
         static void build_ext_file_list(out ext_file_list external_files)
