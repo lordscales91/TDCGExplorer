@@ -134,6 +134,9 @@ namespace TAHTool
         public delegate Stream GetFileEntryStreamHandler(string true_file_name);
         public GetFileEntryStreamHandler GetFileEntryStream;
 
+        int version = 0x10;
+        public int Version { get { return version; } set { version = value;  } }
+
         //entryèÓïÒ
         byte[] b_file_index = null;
         UInt32 b_file_index_count = 0;
@@ -199,7 +202,7 @@ namespace TAHTool
             BinaryWriter writer = new BinaryWriter(File.Create(file_path_name));
             writer.Write(System.Text.Encoding.ASCII.GetBytes("TAH2"));
             writer.Write(all_files_count);
-            writer.Write(((UInt32)1));//TAH version
+            writer.Write(((UInt32)version));
             writer.Write(((UInt32)0));
 
             //+4ÇÕ b_file_index_count (Uint32) äiî[óÃàÊ
