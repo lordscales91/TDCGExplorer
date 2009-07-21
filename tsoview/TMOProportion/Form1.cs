@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.ComponentModel;
@@ -21,6 +21,11 @@ namespace TMOProportion
         public string GetProportionPath()
         {
             return Path.Combine(Application.StartupPath, @"Proportion");
+        }
+
+        public string GetTPOConfigPath()
+        {
+            return Path.Combine(Application.StartupPath, @"TPOConfig.xml");
         }
 
         public Form1()
@@ -46,17 +51,27 @@ namespace TMOProportion
                 pro_list.Add(script);
             }
 
+            TPOConfig config = TPOConfig.Load(GetTPOConfigPath());
+            Dictionary<string, Proportion> portion_map = new Dictionary<string, Proportion>();
+            foreach (Proportion portion in config.Proportions)
+                portion_map[portion.ClassName] = portion;
+
             foreach (IProportion pro in pro_list)
             {
                 ProportionSlider slider = new ProportionSlider();
-                slider.label.Text = pro.ToString();
+                string class_name = pro.ToString();
+                {
+                    Proportion portion;
+                    if (portion_map.TryGetValue(class_name, out portion))
+                        slider.Ratio = portion.Ratio;
+                }
+                slider.label.Text = class_name;
                 slider.Location = new System.Drawing.Point(10, 10 + bar_list.Count * 95);
                 slider.ValueChanged += new System.EventHandler(this.slider_ValueChanged);
                 this.Controls.Add(slider);
 
                 bar_list.Add(slider);
             }
-
             UpdateTpoList();
         }
 
@@ -97,7 +112,11 @@ namespace TMOProportion
                 {
                     TPOFile tpo = tpo_list[i];
                     bar_list[i].Tag = tpo;
+                    tpo.Ratio = bar_list[i].Ratio;
                 }
+
+                tpo_list.Transform(fig.GetFrameIndex());
+                fig.UpdateBoneMatrices(true);
             }
         }
 
