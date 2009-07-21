@@ -211,7 +211,7 @@ public class TPOFile
     }
 
     IProportion proportion = null;
-    public IProportion Proportion { get { return Proportion; } set { proportion = value; }}
+    public IProportion Proportion { get { return proportion; } set { proportion = value; }}
 
     public void ExecuteProportion()
     {
