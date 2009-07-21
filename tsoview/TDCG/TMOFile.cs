@@ -481,6 +481,17 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 指定角度でZ軸回転します。
+        /// </summary>
+        /// <param name="angle">角度（ラジアン）</param>
+        public void RotateZ(float angle)
+        {
+            Vector3 v = new Vector3(m.M31, m.M32, m.M33);
+            Quaternion qt = Quaternion.RotationAxis(v, angle);
+            m *= Matrix.RotationQuaternion(qt);
+        }
+
+        /// <summary>
         /// ワールド座標系において指定角度でY軸回転します。
         /// </summary>
         /// <param name="angle">角度（ラジアン）</param>

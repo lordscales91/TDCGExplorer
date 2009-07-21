@@ -253,55 +253,23 @@ public class TPOFile
             TPONode node = nodes[j];
             Debug.Assert(node != null, "node should not be null j=" + j.ToString());
             TMOMat mat = tmo.frames[i].matrices[j];//変形対象モーション行列
-
-            Matrix m = mat.m;
-
-            Vector3 v = node.ScalingVector3(ratio);
-            m.M11 *= v.X;
-            m.M12 *= v.X;
-            m.M13 *= v.X;
-            m.M21 *= v.Y;
-            m.M22 *= v.Y;
-            m.M23 *= v.Y;
-            m.M31 *= v.Z;
-            m.M32 *= v.Z;
-            m.M33 *= v.Z;
-
-            m = m * node.RotationMatrix(m, ratio);
-
-            Vector3 t = node.Translation;
-            m.M41 += t.X;
-            m.M42 += t.X;
-            m.M43 += t.X;
-
-            mat.m = m;
+            node.Transform(mat, ratio);
         }
     }
+}
+
+public class TPOCommand
+{
+    public enum Type { Scale, Scale1, Scale0, RotateX, RotateY, RotateZ, Move };
+    internal Type type;
+    internal Vector3 v;
+    internal float angle;
 }
 
 public class TPONode
 {
     internal int id;
     internal string name;
-
-    internal Vector3 scaling = new Vector3(1, 1, 1);
-    public Vector3 Scaling
-    {
-        get { return scaling; } set { scaling = value; }
-    }
-    /*
-    internal Quaternion rotation = Quaternion.Identity;
-    public Quaternion Rotation
-    {
-        get { return rotation; } set { rotation = value; }
-    }
-    */
-    internal Vector3 rot = Vector3.Empty;
-    internal Vector3 translation = Vector3.Empty;
-    public Vector3 Translation
-    {
-        get { return translation; } set { translation = value; }
-    }
 
     internal string sname;
     internal List<TPONode> children = new List<TPONode>();
@@ -311,117 +279,113 @@ public class TPONode
     public string Name { get { return name; } }
     public string ShortName { get { return sname; } }
 
+    internal List<TPOCommand> command_list = new List<TPOCommand>();
+
+    public void AddCommand(TPOCommand command)
+    {
+        command_list.Add(command);
+    }
+    
+    public void AddCommand(TPOCommand.Type type, Vector3 v)
+    {
+        TPOCommand command = new TPOCommand();
+        command.type = type;
+        command.v = v;
+        command_list.Add(command);
+    }
+    
+    public void AddCommand(TPOCommand.Type type, float angle)
+    {
+        TPOCommand command = new TPOCommand();
+        command.type = type;
+        command.angle = angle;
+        command_list.Add(command);
+    }
+
     public TPONode()
     {
     }
 
-    public Matrix ScalingMatrix(float ratio)
+    public void Transform(TMOMat mat, float ratio)
     {
-        Vector3 v;
-        v.X = (float)Math.Pow(scaling.X, ratio);
-        v.Y = (float)Math.Pow(scaling.Y, ratio);
-        v.Z = (float)Math.Pow(scaling.Z, ratio);
-        return Matrix.Scaling(v);
+        foreach (TPOCommand command in command_list)
+        {
+            Matrix scaling = Matrix.Identity;
+            switch (command.type)
+            {
+                case TPOCommand.Type.Scale:
+                case TPOCommand.Type.Scale1:
+                case TPOCommand.Type.Scale0:
+                    Vector3 v;
+                    v.X = (float)Math.Pow(command.v.X, ratio);
+                    v.Y = (float)Math.Pow(command.v.Y, ratio);
+                    v.Z = (float)Math.Pow(command.v.Z, ratio);
+                    scaling = Matrix.Scaling(v);
+                    break;
+            }
+            switch (command.type)
+            {
+                case TPOCommand.Type.Scale:
+                    mat.Scale(scaling);
+                    break;
+                case TPOCommand.Type.Scale1:
+                    mat.Scale1(scaling);
+                    break;
+                case TPOCommand.Type.Scale0:
+                    mat.Scale0(scaling);
+                    break;
+                case TPOCommand.Type.RotateX:
+                    mat.RotateX(command.angle * ratio);
+                    break;
+                case TPOCommand.Type.RotateY:
+                    mat.RotateY(command.angle * ratio);
+                    break;
+                case TPOCommand.Type.RotateZ:
+                    mat.RotateZ(command.angle * ratio);
+                    break;
+                case TPOCommand.Type.Move:
+                    mat.Move(command.v);
+                    break;
+            }
+        }
     }
-
-    public Vector3 ScalingVector3(float ratio)
-    {
-        Vector3 v;
-        v.X = (float)Math.Pow(scaling.X, ratio);
-        v.Y = (float)Math.Pow(scaling.Y, ratio);
-        v.Z = (float)Math.Pow(scaling.Z, ratio);
-        return v;
-    }
-
-    /*
-    public Matrix RotationMatrix
-    {
-        get { return Matrix.RotationQuaternion(rotation); }
-    }
-    */
-    public Matrix RotationMatrix(Matrix m)
-    {
-        Vector3 vx = new Vector3(m.M11, m.M12, m.M13);
-        Quaternion qx = Quaternion.RotationAxis(vx, rot.X);
-
-        Vector3 vy = new Vector3(m.M21, m.M22, m.M23);
-        Quaternion qy = Quaternion.RotationAxis(vy, rot.Y);
-
-        Vector3 vz = new Vector3(m.M31, m.M32, m.M33);
-        Quaternion qz = Quaternion.RotationAxis(vz, rot.Z);
-
-        return Matrix.RotationQuaternion(qy * qx * qz);
-    }
-
-    public Matrix RotationMatrix(Matrix m, float ratio)
-    {
-        Vector3 vx = new Vector3(m.M11, m.M12, m.M13);
-        Quaternion qx = Quaternion.RotationAxis(vx, rot.X * ratio);
-
-        Vector3 vy = new Vector3(m.M21, m.M22, m.M23);
-        Quaternion qy = Quaternion.RotationAxis(vy, rot.Y * ratio);
-
-        Vector3 vz = new Vector3(m.M31, m.M32, m.M33);
-        Quaternion qz = Quaternion.RotationAxis(vz, rot.Z * ratio);
-
-        return Matrix.RotationQuaternion(qy * qx * qz);
-    }
-
-    public Matrix TranslationMatrix
-    {
-        get { return Matrix.Translation(translation); }
-    }
-    /*
-    public Matrix TransformationMatrix
-    {
-        get { return ScalingMatrix * RotationMatrix * TransformationMatrix; }
-    }
-    */
 
     public void Scale(float x, float y, float z)
     {
-        scaling.X *= x;
-        scaling.Y *= y;
-        scaling.Z *= z;
+        AddCommand(TPOCommand.Type.Scale, new Vector3(x, y, z));
     }
 
     public void Scale1(float x, float y, float z)
     {
-        scaling.X *= x;
-        scaling.Y *= y;
-        scaling.Z *= z;
+        AddCommand(TPOCommand.Type.Scale1, new Vector3(x, y, z));
+
         foreach (TPONode child in children)
             child.Scale0(x, y, z);
     }
 
     public void Scale0(float x, float y, float z)
     {
-        scaling.X /= x;
-        scaling.Y /= y;
-        scaling.Z /= z;
+        AddCommand(TPOCommand.Type.Scale0, new Vector3(x, y, z));
     }
 
     public void RotateX(float angle)
     {
-        //rotation.RotateAxis(new Vector3(1,0,0), angle);
-        rot.X += angle;
+        AddCommand(TPOCommand.Type.RotateX, angle);
     }
 
     public void RotateY(float angle)
     {
-        //rotation.RotateAxis(new Vector3(0,1,0), angle);
-        rot.Y += angle;
+        AddCommand(TPOCommand.Type.RotateY, angle);
     }
 
     public void RotateZ(float angle)
     {
-        //rotation.RotateAxis(new Vector3(0,0,1), angle);
-        rot.Z += angle;
+        AddCommand(TPOCommand.Type.RotateZ, angle);
     }
 
     public void Move(float x, float y, float z)
     {
-        translation += new Vector3(x, y, z);
+        AddCommand(TPOCommand.Type.Move, new Vector3(x, y, z));
     }
 }
 }
