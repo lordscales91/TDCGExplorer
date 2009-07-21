@@ -620,6 +620,7 @@ namespace System.Windows.Forms
                 Stream output = File.Create(destpath);
                 // PNGを出力する.
                 pngstream.SavePNGFile(png, output);
+                output.Flush();
             }
             catch (Exception ex)
             {
