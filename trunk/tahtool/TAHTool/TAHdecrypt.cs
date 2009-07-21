@@ -20,7 +20,6 @@ using System.IO;
             string base_path = Path.GetFileNameWithoutExtension(source_file);
 
             Console.WriteLine("file_name\toffset\tlength\tflag");
-            decrypter.extract_TAH_directory();
             foreach (TAHEntry entry in decrypter.Entries)
             {
                 Console.WriteLine("{0}\t{1}\t{2}\t{3}", entry.file_name, entry.offset, entry.length, entry.flag);
