@@ -29,7 +29,7 @@ namespace TAHTool
         public struct header
         {
             public UInt32 index_entry_count;
-            public UInt32 unknown; //1
+            public UInt32 version; //1
             public UInt32 reserved; //0
         }
 
@@ -68,7 +68,7 @@ namespace TAHTool
                 throw new Exception("File is not TAH");
 
             tah_header.index_entry_count = reader.ReadUInt32();
-            tah_header.unknown = reader.ReadUInt32();
+            tah_header.version = reader.ReadUInt32();
             tah_header.reserved = reader.ReadUInt32();
 
             UInt32 index_buffer_size = tah_header.index_entry_count * 8; //sizeof(index_entry) == 8
@@ -187,7 +187,9 @@ namespace TAHTool
                 if (Entries[i].file_name == null)
                 {
                     //names.txt Çåüçı
-                    int pos = Array.BinarySearch(external_files.hashkeys, Entries[i].hash_name);
+                    int pos = -1;
+                    if (external_files.files != null)
+                        pos = Array.BinarySearch(external_files.hashkeys, Entries[i].hash_name);
                     if (pos < 0) // not found
                     {
                         //ÉtÉ@ÉCÉãñºÇÕ <i>_<hash>Ç…Ç∑ÇÈ
@@ -224,9 +226,10 @@ namespace TAHTool
                 StreamReader reader = new StreamReader(File.OpenRead(names_path));
                 List<string> known_files = new List<string>();
                 System.Console.Out.WriteLine("Reading \"names.txt\" at " + Application.StartupPath + ".");
-                while (reader.BaseStream.Position < reader.BaseStream.Length)
+                string line;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    known_files.Add(reader.ReadLine());
+                    known_files.Add(line);
                 }
                 //map a list of hash keys to the file...
                 external_files.files = known_files.ToArray();
