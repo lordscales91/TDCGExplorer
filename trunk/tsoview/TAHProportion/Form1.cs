@@ -41,6 +41,7 @@ namespace TAHTool
                 var script = CSScript.Load(script_file).CreateInstance(class_name).AlignToInterface<IProportion>();
                 pro_list.Add(script);
             }
+            DumpPortions();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -137,13 +138,28 @@ namespace TAHTool
             encrypter.Save(@"tmo-" + Path.GetFileName(source_file));
         }
 
+        private void DumpPortions()
+        {
+            TPOConfig config = TPOConfig.Load(GetTPOConfigPath());
+            gvPortions.Rows.Clear();
+            foreach (Proportion portion in config.Proportions)
+            {
+                string[] row = { portion.ClassName, string.Format("{0:F2}", portion.Ratio) };
+                gvPortions.Rows.Add(row);
+            }
+        }
+
         private void DumpEntries()
         {
             gvEntries.Rows.Clear();
             foreach (TAHEntry entry in decrypter.Entries)
             {
-                string[] row = { entry.file_name, entry.offset.ToString(), entry.length.ToString() };
-                gvEntries.Rows.Add(row);
+                string ext = Path.GetExtension(entry.file_name).ToLower();
+                if (ext == ".tmo")
+                {
+                    string[] row = { entry.file_name, entry.offset.ToString(), entry.length.ToString() };
+                    gvEntries.Rows.Add(row);
+                }
             }
         }
 
