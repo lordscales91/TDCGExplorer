@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+namespace TAHTool
+{
     class Encrypter
     {
         public struct file_entry
@@ -14,12 +16,19 @@ using System.IO;
             public UInt32 hash_value; //only for entries with file_name == null
         }
 
-        List<string> files = new List<string>();
+        List<string> file_names = new List<string>();
+
+        public int Count
+        {
+            get
+            {
+                return file_names.Count;
+            }
+        }
 
         public void Add(string file)
         {
-            files.Add(file);
-            //Console.WriteLine("add {0}", file);
+            file_names.Add(file);
         }
 
         public string SourcePath { get; set; }
@@ -28,14 +37,13 @@ using System.IO;
         {
             Dictionary<string, List<string>> dir_entries = new Dictionary<string, List<string>>();
 
-            foreach (string file in files)
+            foreach (string file in file_names)
             {
                 string dirname = Path.GetDirectoryName(file).Replace(@"\", "/");
                 string basename = Path.GetFileName(file);
-                if (! dir_entries.ContainsKey(dirname))
-                    dir_entries[dirname] = new List<string>(); 
+                if (!dir_entries.ContainsKey(dirname))
+                    dir_entries[dirname] = new List<string>();
                 dir_entries[dirname].Add(basename);
-                //Console.WriteLine("dirname {0} basename {1}", dirname, basename);
             }
 
             //全ディレクトリ名
@@ -49,13 +57,12 @@ using System.IO;
                 directories.Remove(source_path);
 
             //全ファイル数
-            int all_files_count = files.Count;
-            all_compressed_files = new file_entry[all_files_count];
+            all_compressed_files = new file_entry[file_names.Count];
 
             //file entryを用意する
             UInt32 act_file = 0;
             //全ファイル数 + 全ディレクトリ数（source_path は除く）
-            file_index = new string[all_files_count + dir_entries.Count];
+            file_index = new string[file_names.Count + dir_entries.Count];
 
             //現在のfile indexを指す idx
             UInt32 index_pos = 0;
@@ -69,40 +76,31 @@ using System.IO;
                 //現在のディレクトリ上にある全ファイル名（ディレクトリは含まない）について繰り返す
                 foreach (string file in dir_entries[source_path])
                 {
-                    {
-                        //名無し対応
-                        try
-                        {
-                            //名無しなのでファイル名はない
-                            //<idx>_<hash>.<ext>
-                            string fparts0 = file;
-                            string[] ary_1 = fparts0.Split(new string[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
-                            string fparts1 = ary_1[ary_1.Length - 1];//= <hash>.<ext>
-                            string fparts2 = fparts1.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries)[0];//<hash> before dot
-                            //this should be the string of the hash value
-                            //hash値を控える
-                            all_compressed_files[act_file].hash_value = System.UInt32.Parse(fparts2);
-                        }
-                        //名無しでなかった
-                        catch (Exception)
-                        {
-                            file_index[index_pos] = file;
-                            //entry ファイル名を控える
-                            all_compressed_files[act_file].file_name = act_file_index_path + file_index[index_pos];
-                            index_pos++;
-                        }
-                    }
+                    //名無し対応
                     try
                     {
-                        //実ファイル名を控える
-                        all_compressed_files[act_file].true_file_name = source_path + "/" + file;
-                        act_file++;
+                        //名無しなのでファイル名はない
+                        //<idx>_<hash>.<ext>
+                        string fparts0 = file;
+                        string[] ary_1 = fparts0.Split(new string[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
+                        string fparts1 = ary_1[ary_1.Length - 1];//= <hash>.<ext>
+                        string fparts2 = fparts1.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries)[0];//<hash> before dot
+                        //this should be the string of the hash value
+                        //hash値を控える
+                        all_compressed_files[act_file].hash_value = System.UInt32.Parse(fparts2);
                     }
-                    catch (Exception ex)
+                    //名無しでなかった
+                    catch (Exception)
                     {
-                        System.Console.Out.WriteLine(ex);
-                        return -1;
+                        file_index[index_pos] = file;
+                        //entry ファイル名を控える
+                        all_compressed_files[act_file].file_name = act_file_index_path + file;
+                        index_pos++;
                     }
+
+                    //実ファイル名を控える
+                    all_compressed_files[act_file].true_file_name = source_path + "/" + file;
+                    act_file++;
                 }
             }
 
@@ -113,31 +111,21 @@ using System.IO;
                     //ディレクトリ名を控える
                     //ただし source_path + 1 文字飛ばす
                     //いつも '/' で終わる
-                    file_index[index_pos] = directories[i].Substring(source_path.Length + 1) + @"\";
-                    file_index[index_pos] = file_index[index_pos].Replace(@"\", "/");
+                    file_index[index_pos] = directories[i].Substring(source_path.Length + 1) + @"/";
                     act_file_index_path = file_index[index_pos];
                     index_pos++;
                 }
                 //現在のディレクトリ上にある全ファイル名（ディレクトリは含まない）について繰り返す
                 foreach (string file in dir_entries[directories[i]])
                 {
-                    {
-                        file_index[index_pos] = file;
-                        //entry ファイル名を控える
-                        all_compressed_files[act_file].file_name = act_file_index_path + file_index[index_pos];
-                        index_pos++;
-                    }
-                    try
-                    {
-                        //実ファイル名を控える
-                        all_compressed_files[act_file].true_file_name = directories[i] + "/" + file;
-                        act_file++;
-                    }
-                    catch (Exception ex)
-                    {
-                        System.Console.Out.WriteLine(ex);
-                        return -1;
-                    }
+                    file_index[index_pos] = file;
+                    //entry ファイル名を控える
+                    all_compressed_files[act_file].file_name = act_file_index_path + file;
+                    index_pos++;
+
+                    //実ファイル名を控える
+                    all_compressed_files[act_file].true_file_name = directories[i] + "/" + file;
+                    act_file++;
                 }
             }
             return 0;
@@ -246,8 +234,6 @@ using System.IO;
                     all_compressed_files[i].compressed_data = new byte[compressed_length];
                     Array.Copy(compressed_data, 0, all_compressed_files[i].compressed_data, 0, (int)compressed_length);
 
-                    System.Console.Out.WriteLine(String.Format("Compressing File: {0} {1}", all_compressed_files[i].true_file_name, all_compressed_files[i].uncompressed_length));
-
                     writer.Write(all_compressed_files[i].uncompressed_length);
                     writer.Write(all_compressed_files[i].compressed_data);
                     writer.Flush();
@@ -313,3 +299,4 @@ using System.IO;
         }
 
     }
+}

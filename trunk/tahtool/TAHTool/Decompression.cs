@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+namespace TAHTool
+{
     class Decompression
     {
         static MT19937ar myMT19937ar = new MT19937ar();
@@ -80,3 +82,4 @@ using System.IO;
             }
         }
     }
+}

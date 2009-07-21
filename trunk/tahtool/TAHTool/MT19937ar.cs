@@ -1,5 +1,7 @@
 using System;
 
+namespace TAHTool
+{
     class MT19937ar
     {
         //A C# adaption
@@ -159,3 +161,4 @@ using System;
             }
         }
     }
+}

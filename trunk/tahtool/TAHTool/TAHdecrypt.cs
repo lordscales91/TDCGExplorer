@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+namespace TAHTool
+{
     class TAHdecrypt
     {
         static void Main(string[] args)
@@ -74,3 +76,4 @@ using System.IO;
             return ext;
         }
     }
+}
