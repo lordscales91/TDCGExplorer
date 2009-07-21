@@ -51,7 +51,7 @@ namespace TMOProportion
                 ProportionSlider slider = new ProportionSlider();
                 slider.label.Text = pro.ToString();
                 slider.Location = new System.Drawing.Point(10, 10 + bar_list.Count * 95);
-                slider.trackBar.ValueChanged += new System.EventHandler(this.proportionTrackBar_ValueChanged);
+                slider.ValueChanged += new System.EventHandler(this.slider_ValueChanged);
                 this.Controls.Add(slider);
 
                 bar_list.Add(slider);
@@ -66,13 +66,13 @@ namespace TMOProportion
             viewer.Render();
         }
 
-        private void proportionTrackBar_ValueChanged(object sender, EventArgs e)
+        private void slider_ValueChanged(object sender, EventArgs e)
         {
-            TrackBar trackBar = sender as TrackBar;
+            ProportionSlider slider = sender as ProportionSlider;
             {
-                TPOFile tpo = trackBar.Tag as TPOFile;
+                TPOFile tpo = slider.Tag as TPOFile;
                 if (tpo != null)
-                    tpo.Ratio = trackBar.Value * 0.1f;
+                    tpo.Ratio = slider.Ratio;
             }
 
             Figure fig;
@@ -96,7 +96,7 @@ namespace TMOProportion
                 for (int i = 0; i < tpo_list.Count; i++)
                 {
                     TPOFile tpo = tpo_list[i];
-                    bar_list[i].trackBar.Tag = tpo;
+                    bar_list[i].Tag = tpo;
                 }
             }
         }

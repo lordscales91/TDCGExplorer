@@ -30,6 +30,7 @@
         {
             this.label = new System.Windows.Forms.Label();
             this.trackBar = new System.Windows.Forms.TrackBar();
+            this.lbRatio = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar)).BeginInit();
             this.SuspendLayout();
             // 
@@ -50,11 +51,22 @@
             this.trackBar.Size = new System.Drawing.Size(262, 45);
             this.trackBar.TabIndex = 1;
             this.trackBar.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.trackBar.ValueChanged += new System.EventHandler(this.trackBar_ValueChanged);
+            // 
+            // lbRatio
+            // 
+            this.lbRatio.AutoSize = true;
+            this.lbRatio.Location = new System.Drawing.Point(237, 10);
+            this.lbRatio.Name = "lbRatio";
+            this.lbRatio.Size = new System.Drawing.Size(25, 12);
+            this.lbRatio.TabIndex = 2;
+            this.lbRatio.Text = "0.00";
             // 
             // ProportionSlider
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.lbRatio);
             this.Controls.Add(this.trackBar);
             this.Controls.Add(this.label);
             this.Name = "ProportionSlider";
@@ -69,6 +81,7 @@
 
         public System.Windows.Forms.Label label;
         public System.Windows.Forms.TrackBar trackBar;
+        private System.Windows.Forms.Label lbRatio;
 
     }
 }
