@@ -16,15 +16,21 @@ namespace TDCGExplorer
             InitializeComponent();
         }
 
+        private string trimdir(string dir)
+        {
+            if(dir.EndsWith("\\")) return dir.Substring(0,dir.Length-1);
+            return dir;
+        }
+
         public string textArcPath
         {
-            get { return tbArcsDirectory.Text; }
+            get { return trimdir(tbArcsDirectory.Text); }
             set { tbArcsDirectory.Text = value; }
         }
 
         public string textZipPath
         {
-            get { return tbZipDirectory.Text; }
+            get { return trimdir(tbZipDirectory.Text); }
             set { tbZipDirectory.Text = value; }
         }
 
@@ -48,7 +54,7 @@ namespace TDCGExplorer
 
         public string textWorkPath
         {
-            get { return tbWorkPath.Text; }
+            get { return trimdir(tbWorkPath.Text); }
             set { tbWorkPath.Text = value; }
         }
 
@@ -100,7 +106,7 @@ namespace TDCGExplorer
         }
         public string saveDirectory
         {
-            get { return textBoxSaveFile.Text; }
+            get { return trimdir(textBoxSaveFile.Text); }
             set { textBoxSaveFile.Text = value; }
         }
         public bool initializeCamera
@@ -120,7 +126,7 @@ namespace TDCGExplorer
         }
         public string tahEditorPath
         {
-            get { return textBoxTahEditor.Text; }
+            get { return trimdir(textBoxTahEditor.Text); }
             set { textBoxTahEditor.Text = value; }
         }
         public string collisionDetectLevel

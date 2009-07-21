@@ -148,6 +148,32 @@ namespace System.Windows.Forms
                 @"<pre>" + "ハッシュコード : " + tofile.hash.ToString("x8") + "</pre>";
 
             webBrowser.DocumentText = text;
+
+            try
+            {
+                string filename = fromfile.GetDisplayPath().ToLower();
+                if (Path.GetExtension(filename) == ".tso")
+                {
+                    // TSOを表示する.
+                    using (GenericTAHStream tahstream = new GenericTAHStream(new GenericArcsTahInfo(from), fromfile))
+                    {
+                        Cursor.Current = Cursors.WaitCursor;
+                        TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
+                        TDCGExplorer.TDCGExplorer.MainFormWindow.clearTSOViewer();
+                        TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
+                        TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad(); // 初期tmoを読み込む.
+                        // カメラをセンター位置に.
+                        TSOCameraAutoCenter camera = new TSOCameraAutoCenter(TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer);
+                        camera.UpdateCenterPosition(fromfile.path.ToUpper());
+                        // 次回カメラが必ずリセットされる様にする.
+                        TDCGExplorer.TDCGExplorer.MainFormWindow.setNeedCameraReset();
+                        Cursor.Current = Cursors.Default;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
 
         private void dataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)

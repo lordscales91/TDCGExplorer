@@ -12,13 +12,15 @@ namespace System.Windows.Forms
 {
     class SaveFilePage : ZipFilePageControl
     {
-        TDCGSaveFileInfo savefile;
+        private TDCGSaveFileInfo savefile;
         private ContextMenuStrip contextMenuStripSaveData;
         private System.ComponentModel.IContainer components;
         private ToolStripMenuItem toolStripMenuItemMakeTah;
         private DataGridView dataGridView;
         private List<PNGTsoData> tsoDataList = new List<PNGTsoData>();
+        private ToolStripMenuItem toolStripMenuItemHSave;
         private string filename;
+        private Bitmap savefilebitmap;
 
         // zipファイルの中から
         public SaveFilePage(GenericTahInfo tahInfo) : base(tahInfo)
@@ -82,6 +84,7 @@ namespace System.Windows.Forms
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.contextMenuStripSaveData = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItemMakeTah = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemHSave = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.contextMenuStripSaveData.SuspendLayout();
             this.SuspendLayout();
@@ -103,16 +106,24 @@ namespace System.Windows.Forms
             // contextMenuStripSaveData
             // 
             this.contextMenuStripSaveData.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItemMakeTah});
+            this.toolStripMenuItemMakeTah,
+            this.toolStripMenuItemHSave});
             this.contextMenuStripSaveData.Name = "contextMenuStripSaveData";
-            this.contextMenuStripSaveData.Size = new System.Drawing.Size(207, 26);
-            this.contextMenuStripSaveData.Click += new System.EventHandler(this.contextMenuStripSaveData_Click);
+            this.contextMenuStripSaveData.Size = new System.Drawing.Size(231, 48);
             // 
             // toolStripMenuItemMakeTah
             // 
             this.toolStripMenuItemMakeTah.Name = "toolStripMenuItemMakeTah";
-            this.toolStripMenuItemMakeTah.Size = new System.Drawing.Size(206, 22);
+            this.toolStripMenuItemMakeTah.Size = new System.Drawing.Size(230, 22);
             this.toolStripMenuItemMakeTah.Text = "TAHファイルを作成する";
+            this.toolStripMenuItemMakeTah.Click += new System.EventHandler(this.toolStripMenuItemMakeTah_Click);
+            // 
+            // toolStripMenuItemHSave
+            // 
+            this.toolStripMenuItemHSave.Name = "toolStripMenuItemHSave";
+            this.toolStripMenuItemHSave.Size = new System.Drawing.Size(230, 22);
+            this.toolStripMenuItemHSave.Text = "ヘビーセーブ形式で保存する";
+            this.toolStripMenuItemHSave.Click += new System.EventHandler(this.toolStripMenuItemHSave_Click);
             // 
             // SaveFilePage
             // 
@@ -134,6 +145,9 @@ namespace System.Windows.Forms
 
         public override void BindingStream(MemoryStream ms)
         {
+            ms.Seek(0, SeekOrigin.Begin);
+            savefilebitmap = new Bitmap(ms);
+            
             ms.Seek(0, SeekOrigin.Begin);
             savefile = new TDCGSaveFileInfo((Stream)ms);
 
@@ -370,8 +384,7 @@ namespace System.Windows.Forms
             dataGridView.Size = Size;
         }
 
-        // セーブデータからTAHを作成する.
-        private void contextMenuStripSaveData_Click(object sender, EventArgs e)
+        private void makeTAHFile()
         {
             string dbfilename = LBFileTahUtl.GetTahDbPath(filename);
             if (File.Exists(dbfilename))
@@ -505,7 +518,7 @@ namespace System.Windows.Forms
                                     "data/icon/items/N999SAVE_300.psd" };
 
             // base.tahから手持ちアイテム以外のファイルを読み込む.
-            Dictionary<uint, byte[]> tbndata = new Dictionary<uint,byte[]>();
+            Dictionary<uint, byte[]> tbndata = new Dictionary<uint, byte[]>();
             using (Stream file_stream = File.OpenRead(Path.Combine(TDCGExplorer.TDCGExplorer.SystemDB.arcs_path, "base.tah")))
             {
                 TAHFile tah = new TAHFile(file_stream);
@@ -514,7 +527,8 @@ namespace System.Windows.Forms
                     tah.LoadEntries();
                     foreach (TAHEntry ent in tah.EntrySet.Entries)
                     {
-                        for(int id=0;id<tbnname.Length;id++){
+                        for (int id = 0; id < tbnname.Length; id++)
+                        {
                             if (ent.FileName != null && ent.FileName.ToLower() == tbnname[id])
                             {
                                 byte[] content = TAHUtil.ReadEntryData(tah.Reader, ent);
@@ -530,7 +544,7 @@ namespace System.Windows.Forms
                     Debug.WriteLine("basetah.open.error");
                 }
             }
-           
+
             // 手持ちアイテムTBNを読み込む.
             try
             {
@@ -581,6 +595,47 @@ namespace System.Windows.Forms
             editor.Commit(transaction);
             TDCGExplorer.TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
             editor.SelectAll();
+        }
+
+        private void HeavySave()
+        {
+            try
+            {
+                // ヘビーセーブ形式で保存する.
+                if (savefilebitmap == null) return;
+                // まずPNG形式のデータを作る.
+                MemoryStream basepng = new MemoryStream();
+                savefilebitmap.Save(basepng, System.Drawing.Imaging.ImageFormat.Png);
+                // PNGFileクラスにデータを取り込む.
+                PNGStream pngstream = new PNGStream();
+                basepng.Seek(0, SeekOrigin.Begin);
+                PNGFile png = pngstream.GetPNG(basepng);
+                //TSOデータを設定する.
+                foreach (PNGTsoData tsodata in tsoDataList) pngstream.get.Add(tsodata);
+                // 保存先を決める.
+                string savefile_dir = TDCGExplorer.TDCGExplorer.SystemDB.savefile_directory;
+                string savefile_name = "new." + Path.GetFileNameWithoutExtension(filename) + ".png";
+                string destpath = Path.Combine(savefile_dir, savefile_name);
+                // 保存先をオープン.
+                Stream output = File.Create(destpath);
+                // PNGを出力する.
+                pngstream.SavePNGFile(png, output);
+            }
+            catch (Exception ex)
+            {
+                TDCGExplorer.TDCGExplorer.SetToolTips("ファイルセーブエラー:" + ex.Message);
+            }
+        }
+
+        private void toolStripMenuItemHSave_Click(object sender, EventArgs e)
+        {
+            HeavySave();
+            TDCGExplorer.TDCGExplorer.MainFormWindow.UpdateSaveFileTree();
+        }
+
+        private void toolStripMenuItemMakeTah_Click(object sender, EventArgs e)
+        {
+            makeTAHFile();
         }
     }
 }

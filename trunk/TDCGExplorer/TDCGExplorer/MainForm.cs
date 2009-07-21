@@ -496,6 +496,13 @@ namespace TDCGExplorer
             }
         }
 
+        public void UpdateSaveFileTree()
+        {
+            treeViewSaveFile.Nodes.Clear();
+            ListBoxClear();
+            TDCGExplorer.MakeSavefileTreeView(treeViewSaveFile);
+        }
+
         private void SetColor(TreeNode node)
         {
             // 以前に設定していた色は戻す.
