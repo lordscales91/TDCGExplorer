@@ -31,14 +31,14 @@
             this.diaOpen1 = new System.Windows.Forms.OpenFileDialog();
             this.btnLoad = new System.Windows.Forms.Button();
             this.gvEntries = new System.Windows.Forms.DataGridView();
+            this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Offset = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Length = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.bwCompress = new System.ComponentModel.BackgroundWorker();
             this.btnCompress = new System.Windows.Forms.Button();
             this.staStrip1 = new System.Windows.Forms.StatusStrip();
             this.lbStatus = new System.Windows.Forms.ToolStripStatusLabel();
             this.pbStatus = new System.Windows.Forms.ToolStripProgressBar();
-            this.FileName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Offset = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Length = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.gvEntries)).BeginInit();
             this.staStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -46,7 +46,7 @@
             // diaOpen1
             // 
             this.diaOpen1.FileName = "base_xp.tah";
-            this.diaOpen1.Filter = "Tah files|*.tah|All files|*.*";
+            this.diaOpen1.Filter = "tah Files|*.tah|All Files|*.*";
             // 
             // btnLoad
             // 
@@ -73,6 +73,25 @@
             this.gvEntries.RowTemplate.Height = 21;
             this.gvEntries.Size = new System.Drawing.Size(597, 366);
             this.gvEntries.TabIndex = 1;
+            // 
+            // FileName
+            // 
+            this.FileName.HeaderText = "File name";
+            this.FileName.Name = "FileName";
+            this.FileName.ReadOnly = true;
+            this.FileName.Width = 250;
+            // 
+            // Offset
+            // 
+            this.Offset.HeaderText = "Offset";
+            this.Offset.Name = "Offset";
+            this.Offset.ReadOnly = true;
+            // 
+            // Length
+            // 
+            this.Length.HeaderText = "Length";
+            this.Length.Name = "Length";
+            this.Length.ReadOnly = true;
             // 
             // bwCompress
             // 
@@ -113,25 +132,6 @@
             // 
             this.pbStatus.Name = "pbStatus";
             this.pbStatus.Size = new System.Drawing.Size(100, 17);
-            // 
-            // FileName
-            // 
-            this.FileName.HeaderText = "File name";
-            this.FileName.Name = "FileName";
-            this.FileName.ReadOnly = true;
-            this.FileName.Width = 250;
-            // 
-            // Offset
-            // 
-            this.Offset.HeaderText = "Offset";
-            this.Offset.Name = "Offset";
-            this.Offset.ReadOnly = true;
-            // 
-            // Length
-            // 
-            this.Length.HeaderText = "Length";
-            this.Length.Name = "Length";
-            this.Length.ReadOnly = true;
             // 
             // Form1
             // 
