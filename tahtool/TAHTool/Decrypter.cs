@@ -36,27 +36,6 @@ using System.IO;
             public UInt32 offset;
         }
 
-        public int decrypt_archive(string source_file, string dest_path)
-        {
-            try
-            {
-                reader = new BinaryReader(File.OpenRead(source_file));
-            }
-            catch (Exception)
-            {
-                System.Console.Out.WriteLine("Error: This file cannot be read or does not exist.");
-                return -1;
-            }
-            int ret = 0;
-            ret = extract_TAH_directory();
-            if (ret >= 0)
-            {
-                ret = extract_TAH_resource(dest_path);
-            }
-            reader.Close();
-            return ret;
-        }
-
         public static UInt32 gen_hash_key_for_string(ref byte[] strg)
         {
             UInt32 key = 0xC8A4E57AU;
@@ -90,104 +69,49 @@ using System.IO;
             }
         }
 
-        public int extract_TAH_directory()
+        public void extract_TAH_directory()
         {
             Entries = null;
 
-            header tah_header;
-            UInt32 arc_size;
+            UInt32 arc_size = (UInt32)reader.BaseStream.Length;
 
-            if (reader.BaseStream.Length > 16) //sizeof(header) == 16
-            {
-                arc_size = (UInt32)reader.BaseStream.Length;
-            }
-            else
-            {
-                return -1;
-            }
+            header tah_header = new header();
 
-            tah_header = new header();
-
-            try
-            {
-                tah_header.id = reader.ReadUInt32();
-                tah_header.index_entry_count = reader.ReadUInt32();
-                tah_header.unknown = reader.ReadUInt32();
-                tah_header.reserved = reader.ReadUInt32();
-            }
-            catch (Exception)
-            {
-                System.Console.Out.WriteLine("Error: Cannot read out header from the archive.");
-                return -1;
-            }
+            tah_header.id = reader.ReadUInt32();
+            tah_header.index_entry_count = reader.ReadUInt32();
+            tah_header.unknown = reader.ReadUInt32();
+            tah_header.reserved = reader.ReadUInt32();
 
             if (!file_header_match_with_TAH(tah_header.id))
             {
-                System.Console.Out.WriteLine("Error: Wrong file format. Please use a TAH archive as input file.");
-                return -1;
+                throw new ApplicationException("Wrong file format. Please use a TAH archive as input file.");
             }
 
             UInt32 index_buffer_size = tah_header.index_entry_count * 8; //sizeof(index_entry) == 8
             index_entry[] index_buffer = new index_entry[tah_header.index_entry_count];
 
-            try
+            for (int i = 0; i < tah_header.index_entry_count; i++)
             {
-                for (int i = 0; i < tah_header.index_entry_count; i++)
-                {
-                    index_buffer[i].hash_name = reader.ReadUInt32();
-                    index_buffer[i].offset = reader.ReadUInt32();
-                }
-            }
-            catch (Exception)
-            {
-                System.Console.Out.WriteLine("Error: Cannot read out index of the archive.");
-                return -1;
+                index_buffer[i].hash_name = reader.ReadUInt32();
+                index_buffer[i].offset = reader.ReadUInt32();
             }
 
-            UInt32 output_length;
-
-            try
-            {
-                output_length = reader.ReadUInt32();
-            }
-            catch (Exception)
-            {
-                System.Console.Out.WriteLine("Error: Cannot read out data size information of the archive.");
-                return -1;
-            }
+            UInt32 output_length = reader.ReadUInt32();
 
             //entry情報の読み出し長さ
             UInt32 input_length = index_buffer[0].offset - /*sizeof(header)*/ 16 - index_buffer_size;
             //entry情報の読み出しバッファ
             byte[] data_input = new byte[input_length];
 
-            try
-            {
-                data_input = reader.ReadBytes((int)input_length);
-            }
-            catch (Exception)
-            {
-                System.Console.Out.WriteLine("Error: Cannot read out compressed data of the archive.");
-                return -1;
-            }
+            data_input = reader.ReadBytes((int)input_length);
             //-- entry情報の読み込み完了! --
 
             byte[] output_data = new byte[output_length];
 
-            try
-            {
-                Decompression.decrypt(ref data_input, input_length, ref output_data, output_length);
-            }
-            catch (Exception)
-            {
-                System.Console.Out.WriteLine("Error: Failed to decrypt data. Possible error in archive.");
-                return -1;
-            }
+            Decompression.decrypt(ref data_input, input_length, ref output_data, output_length);
             //-- entry情報の復号完了! --
 
             build_TAHEntrys(output_data, index_buffer, arc_size);
-
-            return 0;
         }
 
         public void build_TAHEntrys(byte[] str_file_path, index_entry[] index_buffer, UInt32 arc_size)
@@ -487,17 +411,8 @@ using System.IO;
 
         public string[] GetFiles(string source_file)
         {
-            try
-            {
-                reader = new BinaryReader(File.OpenRead(source_file));
-            }
-            catch (Exception)
-            {
-                System.Console.Out.WriteLine("Error: This file cannot be read or does not exist.");
-                return null;
-            }
-            int ret = 0;
-            ret = extract_TAH_directory();
+            reader = new BinaryReader(File.OpenRead(source_file));
+            extract_TAH_directory();
             reader.Close();
 
             //
@@ -515,17 +430,8 @@ using System.IO;
 
         public void Load(string source_file)
         {
-            try
-            {
-                reader = new BinaryReader(File.OpenRead(source_file));
-            }
-            catch (Exception)
-            {
-                System.Console.Out.WriteLine("Error: This file cannot be read or does not exist.");
-                return;
-            }
-            int ret = 0;
-            ret = extract_TAH_directory();
+            reader = new BinaryReader(File.OpenRead(source_file));
+            extract_TAH_directory();
         }
 
         public void Close()
