@@ -499,7 +499,6 @@ namespace TDCGExplorer
         public void UpdateSaveFileTree()
         {
             treeViewSaveFile.Nodes.Clear();
-            ListBoxClear();
             TDCGExplorer.MakeSavefileTreeView(treeViewSaveFile);
         }
 
