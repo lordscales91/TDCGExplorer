@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+namespace TAHTool
+{
     public class TAHEntry
     {
         public UInt32 hash_name;
@@ -61,10 +63,7 @@ using System.IO;
 
             byte[] magic = reader.ReadBytes(4);
 
-            if(magic[0] != (byte)'T'
-            || magic[1] != (byte)'A'
-            || magic[2] != (byte)'H'
-            || magic[3] != (byte)'2')
+            if (magic[0] != (byte)'T' || magic[1] != (byte)'A' || magic[2] != (byte)'H' || magic[3] != (byte)'2')
                 throw new Exception("File is not TAH");
 
             tah_header.index_entry_count = reader.ReadUInt32();
@@ -241,12 +240,6 @@ using System.IO;
                 //sorting for faster look up...
                 Array.Sort(external_files.hashkeys, external_files.files);
             }
-            else
-            {
-                System.Console.Out.WriteLine("Could not find \"names.txt\" at " + System.Environment.CurrentDirectory.ToString() + ".");
-                System.Console.Out.WriteLine("Press any Key to continue with data extraction without correct file names.");
-                System.Console.ReadKey();
-            }
         }
 
         public int ExtractResource(TAHEntry entry, out byte[] data_output)
@@ -317,6 +310,8 @@ using System.IO;
 
         public void Close()
         {
-            reader.Close();
+            if (reader != null)
+                reader.Close();
         }
     }
+}

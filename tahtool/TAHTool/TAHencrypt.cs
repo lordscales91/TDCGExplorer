@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
+namespace TAHTool
+{
     class TAHancrypt
     {
         static void Main(string[] args)
@@ -61,5 +63,5 @@ using System.IO;
             encrypter.Save(file_path_name);
             return 0;
         }
-
     }
+}
