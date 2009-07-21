@@ -21,13 +21,13 @@ using System.IO;
             string base_path = Path.GetFileNameWithoutExtension(source_file);
 
             Console.WriteLine("file_name\toffset\tlength\tflag");
-            entry_meta_info info;
-            while (decrypter.FindNext(out info))
+            decrypter.extract_TAH_directory();
+            foreach (TAHEntry info in decrypter.Entries)
             {
                 Console.WriteLine("{0}\t{1}\t{2}\t{3}", info.file_name, info.offset, info.length, info.flag);
 
                 byte[] data_output;
-                decrypter.ExtractResource(ref info, out data_output);
+                decrypter.ExtractResource(info, out data_output);
 
                 string file_name = info.file_name;
 

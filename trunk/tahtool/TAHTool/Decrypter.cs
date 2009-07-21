@@ -2,13 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-        public struct entry_meta_info
-        {
-            public string file_name;
-            public UInt32 offset;
-            public UInt32 length;
-            public UInt32 flag; //at bit 0x1: no path info in tah file 1 otherwise 0
-        }
+    public class TAHEntry
+    {
+        public string file_name;
+        public UInt32 offset;
+        public UInt32 length;
+        public UInt32 flag; //at bit 0x1: no path info in tah file 1 otherwise 0
+    }
 
     class Decrypter
     {
@@ -47,12 +47,11 @@ using System.IO;
                 System.Console.Out.WriteLine("Error: This file cannot be read or does not exist.");
                 return -1;
             }
-            entry_meta_info[] entry_meta_infos;
             int ret = 0;
-            ret = extract_TAH_directory(out entry_meta_infos);
+            ret = extract_TAH_directory();
             if (ret >= 0)
             {
-                ret = extract_TAH_resource(dest_path, ref entry_meta_infos);
+                ret = extract_TAH_resource(dest_path);
             }
             reader.Close();
             return ret;
@@ -91,9 +90,10 @@ using System.IO;
             }
         }
 
-        public int extract_TAH_directory(out entry_meta_info[] entry_meta_infos)
+        public int extract_TAH_directory()
         {
-            entry_meta_infos = null;
+            Entries = null;
+
             header tah_header;
             UInt32 arc_size;
 
@@ -185,20 +185,16 @@ using System.IO;
             }
             //-- entry情報の復号完了! --
 
-            entry_meta_infos = build_entry_meta_infos(output_data, index_buffer, arc_size);
+            build_TAHEntrys(output_data, index_buffer, arc_size);
 
             return 0;
         }
 
-        public static entry_meta_info[] build_entry_meta_infos(byte[] output_data, index_entry[] index_buffer, UInt32 arc_size)
+        public void build_TAHEntrys(byte[] str_file_path, index_entry[] index_buffer, UInt32 arc_size)
         {
             int index_entry_count = index_buffer.Length;
 
-            entry_meta_info[] directory_meta_info_buffer = new entry_meta_info[index_entry_count];
-
-            //byte[] str_file_path = new byte[output_data.Length];
-            //output_data.CopyTo(str_file_path, 0);//xxx: copyして持つ必要はあるか???
-            byte[] str_file_path = output_data;
+            Entries = new TAHEntry[index_entry_count];
 
             byte[] file_path = new byte[MAX_PATH];
             int act_str_pos = 0;
@@ -257,13 +253,13 @@ using System.IO;
                     for (h = 0; h < index_entry_count; h++)
                     {
                         //名無しで
-                        if (directory_meta_info_buffer[h].file_name == null)
+                        if (Entries[h].file_name == null)
                         {
                             //hashが一致する
                             if (hash_key == index_buffer[h].hash_name)
                             {
                                 //file_nameとしてcopy
-                                directory_meta_info_buffer[h].file_name = System.Text.Encoding.GetEncoding(932).GetString(str_path, 0, i + str_path_offset);
+                                Entries[h].file_name = System.Text.Encoding.GetEncoding(932).GetString(str_path, 0, i + str_path_offset);
                                 break;
                             }
                         }
@@ -282,36 +278,34 @@ using System.IO;
             for (UInt32 i = 0; i < index_entry_count; i++)
             {
                 //file_nameが見つからなかった場合
-                if (directory_meta_info_buffer[i].file_name == null)
+                if (Entries[i].file_name == null)
                 {
                     //names.txt を検索
                     int pos = Array.BinarySearch(external_files.hashkeys, index_buffer[i].hash_name);
                     if (pos < 0) // not found
                     {
                         //ファイル名は <i>_<hash>にする
-                        directory_meta_info_buffer[i].file_name = i.ToString("00000000") + "_" + index_buffer[i].hash_name.ToString();
+                        Entries[i].file_name = i.ToString("00000000") + "_" + index_buffer[i].hash_name.ToString();
                         //file_nameが見つからなかったflag on
-                        directory_meta_info_buffer[i].flag ^= 0x1;
+                        Entries[i].flag ^= 0x1;
                     }
                     else
                     {
-                        directory_meta_info_buffer[i].file_name = external_files.files[pos];
+                        Entries[i].file_name = external_files.files[pos];
                     }
                 }
                 //オフセットを設定
-                directory_meta_info_buffer[i].offset = index_buffer[i].offset;
+                Entries[i].offset = index_buffer[i].offset;
             }
 
             for (UInt32 i = 0; i < index_entry_count - 1; i++)
             {
                 //data読み込み長さを設定
                 //読み込み長さは現在entryオフセットと次のentryオフセットとの差である
-                directory_meta_info_buffer[i].length = index_buffer[i + 1].offset - index_buffer[i].offset;
+                Entries[i].length = index_buffer[i + 1].offset - index_buffer[i].offset;
             }
             //最終entry data読み込み長さを設定
-            directory_meta_info_buffer[index_entry_count - 1].length = arc_size - index_buffer[index_entry_count - 1].offset;
-
-            return directory_meta_info_buffer;
+            Entries[index_entry_count - 1].length = arc_size - index_buffer[index_entry_count - 1].offset;
         }
 
         static void build_ext_file_list(out ext_file_list external_files)
@@ -349,16 +343,16 @@ using System.IO;
             }
         }
 
-        public int ExtractResource(ref entry_meta_info ent_meta_info, out byte[] data_output)
+        public int ExtractResource(TAHEntry entry, out byte[] data_output)
         {
             //data読み込み長さ
             //-4はdata書き出し長さ格納領域 (UInt32) を減じている
-            UInt32 data_input_length = ent_meta_info.length - 4;
+            UInt32 data_input_length = entry.length - 4;
             //data読み込みバッファ
             byte[] data_input = new byte[data_input_length];
             UInt32 data_output_length;
 
-            reader.BaseStream.Position = ent_meta_info.offset;
+            reader.BaseStream.Position = entry.offset;
 
             try
             {
@@ -390,63 +384,19 @@ using System.IO;
             return 0;
         }
 
-        int extract_TAH_resource_0(ref entry_meta_info ent_meta_info, out byte[] data_output)
-        {
-            //data読み込み長さ
-            //-4はdata書き出し長さ格納領域 (UInt32) を減じている
-            UInt32 data_input_length = ent_meta_info.length - 4;
-            //data読み込みバッファ
-            byte[] data_input = new byte[data_input_length];
-            UInt32 data_output_length;
-
-            reader.BaseStream.Position = ent_meta_info.offset;
-
-            try
-            {
-                //data書き出し長さ
-                data_output_length = reader.ReadUInt32();
-                data_input = reader.ReadBytes((int)data_input_length);
-            }
-            catch (Exception)
-            {
-                System.Console.Out.WriteLine("Error: Cannot read out compressed data of the archive.");
-                data_output = new byte[0];
-                return -1;
-            }
-            //-- data読み込み（復号前）完了! --
-
-            //data書き出しバッファ
-            data_output = new byte[data_output_length];
-
-            try
-            {
-                Decompression.decrypt(ref data_input, data_input_length, ref data_output, data_output_length);
-            }
-            catch (Exception)
-            {
-                System.Console.Out.WriteLine("Error: Failed to decrypt data. Possible error in archive.");
-                return -1;
-            }
-            //-- data復号完了! --
-            return 0;
-        }
-
-        int extract_TAH_resource(string dest_path, ref entry_meta_info[] entry_meta_infos)
+        int extract_TAH_resource(string dest_path)
         {
             //now proceed with decrypting
-            for (int i = 0; i < entry_meta_infos.Length; i++)
+            for (int i = 0; i < Entries.Length; i++)
             {
                 //data書き出しバッファ
                 byte[] data_output;
 
-                int ret;
-                ret = extract_TAH_resource_0(ref entry_meta_infos[i], out data_output);
-                if (ret < 0)
-                    return ret;
+                ExtractResource(Entries[i], out data_output);
 
                 //書き出しファイル名
                 string write_file_str = dest_path;
-                write_file_str += "/" + entry_meta_infos[i].file_name;
+                write_file_str += "/" + Entries[i].file_name;
                 //write_file_str =  write_file_str.Replace("/", "\\");
 
                 UInt32 hashkey = 0;
@@ -491,7 +441,7 @@ using System.IO;
                 }
 
                 //flag & 0x1 = 1ならno path
-                if (entry_meta_infos[i].flag % 2 == 1)
+                if (Entries[i].flag % 2 == 1)
                 {
                     string ext;
                     string magic = System.Text.Encoding.ASCII.GetString(data_output, 0, 4);
@@ -546,24 +496,25 @@ using System.IO;
                 System.Console.Out.WriteLine("Error: This file cannot be read or does not exist.");
                 return null;
             }
-            entry_meta_info[] entry_meta_infos;
             int ret = 0;
-            ret = extract_TAH_directory(out entry_meta_infos);
+            ret = extract_TAH_directory();
             reader.Close();
-            string[] files = new string[entry_meta_infos.Length];
-            for (int count = 0; count < entry_meta_infos.Length; count++)
+
+            //
+            //Entries.collect file_name
+            //
+            string[] files = new string[Entries.Length];
+            for (int count = 0; count < Entries.Length; count++)
             {
-                files[count] = entry_meta_infos[count].file_name;
+                files[count] = Entries[count].file_name;
             }
             return files;
         }
 
-        entry_meta_info[] m_entry_meta_infos;
-        int m_count = 0;
+        public TAHEntry[] Entries { get; set; }
 
         public void Load(string source_file)
         {
-            m_count = 0;
             try
             {
                 reader = new BinaryReader(File.OpenRead(source_file));
@@ -574,27 +525,11 @@ using System.IO;
                 return;
             }
             int ret = 0;
-            ret = extract_TAH_directory(out m_entry_meta_infos);
+            ret = extract_TAH_directory();
         }
 
         public void Close()
         {
             reader.Close();
-        }
-
-        public bool FindFirst(out entry_meta_info info)
-        {
-            m_count = 0;
-            return FindNext(out info);
-        }
-
-        public bool FindNext(out entry_meta_info info)
-        {
-            bool exist_p = m_count < m_entry_meta_infos.Length;
-            if (exist_p)
-                info = m_entry_meta_infos[m_count++];
-            else
-                info = new entry_meta_info();
-            return exist_p;
         }
     }
