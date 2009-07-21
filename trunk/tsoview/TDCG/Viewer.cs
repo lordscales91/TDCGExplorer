@@ -804,6 +804,7 @@ public class Viewer : IDisposable
             foreach (Figure fig in FigureList)
                 fig.SetFrameIndex(frame_index);
         }
+        /*
         else if (! solved)
         {
             foreach (Figure fig in FigureList)
@@ -813,6 +814,7 @@ public class Viewer : IDisposable
                 fig.UpdateBoneMatricesWithoutTMO();
             }
         }
+        */
     }
     bool solved = false;
     long wait = (long)(10000000.0f / 60.0f);
@@ -961,10 +963,12 @@ public class Viewer : IDisposable
     }
     */
 
-        //‹t‰^“®Šw‚É‚¨‚¯‚é–Ú•W‚ð•`‰æ
+    //‹t‰^“®Šw‚É‚¨‚¯‚é–Ú•W‚ð•`‰æ
+    /*
     {
         DrawMeshSub(sphere, Matrix.Translation(target), new Vector4(1,1,0,1));
     }
+    */
 
         device.EndScene();
         {
