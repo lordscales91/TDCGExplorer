@@ -30,19 +30,17 @@ namespace TDCGExplorer
         /// </summary>
         /// <param name="bw"></param>
         public delegate void BinaryWriterHandler(BinaryWriter bw);
-
         /// <summary>
         /// TaObチャンクを書き出すハンドラ
         /// </summary>
         public BinaryWriterHandler WriteTaOb;
-#if false
         /// <summary>
         /// 指定パスに保存します。
         /// </summary>
         /// <param name="dest_file">パス</param>
-        public void Save(string dest_file)
+        public void Save(Stream stream /*string dest_file*/)
         {
-            BinaryWriter bw = new BinaryWriter(File.Create(dest_file), System.Text.Encoding.Default);
+            BinaryWriter bw = new BinaryWriter(stream, System.Text.Encoding.Default);
 
             PNGWriter.Write(bw, header);
             PNGWriter.WriteIHDR(bw, ihdr);
@@ -56,7 +54,6 @@ namespace TDCGExplorer
 
             bw.Close();
         }
-#endif
         /// <summary>
         /// pngヘッダを処理するのに用いるデリゲート型
         /// </summary>

@@ -103,6 +103,7 @@
     <Compile Include="AnnotationDB.cs" />
     <Compile Include="ArcNames.cs" />
     <Compile Include="ArcsDataBase.cs" />
+    <Compile Include="PNGWriter.cs" />
     <Compile Include="SimpleDropDownDialog.cs">
       <SubType>Form</SubType>
     </Compile>
