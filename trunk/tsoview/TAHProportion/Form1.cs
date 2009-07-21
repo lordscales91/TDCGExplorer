@@ -70,10 +70,18 @@ namespace TAHTool
                 TAHEntry entry = entries[true_file_name];
                 byte[] data_output;
                 decrypter.ExtractResource(entry, out data_output);
+                
+                TDCG.TMOFile tmo = new TDCG.TMOFile();
+                MemoryStream tmo_stream = new MemoryStream(data_output);
+                tmo.Load(tmo_stream);
+                tmo_stream.Seek(0, SeekOrigin.Begin);
+                tmo.Save(tmo_stream);
+                tmo_stream.Seek(0, SeekOrigin.Begin);
+                
                 current_index++;
                 int percent = current_index * 100 / entries_count;
                 worker.ReportProgress(percent);
-                return new MemoryStream(data_output);
+                return tmo_stream;
             };
 
             encrypter.Save(@"tmo-" + Path.GetFileName(source_file));
@@ -129,6 +137,7 @@ namespace TAHTool
 
         private void bwCompress_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            Console.WriteLine("completed");
             lbStatus.Text = "ok. Compressed";
             pbStatus.Value = 0;
             btnLoad.Enabled = true;
