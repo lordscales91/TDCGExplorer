@@ -32,30 +32,7 @@ using System.IO;
                 //flag & 0x1 = 1‚È‚çno path
                 if (entry.flag % 2 == 1)
                 {
-                    string ext;
-                    string magic = System.Text.Encoding.ASCII.GetString(data_output, 0, 4);
-                    switch (magic)
-                    {
-                        case "8BPS":
-                            ext = ".psd";
-                            break;
-                        case "TMO1":
-                            ext = ".tmo";
-                            break;
-                        case "TSO1":
-                            ext = ".tso";
-                            break;
-                        case "OggS":
-                            ext = ".ogg";
-                            break;
-                        case "BBBB":
-                            ext = ".tbn";
-                            break;
-                        default:
-                            ext = ".cgfx";
-                            break;
-                    }
-                    file_name += ext;
+                    file_name += GetExtensionFromMagic(data_output);
                 }
                 string dest_file_name = Path.Combine(base_path, file_name);
                 Directory.CreateDirectory(Path.GetDirectoryName(dest_file_name));
@@ -67,5 +44,33 @@ using System.IO;
             decrypter.Close();
 
             return 0;
+        }
+
+        static string GetExtensionFromMagic(byte[] data_output)
+        {
+            string ext;
+            string magic = System.Text.Encoding.ASCII.GetString(data_output, 0, 4);
+            switch (magic)
+            {
+                case "8BPS":
+                    ext = ".psd";
+                    break;
+                case "TMO1":
+                    ext = ".tmo";
+                    break;
+                case "TSO1":
+                    ext = ".tso";
+                    break;
+                case "OggS":
+                    ext = ".ogg";
+                    break;
+                case "BBBB":
+                    ext = ".tbn";
+                    break;
+                default:
+                    ext = ".cgfx";
+                    break;
+            }
+            return ext;
         }
     }

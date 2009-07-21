@@ -30,7 +30,7 @@ using System.IO;
 
             foreach (string file in files)
             {
-                string dirname = Path.GetDirectoryName(file);
+                string dirname = Path.GetDirectoryName(file).Replace(@"\", "/");
                 string basename = Path.GetFileName(file);
                 if (! dir_entries.ContainsKey(dirname))
                     dir_entries[dirname] = new List<string>(); 
@@ -95,7 +95,7 @@ using System.IO;
                     try
                     {
                         //実ファイル名を控える
-                        all_compressed_files[act_file].true_file_name = Path.Combine(source_path, file);
+                        all_compressed_files[act_file].true_file_name = source_path + "/" + file;
                         act_file++;
                     }
                     catch (Exception ex)
@@ -113,8 +113,8 @@ using System.IO;
                     //ディレクトリ名を控える
                     //ただし source_path + 1 文字飛ばす
                     //いつも '/' で終わる
-                    file_index[index_pos] = directories[i].Substring(source_path.Length + 1) + "\\";
-                    file_index[index_pos] = file_index[index_pos].Replace("\\", "/");
+                    file_index[index_pos] = directories[i].Substring(source_path.Length + 1) + @"\";
+                    file_index[index_pos] = file_index[index_pos].Replace(@"\", "/");
                     act_file_index_path = file_index[index_pos];
                     index_pos++;
                 }
@@ -130,7 +130,7 @@ using System.IO;
                     try
                     {
                         //実ファイル名を控える
-                        all_compressed_files[act_file].true_file_name = Path.Combine(directories[i], file);
+                        all_compressed_files[act_file].true_file_name = directories[i] + "/" + file;
                         act_file++;
                     }
                     catch (Exception ex)
