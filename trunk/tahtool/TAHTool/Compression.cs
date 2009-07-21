@@ -115,10 +115,6 @@ using System.IO;
                     nLen2 = 0;
                 }
 
-                if (nInputPos > 32860)
-                {
-                    int dummy = 0;
-                }
                 // Are there ANY good matches?
                 if ((nOffset1 != 0) || (nOffset2 != 0))
                 {

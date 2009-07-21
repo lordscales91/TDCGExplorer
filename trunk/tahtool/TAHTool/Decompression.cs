@@ -34,10 +34,6 @@ using System.IO;
             while (act_output_length < output_length)
             {
                 flag >>= 1;
-                if (act_output_length >= 32860)
-                {
-                    int dummy = 0;
-                }
                 if ((flag & 0x0100) == 0)
                 {
                     seed = (seed + 1) & 0x3ff;
