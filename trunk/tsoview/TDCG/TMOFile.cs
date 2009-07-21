@@ -17,12 +17,12 @@ namespace TDCG
         /// </summary>
         protected BinaryReader reader;
 
-        internal byte[] header;
-        internal int opt0;
-        internal int opt1;
-        internal TMONode[] nodes;
-        internal TMOFrame[] frames;
-        internal byte[] footer;
+        public byte[] header;
+        public int opt0;
+        public int opt1;
+        public TMONode[] nodes;
+        public TMOFrame[] frames;
+        public byte[] footer;
 
         internal Dictionary<string, TMONode> nodemap;
 
