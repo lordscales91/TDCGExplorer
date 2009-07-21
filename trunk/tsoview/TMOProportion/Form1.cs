@@ -59,13 +59,12 @@ namespace TMOProportion
             foreach (IProportion pro in pro_list)
             {
                 ProportionSlider slider = new ProportionSlider();
-                string class_name = pro.ToString();
+                slider.ClassName = pro.ToString();
                 {
                     Proportion portion;
-                    if (portion_map.TryGetValue(class_name, out portion))
+                    if (portion_map.TryGetValue(slider.ClassName, out portion))
                         slider.Ratio = portion.Ratio;
                 }
-                slider.label.Text = class_name;
                 slider.Location = new System.Drawing.Point(10, 10 + bar_list.Count * 95);
                 slider.ValueChanged += new System.EventHandler(this.slider_ValueChanged);
                 this.Controls.Add(slider);
@@ -138,6 +137,30 @@ namespace TMOProportion
                 else
                     e.Effect = DragDropEffects.Move;
             }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            SaveTPOConfig();
+            Close();
+        }
+
+        private void SaveTPOConfig()
+        {
+            TPOConfig config = new TPOConfig();
+
+            config.Proportions = new Proportion[bar_list.Count];
+            for (int i = 0; i < bar_list.Count; i++)
+                config.Proportions[i] = new Proportion();
+
+            for (int i = 0; i < bar_list.Count; i++)
+            {
+                Proportion portion = config.Proportions[i];
+                ProportionSlider slider = bar_list[i];
+                portion.ClassName = slider.ClassName;
+                portion.Ratio = slider.Ratio;
+            }
+            config.Save(GetTPOConfigPath());
         }
 
     }

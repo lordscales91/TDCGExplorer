@@ -41,5 +41,16 @@ public class TPOConfig
         reader.Close();
         return config;
     }
+
+    public void Save(string dest_file)
+    {
+        XmlSerializer serializer = new XmlSerializer(typeof(TPOConfig));
+        XmlWriterSettings settings = new XmlWriterSettings();
+        settings.Encoding = Encoding.GetEncoding("Shift_JIS");
+        settings.Indent = true;
+        XmlWriter writer = XmlWriter.Create(dest_file, settings);
+        serializer.Serialize(writer, this);
+        writer.Close();
+    }
 }
 }

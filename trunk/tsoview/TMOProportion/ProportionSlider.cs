@@ -13,6 +13,20 @@ namespace TMOProportion
     {
         public event EventHandler ValueChanged;
 
+        string class_name = null;
+        public string ClassName
+        {
+            get
+            {
+                return class_name;
+            }
+            set
+            {
+                class_name = value;
+                lbClassName.Text = class_name;
+            }
+        }
+
         float ratio = 0.0f;
         public float Ratio
         {
@@ -25,15 +39,15 @@ namespace TMOProportion
                 if (ratio != value)
                 {
                     ratio = value;
-                    int ratioTrackBarValue = (int)(ratio * 10.0f);
-                    trackBar.Value = ratioTrackBarValue;
                     lbRatio.Text = string.Format("{0:F2}", ratio);
+                    tbRatio.Value = (int)(ratio * 10.0f);
                     if (ValueChanged != null)
                         ValueChanged(this, new EventArgs());
                 }
             }
 
         }
+        
         public ProportionSlider()
         {
             InitializeComponent();
@@ -41,7 +55,7 @@ namespace TMOProportion
 
         private void trackBar_ValueChanged(object sender, EventArgs e)
         {
-            Ratio = trackBar.Value * 0.1f;
+            Ratio = tbRatio.Value * 0.1f;
         }
     }
 }

@@ -28,30 +28,30 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.label = new System.Windows.Forms.Label();
-            this.trackBar = new System.Windows.Forms.TrackBar();
+            this.lbClassName = new System.Windows.Forms.Label();
+            this.tbRatio = new System.Windows.Forms.TrackBar();
             this.lbRatio = new System.Windows.Forms.Label();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbRatio)).BeginInit();
             this.SuspendLayout();
             // 
-            // label
+            // lbClassName
             // 
-            this.label.AutoSize = true;
-            this.label.Location = new System.Drawing.Point(10, 10);
-            this.label.Name = "label";
-            this.label.Size = new System.Drawing.Size(35, 12);
-            this.label.TabIndex = 0;
-            this.label.Text = "label1";
+            this.lbClassName.AutoSize = true;
+            this.lbClassName.Location = new System.Drawing.Point(10, 10);
+            this.lbClassName.Name = "lbClassName";
+            this.lbClassName.Size = new System.Drawing.Size(35, 12);
+            this.lbClassName.TabIndex = 0;
+            this.lbClassName.Text = "label1";
             // 
-            // trackBar
+            // tbRatio
             // 
-            this.trackBar.Location = new System.Drawing.Point(10, 30);
-            this.trackBar.Maximum = 20;
-            this.trackBar.Name = "trackBar";
-            this.trackBar.Size = new System.Drawing.Size(262, 45);
-            this.trackBar.TabIndex = 1;
-            this.trackBar.TickStyle = System.Windows.Forms.TickStyle.Both;
-            this.trackBar.ValueChanged += new System.EventHandler(this.trackBar_ValueChanged);
+            this.tbRatio.Location = new System.Drawing.Point(10, 30);
+            this.tbRatio.Maximum = 20;
+            this.tbRatio.Name = "tbRatio";
+            this.tbRatio.Size = new System.Drawing.Size(262, 45);
+            this.tbRatio.TabIndex = 1;
+            this.tbRatio.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.tbRatio.ValueChanged += new System.EventHandler(this.trackBar_ValueChanged);
             // 
             // lbRatio
             // 
@@ -67,11 +67,11 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.lbRatio);
-            this.Controls.Add(this.trackBar);
-            this.Controls.Add(this.label);
+            this.Controls.Add(this.tbRatio);
+            this.Controls.Add(this.lbClassName);
             this.Name = "ProportionSlider";
             this.Size = new System.Drawing.Size(280, 85);
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbRatio)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -79,8 +79,8 @@
 
         #endregion
 
-        public System.Windows.Forms.Label label;
-        public System.Windows.Forms.TrackBar trackBar;
+        public System.Windows.Forms.Label lbClassName;
+        public System.Windows.Forms.TrackBar tbRatio;
         private System.Windows.Forms.Label lbRatio;
 
     }
