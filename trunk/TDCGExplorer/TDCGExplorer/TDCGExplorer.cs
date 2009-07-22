@@ -84,7 +84,7 @@ namespace TDCGExplorer
 
                 string savepath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "TDCGExplorer デバッグ情報.txt");
                 File.Delete(savepath);
-                using (Stream stream = File.OpenWrite(savepath))
+                using (Stream stream = File.Create(savepath))
                 {
                     StreamWriter writer = new StreamWriter(stream);
 
@@ -835,9 +835,9 @@ namespace TDCGExplorer
                         filename = Path.Combine(destpath, ent.FileName);
                     }
                     Directory.CreateDirectory(Path.GetDirectoryName(filename));
-                    File.Delete(filename);
                     byte[] data = TAHUtil.ReadEntryData(tah.Reader, ent);
-                    using (Stream writefile = File.OpenWrite(filename))
+                    File.Delete(filename);
+                    using (Stream writefile = File.Create(filename))
                     {
                         writefile.Write(data, 0, data.Length);
                         writefile.Flush();
