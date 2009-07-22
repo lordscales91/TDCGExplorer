@@ -29,23 +29,18 @@ namespace TDCGExplorer
 
                         Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(destpath, entry.FileName)));
 
-                        Stream fileStream = File.OpenWrite(Path.Combine(destpath, entry.FileName));
-
-                        BufferedStream bufferedDataStream = new BufferedStream(ms);
-                        BufferedStream bufferedFileStream = new BufferedStream(fileStream);
-#if false
-                        byte[] buf = new byte[1024];
-                        int len;
-                        while ((len = bufferedDataStream.Read(buf, 0, buf.Length)) > 0)
+                        string destfilepath = Path.Combine(destpath, entry.FileName);
+                        File.Delete(destfilepath);
+                        using (Stream fileStream = File.Create(destfilepath))
                         {
-                            bufferedFileStream.Write(buf, 0, len);
-                        }
-#endif
-                        CopyStream(bufferedDataStream, bufferedFileStream);
+                            BufferedStream bufferedDataStream = new BufferedStream(ms);
+                            BufferedStream bufferedFileStream = new BufferedStream(fileStream);
+                            CopyStream(bufferedDataStream, bufferedFileStream);
 
-                        bufferedFileStream.Flush();
-                        bufferedFileStream.Close();
-                        bufferedDataStream.Close();
+                            bufferedFileStream.Flush();
+                            bufferedFileStream.Close();
+                            bufferedDataStream.Close();
+                        }
                     }
                 }
                 return true;

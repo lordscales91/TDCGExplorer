@@ -343,7 +343,7 @@ namespace System.Windows.Forms
                             Debug.WriteLine("save to "+destfile);
                             Directory.CreateDirectory(Path.GetDirectoryName(destfile));
                             File.Delete(destfile);
-                            using (Stream stream = File.OpenWrite(destfile))
+                            using (Stream stream = File.Create(destfile))
                             {
                                 BinaryWriter writer = new BinaryWriter(stream, System.Text.Encoding.Default);
                                 TAHLocalDbEntry tahentry = database.GetEntry(path);
@@ -685,9 +685,9 @@ namespace System.Windows.Forms
             tah.Version=uint.Parse(database["version"]);
             // TAHファイルを書き出す.
             Directory.CreateDirectory(Path.GetDirectoryName(destfilename));
-            File.Delete(destfilename);
             int count = 1;
-            using (Stream stream = File.OpenWrite(destfilename))
+            File.Delete(destfilename);
+            using (Stream stream = File.Create(destfilename))
             {
                 // データ取得delegate
                 tah.Data += delegate(string filename)

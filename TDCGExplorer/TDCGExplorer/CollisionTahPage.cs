@@ -14,6 +14,10 @@ namespace System.Windows.Forms
         private SplitContainer splitContainer;
         private WebBrowser webBrowser;
         private DataGridView dataGridView;
+        private ContextMenuStrip contextMenuStrip;
+        private System.ComponentModel.IContainer components;
+        private ToolStripMenuItem toolStripMenuItemEditTah;
+        private ToolStripMenuItem toolStripMenuItemClose;
         CollisionItem collisionEntry;
 
         public CollisionTahPageControl(CollisionItem argCollisionEntry)
@@ -51,13 +55,18 @@ namespace System.Windows.Forms
 
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.splitContainer = new System.Windows.Forms.SplitContainer();
             this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemEditTah = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
             this.webBrowser = new System.Windows.Forms.WebBrowser();
             this.splitContainer.Panel1.SuspendLayout();
             this.splitContainer.Panel2.SuspendLayout();
             this.splitContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer
@@ -85,12 +94,35 @@ namespace System.Windows.Forms
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView.ContextMenuStrip = this.contextMenuStrip;
             this.dataGridView.Location = new System.Drawing.Point(0, 0);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.Size = new System.Drawing.Size(0, 150);
             this.dataGridView.TabIndex = 0;
             this.dataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellContentClick);
             this.dataGridView.MouseEnter += new System.EventHandler(this.dataGridView_MouseEnter);
+            // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemEditTah,
+            this.toolStripMenuItemClose});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(207, 48);
+            // 
+            // toolStripMenuItemEditTah
+            // 
+            this.toolStripMenuItemEditTah.Name = "toolStripMenuItemEditTah";
+            this.toolStripMenuItemEditTah.Size = new System.Drawing.Size(206, 22);
+            this.toolStripMenuItemEditTah.Text = "TAHファイルを編集する";
+            this.toolStripMenuItemEditTah.Click += new System.EventHandler(this.toolStripMenuItemEditTah_Click);
+            // 
+            // toolStripMenuItemClose
+            // 
+            this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
+            this.toolStripMenuItemClose.Size = new System.Drawing.Size(206, 22);
+            this.toolStripMenuItemClose.Text = "閉じる";
+            this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
             // 
             // webBrowser
             // 
@@ -115,6 +147,7 @@ namespace System.Windows.Forms
             this.splitContainer.Panel2.ResumeLayout(false);
             this.splitContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -203,6 +236,22 @@ namespace System.Windows.Forms
             {
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
+        }
+
+        private void toolStripMenuItemEditTah_Click(object sender, EventArgs e)
+        {
+            if (TDCGExplorer.TDCGExplorer.BusyTest() == true) return;
+
+            ArcsCollisionRecord col = collisionEntry.entries[0];
+            ArcsDatabase db = TDCGExplorer.TDCGExplorer.ArcsDB;
+            ArcsTahEntry from = db.GetTah(col.fromTahID);
+            LBFileTahUtl.OpenTahEditor(new GenericArcsTahInfo(from));
+        }
+
+        private void toolStripMenuItemClose_Click(object sender, EventArgs e)
+        {
+            if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
+            Parent.Dispose();
         }
     }
 }

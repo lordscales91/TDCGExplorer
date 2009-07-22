@@ -20,6 +20,7 @@ namespace System.Windows.Forms
         private List<PNGTsoData> tsoDataList = new List<PNGTsoData>();
         private ToolStripMenuItem toolStripMenuItemHSave;
         private string filename;
+        private ToolStripMenuItem toolStripMenuItemClose;
         private Bitmap savefilebitmap;
 
         // zipファイルの中から
@@ -85,6 +86,7 @@ namespace System.Windows.Forms
             this.contextMenuStripSaveData = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItemMakeTah = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemHSave = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.contextMenuStripSaveData.SuspendLayout();
             this.SuspendLayout();
@@ -107,9 +109,10 @@ namespace System.Windows.Forms
             // 
             this.contextMenuStripSaveData.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemMakeTah,
-            this.toolStripMenuItemHSave});
+            this.toolStripMenuItemHSave,
+            this.toolStripMenuItemClose});
             this.contextMenuStripSaveData.Name = "contextMenuStripSaveData";
-            this.contextMenuStripSaveData.Size = new System.Drawing.Size(231, 48);
+            this.contextMenuStripSaveData.Size = new System.Drawing.Size(231, 70);
             // 
             // toolStripMenuItemMakeTah
             // 
@@ -124,6 +127,13 @@ namespace System.Windows.Forms
             this.toolStripMenuItemHSave.Size = new System.Drawing.Size(230, 22);
             this.toolStripMenuItemHSave.Text = "ヘビーセーブ形式で保存する";
             this.toolStripMenuItemHSave.Click += new System.EventHandler(this.toolStripMenuItemHSave_Click);
+            // 
+            // toolStripMenuItemClose
+            // 
+            this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
+            this.toolStripMenuItemClose.Size = new System.Drawing.Size(230, 22);
+            this.toolStripMenuItemClose.Text = "閉じる";
+            this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
             // 
             // SaveFilePage
             // 
@@ -617,10 +627,12 @@ namespace System.Windows.Forms
                 string savefile_name = "new." + Path.GetFileNameWithoutExtension(filename) + ".png";
                 string destpath = Path.Combine(savefile_dir, savefile_name);
                 // 保存先をオープン.
-                Stream output = File.Create(destpath);
-                // PNGを出力する.
-                pngstream.SavePNGFile(png, output);
-                output.Flush();
+                File.Delete(destpath);
+                using (Stream output = File.Create(destpath))
+                {
+                    // PNGを出力する.
+                    pngstream.SavePNGFile(png, output);
+                }
             }
             catch (Exception ex)
             {
@@ -636,7 +648,14 @@ namespace System.Windows.Forms
 
         private void toolStripMenuItemMakeTah_Click(object sender, EventArgs e)
         {
+            if (TDCGExplorer.TDCGExplorer.BusyTest() == true) return;
             makeTAHFile();
+        }
+
+        private void toolStripMenuItemClose_Click(object sender, EventArgs e)
+        {
+            if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
+            Parent.Dispose();
         }
     }
 }

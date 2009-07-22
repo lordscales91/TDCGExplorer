@@ -28,7 +28,7 @@ namespace TDCGExplorer
                 HttpWebResponse response = request.GetResponse() as HttpWebResponse;
                 Stream dataStream = response.GetResponseStream();
                 File.Delete(localfile);
-                Stream fileStream = File.OpenWrite(localfile);
+                Stream fileStream = File.Create(localfile);
 
                 BufferedStream bufferedDataStream = new BufferedStream(dataStream);
                 BufferedStream bufferedFileStream = new BufferedStream(fileStream);
