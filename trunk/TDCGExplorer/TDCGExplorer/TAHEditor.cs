@@ -317,6 +317,7 @@ namespace System.Windows.Forms
         private void toolStripMenuItemClose_Click(object sender, EventArgs e)
         {
             if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
+
             Parent.Dispose();
         }
 
@@ -512,6 +513,7 @@ namespace System.Windows.Forms
         private void toolStripMenuItemEditIdentify_Click(object sender, EventArgs e)
         {
             if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
+
             SimpleTextDialog dialog = new SimpleTextDialog();
             dialog.labeltext = "新しい名前";
             dialog.dialogtext = "ファイル名の変更";
@@ -713,6 +715,8 @@ namespace System.Windows.Forms
         // TAHの情報を変更する.
         private void toolStripMenuItemTAHInfoEdit_Click(object sender, EventArgs e)
         {
+            if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
+
             TAHInfoDialog dialog = new TAHInfoDialog();
             dialog.tahVersion = int.Parse(database["version"]);
             dialog.tahSource = database["source"];
@@ -756,8 +760,8 @@ namespace System.Windows.Forms
 
         private void toolStripMenuItemChangeColor_Click(object sender, EventArgs e)
         {
-
             if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
+
             SimpleTextDialog dialog = new SimpleTextDialog();
             dialog.labeltext = "新しい色番号";
             dialog.dialogtext = "色番号のへ工";
@@ -784,6 +788,8 @@ namespace System.Windows.Forms
 
         private void toolStripMenuItemDeleteItem_Click(object sender, EventArgs e)
         {
+            if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
+
             using (SQLiteTransaction transaction = database.BeginTransaction())
             {
                 try

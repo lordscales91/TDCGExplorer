@@ -834,6 +834,10 @@ namespace TDCGExplorer
                     {
                         filename = Path.Combine(destpath, ent.FileName);
                     }
+                    SetToolTips("ファイル書き込み中:" + Path.GetFileName(filename));
+                    IncBusy();
+                    Application.DoEvents();
+                    DecBusy();
                     Directory.CreateDirectory(Path.GetDirectoryName(filename));
                     byte[] data = TAHUtil.ReadEntryData(tah.Reader, ent);
                     File.Delete(filename);
@@ -846,6 +850,7 @@ namespace TDCGExplorer
                     id++;
                 }
             }
+            SetToolTips("ファイル書き込み完了:" + entry.shortname);
         }
 
         // ディレクトリの一覧を取得する.
