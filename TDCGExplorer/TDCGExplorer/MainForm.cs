@@ -286,13 +286,15 @@ namespace TDCGExplorer
         {
             try
             {
-                GenericZipTreeNode node = (GenericZipTreeNode)lastSelectTreeNode;
-                node.DoEditAnnotation();
-            }
-            catch (System.InvalidCastException ex)
-            {
-                MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
-                Debug.WriteLine(ex.Message);
+                GenericZipTreeNode node = lastSelectTreeNode as GenericZipTreeNode;
+                if (node != null)
+                {
+                    node.DoEditAnnotation();
+                }
+                else
+                {
+                    MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
+                }
             }
             catch (Exception exception)
             {
@@ -528,16 +530,18 @@ namespace TDCGExplorer
         // ツリーで選択されたら.
         private void TreeView_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            TreeView treeView = (TreeView)sender;
-            try
+            TreeView treeView = sender as TreeView;
+            if (treeView != null)
             {
-                GenericTahTreeNode node = (GenericTahTreeNode)treeView.SelectedNode;
-                node.DoTvTreeSelect();
-            }
-            catch (Exception exception)
-            {
-                ListBoxClear();
-                Debug.WriteLine(exception.Message);
+                GenericTahTreeNode node = treeView.SelectedNode as GenericTahTreeNode;
+                if (node != null)
+                {
+                    node.DoTvTreeSelect();
+                }
+                else
+                {
+                    ListBoxClear();
+                }
             }
             SetSelectedNode(treeView.SelectedNode);
         }
@@ -697,13 +701,15 @@ namespace TDCGExplorer
             Cursor.Current = Cursors.WaitCursor;
             try
             {
-                GenericZipTreeNode node = (GenericZipTreeNode)lastSelectTreeNode;
-                TDCGExplorer.InstallPreferZip(node);
-            }
-            catch (System.InvalidCastException ex)
-            {
-                MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
-                Debug.WriteLine(ex.Message);
+                GenericZipTreeNode node = lastSelectTreeNode as GenericZipTreeNode;
+                if (node != null)
+                {
+                    TDCGExplorer.InstallPreferZip(node);
+                }
+                else
+                {
+                    MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
+                }
             }
             catch (Exception exception)
             {
@@ -753,13 +759,15 @@ namespace TDCGExplorer
 
             try
             {
-                GenericZipTreeNode node = (GenericZipTreeNode) lastSelectTreeNode;
-                AssignTagPageControl(new MODRefPage(node.Entry));
-            }
-            catch (System.InvalidCastException ex)
-            {
-                MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
-                Debug.WriteLine(ex.Message);
+                GenericZipTreeNode node = lastSelectTreeNode as GenericZipTreeNode;
+                if (node != null)
+                {
+                    AssignTagPageControl(new MODRefPage(node.Entry));
+                }
+                else
+                {
+                    MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
+                }
             }
             catch (Exception exception)
             {
@@ -945,6 +953,27 @@ namespace TDCGExplorer
         public void DeleteTimer(EventHandler handler)
         {
             MainTimer.Tick -= handler;
+        }
+
+        private void OpenFolderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                TreeView treeView = tabControlTreeView.SelectedTab.Controls[0] as TreeView;
+                if (treeView != null)
+                {
+                    GenericTahTreeNode node = treeView.SelectedNode as GenericTahTreeNode;
+                    if (node != null) node.DoExploreNode();
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void OpenFolderCXToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            OpenFolderToolStripMenuItem_Click(sender, e);
         }
     }
 }

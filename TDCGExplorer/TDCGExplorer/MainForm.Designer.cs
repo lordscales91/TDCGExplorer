@@ -37,6 +37,7 @@
             this.FindDialogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditAnnotationToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createFromArcsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadLatestArcsnameszipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -56,6 +57,7 @@
             this.InstallPreferredModToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditAnnotationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LookUpModrefToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenFolderCXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainTimer = new System.Windows.Forms.Timer(this.components);
@@ -129,6 +131,7 @@
             this.InstallPreferredModsToolStripMenuItem,
             this.FindDialogToolStripMenuItem,
             this.EditAnnotationToolStripMenuItem1,
+            this.OpenFolderToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.tDCGExplorerToolStripMenuItem.Name = "tDCGExplorerToolStripMenuItem";
             this.tDCGExplorerToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
@@ -175,6 +178,13 @@
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.exitToolStripMenuItem.Text = "終了";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
+            // 
+            // OpenFolderToolStripMenuItem
+            // 
+            this.OpenFolderToolStripMenuItem.Name = "OpenFolderToolStripMenuItem";
+            this.OpenFolderToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.OpenFolderToolStripMenuItem.Text = "フォルダを開く";
+            this.OpenFolderToolStripMenuItem.Click += new System.EventHandler(this.OpenFolderToolStripMenuItem_Click);
             // 
             // databaseToolStripMenuItem
             // 
@@ -292,9 +302,10 @@
             this.extractZipToolStripMenuItem,
             this.InstallPreferredModToolStripMenuItem,
             this.EditAnnotationToolStripMenuItem,
-            this.LookUpModrefToolStripMenuItem});
+            this.LookUpModrefToolStripMenuItem,
+            this.OpenFolderCXToolStripMenuItem});
             this.cmContextMenu.Name = "cmContextMenu";
-            this.cmContextMenu.Size = new System.Drawing.Size(243, 114);
+            this.cmContextMenu.Size = new System.Drawing.Size(243, 136);
             // 
             // expandAllToolStripMenuItem
             // 
@@ -330,6 +341,13 @@
             this.LookUpModrefToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.LookUpModrefToolStripMenuItem.Text = "関連アーカイブを調べる";
             this.LookUpModrefToolStripMenuItem.Click += new System.EventHandler(this.LookupModRefToolStripMenuItem_Click);
+            // 
+            // OpenFolderCXToolStripMenuItem
+            // 
+            this.OpenFolderCXToolStripMenuItem.Name = "OpenFolderCXToolStripMenuItem";
+            this.OpenFolderCXToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.OpenFolderCXToolStripMenuItem.Text = "フォルダを開く";
+            this.OpenFolderCXToolStripMenuItem.Click += new System.EventHandler(this.OpenFolderCXToolStripMenuItem_Click);
             // 
             // StatusStrip
             // 
@@ -780,6 +798,8 @@
         private System.Windows.Forms.ToolStripMenuItem displayUpdateToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripSaveFile;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem OpenFolderToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem OpenFolderCXToolStripMenuItem;
 
     }
 }

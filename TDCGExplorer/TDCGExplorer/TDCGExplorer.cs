@@ -877,6 +877,18 @@ namespace TDCGExplorer
                 string fullpath = file;
                 string filename = Path.GetFileName(file);
 
+                // セーブファイルか?
+                if (fullpath.ToLower().EndsWith("tdcgsav.png") == true)
+                {
+                    // ファイルが複数の時は新規タブで連続してオープンする.
+                    if (files.Length > 1)
+                    {
+                        TDCGExplorer.MainFormWindow.NewTab();
+                    }
+                    TDCGExplorer.MainFormWindow.AssignTagPageControl(new SaveFilePage(fullpath));
+                    continue;
+                }
+
                 if (File.Exists(LBFileTahUtl.GetTahDbPath(basename)))
                 {
                     MessageBox.Show("既にデータベースファイルがあります。\n" + LBFileTahUtl.GetTahDbPath(basename) + "\n削除してから操作してください。", "エラー", MessageBoxButtons.OK);
