@@ -280,7 +280,7 @@ namespace System.Windows.Forms
             // 
             this.toolStripMenuItemSaveTAHFile.Name = "toolStripMenuItemSaveTAHFile";
             this.toolStripMenuItemSaveTAHFile.Size = new System.Drawing.Size(290, 22);
-            this.toolStripMenuItemSaveTAHFile.Text = "選択したTAHファイルを保存する";
+            this.toolStripMenuItemSaveTAHFile.Text = "選択したファイルをTAHに梱包する";
             this.toolStripMenuItemSaveTAHFile.Click += new System.EventHandler(this.toolStripMenuItemSaveTAHFile_Click);
             // 
             // toolStripMenuItemClose
