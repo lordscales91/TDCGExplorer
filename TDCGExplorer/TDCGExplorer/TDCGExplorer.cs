@@ -878,7 +878,7 @@ namespace TDCGExplorer
                 string filename = Path.GetFileName(file);
 
                 // セーブファイルか?
-                if (fullpath.ToLower().EndsWith("tdcgsav.png") == true)
+                if (fullpath.ToLower().EndsWith("tdcgsav.png") == true || fullpath.ToLower().EndsWith("tdcgsav.bmp")==true)
                 {
                     // ファイルが複数の時は新規タブで連続してオープンする.
                     if (files.Length > 1)
