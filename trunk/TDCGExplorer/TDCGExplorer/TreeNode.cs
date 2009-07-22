@@ -5,6 +5,7 @@ using System.Text;
 using System.IO;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace TDCGExplorer
 {
@@ -19,6 +20,10 @@ namespace TDCGExplorer
         }
         public virtual void DoEditAnnotation()
         {
+        }
+        public virtual void DoExploreNode()
+        {
+            System.Diagnostics.Process.Start("EXPLORER.EXE",FullPath);
         }
     }
 
@@ -75,13 +80,6 @@ namespace TDCGExplorer
             {
                 TDCGExplorer.MainFormWindow.ListBoxMainView.Items.Add(new LbZipFileItem(file));
             }
-#if false
-            // MODREFサーバに問い合わせる.
-            if (TDCGExplorer.GetSystemDatabase().modrefserver_alwaysenable == "true")
-            {
-                TDCGExplorer.GetMainForm().AssignTagPageControl(new MODRefPage(zipid));
-            }
-#endif
             if (TDCGExplorer.BusyTest() == true) return;
 
             // ZIPページを開いた時の動作を指定する (none:なにもしない server:サーバにアクセス image:画像表示 text:テキスト表示)
@@ -142,6 +140,13 @@ namespace TDCGExplorer
                 default:
                     break;
             }
+
+        }
+        // zipファイルの場合はDBを調べる.
+        public override void DoExploreNode()
+        {
+            ArcsZipArcEntry zip = TDCGExplorer.ArcsDB.GetZip(zipid);
+            System.Diagnostics.Process.Start("EXPLORER.EXE", Path.Combine(TDCGExplorer.SystemDB.zips_path,zip.path));
         }
 
         // アノテーションを入力する.
