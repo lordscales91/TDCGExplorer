@@ -227,7 +227,14 @@ public class TPOFile
 
         proportion.Nodes = nodemap;
         //TPONode‚É•ÏŒ`ŒW”‚ğİ’è‚·‚éB
-        proportion.Execute();
+        try
+        {
+            proportion.Execute();
+        }
+        catch (KeyNotFoundException)
+        {
+            /* not found */
+        }
     }
 
     /// <summary>

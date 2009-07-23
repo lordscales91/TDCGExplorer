@@ -42,7 +42,12 @@ namespace TDCG
         /// <param name="dest_file">パス</param>
         public void Save(string dest_file)
         {
-            BinaryWriter bw = new BinaryWriter(File.Create(dest_file), System.Text.Encoding.Default);
+            using (Stream dest_stream = File.Create(dest_file))
+                Save(dest_stream);
+        }
+        public void Save(Stream dest_stream)
+        {
+            BinaryWriter bw = new BinaryWriter(dest_stream, System.Text.Encoding.Default);
 
             PNGWriter.Write(bw, header);
             PNGWriter.WriteIHDR(bw, ihdr);
@@ -53,8 +58,6 @@ namespace TDCG
             if (WriteTaOb != null)
                 WriteTaOb(bw);
             PNGWriter.WriteIEND(bw);
-
-            bw.Close();
         }
 
         /// <summary>
@@ -91,7 +94,12 @@ namespace TDCG
         /// <param name="source_file">パス</param>
         public void Load(string source_file)
         {
-            this.reader = new BinaryReader(File.OpenRead(source_file), System.Text.Encoding.Default);
+            using (Stream source_stream = File.OpenRead(source_file))
+                Load(source_stream);
+        }
+        public void Load(Stream source_stream)
+        {
+            this.reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
             this.header = reader.ReadBytes(8);
             if(header[0] != 0x89
             || header[1] != (byte)'P'
@@ -146,7 +154,6 @@ namespace TDCG
                     break;
                 }
             }
-            reader.Close();
         }
 
         /// <summary>
