@@ -41,6 +41,7 @@ namespace TAHTool
                 var script = CSScript.Load(script_file).CreateInstance(class_name).AlignToInterface<IProportion>();
                 pro_list.Add(script);
             }
+            tpo_list.SetProportionList(pro_list);
             DumpPortions();
         }
 
@@ -109,7 +110,6 @@ namespace TAHTool
                 if (tmo.nodes[0].Name == "|W_Hips")
                 {
                     tpo_list.Tmo = tmo;
-                    tpo_list.SetProportionList(pro_list);
 
                     for (int i = 0; i < tpo_list.Count; i++)
                     {

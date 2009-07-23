@@ -172,6 +172,9 @@ public class TPOFile
 
             tmo = value;
 
+            if (tmo == null)
+                return;
+
             if (tmo.nodes == null)
                 return;
 
