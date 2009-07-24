@@ -266,7 +266,7 @@ namespace System.Windows.Forms
             // 
             this.toolStripMenuItemChangeColor.Name = "toolStripMenuItemChangeColor";
             this.toolStripMenuItemChangeColor.Size = new System.Drawing.Size(290, 22);
-            this.toolStripMenuItemChangeColor.Text = "選択した色番号を変更する";
+            this.toolStripMenuItemChangeColor.Text = "選択したファイルの色番号を変更する";
             this.toolStripMenuItemChangeColor.Click += new System.EventHandler(this.toolStripMenuItemChangeColor_Click);
             // 
             // toolStripMenuItemDeleteItem
