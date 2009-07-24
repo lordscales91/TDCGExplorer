@@ -11,6 +11,7 @@ namespace TDCGExplorer
     public class TAHLocalDbEntry
     {
         public string path;
+        public int hash;
         public int dataid;
     }
     public class TAHLocalDBDataEntry
@@ -53,7 +54,7 @@ namespace TDCGExplorer
             {
                 using (SQLiteCommand cmd = cnn.CreateCommand())
                 {
-                    cmd.CommandText = "CREATE TABLE Entry (PATH TEXT PRIMARY KEY, DATAID INTEGER)";
+                    cmd.CommandText = "CREATE TABLE Entry (PATH TEXT PRIMARY KEY, DATAID INTEGER, HASH INTEGER)";
                     cmd.ExecuteNonQuery();
                 }
             }
@@ -119,9 +120,10 @@ namespace TDCGExplorer
             using (SQLiteCommand cmd = cnn.CreateCommand())
             {
                 // acpathを追加する.
-                cmd.CommandText = "INSERT INTO Entry (PATH,DATAID) VALUES(@path,@id)";
+                cmd.CommandText = "INSERT INTO Entry (PATH,DATAID,HASH) VALUES(@path,@id,@hash)";
                 cmd.Parameters.AddWithValue("path", entry.path);
                 cmd.Parameters.AddWithValue("id", entry.dataid);
+                cmd.Parameters.AddWithValue("hash",(int) entry.hash);
                 cmd.ExecuteNonQuery();
             }
         }
@@ -150,7 +152,7 @@ namespace TDCGExplorer
             TAHLocalDbEntry entry = null;
             using (SQLiteCommand cmd = cnn.CreateCommand())
             {
-                cmd.CommandText = "SELECT PATH,DATAID FROM Entry WHERE PATH=@path";
+                cmd.CommandText = "SELECT PATH,DATAID,HASH FROM Entry WHERE PATH=@path";
                 cmd.Parameters.AddWithValue("path", path);
                 using (SQLiteDataReader reader = cmd.ExecuteReader())
                 {
@@ -159,6 +161,30 @@ namespace TDCGExplorer
                         entry = new TAHLocalDbEntry();
                         entry.path = reader[0].ToString();
                         entry.dataid = int.Parse(reader[1].ToString());
+                        entry.hash = int.Parse(reader[2].ToString());
+                        break;
+                    }
+                }
+            }
+            return entry;
+        }
+
+        // エントリを取得する
+        public TAHLocalDbEntry GetEntryHash(int hash)
+        {
+            TAHLocalDbEntry entry = null;
+            using (SQLiteCommand cmd = cnn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT PATH,DATAID,HASH FROM Entry WHERE HASH=@hash";
+                cmd.Parameters.AddWithValue("hash", hash.ToString());
+                using (SQLiteDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        entry = new TAHLocalDbEntry();
+                        entry.path = reader[0].ToString();
+                        entry.dataid = int.Parse(reader[1].ToString());
+                        entry.hash = int.Parse(reader[2].ToString());
                         break;
                     }
                 }
@@ -210,6 +236,18 @@ namespace TDCGExplorer
                 // acpathを追加する.
                 cmd.CommandText = "DELETE FROM Entry WHERE PATH=@path";
                 cmd.Parameters.AddWithValue("path", path);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        // エントリを削除する.
+        public void DeleteEntry(int id)
+        {
+            using (SQLiteCommand cmd = cnn.CreateCommand())
+            {
+                // acpathを追加する.
+                cmd.CommandText = "DELETE FROM Entry WHERE ID=@id";
+                cmd.Parameters.AddWithValue("id", id);
                 cmd.ExecuteNonQuery();
             }
         }
