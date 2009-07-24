@@ -23,7 +23,8 @@ namespace TDCGExplorer
         }
         public virtual void DoExploreNode()
         {
-            System.Diagnostics.Process.Start("EXPLORER.EXE",FullPath);
+            if (Directory.Exists(FullPath) == true)
+                System.Diagnostics.Process.Start(@"EXPLORER.EXE", "\"" + FullPath + "\"");
         }
     }
 
@@ -146,7 +147,9 @@ namespace TDCGExplorer
         public override void DoExploreNode()
         {
             ArcsZipArcEntry zip = TDCGExplorer.ArcsDB.GetZip(zipid);
-            System.Diagnostics.Process.Start("EXPLORER.EXE", Path.Combine(TDCGExplorer.SystemDB.zips_path,zip.path));
+            string fullpath = Path.Combine(TDCGExplorer.SystemDB.zips_path, zip.path);
+            if (File.Exists(fullpath) == true)
+                System.Diagnostics.Process.Start(@"EXPLORER.EXE", "/SELECT,\"" + fullpath + "\"");
         }
 
         // アノテーションを入力する.
