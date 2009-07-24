@@ -273,7 +273,7 @@ namespace TDCGExplorer
             edit.translateBone = SystemDB.translateto;
             edit.centerBone = SystemDB.cameracenter;
             edit.tahEditorPath = SystemDB.tahpath;
-            edit.collisionDetectLevel = SystemDB.collisionchecklebel;
+            edit.collisionDetectLevel = SystemDB.collisionchecklevel;
             edit.findziplevel = SystemDB.findziplevel;
             edit.delete_tahcache = SystemDB.delete_tahcache;
             edit.taheditorprevire = SystemDB.taheditorpreview;
@@ -297,7 +297,7 @@ namespace TDCGExplorer
                 SystemDB.translateto = edit.translateBone;
                 SystemDB.cameracenter = edit.centerBone;
                 SystemDB.tahpath = edit.tahEditorPath;
-                SystemDB.collisionchecklebel = edit.collisionDetectLevel;
+                SystemDB.collisionchecklevel = edit.collisionDetectLevel;
                 SystemDB.findziplevel = edit.findziplevel;
                 SystemDB.delete_tahcache = edit.delete_tahcache;
                 SystemDB.taheditorpreview = edit.taheditorprevire;
@@ -416,7 +416,7 @@ namespace TDCGExplorer
             // tahを展開する.
             List<ArcsTahEntry> list = db.GetTahs();
             Dictionary<int, List<ArcsCollisionRecord>> colldomain;
-            if (SystemDB.collisionchecklebel == "collision")
+            if (SystemDB.collisionchecklevel == "collision")
             {
                 colldomain = db.GetCollisionDomain();
             }
