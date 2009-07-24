@@ -70,8 +70,13 @@ namespace System.Windows.Forms
             try
             {
                 // 全部読み出す.
-                Bitmap bitmap = new Bitmap(ms);
-                pictureBox.Image = (Image)bitmap;
+                using(Bitmap bitmap = new Bitmap(ms))
+                using(MemoryStream basebmp = new MemoryStream())
+                {
+                    bitmap.Save(basebmp, System.Drawing.Imaging.ImageFormat.Bmp);
+                    Bitmap newbmp = new Bitmap(basebmp);
+                    pictureBox.Image = (Image)newbmp;
+                }
             }
             catch (Exception e)
             {
