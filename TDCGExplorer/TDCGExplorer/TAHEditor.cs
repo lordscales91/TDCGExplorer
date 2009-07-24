@@ -125,12 +125,14 @@ namespace System.Windows.Forms
 
         private void createfromExistTAH(GenericTahInfo info)
         {
+            List<string> tsonames = new List<string>();
             GenericTAHStream stream = new GenericTAHStream(info, null);
             TAHFile tah = stream.tahfile;
             if (tah != null)
             {
                 using (SQLiteTransaction transaction = database.BeginTransaction())
                 {
+                    bool hashonly = false;
                     database["version"] = info.version.ToString();
                     database["source"] = info.path;
                     int id = 0;
@@ -140,6 +142,7 @@ namespace System.Windows.Forms
                         if (ent.FileName == null)
                         {
                             filename = id.ToString("d8") + "_" + ent.Hash.ToString("x8");
+                            hashonly = true;
                         }
                         else
                         {
@@ -152,15 +155,56 @@ namespace System.Windows.Forms
                         dataentry.dataid = 0;
                         dataentry.data = bytedata;
                         entry.path = filename;
+                        entry.hash = (int) ent.Hash;
                         entry.dataid = database.AddData(dataentry);
                         // データベースにデータを登録する.
                         TDCGExplorer.TDCGExplorer.SetToolTips(info.shortname + " : " + filename + " 展開中");
                         database.AddContent(entry);
                         id++;
 
+                        if (Path.GetExtension(filename).ToLower() == ".tbn")
+                        {
+                            string tsoname = TDCGTbnUtil.GetTsoName(bytedata);
+                            if (tsoname != null) tsonames.Add(Path.GetFileName(tsoname));
+                        }
+
                         TDCGExplorer.TDCGExplorer.IncBusy();
                         Application.DoEvents();
                         TDCGExplorer.TDCGExplorer.DecBusy();
+                    }
+                    if (hashonly == true)
+                    {
+                        // tbnの情報を使ってディレクトリ情報を再構築する.
+                        foreach (string tsoname in tsonames)
+                        {
+                            TAHLocalDbEntry entry;
+                            // TSOファイル名を復元する.
+                            string tsopath = "data/model/" + tsoname;
+                            UInt32 tsohash = TAHUtil.CalcHash(tsopath);
+                            entry = database.GetEntryHash((int)tsohash);
+                            if (entry != null)
+                            {
+                                TAHLocalDbEntry newent = new TAHLocalDbEntry();
+                                newent.dataid = entry.dataid;
+                                newent.hash = entry.hash;
+                                newent.path = tsopath;
+                                database.DeleteEntry(entry.path);
+                                database.AddContent(newent);
+                            }
+                            // PSDファイル名を復元する.
+                            string psdpath = "data/icon/items/" + tsoname.Substring(0, 12) + ".psd";
+                            UInt32 psdhash = TAHUtil.CalcHash(psdpath);
+                            entry = database.GetEntryHash((int)psdhash);
+                            if (entry != null)
+                            {
+                                TAHLocalDbEntry newent = new TAHLocalDbEntry();
+                                newent.dataid = entry.dataid;
+                                newent.hash = entry.hash;
+                                newent.path = psdpath;
+                                database.DeleteEntry(entry.path);
+                                database.AddContent(newent);
+                            }
+                        }
                     }
                     transaction.Commit();
                 }
