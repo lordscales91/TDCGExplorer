@@ -77,22 +77,27 @@ namespace System.Windows.Forms
         private void ExtractFile(IArchive arc, string source_file)
         {
             TDCGExplorer.TDCGExplorer.SetLastAccessFile = source_file;
-            arc.Open(source_file);
-            if (arc == null)
-                return;
-
-            foreach (IArchiveEntry entry in arc)
+            try
             {
-                if (entry.FileName == info.path)
-                {
-                    using (MemoryStream ms = new MemoryStream((int)entry.Size))
-                    {
-                        arc.Extract(entry, ms);
-                        ms.Seek(0, SeekOrigin.Begin);
+                arc.Open(source_file);
 
-                        BindingStream(ms);
+                foreach (IArchiveEntry entry in arc)
+                {
+                    if (entry.FileName == info.path)
+                    {
+                        using (MemoryStream ms = new MemoryStream((int)entry.Size))
+                        {
+                            arc.Extract(entry, ms);
+                            ms.Seek(0, SeekOrigin.Begin);
+
+                            BindingStream(ms);
+                        }
                     }
                 }
+            }
+            catch (Exception e)
+            {
+                TDCGExplorer.TDCGExplorer.SetToolTips("ファイル展開エラー:" + e.Message);
             }
         }
         public virtual void BindingStream(MemoryStream ms)
