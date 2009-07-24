@@ -339,7 +339,7 @@ namespace TDCGExplorer
                         }
                         if (currentNode == null)
                         {
-                            currentNode = new GenericFilesTreeNode(sublevel);//parentNode.Nodes.Add(sublevel);
+                            currentNode = new GenericFilesTreeNode(sublevel);
                             parentNode.Nodes.Add(currentNode);
                         }
                         parentNode = currentNode;
@@ -388,7 +388,8 @@ namespace TDCGExplorer
                         }
                         if (currentNode == null)
                         {
-                            currentNode = parentNode.Nodes.Add(sublevel);
+                            currentNode = new GenericFilesTreeNode(sublevel);
+                            parentNode.Nodes.Add(currentNode);
                         }
                         parentNode = currentNode;
                         if (++count == toplevel.Length) break; // 末端ノードの一つ前で止める.
@@ -508,7 +509,8 @@ namespace TDCGExplorer
                         }
                         if (currentNode == null)
                         {
-                            currentNode = parentNode.Nodes.Add(sublevel);
+                            currentNode = new GenericFilesTreeNode(sublevel);
+                            parentNode.Nodes.Add(currentNode);
                         }
                         parentNode = currentNode;
                         if (++count == toplevel.Length) break; // 末端ノードの一つ前で止める.
