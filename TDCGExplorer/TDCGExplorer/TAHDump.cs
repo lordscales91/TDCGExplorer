@@ -17,26 +17,7 @@ namespace TDCGExplorer
         public static string zipspath;
         public static string zipcoderegexp;
         public static MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
-#if false
-        public static void ArcsDumpTAHEntries(string source_file,ArcsDatabase db)
-        {
-            // 既にdb上にエントリがあるか調べる.
-            string tahid = db.GetTahID(source_file.Substring(arcspath.Length + 1));
-            if (tahid != null)
-            {
-                // 該当するエントリの存在フラグを立てる.
-                TDCGExplorer.SetToolTips("Update " + Path.GetFileName(source_file) );
-                db.UpdateTahExistUp(tahid.ToString());
-            }
-            else
-            {
-                using (FileStream source = File.OpenRead(source_file))
-                {
-                    ArcsDumpTAHEntries(source, db, source_file);
-                }
-            }
-        }
-#endif
+
         public static void ArcsDumpDirEntriesMain(string dir, ArcsDatabase db)
         {
             arcspath = dir;
@@ -62,9 +43,6 @@ namespace TDCGExplorer
             string[] tah_files = Directory.GetFiles(dir, "*.TAH");
             foreach (string file in tah_files)
             {
-#if false
-                ArcsDumpTAHEntries(file,db);
-#endif
                 // 既にdb上にエントリがあるか調べる.
                 //string tahid = db.GetTahID(file.Substring(arcspath.Length + 1));
                 ArcsTahEntry tah = db.GetTah(file.Substring(arcspath.Length + 1));
@@ -100,63 +78,45 @@ namespace TDCGExplorer
 
         public static void ArcsDumpTAHEntries(Stream source, ArcsDatabase db,string tahname)
         {
-            TDCGExplorer.SetToolTips("Processing " + Path.GetFileName(tahname));
-            using (TAHFile tah = new TAHFile(source))
-            {
-                try
-                {
-                    tah.LoadEntries();
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine("Error: " + ex);
-                    return;
-                }
-
-                DateTime datetime = File.GetLastWriteTime(tahname);
-
-                ArcsTahEntry entry = new ArcsTahEntry();
-                entry.path = tahname.Substring(arcspath.Length + 1);
-                entry.shortname = Path.GetFileName(tahname).ToLower();
-                entry.version = (int)tah.Header.Version;
-                entry.id = 0;
-                entry.exist = 1;
-                entry.datetime = datetime;
-
-                entry.id = db.SetTahEntry(entry);
-                ArcsDumpTahFilesEntries(db, entry, tah);
-            }
-#if false
-            // 衝突クラスタを構築する.
-            int count = 0;
-            foreach (TAHEntry ent in tah.EntrySet.Entries)
-            {
-                CollisionClusterRecord collision = new CollisionClusterRecord();
-                collision.tahid = id;
-                if (ent.FileName == null) collision.path = ""; //count.ToString("d8") + "_" + ent.Hash.ToString("x8");
-                else collision.path = ent.FileName.ToLower();
-                collision.hash = (int)ent.Hash;
-                db.SetCollisionRecord(collision);
-                count++;
-            }
-#endif
-        }
-
-        public static void ArcsDumpTahFilesEntries(ArcsDatabase db, ArcsTahEntry entry, TAHFile tah)
-        {
-            string source = Path.Combine(TDCGExplorer.SystemDB.arcs_path, entry.path);
-#if false
-            TAHFile tah = new TAHFile(source);
             try
             {
-                tah.LoadEntries();
+                TDCGExplorer.SetToolTips("Processing " + Path.GetFileName(tahname));
+                using (TAHFile tah = new TAHFile(source))
+                {
+                    try
+                    {
+                        tah.LoadEntries();
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine("Error: " + ex);
+                        return;
+                    }
+
+                    DateTime datetime = File.GetLastWriteTime(tahname);
+
+                    ArcsTahEntry entry = new ArcsTahEntry();
+                    entry.path = tahname.Substring(arcspath.Length + 1);
+                    entry.shortname = Path.GetFileName(tahname).ToLower();
+                    entry.version = (int)tah.Header.Version;
+                    entry.id = 0;
+                    entry.exist = 1;
+                    entry.datetime = datetime;
+
+                    entry.id = db.SetTahEntry(entry);
+                    ArcsDumpTahFilesEntries(db, entry, tah);
+                }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine("Error: " + ex);
                 return;
             }
-#endif
+        }
+
+        public static void ArcsDumpTahFilesEntries(ArcsDatabase db, ArcsTahEntry entry, TAHFile tah)
+        {
+            string source = Path.Combine(TDCGExplorer.SystemDB.arcs_path, entry.path);
             int tahentry = 0;
             foreach (TAHEntry ent in tah.EntrySet.Entries)
             {
@@ -168,48 +128,12 @@ namespace TDCGExplorer
                 {
                     TDCGExplorer.SetToolTips("Dump " + ent.FileName + " file");
                 }
-#if false
-                // TSOだけ実体化してmd5sumを計算する.
-                if(ent.FileName!=null && Path.GetExtension(ent.FileName).ToLower() == ".tso")
-                {
-                    ArcsTahFilesEntry fileentry = new ArcsTahFilesEntry();
-                    byte[] data = TAHUtil.ReadEntryData(tah.Reader, ent);
-                    byte[] hash = md5.ComputeHash(data);
-                    StringBuilder sb = new StringBuilder();
-                    foreach (byte b in hash)
-                        sb.Append(b.ToString("x2"));
-                    fileentry.id = 0;
-                    fileentry.tahid = entry.id;
-                    fileentry.tahentry = tahentry++;
-                    fileentry.path = ent.FileName;
-                    if (entry.path == null) entry.path = "";
-                    fileentry.md5sum = sb.ToString();
-                    fileentry.hash = (int) ent.Hash;
-                    fileentry.length = (int)ent.Length;
-                    db.SetTahFilesPath(fileentry);
-                }
-                else
-                {
-
-                    ArcsTahFilesEntry fileentry = new ArcsTahFilesEntry();
-                    fileentry.id = 0;
-                    fileentry.tahid = entry.id;
-                    fileentry.tahentry = tahentry++;
-                    fileentry.path = ent.FileName;
-                    if (entry.path == null) entry.path = "";
-                    fileentry.md5sum = "";
-                    fileentry.hash = (int)ent.Hash;
-                    fileentry.length = (int)ent.Length;
-                    db.SetTahFilesPath(fileentry);
-                }
-#endif
                 ArcsTahFilesEntry fileentry = new ArcsTahFilesEntry();
                 fileentry.id = 0;
                 fileentry.tahid = entry.id;
                 fileentry.tahentry = tahentry++;
                 fileentry.path = ent.FileName;
                 if (entry.path == null) entry.path = "";
-//              fileentry.md5sum = "";
                 fileentry.hash = (int)ent.Hash;
                 fileentry.length = (int)ent.Length;
                 db.SetTahFilesPath(fileentry);
@@ -307,23 +231,7 @@ namespace TDCGExplorer
                 ZipsDumpDirEntries(entry, db);
             }
         }
-#if false
-        public static void ZipsDumpFileEntries(string source_file, ArcsDatabase db)
-        {
-            // 既にdb上にエントリがあるか調べる.
-           string zipid = db.GetZipID(source_file.Substring(zipspath.Length + 1));
-           if (zipid != null)
-            {
-                // 該当するエントリの存在フラグを立てる.
-                TDCGExplorer.SetToolTips("Update " + Path.GetFileName(source_file) );
-                db.UpdateZipExistUp(zipid);
-            }
-            else
-            {
-                ZipsDumpTAHEntries(db, source_file);
-            }
-        }
-#endif
+
         public static void ZipsDumpTAHEntries(ArcsDatabase db, string zipname)
         {
             string ext=Path.GetExtension(zipname).ToLower();
@@ -381,8 +289,6 @@ namespace TDCGExplorer
             {
                 TDCGExplorer.SetLastAccessFile = source_file;
                 arc.Open(source_file);
-                if (arc == null)
-                    return;
 
                 foreach (IArchiveEntry entry in arc)
                 {
@@ -428,40 +334,6 @@ namespace TDCGExplorer
                                     {
                                         TDCGExplorer.SetToolTips("Dump " + Path.GetFileName(ent.FileName) + " file");
                                     }
-#if false
-                                // TSOだけ実体化してmd5sumを計算する.
-                                if (ent.FileName != null && Path.GetExtension(ent.FileName).ToLower() == ".tso")
-                                {
-                                    ArcsTahFilesEntry fileentry = new ArcsTahFilesEntry();
-                                    byte[] data = TAHUtil.ReadEntryData(tah.Reader, ent);
-                                    byte[] hash = md5.ComputeHash(data);
-                                    StringBuilder sb = new StringBuilder();
-                                    foreach (byte b in hash)
-                                        sb.Append(b.ToString("x2"));
-                                    fileentry.id = 0;
-                                    fileentry.tahid = tahid;
-                                    fileentry.tahentry = tahentry++;
-                                    fileentry.path = ent.FileName;
-                                    if (fileentry.path == null) fileentry.path = "";
-                                    fileentry.md5sum = sb.ToString();
-                                    fileentry.hash = (int)ent.Hash;
-                                    fileentry.length = (int)ent.Length;
-                                    db.SetZipTahFilesPath(fileentry);
-                                }
-                                else
-                                {
-                                    ArcsTahFilesEntry fileentry = new ArcsTahFilesEntry();
-                                    fileentry.id = 0;
-                                    fileentry.tahid = tahid;
-                                    fileentry.tahentry = tahentry++;
-                                    fileentry.path = ent.FileName;
-                                    if (fileentry.path == null) fileentry.path = "";
-                                    fileentry.md5sum = "";
-                                    fileentry.hash = (int)ent.Hash;
-                                    fileentry.length = (int)ent.Length;
-                                    db.SetZipTahFilesPath(fileentry);
-                                }
-#endif
                                     ArcsTahFilesEntry fileentry = new ArcsTahFilesEntry();
                                     fileentry.id = 0;
                                     fileentry.tahid = tahid;
@@ -495,40 +367,5 @@ namespace TDCGExplorer
                 return;
             }
         }
-
-#if false
-        public static void MakeCollisionMap(ArcsDatabase db)
-        {
-            // 設計中…未完了
-
-            // 全ての衝突レコードを取得する(重複を含む).
-            List<CollisionClusterRecord> collisions = db.GetCollisionRecords();
-
-            Dictionary<int,List<CollisionClusterRecord>> coltable = new Dictionary<int,List<CollisionClusterRecord>>();
-            List<int> allhash = new List<int>();
-
-            // 衝突している全てのハッシュをリスト化する.
-            foreach (CollisionClusterRecord iter in collisions)
-            {
-                if(!coltable.ContainsKey(iter.hash)){
-                    coltable[iter.hash]=new List<CollisionClusterRecord>();
-                    allhash.Add(iter.hash);
-                }
-                coltable[iter.hash].Add(iter);
-            }
-
-            Dictionary<string, List<CollisionClusterRecord>> strtable = new Dictionary<string, List<CollisionClusterRecord>>();
-            // パス名に対する衝突表を作る
-            foreach (CollisionClusterRecord iter in collisions)
-            {
-                if (!strtable.ContainsKey(iter.path))
-                {
-                    strtable[iter.path] = new List<CollisionClusterRecord>();
-                }
-                strtable[iter.path].Add(iter);
-            }
-        }
-#endif
-
     }
 }
