@@ -134,7 +134,7 @@ namespace TDCGExplorer
             cameracenter = cameracenter;
             translateto = translateto;
             tahpath = tahpath;
-            collisionchecklebel = collisionchecklebel;
+            collisionchecklevel = collisionchecklevel;
             findziplevel = findziplevel;
             delete_tahcache = delete_tahcache;
             taheditorpreview = taheditorpreview;
@@ -257,10 +257,10 @@ namespace TDCGExplorer
             set { SetSqlValue("tahpath", value); }
         }
         // 衝突チェックレベル
-        public string collisionchecklebel
+        public string collisionchecklevel
         {
-            get { return GetSqlValue("collisionchecklebel", Path.Combine(GetSystemDatabasePath(), "collision")); }
-            set { SetSqlValue("collisionchecklebel", value); }
+            get { return GetSqlValue("collisionchecklevel", "collision"); }
+            set { SetSqlValue("collisionchecklevel", value); }
         }
         // zip探索優先レベル設定
         public bool findziplevel
