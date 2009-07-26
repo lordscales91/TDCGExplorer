@@ -689,6 +689,9 @@ namespace TDCGExplorer
             // 展開に成功したらzipのノードの色を変える.
             if (ZipFileUtil.ExtractZipFile(zipsource, destpath) == true)
             {
+                if (Directory.Exists(destpath) == true)
+                    System.Diagnostics.Process.Start(@"EXPLORER.EXE", "/SELECT,\"" + destpath + "\"");
+
                 sender.ForeColor = Color.Magenta;
                 return true;
             }
@@ -741,7 +744,7 @@ namespace TDCGExplorer
                     parent.Expand();
                     parent = parent.Parent;
                 }
-                view.SelectedNode = node;
+                MainFormWindow.SelectArcsTreeNode(node);
                 return;
             }
             foreach (TreeNode subnode in node.Nodes)
@@ -1054,8 +1057,6 @@ namespace TDCGExplorer
 
                         arcs.Vacuum();
 
-                        TDCGExplorer.MainFormWindow.asyncDisplayFromArcs(); // 表示更新.
-
                         TDCGExplorer.SetToolTips("Database build complete");
                         TDCGExplorer.SystemDB.database_build = "yes";
                     }
@@ -1065,6 +1066,8 @@ namespace TDCGExplorer
                     TDCGExplorer.SetToolTips("Error occured : " + e.Message);
                 }
                 TDCGExplorer.DecBusy();
+
+                TDCGExplorer.MainFormWindow.asyncDisplayFromArcs(); // 表示更新.
             }
         }
     }
