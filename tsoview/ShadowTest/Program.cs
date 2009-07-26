@@ -64,6 +64,10 @@ public class Viewer : IDisposable
 {
     internal Device device;
     internal Effect effect;
+
+    internal Surface dev_surface = null;
+    internal Surface dev_zbuf = null;
+
     internal Mesh teapot;
 
     struct SParam
@@ -85,6 +89,11 @@ public class Viewer : IDisposable
     Matrix g_matV;
     Matrix g_matP;
     VertexBuffer g_pVBuffer;
+    VertexBuffer g_pVBufferForTexture;
+    VertexBuffer g_pVBufferForGauss;
+    Surface g_pRenderZ;
+    Texture[] g_aRenderTexture;
+    Surface[] g_aRenderSurface;
 
     // マウスポイントしているスクリーン座標
     private Point lastScreenPoint = Point.Empty;
@@ -189,16 +198,55 @@ public class Viewer : IDisposable
         m_fLitX = -60.0f;
         m_fLitY = 135.0f;
 
-        CustomVertex.PositionNormal[] verts = new CustomVertex.PositionNormal[4];
-        verts[0] = new CustomVertex.PositionNormal(-30, -5, +30, 0, 1, 0);
-        verts[1] = new CustomVertex.PositionNormal(+30, -5, +30, 0, 1, 0);
-        verts[2] = new CustomVertex.PositionNormal(-30, -5, -30, 0, 1, 0);
-        verts[3] = new CustomVertex.PositionNormal(+30, -5, -30, 0, 1, 0);
+        dev_surface = device.GetRenderTarget(0);
+        dev_zbuf = device.DepthStencilSurface;
 
-        g_pVBuffer = new VertexBuffer(typeof(CustomVertex.PositionNormal), 4, device, Usage.Dynamic, CustomVertex.PositionNormal.Format, Pool.Default);
-        g_pVBuffer.SetData(verts, 0, LockFlags.None);
+        {
+            CustomVertex.PositionNormal[] verts = new CustomVertex.PositionNormal[4];
+            verts[0] = new CustomVertex.PositionNormal(-30, -5, +30, 0, 1, 0);
+            verts[1] = new CustomVertex.PositionNormal(+30, -5, +30, 0, 1, 0);
+            verts[2] = new CustomVertex.PositionNormal(-30, -5, -30, 0, 1, 0);
+            verts[3] = new CustomVertex.PositionNormal(+30, -5, -30, 0, 1, 0);
+
+            g_pVBuffer = new VertexBuffer(typeof(CustomVertex.PositionNormal), 4, device, Usage.Dynamic | Usage.WriteOnly, CustomVertex.PositionNormal.Format, Pool.Default);
+            g_pVBuffer.SetData(verts, 0, LockFlags.None);
+        }
+
+        {
+            CustomVertex.PositionTextured[] verts = new CustomVertex.PositionTextured[4];
+            verts[0] = new CustomVertex.PositionTextured(-1.0f, +1.0f, 0, 0, 0);
+            verts[1] = new CustomVertex.PositionTextured(-0.5f, +1.0f, 0, 1, 0);
+            verts[2] = new CustomVertex.PositionTextured(-1.0f, +0.5f, 0, 0, 1);
+            verts[3] = new CustomVertex.PositionTextured(-0.5f, +0.5f, 0, 1, 1);
+
+            g_pVBufferForTexture = new VertexBuffer(typeof(CustomVertex.PositionTextured), 4, device, Usage.Dynamic | Usage.WriteOnly, CustomVertex.PositionTextured.Format, Pool.Default);
+            g_pVBufferForTexture.SetData(verts, 0, LockFlags.None);
+        }
+
+        {
+            CustomVertex.PositionTextured[] verts = new CustomVertex.PositionTextured[4];
+            verts[0] = new CustomVertex.PositionTextured(-1, +1, 0, 0, 0);
+            verts[1] = new CustomVertex.PositionTextured(+1, +1, 0, 1, 0);
+            verts[2] = new CustomVertex.PositionTextured(-1, -1, 0, 0, 1);
+            verts[3] = new CustomVertex.PositionTextured(+1, -1, 0, 1, 1);
+
+            g_pVBufferForGauss = new VertexBuffer(typeof(CustomVertex.PositionTextured), 4, device, Usage.Dynamic | Usage.WriteOnly, CustomVertex.PositionTextured.Format, Pool.Default);
+            g_pVBufferForGauss.SetData(verts, 0, LockFlags.None);
+        }
 
         teapot = Mesh.Teapot(device);
+
+        g_pRenderZ = device.CreateDepthStencilSurface(512, 512, DepthFormat.D24S8, MultiSampleType.None, 0, false);
+
+        g_aRenderTexture = new Texture[3];
+        g_aRenderSurface = new Surface[3];
+        for (int i = 0; i < 3; i++)
+        {
+            g_aRenderTexture[i] = new Texture(device, 512, 512, 1, Usage.RenderTarget, Format.G32R32F, Pool.Default);
+            g_aRenderSurface[i] = g_aRenderTexture[i].GetSurfaceLevel(0);
+        }
+
+        SetGaussWeight(25.0f);
 
         return true;
     }
@@ -230,12 +278,11 @@ public class Viewer : IDisposable
 
         device.BeginScene();
 
-        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.CornflowerBlue, 1.0f, 0);
-
         CalcLightTrans(ref sParam);
-        //DrawShadowMap(ref sParam);
-        //DrawGauss();
+        DrawShadowMap(ref sParam);
+        DrawGauss();
         DrawReceiver();
+        DrawTexture();
 
         device.EndScene();
 
@@ -245,7 +292,7 @@ public class Viewer : IDisposable
 
     void CalcLightTrans(ref SParam sParam)
     {
-        Vector3 vLight = new Vector3(0,0,1);
+        Vector3 vLight = new Vector3(0,0,-1);
         Matrix mat;
         mat = Matrix.RotationYawPitchRoll(sParam.vLightAngle.Y, sParam.vLightAngle.X, 0.0f);
         vLight = Vector3.TransformNormal(vLight, mat);
@@ -265,17 +312,20 @@ public class Viewer : IDisposable
 
     void DrawShadowMap(ref SParam sParam)
     {
+        device.SetRenderTarget(0, g_aRenderSurface[0]);
+        device.DepthStencilSurface = g_pRenderZ;
+
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
+
         Vector4 lp = new Vector4(g_vLightPos.X, g_vLightPos.Y, g_vLightPos.Z, 1.0f);
         Matrix ls = g_matW * g_matLightTrans;
         effect.SetValue("matLS", ls);
         effect.SetValue("vLightPos", lp);
 
-        effect.Technique = "Tec0_NormalDraw";
+        effect.Technique = "Tec1_ShadowMapDraw";
 
         //draw teapot
-        Matrix wvp = g_matW * g_matV * g_matP;
-        effect.SetValue("matWVP", wvp);
-
+        device.VertexFormat = CustomVertex.PositionNormal.Format;
         {
             int npass = effect.Begin(0);
             for (int ipass = 0; ipass < npass; ipass++)
@@ -290,7 +340,13 @@ public class Viewer : IDisposable
 
     void DrawReceiver()
     {
-        effect.Technique = "Tec0_NormalDraw";
+        device.SetRenderTarget(0, dev_surface);
+        device.DepthStencilSurface = dev_zbuf;
+
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.CornflowerBlue, 1.0f, 0);
+
+        effect.Technique = "Tec5_ShadowDraw";
+        effect.SetValue("texRender", g_aRenderTexture[2]);
 
         Matrix wvp;
         Matrix ls;
@@ -302,7 +358,6 @@ public class Viewer : IDisposable
         effect.SetValue("matLS", ls);
 
         device.VertexFormat = CustomVertex.PositionNormal.Format;
-
         {
             int npass = effect.Begin(0);
             for (int ipass = 0; ipass < npass; ipass++)
@@ -333,8 +388,82 @@ public class Viewer : IDisposable
         }
     }
 
+    void DrawTexture()
+    {
+        effect.Technique = "Tec3_TexDraw";
+        effect.SetValue("texRender", g_aRenderTexture[2]);
+
+        device.VertexFormat = CustomVertex.PositionTextured.Format;
+        {
+            int npass = effect.Begin(0);
+            for (int ipass = 0; ipass < npass; ipass++)
+            {
+                effect.BeginPass(ipass);
+                device.SetStreamSource(0, g_pVBufferForTexture, 0);
+                device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+                effect.EndPass();
+            }
+            effect.End();
+        }
+    }
+
+    void SetGaussWeight(float disp)
+    {
+        float[] aW = new float[8];
+        float t = 0.0f;
+        for (int i = 0; i < 8; i++)
+        {
+            float p = 1.0f + 2.0f * (float)i;
+            aW[i] = (float)Math.Exp(-0.5f * p * p / disp);
+            t += 2.0f * aW[i];
+        }
+        for (int i = 0; i < 8; i++)
+            aW[i] /= t;
+        effect.SetValue("aWeight", aW);
+    }
+
+    void DrawGauss()
+    {
+        effect.Technique = "Tec4_GaussDraw";
+
+        int npass = effect.Begin(0);
+
+        device.SetRenderTarget(0, g_aRenderSurface[1]);
+        device.DepthStencilSurface = g_pRenderZ;
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
+
+        effect.SetValue("texRender", g_aRenderTexture[0]);
+        device.VertexFormat = CustomVertex.PositionTextured.Format;
+        {
+            effect.BeginPass(0);
+            device.SetStreamSource(0, g_pVBufferForGauss, 0);
+            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+            effect.EndPass();
+        }
+
+        device.SetRenderTarget(0, g_aRenderSurface[2]);
+        device.DepthStencilSurface = g_pRenderZ;
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
+
+        effect.SetValue("texRender", g_aRenderTexture[1]);
+        device.VertexFormat = CustomVertex.PositionTextured.Format;
+        {
+            effect.BeginPass(1);
+            device.SetStreamSource(0, g_pVBufferForGauss, 0);
+            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+            effect.EndPass();
+        }
+        effect.End();
+    }
+
     public void Dispose()
     {
+        foreach (Surface surface in g_aRenderSurface)
+            surface.Dispose();
+        foreach (Texture texture in g_aRenderTexture)
+            texture.Dispose();
+        if (g_pRenderZ != null)
+            g_pRenderZ.Dispose();
         if (teapot != null)
             teapot.Dispose();
         if (device != null)
