@@ -731,6 +731,35 @@ namespace TDCGExplorer
             }
         }
 
+        private static void FindArcsTreeNode(TreeView view,TreeNode node, string path)
+        {
+            if (node.FullPath == path)
+            {
+                TreeNode parent = node.Parent;
+                while (parent != null)
+                {
+                    parent.Expand();
+                    parent = parent.Parent;
+                }
+                view.SelectedNode = node;
+                return;
+            }
+            foreach (TreeNode subnode in node.Nodes)
+            {
+                FindArcsTreeNode(view, subnode, path);
+            }
+        }
+
+        // 指定されたパスのノードを選択する.
+        public static void SelectArcsTreeNode(string path)
+        {
+            TreeView arcsTree = MainFormWindow.ArcsTreeView;
+            if (arcsTree.Nodes[0] != null)
+            {
+                FindArcsTreeNode(arcsTree,arcsTree.Nodes[0], Path.GetDirectoryName(path) );
+            }
+        }
+
         public static void InstallPreferZip(GenericZipTreeNode zipNode)
         {
             ArcsZipArcEntry zipentry = ArcsDB.GetZip(zipNode.Entry);

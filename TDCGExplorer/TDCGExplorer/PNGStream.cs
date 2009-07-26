@@ -97,7 +97,7 @@ namespace TDCGExplorer
                 png = new PNGFile();
                 png.Load(stream);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 png = null;
             }
