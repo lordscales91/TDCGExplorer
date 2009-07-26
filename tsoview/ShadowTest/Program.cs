@@ -85,8 +85,57 @@ public class Viewer : IDisposable
     Matrix g_matV;
     Matrix g_matP;
 
+    // マウスポイントしているスクリーン座標
+    private Point lastScreenPoint = Point.Empty;
+
+    private void form_OnMouseDown(object sender, MouseEventArgs e)
+    {
+        lastScreenPoint.X = e.X;
+        lastScreenPoint.Y = e.Y;
+    }
+
+    private void form_OnMouseMove(object sender, MouseEventArgs e)
+    {
+        int dx = e.X - lastScreenPoint.X;
+        int dy = e.Y - lastScreenPoint.Y;
+
+        float limit_angle = 80.0f;
+        float fRotY = (float)dx * 0.2f;
+        float fRotX = (float)dy * 0.2f;
+
+        switch (e.Button)
+        {
+        case MouseButtons.Left:
+            m_fCamY += fRotY;
+            m_fCamX += fRotX;
+            if (m_fCamX > +limit_angle)
+                m_fCamX = +limit_angle;
+            else
+            if (m_fCamX < -limit_angle)
+                m_fCamX = -limit_angle;
+            break;
+        case MouseButtons.Middle:
+            break;
+        case MouseButtons.Right:
+            m_fLitY += fRotY;
+            m_fLitX += fRotX;
+            if (m_fLitX > +limit_angle)
+                m_fLitX = +limit_angle;
+            else
+            if (m_fLitX < -limit_angle)
+                m_fLitX = -limit_angle;
+            break;
+        }
+
+        lastScreenPoint.X = e.X;
+        lastScreenPoint.Y = e.Y;
+    }
+
     public bool InitializeApplication(Control control)
     {
+        control.MouseDown += new MouseEventHandler(form_OnMouseDown);
+        control.MouseMove += new MouseEventHandler(form_OnMouseMove);
+
         PresentParameters pp = new PresentParameters();
         try
         {
@@ -140,33 +189,6 @@ public class Viewer : IDisposable
         m_fLitX = -60.0f;
         m_fLitY = 135.0f;
 
-        SParam sParam;
-        sParam.vCamAngle = new Vector3( Geometry.DegreeToRadian(m_fCamX), Geometry.DegreeToRadian(m_fCamY), 0.0f);
-        sParam.vLightAngle = new Vector3( Geometry.DegreeToRadian(m_fLitX), Geometry.DegreeToRadian(m_fLitY), 0.0f);
-        sParam.fCamLength = 80.0f;
-
-        CalcLightTrans(ref sParam);
-
-        Vector4 lp = new Vector4(g_vLightPos.X, g_vLightPos.Y, g_vLightPos.Z, 1.0f);
-        Matrix ls = g_matW * g_matLightTrans;
-        effect.SetValue("matLS", ls);
-        effect.SetValue("vLightPos", lp);
-
-        g_matW = Matrix.Scaling(5,5,5);
-        g_matL = Matrix.Translation(15,0,0);
-
-        Vector3 vEye = new Vector3(0,0,-sParam.fCamLength);
-        Vector3 vCenter = new Vector3(0,0,0);
-        Vector3 vUp = new Vector3(0,1,0);
-        g_matV = Matrix.RotationYawPitchRoll(sParam.vCamAngle.Y, sParam.vCamAngle.X, 0.0f);
-        vEye = Vector3.TransformCoordinate(vEye, g_matV);
-        g_matV = Matrix.LookAtLH(vEye, vCenter, vUp);
-
-        g_matP = Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f), 4.0f/3.0f, 1.0f, 200.0f);
-
-        Matrix wvp = g_matW * g_matV * g_matP;
-        effect.SetValue("matWVP", wvp);
-
         teapot = Mesh.Teapot(device);
 
         return true;
@@ -200,6 +222,33 @@ public class Viewer : IDisposable
 
     public void Render()
     {
+        SParam sParam;
+        sParam.vCamAngle = new Vector3( Geometry.DegreeToRadian(m_fCamX), Geometry.DegreeToRadian(m_fCamY), 0.0f);
+        sParam.vLightAngle = new Vector3( Geometry.DegreeToRadian(m_fLitX), Geometry.DegreeToRadian(m_fLitY), 0.0f);
+        sParam.fCamLength = 80.0f;
+
+        CalcLightTrans(ref sParam);
+
+        Vector4 lp = new Vector4(g_vLightPos.X, g_vLightPos.Y, g_vLightPos.Z, 1.0f);
+        Matrix ls = g_matW * g_matLightTrans;
+        effect.SetValue("matLS", ls);
+        effect.SetValue("vLightPos", lp);
+
+        g_matW = Matrix.Scaling(5,5,5);
+        g_matL = Matrix.Translation(15,0,0);
+
+        Vector3 vEye = new Vector3(0,0,-sParam.fCamLength);
+        Vector3 vCenter = new Vector3(0,0,0);
+        Vector3 vUp = new Vector3(0,1,0);
+        g_matV = Matrix.RotationYawPitchRoll(sParam.vCamAngle.Y, sParam.vCamAngle.X, 0.0f);
+        vEye = Vector3.TransformCoordinate(vEye, g_matV);
+        g_matV = Matrix.LookAtLH(vEye, vCenter, vUp);
+
+        g_matP = Matrix.PerspectiveFovLH(Geometry.DegreeToRadian(45.0f), 4.0f/3.0f, 1.0f, 200.0f);
+
+        Matrix wvp = g_matW * g_matV * g_matP;
+        effect.SetValue("matWVP", wvp);
+
         device.BeginScene();
 
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.CornflowerBlue, 1.0f, 0);
