@@ -218,6 +218,7 @@ namespace System.Windows.Forms
                                     List<ArcsTahFilesEntry> zipfiles = arcDB.GetZipTahFilesEntries(TDCGExplorer.TAHUtil.CalcHash(colbase));
                                     foreach (ArcsTahFilesEntry zipfile in zipfiles)
                                     {
+                                        if (zipfile.path.ToLower() != colbase) continue; // ハッシュ衝突なら無視する.
                                         ArcsZipTahEntry ziptah = arcDB.GetZipTah(zipfile.tahid);
                                         ArcsZipArcEntry zip = arcDB.GetZip(ziptah.zipid);
                                         zipname.Add(zip.GetDisplayPath());

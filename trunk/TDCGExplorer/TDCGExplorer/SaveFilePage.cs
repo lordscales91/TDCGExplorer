@@ -642,6 +642,7 @@ namespace System.Windows.Forms
 
         private void toolStripMenuItemHSave_Click(object sender, EventArgs e)
         {
+            if (TDCGExplorer.TDCGExplorer.BusyTest() == true) return;
             HeavySave();
             TDCGExplorer.TDCGExplorer.MainFormWindow.UpdateSaveFileTree();
         }

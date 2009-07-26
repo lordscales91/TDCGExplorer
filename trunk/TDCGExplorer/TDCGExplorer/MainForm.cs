@@ -377,15 +377,7 @@ namespace TDCGExplorer
         // 新規タブでページを開く.
         private void NewTabPageToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            try
-            {
-                NewTab();
-            }
-            catch (Exception exception)
-            {
-                TDCGExplorer.SetToolTips("error:" + exception.Message);
-                Debug.WriteLine(exception.Message);
-            }
+            NewTab();
         }
 
         // タブを取得する。無い時は新規に作る.
@@ -393,10 +385,10 @@ namespace TDCGExplorer
         {
             if (tabMainView.TabPages.Count == 0)
             {
-                TabPage tabPage = new TabPage();
-                tabMainView.Controls.Add(tabPage);
-                tabMainView.SelectTab(tabMainView.Controls.Count - 1);
+                NewTab();
             }
+            // 一番最後のタブを割り当てる.
+            tabMainView.SelectTab(tabMainView.Controls.Count - 1);
             return tabMainView.SelectedTab;
         }
 
@@ -440,6 +432,11 @@ namespace TDCGExplorer
         // ツリー表示をクリアする.
         public void ClearTreeBox()
         {
+            // ページを消去する.
+            tabMainView.TabPages.Clear();
+            // リストボックスの中身を消去する.
+            ListBoxClear();
+            // ツリーを消去する
             lastSelectTreeNode = null;
             lastSelectTreeNodeColor = Color.Transparent;
             treeViewArcs.Nodes.Clear();
@@ -448,10 +445,6 @@ namespace TDCGExplorer
             treeViewInstalled.Nodes.Clear();
             treeViewTag.Nodes.Clear();
             treeViewSaveFile.Nodes.Clear();
-            // リストボックスの中身を消去する.
-            ListBoxClear();
-            // ページを消去する.
-            tabMainView.TabPages.Clear();
         }
 
         // リストボックスを消去する.
@@ -986,6 +979,13 @@ namespace TDCGExplorer
         {
             if (TDCGExplorer.BusyTest() == true) return;
             AssignTagPageControl(new FindBaseModPage());
+        }
+
+        public void SelectArcsTreeNode(TreeNode node)
+        {
+            ResetColor();
+            treeViewArcs.SelectedNode = node;
+            SetColor(node);
         }
     }
 }
