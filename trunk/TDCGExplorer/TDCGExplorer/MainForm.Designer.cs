@@ -34,10 +34,11 @@
             this.extractZipFileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.ResearchAssumptionArchiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.InstallPreferredModsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.findNoBaseModToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FindDialogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditAnnotationToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.databaseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.createFromArcsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadLatestArcsnameszipToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -129,6 +130,7 @@
             this.extractZipFileToolStripMenuItem1,
             this.ResearchAssumptionArchiveToolStripMenuItem,
             this.InstallPreferredModsToolStripMenuItem,
+            this.findNoBaseModToolStripMenuItem,
             this.FindDialogToolStripMenuItem,
             this.EditAnnotationToolStripMenuItem1,
             this.OpenFolderToolStripMenuItem,
@@ -158,6 +160,13 @@
             this.InstallPreferredModsToolStripMenuItem.Text = "前提アーカイブファイルを展開";
             this.InstallPreferredModsToolStripMenuItem.Click += new System.EventHandler(this.ExtractPreferZipMainMenuToolStripMenuItem_Click);
             // 
+            // findNoBaseModToolStripMenuItem
+            // 
+            this.findNoBaseModToolStripMenuItem.Name = "findNoBaseModToolStripMenuItem";
+            this.findNoBaseModToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.findNoBaseModToolStripMenuItem.Text = "前提TAHを検索する";
+            this.findNoBaseModToolStripMenuItem.Click += new System.EventHandler(this.findNoBaseModToolStripMenuItem_Click);
+            // 
             // FindDialogToolStripMenuItem
             // 
             this.FindDialogToolStripMenuItem.Name = "FindDialogToolStripMenuItem";
@@ -172,19 +181,19 @@
             this.EditAnnotationToolStripMenuItem1.Text = "注訳を入力...";
             this.EditAnnotationToolStripMenuItem1.Click += new System.EventHandler(this.EditAnnotationToolStripMenuItem1_Click);
             // 
-            // exitToolStripMenuItem
-            // 
-            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.exitToolStripMenuItem.Text = "終了";
-            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
-            // 
             // OpenFolderToolStripMenuItem
             // 
             this.OpenFolderToolStripMenuItem.Name = "OpenFolderToolStripMenuItem";
             this.OpenFolderToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.OpenFolderToolStripMenuItem.Text = "フォルダを開く";
             this.OpenFolderToolStripMenuItem.Click += new System.EventHandler(this.OpenFolderToolStripMenuItem_Click);
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.exitToolStripMenuItem.Text = "終了";
+            this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // databaseToolStripMenuItem
             // 
@@ -800,6 +809,7 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem OpenFolderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenFolderCXToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem findNoBaseModToolStripMenuItem;
 
     }
 }

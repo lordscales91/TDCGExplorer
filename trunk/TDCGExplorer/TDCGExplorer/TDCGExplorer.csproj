@@ -103,6 +103,9 @@
     <Compile Include="AnnotationDB.cs" />
     <Compile Include="ArcNames.cs" />
     <Compile Include="ArcsDataBase.cs" />
+    <Compile Include="FindBaseModPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="PNGWriter.cs" />
     <Compile Include="SimpleDropDownDialog.cs">
       <SubType>Form</SubType>
@@ -179,6 +182,9 @@
     <Compile Include="TAHUtil.cs" />
     <Compile Include="TDCGExplorer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FindBaseModPage.resx">
+      <DependentUpon>FindBaseModPage.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SimpleDropDownDialog.resx">
       <DependentUpon>SimpleDropDownDialog.cs</DependentUpon>
     </EmbeddedResource>

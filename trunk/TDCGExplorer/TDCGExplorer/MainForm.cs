@@ -43,6 +43,11 @@ namespace TDCGExplorer
             set { }
         }
 
+        public TreeView ArcsTreeView
+        {
+            get { return treeViewArcs; }
+        }
+
         // スレッド実行時はエラーにする.
         private bool threadCheck()
         {
@@ -974,6 +979,13 @@ namespace TDCGExplorer
         private void OpenFolderCXToolStripMenuItem_Click(object sender, EventArgs e)
         {
             OpenFolderToolStripMenuItem_Click(sender, e);
+        }
+
+        // 00番が見つからないMODを探索する.
+        private void findNoBaseModToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (TDCGExplorer.BusyTest() == true) return;
+            AssignTagPageControl(new FindBaseModPage());
         }
     }
 }
