@@ -189,7 +189,7 @@ public class Viewer : IDisposable
     {
         matrixStack.Push();
 
-        Matrix transform = node.transformation_matrix;
+        Matrix transform = node.TransformationMatrix;
 
         if (tmo_nodemap != null)
         try

@@ -383,14 +383,25 @@ namespace TDCG
     /// </summary>
     public class TSONode
     {
-        internal int id;
-        internal string name;
-        internal string sname;
+        private int id;
+        private string name;
+        private string sname;
+        private Vector3 translation;
+        private Quaternion rotation;
 
         private Matrix transformation_matrix;
         private bool need_update_transformation;
 
-        private Vector3 translation;
+        /// <summary>
+        /// TSONodeÇê∂ê¨ÇµÇ‹Ç∑ÅB
+        /// </summary>
+        public TSONode(int id, string name)
+        {
+            this.id = id;
+            this.name = name;
+            this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
+        }
+
         /// <summary>
         /// à íuïœà 
         /// </summary>
@@ -405,7 +416,6 @@ namespace TDCG
             }
         }
 
-        private Quaternion rotation;
         /// <summary>
         /// âÒì]ïœà 
         /// </summary>
@@ -767,21 +777,17 @@ namespace TDCG
 
             for (int i = 0; i < node_count; i++)
             {
-                nodes[i] = new TSONode();
-                nodes[i].id = i;
-                nodes[i].name = ReadString();
-                nodes[i].sname = nodes[i].name.Substring(nodes[i].name.LastIndexOf('|')+1);
-                nodemap.Add(nodes[i].name, nodes[i]);
-
-                //Console.WriteLine(i + ": " + nodes[i].sname);
+                string name = ReadString();
+                nodes[i] = new TSONode(i, name);
+                nodemap.Add(name, nodes[i]);
             }
 
             for (int i = 0; i < node_count; i++)
             {
-                int index = nodes[i].name.LastIndexOf('|');
+                int index = nodes[i].Name.LastIndexOf('|');
                 if (index <= 0)
                     continue;
-                string pname = nodes[i].name.Substring(0, index);
+                string pname = nodes[i].Name.Substring(0, index);
                 nodes[i].parent = nodemap[pname];
                 nodes[i].parent.child_nodes.Add(nodes[i]);
             }

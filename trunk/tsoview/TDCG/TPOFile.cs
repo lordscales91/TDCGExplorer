@@ -185,22 +185,18 @@ public class TPOFile
             //そしてnodemapに追加する。
             for (int i = 0; i < node_count; i++)
             {
-                nodes[i] = new TPONode();
-                nodes[i].id = i;
-                nodes[i].name = tmo.nodes[i].name;
-                nodes[i].sname = nodes[i].name.Substring(nodes[i].name.LastIndexOf('|')+1);
-                nodemap.Add(nodes[i].name, nodes[i]);
-
-                //Console.WriteLine(i + ": " + nodes[i].sname);
+                string name = tmo.nodes[i].Name;
+                nodes[i] = new TPONode(i, name);
+                nodemap.Add(name, nodes[i]);
             }
 
             //親子関係を設定する。
             for (int i = 0; i < node_count; i++)
             {
-                int index = nodes[i].name.LastIndexOf('|');
+                int index = nodes[i].Name.LastIndexOf('|');
                 if (index <= 0)
                     continue;
-                string pname = nodes[i].name.Substring(0, index);
+                string pname = nodes[i].Name.Substring(0, index);
                 nodes[i].parent = nodemap[pname];
                 nodes[i].parent.children.Add(nodes[i]);
             }
@@ -223,7 +219,7 @@ public class TPOFile
 
         Dictionary<string, TPONode> nodemap = new Dictionary<string, TPONode>();
         foreach (TPONode node in nodes)
-            nodemap[node.sname] = node;
+            nodemap[node.ShortName] = node;
 
         proportion.Nodes = nodemap;
         //TPONodeに変形係数を設定する。
@@ -278,10 +274,10 @@ public class TPOCommand
 
 public class TPONode
 {
-    internal int id;
-    internal string name;
-
-    internal string sname;
+    private int id;
+    private string name;
+    private string sname;
+    
     internal List<TPONode> children = new List<TPONode>();
     internal TPONode parent;
 
@@ -312,8 +308,11 @@ public class TPONode
         command_list.Add(command);
     }
 
-    public TPONode()
+    public TPONode(int id, string name)
     {
+        this.id = id;
+        this.name = name;
+        this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
     }
 
     public void Transform(TMOMat mat, float ratio)
