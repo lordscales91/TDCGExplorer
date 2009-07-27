@@ -1183,20 +1183,28 @@ public class Viewer : IDisposable
         Vector3 localEffectorP = Vector3.TransformCoordinate(worldEffectorP, invCoord);
         Vector3 localTargetP = Vector3.TransformCoordinate(worldTargetP, invCoord);
 
-        Vector3 toEffector = Vector3.Normalize(localEffectorP);
-        Vector3 toTarget = Vector3.Normalize(localTargetP);
-
-        float rotDotProduct = Vector3.Dot(toEffector, toTarget);
-        float rotAngle = (float)Math.Acos(rotDotProduct);
-        if (rotAngle > float.Epsilon)
-        {
-            Vector3 rotAxis = Vector3.Cross(toEffector, toTarget);
-            rotAxis.Normalize();
-            Quaternion q = Quaternion.RotationAxis(rotAxis, rotAngle);
+        Quaternion q;
+        if (RotationVectorToVector(localEffectorP, localTargetP, out q))
             node.Rotation = q * node.Rotation;
-        }
         if ((localEffectorP - localTargetP).LengthSq() < 0.1f)
             solved = true;
+    }
+
+    public bool RotationVectorToVector(Vector3 v1, Vector3 v2, out Quaternion q)
+    {
+        Vector3 n1 = Vector3.Normalize(v1);
+        Vector3 n2 = Vector3.Normalize(v2);
+        float dotProduct = Vector3.Dot(n1, n2);
+        float angle = (float)Math.Acos(dotProduct);
+        bool needRotate = (angle > float.Epsilon);
+        if (needRotate)
+        {
+            Vector3 axis = Vector3.Cross(n1, n2);
+            q = Quaternion.RotationAxis(axis, angle);
+        }
+        else
+            q = Quaternion.Identity;
+        return needRotate;
     }
 
     /// <summary>
