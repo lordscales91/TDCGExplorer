@@ -146,6 +146,7 @@ public class Viewer : IDisposable
 
         lastScreenPoint.X = e.X;
         lastScreenPoint.Y = e.Y;
+        clicked = false;  // correct?
     }
 
     // 選択フィギュアindex
@@ -621,12 +622,14 @@ public class Viewer : IDisposable
         effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand"] =
             new string[] {
                 "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm",
-                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm" };
+                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm",
+                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder" };
 
         effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm|W_RightForeArmRoll|W_RightHand"] =
             new string[] {
                 "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm",
-                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm" };
+                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm",
+                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder" };
 
         effector_dictionary["|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot"] =
             new string[] {
@@ -640,6 +643,16 @@ public class Viewer : IDisposable
 
         current_effector_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand";
 
+        //should be update target when select figure
+        this.FigureEvent += delegate(object sender, EventArgs e)
+        {
+            Figure fig;
+            if (TryGetFigure(out fig))
+            {
+                TSONode bone = fig.TSOList[0].nodemap[current_effector_name];
+                target = bone.GetWorldPosition();
+            }
+        };
         return true;
     }
     string current_effector_name = null;
@@ -955,7 +968,7 @@ public class Viewer : IDisposable
 
         if (TryGetFigure(out fig))
         {
-            TSONode current_effector = fig.TSOList[0].nodemap[current_effector_name];
+            TSONode effector = fig.TSOList[0].nodemap[current_effector_name];
 
             foreach (string effector_name in effector_dictionary.Keys)
             {
@@ -964,14 +977,14 @@ public class Viewer : IDisposable
                 if (found && clicked)
                 {
                     current_effector_name = bone.Name;
-                    current_effector = bone;
+                    effector = bone;
                     target = bone.GetWorldPosition();
                 }
                 Vector4 color;
                 if (found)
                     color = new Vector4(1,1,1,1);
                 else
-                    color = ( bone == current_effector ) ? new Vector4(0,1,0,0.5f) : new Vector4(1,0,0,0.5f);
+                    color = ( bone == effector ) ? new Vector4(0,1,0,0.5f) : new Vector4(1,0,0,0.5f);
 
                 DrawMeshSub(sphere, bone.combined_matrix * world_matrix, color);
             }
