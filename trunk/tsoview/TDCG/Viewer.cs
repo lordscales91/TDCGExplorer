@@ -695,7 +695,7 @@ public class Viewer : IDisposable
             vbGauss.SetData(verts, 0, LockFlags.None);
         }
 
-        SetGaussianWeight(25.0f);
+        SetGaussianWeight(12.5f);
     }
 
     private void CancelResize(object sender, CancelEventArgs e)

@@ -841,6 +841,7 @@ cVertexData cMainVS_UVRPL( appdata IN ) //追加 Ripple UV.x=((SQRT(UVSCR)*IN.UV.x
 float4 cShadowMapPS( cVertexData3 IN ) : COLOR
 {
     float4 o = (float4)0;
+    o.a = 1.0f;
     // Z値算出
     float depth = IN.ShadowMapTex.z / IN.ShadowMapTex.w;
     o.x = depth;
@@ -938,7 +939,7 @@ float4 cMainPS( cVertexData IN ) : COLOR //デフォルトピクセルシェーダ
         float d = z - c.x;
         float pmax = variance / (variance + d*d);
 
-        L *= max( lit_fact, pmax );
+        L += max( lit_fact, pmax ) - 1.0;
 	float	lp		 = min( 1.0, max( 0.0, ( L * 0.6   ) + ( Ambient   * 0.01 ) ) );
 	float	hp0		 = min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
 	float	hp		 = pow( abs(hp0), HighLightPower );
