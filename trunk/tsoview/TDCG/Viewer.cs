@@ -66,6 +66,27 @@ public class Viewer : IDisposable
         solved = false;
     }
 
+    /// <summary>
+    /// 逆運動学における目標をスクリーン座標で指定します。
+    /// </summary>
+    private void SetTargetOnScreen(float x, float y)
+    {
+        Figure fig;
+
+        if (TryGetFigure(out fig))
+        {
+            string effector_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand";
+            TSONode bone = fig.TSOList[0].nodemap[effector_name];
+            Vector3 v = target;
+            v = Vector3.TransformCoordinate(v, Transform_View);
+            v = Vector3.TransformCoordinate(v, Transform_Projection);
+            //Matrix world = Matrix.Translation(target);
+            //Matrix targetOnProj = world * Transform_View * Transform_Projection;
+            target = ScreenToWorld(x, y, v.Z, ref Transform_View, ref Transform_Projection);
+            solved = false;
+        }
+    }
+
     // マウスポイントしているスクリーン座標
     private Point lastScreenPoint = Point.Empty;
 
@@ -85,6 +106,9 @@ public class Viewer : IDisposable
         case MouseButtons.Left:
             if (Control.ModifierKeys == Keys.Control)
                 lightDir = ScreenToOrientation(e.X, e.Y);
+            else
+            if (Control.ModifierKeys == Keys.Shift)
+                SetTargetOnScreen(e.X, e.Y);
             break;
         }
 
@@ -102,6 +126,9 @@ public class Viewer : IDisposable
         case MouseButtons.Left:
             if (Control.ModifierKeys == Keys.Control)
                 lightDir = ScreenToOrientation(e.X, e.Y);
+            else
+            if (Control.ModifierKeys == Keys.Shift)
+                SetTargetOnScreen(e.X, e.Y);
             else
                 camera.Move(-dx, dy, 0.0f);
             break;
