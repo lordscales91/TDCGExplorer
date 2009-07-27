@@ -28,11 +28,11 @@ public class Viewer : IDisposable
     private EffectHandle handle_ShadowMap;
 
     private bool shadowMapEnabled = false;
-    internal Texture ztex = null;
+    internal Texture[] renderTextures = null;
     int ztexw = 0;
     int ztexh = 0;
-    internal Surface ztex_surface = null;
-    internal Surface ztex_zbuf = null;
+    internal Surface[] renderSurfaces = null;
+    internal Surface renderZ = null;
 
     internal Sprite sprite = null;
     float w_scale = 1.0f;
@@ -480,6 +480,8 @@ public class Viewer : IDisposable
     private Matrix Light_View = Matrix.Identity;
     private Matrix Light_Projection = Matrix.Identity;
 
+    private VertexBuffer vbGauss;
+
     /// <summary>
     /// deviceÇçÏê¨ÇµÇ‹Ç∑ÅB
     /// </summary>
@@ -518,6 +520,9 @@ public class Viewer : IDisposable
             DisplayMode display_mode = Manager.Adapters.Default.CurrentDisplayMode;
 
             int ret;
+            if (Manager.CheckDepthStencilMatch(adapter_ordinal, DeviceType.Hardware, display_mode.Format, pp.BackBufferFormat, DepthFormat.D24S8, out ret))
+                pp.AutoDepthStencilFormat = DepthFormat.D24S8;
+            else
             if (Manager.CheckDepthStencilMatch(adapter_ordinal, DeviceType.Hardware, display_mode.Format, pp.BackBufferFormat, DepthFormat.D24X8, out ret))
                 pp.AutoDepthStencilFormat = DepthFormat.D24X8;
             else
@@ -587,12 +592,12 @@ public class Viewer : IDisposable
     private void OnDeviceLost(object sender, EventArgs e)
     {
         Console.WriteLine("OnDeviceLost");
-        if (ztex_zbuf != null)
-            ztex_zbuf.Dispose();
-        if (ztex_surface != null)
-            ztex_surface.Dispose();
-        if (ztex != null)
-            ztex.Dispose();
+        if (renderZ != null)
+            renderZ.Dispose();
+        foreach (Surface surface in renderSurfaces)
+            surface.Dispose();
+        foreach (Texture texture in renderTextures)
+            texture.Dispose();
         if (dev_zbuf != null)
             dev_zbuf.Dispose();
         if (dev_surface != null)
@@ -622,16 +627,22 @@ public class Viewer : IDisposable
 
         if (shadowMapEnabled)
         {
-            ztex = new Texture(device, dev_zbufw, dev_zbufh, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-            effect.SetValue("texShadowMap", ztex);
-            ztex_surface = ztex.GetSurfaceLevel(0);
+            renderTextures = new Texture[3];
+            renderSurfaces = new Surface[3];
+            for (int i = 0; i < 3; i++)
             {
-                ztexw = ztex_surface.Description.Width;
-                ztexh = ztex_surface.Description.Height;
+                renderTextures[i] = new Texture(device, 512, 512, 1, Usage.RenderTarget, Format.G32R32F, Pool.Default);
+                renderSurfaces[i] = renderTextures[i].GetSurfaceLevel(0);
+            }
+
+            //effect.SetValue("texShadowMap", renderTextures[0]);
+            {
+                ztexw = renderSurfaces[0].Description.Width;
+                ztexh = renderSurfaces[0].Description.Height;
             }
             Console.WriteLine("ztex {0}x{1}", ztexw, ztexh);
 
-            ztex_zbuf = device.CreateDepthStencilSurface(ztexw, ztexh, DepthFormat.D16, MultiSampleType.None, 0, false);
+            renderZ = device.CreateDepthStencilSurface(ztexw, ztexh, DepthFormat.D24S8, MultiSampleType.None, 0, false);
 
             w_scale = (float)devw / ztexw;
             h_scale = (float)devh / ztexh;
@@ -672,6 +683,19 @@ public class Viewer : IDisposable
         device.RenderState.AlphaFunction = Compare.GreaterEqual;
 
         device.RenderState.IndexedVertexBlendEnable = true;
+
+        {
+            CustomVertex.PositionTextured[] verts = new CustomVertex.PositionTextured[4];
+            verts[0] = new CustomVertex.PositionTextured(-1, +1, 0, 0, 0);
+            verts[1] = new CustomVertex.PositionTextured(+1, +1, 0, 1, 0);
+            verts[2] = new CustomVertex.PositionTextured(-1, -1, 0, 0, 1);
+            verts[3] = new CustomVertex.PositionTextured(+1, -1, 0, 1, 1);
+
+            vbGauss = new VertexBuffer(typeof(CustomVertex.PositionTextured), 4, device, Usage.Dynamic | Usage.WriteOnly, CustomVertex.PositionTextured.Format, Pool.Default);
+            vbGauss.SetData(verts, 0, LockFlags.None);
+        }
+
+        SetGaussianWeight(25.0f);
     }
 
     private void CancelResize(object sender, CancelEventArgs e)
@@ -804,7 +828,6 @@ public class Viewer : IDisposable
             foreach (Figure fig in FigureList)
                 fig.SetFrameIndex(frame_index);
         }
-        /*
         else if (! solved)
         {
             foreach (Figure fig in FigureList)
@@ -814,7 +837,6 @@ public class Viewer : IDisposable
                 fig.UpdateBoneMatricesWithoutTMO();
             }
         }
-        */
     }
     bool solved = false;
     long wait = (long)(10000000.0f / 60.0f);
@@ -842,25 +864,86 @@ public class Viewer : IDisposable
     {
         device.BeginScene();
 
-        if (shadowMapEnabled)
-        {
-            device.SetRenderTarget(0, ztex_surface);
-            device.DepthStencilSurface = ztex_zbuf;
-            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
-        }
-
         {
             Matrix world_view_matrix = world_matrix * Transform_View;
             Matrix world_view_projection_matrix = world_view_matrix * Transform_Projection;
             effect.SetValue("wld", world_matrix);
             effect.SetValue("wv", world_view_matrix);
             effect.SetValue("wvp", world_view_projection_matrix);
-            if (shadowMapEnabled)
-                effect.SetValue("lightview", Light_View);
         }
 
-    if (shadowMapEnabled && shadowShown)
+        if (shadowMapEnabled && shadowShown)
+        {
+            DrawShadowMap();
+            DrawGaussianBlur();
+            DrawFigure();
+        }
+        else
+        {
+            device.SetRenderTarget(0, renderSurfaces[2]);
+            device.DepthStencilSurface = renderZ;
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
+
+            DrawFigure();
+        }
+
+        device.RenderState.AlphaBlendEnable = false;
+
+        if (shadowMapEnabled && SpriteShown)
+        {
+            DrawSprite();
+        }
+ 
+    //è’ìÀîªíË
+    /*
     {
+        Figure fig;
+
+        if (TryGetFigure(out fig))
+        {
+            TSONode bone = fig.TSOList[0].nodemap[sphere_bone_name];
+            DrawMeshSub(sphere, bone.combined_matrix * world_matrix, GetBoneColor(bone));
+        }
+    }
+    */
+
+    //ãtâ^ìÆäwÇ…Ç®ÇØÇÈñ⁄ïWÇï`âÊ
+    {
+        DrawMeshSub(sphere, Matrix.Translation(target), new Vector4(1,1,0,1));
+    }
+
+        device.EndScene();
+        {
+            int ret;
+            if (! device.CheckCooperativeLevel(out ret))
+            {
+                switch ((ResultCode)ret)
+                {
+                    case ResultCode.DeviceLost:
+                        Thread.Sleep(30);
+                        return;
+                    case ResultCode.DeviceNotReset:
+                        device.Reset(device.PresentationParameters);
+                        break;
+                    default:
+                        Console.WriteLine((ResultCode)ret);
+                        return;
+                }
+            }
+        }
+
+        device.Present();
+        Thread.Sleep(30);
+    }
+
+    void DrawShadowMap()
+    {
+        device.SetRenderTarget(0, renderSurfaces[0]);
+        device.DepthStencilSurface = renderZ;
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
+
+        effect.SetValue("lightview", Light_View);
+
         device.RenderState.AlphaBlendEnable = false;
 
         effect.Technique = handle_ShadowMap;
@@ -899,11 +982,63 @@ public class Viewer : IDisposable
         }
     }
 
+    void SetGaussianWeight(float disp)
+    {
+        float[] weights = new float[8];
+        float t = 0.0f;
+        for (int i = 0; i < 8; i++)
+        {
+            float p = 1.0f + 2.0f * (float)i;
+            weights[i] = (float)Math.Exp(-0.5f * p * p / disp);
+            t += 2.0f * weights[i];
+        }
+        for (int i = 0; i < 8; i++)
+            weights[i] /= t;
+        effect.SetValue("gaussw", weights);
+    }
+
+    void DrawGaussianBlur()
+    {
+        effect.Technique = "Tec4_GaussDraw";
+
+        int npass = effect.Begin(0);
+
+        device.SetRenderTarget(0, renderSurfaces[1]);
+        device.DepthStencilSurface = renderZ;
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
+
+        effect.SetValue("texShadowMap", renderTextures[0]);
+        device.VertexFormat = CustomVertex.PositionTextured.Format;
+        {
+            effect.BeginPass(0);
+            device.SetStreamSource(0, vbGauss, 0);
+            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+            effect.EndPass();
+        }
+
+        device.SetRenderTarget(0, renderSurfaces[2]);
+        device.DepthStencilSurface = renderZ;
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
+
+        effect.SetValue("texShadowMap", renderTextures[1]);
+        device.VertexFormat = CustomVertex.PositionTextured.Format;
+        {
+            effect.BeginPass(1);
+            device.SetStreamSource(0, vbGauss, 0);
+            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+            effect.EndPass();
+        }
+        effect.End();
+    }
+
+    void DrawFigure()
+    {
         device.SetRenderTarget(0, dev_surface);
         device.DepthStencilSurface = dev_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
 
         device.RenderState.AlphaBlendEnable = true;
+        effect.SetValue("texShadowMap", renderTextures[2]);
 
         foreach (Figure fig in FigureList)
         foreach (TSOFile tso in fig.TSOList)
@@ -937,61 +1072,16 @@ public class Viewer : IDisposable
             }
             tso.EndRender();
         }
+    }
 
-        device.RenderState.AlphaBlendEnable = false;
-
-    if (shadowMapEnabled && SpriteShown)
+    void DrawSprite()
     {
         sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
         Rectangle rect = new Rectangle(0, 0, ztexw, ztexh);
 
         sprite.Begin(0);
-        sprite.Draw(ztex, rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
+        sprite.Draw(renderTextures[2], rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
         sprite.End();
-    }
- 
-    //è’ìÀîªíË
-    /*
-    {
-        Figure fig;
-
-        if (TryGetFigure(out fig))
-        {
-            TSONode bone = fig.TSOList[0].nodemap[sphere_bone_name];
-            DrawMeshSub(sphere, bone.combined_matrix * world_matrix, GetBoneColor(bone));
-        }
-    }
-    */
-
-    //ãtâ^ìÆäwÇ…Ç®ÇØÇÈñ⁄ïWÇï`âÊ
-    /*
-    {
-        DrawMeshSub(sphere, Matrix.Translation(target), new Vector4(1,1,0,1));
-    }
-    */
-
-        device.EndScene();
-        {
-            int ret;
-            if (! device.CheckCooperativeLevel(out ret))
-            {
-                switch ((ResultCode)ret)
-                {
-                    case ResultCode.DeviceLost:
-                        Thread.Sleep(30);
-                        return;
-                    case ResultCode.DeviceNotReset:
-                        device.Reset(device.PresentationParameters);
-                        break;
-                    default:
-                        Console.WriteLine((ResultCode)ret);
-                        return;
-                }
-            }
-        }
-
-        device.Present();
-        Thread.Sleep(30);
     }
 
     /// <summary>
@@ -1120,12 +1210,12 @@ public class Viewer : IDisposable
             sphere.Dispose();
         if (sprite != null)
             sprite.Dispose();
-        if (ztex_zbuf != null)
-            ztex_zbuf.Dispose();
-        if (ztex_surface != null)
-            ztex_surface.Dispose();
-        if (ztex != null)
-            ztex.Dispose();
+        if (renderZ != null)
+            renderZ.Dispose();
+        foreach (Surface surface in renderSurfaces)
+            surface.Dispose();
+        foreach (Texture texture in renderTextures)
+            texture.Dispose();
         if (dev_zbuf != null)
             dev_zbuf.Dispose();
         if (dev_surface != null)
