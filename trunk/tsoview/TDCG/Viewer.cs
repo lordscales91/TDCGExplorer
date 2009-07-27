@@ -72,17 +72,17 @@ public class Viewer : IDisposable
     private void SetTargetOnScreen(float x, float y)
     {
         Figure fig;
-
         if (TryGetFigure(out fig))
         {
-            TSONode bone = fig.TSOList[0].nodemap[current_effector_name];
-            Vector3 v = target;
-            v = Vector3.TransformCoordinate(v, Transform_View);
-            v = Vector3.TransformCoordinate(v, Transform_Projection);
-            //Matrix world = Matrix.Translation(target);
-            //Matrix targetOnProj = world * Transform_View * Transform_Projection;
-            target = ScreenToWorld(x, y, v.Z, ref Transform_View, ref Transform_Projection);
-            solved = false;
+            TSONode bone;
+            if (fig.TSOList[0].nodemap.TryGetValue(current_effector_name, out bone))
+            {
+                Vector3 v = target;
+                v = Vector3.TransformCoordinate(v, Transform_View);
+                v = Vector3.TransformCoordinate(v, Transform_Projection);
+                target = ScreenToWorld(x, y, v.Z, ref Transform_View, ref Transform_Projection);
+                solved = false;
+            }
         }
     }
 
@@ -649,8 +649,9 @@ public class Viewer : IDisposable
             Figure fig;
             if (TryGetFigure(out fig))
             {
-                TSONode bone = fig.TSOList[0].nodemap[current_effector_name];
-                target = bone.GetWorldPosition();
+                TSONode bone;
+                if (fig.TSOList[0].nodemap.TryGetValue(current_effector_name, out bone))
+                    target = bone.GetWorldPosition();
             }
         };
         return true;
@@ -898,7 +899,8 @@ public class Viewer : IDisposable
         }
         else if (! solved)
         {
-            foreach (Figure fig in FigureList)
+            Figure fig;
+            if (TryGetFigure(out fig))
             {
                 foreach (TSOFile tso in fig.TSOList)
                     Solve(tso, current_effector_name);
@@ -965,28 +967,32 @@ public class Viewer : IDisposable
     //è’ìÀîªíË
     {
         Figure fig;
-
         if (TryGetFigure(out fig))
         {
-            TSONode effector = fig.TSOList[0].nodemap[current_effector_name];
-
-            foreach (string effector_name in effector_dictionary.Keys)
+            TSONode effector;
+            if (fig.TSOList[0].nodemap.TryGetValue(current_effector_name, out effector))
             {
-                TSONode bone = fig.TSOList[0].nodemap[effector_name];
-                bool found = FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone);
-                if (found && clicked)
+                foreach (string effector_name in effector_dictionary.Keys)
                 {
-                    current_effector_name = bone.Name;
-                    effector = bone;
-                    target = bone.GetWorldPosition();
-                }
-                Vector4 color;
-                if (found)
-                    color = new Vector4(1,1,1,1);
-                else
-                    color = ( bone == effector ) ? new Vector4(0,1,0,0.5f) : new Vector4(1,0,0,0.5f);
+                    TSONode bone;
+                    if (fig.TSOList[0].nodemap.TryGetValue(effector_name, out bone))
+                    {
+                        bool found = FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone);
+                        if (found && clicked)
+                        {
+                            current_effector_name = bone.Name;
+                            effector = bone;
+                            target = bone.GetWorldPosition();
+                        }
+                        Vector4 color;
+                        if (found)
+                            color = new Vector4(1,1,1,1);
+                        else
+                            color = ( bone == effector ) ? new Vector4(0,1,0,0.5f) : new Vector4(1,0,0,0.5f);
 
-                DrawMeshSub(sphere, bone.combined_matrix * world_matrix, color);
+                        DrawMeshSub(sphere, bone.combined_matrix * world_matrix, color);
+                    }
+                }
             }
         }
     }
@@ -1227,12 +1233,15 @@ public class Viewer : IDisposable
     /// <param name="tso"></param>
     private void Solve(TSOFile tso, string effector_name)
     {
-        TSONode effector = tso.nodemap[effector_name];
-
-        foreach (string node_name in effector_dictionary[effector_name])
+        TSONode effector;
+        if (tso.nodemap.TryGetValue(effector_name, out effector))
         {
-            TSONode node = tso.nodemap[node_name];
-            Solve(effector, node);
+            foreach (string node_name in effector_dictionary[effector_name])
+            {
+                TSONode node;
+                if (tso.nodemap.TryGetValue(node_name, out node))
+                    Solve(effector, node);
+            }
         }
     }
 
