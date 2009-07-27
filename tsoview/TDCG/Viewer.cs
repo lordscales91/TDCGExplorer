@@ -75,8 +75,7 @@ public class Viewer : IDisposable
 
         if (TryGetFigure(out fig))
         {
-            string effector_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand";
-            TSONode bone = fig.TSOList[0].nodemap[effector_name];
+            TSONode bone = fig.TSOList[0].nodemap[current_effector_name];
             Vector3 v = target;
             v = Vector3.TransformCoordinate(v, Transform_View);
             v = Vector3.TransformCoordinate(v, Transform_Projection);
@@ -99,6 +98,8 @@ public class Viewer : IDisposable
                 1000.0f );
     }
 
+    private bool clicked = false;
+
     private void form_OnMouseDown(object sender, MouseEventArgs e)
     {
         switch (e.Button)
@@ -106,14 +107,17 @@ public class Viewer : IDisposable
         case MouseButtons.Left:
             if (Control.ModifierKeys == Keys.Control)
                 lightDir = ScreenToOrientation(e.X, e.Y);
-            else
-            if (Control.ModifierKeys == Keys.Shift)
-                SetTargetOnScreen(e.X, e.Y);
             break;
         }
 
         lastScreenPoint.X = e.X;
         lastScreenPoint.Y = e.Y;
+        clicked = true;
+    }
+
+    private void form_OnMouseUp(object sender, MouseEventArgs e)
+    {
+        clicked = false;
     }
 
     private void form_OnMouseMove(object sender, MouseEventArgs e)
@@ -532,6 +536,7 @@ public class Viewer : IDisposable
 
         control.SizeChanged += new EventHandler(control_OnSizeChanged);
         control.MouseDown += new MouseEventHandler(form_OnMouseDown);
+        control.MouseUp += new MouseEventHandler(form_OnMouseUp);
         control.MouseMove += new MouseEventHandler(form_OnMouseMove);
 
         PresentParameters pp = new PresentParameters();
@@ -609,12 +614,35 @@ public class Viewer : IDisposable
 
             sprite = new Sprite(device);
         }
-        sphere = Mesh.Sphere(device, 0.12f, 8, 6);
+        sphere = Mesh.Sphere(device, 0.25f, 8, 6);
         camera.Update();
         OnDeviceReset(device, null);
 
+        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand"] =
+            new string[] {
+                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm",
+                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm" };
+
+        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm|W_RightForeArmRoll|W_RightHand"] =
+            new string[] {
+                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm",
+                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm" };
+
+        effector_dictionary["|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot"] =
+            new string[] {
+                "|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg",
+                "|W_Hips|W_RightHips_Dummy|W_RightUpLeg" };
+
+        effector_dictionary["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot"] =
+            new string[] {
+                "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg",
+                "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg" };
+
+        current_effector_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand";
+
         return true;
     }
+    string current_effector_name = null;
 
     private void OnDeviceLost(object sender, EventArgs e)
     {
@@ -860,7 +888,7 @@ public class Viewer : IDisposable
             foreach (Figure fig in FigureList)
             {
                 foreach (TSOFile tso in fig.TSOList)
-                    Solve(tso);
+                    Solve(tso, current_effector_name);
                 fig.UpdateBoneMatricesWithoutTMO();
             }
         }
@@ -922,21 +950,37 @@ public class Viewer : IDisposable
         }
  
     //è’ìÀîªíË
-    /*
     {
         Figure fig;
 
         if (TryGetFigure(out fig))
         {
-            TSONode bone = fig.TSOList[0].nodemap[sphere_bone_name];
-            DrawMeshSub(sphere, bone.combined_matrix * world_matrix, GetBoneColor(bone));
+            TSONode current_effector = fig.TSOList[0].nodemap[current_effector_name];
+
+            foreach (string effector_name in effector_dictionary.Keys)
+            {
+                TSONode bone = fig.TSOList[0].nodemap[effector_name];
+                bool found = FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone);
+                if (found && clicked)
+                {
+                    current_effector_name = bone.Name;
+                    current_effector = bone;
+                    target = bone.GetWorldPosition();
+                }
+                Vector4 color;
+                if (found)
+                    color = new Vector4(1,1,1,1);
+                else
+                    color = ( bone == current_effector ) ? new Vector4(0,1,0,0.5f) : new Vector4(1,0,0,0.5f);
+
+                DrawMeshSub(sphere, bone.combined_matrix * world_matrix, color);
+            }
         }
     }
-    */
 
     //ãtâ^ìÆäwÇ…Ç®ÇØÇÈñ⁄ïWÇï`âÊ
     {
-        DrawMeshSub(sphere, Matrix.Translation(target), new Vector4(1,1,0,1));
+        DrawMeshSub(sphere, Matrix.Translation(target), new Vector4(1,1,0,0.5f));
     }
 
         device.EndScene();
@@ -1140,26 +1184,15 @@ public class Viewer : IDisposable
         effect.End();
     }
 
-    private string sphere_bone_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck";
-
-    private Vector4 GetBoneColor(TSONode node)
-    {
-        if (FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y))
-            return new Vector4(1,1,1,1);
-        else
-            return new Vector4(1,0,0,1);
-    }
-
-    private bool FindBoneOnScreenPoint(float x, float y)
+    private bool FindBoneOnScreenPoint(float x, float y, TSONode bone)
     {
         Figure fig;
 
         if (TryGetFigure(out fig))
         {
-            TSONode bone = fig.TSOList[0].nodemap[sphere_bone_name];
             Matrix m = bone.combined_matrix * world_matrix;
 
-            float sphereRadius = 1.0f;
+            float sphereRadius = 0.25f;
             Vector3 sphereCenter = new Vector3(m.M41, m.M42, m.M43);
             Vector3 rayStart = ScreenToWorld(x, y, 0.0f, ref Transform_View, ref Transform_Projection);
             Vector3 rayEnd = ScreenToWorld(x, y, 1.0f, ref Transform_View, ref Transform_Projection);
@@ -1173,25 +1206,21 @@ public class Viewer : IDisposable
         return false;
     }
 
+    Dictionary<string, string[]> effector_dictionary = new Dictionary<string, string[]>();
+
     /// <summary>
     /// ãtâ^ìÆäwÇ…ÇÊÇÈâÇìæÇ‹Ç∑ÅB
     /// </summary>
     /// <param name="tso"></param>
-    private void Solve(TSOFile tso)
+    private void Solve(TSOFile tso, string effector_name)
     {
-        string effector_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand";
         TSONode effector = tso.nodemap[effector_name];
 
-        string node_name;
-        TSONode node;
-
-        node_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm";
-        node = tso.nodemap[node_name];
-        Solve(effector, node);
-
-        node_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm";
-        node = tso.nodemap[node_name];
-        Solve(effector, node);
+        foreach (string node_name in effector_dictionary[effector_name])
+        {
+            TSONode node = tso.nodemap[node_name];
+            Solve(effector, node);
+        }
     }
 
     /// <summary>
