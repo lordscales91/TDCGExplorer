@@ -48,6 +48,8 @@ public class Viewer : IDisposable
     /// </summary>
     public List<Figure> FigureList = new List<Figure>();
 
+    TMOFile baseTMO = null;
+
     // ƒ‰ƒCƒg•ûŒü
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
 
@@ -461,8 +463,9 @@ public class Viewer : IDisposable
         if (fig_list[0].TSOList.Count == 0) //POSE png
         {
             TMOFile tmo = fig_list[0].Tmo;
+            Debug.Assert(tmo != null);
             Figure fig;
-            if (tmo != null && TryGetFigure(out fig))
+            if (TryGetFigure(out fig))
             {
                 fig.Tmo = tmo;
                 fig.UpdateNodeMapAndBoneMatrices();
@@ -479,6 +482,8 @@ public class Viewer : IDisposable
             foreach (Figure fig in fig_list)
             {
                 fig.OpenTSOFile(device, effect);
+                if (fig.Tmo.frames == null)
+                    fig.Tmo = BaseTMO;
                 fig.UpdateNodeMapAndBoneMatrices();
                 FigureList.Add(fig);
             }
@@ -654,9 +659,18 @@ public class Viewer : IDisposable
                     target = bone.GetWorldPosition();
             }
         };
+
+        baseTMO = new TMOFile();
+        baseTMO.Load(Application.StartupPath + @"\" + @"base.tmo");
+
         return true;
     }
     string current_effector_name = null;
+
+    TMOFile BaseTMO
+    {
+        get { return baseTMO; }
+    }
 
     private void OnDeviceLost(object sender, EventArgs e)
     {
