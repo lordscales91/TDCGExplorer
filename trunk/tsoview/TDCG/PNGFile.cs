@@ -45,6 +45,10 @@ namespace TDCG
             using (Stream dest_stream = File.Create(dest_file))
                 Save(dest_stream);
         }
+        /// <summary>
+        /// 指定ストリームに保存します。
+        /// </summary>
+        /// <param name="dest_stream">ストリーム</param>
         public void Save(Stream dest_stream)
         {
             BinaryWriter bw = new BinaryWriter(dest_stream, System.Text.Encoding.Default);
@@ -97,6 +101,10 @@ namespace TDCG
             using (Stream source_stream = File.OpenRead(source_file))
                 Load(source_stream);
         }
+        /// <summary>
+        /// 指定ストリームから読み込みます。
+        /// </summary>
+        /// <param name="source_stream">ストリーム</param>
         public void Load(Stream source_stream)
         {
             this.reader = new BinaryReader(source_stream, System.Text.Encoding.Default);

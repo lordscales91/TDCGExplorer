@@ -17,11 +17,29 @@ namespace TDCG
         /// </summary>
         protected BinaryReader reader;
 
+        /// <summary>
+        /// ヘッダ
+        /// </summary>
         public byte[] header;
+        /// <summary>
+        /// オプション値0
+        /// </summary>
         public int opt0;
+        /// <summary>
+        /// オプション値1
+        /// </summary>
         public int opt1;
+        /// <summary>
+        /// bone配列
+        /// </summary>
         public TMONode[] nodes;
+        /// <summary>
+        /// フレーム配列
+        /// </summary>
         public TMOFrame[] frames;
+        /// <summary>
+        /// フッタ
+        /// </summary>
         public byte[] footer;
 
         internal Dictionary<string, TMONode> nodemap;
@@ -128,6 +146,12 @@ namespace TDCG
             this.footer = reader.ReadBytes(4);
         }
 
+        /// <summary>
+        /// 行列を得ます。
+        /// </summary>
+        /// <param name="name">bone名称</param>
+        /// <param name="frame_index">フレーム番号</param>
+        /// <returns></returns>
         public TMOMat GetTMOMat(string name, int frame_index)
         {
             return frames[frame_index].matrices[nodemap[name].ID];
@@ -529,10 +553,10 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 回転行列と変位行列に分割します。
+        /// 回転行列と位置ベクトルに分割します。
         /// </summary>
-        /// <param name="m">回転行列</param>
-        /// <returns>変位行列</returns>
+        /// <param name="m">元の行列（戻り値は回転行列）</param>
+        /// <returns>位置ベクトル</returns>
         public static Vector3 DecomposeMatrix(ref Matrix m)
         {
             Vector3 t = new Vector3(m.M41, m.M42, m.M43);
@@ -542,6 +566,12 @@ namespace TDCG
             return t;
         }
 
+        /// <summary>
+        /// 拡大縮小ベクトルと回転行列と位置ベクトルに分割します。
+        /// </summary>
+        /// <param name="m">元の行列（戻り値は回転行列）</param>
+        /// <param name="scaling">拡大縮小ベクトル</param>
+        /// <returns>位置ベクトル</returns>
         public static Vector3 DecomposeMatrix(ref Matrix m, out Vector3 scaling)
         {
             Vector3 vx = new Vector3(m.M11, m.M12, m.M13);
@@ -570,6 +600,13 @@ namespace TDCG
             return vt;
         }
 
+        /// <summary>
+        /// 拡大縮小ベクトルと回転quaternionと位置ベクトルに分割します。
+        /// </summary>
+        /// <param name="m">元の行列（戻り値は回転行列）</param>
+        /// <param name="scaling">拡大縮小ベクトル</param>
+        /// <param name="rotation">回転quaternion</param>
+        /// <returns>位置ベクトル</returns>
         public static Vector3 DecomposeMatrix(ref Matrix m, out Vector3 scaling, out Quaternion rotation)
         {
             Vector3 translation = DecomposeMatrix(ref m, out scaling);

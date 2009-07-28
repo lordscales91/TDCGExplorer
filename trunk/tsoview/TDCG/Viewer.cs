@@ -1230,7 +1230,8 @@ public class Viewer : IDisposable
     /// <summary>
     /// 逆運動学による解を得ます。
     /// </summary>
-    /// <param name="tso"></param>
+    /// <param name="tso">tso</param>
+    /// <param name="effector_name">エフェクタnode名称</param>
     private void Solve(TSOFile tso, string effector_name)
     {
         TSONode effector;
@@ -1268,6 +1269,13 @@ public class Viewer : IDisposable
             solved = true;
     }
 
+    /// <summary>
+    /// v1をv2に合わせる回転を得ます。
+    /// </summary>
+    /// <param name="v1">v1</param>
+    /// <param name="v2">v2</param>
+    /// <param name="q">q</param>
+    /// <returns>回転が必要であるか</returns>
     public bool RotationVectorToVector(Vector3 v1, Vector3 v2, out Quaternion q)
     {
         Vector3 n1 = Vector3.Normalize(v1);
