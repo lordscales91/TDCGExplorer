@@ -895,25 +895,12 @@ namespace TDCG
                 i.Move(translation);
         }
 
-        private Vector3 translation;
+        private Vector3 scaling;
         private Quaternion rotation;
+        private Vector3 translation;
 
         private Matrix transformation_matrix;
         private bool need_update_transformation;
-
-        /// <summary>
-        /// 位置変位
-        /// </summary>
-        public Vector3 Translation
-        {
-            get {
-                return translation;
-            }
-            set {
-                translation = value;
-                need_update_transformation = true;
-            }
-        }
 
         /// <summary>
         /// 回転変位
@@ -925,6 +912,20 @@ namespace TDCG
             }
             set {
                 rotation = value;
+                need_update_transformation = true;
+            }
+        }
+
+        /// <summary>
+        /// 位置変位
+        /// </summary>
+        public Vector3 Translation
+        {
+            get {
+                return translation;
+            }
+            set {
+                translation = value;
                 need_update_transformation = true;
             }
         }
@@ -967,6 +968,16 @@ namespace TDCG
         }
 
         /// <summary>
+        /// スケール行列
+        /// </summary>
+        public Matrix ScalingMatrix
+        {
+            get {
+                return Matrix.Scaling(scaling);
+            }
+        }
+
+        /// <summary>
         /// 回転行列
         /// </summary>
         public Matrix RotationMatrix
@@ -987,14 +998,14 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 変形行列。これは 回転行列 x 位置行列 です。
+        /// 変形行列。これは スケール行列 x 回転行列 x 位置行列 です。
         /// </summary>
         public Matrix TransformationMatrix
         {
             get {
                 if (need_update_transformation)
                 {
-                    transformation_matrix = RotationMatrix * TranslationMatrix;
+                    transformation_matrix = ScalingMatrix * RotationMatrix * TranslationMatrix;
                     need_update_transformation = false;
                 }
                 return transformation_matrix;
@@ -1002,7 +1013,7 @@ namespace TDCG
             set {
                 transformation_matrix = value;
                 Matrix m = transformation_matrix;
-                translation = TMOMat.DecomposeMatrix(ref m);
+                translation = TMOMat.DecomposeMatrix(ref m, out scaling);
                 rotation = Quaternion.RotationMatrix(m);
             }
         }

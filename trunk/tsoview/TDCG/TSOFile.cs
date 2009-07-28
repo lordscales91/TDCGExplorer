@@ -386,8 +386,9 @@ namespace TDCG
         private int id;
         private string name;
         private string sname;
-        private Vector3 translation;
+
         private Quaternion rotation;
+        private Vector3 translation;
 
         private Matrix transformation_matrix;
         private bool need_update_transformation;
@@ -403,20 +404,6 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ˆÊ’u•ÏˆÊ
-        /// </summary>
-        public Vector3 Translation
-        {
-            get {
-                return translation;
-            }
-            set {
-                translation = value;
-                need_update_transformation = true;
-            }
-        }
-
-        /// <summary>
         /// ‰ñ“]•ÏˆÊ
         /// </summary>
         public Quaternion Rotation
@@ -426,6 +413,20 @@ namespace TDCG
             }
             set {
                 rotation = value;
+                need_update_transformation = true;
+            }
+        }
+
+        /// <summary>
+        /// ˆÊ’u•ÏˆÊ
+        /// </summary>
+        public Vector3 Translation
+        {
+            get {
+                return translation;
+            }
+            set {
+                translation = value;
                 need_update_transformation = true;
             }
         }
