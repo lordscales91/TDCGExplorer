@@ -663,10 +663,12 @@ public class Viewer : IDisposable
         Console.WriteLine("OnDeviceLost");
         if (renderZ != null)
             renderZ.Dispose();
-        foreach (Surface surface in renderSurfaces)
-            surface.Dispose();
-        foreach (Texture texture in renderTextures)
-            texture.Dispose();
+        if (renderSurfaces != null)
+            foreach (Surface surface in renderSurfaces)
+                surface.Dispose();
+        if (renderTextures != null)
+            foreach (Texture texture in renderTextures)
+                texture.Dispose();
         if (dev_zbuf != null)
             dev_zbuf.Dispose();
         if (dev_surface != null)
@@ -740,7 +742,6 @@ public class Viewer : IDisposable
         device.RenderState.Lighting = false;
         device.RenderState.CullMode = Cull.CounterClockwise;
 
-        device.RenderState.AlphaBlendEnable = true;
         device.SetTextureStageState(0, TextureStageStates.AlphaOperation, (int)TextureOperation.Modulate);
         device.SetTextureStageState(0, TextureStageStates.AlphaArgument1, (int)TextureArgument.TextureColor);
         device.SetTextureStageState(0, TextureStageStates.AlphaArgument2, (int)TextureArgument.Current);
@@ -942,22 +943,20 @@ public class Viewer : IDisposable
             effect.SetValue("wvp", world_view_projection_matrix);
         }
 
-        if (shadowMapEnabled && shadowShown)
+        if (shadowMapEnabled)
         {
-            DrawShadowMap();
-            DrawGaussianBlur();
-            DrawFigure();
-        }
-        else
-        {
-            device.SetRenderTarget(0, renderSurfaces[2]);
-            device.DepthStencilSurface = renderZ;
-            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
-
-            DrawFigure();
+            if (shadowShown)
+            {
+                DrawShadowMap();
+                DrawGaussianBlur();
+            }
+            else
+            {
+                ClearShadowMap();
+            }
         }
 
-        device.RenderState.AlphaBlendEnable = false;
+        DrawFigure();
 
         if (shadowMapEnabled && SpriteShown)
         {
@@ -1028,14 +1027,13 @@ public class Viewer : IDisposable
 
     void DrawShadowMap()
     {
+        device.RenderState.AlphaBlendEnable = false;
+
         device.SetRenderTarget(0, renderSurfaces[0]);
         device.DepthStencilSurface = renderZ;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
 
         effect.SetValue("lightview", Light_View);
-
-        device.RenderState.AlphaBlendEnable = false;
-
         effect.Technique = handle_ShadowMap;
 
         foreach (Figure fig in FigureList)
@@ -1121,14 +1119,25 @@ public class Viewer : IDisposable
         effect.End();
     }
 
+    void ClearShadowMap()
+    {
+        device.SetRenderTarget(0, renderSurfaces[2]);
+        device.DepthStencilSurface = renderZ;
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
+    }
+    
     void DrawFigure()
     {
+        device.RenderState.AlphaBlendEnable = true;
+
         device.SetRenderTarget(0, dev_surface);
         device.DepthStencilSurface = dev_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
 
-        device.RenderState.AlphaBlendEnable = true;
-        effect.SetValue("texShadowMap", renderTextures[2]);
+        if (shadowMapEnabled)
+        {
+            effect.SetValue("texShadowMap", renderTextures[2]);
+        }
 
         foreach (Figure fig in FigureList)
         foreach (TSOFile tso in fig.TSOList)
@@ -1166,6 +1175,8 @@ public class Viewer : IDisposable
 
     void DrawSprite()
     {
+        device.RenderState.AlphaBlendEnable = false;
+
         sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
         Rectangle rect = new Rectangle(0, 0, ztexw, ztexh);
 
@@ -1306,10 +1317,12 @@ public class Viewer : IDisposable
             sprite.Dispose();
         if (renderZ != null)
             renderZ.Dispose();
-        foreach (Surface surface in renderSurfaces)
-            surface.Dispose();
-        foreach (Texture texture in renderTextures)
-            texture.Dispose();
+        if (renderSurfaces != null)
+            foreach (Surface surface in renderSurfaces)
+                surface.Dispose();
+        if (renderTextures != null)
+            foreach (Texture texture in renderTextures)
+                texture.Dispose();
         if (dev_zbuf != null)
             dev_zbuf.Dispose();
         if (dev_surface != null)
