@@ -8,11 +8,22 @@ using Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
-
+/// <summary>
+/// TPOファイルのリストです。
+/// </summary>
 public class TPOFileList
 {
-    List<TPOFile> list = new List<TPOFile>();
+    private List<TPOFile> list = new List<TPOFile>();
+    //初期モーション行列値を保持するフレーム配列
+    private TMOFrame[] frames;
 
+    private TMOFile tmo = null;
+
+    /// <summary>
+    /// インデクサ
+    /// </summary>
+    /// <param name="i">index</param>
+    /// <returns>tpo</returns>
     public TPOFile this[int i]
     {
         get
@@ -21,6 +32,9 @@ public class TPOFileList
         }
     }
 
+    /// <summary>
+    /// 要素数
+    /// </summary>
     public int Count
     {
         get
@@ -29,17 +43,28 @@ public class TPOFileList
         }
     }
     
+    /// <summary>
+    /// tpoを追加します。
+    /// </summary>
+    /// <param name="tpo"></param>
     public void Add(TPOFile tpo)
     {
         tpo.Tmo = tmo;
         list.Add(tpo);
     }
 
+    /// <summary>
+    /// リストを消去します。
+    /// </summary>
     public void Clear()
     {
         list.Clear();
     }
 
+    /// <summary>
+    /// 体型リストを設定します。
+    /// </summary>
+    /// <param name="pro_list">体型リスト</param>
     public void SetProportionList(List<IProportion> pro_list)
     {
         Clear();
@@ -51,6 +76,9 @@ public class TPOFileList
         }
     }
 
+    /// <summary>
+    /// Tpo.Tmoに含まれるモーション行列値を変形します。
+    /// </summary>
     public void Transform()
     {
         LoadMatrix();
@@ -58,6 +86,10 @@ public class TPOFileList
             tpo.Transform();
     }
 
+    /// <summary>
+    /// 指定番号のフレームに含まれるモーション行列値を変形します。
+    /// </summary>
+    /// <param name="i">フレーム番号</param>
     public void Transform(int i)
     {
         LoadMatrix();
@@ -65,10 +97,9 @@ public class TPOFileList
             tpo.Transform(i);
     }
 
-    //初期モーション行列値を保持するフレーム配列
-    internal TMOFrame[] frames;
-
-    internal TMOFile tmo = null;
+    /// <summary>
+    /// tmo
+    /// </summary>
     public TMOFile Tmo
     {
         get
@@ -108,6 +139,9 @@ public class TPOFileList
         }
     }
 
+    /// <summary>
+    /// 退避モーション行列値をtmoに戻します。
+    /// </summary>
     public void LoadMatrix()
     {
         if (frames == null)
@@ -125,6 +159,9 @@ public class TPOFileList
         }
     }
 
+    /// <summary>
+    /// モーション行列値をtmoから退避します。
+    /// </summary>
     public void SaveMatrix()
     {
         if (frames == null)
@@ -143,11 +180,21 @@ public class TPOFileList
     }
 }
 
+    /// <summary>
+    /// TPOファイルを扱います。
+    /// </summary>
 public class TPOFile
 {
+    private float ratio = 0.0f;
+    private TMOFile tmo = null;
+    private Dictionary<string, TPONode> nodemap = new Dictionary<string, TPONode>();
+    private IProportion proportion = null;
+
+    /// <summary>
+    /// bone配列
+    /// </summary>
     public TPONode[] nodes;
 
-    internal float ratio = 0.0f;
     /// <summary>
     /// TPONodeの変形係数に乗ずる変形比率
     /// </summary>
@@ -155,9 +202,10 @@ public class TPOFile
     {
         get { return ratio; } set { ratio = value; }
     }
-    internal Dictionary<string, TPONode> nodemap = new Dictionary<string, TPONode>();
 
-    internal TMOFile tmo = null;
+    /// <summary>
+    /// tmo
+    /// </summary>
     public TMOFile Tmo
     {
         get
@@ -205,13 +253,21 @@ public class TPOFile
         }
     }
 
+    /// <summary>
+    /// tpoを生成します。
+    /// </summary>
     public TPOFile()
     {
     }
 
-    IProportion proportion = null;
+    /// <summary>
+    /// 体型
+    /// </summary>
     public IProportion Proportion { get { return proportion; } set { proportion = value; }}
 
+    /// <summary>
+    /// TPONodeに変形係数を設定します。
+    /// </summary>
     public void ExecuteProportion()
     {
         if (proportion == null)
@@ -234,7 +290,7 @@ public class TPOFile
     }
 
     /// <summary>
-    /// TPONodeの変形係数に従ってTpo.Tmoのモーション行列値を変形する。
+    /// Tpo.Tmoに含まれるモーション行列値を変形します。
     /// </summary>
     public void Transform()
     {
@@ -248,6 +304,10 @@ public class TPOFile
         }
     }
 
+    /// <summary>
+    /// 指定番号のフレームに含まれるモーション行列値を変形します。
+    /// </summary>
+    /// <param name="i">フレーム番号</param>
     public void Transform(int i)
     {
         if (tmo.frames == null)
@@ -264,14 +324,52 @@ public class TPOFile
     }
 }
 
+    /// <summary>
+    /// 体型変更操作
+    /// </summary>
 public class TPOCommand
 {
-    public enum Type { Scale, Scale1, Scale0, RotateX, RotateY, RotateZ, Move };
+    /// <summary>
+    /// 操作タイプ
+    /// </summary>
+    public enum Type {
+        /// <summary>
+        /// 拡大
+        /// </summary>
+        Scale,
+        /// <summary>
+        /// 拡大（子boneはそれぞれ縮小）
+        /// </summary>
+        Scale1,
+        /// <summary>
+        /// 縮小
+        /// </summary>
+        Scale0,
+        /// <summary>
+        /// X軸回転
+        /// </summary>
+        RotateX,
+        /// <summary>
+        /// Y軸回転
+        /// </summary>
+        RotateY,
+        /// <summary>
+        /// Z軸回転
+        /// </summary>
+        RotateZ,
+        /// <summary>
+        /// 移動
+        /// </summary>
+        Move
+    };
     internal Type type;
     internal Vector3 v;
     internal float angle;
 }
 
+    /// <summary>
+    /// boneを扱います。
+    /// </summary>
 public class TPONode
 {
     private int id;
@@ -281,17 +379,35 @@ public class TPONode
     internal List<TPONode> children = new List<TPONode>();
     internal TPONode parent;
 
+    /// <summary>
+    /// ID
+    /// </summary>
     public int ID { get { return id; } }
+    /// <summary>
+    /// 名称
+    /// </summary>
     public string Name { get { return name; } }
+    /// <summary>
+    /// 名称（短い形式）
+    /// </summary>
     public string ShortName { get { return sname; } }
 
     internal List<TPOCommand> command_list = new List<TPOCommand>();
 
+    /// <summary>
+    /// 変形操作を追加します。
+    /// </summary>
+    /// <param name="command"></param>
     public void AddCommand(TPOCommand command)
     {
         command_list.Add(command);
     }
     
+    /// <summary>
+    /// 変形操作を追加します。
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="v"></param>
     public void AddCommand(TPOCommand.Type type, Vector3 v)
     {
         TPOCommand command = new TPOCommand();
@@ -300,6 +416,11 @@ public class TPONode
         command_list.Add(command);
     }
     
+    /// <summary>
+    /// 変形操作を追加します。
+    /// </summary>
+    /// <param name="type"></param>
+    /// <param name="angle"></param>
     public void AddCommand(TPOCommand.Type type, float angle)
     {
         TPOCommand command = new TPOCommand();
@@ -308,6 +429,11 @@ public class TPONode
         command_list.Add(command);
     }
 
+    /// <summary>
+    /// TPONodeを生成します。
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="name"></param>
     public TPONode(int id, string name)
     {
         this.id = id;
@@ -315,6 +441,11 @@ public class TPONode
         this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
     }
 
+    /// <summary>
+    /// モーション行列を指定比率で変形します。
+    /// </summary>
+    /// <param name="mat">モーション行列</param>
+    /// <param name="ratio">比率</param>
     public void Transform(TMOMat mat, float ratio)
     {
         foreach (TPOCommand command in command_list)
@@ -359,11 +490,23 @@ public class TPONode
         }
     }
 
+    /// <summary>
+    /// 拡大します。
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
     public void Scale(float x, float y, float z)
     {
         AddCommand(TPOCommand.Type.Scale, new Vector3(x, y, z));
     }
 
+    /// <summary>
+    /// 拡大します。同時に子boneはそれぞれ縮小します。
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
     public void Scale1(float x, float y, float z)
     {
         AddCommand(TPOCommand.Type.Scale1, new Vector3(x, y, z));
@@ -372,26 +515,50 @@ public class TPONode
             child.Scale0(x, y, z);
     }
 
+    /// <summary>
+    /// 縮小します。
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
     public void Scale0(float x, float y, float z)
     {
         AddCommand(TPOCommand.Type.Scale0, new Vector3(x, y, z));
     }
 
+    /// <summary>
+    /// X軸回転を行います。
+    /// </summary>
+    /// <param name="angle"></param>
     public void RotateX(float angle)
     {
         AddCommand(TPOCommand.Type.RotateX, angle);
     }
 
+    /// <summary>
+    /// Y軸回転を行います。
+    /// </summary>
+    /// <param name="angle"></param>
     public void RotateY(float angle)
     {
         AddCommand(TPOCommand.Type.RotateY, angle);
     }
 
+    /// <summary>
+    /// Z軸回転を行います。
+    /// </summary>
+    /// <param name="angle"></param>
     public void RotateZ(float angle)
     {
         AddCommand(TPOCommand.Type.RotateZ, angle);
     }
 
+    /// <summary>
+    /// 移動します。
+    /// </summary>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
     public void Move(float x, float y, float z)
     {
         AddCommand(TPOCommand.Type.Move, new Vector3(x, y, z));

@@ -107,7 +107,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// TSOFileに対するnodemapを追加します。
+    /// tsoに対するnodemapを追加します。
     /// </summary>
     /// <param name="tso">tso</param>
     protected void AddNodeMap(TSOFile tso)
@@ -134,8 +134,11 @@ public class Figure : IDisposable
         matrixStack = new MatrixStack();
     }
     
-    /// TMOFileを変更したときに呼ぶ必要があります。
-    /// tmo frame indexと中心点を設定します。
+    /// <summary>
+    /// tmoを変更したときに呼ぶ必要があります。
+    /// </summary>
+    /// フレーム番号を0に設定します。
+    /// 中心点を腰boneの位置に設定します。
     protected void UpdateTMO()
     {
         Debug.Assert(tmo != null);
@@ -152,7 +155,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// 次のtmo frameに進みます。
+    /// 次のフレームに進みます。
     /// </summary>
     public void NextTMOFrame()
     {
@@ -165,7 +168,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// 現在のtmo frameを得ます。
+    /// 現在のフレームを得ます。
     /// </summary>
     /// <returns>現在のtmo frame</returns>
     protected TMOFrame GetTMOFrame()
@@ -178,13 +181,17 @@ public class Figure : IDisposable
         return null;
     }
 
+    /// <summary>
+    /// 現在のフレーム番号を得ます。
+    /// </summary>
+    /// <returns></returns>
     public int GetFrameIndex()
     {
         return current_frame_index;
     }
 
     /// <summary>
-    /// TSOFileをTSOListに追加します。
+    /// tsoをTSOListに追加します。
     /// </summary>
     /// <param name="tso">tso</param>
     public void AddTSO(TSOFile tso)
