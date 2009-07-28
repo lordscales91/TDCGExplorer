@@ -13,37 +13,36 @@ namespace TDCG
     /// </summary>
 public class Camera
 {
-    internal Vector3 center = Vector3.Empty;
+    private Vector3 center = Vector3.Empty;
+    private Vector3 translation = Vector3.Empty;
+    private Vector3 localP = new Vector3(0.0f, 0.0f, -10.0f);
+    private Vector3 dirD = Vector3.Empty; //カメラ移動方向ベクトル
+    private float zD = 0.0f;      //カメラ奥行オフセット値
+    private bool needUpdate = true;    //更新する必要があるか
+    private Matrix view = Matrix.Identity;  //ビュー行列
+    private Matrix pose = Matrix.Identity;
+    private float rotZD = 0.0f;   //カメラ Z軸回転差分
+    private float angleU = 0.02f;        //移動時回転単位（ラジアン）
+
     /// <summary>
     /// 回転中心
     /// </summary>
     public Vector3 Center { get { return center; } set { center = value; } }
 
-    internal Vector3 translation = Vector3.Empty;
     /// <summary>
     /// view座標上のカメラの位置
     /// </summary>
     public Vector3 Translation { get { return translation; } set { translation = value; } }
 
-    internal Vector3 camPosL = new Vector3(0.0f, 0.0f, -10.0f);
     /// <summary>
     /// 注視点を原点とした座標上のカメラの位置
     /// </summary>
-    public Vector3 CamPosL { get { return camPosL; } set { camPosL = value; } }
+    public Vector3 LocalPosition { get { return localP; } set { localP = value; } }
     
-    internal Vector3 camDirDef = Vector3.Empty; //カメラ移動方向ベクトル
-    internal float offsetZ = 0.0f;      //カメラ奥行オフセット値
-    internal bool needUpdate = true;    //更新したか
-    internal Matrix viewMat = Matrix.Identity;  //ビュー行列
-
-    internal Matrix camPoseMat = Matrix.Identity;
     /// <summary>
     /// カメラの姿勢行列
     /// </summary>
-    public Matrix CamPoseMat { get { return camPoseMat; } set { camPoseMat = value; } }
-
-    internal float camZRotDef = 0.0f;   //カメラ Z軸回転差分
-    internal float camAngleUnit = 0.02f;        //移動時回転単位（ラジアン）
+    public Matrix Pose { get { return pose; } set { pose = value; } }
 
     /// <summary>
     /// カメラを生成します。
@@ -108,10 +107,10 @@ public class Camera
         Camera camera = new Camera();
         camera.Center = Vector3.Lerp(cam1.Center, cam2.Center, ratio);
         camera.Translation = Vector3.Lerp(cam1.Translation, cam2.Translation, ratio);
-        camera.CamPosL = Vector3.Lerp(cam1.CamPosL, cam2.CamPosL, ratio);
-        Quaternion q1 = Quaternion.RotationMatrix(cam1.CamPoseMat);
-        Quaternion q2 = Quaternion.RotationMatrix(cam2.CamPoseMat);
-        camera.CamPoseMat = Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, ratio));
+        camera.LocalPosition = Vector3.Lerp(cam1.LocalPosition, cam2.LocalPosition, ratio);
+        Quaternion q1 = Quaternion.RotationMatrix(cam1.Pose);
+        Quaternion q2 = Quaternion.RotationMatrix(cam2.Pose);
+        camera.Pose = Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, ratio));
         return camera;
     }
 
@@ -125,20 +124,20 @@ public class Camera
     {
         center = Vector3.Lerp(cam1.Center, cam2.Center, ratio);
         translation = Vector3.Lerp(cam1.Translation, cam2.Translation, ratio);
-        camPosL = Vector3.Lerp(cam1.CamPosL, cam2.CamPosL, ratio);
-        Quaternion q1 = Quaternion.RotationMatrix(cam1.CamPoseMat);
-        Quaternion q2 = Quaternion.RotationMatrix(cam2.CamPoseMat);
-        camPoseMat = Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, ratio));
+        localP = Vector3.Lerp(cam1.LocalPosition, cam2.LocalPosition, ratio);
+        Quaternion q1 = Quaternion.RotationMatrix(cam1.Pose);
+        Quaternion q2 = Quaternion.RotationMatrix(cam2.Pose);
+        pose = Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, ratio));
 
         //view行列更新
-        Vector3 posW = camPosL + center;
+        Vector3 posW = localP + center;
         {
-            Matrix m = camPoseMat;
+            Matrix m = pose;
             m.M41 = posW.X;
             m.M42 = posW.Y;
             m.M43 = posW.Z;
             m.M44 = 1.0f;
-            viewMat = Matrix.Invert(m) * Matrix.Translation(-translation);
+            view = Matrix.Invert(m) * Matrix.Translation(-translation);
         }
 
         //差分をリセット
@@ -153,38 +152,38 @@ public class Camera
     {
         center = Vector3.Empty;
         translation = Vector3.Empty;
-        camPosL = new Vector3(0.0f, 0.0f, -10.0f);
-        camPoseMat = Matrix.Identity;
+        localP = new Vector3(0.0f, 0.0f, -10.0f);
+        pose = Matrix.Identity;
         needUpdate = true;
     }
 
     /// <summary>
     /// カメラの位置を更新します。
     /// </summary>
-    /// <param name="camDirX">移動方向（経度）</param>
-    /// <param name="camDirY">移動方向（緯度）</param>
-    /// <param name="offsetZ">奥行オフセット値</param>
-    public void Move(float camDirX, float camDirY, float offsetZ)
+    /// <param name="dirX">移動方向（経度）</param>
+    /// <param name="dirY">移動方向（緯度）</param>
+    /// <param name="dirZ">移動方向（奥行）</param>
+    public void Move(float dirX, float dirY, float dirZ)
     {
-        if (camDirX == 0.0f && camDirY == 0.0f && offsetZ == 0.0f)
+        if (dirX == 0.0f && dirY == 0.0f && dirZ == 0.0f)
             return;
 
-        camDirDef.X += camDirX;
-        camDirDef.Y += camDirY;
-        this.offsetZ += offsetZ;
+        dirD.X += dirX;
+        dirD.Y += dirY;
+        this.zD += dirZ;
         needUpdate = true;
     }
 
     /// <summary>
     /// カメラをZ軸回転します。
     /// </summary>
-    /// <param name="radian">回転角度（ラジアン）</param>
-    public void RotZ(float radian)
+    /// <param name="angle">回転角度（ラジアン）</param>
+    public void RotZ(float angle)
     {
-        if (radian == 0.0f)
+        if (angle == 0.0f)
             return;
 
-        camZRotDef = radian;
+        rotZD = angle;
         needUpdate = true;
     }
 
@@ -198,10 +197,10 @@ public class Camera
     /// <param name="up">上方ベクトル</param>
     public void LookAt(Vector3 eye, Vector3 center, Vector3 up)
     {
-        this.camPosL = center - eye;
+        this.localP = center - eye;
         {
             // カメラ姿勢を更新
-            Vector3 z = Vector3.Normalize(-camPosL);
+            Vector3 z = Vector3.Normalize(-localP);
             Vector3 y = up;
             Vector3 x = Vector3.Normalize(Vector3.Cross(y, z));
             y = Vector3.Normalize(Vector3.Cross(z, x));
@@ -216,21 +215,21 @@ public class Camera
                 m.M31 = z.X;
                 m.M32 = z.Y;
                 m.M33 = z.Z;
-                this.camPoseMat = m;
+                this.pose = m;
             }
         }
         this.center = Vector3.Empty;
         this.translation = eye;
 
         //view行列更新
-        Vector3 posW = camPosL + this.center;
+        Vector3 posW = localP + this.center;
         {
-            Matrix m = camPoseMat;
+            Matrix m = pose;
             m.M41 = posW.X;
             m.M42 = posW.Y;
             m.M43 = posW.Z;
             m.M44 = 1.0f;
-            viewMat = Matrix.Invert(m) * Matrix.Translation(-translation);
+            view = Matrix.Invert(m) * Matrix.Translation(-translation);
         }
 
         //差分をリセット
@@ -253,19 +252,19 @@ public class Camera
     /// <summary>
     /// カメラのZ軸方向を得ます。
     /// </summary>
-    /// <returns></returns>
-    public Vector3 GetCamZAxis()
+    /// <returns>Z軸方向</returns>
+    public Vector3 GetZAxis()
     {
-        return new Vector3(camPoseMat.M31, camPoseMat.M32, camPoseMat.M33);
+        return new Vector3(pose.M31, pose.M32, pose.M33);
     }
 
     /// <summary>
     /// カメラのY軸方向を得ます。
     /// </summary>
-    /// <returns></returns>
-    public Vector3 GetCamYAxis()
+    /// <returns>Y軸方向</returns>
+    public Vector3 GetYAxis()
     {
-        return new Vector3(camPoseMat.M21, camPoseMat.M22, camPoseMat.M23);
+        return new Vector3(pose.M21, pose.M22, pose.M23);
     }
 
     /// <summary>
@@ -277,22 +276,22 @@ public class Camera
             return;
 
         //カメラ Z軸回転で姿勢を仮更新
-        camPoseMat = Matrix.RotationZ(camZRotDef) * camPoseMat;
+        pose = Matrix.RotationZ(rotZD) * pose;
 
         //緯度経度の差分移動
-        Vector3 dL = Vector3.TransformCoordinate(camDirDef, camPoseMat);
-        if (dL.X != 0.0f || dL.Y != 0.0f || dL.Z != 0.0f)
+        Vector3 localD = Vector3.TransformCoordinate(dirD, pose);
+        if (localD.X != 0.0f || localD.Y != 0.0f || localD.Z != 0.0f)
         {
             //カメラ位置を更新
-            Vector3 camZAxis = GetCamZAxis();
-            Vector3 rotAxis = Vector3.Cross(dL, camZAxis);
-            Quaternion q = Quaternion.RotationAxis(rotAxis, camAngleUnit * camDirDef.Length());
-            Matrix rotMat = Matrix.RotationQuaternion(q);
-            camPosL = Vector3.TransformCoordinate(camPosL, rotMat);
+            Vector3 zAxis = GetZAxis();
+            Vector3 rotAxis = Vector3.Cross(localD, zAxis);
+            Quaternion q = Quaternion.RotationAxis(rotAxis, angleU * dirD.Length());
+            Matrix rotation = Matrix.RotationQuaternion(q);
+            localP = Vector3.TransformCoordinate(localP, rotation);
 
             //カメラ姿勢を更新
-            Vector3 z = Vector3.Normalize(-camPosL);
-            Vector3 y = GetCamYAxis();
+            Vector3 z = Vector3.Normalize(-localP);
+            Vector3 y = GetYAxis();
             Vector3 x = Vector3.Normalize(Vector3.Cross(y, z));
             y = Vector3.Normalize(Vector3.Cross(z, x));
             {
@@ -306,26 +305,26 @@ public class Camera
                 m.M31 = z.X;
                 m.M32 = z.Y;
                 m.M33 = z.Z;
-                camPoseMat = m;
+                pose = m;
             }
         }
 
         //奥行オフセットを更新
-        if (offsetZ != 0.0f && camPosL.Length() - offsetZ > 0)
+        if (zD != 0.0f && localP.Length() - zD > 0)
         {
-            Vector3 z = Vector3.Normalize(-camPosL);
-            camPosL += offsetZ * z;
+            Vector3 z = Vector3.Normalize(-localP);
+            localP += zD * z;
         }
 
         //view行列更新
-        Vector3 posW = camPosL + center;
+        Vector3 worldP = localP + center;
         {
-            Matrix m = camPoseMat;
-            m.M41 = posW.X;
-            m.M42 = posW.Y;
-            m.M43 = posW.Z;
+            Matrix m = pose;
+            m.M41 = worldP.X;
+            m.M42 = worldP.Y;
+            m.M43 = worldP.Z;
             m.M44 = 1.0f;
-            viewMat = Matrix.Invert(m) * Matrix.Translation(-translation);
+            view = Matrix.Invert(m) * Matrix.Translation(-translation);
         }
 
         //差分をリセット
@@ -338,7 +337,7 @@ public class Camera
     /// </summary>
     public Matrix GetViewMatrix()
     {
-        return viewMat;
+        return view;
     }
 
     /// <summary>
@@ -378,9 +377,9 @@ public class Camera
     /// </summary>
     protected void ResetDefValue()
     {
-        camDirDef = Vector3.Empty;
-        offsetZ = 0.0f;
-        camZRotDef = 0.0f;
+        dirD = Vector3.Empty;
+        zD = 0.0f;
+        rotZD = 0.0f;
     }
 
     private CameraMotion motion = null;
