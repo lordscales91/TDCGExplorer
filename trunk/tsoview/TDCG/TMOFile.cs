@@ -401,17 +401,6 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 指定変位だけ移動します。
-        /// </summary>
-        /// <param name="translation">変位</param>
-        public void Move(Vector3 translation)
-        {
-            m.M41 += translation.X;
-            m.M42 += translation.Y;
-            m.M43 += translation.Z;
-        }
-
-        /// <summary>
         /// 指定比率で拡大します。
         /// </summary>
         /// <param name="x">X軸拡大比率</param>
@@ -523,6 +512,17 @@ namespace TDCG
             Vector3 v = new Vector3(0.0f, 1.0f, 0.0f);
             Quaternion qt = Quaternion.RotationAxis(v, angle);
             m *= Matrix.RotationQuaternion(qt);
+        }
+
+        /// <summary>
+        /// 指定変位だけ移動します。
+        /// </summary>
+        /// <param name="translation">変位</param>
+        public void Move(Vector3 translation)
+        {
+            m.M41 += translation.X;
+            m.M42 += translation.Y;
+            m.M43 += translation.Z;
         }
 
         /// <summary>
@@ -797,20 +797,6 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 指定変位だけ移動します。
-        /// </summary>
-        /// <param name="x">X軸変位</param>
-        /// <param name="y">Y軸変位</param>
-        /// <param name="z">Z軸変位</param>
-        public void Move(float x, float y, float z)
-        {
-            Vector3 translation = new Vector3(x, y, z);
-
-            foreach (TMOMat i in frame_matrices)
-                i.Move(translation);
-        }
-
-        /// <summary>
         /// 指定変位だけ拡大します。
         /// </summary>
         /// <param name="x">X軸変位</param>
@@ -893,6 +879,132 @@ namespace TDCG
         {
             foreach (TMOMat i in frame_matrices)
                 i.RotateWorldY(angle);
+        }
+
+        /// <summary>
+        /// 指定変位だけ移動します。
+        /// </summary>
+        /// <param name="x">X軸変位</param>
+        /// <param name="y">Y軸変位</param>
+        /// <param name="z">Z軸変位</param>
+        public void Move(float x, float y, float z)
+        {
+            Vector3 translation = new Vector3(x, y, z);
+
+            foreach (TMOMat i in frame_matrices)
+                i.Move(translation);
+        }
+
+        private Vector3 translation;
+        private Quaternion rotation;
+
+        private Matrix transformation_matrix;
+        private bool need_update_transformation;
+
+        /// <summary>
+        /// 位置変位
+        /// </summary>
+        public Vector3 Translation
+        {
+            get {
+                return translation;
+            }
+            set {
+                translation = value;
+                need_update_transformation = true;
+            }
+        }
+
+        /// <summary>
+        /// 回転変位
+        /// </summary>
+        public Quaternion Rotation
+        {
+            get {
+                return rotation;
+            }
+            set {
+                rotation = value;
+                need_update_transformation = true;
+            }
+        }
+
+        /// <summary>
+        /// ワールド座標系での位置と向きを表します。これはviewerから更新されます。
+        /// </summary>
+        public Matrix combined_matrix;
+
+        /// <summary>
+        /// ワールド座標系での位置を得ます。
+        /// </summary>
+        /// <returns></returns>
+        public Vector3 GetWorldPosition()
+        {
+            TMONode bone = this;
+            Vector3 v = Vector3.Empty;
+            while (bone != null)
+            {
+                v = Vector3.TransformCoordinate(v, bone.TransformationMatrix);
+                bone = bone.parent;
+            }
+            return v;
+        }
+
+        /// <summary>
+        /// ワールド座標系での位置と向きを得ます。
+        /// </summary>
+        /// <returns></returns>
+        public Matrix GetWorldCoordinate()
+        {
+            TMONode bone = this;
+            Matrix m = Matrix.Identity;
+            while (bone != null)
+            {
+                m.Multiply(bone.TransformationMatrix);
+                bone = bone.parent;
+            }
+            return m;
+        }
+
+        /// <summary>
+        /// 回転行列
+        /// </summary>
+        public Matrix RotationMatrix
+        {
+            get {
+                return Matrix.RotationQuaternion(rotation);
+            }
+        }
+
+        /// <summary>
+        /// 位置行列
+        /// </summary>
+        public Matrix TranslationMatrix
+        {
+            get {
+                return Matrix.Translation(translation);
+            }
+        }
+
+        /// <summary>
+        /// 変形行列。これは 回転行列 x 位置行列 です。
+        /// </summary>
+        public Matrix TransformationMatrix
+        {
+            get {
+                if (need_update_transformation)
+                {
+                    transformation_matrix = RotationMatrix * TranslationMatrix;
+                    need_update_transformation = false;
+                }
+                return transformation_matrix;
+            }
+            set {
+                transformation_matrix = value;
+                Matrix m = transformation_matrix;
+                translation = TMOMat.DecomposeMatrix(ref m);
+                rotation = Quaternion.RotationMatrix(m);
+            }
         }
     }
 }
