@@ -201,15 +201,7 @@ public class Figure : IDisposable
 
         current_frame_index = frame_index;
 
-        foreach (TSONode tso_node in tso.nodes)
-        {
-            TMONode tmo_node;
-            if (nodemap.TryGetValue(tso_node, out tmo_node))
-            {
-                tso_node.TransformationMatrix = tmo_node.TransformationMatrix;
-                tso_node.combined_matrix = tmo_node.combined_matrix;
-            }
-        }
+        CopyBoneMatricesToTSO(tso);
 
         TSOList.Add(tso);
     }
@@ -222,15 +214,7 @@ public class Figure : IDisposable
         UpdateBoneMatrices(tmo, null);
 
         foreach (TSOFile tso in TSOList)
-        foreach (TSONode tso_node in tso.nodes)
-        {
-            TMONode tmo_node;
-            if (nodemap.TryGetValue(tso_node, out tmo_node))
-            {
-                tso_node.TransformationMatrix = tmo_node.TransformationMatrix;
-                tso_node.combined_matrix = tmo_node.combined_matrix;
-            }
-        }
+            CopyBoneMatricesToTSO(tso);
     }
 
     /// <summary>
@@ -255,15 +239,7 @@ public class Figure : IDisposable
         UpdateBoneMatrices(tmo, tmo_frame);
 
         foreach (TSOFile tso in TSOList)
-        foreach (TSONode tso_node in tso.nodes)
-        {
-            TMONode tmo_node;
-            if (nodemap.TryGetValue(tso_node, out tmo_node))
-            {
-                tso_node.TransformationMatrix = tmo_node.TransformationMatrix;
-                tso_node.combined_matrix = tmo_node.combined_matrix;
-            }
-        }
+            CopyBoneMatricesToTSO(tso);
     }
     
     /// <summary>
@@ -294,6 +270,19 @@ public class Figure : IDisposable
             UpdateBoneMatrices(child_node, tmo_frame);
 
         matrixStack.Pop();
+    }
+
+    protected void CopyBoneMatricesToTSO(TSOFile tso)
+    {
+        foreach (TSONode tso_node in tso.nodes)
+        {
+            TMONode tmo_node;
+            if (nodemap.TryGetValue(tso_node, out tmo_node))
+            {
+                tso_node.TransformationMatrix = tmo_node.TransformationMatrix;
+                tso_node.combined_matrix = tmo_node.combined_matrix;
+            }
+        }
     }
 
     /// <summary>
