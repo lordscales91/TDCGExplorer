@@ -49,7 +49,8 @@ public class Figure : IDisposable
         set
         {
             tmo = value;
-            UpdateTMO();
+            ResetFrameIndex();
+            SetCenterToHips();
         }
     }
 
@@ -122,7 +123,7 @@ public class Figure : IDisposable
 
     private MatrixStack matrixStack = null;
     private int frame_index = 0;
-    private int current_frame_index = -1;
+    private int current_frame_index = 0;
 
     /// <summary>
     /// フィギュアを生成します。
@@ -135,16 +136,20 @@ public class Figure : IDisposable
     }
     
     /// <summary>
-    /// tmoを変更したときに呼ぶ必要があります。
-    /// </summary>
     /// フレーム番号を0に設定します。
-    /// 中心点を腰boneの位置に設定します。
-    protected void UpdateTMO()
+    /// </summary>
+    protected void ResetFrameIndex()
     {
-        Debug.Assert(tmo != null);
         frame_index = 0;
         current_frame_index = 0;
+    }
 
+    /// <summary>
+    /// 中心点を腰boneの位置に設定します。
+    /// </summary>
+    protected void SetCenterToHips()
+    {
+        Debug.Assert(tmo != null);
         TMONode tmo_node;
         if (tmo.nodemap.TryGetValue("|W_Hips", out tmo_node))
         {
@@ -272,6 +277,10 @@ public class Figure : IDisposable
         matrixStack.Pop();
     }
 
+    /// <summary>
+    /// bone行列をtmoからtsoへ複写します。
+    /// </summary>
+    /// TODO: これは不要な操作のはず
     protected void CopyBoneMatricesToTSO(TSOFile tso)
     {
         foreach (TSONode tso_node in tso.nodes)
