@@ -1266,7 +1266,7 @@ public class Viewer : IDisposable
     /// <summary>
     /// 逆運動学による解を得ます。
     /// </summary>
-    /// <param name="tso">tso</param>
+    /// <param name="tmo">tmo</param>
     /// <param name="effector_name">エフェクタnode名称</param>
     private void Solve(TMOFile tmo, string effector_name)
     {
