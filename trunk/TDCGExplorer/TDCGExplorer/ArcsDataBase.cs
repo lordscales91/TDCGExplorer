@@ -220,6 +220,77 @@ namespace TDCGExplorer
             }
         }
 
+        public void CreateInformationTable()
+        {
+            try
+            {
+                using (SQLiteCommand cmd = cnn.CreateCommand())
+                {
+                    cmd.CommandText = "CREATE TABLE Information (ID TEXT PRIMARY KEY, VALUE TEXT)";
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        // 値を読み出す.
+        private string GetInformationValue(string id)
+        {
+            string value = "";
+            try
+            {
+                using (SQLiteCommand cmd = cnn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT VALUE FROM Information WHERE ID=@id";
+                    cmd.Parameters.AddWithValue("id", id);
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            value = reader[0].ToString();
+                            break;
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+            return value;
+        }
+
+        // 値を設定する.
+        private void SetInformationValue(string id, string value)
+        {
+            // 値を追加する.
+            try
+            {
+                using (SQLiteCommand cmd = cnn.CreateCommand())
+                {
+                    // acpathを追加する.
+                    cmd.CommandText = "INSERT OR REPLACE INTO Information (ID,VALUE) VALUES(@id,@value)";
+                    cmd.Parameters.AddWithValue("id", id);
+                    cmd.Parameters.AddWithValue("value", value);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+        }
+
+        // informationアクセス
+        public string this[string key]
+        {
+            get { return GetInformationValue(key); }
+            set { SetInformationValue(key, value); }
+        }
+
         //トランザクションを開始する.
         public SQLiteTransaction BeginTransaction()
         {

@@ -987,5 +987,21 @@ namespace TDCGExplorer
             treeViewArcs.SelectedNode = node;
             SetColor(node);
         }
+
+        private void ShowManualToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(@"AcroRd32.exe", @"manuarl.pdf");
+        }
+
+        private void ShowVersionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            string cr = "\n";
+            string appVersion = "TDCGExplorer Version " + TDCGExplorer.CONST_APPVERSION;
+            string sysDbVersion = "System.db Version " + TDCGExplorer.SystemDB.appversion;
+            string arcsDbVersion = "Arcs.db Version " + TDCGExplorer.ArcsDB["version"];
+            string directXVersion = "DirectX Version " + TDCGExplorer.GetDirectXVersion();
+            string copyright = TDCGExplorer.CONST_COPYRIGHT;
+            MessageBox.Show(appVersion+cr+sysDbVersion+cr+arcsDbVersion+cr+directXVersion+cr+cr+copyright , "Version", MessageBoxButtons.OK);
+        }
     }
 }
