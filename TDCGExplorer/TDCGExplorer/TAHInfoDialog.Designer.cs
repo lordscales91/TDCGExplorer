@@ -49,13 +49,13 @@
             // 
             this.textBoxTahVersion.Location = new System.Drawing.Point(15, 35);
             this.textBoxTahVersion.Name = "textBoxTahVersion";
-            this.textBoxTahVersion.Size = new System.Drawing.Size(100, 20);
+            this.textBoxTahVersion.Size = new System.Drawing.Size(74, 20);
             this.textBoxTahVersion.TabIndex = 1;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(118, 19);
+            this.label2.Location = new System.Drawing.Point(95, 19);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(75, 13);
             this.label2.TabIndex = 2;
@@ -63,7 +63,7 @@
             // 
             // textBoxTahSource
             // 
-            this.textBoxTahSource.Location = new System.Drawing.Point(121, 35);
+            this.textBoxTahSource.Location = new System.Drawing.Point(95, 35);
             this.textBoxTahSource.Name = "textBoxTahSource";
             this.textBoxTahSource.Size = new System.Drawing.Size(429, 20);
             this.textBoxTahSource.TabIndex = 3;
@@ -71,7 +71,7 @@
             // button1
             // 
             this.button1.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.button1.Location = new System.Drawing.Point(475, 62);
+            this.button1.Location = new System.Drawing.Point(449, 61);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 4;
@@ -81,7 +81,7 @@
             // button2
             // 
             this.button2.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.button2.Location = new System.Drawing.Point(394, 62);
+            this.button2.Location = new System.Drawing.Point(368, 61);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 5;
@@ -92,7 +92,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(562, 103);
+            this.ClientSize = new System.Drawing.Size(537, 95);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBoxTahSource);

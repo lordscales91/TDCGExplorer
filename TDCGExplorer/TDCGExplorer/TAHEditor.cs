@@ -94,11 +94,6 @@ namespace System.Windows.Forms
                 {
                     File.Delete(tahdbpath);
                 }
-                else
-                {
-                    if (MessageBox.Show("作業用データベースファイルを削除しますか？\nこのファイルは次回編集時に再利用できます。\n(初期設定でこの表示をせず常に削除する事が出来ます)", "DBの削除", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
-                        File.Delete(tahdbpath);
-                }
             }
             base.Dispose(disposing);
         }
@@ -370,6 +365,7 @@ namespace System.Windows.Forms
         {
             if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
 
+            string destpath = Path.Combine(TDCGExplorer.TDCGExplorer.SystemDB.tahpath, Path.GetFileNameWithoutExtension(database["source"]));
             foreach (DataGridViewRow viewrow in dataGridView.SelectedRows)
             {
                 DataRowView vrow = viewrow.DataBoundItem as DataRowView;
@@ -383,7 +379,6 @@ namespace System.Windows.Forms
                         if (entry != null)
                         {
                             string path = entry[0].ToString() + entry[1].ToString();
-                            string destpath = Path.Combine(TDCGExplorer.TDCGExplorer.SystemDB.tahpath, Path.GetFileNameWithoutExtension(database["source"]));
                             string destfile = Path.Combine(destpath, path);
                             Debug.WriteLine("save to "+destfile);
                             Directory.CreateDirectory(Path.GetDirectoryName(destfile));
@@ -401,6 +396,7 @@ namespace System.Windows.Forms
                     }
                 }
             }
+            TDCGExplorer.TDCGExplorer.ExplorerSelectPath(destpath);
         }
 
         // ファイル名の置換
@@ -753,7 +749,7 @@ namespace System.Windows.Forms
                 stream.Close();
             }
             TDCGExplorer.TDCGExplorer.SetToolTips("梱包完了");
-
+            TDCGExplorer.TDCGExplorer.ExplorerSelectPath(destfilename);
         }
 
         // TAHの情報を変更する.

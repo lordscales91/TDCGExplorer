@@ -51,6 +51,9 @@
             this.ExpandTreeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.NewTabToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.CloseTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ShowManualToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ShowVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.treeViewArcs = new System.Windows.Forms.TreeView();
             this.cmContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.expandAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -117,7 +120,8 @@
             this.tDCGExplorerToolStripMenuItem,
             this.databaseToolStripMenuItem,
             this.tSOViewToolStripMenuItem,
-            this.WindowMenuToolStripMenuItem});
+            this.WindowMenuToolStripMenuItem,
+            this.HelpToolStripMenuItem});
             this.MainMenu.Location = new System.Drawing.Point(0, 0);
             this.MainMenu.Name = "MainMenu";
             this.MainMenu.Size = new System.Drawing.Size(817, 24);
@@ -287,6 +291,29 @@
             this.CloseTabToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.CloseTabToolStripMenuItem.Text = "タブを閉じる";
             this.CloseTabToolStripMenuItem.Click += new System.EventHandler(this.CloseTabToolStripMenuItem_Click);
+            // 
+            // ヘルプToolStripMenuItem
+            // 
+            this.HelpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ShowManualToolStripMenuItem,
+            this.ShowVersionToolStripMenuItem});
+            this.HelpToolStripMenuItem.Name = "ヘルプToolStripMenuItem";
+            this.HelpToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
+            this.HelpToolStripMenuItem.Text = "ヘルプ";
+            // 
+            // マニュアルの表示ToolStripMenuItem
+            // 
+            this.ShowManualToolStripMenuItem.Name = "マニュアルの表示ToolStripMenuItem";
+            this.ShowManualToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.ShowManualToolStripMenuItem.Text = "マニュアルの表示";
+            this.ShowManualToolStripMenuItem.Click += new System.EventHandler(this.ShowManualToolStripMenuItem_Click);
+            // 
+            // バージョンToolStripMenuItem
+            // 
+            this.ShowVersionToolStripMenuItem.Name = "バージョンToolStripMenuItem";
+            this.ShowVersionToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
+            this.ShowVersionToolStripMenuItem.Text = "バージョン...";
+            this.ShowVersionToolStripMenuItem.Click += new System.EventHandler(this.ShowVersionToolStripMenuItem_Click);
             // 
             // treeViewArcs
             // 
@@ -810,6 +837,9 @@
         private System.Windows.Forms.ToolStripMenuItem OpenFolderToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem OpenFolderCXToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem findNoBaseModToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem HelpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ShowManualToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ShowVersionToolStripMenuItem;
 
     }
 }

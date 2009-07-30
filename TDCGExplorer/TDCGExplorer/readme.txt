@@ -26,7 +26,7 @@ Version 1.0になりました。3.1になるまでバグが残っているかも知れません。
         ArchiveLib.dll                          圧縮関連コンポーネント
         ICSharpCode.SharpZipLib.dll             圧縮関連コンポーネント
         unrar.dll                               圧縮関連コンポーネント
-        default.tmo                             標準のポーズデータ
+        SnapShotPose.tmo                        標準のポーズデータ
         N001OBON_Z00.tbn                        Zカテゴリ用TBNファイル
         N999SAVE_A00.psd                        デフォルトアイコン
         names.txt                               ハッシュ引き用ファイル一覧

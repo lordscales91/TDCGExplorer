@@ -1,5 +1,4 @@
-﻿
-// TDCGExplorer Framework by Konoa.
+﻿// TDCGExplorer Framework by Konoa.
 //
 
 using System;
@@ -17,6 +16,10 @@ namespace TDCGExplorer
 {
     public class TDCGExplorer
     {
+        public const string CONST_DBVERSION = "1.00";
+        public const string CONST_APPVERSION = "1.00";
+        public const string CONST_COPYRIGHT = "Copyright © 2009 3DCG Craftsmen's Guild.";
+
         private static SystemDatabase systemDatabase;
         private static ArcsDatabase arcsDatabase;
         private static AnnotationDB annotationDatabase;
@@ -69,7 +72,7 @@ namespace TDCGExplorer
 
                 ResetDefaultPose();
 
-                SetToolTips("Copyright © 2009 3DCG Craftsmen's Guild.");
+                SetToolTips(CONST_COPYRIGHT);
 
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
@@ -151,7 +154,7 @@ namespace TDCGExplorer
 
         public static void ResetDefaultPose()
         {
-            defaultTMO = LoadTMO("default.tmo");
+            defaultTMO = LoadTMO("SnapShotPose.tmo");
         }
 
         public static Stream defaultpose
@@ -301,6 +304,7 @@ namespace TDCGExplorer
                 SystemDB.findziplevel = edit.findziplevel;
                 SystemDB.delete_tahcache = edit.delete_tahcache;
                 SystemDB.taheditorpreview = edit.taheditorprevire;
+                SystemDB.appversion = CONST_APPVERSION;
             }
         }
 
@@ -689,9 +693,7 @@ namespace TDCGExplorer
             // 展開に成功したらzipのノードの色を変える.
             if (ZipFileUtil.ExtractZipFile(zipsource, destpath) == true)
             {
-                if (Directory.Exists(destpath) == true)
-                    System.Diagnostics.Process.Start(@"EXPLORER.EXE", "/SELECT,\"" + destpath + "\"");
-
+                ExplorerSelectPath(destpath);
                 sender.ForeColor = Color.Magenta;
                 return true;
             }
@@ -847,6 +849,12 @@ namespace TDCGExplorer
                 else
                     MessageBox.Show("前提zipは全てインストール済みです", "展開", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
+            if (installedcount > 0)
+            {
+                string destpath = SystemDB.work_path;
+                destpath = Path.Combine(destpath, "Required " + zipentry.code);
+                ExplorerPath(destpath);
+            }
         }
 
         public static void TAHDecrypt(GenericTahInfo entry)
@@ -885,6 +893,8 @@ namespace TDCGExplorer
                 }
             }
             SetToolTips("ファイル書き込み完了:" + entry.shortname);
+
+            ExplorerSelectPath(destpath);
         }
 
         // ディレクトリの一覧を取得する.
@@ -1017,6 +1027,64 @@ namespace TDCGExplorer
                 }
             }
         }
+
+        public static void ExplorerPath(string destpath)
+        {
+            if (Directory.Exists(destpath) == true || File.Exists(destpath)==true)
+                System.Diagnostics.Process.Start(@"EXPLORER.EXE", "\"" + destpath + "\"");
+        }
+
+        public static void ExplorerSelectPath(string destpath)
+        {
+            if (Directory.Exists(destpath) == true || File.Exists(destpath) == true)
+                System.Diagnostics.Process.Start(@"EXPLORER.EXE", "/SELECT,\"" + destpath + "\"");
+        }
+
+        public static string GetDirectXVersion()
+        {
+            string directXVersion = "Unknown";
+            try
+            {
+                Microsoft.Win32.RegistryKey key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\DirectX");
+                directXVersion = key.GetValue("Version").ToString();
+            }
+            catch(Exception)
+            {
+            }
+            switch(directXVersion){
+                case "4.08.01.0810":
+                    directXVersion += " (8.1)";
+                    break;
+                case "4.08.01.0881":
+                    directXVersion += " (8.1)";
+                    break;
+                case "4.08.01.0901":
+                    directXVersion += " (8.1a)";
+                    break;
+                case "4.08.02.0134":
+                    directXVersion += " (8.2)";
+                    break;
+                case "4.09.00.0900":
+                    directXVersion += " (9)";
+                    break;
+                case "4.09.00.0901":
+                    directXVersion += " (9a)";
+                    break;
+                case "4.09.00.0902":
+                    directXVersion += " (9b)";
+                    break;
+                case "4.09.00.0903":
+                    directXVersion += " (9c)";
+                    break;
+                case "4.09.00.0904":
+                    directXVersion += " (9c)";
+                    break;
+                default:
+                    break;
+            }
+            return directXVersion;
+        }
+
     }
 
     public class CreateArcsDatabaseThread
@@ -1040,6 +1108,7 @@ namespace TDCGExplorer
 #endif
                     using (SQLiteTransaction transacion = arcs.BeginTransaction())
                     {
+                        arcs.CreateInformationTable();
                         arcs.CreateTahDatabase();
                         arcs.CreateFilesDatabase();
                         arcs.CreateZipDatabase();
@@ -1059,6 +1128,7 @@ namespace TDCGExplorer
 
                         TDCGExplorer.SetToolTips("Database build complete");
                         TDCGExplorer.SystemDB.database_build = "yes";
+                        arcs["version"] = TDCGExplorer.CONST_DBVERSION;
                     }
                 }
                 catch (Exception e)

@@ -276,7 +276,7 @@ namespace TDCGExplorer
         // tahキャッシュ削除設定
         public bool delete_tahcache
         {
-            get { return GetSqlValue("delete_tahcache", "false") == "true"; }
+            get { return GetSqlValue("delete_tahcache", "true") == "true"; }
             set
             {
                 if (value == true) SetSqlValue("delete_tahcache", "true");
@@ -295,5 +295,14 @@ namespace TDCGExplorer
             }
         }
 
+        // TAHエディタでのプレビュー表示設定
+        public string appversion
+        {
+            get { return GetSqlValue("appversion", TDCGExplorer.CONST_APPVERSION); }
+            set
+            {
+                SetSqlValue("appversion", value);
+            }
+        }
     }
 }
