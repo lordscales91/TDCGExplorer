@@ -121,7 +121,7 @@ public class TSOForm : Form
         if (keysEnabled[keySave] && keys[keySave])
         {
             keysEnabled[keySave] = false;
-            viewer.SaveToBitmap();
+            viewer.SaveToBitmap("sample.bmp");
         }
         if (keysEnabled[keyMotion] && keys[keyMotion])
         {

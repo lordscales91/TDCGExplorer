@@ -1122,11 +1122,12 @@ public class Viewer : IDisposable
     /// <summary>
     /// バックバッファをBitmapファイルに保存します。
     /// </summary>
-    public void SaveToBitmap()
+    /// <param name="file">ファイル名</param>
+    public void SaveToBitmap(string file)
     {
       using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))
       if (sf != null)
-          SurfaceLoader.Save("sample.bmp", ImageFileFormat.Bmp, sf);
+          SurfaceLoader.Save(file, ImageFileFormat.Bmp, sf);
     }
 }
 }
