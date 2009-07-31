@@ -651,8 +651,10 @@ namespace TDCGExplorer
                     GenericSavefileTreeNode currentNode = null;
                     GenericSavefileTreeNode parentNode = savenode;
                     int count = 1;
+                    string subdir = savedir;
                     foreach (string sublevel in toplevel)
                     {
+                        subdir = Path.Combine(subdir, sublevel);
                         currentNode = null;
                         foreach (GenericSavefileTreeNode nodes in parentNode.Nodes)
                         {
@@ -664,7 +666,7 @@ namespace TDCGExplorer
                         }
                         if (currentNode == null)
                         {
-                            currentNode = new GenericSavefileTreeNode(sublevel,dir);//parentNode.Nodes.Add(sublevel);
+                            currentNode = new GenericSavefileTreeNode(sublevel,subdir);//parentNode.Nodes.Add(sublevel);
                             parentNode.Nodes.Add(currentNode);
                         }
                         parentNode = currentNode;

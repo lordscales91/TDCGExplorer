@@ -216,127 +216,15 @@ namespace System.Windows.Forms
                 if (partsname.StartsWith("items/")==true)
                 {
                     if(TDCGExplorer.TDCGExplorer.SystemDB.findziplevel==false){
-                        // まずarcsからさがしてみる.
-                        List<ArcsTahFilesEntry> files = TDCGExplorer.TDCGExplorer.ArcsDB.GetTahFilesEntry(TAHUtil.CalcHash("data/model/" + partsname.Substring(6) + ".tso"));
-                        if (files.Count > 0)
-                        {
-                            ArcsTahFilesEntry file = null;
-                            ArcsTahEntry tah = null;
-                            int pastVersion = -1;
-                            foreach (ArcsTahFilesEntry subfile in files)
-                            {
-                                ArcsTahEntry subtah = TDCGExplorer.TDCGExplorer.ArcsDB.GetTah(subfile.tahid);
-                                if (subtah.version > pastVersion)
-                                {
-                                    file = subfile;
-                                    tah = subtah;
-                                    pastVersion = subtah.version;
-                                }
-                                TDCGExplorer.TDCGExplorer.IncBusy();
-                                Application.DoEvents();
-                                TDCGExplorer.TDCGExplorer.DecBusy();
-
-                            }
-                            if (tah != null)
-                            {
-                                partfile[2] = tah.path;
-                                if (pngstream.count == 0) // 通常セーブなら
-                                {
-                                    try
-                                    {
-                                        DisplayTso(new GenericArcsTahInfo(tah), file,i);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Debug.WriteLine("Error: " + ex);
-                                    }
-                                }
-                            }
-                        }
+                        partfile[2] = FindFromArcsTahs(partsname, i, pngstream.count > 0);
                     }
-                    // arcsに無かったら全zipから探す.
                     if (partfile[2] == "")
                     {
-                        List<ArcsTahFilesEntry> files = TDCGExplorer.TDCGExplorer.ArcsDB.GetZipTahFilesEntries(TAHUtil.CalcHash("data/model/" + partsname.Substring(6) + ".tso"));
-                        if (files.Count>0)
-                        {
-                            ArcsTahFilesEntry file = null;
-                            ArcsZipTahEntry tah = null;
-                            int pastVersion = -1;
-                            foreach (ArcsTahFilesEntry subfile in files)
-                            {
-                                ArcsZipTahEntry subtah = TDCGExplorer.TDCGExplorer.ArcsDB.GetZipTah(subfile.tahid);
-                                if (subtah.version > pastVersion)
-                                {
-                                    file = subfile;
-                                    tah = subtah;
-                                    pastVersion = subtah.version;
-                                }
-                                TDCGExplorer.TDCGExplorer.IncBusy();
-                                Application.DoEvents();
-                                TDCGExplorer.TDCGExplorer.DecBusy();
-                            }
-                            if (tah != null)
-                            {
-                                ArcsZipArcEntry zip = TDCGExplorer.TDCGExplorer.ArcsDB.GetZip(tah.zipid);
-                                if (zip != null)
-                                {
-                                    partfile[2] = zip.path + "\\" + tah.path;
-
-                                    if (pngstream.count == 0)// 通常セーブなら
-                                    { 
-                                        try
-                                        {
-                                            DisplayTso(new GenericZipsTahInfo(tah), file,i);
-                                        }
-                                        catch (Exception ex)
-                                        {
-                                            Debug.WriteLine("Error: " + ex);
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        partfile[2] = FindFromZipTahs(partsname, i, pngstream.count > 0);
                     }
                     if (TDCGExplorer.TDCGExplorer.SystemDB.findziplevel == true && partfile[2] == "")
                     {
-                        // まずarcsからさがしてみる.
-                        List<ArcsTahFilesEntry> files = TDCGExplorer.TDCGExplorer.ArcsDB.GetTahFilesEntry(TAHUtil.CalcHash("data/model/" + partsname.Substring(6) + ".tso"));
-                        if (files.Count > 0)
-                        {
-                            ArcsTahFilesEntry file = null;
-                            ArcsTahEntry tah = null;
-                            int pastVersion = -1;
-                            foreach (ArcsTahFilesEntry subfile in files)
-                            {
-                                ArcsTahEntry subtah = TDCGExplorer.TDCGExplorer.ArcsDB.GetTah(subfile.tahid);
-                                if (subtah.version > pastVersion)
-                                {
-                                    file = subfile;
-                                    tah = subtah;
-                                    pastVersion = subtah.version;
-                                }
-                                TDCGExplorer.TDCGExplorer.IncBusy();
-                                Application.DoEvents();
-                                TDCGExplorer.TDCGExplorer.DecBusy();
-
-                            }
-                            if (tah != null)
-                            {
-                                partfile[2] = tah.path;
-                                if (pngstream.count == 0) // 通常セーブなら
-                                {
-                                    try
-                                    {
-                                        DisplayTso(new GenericArcsTahInfo(tah), file,i);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Debug.WriteLine("Error: " + ex);
-                                    }
-                                }
-                            }
-                        }
+                        partfile[2] = FindFromArcsTahs(partsname, i, pngstream.count > 0);
                     }
                 }
 
@@ -357,28 +245,78 @@ namespace System.Windows.Forms
 
         private void DisplayTso(GenericTahInfo info, ArcsTahFilesEntry file,int id)
         {
-            // TSOを読み込む
+            // tso名を取得する.
+            string tsoname;
             using (GenericTAHStream tahstream = new GenericTAHStream(info, file))
             {
-                if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
-                TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
-                TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
-                TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
-                TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
-
                 using (MemoryStream memorystream = new MemoryStream())
                 {
                     tahstream.stream.Seek(0, SeekOrigin.Begin);
                     ZipFileUtil.CopyStream(tahstream.stream, memorystream);
-                    PNGTsoData tsodata = new PNGTsoData();
-                    tsodata.tsoID = (uint)id;
-                    tsodata.tsodata = memorystream.ToArray();
-                    tsoDataList.Add(tsodata);
+                    tsoname=TDCGTbnUtil.GetTsoName(memorystream.ToArray());
                 }
+            }
 
-                TDCGExplorer.TDCGExplorer.IncBusy();
-                Application.DoEvents();
-                TDCGExplorer.TDCGExplorer.DecBusy();
+            GenericTahInfo tsoinfo = null;
+            ArcsTahFilesEntry tso = null;
+            if (info.zipid < 0)
+            {// Arcsの場合
+                int pastVersion=-1;
+                ArcsTahEntry tahinfo = null;
+                List<ArcsTahFilesEntry> tsos = TDCGExplorer.TDCGExplorer.ArcsDB.GetTahFilesEntry(TAHUtil.CalcHash(tsoname));
+                foreach (ArcsTahFilesEntry subfile in tsos)
+                {
+                    ArcsTahEntry subtah = TDCGExplorer.TDCGExplorer.ArcsDB.GetTah(subfile.tahid);
+                    if (subtah.version > pastVersion)
+                    {
+                        tso = subfile;
+                        tahinfo = subtah;
+                        pastVersion = subtah.version;
+                    }
+                }
+                tsoinfo = new GenericArcsTahInfo(tahinfo);
+            }else{// zipの場合
+                int pastVersion = -1;
+                ArcsZipTahEntry tahinfo = null;
+                List<ArcsTahFilesEntry> tsos = TDCGExplorer.TDCGExplorer.ArcsDB.GetZipTahFilesEntries(TAHUtil.CalcHash(tsoname));
+                foreach (ArcsTahFilesEntry subfile in tsos)
+                {
+                    ArcsZipTahEntry subtah = TDCGExplorer.TDCGExplorer.ArcsDB.GetZipTah(subfile.tahid);
+                    if (subtah.version > pastVersion)
+                    {
+                        tso = subfile;
+                        tahinfo = subtah;
+                        pastVersion = subtah.version;
+                    }
+                }
+                tsoinfo = new GenericZipsTahInfo(tahinfo);
+            }
+
+            if (tsoinfo != null && tso != null)
+            {
+                // TSOを読み込む
+                using (GenericTAHStream tahstream = new GenericTAHStream(tsoinfo, tso))
+                {
+                    if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
+                    TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
+                    TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
+                    TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
+                    TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
+
+                    using (MemoryStream memorystream = new MemoryStream())
+                    {
+                        tahstream.stream.Seek(0, SeekOrigin.Begin);
+                        ZipFileUtil.CopyStream(tahstream.stream, memorystream);
+                        PNGTsoData tsodata = new PNGTsoData();
+                        tsodata.tsoID = (uint)id;
+                        tsodata.tsodata = memorystream.ToArray();
+                        tsoDataList.Add(tsodata);
+                    }
+
+                    TDCGExplorer.TDCGExplorer.IncBusy();
+                    Application.DoEvents();
+                    TDCGExplorer.TDCGExplorer.DecBusy();
+                }
             }
         }
 
@@ -659,6 +597,96 @@ namespace System.Windows.Forms
         {
             if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
             Parent.Dispose();
+        }
+
+        private string FindFromArcsTahs(string filename, int id, bool heavysave)
+        {
+            string retval="";
+
+            List<ArcsTahFilesEntry> files = TDCGExplorer.TDCGExplorer.ArcsDB.GetTahFilesEntry(TAHUtil.CalcHash("script/" + filename + ".tbn"));
+            if (files.Count > 0)
+            {
+                ArcsTahFilesEntry file = null;
+                ArcsTahEntry tah = null;
+                int pastVersion = -1;
+                foreach (ArcsTahFilesEntry subfile in files)
+                {
+                    ArcsTahEntry subtah = TDCGExplorer.TDCGExplorer.ArcsDB.GetTah(subfile.tahid);
+                    if (subtah.version > pastVersion)
+                    {
+                        file = subfile;
+                        tah = subtah;
+                        pastVersion = subtah.version;
+                    }
+                    TDCGExplorer.TDCGExplorer.IncBusy();
+                    Application.DoEvents();
+                    TDCGExplorer.TDCGExplorer.DecBusy();
+
+                }
+                if (tah != null)
+                {
+                    retval = tah.path;
+                    if (heavysave == false) // 通常セーブなら
+                    {
+                        try
+                        {
+                            DisplayTso(new GenericArcsTahInfo(tah), file, id);
+                        }
+                        catch (Exception ex)
+                        {
+                            Debug.WriteLine("Error: " + ex);
+                        }
+                    }
+                }
+            }
+            return retval;
+        }
+
+        private string FindFromZipTahs(string filename,int id,bool heavysave)
+        {
+            string retval = "";
+
+            List<ArcsTahFilesEntry> files = TDCGExplorer.TDCGExplorer.ArcsDB.GetZipTahFilesEntries(TAHUtil.CalcHash("script/" + filename + ".tbn"));
+            if (files.Count > 0)
+            {
+                ArcsTahFilesEntry file = null;
+                ArcsZipTahEntry tah = null;
+                int pastVersion = -1;
+                foreach (ArcsTahFilesEntry subfile in files)
+                {
+                    ArcsZipTahEntry subtah = TDCGExplorer.TDCGExplorer.ArcsDB.GetZipTah(subfile.tahid);
+                    if (subtah.version > pastVersion)
+                    {
+                        file = subfile;
+                        tah = subtah;
+                        pastVersion = subtah.version;
+                    }
+                    TDCGExplorer.TDCGExplorer.IncBusy();
+                    Application.DoEvents();
+                    TDCGExplorer.TDCGExplorer.DecBusy();
+                }
+                if (tah != null)
+                {
+                    ArcsZipArcEntry zip = TDCGExplorer.TDCGExplorer.ArcsDB.GetZip(tah.zipid);
+                    if (zip != null)
+                    {
+                        retval = zip.path + "\\" + tah.path;
+
+                        if (heavysave == false)// 通常セーブなら
+                        {
+                            try
+                            {
+                                DisplayTso(new GenericZipsTahInfo(tah), file, id);
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("Error: " + ex);
+                            }
+                        }
+                    }
+                }
+            }
+            return retval;
         }
     }
 }
