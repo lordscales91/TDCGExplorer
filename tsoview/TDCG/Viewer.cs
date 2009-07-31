@@ -659,20 +659,18 @@ public class Viewer : IDisposable
 
         current_effector_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand";
 
-        /*
         //should be update target when select figure
         this.FigureEvent += delegate(object sender, EventArgs e)
         {
             Figure fig;
             if (TryGetFigure(out fig))
             {
-                Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
-                TMONode bone;
-                if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
+                Debug.Assert(fig.TSOList[0].nodemap != null, "fig.TSOList[0].nodemap should not be null");
+                TSONode bone;
+                if (fig.TSOList[0].nodemap.TryGetValue(current_effector_name, out bone))
                     target = bone.GetWorldPosition();
             }
         };
-        */
 
         baseTMO = new TMOFile();
         baseTMO.Load(Application.StartupPath + @"\" + @"base.tmo");
@@ -926,17 +924,16 @@ public class Viewer : IDisposable
             foreach (Figure fig in FigureList)
                 fig.SetFrameIndex(frame_index);
         }
-        /*
         else if (! solved)
         {
             Figure fig;
             if (TryGetFigure(out fig))
             {
-                Solve(fig.Tmo, current_effector_name);
+                foreach (TSOFile tso in fig.TSOList)
+                    Solve(tso, current_effector_name);
                 fig.UpdateBoneMatricesWithoutTMOFrame();
             }
         }
-        */
     }
     bool solved = false;
     long wait = (long)(10000000.0f / 60.0f);
@@ -992,20 +989,19 @@ public class Viewer : IDisposable
             DrawSprite();
         }
  
-    /*
     //è’ìÀîªíË
     {
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
-            TMONode effector;
-            if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out effector))
+            Debug.Assert(fig.TSOList[0].nodemap != null, "fig.TSOList[0].nodemap should not be null");
+            TSONode effector;
+            if (fig.TSOList[0].nodemap.TryGetValue(current_effector_name, out effector))
             {
                 foreach (string effector_name in effector_dictionary.Keys)
                 {
-                    TMONode bone;
-                    if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
+                    TSONode bone;
+                    if (fig.TSOList[0].nodemap.TryGetValue(effector_name, out bone))
                     {
                         bool found = FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone);
                         if (found && clicked)
@@ -1031,7 +1027,6 @@ public class Viewer : IDisposable
     {
         DrawMeshSub(sphere, Matrix.Translation(target), new Vector4(1,1,0,0.5f));
     }
-    */
 
         device.EndScene();
         {
