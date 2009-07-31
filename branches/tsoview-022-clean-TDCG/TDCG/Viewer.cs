@@ -628,6 +628,7 @@ public class Viewer : IDisposable
 
         device.RenderState.IndexedVertexBlendEnable = true;
 
+        if (shadowMapEnabled)
         {
             CustomVertex.PositionTextured[] verts = new CustomVertex.PositionTextured[4];
             verts[0] = new CustomVertex.PositionTextured(-1, +1, 0, 0, 0);
@@ -639,7 +640,8 @@ public class Viewer : IDisposable
             vbGauss.SetData(verts, 0, LockFlags.None);
         }
 
-        SetGaussianWeight(12.5f);
+        if (shadowMapEnabled)
+            SetGaussianWeight(12.5f);
     }
 
     private void CancelResize(object sender, CancelEventArgs e)
