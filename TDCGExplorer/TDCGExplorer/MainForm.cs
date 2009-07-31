@@ -74,17 +74,24 @@ namespace TDCGExplorer
         {
             TDCGExplorer.IfReadyDbDisplayArcsDB();
 
-            string windowRect = TDCGExplorer.SystemDB.window_rectangle;
-            string[] rect = windowRect.Split(',');
-            Left = int.Parse(rect[0]);
-            Top = int.Parse(rect[1]);
-            Size = new Size( int.Parse(rect[2]) , int.Parse(rect[3]));
+            // この処理がWindows x64ではたまに失敗するらしい.
+            try
+            {
+                string windowRect = TDCGExplorer.SystemDB.window_rectangle;
+                string[] rect = windowRect.Split(',');
+                Left = int.Parse(rect[0]);
+                Top = int.Parse(rect[1]);
+                Size = new Size(int.Parse(rect[2]), int.Parse(rect[3]));
 
-            string splitterDistance = TDCGExplorer.SystemDB.splitter_distance;
-            string[] distance = splitterDistance.Split(',');
-            splitContainerV.SplitterDistance = int.Parse(distance[0]);
-            splitContainerH.SplitterDistance = int.Parse(distance[1]);
-            splitContainerWithView.SplitterDistance = int.Parse(distance[2]);
+                string splitterDistance = TDCGExplorer.SystemDB.splitter_distance;
+                string[] distance = splitterDistance.Split(',');
+                splitContainerV.SplitterDistance = int.Parse(distance[0]);
+                splitContainerH.SplitterDistance = int.Parse(distance[1]);
+                splitContainerWithView.SplitterDistance = int.Parse(distance[2]);
+            }
+            catch (Exception)
+            {
+            }
 
             viewer = null;
 
@@ -395,7 +402,34 @@ namespace TDCGExplorer
         // タブにコントロールを配置する.
         public void AssignTagPageControl(Control control)
         {
-            TabPage currentPage = GetCurrentTagPage();
+            TabPage currentPage = null;
+            if (TDCGExplorer.SystemDB.alwaysnewtab == true)
+            {
+                Type type = control.GetType();
+                foreach (TabPage page in tabMainView.TabPages)
+                {
+                    if (page.Controls.Count > 0)
+                    {
+                        if (page.Controls[0].GetType() == type) currentPage = page; // 同じ属性のページ.
+                    }
+                    else
+                    {
+                        currentPage = page; // 空のページ.
+                        break;
+                    }
+                }
+                // 該当ページが無かったら新規ページを作成する.
+                if (currentPage == null)
+                {
+                    NewTab();
+                    currentPage = GetCurrentTagPage();
+                }
+                tabMainView.SelectedTab = currentPage;
+            }
+            else
+            {
+                currentPage = GetCurrentTagPage();
+            }
             control.ClientSize = currentPage.Size;
             currentPage.Text = control.Text;
             Control lastControl = null;

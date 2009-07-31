@@ -56,13 +56,15 @@ namespace System.Windows.Forms
                 TDCGExplorer.TDCGExplorer.SetToolTips("データベース検索中...");
                 Text = Path.GetFileName(path);
                 TDCGExplorer.TDCGExplorer.SetLastAccessFile = path;
-                FileStream fs = File.OpenRead(path);
-                Byte[] buffer;
-                BinaryReader reader = new BinaryReader(fs, System.Text.Encoding.Default);
-                buffer = reader.ReadBytes((int)fs.Length);
-                using (MemoryStream ms = new MemoryStream(buffer))
+                using (FileStream fs = File.OpenRead(path))
                 {
-                    BindingStream(ms);
+                    Byte[] buffer;
+                    BinaryReader reader = new BinaryReader(fs, System.Text.Encoding.Default);
+                    buffer = reader.ReadBytes((int)fs.Length);
+                    using (MemoryStream ms = new MemoryStream(buffer))
+                    {
+                        BindingStream(ms);
+                    }
                 }
                 dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
                 dataGridView.ReadOnly = true;

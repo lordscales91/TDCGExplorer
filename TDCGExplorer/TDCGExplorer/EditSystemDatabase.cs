@@ -157,5 +157,10 @@ namespace TDCGExplorer
             get { return checkBoxTahPreview.Checked; }
             set { checkBoxTahPreview.Checked = value; }
         }
+        public bool alwaysnewtab
+        {
+            get { return checkBoxAlwaysNewTab.Checked; }
+            set { checkBoxAlwaysNewTab.Checked = value; }
+        }
     }
 }
