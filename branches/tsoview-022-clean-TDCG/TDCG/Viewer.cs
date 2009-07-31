@@ -48,8 +48,6 @@ public class Viewer : IDisposable
     /// </summary>
     public List<Figure> FigureList = new List<Figure>();
 
-    TMOFile baseTMO = null;
-
     // ƒ‰ƒCƒg•ûŒü
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
 
@@ -76,9 +74,9 @@ public class Viewer : IDisposable
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
-            TMONode bone;
-            if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
+            Debug.Assert(fig.TSOList[0].nodemap != null, "fig.TSOList[0].nodemap should not be null");
+            TSONode bone;
+            if (fig.TSOList[0].nodemap.TryGetValue(current_effector_name, out bone))
             {
                 Vector3 v = target;
                 v = Vector3.TransformCoordinate(v, Transform_View);
@@ -327,8 +325,6 @@ public class Viewer : IDisposable
             tso.Open(device, effect);
             fig.AddTSO(tso);
         }
-        if (fig.Tmo.frames == null)
-            fig.Tmo = BaseTMO;
         fig.UpdateNodeMapAndBoneMatrices();
         int idx = FigureList.Count;
         FigureList.Add(fig);
@@ -363,8 +359,6 @@ public class Viewer : IDisposable
             fig = FigureList[figureIndex];
         if (FigureList.Count == 0)
         {
-            if (fig.Tmo.frames == null)
-                fig.Tmo = BaseTMO;
             int idx = FigureList.Count;
             FigureList.Add(fig);
             SetFigureIndex(idx);
@@ -493,8 +487,6 @@ public class Viewer : IDisposable
             foreach (Figure fig in fig_list)
             {
                 fig.OpenTSOFile(device, effect);
-                if (fig.Tmo.frames == null)
-                    fig.Tmo = BaseTMO;
                 fig.UpdateNodeMapAndBoneMatrices();
                 FigureList.Add(fig);
             }
@@ -672,17 +664,9 @@ public class Viewer : IDisposable
             }
         };
 
-        baseTMO = new TMOFile();
-        baseTMO.Load(Application.StartupPath + @"\" + @"base.tmo");
-
         return true;
     }
     string current_effector_name = null;
-
-    TMOFile BaseTMO
-    {
-        get { return baseTMO; }
-    }
 
     private void OnDeviceLost(object sender, EventArgs e)
     {
