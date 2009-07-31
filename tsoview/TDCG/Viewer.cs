@@ -659,6 +659,7 @@ public class Viewer : IDisposable
 
         current_effector_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand";
 
+        /*
         //should be update target when select figure
         this.FigureEvent += delegate(object sender, EventArgs e)
         {
@@ -671,6 +672,7 @@ public class Viewer : IDisposable
                     target = bone.GetWorldPosition();
             }
         };
+        */
 
         baseTMO = new TMOFile();
         baseTMO.Load(Application.StartupPath + @"\" + @"base.tmo");
@@ -924,6 +926,7 @@ public class Viewer : IDisposable
             foreach (Figure fig in FigureList)
                 fig.SetFrameIndex(frame_index);
         }
+        /*
         else if (! solved)
         {
             Figure fig;
@@ -933,6 +936,7 @@ public class Viewer : IDisposable
                 fig.UpdateBoneMatricesWithoutTMOFrame();
             }
         }
+        */
     }
     bool solved = false;
     long wait = (long)(10000000.0f / 60.0f);
@@ -988,6 +992,7 @@ public class Viewer : IDisposable
             DrawSprite();
         }
  
+    /*
     //è’ìÀîªíË
     {
         Figure fig;
@@ -1026,6 +1031,7 @@ public class Viewer : IDisposable
     {
         DrawMeshSub(sphere, Matrix.Translation(target), new Vector4(1,1,0,0.5f));
     }
+    */
 
         device.EndScene();
         {

@@ -206,7 +206,9 @@ public class Figure : IDisposable
 
         current_frame_index = frame_index;
 
-        CopyBoneMatricesToTSO(tso);
+        TMOFrame tmo_frame = GetTMOFrame();
+        UpdateBoneMatrices(tso, tmo_frame);
+        //CopyBoneMatricesToTSO(tso);
 
         TSOList.Add(tso);
     }
@@ -216,10 +218,9 @@ public class Figure : IDisposable
     /// </summary>
     public void UpdateBoneMatricesWithoutTMOFrame()
     {
-        UpdateBoneMatrices(tmo, null);
-
         foreach (TSOFile tso in TSOList)
-            CopyBoneMatricesToTSO(tso);
+            UpdateBoneMatrices(tso, null);
+            //CopyBoneMatricesToTSO(tso);
     }
 
     /// <summary>
@@ -241,37 +242,39 @@ public class Figure : IDisposable
         current_frame_index = frame_index;
 
         TMOFrame tmo_frame = GetTMOFrame();
-        UpdateBoneMatrices(tmo, tmo_frame);
 
         foreach (TSOFile tso in TSOList)
-            CopyBoneMatricesToTSO(tso);
+            UpdateBoneMatrices(tso, tmo_frame);
+            //CopyBoneMatricesToTSO(tso);
     }
     
     /// <summary>
     /// bone行列を更新します。
     /// </summary>
-    protected void UpdateBoneMatrices(TMOFile tmo, TMOFrame tmo_frame)
+    protected void UpdateBoneMatrices(TSOFile tso, TMOFrame tmo_frame)
     {
         matrixStack.LoadMatrix(Matrix.Translation(translation));
-        UpdateBoneMatrices(tmo.nodes[0], tmo_frame);
+        UpdateBoneMatrices(tso.nodes[0], tmo_frame);
     }
 
     /// <summary>
     /// bone行列を更新します。
     /// </summary>
-    protected void UpdateBoneMatrices(TMONode tmo_node, TMOFrame tmo_frame)
+    protected void UpdateBoneMatrices(TSONode tso_node, TMOFrame tmo_frame)
     {
         matrixStack.Push();
 
         if (tmo_frame != null)
         {
             // TMO animation
-            tmo_node.TransformationMatrix = tmo_frame.matrices[tmo_node.ID].m;
+            TMONode tmo_node;
+            if (nodemap.TryGetValue(tso_node, out tmo_node))
+            tso_node.TransformationMatrix = tmo_frame.matrices[tmo_node.ID].m;
         }
-        matrixStack.MultiplyMatrixLocal(tmo_node.TransformationMatrix);
-        tmo_node.combined_matrix = matrixStack.Top;
+        matrixStack.MultiplyMatrixLocal(tso_node.TransformationMatrix);
+        tso_node.combined_matrix = matrixStack.Top;
 
-        foreach (TMONode child_node in tmo_node.child_nodes)
+        foreach (TSONode child_node in tso_node.child_nodes)
             UpdateBoneMatrices(child_node, tmo_frame);
 
         matrixStack.Pop();
