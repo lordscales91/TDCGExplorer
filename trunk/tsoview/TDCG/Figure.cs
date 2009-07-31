@@ -281,23 +281,6 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// bone行列をtmoからtsoへ複写します。
-    /// </summary>
-    /// TODO: これは不要な操作のはず
-    protected void CopyBoneMatricesToTSO(TSOFile tso)
-    {
-        foreach (TSONode tso_node in tso.nodes)
-        {
-            TMONode tmo_node;
-            if (nodemap.TryGetValue(tso_node, out tmo_node))
-            {
-                tso_node.TransformationMatrix = tmo_node.TransformationMatrix;
-                tso_node.combined_matrix = tmo_node.combined_matrix;
-            }
-        }
-    }
-
-    /// <summary>
     /// TSOFileを指定device上で開きます。
     /// </summary>
     /// <param name="device">device</param>

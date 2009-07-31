@@ -1246,7 +1246,7 @@ public class Viewer : IDisposable
         effect.End();
     }
 
-    private bool FindBoneOnScreenPoint(float x, float y, TMONode bone)
+    private bool FindBoneOnScreenPoint(float x, float y, TSONode bone)
     {
         Figure fig;
         if (TryGetFigure(out fig))
@@ -1272,18 +1272,18 @@ public class Viewer : IDisposable
     /// <summary>
     /// 逆運動学による解を得ます。
     /// </summary>
-    /// <param name="tmo">tmo</param>
+    /// <param name="tso">tso</param>
     /// <param name="effector_name">エフェクタnode名称</param>
-    private void Solve(TMOFile tmo, string effector_name)
+    private void Solve(TSOFile tso, string effector_name)
     {
-        Debug.Assert(tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
-        TMONode effector;
-        if (tmo.nodemap.TryGetValue(effector_name, out effector))
+        Debug.Assert(tso.nodemap != null, "tso.nodemap should not be null");
+        TSONode effector;
+        if (tso.nodemap.TryGetValue(effector_name, out effector))
         {
             foreach (string node_name in effector_dictionary[effector_name])
             {
-                TMONode node;
-                if (tmo.nodemap.TryGetValue(node_name, out node))
+                TSONode node;
+                if (tso.nodemap.TryGetValue(node_name, out node))
                     Solve(effector, node);
             }
         }
@@ -1294,7 +1294,7 @@ public class Viewer : IDisposable
     /// </summary>
     /// <param name="effector">エフェクタnode</param>
     /// <param name="node">対象node</param>
-    public void Solve(TMONode effector, TMONode node)
+    public void Solve(TSONode effector, TSONode node)
     {
         Vector3 worldTargetP = target;
 
