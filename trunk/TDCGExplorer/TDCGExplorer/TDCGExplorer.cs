@@ -280,6 +280,7 @@ namespace TDCGExplorer
             edit.findziplevel = SystemDB.findziplevel;
             edit.delete_tahcache = SystemDB.delete_tahcache;
             edit.taheditorprevire = SystemDB.taheditorpreview;
+            edit.alwaysnewtab = SystemDB.alwaysnewtab;
             edit.Owner = MainFormWindow;
             if (edit.ShowDialog() == DialogResult.OK)
             {
@@ -304,6 +305,7 @@ namespace TDCGExplorer
                 SystemDB.findziplevel = edit.findziplevel;
                 SystemDB.delete_tahcache = edit.delete_tahcache;
                 SystemDB.taheditorpreview = edit.taheditorprevire;
+                SystemDB.alwaysnewtab = edit.alwaysnewtab;
                 SystemDB.appversion = CONST_APPVERSION;
             }
         }

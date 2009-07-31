@@ -70,9 +70,12 @@
             this.checkBoxDeleteTahCache = new System.Windows.Forms.CheckBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.checkBoxTahPreview = new System.Windows.Forms.CheckBox();
+            this.checkBoxAlwaysNewTab = new System.Windows.Forms.CheckBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // OKButton
@@ -452,11 +455,32 @@
             this.checkBoxTahPreview.Text = "TSOプレビューを表示する";
             this.checkBoxTahPreview.UseVisualStyleBackColor = true;
             // 
+            // checkBoxAlwaysNewTab
+            // 
+            this.checkBoxAlwaysNewTab.AutoSize = true;
+            this.checkBoxAlwaysNewTab.Location = new System.Drawing.Point(7, 19);
+            this.checkBoxAlwaysNewTab.Name = "checkBoxAlwaysNewTab";
+            this.checkBoxAlwaysNewTab.Size = new System.Drawing.Size(120, 17);
+            this.checkBoxAlwaysNewTab.TabIndex = 0;
+            this.checkBoxAlwaysNewTab.Text = "新規タブで表示する";
+            this.checkBoxAlwaysNewTab.UseVisualStyleBackColor = true;
+            // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.checkBoxAlwaysNewTab);
+            this.groupBox4.Location = new System.Drawing.Point(378, 414);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Size = new System.Drawing.Size(200, 44);
+            this.groupBox4.TabIndex = 35;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "タブブラウザ";
+            // 
             // EditSystemDatabase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(615, 521);
+            this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.label15);
@@ -501,6 +525,8 @@
             this.groupBox2.PerformLayout();
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
+            this.groupBox4.ResumeLayout(false);
+            this.groupBox4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -550,5 +576,7 @@
         private System.Windows.Forms.CheckBox checkBoxDeleteTahCache;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox checkBoxTahPreview;
+        private System.Windows.Forms.CheckBox checkBoxAlwaysNewTab;
+        private System.Windows.Forms.GroupBox groupBox4;
     }
 }

@@ -304,5 +304,17 @@ namespace TDCGExplorer
                 SetSqlValue("appversion", value);
             }
         }
+
+        // 常に新規タブで表示するか設定
+        public bool alwaysnewtab
+        {
+            get { return GetSqlValue("alwaysnewtab", "true") == "true"; }
+            set
+            {
+                if (value == true) SetSqlValue("alwaysnewtab", "true");
+                else SetSqlValue("alwaysnewtab", "false");
+            }
+        }
+
     }
 }
