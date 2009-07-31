@@ -41,8 +41,6 @@ public class Viewer : IDisposable
     internal Surface dev_surface = null;
     internal Surface dev_zbuf = null;
 
-    internal Mesh sphere = null;
-
     /// <summary>
     /// viewerが保持しているフィギュアリスト
     /// </summary>
@@ -144,52 +142,6 @@ public class Viewer : IDisposable
             z = (float)Math.Sqrt(1.0f - mag);
 
         return new Vector3(x, y, z);
-    }
-
-    /// 球とレイの衝突を見つけます。
-    public bool DetectSphereRayCollision(float sphereRadius, ref Vector3 sphereCenter, ref Vector3 rayStart, ref Vector3 rayOrientation, out Vector3 collisionPoint, out float collisionTime)
-    {
-        collisionTime = 0.0f;
-        collisionPoint = Vector3.Empty;
-
-        Vector3 u = rayStart - sphereCenter;
-        float a = Vector3.Dot(rayOrientation, rayOrientation);
-        float b = Vector3.Dot(rayOrientation, u);
-        float c = Vector3.Dot(u, u) - sphereRadius*sphereRadius;
-        if (a <= float.Epsilon)
-            //誤差
-            return false;
-        float d = b*b - a*c;
-        if (d < 0.0f)
-            //衝突しない
-            return false;
-        collisionTime = (-b - (float)Math.Sqrt(d))/a;
-        collisionPoint = rayStart + rayOrientation*collisionTime;
-        return true;
-    }
-
-    /// スクリーン位置をワールド座標へ変換します。
-    public Vector3 ScreenToWorld(float screenX, float screenY, float z, ref Matrix view, ref Matrix proj)
-    {
-        //viewport行列を作成
-        Matrix m = Matrix.Identity;
-        Viewport vp = device.Viewport;
-        m.M11 = (float)vp.Width/2;
-        m.M22 = -1.0f*(float)vp.Height/2;
-        m.M33 = (float)vp.MaxZ - (float)vp.MinZ;
-        m.M41 = (float)(vp.X + vp.Width/2);
-        m.M42 = (float)(vp.Y + vp.Height/2);
-        m.M43 = vp.MinZ;
-
-        //スクリーン位置
-        Vector3 v = new Vector3(screenX, screenY,  z);
-
-        Matrix inv_m = Matrix.Invert(m);
-        Matrix inv_proj = Matrix.Invert(proj);
-        Matrix inv_view = Matrix.Invert(view);
-
-        //スクリーン位置をワールド座標へ変換
-        return Vector3.TransformCoordinate(v, inv_m * inv_proj * inv_view);
     }
 
     /// <summary>
@@ -574,7 +526,6 @@ public class Viewer : IDisposable
 
             sprite = new Sprite(device);
         }
-        sphere = Mesh.Sphere(device, 0.25f, 8, 6);
         camera.Update();
         OnDeviceReset(device, null);
 
@@ -1088,27 +1039,6 @@ public class Viewer : IDisposable
         effect.End();
     }
 
-    private bool FindBoneOnScreenPoint(float x, float y, TSONode bone)
-    {
-        Figure fig;
-        if (TryGetFigure(out fig))
-        {
-            Matrix m = bone.combined_matrix * world_matrix;
-
-            float sphereRadius = 0.25f;
-            Vector3 sphereCenter = new Vector3(m.M41, m.M42, m.M43);
-            Vector3 rayStart = ScreenToWorld(x, y, 0.0f, ref Transform_View, ref Transform_Projection);
-            Vector3 rayEnd = ScreenToWorld(x, y, 1.0f, ref Transform_View, ref Transform_Projection);
-            Vector3 rayOrientation = rayEnd - rayStart;
-
-            Vector3 collisionPoint;
-            float collisionTime;
-
-            return DetectSphereRayCollision(sphereRadius, ref sphereCenter, ref rayStart, ref rayOrientation, out collisionPoint, out collisionTime);
-        }
-        return false;
-    }
-
     /// <summary>
     /// 内部objectを破棄します。
     /// </summary>
@@ -1116,8 +1046,6 @@ public class Viewer : IDisposable
     {
         foreach (Figure fig in FigureList)
             fig.Dispose();
-        if (sphere != null)
-            sphere.Dispose();
         if (sprite != null)
             sprite.Dispose();
         if (renderZ != null)
