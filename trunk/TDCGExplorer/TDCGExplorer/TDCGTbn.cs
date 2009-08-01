@@ -111,6 +111,18 @@ namespace TDCGExplorer
                 tbndata[0x756] = category.byte3;
             }
         }
+        public static string ext(byte[] data)
+        {
+            if (data.Length > 4 && data[0] == 'F' && data[1] == 'O' && data[2] == 'N' && data[3] == 'T') return ".font";
+            if (data.Length > 4 && data[0] == '8' && data[1] == 'B' && data[2] == 'P' && data[3] == 'S') return ".psd";
+            if (data.Length > 4 && data[0] == 0x89 && data[1] == 'P' && data[2] == 'N' && data[3] == 'G') return ".png";
+            if (data.Length > 4 && data[0] == 'T' && data[1] == 'S' && data[2] == 'O' && data[3] == '1') return ".tso";
+            if (data.Length > 4 && data[0] == 'T' && data[1] == 'M' && data[2] == 'O' && data[3] == '1') return ".tmo";
+            if (data.Length > 4 && data[0] == '/' && data[1] == '*' && data[2] == '*' && data[3] == '*') return ".cgfx";
+            if (data.Length > 4 && data[0] == 'B' && data[1] == 'B' && data[2] == 'B' && data[3] == 'B') return ".tbn";
+            if (data.Length > 4 && data[0] == 'O' && data[1] == 'g' && data[2] == 'g' && data[3] == 'S') return ".ogg";
+            return "";
+        }
     }
 
     public class TBNCategoryData

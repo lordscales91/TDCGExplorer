@@ -886,6 +886,7 @@ namespace TDCGExplorer
                     DecBusy();
                     Directory.CreateDirectory(Path.GetDirectoryName(filename));
                     byte[] data = TAHUtil.ReadEntryData(tah.Reader, ent);
+                    if (Path.GetExtension(filename) == "") filename += TDCGTbnUtil.ext(data); // ファイル内容から拡張子を推定する
                     File.Delete(filename);
                     using (Stream writefile = File.Create(filename))
                     {
@@ -967,6 +968,7 @@ namespace TDCGExplorer
                                     }
                                     SetToolTips("ファイル読み取り中:" + tahfile);
                                     byte[] tahdata = TAHUtil.ReadEntryData(tah.Reader, ent);
+                                    if (Path.GetExtension(tahfile) == "") tahfile += TDCGTbnUtil.ext(tahdata); // ファイル内容から拡張子を推定する
                                     editor.AddItem(tahfile, tahdata);
                                     IncBusy();
                                     Application.DoEvents();

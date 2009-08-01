@@ -145,7 +145,7 @@ namespace System.Windows.Forms
                         }
                         byte[] bytedata = TAHUtil.ReadEntryData(tah.Reader, ent);
                         TAHLocalDbEntry entry = new TAHLocalDbEntry();
-
+                        if (Path.GetExtension(filename) == "") filename += TDCGTbnUtil.ext(bytedata); // ファイル内容から拡張子を推定する
                         TAHLocalDBDataEntry dataentry = new TAHLocalDBDataEntry();
                         dataentry.dataid = 0;
                         dataentry.data = bytedata;
