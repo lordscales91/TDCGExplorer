@@ -354,7 +354,7 @@ public class TPONode
                     mat.RotateZ(command.angle * ratio);
                     break;
                 case TPOCommand.Type.Move:
-                    mat.Move(command.v);
+                    mat.Move(command.v * ratio);
                     break;
             }
         }
