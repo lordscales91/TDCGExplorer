@@ -28,10 +28,10 @@ namespace TMOProportion
             return Path.Combine(Application.StartupPath, @"TPOConfig.xml");
         }
 
-        public Form1()
+        public Form1(TSOConfig tso_config, string[] args)
         {
             InitializeComponent();
-            this.ClientSize = new Size(800, 600);
+            this.ClientSize = tso_config.ClientSize;
             viewer = new Viewer();
 
             if (viewer.InitializeApplication(this, true))
@@ -40,6 +40,9 @@ namespace TMOProportion
                 {
                     UpdateTpoList();
                 };
+                foreach (string arg in args)
+                    viewer.LoadAnyFile(arg, true);
+
                 timer1.Enabled = true;
             }
 
@@ -51,9 +54,9 @@ namespace TMOProportion
                 pro_list.Add(script);
             }
 
-            TPOConfig config = TPOConfig.Load(GetTPOConfigPath());
+            TPOConfig tpo_config = TPOConfig.Load(GetTPOConfigPath());
             Dictionary<string, Proportion> portion_map = new Dictionary<string, Proportion>();
-            foreach (Proportion portion in config.Proportions)
+            foreach (Proportion portion in tpo_config.Proportions)
                 portion_map[portion.ClassName] = portion;
 
             foreach (IProportion pro in pro_list)
