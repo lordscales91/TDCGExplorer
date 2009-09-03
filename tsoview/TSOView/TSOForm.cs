@@ -50,10 +50,10 @@ public class TSOForm : Form
 
     private int cam_frame_index = 0;
 
-    public TSOForm(TSOConfig config, string[] args)
+    public TSOForm(TSOConfig tso_config, string[] args)
     {
         InitializeComponent();
-        this.ClientSize = config.ClientSize;
+        this.ClientSize = tso_config.ClientSize;
         this.Text = "TSOView";
         this.AllowDrop = true;
 

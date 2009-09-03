@@ -104,6 +104,7 @@
       <DependentUpon>ProportionSlider.cs</DependentUpon>
     </Compile>
     <Compile Include="TPOConfig.cs" />
+    <Compile Include="TSOConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="TPOConfig.xml">

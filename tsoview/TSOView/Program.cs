@@ -23,17 +23,17 @@ static class Program
     {
         Debug.Listeners.Add(new TextWriterTraceListener(Console.Out));
 
-        TSOConfig config;
+        TSOConfig tso_config;
 
-        string config_file = Path.Combine(Application.StartupPath, @"config.xml");
-        if (File.Exists(config_file))
-            config = TSOConfig.Load(config_file);
+        string tso_config_file = Path.Combine(Application.StartupPath, @"config.xml");
+        if (File.Exists(tso_config_file))
+            tso_config = TSOConfig.Load(tso_config_file);
         else
-            config = new TSOConfig();
+            tso_config = new TSOConfig();
 
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
-        Application.Run(new TSOForm(config, args));
+        Application.Run(new TSOForm(tso_config, args));
     }
 }
 }
