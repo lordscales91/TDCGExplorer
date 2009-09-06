@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PNGProportion", "PNGProport
 		{30D26679-E876-46FC-B8C0-E55146316C8C} = {30D26679-E876-46FC-B8C0-E55146316C8C}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMOProp", "TMOProp\TMOProp.csproj", "{7999DA98-17BB-4734-AF2A-7C03CA117CF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +70,13 @@ Global
 		{2914D2D6-9C27-46A6-B1D6-EEDAEE61CE30}.Release|Any CPU.Build.0 = Release|Any CPU
 		{2914D2D6-9C27-46A6-B1D6-EEDAEE61CE30}.Release|x86.ActiveCfg = Release|x86
 		{2914D2D6-9C27-46A6-B1D6-EEDAEE61CE30}.Release|x86.Build.0 = Release|x86
+		{7999DA98-17BB-4734-AF2A-7C03CA117CF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7999DA98-17BB-4734-AF2A-7C03CA117CF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7999DA98-17BB-4734-AF2A-7C03CA117CF9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7999DA98-17BB-4734-AF2A-7C03CA117CF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7999DA98-17BB-4734-AF2A-7C03CA117CF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7999DA98-17BB-4734-AF2A-7C03CA117CF9}.Release|x86.ActiveCfg = Release|x86
+		{7999DA98-17BB-4734-AF2A-7C03CA117CF9}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
