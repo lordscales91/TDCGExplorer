@@ -17,7 +17,7 @@ namespace TDCGExplorer
     public class TDCGExplorer
     {
         public const string CONST_DBVERSION = "1.00";
-        public const string CONST_APPVERSION = "1.00";
+        public const string CONST_APPVERSION = "1.01";
         public const string CONST_COPYRIGHT = "Copyright © 2009 3DCG Craftsmen's Guild.";
 
         private static SystemDatabase systemDatabase;
@@ -60,6 +60,8 @@ namespace TDCGExplorer
         {
             try
             {
+                Directory.SetCurrentDirectory(Application.StartupPath);
+
                 systemDatabase = new SystemDatabase();
                 arcsDatabase = new ArcsDatabase();
                 arcNames = new ArcNamesDictionary();
