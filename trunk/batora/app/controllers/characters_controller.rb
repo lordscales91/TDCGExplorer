@@ -40,7 +40,11 @@ class CharactersController < ApplicationController
   # POST /characters
   # POST /characters.xml
   def create
-    @character = Character.new(params[:character])
+    @bmp = Bmp.find(params[:bmp_id])
+    if @bmp.character
+      raise ArgumentError.new("the bmp character is already exist")
+    end
+    @character = @bmp.build_character_1(params[:character])
 
     respond_to do |format|
       if @character.save

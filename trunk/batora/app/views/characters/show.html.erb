@@ -1,3 +1,4 @@
+<%= image_tag("/images/bmps/#{@character.bmp_id}.png", :width => 128, :height => 256) %>
 <p>
   <b>Off:</b>
   <%=h @character.off %>
@@ -18,6 +19,3 @@
   <%=h @character.life %>
 </p>
 
-
-<%= link_to 'Edit', edit_character_path(@character) %> |
-<%= link_to 'Back', characters_path %>
