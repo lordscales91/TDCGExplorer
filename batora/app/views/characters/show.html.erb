@@ -1,0 +1,23 @@
+<p>
+  <b>Off:</b>
+  <%=h @character.off %>
+</p>
+
+<p>
+  <b>Def:</b>
+  <%=h @character.def %>
+</p>
+
+<p>
+  <b>Agi:</b>
+  <%=h @character.agi %>
+</p>
+
+<p>
+  <b>Life:</b>
+  <%=h @character.life %>
+</p>
+
+
+<%= link_to 'Edit', edit_character_path(@character) %> |
+<%= link_to 'Back', characters_path %>

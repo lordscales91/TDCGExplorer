@@ -1,0 +1,26 @@
+<h1>Listing characters</h1>
+
+<table>
+  <tr>
+    <th>Off</th>
+    <th>Def</th>
+    <th>Agi</th>
+    <th>Life</th>
+  </tr>
+
+<% for character in @characters %>
+  <tr>
+    <td><%=h character.off %></td>
+    <td><%=h character.def %></td>
+    <td><%=h character.agi %></td>
+    <td><%=h character.life %></td>
+    <td><%= link_to 'Show', character %></td>
+    <td><%= link_to 'Edit', edit_character_path(character) %></td>
+    <td><%= link_to 'Destroy', character, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New character', new_character_path %>
