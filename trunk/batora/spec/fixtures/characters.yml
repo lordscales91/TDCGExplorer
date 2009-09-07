@@ -1,0 +1,13 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  off: 1
+  def: 1
+  agi: 1
+  life: 1
+
+two:
+  off: 1
+  def: 1
+  agi: 1
+  life: 1
