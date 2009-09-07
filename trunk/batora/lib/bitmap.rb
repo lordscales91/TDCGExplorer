@@ -26,7 +26,7 @@ class Bitmap
       # puts ": %02X " % c
       str.concat c.chr
     end
-    str
+    str.sub(/\0+$/,'')
   end
 
   def load(path)
