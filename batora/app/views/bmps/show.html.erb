@@ -1,10 +1,17 @@
 <h1>Bmps#show</h1>
-<p>Find me in app/views/bmps/show.html.erb</p>
 <%= image_tag("/images/bmps/#{@bmp.id}.png", :width => 128, :height => 256) %>
-<ul>
-<%-for tbn in @bmp.tbns-%>
-  <li><%=h tbn.name %></li>
-<%-end-%>
-</ul>
-<%= link_to "character", character_path(@bmp.character) %>
-<%= button_to "Create character", characters_path(:bmp_id => @bmp.id) %>
+<div>
+  <%-if @bmp.character-%>
+    <%= link_to "character", character_path(@bmp.character) %>
+  <%-else-%>
+    <%= button_to "Create character", characters_path(:bmp_id => @bmp.id) %>
+  <%-end-%>
+</div>
+<div>
+  <b>Tbns:</b><br />
+  <ul>
+  <%-for tbn in @bmp.tbns-%>
+    <li><%=h tbn.name %></li>
+  <%-end-%>
+  </ul>
+</div>
