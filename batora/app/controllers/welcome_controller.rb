@@ -3,7 +3,7 @@ class WelcomeController < ApplicationController
   end
 
   def upload
-    Upload.upload_savefile(params[:file])
-    redirect_to :action => 'index'
+    @bmp = Upload.upload_savefile(params[:file])
+    redirect_to bmp_path(@bmp)
   end
 end

@@ -12,11 +12,17 @@ module_function
     bitmap.load(bmp_path)
     # bitmap.tbn_names.each { |tbn| puts tbn }
 
+    bmp = Bmp.new
     Bmp.transaction do
-      bmp = Bmp.new
       bmp.path = bmp_path
       bmp.tbn_names = bitmap.tbn_names
       bmp.save!
     end
+
+    # png‚Æ‚µ‚Ä•Û‘¶
+    png_path = RAILS_ROOT + "/public/images/bmps/#{bmp.id}.png"
+    ilist.write(png_path)
+
+    bmp
   end
 end
