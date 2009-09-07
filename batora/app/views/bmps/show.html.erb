@@ -6,3 +6,5 @@
   <li><%=h tbn.name %></li>
 <%-end-%>
 </ul>
+<%= link_to "character", character_path(@bmp.character) %>
+<%= button_to "Create character", characters_path(:bmp_id => @bmp.id) %>
