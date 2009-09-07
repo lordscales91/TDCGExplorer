@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  bmp: 
+  name: MyString
+  position: 1
+
+two:
+  bmp: 
+  name: MyString
+  position: 1
