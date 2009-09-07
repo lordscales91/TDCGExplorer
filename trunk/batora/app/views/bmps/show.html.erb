@@ -1,0 +1,8 @@
+<h1>Bmps#show</h1>
+<p>Find me in app/views/bmps/show.html.erb</p>
+<%= image_tag("/images/bmps/#{@bmp.id}.png", :width => 128, :height => 256) %>
+<ul>
+<%-for tbn in @bmp.tbns-%>
+  <li><%=h tbn.name %></li>
+<%-end-%>
+</ul>
