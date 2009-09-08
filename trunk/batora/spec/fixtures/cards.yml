@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  player: 
+  character: 
+  position: 1
+
+two:
+  player: 
+  character: 
+  position: 1

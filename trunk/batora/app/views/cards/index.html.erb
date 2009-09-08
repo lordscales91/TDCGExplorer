@@ -1,0 +1,24 @@
+<h1>Listing cards</h1>
+
+<table>
+  <tr>
+    <th>Player</th>
+    <th>Character</th>
+    <th>Position</th>
+  </tr>
+
+<% for card in @cards %>
+  <tr>
+    <td><%=h card.player %></td>
+    <td><%=h card.character %></td>
+    <td><%=h card.position %></td>
+    <td><%= link_to 'Show', card %></td>
+    <td><%= link_to 'Edit', edit_card_path(card) %></td>
+    <td><%= link_to 'Destroy', card, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New card', new_card_path %>
