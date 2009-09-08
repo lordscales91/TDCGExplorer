@@ -2,14 +2,13 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe BmpsController do
 
-  #Delete these examples and add some real ones
-  it "should use BmpsController" do
-    controller.should be_an_instance_of(BmpsController)
+  def mock_bmp(stubs={})
+    @mock_bmp ||= mock_model(Bmp, stubs)
   end
-
 
   describe "GET 'index'" do
     it "should be successful" do
+      Bmp.stub!(:find).with(:all).and_return([mock_bmp])
       get 'index'
       response.should be_success
     end
@@ -17,7 +16,8 @@ describe BmpsController do
 
   describe "GET 'show'" do
     it "should be successful" do
-      get 'show'
+      Bmp.stub!(:find).with("37").and_return(mock_bmp)
+      get 'show', :id => "37"
       response.should be_success
     end
   end
