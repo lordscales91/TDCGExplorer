@@ -2,6 +2,10 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe CharactersController do
 
+  def mock_bmp(stubs={})
+    @mock_bmp ||= mock_model(Bmp, stubs)
+  end
+
   def mock_character(stubs={})
     @mock_character ||= mock_model(Character, stubs)
   end
@@ -39,31 +43,34 @@ describe CharactersController do
   end
 
   describe "POST create" do
+    before do
+      Bmp.stub!(:find).with("42").and_return(mock_bmp(:character => nil))
+    end
     
     describe "with valid params" do
       it "assigns a newly created character as @character" do
-        Character.stub!(:new).with({'these' => 'params'}).and_return(mock_character(:save => true))
-        post :create, :character => {:these => 'params'}
+        mock_bmp.stub!(:build_character_1).with({'these' => 'params'}).and_return(mock_character(:save => true))
+        post :create, :bmp_id => "42", :character => {:these => 'params'}
         assigns[:character].should equal(mock_character)
       end
 
       it "redirects to the created character" do
-        Character.stub!(:new).and_return(mock_character(:save => true))
-        post :create, :character => {}
+        mock_bmp.stub!(:build_character_1).and_return(mock_character(:save => true))
+        post :create, :bmp_id => "42", :character => {}
         response.should redirect_to(character_url(mock_character))
       end
     end
     
     describe "with invalid params" do
       it "assigns a newly created but unsaved character as @character" do
-        Character.stub!(:new).with({'these' => 'params'}).and_return(mock_character(:save => false))
-        post :create, :character => {:these => 'params'}
+        mock_bmp.stub!(:build_character_1).with({'these' => 'params'}).and_return(mock_character(:save => false))
+        post :create, :bmp_id => "42", :character => {:these => 'params'}
         assigns[:character].should equal(mock_character)
       end
 
       it "re-renders the 'new' template" do
-        Character.stub!(:new).and_return(mock_character(:save => false))
-        post :create, :character => {}
+        mock_bmp.stub!(:build_character_1).and_return(mock_character(:save => false))
+        post :create, :bmp_id => "42", :character => {}
         response.should render_template('new')
       end
     end
