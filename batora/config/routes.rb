@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :cards
+
   map.resources :players
 
   map.resources :bmps

@@ -1,0 +1,18 @@
+<p>
+  <b>Player:</b>
+  <%=h @card.player %>
+</p>
+
+<p>
+  <b>Character:</b>
+  <%=h @card.character %>
+</p>
+
+<p>
+  <b>Position:</b>
+  <%=h @card.position %>
+</p>
+
+
+<%= link_to 'Edit', edit_card_path(@card) %> |
+<%= link_to 'Back', cards_path %>
