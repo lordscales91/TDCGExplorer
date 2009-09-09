@@ -1,11 +1,11 @@
 <p>
   <b>Player:</b>
-  <%=h @card.player %>
+  <%=h @player.nick %>
 </p>
 
 <p>
   <b>Character:</b>
-  <%=h @card.character %>
+  <%=h @card.character_id %>
 </p>
 
 <p>
@@ -14,5 +14,5 @@
 </p>
 
 
-<%= link_to 'Edit', edit_card_path(@card) %> |
-<%= link_to 'Back', cards_path %>
+<%= link_to 'Edit', edit_player_card_path(@player, @card) %> |
+<%= link_to 'Back', player_cards_path(@player) %>

@@ -1,24 +1,20 @@
 <h1>Editing card</h1>
 
-<% form_for(@card) do |f| %>
+<% form_for([ @player, @card ]) do |f| %>
   <%= f.error_messages %>
 
   <p>
     <%= f.label :player %><br />
-    <%= f.text_field :player %>
+    <%=h @player.nick %>
   </p>
   <p>
     <%= f.label :character %><br />
-    <%= f.text_field :character %>
-  </p>
-  <p>
-    <%= f.label :position %><br />
-    <%= f.text_field :position %>
+    <%= f.text_field :character_id %>
   </p>
   <p>
     <%= f.submit "Update" %>
   </p>
 <% end %>
 
-<%= link_to 'Show', @card %> |
-<%= link_to 'Back', cards_path %>
+<%= link_to 'Show', [ @player, @card ] %> |
+<%= link_to 'Back', player_cards_path(@player) %>

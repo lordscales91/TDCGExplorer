@@ -1,7 +1,7 @@
 ActionController::Routing::Routes.draw do |map|
-  map.resources :cards
-
-  map.resources :players
+  map.resources :players do |players|
+    players.resources :cards
+  end
 
   map.resources :bmps
   map.resources :characters
