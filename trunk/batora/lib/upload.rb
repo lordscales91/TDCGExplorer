@@ -1,8 +1,11 @@
 module Upload
 module_function
   def upload_savefile(file)
+    time = Time.now
+    time_str = "%10d.%06d" % [ time.to_i, time.usec ]
+
     # bmp‚Æ‚µ‚Ä•Û‘¶
-    bmp_path = RAILS_ROOT + "/tmp/bitmaps/1.bmp"
+    bmp_path = RAILS_ROOT + "/tmp/bitmaps/#{time_str}.bmp"
     ilist = Magick::ImageList.new
     ilist.from_blob(file.read)
     ilist.write(bmp_path)
