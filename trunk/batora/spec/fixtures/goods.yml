@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  character: 
+  stock: 1
+  price: 1
+
+two:
+  character: 
+  stock: 1
+  price: 1

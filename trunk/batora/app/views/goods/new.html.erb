@@ -1,0 +1,23 @@
+<h1>New good</h1>
+
+<% form_for(@good) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :character %><br />
+    <%= f.text_field :character %>
+  </p>
+  <p>
+    <%= f.label :stock %><br />
+    <%= f.text_field :stock %>
+  </p>
+  <p>
+    <%= f.label :price %><br />
+    <%= f.text_field :price %>
+  </p>
+  <p>
+    <%= f.submit "Create" %>
+  </p>
+<% end %>
+
+<%= link_to 'Back', goods_path %>
