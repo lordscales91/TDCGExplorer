@@ -3,12 +3,12 @@
 <table>
   <tr>
     <th>Image</th>
-    <th>Off</th>
-    <th>Def</th>
-    <th>Agi</th>
-    <th>Life</th>
-    <th>Stock</th>
-    <th>Price</th>
+    <th><%= _'Character|Off' %></th>
+    <th><%= _'Character|Def' %></th>
+    <th><%= _'Character|Agi' %></th>
+    <th><%= _'Character|Life' %></th>
+    <th><%= _'Good|Stock' %></th>
+    <th><%= _'Good|Price' %></th>
   </tr>
 
 <% for good in @goods %>
@@ -22,7 +22,7 @@
     <td><%=h good.character.life %></td>
     <td><%=h good.stock %></td>
     <td><%=h good.price %></td>
-    <td><%= link_to 'Show', good %></td>
+    <td><%= link_to _('Show'), good %></td>
   </tr>
 <% end %>
 </table>

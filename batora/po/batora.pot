@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: batora 0.0.1\n"
-"POT-Creation-Date: 2009-09-09 23:52+0900\n"
+"POT-Creation-Date: 2009-09-10 00:17+0900\n"
 "PO-Revision-Date: 2009-09-09 23:49+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -56,23 +56,31 @@ msgstr ""
 msgid "Card|Updated at"
 msgstr ""
 
-#: app/models/character.rb:-
+#: app/models/character.rb:- app/views/bmps/show.html.erb:4
 msgid "character"
 msgstr ""
 
-#: app/models/character.rb:-
+#: app/models/character.rb:- app/views/cards/index.html.erb:6
+#: app/views/characters/index.html.erb:6 app/views/characters/show.html.erb:3
+#: app/views/goods/index.html.erb:6
 msgid "Character|Off"
 msgstr ""
 
-#: app/models/character.rb:-
+#: app/models/character.rb:- app/views/cards/index.html.erb:7
+#: app/views/characters/index.html.erb:7 app/views/characters/show.html.erb:8
+#: app/views/goods/index.html.erb:7
 msgid "Character|Def"
 msgstr ""
 
-#: app/models/character.rb:-
+#: app/models/character.rb:- app/views/cards/index.html.erb:8
+#: app/views/characters/index.html.erb:8 app/views/characters/show.html.erb:13
+#: app/views/goods/index.html.erb:8
 msgid "Character|Agi"
 msgstr ""
 
-#: app/models/character.rb:-
+#: app/models/character.rb:- app/views/cards/index.html.erb:9
+#: app/views/characters/index.html.erb:9 app/views/characters/show.html.erb:18
+#: app/views/goods/index.html.erb:9
 msgid "Character|Life"
 msgstr ""
 
@@ -96,11 +104,11 @@ msgstr ""
 msgid "Good|Character"
 msgstr ""
 
-#: app/models/good.rb:-
+#: app/models/good.rb:- app/views/goods/index.html.erb:10
 msgid "Good|Stock"
 msgstr ""
 
-#: app/models/good.rb:-
+#: app/models/good.rb:- app/views/goods/index.html.erb:11
 msgid "Good|Price"
 msgstr ""
 
@@ -116,7 +124,7 @@ msgstr ""
 msgid "player"
 msgstr ""
 
-#: app/models/player.rb:-
+#: app/models/player.rb:- app/views/players/index.html.erb:5
 msgid "Player|Nick"
 msgstr ""
 
@@ -150,4 +158,30 @@ msgstr ""
 
 #: app/models/tbn.rb:-
 msgid "Tbn|Updated at"
+msgstr ""
+
+#: app/views/bmps/index.html.erb:11 app/views/cards/index.html.erb:21
+#: app/views/characters/index.html.erb:21 app/views/goods/index.html.erb:25
+#: app/views/players/index.html.erb:11
+msgid "Show"
+msgstr ""
+
+#: app/views/bmps/show.html.erb:6
+msgid "Create character"
+msgstr ""
+
+#: app/views/cards/index.html.erb:22 app/views/players/index.html.erb:12
+msgid "Edit"
+msgstr ""
+
+#: app/views/cards/index.html.erb:23 app/views/players/index.html.erb:13
+msgid "Destroy"
+msgstr ""
+
+#: app/views/cards/index.html.erb:23 app/views/players/index.html.erb:13
+msgid "Are you sure?"
+msgstr ""
+
+#: app/views/welcome/index.html.erb:5
+msgid "Upload"
 msgstr ""
