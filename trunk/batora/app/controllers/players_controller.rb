@@ -1,4 +1,6 @@
 class PlayersController < ApplicationController
+  layout 'welcome'
+
   # GET /players
   # GET /players.xml
   def index

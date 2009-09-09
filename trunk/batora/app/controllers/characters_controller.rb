@@ -1,4 +1,6 @@
 class CharactersController < ApplicationController
+  layout 'welcome'
+
   # GET /characters
   # GET /characters.xml
   def index
