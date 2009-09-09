@@ -8,7 +8,7 @@ describe GoodsController do
   
   describe "GET index" do
     it "assigns all goods as @goods" do
-      Good.stub!(:find).with(:all).and_return([mock_good])
+      Good.stub!(:find).with(:all, :include => :character).and_return([mock_good])
       get :index
       assigns[:goods].should == [mock_good]
     end
