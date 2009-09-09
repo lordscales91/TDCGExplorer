@@ -2,7 +2,7 @@ class GoodsController < ApplicationController
   # GET /goods
   # GET /goods.xml
   def index
-    @goods = Good.find(:all)
+    @goods = Good.find(:all, :include => :character)
 
     respond_to do |format|
       format.html # index.html.erb
