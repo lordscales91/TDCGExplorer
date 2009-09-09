@@ -2,6 +2,11 @@
 # Likewise, all the methods added will be available for all controllers.
 
 class ApplicationController < ActionController::Base
+  unless RAILS_ENV == 'test'
+    GetText.locale = 'ja'
+  end
+  init_gettext 'batora', :charset => 'Shift_JIS'
+
   helper :all # include all helpers, all the time
 
   # See ActionController::RequestForgeryProtection for details
