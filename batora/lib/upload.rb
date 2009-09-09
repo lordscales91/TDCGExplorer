@@ -2,7 +2,7 @@ require 'RMagick'
 
 module Upload
 module_function
-  def upload_savefile(file)
+  def upload_savefile_0(file)
     time = Time.now
     time_str = "%10d.%06d" % [ time.to_i, time.usec ]
 
@@ -28,6 +28,12 @@ module_function
     png_path = RAILS_ROOT + "/public/images/bmps/#{bmp.id}.png"
     ilist.write(png_path)
 
+    bmp
+  end
+
+  def upload_savefile(file)
+    bmp = upload_savefile_0(file)
+    GC.start
     bmp
   end
 end
