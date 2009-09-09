@@ -1,0 +1,153 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: batora 0.0.1\n"
+"POT-Creation-Date: 2009-09-09 23:52+0900\n"
+"PO-Revision-Date: 2009-09-09 23:49+0900\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=Shift_JIS\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: app/models/bmp.rb:-
+msgid "bmp"
+msgstr ""
+
+#: app/models/bmp.rb:-
+msgid "Bmp|Path"
+msgstr ""
+
+#: app/models/bmp.rb:-
+msgid "Bmp|Created at"
+msgstr ""
+
+#: app/models/bmp.rb:-
+msgid "Bmp|Updated at"
+msgstr ""
+
+#: app/models/card.rb:-
+msgid "card"
+msgstr ""
+
+#: app/models/card.rb:-
+msgid "Card|Player"
+msgstr ""
+
+#: app/models/card.rb:-
+msgid "Card|Character"
+msgstr ""
+
+#: app/models/card.rb:-
+msgid "Card|Position"
+msgstr ""
+
+#: app/models/card.rb:-
+msgid "Card|Created at"
+msgstr ""
+
+#: app/models/card.rb:-
+msgid "Card|Updated at"
+msgstr ""
+
+#: app/models/character.rb:-
+msgid "character"
+msgstr ""
+
+#: app/models/character.rb:-
+msgid "Character|Off"
+msgstr ""
+
+#: app/models/character.rb:-
+msgid "Character|Def"
+msgstr ""
+
+#: app/models/character.rb:-
+msgid "Character|Agi"
+msgstr ""
+
+#: app/models/character.rb:-
+msgid "Character|Life"
+msgstr ""
+
+#: app/models/character.rb:-
+msgid "Character|Created at"
+msgstr ""
+
+#: app/models/character.rb:-
+msgid "Character|Updated at"
+msgstr ""
+
+#: app/models/character.rb:-
+msgid "Character|Bmp"
+msgstr ""
+
+#: app/models/good.rb:-
+msgid "good"
+msgstr ""
+
+#: app/models/good.rb:-
+msgid "Good|Character"
+msgstr ""
+
+#: app/models/good.rb:-
+msgid "Good|Stock"
+msgstr ""
+
+#: app/models/good.rb:-
+msgid "Good|Price"
+msgstr ""
+
+#: app/models/good.rb:-
+msgid "Good|Created at"
+msgstr ""
+
+#: app/models/good.rb:-
+msgid "Good|Updated at"
+msgstr ""
+
+#: app/models/player.rb:-
+msgid "player"
+msgstr ""
+
+#: app/models/player.rb:-
+msgid "Player|Nick"
+msgstr ""
+
+#: app/models/player.rb:-
+msgid "Player|Created at"
+msgstr ""
+
+#: app/models/player.rb:-
+msgid "Player|Updated at"
+msgstr ""
+
+#: app/models/tbn.rb:-
+msgid "tbn"
+msgstr ""
+
+#: app/models/tbn.rb:-
+msgid "Tbn|Bmp"
+msgstr ""
+
+#: app/models/tbn.rb:-
+msgid "Tbn|Name"
+msgstr ""
+
+#: app/models/tbn.rb:-
+msgid "Tbn|Position"
+msgstr ""
+
+#: app/models/tbn.rb:-
+msgid "Tbn|Created at"
+msgstr ""
+
+#: app/models/tbn.rb:-
+msgid "Tbn|Updated at"
+msgstr ""
