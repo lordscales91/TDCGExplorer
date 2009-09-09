@@ -1,0 +1,24 @@
+<h1>Listing goods</h1>
+
+<table>
+  <tr>
+    <th>Character</th>
+    <th>Stock</th>
+    <th>Price</th>
+  </tr>
+
+<% for good in @goods %>
+  <tr>
+    <td><%=h good.character %></td>
+    <td><%=h good.stock %></td>
+    <td><%=h good.price %></td>
+    <td><%= link_to 'Show', good %></td>
+    <td><%= link_to 'Edit', edit_good_path(good) %></td>
+    <td><%= link_to 'Destroy', good, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New good', new_good_path %>
