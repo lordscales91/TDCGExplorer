@@ -20,7 +20,7 @@ describe CardsController do
 
   describe "GET index" do
     it "assigns all cards as @cards" do
-      player_cards.stub!(:find).with(:all).and_return([mock_card])
+      player_cards.stub!(:find).with(:all, :include => :character).and_return([mock_card])
       get :index
       assigns[:cards].should == [mock_card]
     end
