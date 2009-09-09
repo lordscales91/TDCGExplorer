@@ -1,3 +1,5 @@
+require 'RMagick'
+
 module Upload
 module_function
   def upload_savefile(file)
