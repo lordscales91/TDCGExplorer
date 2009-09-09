@@ -3,10 +3,10 @@
 <table>
   <tr>
     <th>Image</th>
-    <th>Off</th>
-    <th>Def</th>
-    <th>Agi</th>
-    <th>Life</th>
+    <th><%= _'Character|Off' %></th>
+    <th><%= _'Character|Def' %></th>
+    <th><%= _'Character|Agi' %></th>
+    <th><%= _'Character|Life' %></th>
   </tr>
 
 <% for character in @characters %>
@@ -18,7 +18,7 @@
     <td><%=h character.def %></td>
     <td><%=h character.agi %></td>
     <td><%=h character.life %></td>
-    <td><%= link_to 'Show', character %></td>
+    <td><%= link_to _('Show'), character %></td>
   </tr>
 <% end %>
 </table>

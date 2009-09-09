@@ -1,10 +1,9 @@
-<h1>Bmps#show</h1>
 <%= image_tag("/images/bmps/#{@bmp.id}.png", :width => 128, :height => 256) %>
 <div>
   <%-if @bmp.character-%>
-    <%= link_to "character", character_path(@bmp.character) %>
+    <%= link_to _("character"), character_path(@bmp.character) %>
   <%-else-%>
-    <%= button_to "Create character", characters_path(:bmp_id => @bmp.id) %>
+    <%= button_to _("Create character"), characters_path(:bmp_id => @bmp.id) %>
   <%-end-%>
 </div>
 <div>

@@ -1,21 +1,21 @@
 <%= image_tag("/images/bmps/#{@character.bmp_id}.png", :width => 128, :height => 256) %>
 <p>
-  <b>Off:</b>
+  <b><%= _'Character|Off' %>:</b>
   <%=h @character.off %>
 </p>
 
 <p>
-  <b>Def:</b>
+  <b><%= _'Character|Def' %>:</b>
   <%=h @character.def %>
 </p>
 
 <p>
-  <b>Agi:</b>
+  <b><%= _'Character|Agi' %>:</b>
   <%=h @character.agi %>
 </p>
 
 <p>
-  <b>Life:</b>
+  <b><%= _'Character|Life' %>:</b>
   <%=h @character.life %>
 </p>
 
