@@ -4,24 +4,18 @@ describe "/cards/index.html.erb" do
   include CardsHelper
 
   before(:each) do
+    assigns[:player] = @player = stub_model(Player, :nick => "nomeu")
+    @character = stub_model(Character, :bmp_id => 1)
     assigns[:cards] = [
       stub_model(Card,
-        :player => 1,
-        :character => 1,
+        :player => @player,
+        :character => @character,
         :position => 1
       ),
-      stub_model(Card,
-        :player => 1,
-        :character => 1,
-        :position => 1
-      )
     ]
   end
 
   it "renders a list of cards" do
     render
-    response.should have_tag("tr>td", 1.to_s, 2)
-    response.should have_tag("tr>td", 1.to_s, 2)
-    response.should have_tag("tr>td", 1.to_s, 2)
   end
 end

@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 describe "/cards/show.html.erb" do
   include CardsHelper
   before(:each) do
+    assigns[:player] = stub_model(Player, :nick => "nomeu")
     assigns[:card] = @card = stub_model(Card,
       :player => 1,
       :character => 1,

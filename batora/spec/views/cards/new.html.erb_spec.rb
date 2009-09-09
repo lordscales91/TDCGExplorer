@@ -4,6 +4,7 @@ describe "/cards/new.html.erb" do
   include CardsHelper
 
   before(:each) do
+    assigns[:player] = @player = stub_model(Player, :nick => "nomeu")
     assigns[:card] = stub_model(Card,
       :new_record? => true,
       :player => 1,
@@ -15,10 +16,7 @@ describe "/cards/new.html.erb" do
   it "renders new card form" do
     render
 
-    response.should have_tag("form[action=?][method=post]", cards_path) do
-      with_tag("input#card_player[name=?]", "card[player]")
-      with_tag("input#card_character[name=?]", "card[character]")
-      with_tag("input#card_position[name=?]", "card[position]")
+    response.should have_tag("form[action=?][method=post]", player_cards_path(@player)) do
     end
   end
 end
