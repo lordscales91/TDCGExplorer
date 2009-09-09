@@ -1,4 +1,6 @@
 class CardsController < ApplicationController
+  layout 'welcome'
+
   # GET /cards
   # GET /cards.xml
   def index
