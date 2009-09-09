@@ -2,12 +2,22 @@
 
 <table>
   <tr>
-    <th>Character</th>
+    <th>Image</th>
+    <th>Off</th>
+    <th>Def</th>
+    <th>Agi</th>
+    <th>Life</th>
   </tr>
 
 <% for card in @cards %>
   <tr>
-    <td><%=h card.character_id %></td>
+    <td>
+      <%= image_tag("/images/bmps/64x64/#{card.character.bmp_id}.png", :width => 64, :height => 64) %>
+    </td>
+    <td><%=h card.character.off %></td>
+    <td><%=h card.character.def %></td>
+    <td><%=h card.character.agi %></td>
+    <td><%=h card.character.life %></td>
     <td><%= link_to 'Show', [ @player, card ] %></td>
     <td><%= link_to 'Edit', edit_player_card_path(@player, card) %></td>
     <td><%= link_to 'Destroy', [ @player, card ], :confirm => 'Are you sure?', :method => :delete %></td>

@@ -2,6 +2,7 @@
 
 <table>
   <tr>
+    <th>Image</th>
     <th>Off</th>
     <th>Def</th>
     <th>Agi</th>
@@ -10,6 +11,9 @@
 
 <% for character in @characters %>
   <tr>
+    <td>
+      <%= image_tag("/images/bmps/64x64/#{character.bmp_id}.png", :width => 64, :height => 64) %>
+    </td>
     <td><%=h character.off %></td>
     <td><%=h character.def %></td>
     <td><%=h character.agi %></td>
