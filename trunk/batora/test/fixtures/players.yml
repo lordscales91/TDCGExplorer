@@ -1,7 +1,9 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  nick: MyString
+  id: 1
+  nick: konoa
 
 two:
-  nick: MyString
+  id: 2
+  nick: nomeu

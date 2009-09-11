@@ -6,20 +6,16 @@ describe "/schedules/index.html.erb" do
   before(:each) do
     assigns[:schedules] = [
       stub_model(Schedule,
-        :home_player_id => 1,
-        :away_player_id => 1
-      ),
-      stub_model(Schedule,
-        :home_player_id => 1,
-        :away_player_id => 1
+        :home_player_nick => "konoa",
+        :away_player_nick => "nomeu"
       )
     ]
   end
 
   it "renders a list of schedules" do
     render
-    response.should have_tag("tr>td", 1.to_s, 2)
-    response.should have_tag("tr>td", 1.to_s, 2)
+    response.should have_tag("tr>td", "konoa", 1)
+    response.should have_tag("tr>td", "nomeu", 1)
   end
 end
 
