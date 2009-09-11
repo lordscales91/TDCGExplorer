@@ -1,0 +1,9 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  home_player_id: 1
+  away_player_id: 1
+
+two:
+  home_player_id: 1
+  away_player_id: 1

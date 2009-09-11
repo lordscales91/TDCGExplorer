@@ -1,0 +1,22 @@
+<h1>Listing schedules</h1>
+
+<table>
+  <tr>
+    <th>Home player</th>
+    <th>Away player</th>
+  </tr>
+
+<% for schedule in @schedules %>
+  <tr>
+    <td><%=h schedule.home_player_id %></td>
+    <td><%=h schedule.away_player_id %></td>
+    <td><%= link_to 'Show', schedule %></td>
+    <td><%= link_to 'Edit', edit_schedule_path(schedule) %></td>
+    <td><%= link_to 'Destroy', schedule, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New schedule', new_schedule_path %>
