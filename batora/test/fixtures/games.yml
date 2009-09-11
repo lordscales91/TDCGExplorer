@@ -1,7 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  schedule: 
+  id: 1
+  schedule_id: 1
+  day: 1
 
 two:
-  schedule: 
+  id: 2
+  schedule_id: 2
+  day: 1
