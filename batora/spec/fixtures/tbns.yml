@@ -1,11 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  player: 
-  character: 
+  id: 1
+  bmp_id: 1
+  name: MyString
   position: 1
 
 two:
-  player: 
-  character: 
+  id: 2
+  bmp_id: 2
+  name: MyString
   position: 1

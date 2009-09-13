@@ -1,9 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
-one:
-  login: MyString
+konoa:
+  id: 1
+  login: "konoa"
   password: MyString
 
-two:
-  login: MyString
+nomeu:
+  id: 2
+  login: "nomeu"
   password: MyString

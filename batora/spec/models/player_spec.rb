@@ -1,13 +1,9 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Player do
-  before(:each) do
-    @valid_attributes = {
-      :nick => "value for nick"
-    }
-  end
+describe Player, "user" do
+  fixtures :players, :users
 
-  it "should create a new instance given valid attributes" do
-    Player.create!(@valid_attributes)
+  it "players(:konoa).user ‚Í users(:konoa) ‚Å‚ ‚é" do
+    players(:konoa).user.should == users(:konoa)
   end
 end

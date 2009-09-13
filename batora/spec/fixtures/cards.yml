@@ -2,8 +2,12 @@
 
 one:
   id: 1
-  nick: konoa
+  player_id: 1
+  character_id: 1
+  position: 1
 
 two:
   id: 2
-  nick: nomeu
+  player_id: 1
+  character_id: 2
+  position: 2
