@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+konoa:
+  id: 1
+  user_id: 1
+  nick: "konoa"
+
+nomeu:
+  id: 2
+  user_id: 2
+  nick: "nomeu"

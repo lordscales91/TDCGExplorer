@@ -27,6 +27,16 @@ class CardsController < ApplicationController
     end
   end
 
+  def be_sold
+    @card = @player.cards.find(params[:id])
+
+    if @card.be_sold
+      redirect_to player_cards_path(@player)
+    else
+      render :action => 'show'
+    end
+  end
+
   # GET /cards/new
   # GET /cards/new.xml
   def new

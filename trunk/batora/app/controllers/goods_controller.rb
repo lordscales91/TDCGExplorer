@@ -21,6 +21,16 @@ class GoodsController < ApplicationController
     end
   end
 
+  def be_bought
+    @good = Good.new(params[:good])
+
+    if @good.be_bought_to(@current_user.player)
+      redirect_to goods_path
+    else
+      render :action => 'show'
+    end
+  end
+
   # GET /goods/new
   # GET /goods/new.xml
   def new

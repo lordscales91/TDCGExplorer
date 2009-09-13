@@ -1,11 +1,13 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 
 one:
-  character: 
+  id: 1
+  character_id: 1
   stock: 1
   price: 1
 
 two:
-  character: 
+  id: 2
+  character_id: 2
   stock: 1
   price: 1
