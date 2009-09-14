@@ -19,6 +19,6 @@ describe "/users/index.html.erb" do
   it "renders a list of users" do
     render
     response.should have_tag("tr>td", "value for login".to_s, 2)
-    response.should have_tag("tr>td", "value for password".to_s, 2)
+    response.should_not have_tag("tr>td", "value for password".to_s, 2)
   end
 end

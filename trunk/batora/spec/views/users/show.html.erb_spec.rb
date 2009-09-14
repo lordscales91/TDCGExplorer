@@ -12,6 +12,6 @@ describe "/users/show.html.erb" do
   it "renders attributes in <p>" do
     render
     response.should have_text(/value\ for\ login/)
-    response.should have_text(/value\ for\ password/)
+    response.should_not have_text(/value\ for\ password/)
   end
 end

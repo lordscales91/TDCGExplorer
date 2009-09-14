@@ -18,6 +18,14 @@ describe CardsController do
     Player.stub!(:find).and_return(mock_player(:cards => player_cards))
   end
 
+  def mock_user(stubs={})
+    @mock_user ||= mock_model(User, stubs)
+  end
+
+  before do
+    controller.stub!(:current_user).and_return(mock_user)
+  end
+
   describe "GET index" do
     it "assigns all cards as @cards" do
       player_cards.stub!(:find).with(:all, :include => :character).and_return([mock_card])
