@@ -3,11 +3,11 @@
 one:
   id: 1
   character_id: 1
-  stock: 1
-  price: 1
+  stock: 10
+  price: 100
 
 two:
   id: 2
   character_id: 2
-  stock: 1
-  price: 1
+  stock: 10
+  price: 100

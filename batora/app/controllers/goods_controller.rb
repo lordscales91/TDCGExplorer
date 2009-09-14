@@ -22,9 +22,9 @@ class GoodsController < ApplicationController
   end
 
   def be_bought
-    @good = Good.new(params[:good])
+    @good = Good.find(params[:id])
 
-    if @good.be_bought_to(@current_user.player)
+    if @good.be_bought_to(current_user.player)
       redirect_to goods_path
     else
       render :action => 'show'

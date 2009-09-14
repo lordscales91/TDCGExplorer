@@ -4,8 +4,10 @@ konoa:
   id: 1
   user_id: 1
   nick: "konoa"
+  money: 100
 
 nomeu:
   id: 2
   user_id: 2
   nick: "nomeu"
+  money: 100

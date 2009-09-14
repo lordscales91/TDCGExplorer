@@ -20,13 +20,14 @@ class Good < ActiveRecord::Base
   def be_bought_to(player)
     price = self.price
     raise "no stock" if self.stock < 1
-    raise "less jewel" if player.jewel < price
+    raise "less money" if player.money < price
     ActiveRecord::Base.transaction do
       self.stock -= 1
       self.price *= self.up_rate
       save!
-      player.jewel -= price
+      player.money -= price
       player.save!
+      player.cards.create(:character => character)
     end
   end
 end
