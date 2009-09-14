@@ -17,6 +17,7 @@ class PlayersController < ApplicationController
   # GET /players/1.xml
   def show
     @player = Player.find(params[:id])
+    return access_denied unless @player.user == current_user
 
     respond_to do |format|
       format.html # show.html.erb
@@ -38,6 +39,7 @@ class PlayersController < ApplicationController
   # GET /players/1/edit
   def edit
     @player = Player.find(params[:id])
+    return access_denied unless @player.user == current_user
   end
 
   # POST /players
@@ -61,6 +63,7 @@ class PlayersController < ApplicationController
   # PUT /players/1.xml
   def update
     @player = Player.find(params[:id])
+    return access_denied unless @player.user == current_user
 
     respond_to do |format|
       if @player.update_attributes(params[:player])
@@ -78,6 +81,7 @@ class PlayersController < ApplicationController
   # DELETE /players/1.xml
   def destroy
     @player = Player.find(params[:id])
+    return access_denied unless @player.user == current_user
     @player.destroy
 
     respond_to do |format|
