@@ -5,6 +5,8 @@ class CardsController < ApplicationController
     @player = Player.find(params[:player_id])
   end
 
+  before_filter :login_required
+
   # GET /cards
   # GET /cards.xml
   def index

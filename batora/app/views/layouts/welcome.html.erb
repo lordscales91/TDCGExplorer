@@ -24,9 +24,9 @@
       <ul>
     <%-if logged_in? -%>
         <li><%= link_menu_to "Card", player_cards_path(current_user.player) %></li>
-    <%-end-%>
         <li><%= link_menu_to "Schedule", schedules_path %></li>
         <li><%= link_menu_to "Shop", goods_path %></li>
+    <%-end-%>
       </ul>
     </div>
   </div>

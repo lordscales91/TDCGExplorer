@@ -1,4 +1,6 @@
 class GoodsController < ApplicationController
+  layout 'welcome'
+
   # GET /goods
   # GET /goods.xml
   def index

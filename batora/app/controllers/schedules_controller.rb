@@ -1,4 +1,6 @@
 class SchedulesController < ApplicationController
+  layout 'welcome'
+
   # GET /schedules
   # GET /schedules.xml
   def index

@@ -7,6 +7,10 @@ describe UsersController do
   end
 
   describe "GET index" do
+    before do
+      controller.stub!(:current_user).and_return(mock_user)
+    end
+
     it "assigns all users as @users" do
       User.stub!(:find).with(:all).and_return([mock_user])
       get :index
@@ -15,6 +19,10 @@ describe UsersController do
   end
 
   describe "GET show" do
+    before do
+      controller.stub!(:current_user).and_return(mock_user)
+    end
+
     it "assigns the requested user as @user" do
       User.stub!(:find).with("37").and_return(mock_user)
       get :show, :id => "37"
@@ -31,6 +39,10 @@ describe UsersController do
   end
 
   describe "GET edit" do
+    before do
+      controller.stub!(:current_user).and_return(mock_user)
+    end
+
     it "assigns the requested user as @user" do
       User.stub!(:find).with("37").and_return(mock_user)
       get :edit, :id => "37"
@@ -71,8 +83,11 @@ describe UsersController do
   end
 
   describe "PUT update" do
-
     describe "with valid params" do
+      before do
+        controller.stub!(:current_user).and_return(mock_user(:update_attributes => true))
+      end
+
       it "updates the requested user" do
         User.should_receive(:find).with("37").and_return(mock_user)
         mock_user.should_receive(:update_attributes).with({'these' => 'params'})
@@ -80,19 +95,23 @@ describe UsersController do
       end
 
       it "assigns the requested user as @user" do
-        User.stub!(:find).and_return(mock_user(:update_attributes => true))
+        User.stub!(:find).and_return(mock_user)
         put :update, :id => "1"
         assigns[:user].should equal(mock_user)
       end
 
       it "redirects to the user" do
-        User.stub!(:find).and_return(mock_user(:update_attributes => true))
+        User.stub!(:find).and_return(mock_user)
         put :update, :id => "1"
         response.should redirect_to(user_url(mock_user))
       end
     end
 
     describe "with invalid params" do
+      before do
+        controller.stub!(:current_user).and_return(mock_user(:update_attributes => false))
+      end
+
       it "updates the requested user" do
         User.should_receive(:find).with("37").and_return(mock_user)
         mock_user.should_receive(:update_attributes).with({'these' => 'params'})
@@ -100,13 +119,13 @@ describe UsersController do
       end
 
       it "assigns the user as @user" do
-        User.stub!(:find).and_return(mock_user(:update_attributes => false))
+        User.stub!(:find).and_return(mock_user)
         put :update, :id => "1"
         assigns[:user].should equal(mock_user)
       end
 
       it "re-renders the 'edit' template" do
-        User.stub!(:find).and_return(mock_user(:update_attributes => false))
+        User.stub!(:find).and_return(mock_user)
         put :update, :id => "1"
         response.should render_template('edit')
       end
@@ -115,6 +134,10 @@ describe UsersController do
   end
 
   describe "DELETE destroy" do
+    before do
+      controller.stub!(:current_user).and_return(mock_user(:destroy => true))
+    end
+
     it "destroys the requested user" do
       User.should_receive(:find).with("37").and_return(mock_user)
       mock_user.should_receive(:destroy)
@@ -122,7 +145,7 @@ describe UsersController do
     end
 
     it "redirects to the users list" do
-      User.stub!(:find).and_return(mock_user(:destroy => true))
+      User.stub!(:find).and_return(mock_user)
       delete :destroy, :id => "1"
       response.should redirect_to(users_url)
     end

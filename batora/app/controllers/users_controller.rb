@@ -1,4 +1,7 @@
 class UsersController < ApplicationController
+  layout 'welcome'
+  before_filter :login_required, :except => [ :new, :create ]
+
   # GET /users
   # GET /users.xml
   def index
@@ -14,6 +17,7 @@ class UsersController < ApplicationController
   # GET /users/1.xml
   def show
     @user = User.find(params[:id])
+    return access_denied unless @user == current_user
 
     respond_to do |format|
       format.html # show.html.erb
@@ -35,6 +39,7 @@ class UsersController < ApplicationController
   # GET /users/1/edit
   def edit
     @user = User.find(params[:id])
+    return access_denied unless @user == current_user
   end
 
   # POST /users
@@ -44,6 +49,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
+        self.current_user = @user # log in
         flash[:notice] = 'User was successfully created.'
         format.html { redirect_to(@user) }
         format.xml  { render :xml => @user, :status => :created, :location => @user }
@@ -58,6 +64,7 @@ class UsersController < ApplicationController
   # PUT /users/1.xml
   def update
     @user = User.find(params[:id])
+    return access_denied unless @user == current_user
 
     respond_to do |format|
       if @user.update_attributes(params[:user])
@@ -75,6 +82,7 @@ class UsersController < ApplicationController
   # DELETE /users/1.xml
   def destroy
     @user = User.find(params[:id])
+    return access_denied unless @user == current_user
     @user.destroy
 
     respond_to do |format|
