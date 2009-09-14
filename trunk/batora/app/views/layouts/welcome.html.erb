@@ -18,6 +18,18 @@
     <%-end-%>
     </div>
   </div>
+  <div id="header">
+    <h1>3DCG Battler</h1>
+    <div id="main-menu">
+      <ul>
+    <%-if logged_in? -%>
+        <li><%= link_menu_to "Card", player_cards_path(current_user.player) %></li>
+    <%-end-%>
+        <li><%= link_menu_to "Schedule", schedules_path %></li>
+        <li><%= link_menu_to "Shop", goods_path %></li>
+      </ul>
+    </div>
+  </div>
 
 <p style="color: green"><%= flash[:notice] %></p>
 

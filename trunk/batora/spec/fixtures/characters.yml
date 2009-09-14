@@ -2,6 +2,7 @@
 
 one:
   id: 1
+  bmp_id: 1
   "off": 1
   def: 1
   agi: 1
@@ -9,6 +10,7 @@ one:
 
 two:
   id: 2
+  bmp_id: 2
   "off": 1
   def: 1
   agi: 1

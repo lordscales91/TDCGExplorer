@@ -11,7 +11,7 @@ class Card < ActiveRecord::Base
       good.stock += 1
       good.price *= good.down_rate
       good.save!
-      player.jewel += sale_price
+      player.money += sale_price
       player.save!
     end
     true

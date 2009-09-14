@@ -5,7 +5,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource :session
 
-  map.resources :goods
+  map.resources :goods, :member => { :be_bought => :put }
 
   map.resources :players do |players|
     players.resources :cards
