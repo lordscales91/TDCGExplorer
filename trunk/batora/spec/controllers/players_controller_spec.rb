@@ -6,6 +6,14 @@ describe PlayersController do
     @mock_player ||= mock_model(Player, stubs)
   end
 
+  def mock_user(stubs={})
+    @mock_user ||= mock_model(User, stubs)
+  end
+
+  before do
+    controller.stub!(:current_user).and_return(mock_user)
+  end
+
   describe "GET index" do
     it "assigns all players as @players" do
       Player.stub!(:find).with(:all).and_return([mock_player])

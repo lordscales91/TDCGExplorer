@@ -19,8 +19,6 @@
     <td><%=h card.character.agi %></td>
     <td><%=h card.character.life %></td>
     <td><%= link_to _('Show'), [ @player, card ] %></td>
-    <td><%= link_to _('Edit'), edit_player_card_path(@player, card) %></td>
-    <td><%= link_to _('Destroy'), [ @player, card ], :confirm => _('Are you sure?'), :method => :delete %></td>
   </tr>
 <% end %>
 </table>

@@ -9,12 +9,6 @@
   <tr>
     <td><%=h player.nick %></td>
     <td><%= link_to _('Show'), player %></td>
-    <td><%= link_to _('Edit'), edit_player_path(player) %></td>
-    <td><%= link_to _('Destroy'), player, :confirm => _('Are you sure?'), :method => :delete %></td>
   </tr>
 <% end %>
 </table>
-
-<br />
-
-<%= link_to 'New player', new_player_path %>

@@ -14,5 +14,5 @@
 </p>
 
 
-<%= link_to 'Edit', edit_player_card_path(@player, @card) %> |
+<%= link_to 'Sell', be_sold_player_card_path(@player, @card), :method => :put %> |
 <%= link_to 'Back', player_cards_path(@player) %>

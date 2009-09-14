@@ -9,7 +9,7 @@ class Good < ActiveRecord::Base
     0.75
   end
 
-  def down_date
+  def down_rate
     0.85
   end
 
