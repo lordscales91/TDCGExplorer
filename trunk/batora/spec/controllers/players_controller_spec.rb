@@ -23,6 +23,10 @@ describe PlayersController do
   end
 
   describe "GET show" do
+    before do
+      mock_player(:user => mock_user)
+    end
+
     it "assigns the requested player as @player" do
       Player.stub!(:find).with("37").and_return(mock_player)
       get :show, :id => "37"
@@ -39,6 +43,10 @@ describe PlayersController do
   end
 
   describe "GET edit" do
+    before do
+      mock_player(:user => mock_user)
+    end
+
     it "assigns the requested player as @player" do
       Player.stub!(:find).with("37").and_return(mock_player)
       get :edit, :id => "37"
@@ -81,6 +89,10 @@ describe PlayersController do
   describe "PUT update" do
 
     describe "with valid params" do
+      before do
+        mock_player(:user => mock_user, :update_attributes => true)
+      end
+
       it "updates the requested player" do
         Player.should_receive(:find).with("37").and_return(mock_player)
         mock_player.should_receive(:update_attributes).with({'these' => 'params'})
@@ -88,19 +100,23 @@ describe PlayersController do
       end
 
       it "assigns the requested player as @player" do
-        Player.stub!(:find).and_return(mock_player(:update_attributes => true))
+        Player.stub!(:find).and_return(mock_player)
         put :update, :id => "1"
         assigns[:player].should equal(mock_player)
       end
 
       it "redirects to the player" do
-        Player.stub!(:find).and_return(mock_player(:update_attributes => true))
+        Player.stub!(:find).and_return(mock_player)
         put :update, :id => "1"
         response.should redirect_to(player_url(mock_player))
       end
     end
 
     describe "with invalid params" do
+      before do
+        mock_player(:user => mock_user, :update_attributes => false)
+      end
+
       it "updates the requested player" do
         Player.should_receive(:find).with("37").and_return(mock_player)
         mock_player.should_receive(:update_attributes).with({'these' => 'params'})
@@ -108,13 +124,13 @@ describe PlayersController do
       end
 
       it "assigns the player as @player" do
-        Player.stub!(:find).and_return(mock_player(:update_attributes => false))
+        Player.stub!(:find).and_return(mock_player)
         put :update, :id => "1"
         assigns[:player].should equal(mock_player)
       end
 
       it "re-renders the 'edit' template" do
-        Player.stub!(:find).and_return(mock_player(:update_attributes => false))
+        Player.stub!(:find).and_return(mock_player)
         put :update, :id => "1"
         response.should render_template('edit')
       end
@@ -123,6 +139,10 @@ describe PlayersController do
   end
 
   describe "DELETE destroy" do
+    before do
+      mock_player(:user => mock_user, :destroy => true)
+    end
+
     it "destroys the requested player" do
       Player.should_receive(:find).with("37").and_return(mock_player)
       mock_player.should_receive(:destroy)
@@ -130,7 +150,7 @@ describe PlayersController do
     end
 
     it "redirects to the players list" do
-      Player.stub!(:find).and_return(mock_player(:destroy => true))
+      Player.stub!(:find).and_return(mock_player)
       delete :destroy, :id => "1"
       response.should redirect_to(players_url)
     end
