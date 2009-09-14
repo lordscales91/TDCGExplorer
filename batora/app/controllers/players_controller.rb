@@ -1,5 +1,6 @@
 class PlayersController < ApplicationController
   layout 'welcome'
+  before_filter :login_required
 
   # GET /players
   # GET /players.xml

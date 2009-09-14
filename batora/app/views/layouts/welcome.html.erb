@@ -23,6 +23,7 @@
     <div id="main-menu">
       <ul>
     <%-if logged_in? -%>
+        <li><%= link_menu_to "Player", player_path(current_user.player) %></li>
         <li><%= link_menu_to "Card", player_cards_path(current_user.player) %></li>
         <li><%= link_menu_to "Schedule", schedules_path %></li>
         <li><%= link_menu_to "Shop", goods_path %></li>
