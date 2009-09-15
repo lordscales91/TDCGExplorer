@@ -112,7 +112,7 @@ namespace TDCG
             return frames[frame_index].matrices[nodemap[name].id];
         }
 
-        public int[] CreateFrameIndexPair(TMOFile motion)
+        public int[] CreateNodeIdPair(TMOFile motion)
         {
             Dictionary<string, TMONode> source_nodes = new Dictionary<string, TMONode>();
 
@@ -147,7 +147,7 @@ namespace TDCG
 
         public void AppendFrameFrom(TMOFile motion)
         {
-            int[] index_pair = CreateFrameIndexPair(motion);
+            int[] index_pair = CreateNodeIdPair(motion);
 
             TMOFrame source_frame = frames[0];
             int append_length = motion.frames.Length;
@@ -163,6 +163,8 @@ namespace TDCG
 
         public void SlerpFrameEndTo(TMOFile motion, int append_length)
         {
+            int[] index_pair = CreateNodeIdPair(motion);
+
             int i0 = ( frames.Length > 1 ) ? frames.Length-1-1 : 0;
             int i1 = frames.Length-1;
             int i2 = 0;
@@ -173,7 +175,7 @@ namespace TDCG
             TMOFrame frame2 = motion.frames[i2];
             TMOFrame frame3 = motion.frames[i3];
 
-            TMOFrame[] interp_frames = TMOFrame.Slerp(frame0, frame1, frame2, frame3, append_length);
+            TMOFrame[] interp_frames = TMOFrame.Slerp(frame0, frame1, frame2, frame3, append_length, index_pair);
             int old_length = frames.Length;
             Array.Resize(ref frames, frames.Length + append_length);
             Array.Copy(interp_frames, 0, frames, old_length, append_length);
@@ -207,7 +209,7 @@ namespace TDCG
 
         public void CopyMotionFrom(TMOFile motion)
         {
-            int[] index_pair = CreateFrameIndexPair(motion);
+            int[] index_pair = CreateNodeIdPair(motion);
 
             TMOFrame source_frame = frames[0];
             TMOFrame motion_frame = motion.frames[0];
@@ -462,7 +464,7 @@ namespace TDCG
         internal int id;
         internal TMOMat[] matrices;
 
-        public static TMOFrame[] Slerp(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, TMOFrame frame3, int length)
+        public static TMOFrame[] Slerp(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, TMOFrame frame3, int length, int[] index_pair)
         {
             TMOFrame[] frames = new TMOFrame[length];
 
@@ -477,8 +479,8 @@ namespace TDCG
                 TMOMat[] interpolated_matrices = TMOMat.Slerp(
                         frame0.matrices[i],
                         frame1.matrices[i],
-                        frame2.matrices[i],
-                        frame3.matrices[i],
+                        frame2.matrices[index_pair[i]],
+                        frame3.matrices[index_pair[i]],
                         length);
 
                 for (int frame_index = 0; frame_index < length; frame_index++)
