@@ -18,6 +18,18 @@ class CardsController < ApplicationController
     end
   end
 
+  def sort
+    @cards = @player.cards.find(:all)
+  end
+
+  def move
+    params[:sorted_cards].each_with_index do |id, i|
+      card = Card.find(id)
+      card.update_attribute(:position, i+1)
+    end
+    render :text => 'moved.'
+  end
+
   # GET /cards/1
   # GET /cards/1.xml
   def show
