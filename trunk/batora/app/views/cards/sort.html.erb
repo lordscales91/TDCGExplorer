@@ -1,0 +1,29 @@
+<style>
+  ul#sorted_cards li {
+    margin: 3px 0px 0px 0px;
+    padding: 3px;
+  }
+  ul#sorted_cards li {
+    width: 280px;
+    border: 1px solid #CCC;
+    background-color: #EEE;
+    font-size: 12px;
+    cursor: move;
+  }
+</style>
+<ul id="sorted_cards">
+<%-for card in @cards-%>
+  <%-content_tag :li, :id => "card_#{card.id}" do-%>
+    <%= image_tag("/images/bmps/64x64/#{card.character.bmp_id}.png", :width => 64, :height => 64) %>
+    <%=h card.character.off %>/
+    <%=h card.character.def %>/
+    <%=h card.character.agi %>/
+    <%=h card.character.life %>
+  <%-end-%>
+<%-end-%>
+</ul>
+<%= sortable_element :sorted_cards, :url => move_player_cards_path(@player) %>
+
+<br />
+
+<%= link_to "Back", player_cards_path(@player) %>

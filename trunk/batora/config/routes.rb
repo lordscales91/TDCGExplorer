@@ -8,7 +8,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :goods, :member => { :be_bought => :put }
 
   map.resources :players do |players|
-    players.resources :cards, :member => { :be_sold => :put }
+    players.resources :cards, :collection => { :sort => :get, :move => :post }, :member => { :be_sold => :put }
   end
 
   map.resources :bmps
