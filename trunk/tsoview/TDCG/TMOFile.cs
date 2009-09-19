@@ -189,12 +189,12 @@ namespace TDCG
                 }
             }
 
-            int[] index_pair = new int[nodes.Length];
+            int[] id_pair = new int[nodes.Length];
 
             foreach (TMONode node in nodes)
-                index_pair[node.ID] = motion_nodes[node.ShortName].ID;
+                id_pair[node.ID] = motion_nodes[node.ShortName].ID;
 
-            return index_pair;
+            return id_pair;
         }
 
         /// <summary>
@@ -653,6 +653,7 @@ namespace TDCG
         /// <param name="frame2"></param>
         /// <param name="frame3"></param>
         /// <param name="length"></param>
+        /// <param name="id_pair">node idのペア</param>
         /// <returns></returns>
         public static TMOFrame[] Slerp(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, TMOFrame frame3, int length, int[] id_pair)
         {
@@ -685,15 +686,15 @@ namespace TDCG
         /// </summary>
         /// <param name="frame0"></param>
         /// <param name="frame1"></param>
-        /// <param name="index_pair">node idのペア</param>
+        /// <param name="id_pair">node idのペア</param>
         /// <returns>新たなframe</returns>
-        public static TMOFrame Select(TMOFrame frame0, TMOFrame frame1, int[] index_pair)
+        public static TMOFrame Select(TMOFrame frame0, TMOFrame frame1, int[] id_pair)
         {
             TMOFrame ret = new TMOFrame();
             ret.matrices = new TMOMat[frame0.matrices.Length];
             for (int i = 0; i < frame0.matrices.Length; i++)
             {
-                ret.matrices[i] = frame1.matrices[index_pair[i]];
+                ret.matrices[i] = frame1.matrices[id_pair[i]];
             }
             return ret;
         }
@@ -705,15 +706,15 @@ namespace TDCG
         /// <param name="frame0">frame0</param>
         /// <param name="frame1">frame1</param>
         /// <param name="frame2">frame2</param>
-        /// <param name="index_pair">node idのペア</param>
+        /// <param name="id_pair">node idのペア</param>
         /// <returns>新たなframe</returns>
-        public static TMOFrame AddSub(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, int[] index_pair)
+        public static TMOFrame AddSub(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, int[] id_pair)
         {
             TMOFrame ret = new TMOFrame();
             ret.matrices = new TMOMat[frame0.matrices.Length];
             for (int i = 0; i < frame0.matrices.Length; i++)
             {
-                ret.matrices[i] = TMOMat.AddSub( frame0.matrices[i], frame1.matrices[index_pair[i]], frame2.matrices[index_pair[i]] );
+                ret.matrices[i] = TMOMat.AddSub( frame0.matrices[i], frame1.matrices[id_pair[i]], frame2.matrices[id_pair[i]] );
             }
             return ret;
         }
