@@ -20,7 +20,6 @@ namespace TMOComposer
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
         string pose_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG\pose";
         string pngsave_file = @"PngSave.xml";
-        string out_tmo_file = @"out.tmo";
 
         public Form1()
         {
@@ -77,16 +76,20 @@ namespace TMOComposer
             else
                 pngsave = new PngSave();
             pngSaveItemBindingSource.DataSource = pngsave.items;
-
+            
+            int position = 0;
             foreach (PngSaveItem item in pngsave.items)
             {
-                item.FigureIndex = viewer.FigureList.Count;
+                pngSaveItemBindingSource.Position = position;
                 viewer.LoadAnyFile(save_path + @"\" + item.File, true);
                 Animate(item);
+                position++;
             }
             
             if (pngSaveItemBindingSource.Count == 0)
                 CreatePngSaveItem("system.tdcgsav.png");
+
+            pngSaveItemBindingSource.Position = 0;
         }
 
         void CreatePngSaveItem(string file)
@@ -95,7 +98,7 @@ namespace TMOComposer
             item.File = file;
             pngSaveItemBindingSource.Add(item);
 
-            item.FigureIndex = viewer.FigureList.Count;
+            pngSaveItemBindingSource.Position = pngSaveItemBindingSource.Count - 1;
             viewer.LoadAnyFile(save_path + @"\" + item.File, true);
         }
 
@@ -111,14 +114,15 @@ namespace TMOComposer
 
         private void Animate(PngSaveItem item)
         {
+            int pngsave_row = pngSaveItemBindingSource.Position;
             TMOAnim tmoanim = item.tmoanim;
             tmoanim.LoadSource();
             if (tmoanim.SourceTmo.frames != null)
             {
                 tmoanim.Process();
-                tmoanim.SaveSourceToFile(out_tmo_file);
+                tmoanim.SaveSourceToFile(String.Format("out-{0:D3}.tmo", pngsave_row));
 
-                Figure fig = viewer.FigureList[item.FigureIndex];
+                Figure fig = viewer.FigureList[pngsave_row];
                 fig.Tmo = tmoanim.SourceTmo;
                 fig.UpdateNodeMapAndBoneMatrices();
             }
@@ -214,6 +218,18 @@ namespace TMOComposer
 
                 CreatePngSaveItem(form2.File);
             }
+        }
+
+        private void btnDel_Click(object sender, EventArgs e)
+        {
+            viewer.RemoveSelectedFigure();
+
+            int pngsave_row = pngSaveItemBindingSource.Position;
+            int tmoanim_row = tmoAnimItemBindingSource.Position;
+            PngSaveItem item = pngsave.items[pngsave_row];
+
+            tmoAnimItemBindingSource.DataSource = null;
+            pngSaveItemBindingSource.Remove(item);
         }
     }
 }
