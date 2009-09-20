@@ -36,6 +36,7 @@
             // 
             // btnGetSaves
             // 
+            this.btnGetSaves.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnGetSaves.Location = new System.Drawing.Point(697, 528);
             this.btnGetSaves.Name = "btnGetSaves";
             this.btnGetSaves.Size = new System.Drawing.Size(75, 23);
@@ -46,6 +47,9 @@
             // 
             // lvSaves
             // 
+            this.lvSaves.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lvSaves.LargeImageList = this.ilSaves;
             this.lvSaves.Location = new System.Drawing.Point(12, 12);
             this.lvSaves.Name = "lvSaves";
@@ -56,7 +60,7 @@
             // 
             // ilSaves
             // 
-            this.ilSaves.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+            this.ilSaves.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
             this.ilSaves.ImageSize = new System.Drawing.Size(128, 256);
             this.ilSaves.TransparentColor = System.Drawing.Color.Transparent;
             // 
