@@ -15,8 +15,11 @@ namespace TMOComposer
     {
         Viewer viewer = null;
         TMOAnim tmoanim;
+
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
         string pose_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG\pose";
+        string tmoanim_file = @"TMOAnim.xml";
+        string out_tmo_file = @"out.tmo";
 
         public Form1()
         {
@@ -69,9 +72,8 @@ namespace TMOComposer
 
         private void CreateTMOAnim()
         {
-            string file = @"TMOAnim.xml";
-            if (File.Exists(file))
-                tmoanim = TMOAnim.Load(file);
+            if (File.Exists(tmoanim_file))
+                tmoanim = TMOAnim.Load(tmoanim_file);
             else
                 tmoanim = new TMOAnim();
             tmoAnimItemBindingSource.DataSource = tmoanim.items;
@@ -79,12 +81,12 @@ namespace TMOComposer
 
         private void button3_Click(object sender, EventArgs e)
         {
-            tmoanim.Dump(@"TMOAnim.xml");
+            tmoanim.Dump(tmoanim_file);
             tmoanim.LoadSource();
             if (tmoanim.SourceTmo.frames != null)
             {
                 tmoanim.Process();
-                tmoanim.SaveSourceToFile(@"out.tmo");
+                tmoanim.SaveSourceToFile(out_tmo_file);
 
                 Figure fig;
                 if (viewer.TryGetFigure(out fig))
