@@ -14,13 +14,12 @@ namespace TMOComposer
     public partial class Form1 : Form
     {
         Viewer viewer = null;
-        TMOAnim tmoanim;
-        public List<PngSaveItem> items = new List<PngSaveItem>();
+        PngSave pngsave;
         Form2 form2 = null;
 
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
         string pose_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG\pose";
-        string tmoanim_file = @"TMOAnim.xml";
+        string pngsave_file = @"PngSave.xml";
         string out_tmo_file = @"out.tmo";
 
         public Form1()
@@ -29,18 +28,10 @@ namespace TMOComposer
             viewer = new Viewer();
             if (viewer.InitializeApplication(this))
             {
-                string save_file = "system.tdcgsav.png";
-                
-                PngSaveItem item = new PngSaveItem();
-                item.File = save_file;
-                pngSaveItemBindingSource.Add(item);
-
-                viewer.LoadAnyFile(save_path + @"\" + item.File);
-                
+                CreatePngSave();
                 viewer.SwitchMotionEnabled();
                 timer1.Enabled = true;
             }
-            CreateTMOAnim();
             form2 = new Form2();
         }
 
@@ -79,30 +70,57 @@ namespace TMOComposer
             }
         }
 
-        private void CreateTMOAnim()
+        private void CreatePngSave()
         {
-            if (File.Exists(tmoanim_file))
-                tmoanim = TMOAnim.Load(tmoanim_file);
+            if (File.Exists(pngsave_file))
+                pngsave = PngSave.Load(pngsave_file);
             else
-                tmoanim = new TMOAnim();
-            tmoAnimItemBindingSource.DataSource = tmoanim.items;
+                pngsave = new PngSave();
+            pngSaveItemBindingSource.DataSource = pngsave.items;
+
+            foreach (PngSaveItem item in pngsave.items)
+            {
+                item.FigureIndex = viewer.FigureList.Count;
+                viewer.LoadAnyFile(save_path + @"\" + item.File, true);
+                Animate(item);
+            }
+            
+            if (pngSaveItemBindingSource.Count == 0)
+                CreatePngSaveItem("system.tdcgsav.png");
+        }
+
+        void CreatePngSaveItem(string file)
+        {
+            PngSaveItem item = new PngSaveItem();
+            item.File = file;
+            pngSaveItemBindingSource.Add(item);
+
+            item.FigureIndex = viewer.FigureList.Count;
+            viewer.LoadAnyFile(save_path + @"\" + item.File, true);
         }
 
         private void btnAnimate_Click(object sender, EventArgs e)
         {
-            tmoanim.Dump(tmoanim_file);
+            int pngsave_row = pngSaveItemBindingSource.Position;
+            int tmoanim_row = tmoAnimItemBindingSource.Position;
+            PngSaveItem item = pngsave.items[pngsave_row];
+
+            pngsave.Dump(pngsave_file);
+            Animate(item);
+        }
+
+        private void Animate(PngSaveItem item)
+        {
+            TMOAnim tmoanim = item.tmoanim;
             tmoanim.LoadSource();
             if (tmoanim.SourceTmo.frames != null)
             {
                 tmoanim.Process();
                 tmoanim.SaveSourceToFile(out_tmo_file);
 
-                Figure fig;
-                if (viewer.TryGetFigure(out fig))
-                {
-                    fig.Tmo = tmoanim.SourceTmo;
-                    fig.UpdateNodeMapAndBoneMatrices();
-                }
+                Figure fig = viewer.FigureList[item.FigureIndex];
+                fig.Tmo = tmoanim.SourceTmo;
+                fig.UpdateNodeMapAndBoneMatrices();
             }
         }
 
@@ -134,42 +152,42 @@ namespace TMOComposer
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            if (gvTMOAnimItems.SelectedCells.Count == 0)
-                return;
+            int pngsave_row = pngSaveItemBindingSource.Position;
+            int tmoanim_row = tmoAnimItemBindingSource.Position;
+            TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;
 
-            int row = gvTMOAnimItems.SelectedCells[0].RowIndex;
-            TMOAnimItem item = tmoanim.items[row];
+            TMOAnimItem item = tmoanim.items[tmoanim_row];
             tmoAnimItemBindingSource.Remove(item);
         }
 
         private void btnUp_Click(object sender, EventArgs e)
         {
-            if (gvTMOAnimItems.SelectedCells.Count == 0)
+            int pngsave_row = pngSaveItemBindingSource.Position;
+            int tmoanim_row = tmoAnimItemBindingSource.Position;
+            TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;
+
+            if (tmoanim_row == 0)
                 return;
 
-            int row = gvTMOAnimItems.SelectedCells[0].RowIndex;
-            if (row == 0)
-                return;
-
-            TMOAnimItem item = tmoanim.items[row];
+            TMOAnimItem item = tmoanim.items[tmoanim_row];
             tmoAnimItemBindingSource.Remove(item);
-            tmoAnimItemBindingSource.Insert(row - 1, item);
-            tmoAnimItemBindingSource.Position = row - 1;
+            tmoAnimItemBindingSource.Insert(tmoanim_row - 1, item);
+            tmoAnimItemBindingSource.Position = tmoanim_row - 1;
         }
 
         private void btnDown_Click(object sender, EventArgs e)
         {
-            if (gvTMOAnimItems.SelectedCells.Count == 0)
+            int pngsave_row = pngSaveItemBindingSource.Position;
+            int tmoanim_row = tmoAnimItemBindingSource.Position;
+            TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;
+
+            if (tmoanim_row == tmoAnimItemBindingSource.Count - 1)
                 return;
 
-            int row = gvTMOAnimItems.SelectedCells[0].RowIndex;
-            if (row == tmoanim.items.Count-1)
-                return;
-
-            TMOAnimItem item = tmoanim.items[row];
+            TMOAnimItem item = tmoanim.items[tmoanim_row];
             tmoAnimItemBindingSource.Remove(item);
-            tmoAnimItemBindingSource.Insert(row + 1, item);
-            tmoAnimItemBindingSource.Position = row + 1;
+            tmoAnimItemBindingSource.Insert(tmoanim_row + 1, item);
+            tmoAnimItemBindingSource.Position = tmoanim_row + 1;
         }
 
         private void btnRec_Click(object sender, EventArgs e)
@@ -179,11 +197,12 @@ namespace TMOComposer
 
         private void gvFigures_SelectionChanged(object sender, EventArgs e)
         {
-            if (gvFigures.SelectedCells.Count == 0)
-                return;
+            int pngsave_row = pngSaveItemBindingSource.Position;
+            int tmoanim_row = tmoAnimItemBindingSource.Position;
+            TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;
 
-            int row = gvFigures.SelectedCells[0].RowIndex;
-            viewer.SetFigureIndex(row);
+            tmoAnimItemBindingSource.DataSource = tmoanim.items;
+            viewer.SetFigureIndex(pngsave_row);
         }
 
         private void btnAdd_Click(object sender, EventArgs e)
@@ -193,11 +212,7 @@ namespace TMOComposer
                 if (form2.File == null)
                     return;
 
-                PngSaveItem item = new PngSaveItem();
-                item.File = form2.File;
-                pngSaveItemBindingSource.Add(item);
-
-                viewer.LoadAnyFile(save_path + @"\" + item.File, true);
+                CreatePngSaveItem(form2.File);
             }
         }
     }

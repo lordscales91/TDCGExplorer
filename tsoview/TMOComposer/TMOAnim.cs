@@ -16,8 +16,10 @@ namespace TMOComposer
 
     public class TMOAnim
     {
-        public string SourceFile {
-            get {
+        public string SourceFile
+        {
+            get
+            {
                 if (items.Count != 0)
                     return items[items.Count - 1].PoseFile;
                 else
