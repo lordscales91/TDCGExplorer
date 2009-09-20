@@ -403,12 +403,12 @@ public class Viewer : IDisposable
         }
     }
 
-    private Camera camera = new Camera();
+    private SimpleCamera camera = new SimpleCamera();
 
     /// <summary>
     /// カメラ
     /// </summary>
-    public Camera Camera
+    public SimpleCamera Camera
     {
         get {
             return camera;
@@ -731,7 +731,7 @@ public class Viewer : IDisposable
             }
 
             //フレーム番号を通知する。
-            camera.SetFrameIndex(frame_index);
+            //camera.SetFrameIndex(frame_index);
         }
 
         camera.Update();

@@ -25,15 +25,12 @@ public class TSOForm : Form
     internal int keyFigure      = (int)Keys.Tab;
     internal int keyDelete      = (int)Keys.Delete;
     internal int keyCameraReset = (int)Keys.D0;
-    internal int keyCameraLoadOrSave1 = (int)Keys.D1;
-    internal int keyCameraLoadOrSave2 = (int)Keys.D2;
-    internal int keyCameraInterpolation = (int)Keys.C;
     internal int keyFigureForm = (int)Keys.G;
 
     internal Viewer viewer = null;
     internal FigureForm fig_form = null;
     
-    private Camera camera
+    private SimpleCamera camera
     {
         get {
             return viewer.Camera;
@@ -43,12 +40,8 @@ public class TSOForm : Form
         }
     }
 
-    private Camera cam1 = null;
-    private Camera cam2 = null;
     private Timer timer1;
     private System.ComponentModel.IContainer components;
-
-    private int cam_frame_index = 0;
 
     public TSOForm(TSOConfig tso_config, string[] args)
     {
@@ -160,57 +153,6 @@ public class TSOForm : Form
             if (viewer.TryGetFigure(out fig))
                 camera.SetCenter(fig.Center);
         }
-        if (keysEnabled[keyCameraLoadOrSave1] && keys[keyCameraLoadOrSave1])
-        {
-            keysEnabled[keyCameraLoadOrSave1] = false;
-            if (keys[(int)Keys.ControlKey])
-                camera.Save(@"camera1.xml");
-            else if (File.Exists(@"camera1.xml"))
-            {
-                camera = Camera.Load(@"camera1.xml");
-                Figure fig;
-                if (viewer.TryGetFigure(out fig))
-                    camera.SetCenter(fig.Center);
-            }
-        }
-        if (keysEnabled[keyCameraLoadOrSave2] && keys[keyCameraLoadOrSave2])
-        {
-            keysEnabled[keyCameraLoadOrSave2] = false;
-            if (keys[(int)Keys.ControlKey])
-                camera.Save(@"camera2.xml");
-            else if (File.Exists(@"camera2.xml"))
-            {
-                camera = Camera.Load(@"camera2.xml");
-                Figure fig;
-                if (viewer.TryGetFigure(out fig))
-                    camera.SetCenter(fig.Center);
-            }
-        }
-        if (keysEnabled[keyCameraInterpolation] && keys[keyCameraInterpolation])
-        {
-            keysEnabled[keyCameraInterpolation] = false;
-            if (cam1 != null && cam2 != null)
-            {
-                camera = cam2;
-                cam_frame_index = 0;
-                cam1 = null;
-                cam2 = null;
-            }
-            else
-            {
-                if (File.Exists(@"camera1.xml"))
-                    cam1 = Camera.Load(@"camera1.xml");
-                if (File.Exists(@"camera2.xml"))
-                    cam2 = Camera.Load(@"camera2.xml");
-                if (cam1 != null && cam2 != null)
-                    camera = cam1;
-            }
-            {
-                Figure fig;
-                if (viewer.TryGetFigure(out fig))
-                    camera.SetCenter(fig.Center);
-            }
-        }
         if (keysEnabled[keyFigureForm] && keys[keyFigureForm])
         {
             keys[keyFigureForm] = false;
@@ -218,19 +160,6 @@ public class TSOForm : Form
             // stale KeyUp event
             fig_form.Show();
             fig_form.Activate();
-        }
-
-        if (cam1 != null && cam2 != null)
-        {
-            camera = Camera.Interpolation(cam1, cam2, cam_frame_index/120.0f);
-            cam_frame_index++;
-            if (cam_frame_index >= 120)
-            {
-                cam_frame_index = 0;
-                Camera cam0 = cam2;
-                cam2 = cam1;
-                cam1 = cam0;
-            }
         }
 
         float keyL = 0.0f;
