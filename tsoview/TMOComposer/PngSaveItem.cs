@@ -8,7 +8,7 @@ namespace TMOComposer
     public class PngSaveItem
     {
         public string File { get; set; }
-        public int FigureIndex { get; set; }
+        //public int FigureIndex { get; set; }
         public TMOAnim tmoanim;
 
         public PngSaveItem()
