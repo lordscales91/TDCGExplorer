@@ -99,8 +99,7 @@ namespace TMOComposer
             TMOAnimItem item = new TMOAnimItem();
             item.PoseFile = lvPoses.SelectedItems[0].Text;
             item.Length = 30;
-            tmoanim.items.Add(item);
-            tmoAnimItemBindingSource.ResetBindings(false);
+            tmoAnimItemBindingSource.Add(item);
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -110,8 +109,7 @@ namespace TMOComposer
 
             int row = gvTMOAnimItems.SelectedCells[0].RowIndex;
             TMOAnimItem item = tmoanim.items[row];
-            tmoanim.items.Remove(item);
-            tmoAnimItemBindingSource.ResetBindings(false);
+            tmoAnimItemBindingSource.Remove(item);
         }
 
         private void btnUp_Click(object sender, EventArgs e)
@@ -124,12 +122,9 @@ namespace TMOComposer
                 return;
 
             TMOAnimItem item = tmoanim.items[row];
-            tmoanim.items.Remove(item);
-            tmoanim.items.Insert(row - 1, item);
-            tmoAnimItemBindingSource.ResetBindings(false);
-            
-            gvTMOAnimItems.ClearSelection();
-            gvTMOAnimItems.Rows[row - 1].Selected = true;
+            tmoAnimItemBindingSource.Remove(item);
+            tmoAnimItemBindingSource.Insert(row - 1, item);
+            tmoAnimItemBindingSource.Position = row - 1;
         }
 
         private void btnDown_Click(object sender, EventArgs e)
@@ -142,12 +137,9 @@ namespace TMOComposer
                 return;
 
             TMOAnimItem item = tmoanim.items[row];
-            tmoanim.items.Remove(item);
-            tmoanim.items.Insert(row + 1, item);
-            tmoAnimItemBindingSource.ResetBindings(false);
-            
-            gvTMOAnimItems.ClearSelection();
-            gvTMOAnimItems.Rows[row + 1].Selected = true;
+            tmoAnimItemBindingSource.Remove(item);
+            tmoAnimItemBindingSource.Insert(row + 1, item);
+            tmoAnimItemBindingSource.Position = row + 1;
         }
     }
 }
