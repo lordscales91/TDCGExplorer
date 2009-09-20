@@ -28,6 +28,7 @@ namespace TMOComposer
             if (viewer.InitializeApplication(this))
             {
                 CreatePngSave();
+                viewer.Camera.SetTranslation(0.0f, +10.0f, -44.0f);
                 viewer.SwitchMotionEnabled();
                 timer1.Enabled = true;
             }

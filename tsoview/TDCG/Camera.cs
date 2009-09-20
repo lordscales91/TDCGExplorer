@@ -349,6 +349,10 @@ public class Camera
         this.center = center;
         needUpdate = true;
     }
+    public void SetCenter(float x, float y, float z)
+    {
+        SetCenter(new Vector3(x, y, z));
+    }
 
     /// <summary>
     /// viewÀ•Wã‚ÌˆÊ’u‚ğİ’è‚µ‚Ü‚·B
@@ -358,6 +362,10 @@ public class Camera
     {
         this.translation = translation;
         needUpdate = true;
+    }
+    public void SetTranslation(float x, float y, float z)
+    {
+        SetTranslation(new Vector3(x, y, z));
     }
 
     /// <summary>
