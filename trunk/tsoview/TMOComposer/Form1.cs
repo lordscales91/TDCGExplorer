@@ -123,6 +123,13 @@ namespace TMOComposer
         private void Animate(PngSaveItem item)
         {
             int pngsave_row = pngSaveItemBindingSource.Position;
+
+            if (pngsave_row == -1)
+                return;
+
+            if (pngsave_row >= viewer.FigureList.Count)
+                return;
+
             TMOAnim tmoanim = item.tmoanim;
             tmoanim.LoadSource();
             if (tmoanim.SourceTmo.frames != null)
@@ -214,7 +221,7 @@ namespace TMOComposer
             if (tmoanim_row == -1)
                 return;
 
-            if (tmoanim_row == tmoAnimItemBindingSource.Count - 1)
+            if (tmoanim_row >= tmoAnimItemBindingSource.Count - 1)
                 return;
 
             TMOAnimItem item = tmoanim.items[tmoanim_row];
