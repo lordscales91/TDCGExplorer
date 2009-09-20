@@ -29,7 +29,7 @@ namespace TMOComposer
                 viewer.SwitchMotionEnabled();
                 timer1.Enabled = true;
             }
-            LoadTMOAnim();
+            CreateTMOAnim();
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -48,9 +48,13 @@ namespace TMOComposer
             }
         }
 
-        private void LoadTMOAnim()
+        private void CreateTMOAnim()
         {
-            tmoanim = TMOAnim.Load(@"TMOAnim.xml");
+            string file = @"TMOAnim.xml";
+            if (File.Exists(file))
+                tmoanim = TMOAnim.Load(file);
+            else
+                tmoanim = new TMOAnim();
             tmoAnimItemBindingSource.DataSource = tmoanim.items;
         }
 
@@ -144,10 +148,6 @@ namespace TMOComposer
             
             gvTMOAnimItems.ClearSelection();
             gvTMOAnimItems.Rows[row + 1].Selected = true;
-        }
-
-        private void tMOAnimItemBindingSource_AddingNew(object sender, AddingNewEventArgs e)
-        {
         }
     }
 }
