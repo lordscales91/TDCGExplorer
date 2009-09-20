@@ -41,11 +41,11 @@ namespace TMOComposer
 
             int orig_frame_idx = viewer.FrameIndex; // backup
             int frame_len = viewer.GetMaxFrameLength();
-            for (int frame_idx = 0; frame_idx < frame_len; frame_idx++)
+            for (int frame_idx = 0; frame_idx < frame_len; frame_idx += 5)
             {
                 viewer.FrameMove(frame_idx);
                 viewer.Render();
-                viewer.SaveToPng(dest_path + String.Format("{0:D3}.png", frame_idx));
+                viewer.SaveToPng(dest_path + @"\" + String.Format("{0:D3}.png", frame_idx));
             }
             viewer.FrameIndex = orig_frame_idx; // restore
             timer1.Enabled = true;
