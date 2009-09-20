@@ -107,7 +107,6 @@
             // tmoAnimItemBindingSource
             // 
             this.tmoAnimItemBindingSource.DataSource = typeof(TMOComposer.TMOAnimItem);
-            this.tmoAnimItemBindingSource.AddingNew += new System.ComponentModel.AddingNewEventHandler(this.tMOAnimItemBindingSource_AddingNew);
             // 
             // btnAnimate
             // 
