@@ -4,4 +4,5 @@
     <Width>1024</Width>
     <Height>768</Height>
   </ClientSize>
+  <RecordStep>5</RecordStep>
 </TSOConfig>

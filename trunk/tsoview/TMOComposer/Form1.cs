@@ -16,6 +16,7 @@ namespace TMOComposer
         Viewer viewer = null;
         PngSave pngsave;
         Form2 form2 = null;
+        TSOConfig tso_config;
 
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
         string pose_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG\pose";
@@ -34,9 +35,10 @@ namespace TMOComposer
                 timer1.Enabled = true;
             }
             form2 = new Form2();
+            this.tso_config = tso_config;
         }
 
-        private void SaveToPngEachFrame()
+        private void SaveToPngEachFrame(int step)
         {
             timer1.Enabled = false;
 
@@ -45,7 +47,7 @@ namespace TMOComposer
 
             int orig_frame_idx = viewer.FrameIndex; // backup
             int frame_len = viewer.GetMaxFrameLength();
-            for (int frame_idx = 0; frame_idx < frame_len; frame_idx += 5)
+            for (int frame_idx = 0; frame_idx < frame_len; frame_idx += step)
             {
                 viewer.FrameMove(frame_idx);
                 viewer.Render();
@@ -198,7 +200,7 @@ namespace TMOComposer
 
         private void btnRec_Click(object sender, EventArgs e)
         {
-            SaveToPngEachFrame();
+            SaveToPngEachFrame(tso_config.RecordStep);
         }
 
         private void gvFigures_SelectionChanged(object sender, EventArgs e)

@@ -11,9 +11,11 @@ namespace TMOComposer
 public class TSOConfig
 {
     public Size ClientSize { get; set; }
+    public int RecordStep { get; set; }
     public TSOConfig()
     {
         this.ClientSize = new Size(1024, 768);
+        this.RecordStep = 5;
     }
 
     public void Dump()
