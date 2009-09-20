@@ -21,9 +21,10 @@ namespace TMOComposer
         string pose_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG\pose";
         string pngsave_file = @"PngSave.xml";
 
-        public Form1()
+        public Form1(TSOConfig tso_config, string[] args)
         {
             InitializeComponent();
+            this.ClientSize = tso_config.ClientSize;
             viewer = new Viewer();
             if (viewer.InitializeApplication(this))
             {

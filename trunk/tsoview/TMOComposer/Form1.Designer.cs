@@ -59,6 +59,8 @@
             // 
             // lvPoses
             // 
+            this.lvPoses.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.lvPoses.LargeImageList = this.ilPoses;
             this.lvPoses.Location = new System.Drawing.Point(796, 12);
             this.lvPoses.Name = "lvPoses";
@@ -76,6 +78,7 @@
             // 
             // btnGetPoses
             // 
+            this.btnGetPoses.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btnGetPoses.Location = new System.Drawing.Point(921, 728);
             this.btnGetPoses.Name = "btnGetPoses";
             this.btnGetPoses.Size = new System.Drawing.Size(75, 23);
@@ -87,6 +90,8 @@
             // gvTMOAnimItems
             // 
             this.gvTMOAnimItems.AllowUserToAddRows = false;
+            this.gvTMOAnimItems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)));
             this.gvTMOAnimItems.AutoGenerateColumns = false;
             this.gvTMOAnimItems.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.gvTMOAnimItems.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -118,6 +123,7 @@
             // 
             // btnAnimate
             // 
+            this.btnAnimate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnAnimate.Location = new System.Drawing.Point(137, 728);
             this.btnAnimate.Name = "btnAnimate";
             this.btnAnimate.Size = new System.Drawing.Size(75, 23);
