@@ -45,6 +45,7 @@
             this.btnUp = new System.Windows.Forms.Button();
             this.btnDown = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
+            this.btnRec = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.gvTMOAnimItems)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tmoAnimItemBindingSource)).BeginInit();
             this.SuspendLayout();
@@ -153,11 +154,22 @@
             this.btnDelete.UseVisualStyleBackColor = true;
             this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
+            // btnRec
+            // 
+            this.btnRec.Location = new System.Drawing.Point(81, 728);
+            this.btnRec.Name = "btnRec";
+            this.btnRec.Size = new System.Drawing.Size(50, 23);
+            this.btnRec.TabIndex = 8;
+            this.btnRec.Text = "&Rec";
+            this.btnRec.UseVisualStyleBackColor = true;
+            this.btnRec.Click += new System.EventHandler(this.btnRec_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 763);
+            this.Controls.Add(this.btnRec);
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.btnDown);
             this.Controls.Add(this.btnUp);
@@ -187,6 +199,7 @@
         private System.Windows.Forms.BindingSource tmoAnimItemBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn poseFileDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn lengthDataGridViewTextBoxColumn;
+        private System.Windows.Forms.Button btnRec;
     }
 }
 

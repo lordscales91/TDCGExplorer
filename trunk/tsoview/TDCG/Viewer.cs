@@ -733,7 +733,11 @@ public class Viewer : IDisposable
             //フレーム番号を通知する。
             //camera.SetFrameIndex(frame_index);
         }
+        FrameMove(frame_index);
+    }
 
+    public void FrameMove(int frame_index)
+    {
         camera.Update();
 
         Transform_View = camera.GetViewMatrix();
@@ -779,6 +783,7 @@ public class Viewer : IDisposable
 
     //フレーム番号
     private int frame_index = 0;
+    public int FrameIndex { get { return frame_index; } set { frame_index = value; } }
 
     /// <summary>
     /// tmo file中で最大のフレーム長さを得ます。
@@ -1128,6 +1133,13 @@ public class Viewer : IDisposable
       using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))
       if (sf != null)
           SurfaceLoader.Save(file, ImageFileFormat.Bmp, sf);
+    }
+
+    public void SaveToPng(string file)
+    {
+      using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))
+      if (sf != null)
+          SurfaceLoader.Save(file, ImageFileFormat.Png, sf);
     }
 }
 }
