@@ -15,6 +15,7 @@ namespace TMOComposer
     {
         Viewer viewer = null;
         TMOAnim tmoanim;
+        public List<PngSaveItem> items = new List<PngSaveItem>();
 
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
         string pose_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG\pose";
@@ -27,8 +28,14 @@ namespace TMOComposer
             viewer = new Viewer();
             if (viewer.InitializeApplication(this))
             {
-                string source_file = save_path + @"\system.tdcgsav.png";
-                viewer.LoadAnyFile(source_file);
+                string save_file = "system.tdcgsav.png";
+                
+                PngSaveItem item = new PngSaveItem();
+                item.File = save_file;
+                pngSaveItemBindingSource.Add(item);
+
+                viewer.LoadAnyFile(save_path + @"\" + item.File);
+                
                 viewer.SwitchMotionEnabled();
                 timer1.Enabled = true;
             }
@@ -54,19 +61,35 @@ namespace TMOComposer
             timer1.Enabled = true;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnGetPoses_Click(object sender, EventArgs e)
         {
             string[] files = Directory.GetFiles(pose_path, "*.png");
             lvPoses.Items.Clear();
-            imageList1.Images.Clear();
+            ilPoses.Images.Clear();
             for (int i = 0; i < files.Length; i++)
             {
                 string file = files[i];
                 using (Image thumbnail = Bitmap.FromFile(file))
                 {
-                    imageList1.Images.Add(thumbnail);
+                    ilPoses.Images.Add(thumbnail);
                 }
                 lvPoses.Items.Add(Path.GetFileName(file), i);
+            }
+        }
+
+        private void btnGetSaves_Click(object sender, EventArgs e)
+        {
+            string[] files = Directory.GetFiles(save_path, "*.png");
+            lvSaves.Items.Clear();
+            ilSaves.Images.Clear();
+            for (int i = 0; i < files.Length; i++)
+            {
+                string file = files[i];
+                using (Image thumbnail = Bitmap.FromFile(file))
+                {
+                    ilSaves.Images.Add(thumbnail);
+                }
+                lvSaves.Items.Add(Path.GetFileName(file), i);
             }
         }
 
@@ -79,7 +102,7 @@ namespace TMOComposer
             tmoAnimItemBindingSource.DataSource = tmoanim.items;
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void btnAnimate_Click(object sender, EventArgs e)
         {
             tmoanim.Dump(tmoanim_file);
             tmoanim.LoadSource();
@@ -121,6 +144,18 @@ namespace TMOComposer
             item.PoseFile = lvPoses.SelectedItems[0].Text;
             item.Length = 30;
             tmoAnimItemBindingSource.Add(item);
+        }
+
+        private void lvSaves_DoubleClick(object sender, EventArgs e)
+        {
+            if (lvSaves.SelectedItems.Count == 0)
+                return;
+
+            PngSaveItem item = new PngSaveItem();
+            item.File = lvSaves.SelectedItems[0].Text;
+            pngSaveItemBindingSource.Add(item);
+
+            viewer.LoadAnyFile(save_path + @"\" + item.File, true);
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -167,5 +202,15 @@ namespace TMOComposer
         {
             SaveToPngEachFrame();
         }
+
+        private void gvFigures_SelectionChanged(object sender, EventArgs e)
+        {
+            if (gvFigures.SelectedCells.Count == 0)
+                return;
+
+            int row = gvFigures.SelectedCells[0].RowIndex;
+            viewer.SetFigureIndex(row);
+        }
+
     }
 }
