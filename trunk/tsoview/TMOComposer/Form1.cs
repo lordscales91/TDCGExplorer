@@ -16,6 +16,7 @@ namespace TMOComposer
         Viewer viewer = null;
         TMOAnim tmoanim;
         public List<PngSaveItem> items = new List<PngSaveItem>();
+        Form2 form2 = null;
 
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
         string pose_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG\pose";
@@ -40,6 +41,7 @@ namespace TMOComposer
                 timer1.Enabled = true;
             }
             CreateTMOAnim();
+            form2 = new Form2();
         }
 
         private void SaveToPngEachFrame()
@@ -74,22 +76,6 @@ namespace TMOComposer
                     ilPoses.Images.Add(thumbnail);
                 }
                 lvPoses.Items.Add(Path.GetFileName(file), i);
-            }
-        }
-
-        private void btnGetSaves_Click(object sender, EventArgs e)
-        {
-            string[] files = Directory.GetFiles(save_path, "*.png");
-            lvSaves.Items.Clear();
-            ilSaves.Images.Clear();
-            for (int i = 0; i < files.Length; i++)
-            {
-                string file = files[i];
-                using (Image thumbnail = Bitmap.FromFile(file))
-                {
-                    ilSaves.Images.Add(thumbnail);
-                }
-                lvSaves.Items.Add(Path.GetFileName(file), i);
             }
         }
 
@@ -146,18 +132,6 @@ namespace TMOComposer
             tmoAnimItemBindingSource.Add(item);
         }
 
-        private void lvSaves_DoubleClick(object sender, EventArgs e)
-        {
-            if (lvSaves.SelectedItems.Count == 0)
-                return;
-
-            PngSaveItem item = new PngSaveItem();
-            item.File = lvSaves.SelectedItems[0].Text;
-            pngSaveItemBindingSource.Add(item);
-
-            viewer.LoadAnyFile(save_path + @"\" + item.File, true);
-        }
-
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if (gvTMOAnimItems.SelectedCells.Count == 0)
@@ -212,5 +186,19 @@ namespace TMOComposer
             viewer.SetFigureIndex(row);
         }
 
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            if (form2.ShowDialog(this) == DialogResult.OK)
+            {
+                if (form2.File == null)
+                    return;
+
+                PngSaveItem item = new PngSaveItem();
+                item.File = form2.File;
+                pngSaveItemBindingSource.Add(item);
+
+                viewer.LoadAnyFile(save_path + @"\" + item.File, true);
+            }
+        }
     }
 }
