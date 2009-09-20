@@ -770,13 +770,13 @@ public class Viewer : IDisposable
 
         if (motionEnabled)
         {
-            //device.Transform.World = world_matrix;
-            foreach (Figure fig in FigureList)
-                fig.UpdateBoneMatrices();
-
             //フレーム番号を通知する。
             foreach (Figure fig in FigureList)
                 fig.SetFrameIndex(frame_index);
+
+            //device.Transform.World = world_matrix;
+            foreach (Figure fig in FigureList)
+                fig.UpdateBoneMatrices();
         }
     }
     long wait = (long)(10000000.0f / 60.0f);
