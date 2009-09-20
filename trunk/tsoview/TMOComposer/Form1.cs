@@ -110,6 +110,10 @@ namespace TMOComposer
         {
             int pngsave_row = pngSaveItemBindingSource.Position;
             int tmoanim_row = tmoAnimItemBindingSource.Position;
+
+            if (pngsave_row == -1)
+                return;
+
             PngSaveItem item = pngsave.items[pngsave_row];
 
             pngsave.Dump(pngsave_file);
@@ -162,7 +166,14 @@ namespace TMOComposer
         {
             int pngsave_row = pngSaveItemBindingSource.Position;
             int tmoanim_row = tmoAnimItemBindingSource.Position;
+
+            if (pngsave_row == -1)
+                return;
+
             TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;
+            
+            if (tmoanim_row == -1)
+                return;
 
             TMOAnimItem item = tmoanim.items[tmoanim_row];
             tmoAnimItemBindingSource.Remove(item);
@@ -172,7 +183,14 @@ namespace TMOComposer
         {
             int pngsave_row = pngSaveItemBindingSource.Position;
             int tmoanim_row = tmoAnimItemBindingSource.Position;
+
+            if (pngsave_row == -1)
+                return;
+
             TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;
+
+            if (tmoanim_row == -1)
+                return;
 
             if (tmoanim_row == 0)
                 return;
@@ -187,7 +205,14 @@ namespace TMOComposer
         {
             int pngsave_row = pngSaveItemBindingSource.Position;
             int tmoanim_row = tmoAnimItemBindingSource.Position;
+
+            if (pngsave_row == -1)
+                return;
+
             TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;
+
+            if (tmoanim_row == -1)
+                return;
 
             if (tmoanim_row == tmoAnimItemBindingSource.Count - 1)
                 return;
@@ -207,8 +232,11 @@ namespace TMOComposer
         {
             int pngsave_row = pngSaveItemBindingSource.Position;
             int tmoanim_row = tmoAnimItemBindingSource.Position;
-            TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;
 
+            if (pngsave_row == -1)
+                return;
+
+            TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;
             tmoAnimItemBindingSource.DataSource = tmoanim.items;
             viewer.SetFigureIndex(pngsave_row);
         }
@@ -230,8 +258,11 @@ namespace TMOComposer
 
             int pngsave_row = pngSaveItemBindingSource.Position;
             int tmoanim_row = tmoAnimItemBindingSource.Position;
-            PngSaveItem item = pngsave.items[pngsave_row];
 
+            if (pngsave_row == -1)
+                return;
+
+            PngSaveItem item = pngsave.items[pngsave_row];
             tmoAnimItemBindingSource.DataSource = null;
             pngSaveItemBindingSource.Remove(item);
         }
