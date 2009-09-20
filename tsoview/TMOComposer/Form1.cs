@@ -32,6 +32,25 @@ namespace TMOComposer
             CreateTMOAnim();
         }
 
+        private void SaveToPngEachFrame()
+        {
+            timer1.Enabled = false;
+
+            string dest_path = @"snapshots";
+            Directory.CreateDirectory(dest_path);
+
+            int orig_frame_idx = viewer.FrameIndex; // backup
+            int frame_len = viewer.GetMaxFrameLength();
+            for (int frame_idx = 0; frame_idx < frame_len; frame_idx++)
+            {
+                viewer.FrameMove(frame_idx);
+                viewer.Render();
+                viewer.SaveToPng(dest_path + String.Format("{0:D3}.png", frame_idx));
+            }
+            viewer.FrameIndex = orig_frame_idx; // restore
+            timer1.Enabled = true;
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             string[] files = Directory.GetFiles(pose_path, "*.png");
@@ -140,6 +159,11 @@ namespace TMOComposer
             tmoAnimItemBindingSource.Remove(item);
             tmoAnimItemBindingSource.Insert(row + 1, item);
             tmoAnimItemBindingSource.Position = row + 1;
+        }
+
+        private void btnRec_Click(object sender, EventArgs e)
+        {
+            SaveToPngEachFrame();
         }
     }
 }
