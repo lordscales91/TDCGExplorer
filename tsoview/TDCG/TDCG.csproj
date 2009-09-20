@@ -66,6 +66,7 @@
     <Compile Include="PNGFile.cs" />
     <Compile Include="PNGWriter.cs" />
     <Compile Include="Shader.cs" />
+    <Compile Include="SimpleCamera.cs" />
     <Compile Include="TMOFile.cs" />
     <Compile Include="TMOWriter.cs" />
     <Compile Include="TPOFile.cs" />
