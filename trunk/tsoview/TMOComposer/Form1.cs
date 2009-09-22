@@ -16,17 +16,22 @@ namespace TMOComposer
         Viewer viewer = null;
         PngSave pngsave;
         Form2 form2 = null;
+        Form3 form3 = null;
         TmoAnimItemForm tmoAnimItemForm = null;
         TSOConfig tso_config;
 
-        string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
-        string pose_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG\pose";
+        string save_path = null;
+        string pose_path = null;
         string pngsave_file = @"PngSave.xml";
 
         public Form1(TSOConfig tso_config, string[] args)
         {
             InitializeComponent();
+            
             this.ClientSize = tso_config.ClientSize;
+            save_path = tso_config.SavePath;
+            pose_path = tso_config.PosePath;
+
             viewer = new Viewer();
             if (viewer.InitializeApplication(this))
             {
@@ -36,7 +41,11 @@ namespace TMOComposer
                 timer1.Enabled = true;
             }
             form2 = new Form2();
+            form2.SavePath = tso_config.SavePath;
+            form3 = new Form3();
+            form3.FacePath = tso_config.FacePath;
             tmoAnimItemForm = new TmoAnimItemForm();
+            tmoAnimItemForm.SetForm3(form3);
             this.tso_config = tso_config;
         }
 

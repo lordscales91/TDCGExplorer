@@ -12,7 +12,7 @@ namespace TMOComposer
 {
     public partial class Form2 : Form
     {
-        string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
+        public string SavePath { get; set; }
 
         public Form2()
         {
@@ -23,7 +23,7 @@ namespace TMOComposer
 
         private void btnGetSaves_Click(object sender, EventArgs e)
         {
-            string[] files = Directory.GetFiles(save_path, "*.png");
+            string[] files = Directory.GetFiles(SavePath, "*.png");
             lvSaves.Items.Clear();
             ilSaves.Images.Clear();
             for (int i = 0; i < files.Length; i++)

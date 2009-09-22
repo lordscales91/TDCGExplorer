@@ -12,7 +12,7 @@ namespace TMOComposer
 {
     public partial class Form3 : Form
     {
-        string face_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG\pose";
+        public string FacePath { get; set; }
 
         public Form3()
         {
@@ -23,7 +23,7 @@ namespace TMOComposer
 
         private void btnGetFaces_Click(object sender, EventArgs e)
         {
-            string[] files = Directory.GetFiles(face_path, "*.png");
+            string[] files = Directory.GetFiles(FacePath, "*.png");
             lvFaces.Items.Clear();
             ilFaces.Images.Clear();
             for (int i = 0; i < files.Length; i++)
