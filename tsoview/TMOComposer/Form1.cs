@@ -16,7 +16,6 @@ namespace TMOComposer
         Viewer viewer = null;
         PngSave pngsave;
         Form2 form2 = null;
-        Form3 form3 = null;
         TmoAnimItemForm tmoAnimItemForm = null;
         TSOConfig tso_config;
 
@@ -37,7 +36,6 @@ namespace TMOComposer
                 timer1.Enabled = true;
             }
             form2 = new Form2();
-            form3 = new Form3();
             tmoAnimItemForm = new TmoAnimItemForm();
             this.tso_config = tso_config;
         }

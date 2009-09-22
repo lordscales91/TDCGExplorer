@@ -12,27 +12,39 @@ namespace TMOComposer
 {
     public partial class Form3 : Form
     {
-        string pose_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG\pose";
+        string face_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG\pose";
 
         public Form3()
         {
             InitializeComponent();
         }
 
-        private void btnGetPoses_Click(object sender, EventArgs e)
+        public string File { get; set; }
+
+        private void btnGetFaces_Click(object sender, EventArgs e)
         {
-            string[] files = Directory.GetFiles(pose_path, "*.png");
-            lvPoses.Items.Clear();
-            ilPoses.Images.Clear();
+            string[] files = Directory.GetFiles(face_path, "*.png");
+            lvFaces.Items.Clear();
+            ilFaces.Images.Clear();
             for (int i = 0; i < files.Length; i++)
             {
                 string file = files[i];
                 using (Image thumbnail = Bitmap.FromFile(file))
                 {
-                    ilPoses.Images.Add(thumbnail);
+                    ilFaces.Images.Add(thumbnail);
                 }
-                lvPoses.Items.Add(Path.GetFileName(file), i);
+                lvFaces.Items.Add(Path.GetFileName(file), i);
             }
+        }
+
+        private void lvFaces_DoubleClick(object sender, EventArgs e)
+        {
+            if (lvFaces.SelectedItems.Count != 0)
+                File = lvFaces.SelectedItems[0].Text;
+            else
+                File = null;
+            this.DialogResult = DialogResult.OK;
+            Close();
         }
     }
 }

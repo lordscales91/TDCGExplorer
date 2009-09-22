@@ -11,9 +11,12 @@ namespace TMOComposer
 {
     public partial class TmoAnimItemForm : Form
     {
+        Form3 form3 = null;
+
         public TmoAnimItemForm()
         {
             InitializeComponent();
+            form3 = new Form3();
         }
         
         TMOAnimItem item;
@@ -31,6 +34,17 @@ namespace TMOComposer
             item.PoseFile = tbPoseFile.Text;
             item.Length = int.Parse(tbLength.Text);
             item.FaceFile = tbFaceFile.Text;
+        }
+
+        private void btnOpenFaces_Click(object sender, EventArgs e)
+        {
+            if (form3.ShowDialog(this) == DialogResult.OK)
+            {
+                if (form3.File == null)
+                    return;
+
+                tbFaceFile.Text = form3.File;
+            }
         }
     }
 }

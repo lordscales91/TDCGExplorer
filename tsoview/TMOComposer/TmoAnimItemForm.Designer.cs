@@ -36,6 +36,7 @@
             this.btnOK = new System.Windows.Forms.Button();
             this.tbFaceFile = new System.Windows.Forms.TextBox();
             this.lbFaceFile = new System.Windows.Forms.Label();
+            this.btnOpenFaces = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lbPoseFile
@@ -107,6 +108,16 @@
             this.lbFaceFile.TabIndex = 6;
             this.lbFaceFile.Text = "FaceFile";
             // 
+            // btnOpenFaces
+            // 
+            this.btnOpenFaces.Location = new System.Drawing.Point(218, 96);
+            this.btnOpenFaces.Name = "btnOpenFaces";
+            this.btnOpenFaces.Size = new System.Drawing.Size(50, 23);
+            this.btnOpenFaces.TabIndex = 8;
+            this.btnOpenFaces.Text = "Open...";
+            this.btnOpenFaces.UseVisualStyleBackColor = true;
+            this.btnOpenFaces.Click += new System.EventHandler(this.btnOpenFaces_Click);
+            // 
             // TmoAnimItemForm
             // 
             this.AcceptButton = this.btnOK;
@@ -114,6 +125,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(284, 263);
+            this.Controls.Add(this.btnOpenFaces);
             this.Controls.Add(this.tbFaceFile);
             this.Controls.Add(this.lbFaceFile);
             this.Controls.Add(this.btnOK);
@@ -140,5 +152,6 @@
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.TextBox tbFaceFile;
         private System.Windows.Forms.Label lbFaceFile;
+        private System.Windows.Forms.Button btnOpenFaces;
     }
 }
