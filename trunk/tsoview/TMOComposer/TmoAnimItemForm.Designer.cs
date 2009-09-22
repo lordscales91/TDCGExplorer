@@ -34,6 +34,8 @@
             this.tbLength = new System.Windows.Forms.TextBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
+            this.tbFaceFile = new System.Windows.Forms.TextBox();
+            this.lbFaceFile = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // lbPoseFile
@@ -49,7 +51,7 @@
             // 
             this.tbPoseFile.Location = new System.Drawing.Point(12, 24);
             this.tbPoseFile.Name = "tbPoseFile";
-            this.tbPoseFile.Size = new System.Drawing.Size(100, 19);
+            this.tbPoseFile.Size = new System.Drawing.Size(200, 19);
             this.tbPoseFile.TabIndex = 1;
             // 
             // lbLength
@@ -89,6 +91,22 @@
             this.btnOK.UseVisualStyleBackColor = true;
             this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
             // 
+            // tbFaceFile
+            // 
+            this.tbFaceFile.Location = new System.Drawing.Point(12, 98);
+            this.tbFaceFile.Name = "tbFaceFile";
+            this.tbFaceFile.Size = new System.Drawing.Size(200, 19);
+            this.tbFaceFile.TabIndex = 7;
+            // 
+            // lbFaceFile
+            // 
+            this.lbFaceFile.AutoSize = true;
+            this.lbFaceFile.Location = new System.Drawing.Point(12, 83);
+            this.lbFaceFile.Name = "lbFaceFile";
+            this.lbFaceFile.Size = new System.Drawing.Size(49, 12);
+            this.lbFaceFile.TabIndex = 6;
+            this.lbFaceFile.Text = "FaceFile";
+            // 
             // TmoAnimItemForm
             // 
             this.AcceptButton = this.btnOK;
@@ -96,6 +114,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(284, 263);
+            this.Controls.Add(this.tbFaceFile);
+            this.Controls.Add(this.lbFaceFile);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.tbLength);
@@ -118,5 +138,7 @@
         private System.Windows.Forms.TextBox tbLength;
         private System.Windows.Forms.Button btnCancel;
         private System.Windows.Forms.Button btnOK;
+        private System.Windows.Forms.TextBox tbFaceFile;
+        private System.Windows.Forms.Label lbFaceFile;
     }
 }

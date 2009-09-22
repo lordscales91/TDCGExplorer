@@ -12,20 +12,33 @@ namespace TMOComposer
     {
         public string PoseFile { get; set; }
         public int Length { get; set; }
+        public string FaceFile { get; set; }
     }
 
     public class TMOAnim
     {
-        public string SourceFile
+        public TMOAnimItem SourceItem
         {
             get
             {
                 if (items.Count != 0)
-                    return items[items.Count - 1].PoseFile;
+                    return items[items.Count - 1];
                 else
                     return null;
             }
         }
+
+        public string SourceFile
+        {
+            get
+            {
+                if (SourceItem != null)
+                    return SourceItem.PoseFile;
+                else
+                    return null;
+            }
+        }
+
         public List<TMOAnimItem> items = new List<TMOAnimItem>();
 
         public void Dump(string dest_file)
@@ -70,7 +83,18 @@ namespace TMOComposer
 
         public void LoadSource()
         {
+            List<string> except_snames = new List<string>();
+            except_snames.Add("Kami_Oya");
+
             source = LoadPNGFile(GetSourcePath(SourceFile));
+
+            if (SourceItem.FaceFile != null)
+            {
+                Console.WriteLine("Load File: " + SourceItem.FaceFile);
+                TMOFile face_motion = LoadPNGFile(GetMotionPath(SourceItem.FaceFile));
+                if (face_motion.frames != null)
+                    source.CopyChildrenNodeFrom(face_motion, "face_oya", except_snames);
+            }
         }
 
         public void SaveSourceToFile(string dest_path)
@@ -102,10 +126,21 @@ namespace TMOComposer
 
         public void Process()
         {
+            List<string> except_snames = new List<string>();
+            except_snames.Add("Kami_Oya");
+
             foreach (TMOAnimItem item in items)
             {
                 Console.WriteLine("Load File: " + item.PoseFile);
                 TMOFile motion = LoadPNGFile(GetMotionPath(item.PoseFile));
+
+                if (item.FaceFile != null)
+                {
+                    Console.WriteLine("Load File: " + item.FaceFile);
+                    TMOFile face_motion = LoadPNGFile(GetMotionPath(item.FaceFile));
+                    if (face_motion.frames != null)
+                        motion.CopyChildrenNodeFrom(face_motion, "face_oya", except_snames);
+                }
 
                 source.SlerpFrameEndTo(motion, item.Length);
                 Console.WriteLine("source nodes Length {0}", source.nodes.Length);

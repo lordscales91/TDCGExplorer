@@ -23,12 +23,14 @@ namespace TMOComposer
             this.item = item;
             tbPoseFile.Text = item.PoseFile;
             tbLength.Text = item.Length.ToString();
+            tbFaceFile.Text = item.FaceFile;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
             item.PoseFile = tbPoseFile.Text;
             item.Length = int.Parse(tbLength.Text);
+            item.FaceFile = tbFaceFile.Text;
         }
     }
 }
