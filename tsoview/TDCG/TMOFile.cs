@@ -304,15 +304,34 @@ namespace TDCG
 
         /// <summary>
         /// 指定tmoにある指定名称（短い形式）のnodeを同じ名称のnodeに複写します。
+        /// ただし複写の対象は子node以降です。指定nodeは複写しません。
+        /// また、除外node以降のnodeは複写しません。
+        /// </summary>
+        /// <param name="motion">tmo</param>
+        /// <param name="sname">node名称（短い形式）</param>
+        /// <param name="except_snames">除外node名称（短い形式）リスト</param>
+        public void CopyChildrenNodeFrom(TMOFile motion, string sname, List<string> except_snames)
+        {
+            TMONode node = this.FindNodeByShortName(sname);
+            if (node == null)
+                return;
+            TMONode motion_node = motion.FindNodeByShortName(sname);
+            if (motion_node == null)
+                return;
+            node.CopyChildrenMatFrom(motion_node, except_snames);
+        }
+
+        /// <summary>
+        /// 指定tmoにある指定名称（短い形式）のnodeを同じ名称のnodeに複写します。
         /// </summary>
         /// <param name="motion">tmo</param>
         /// <param name="sname">node名称（短い形式）</param>
         public void CopyNodeFrom(TMOFile motion, string sname)
         {
-            TMONode node = this.FindNodeByShortName( sname );
+            TMONode node = this.FindNodeByShortName(sname);
             if (node == null)
                 return;
-            TMONode motion_node = motion.FindNodeByShortName( sname );
+            TMONode motion_node = motion.FindNodeByShortName(sname);
             if (motion_node == null)
                 return;
             node.CopyMatFrom(motion_node);
@@ -784,15 +803,68 @@ namespace TDCG
         /// 指定nodeから行列を複写します。
         /// </summary>
         /// <param name="motion">node</param>
-        public void CopyMatFrom(TMONode motion)
+        public void CopyThisMatFrom(TMONode motion)
         {
             //Console.WriteLine("copy mat {0} {1}", sname, motion.ShortName);
             int i = 0;
             foreach (TMOMat mat in frame_matrices)
             {
-                mat.m = motion.frame_matrices[ i % motion.frame_matrices.Count ].m;
+                mat.m = motion.frame_matrices[i % motion.frame_matrices.Count].m;
                 i++;
             }
+        }
+
+        void CopyChildrenMatFrom_0(TMONode motion, List<string> except_snames)
+        {
+            List<TMONode> select_children = new List<TMONode>();
+            foreach (TMONode child in child_nodes)
+            {
+                bool found = false;
+                foreach (string except_sname in except_snames)
+                {
+                    if (child.sname == except_sname)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found)
+                    except_snames.Remove(child.sname);
+                else
+                    select_children.Add(child);
+            }
+            foreach (TMONode child in select_children)
+            {
+                TMONode motion_child = motion.FindChildByShortName(child.sname);
+                child.CopyThisMatFrom(motion_child);
+                child.CopyChildrenMatFrom_0(motion_child, except_snames);
+            }
+        }
+
+        /// <summary>
+        /// 指定nodeから行列を複写します。
+        /// ただし複写の対象は子node以降です。指定nodeは複写しません。
+        /// また、除外node以降のnodeは複写しません。
+        /// </summary>
+        /// <param name="motion">node</param>
+        /// <param name="except_snames">除外node名称（短い形式）リスト</param>
+        public void CopyChildrenMatFrom(TMONode motion, List<string> except_snames)
+        {
+            List<string> dup_except_snames = new List<string>();
+            foreach (string except_sname in except_snames)
+            {
+                dup_except_snames.Add(except_sname);
+            }
+            CopyChildrenMatFrom_0(motion, dup_except_snames);
+        }
+
+        /// <summary>
+        /// 指定nodeから行列を複写します。
+        /// </summary>
+        /// <param name="motion">node</param>
+        public void CopyMatFrom(TMONode motion)
+        {
+            CopyThisMatFrom(motion);
             foreach (TMONode child in child_nodes)
             {
                 child.CopyMatFrom(motion.FindChildByShortName(child.sname));
