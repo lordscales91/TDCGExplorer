@@ -13,10 +13,14 @@ namespace TMOComposer
     {
         Form3 form3 = null;
 
+        public void SetForm3(Form3 form3)
+        {
+            this.form3 = form3;
+        }
+
         public TmoAnimItemForm()
         {
             InitializeComponent();
-            form3 = new Form3();
         }
         
         TMOAnimItem item;

@@ -12,10 +12,17 @@ public class TSOConfig
 {
     public Size ClientSize { get; set; }
     public int RecordStep { get; set; }
+    public string SavePath { get; set; }
+    public string PosePath { get; set; }
+    public string FacePath { get; set; }
+
     public TSOConfig()
     {
         this.ClientSize = new Size(1024, 768);
         this.RecordStep = 5;
+        this.SavePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
+        this.PosePath = SavePath + @"\pose";
+        this.FacePath = PosePath;
     }
 
     public void Dump()
