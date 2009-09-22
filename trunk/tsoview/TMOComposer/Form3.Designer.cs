@@ -29,47 +29,48 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.btnGetPoses = new System.Windows.Forms.Button();
-            this.lvPoses = new System.Windows.Forms.ListView();
-            this.ilPoses = new System.Windows.Forms.ImageList(this.components);
+            this.btnGetFaces = new System.Windows.Forms.Button();
+            this.lvFaces = new System.Windows.Forms.ListView();
+            this.ilFaces = new System.Windows.Forms.ImageList(this.components);
             this.SuspendLayout();
             // 
-            // btnGetPoses
+            // btnGetFaces
             // 
-            this.btnGetPoses.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnGetPoses.Location = new System.Drawing.Point(697, 528);
-            this.btnGetPoses.Name = "btnGetPoses";
-            this.btnGetPoses.Size = new System.Drawing.Size(75, 23);
-            this.btnGetPoses.TabIndex = 15;
-            this.btnGetPoses.Text = "&Get poses";
-            this.btnGetPoses.UseVisualStyleBackColor = true;
-            this.btnGetPoses.Click += new System.EventHandler(this.btnGetPoses_Click);
+            this.btnGetFaces.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnGetFaces.Location = new System.Drawing.Point(697, 528);
+            this.btnGetFaces.Name = "btnGetFaces";
+            this.btnGetFaces.Size = new System.Drawing.Size(75, 23);
+            this.btnGetFaces.TabIndex = 15;
+            this.btnGetFaces.Text = "&Get faces";
+            this.btnGetFaces.UseVisualStyleBackColor = true;
+            this.btnGetFaces.Click += new System.EventHandler(this.btnGetFaces_Click);
             // 
-            // lvPoses
+            // lvFaces
             // 
-            this.lvPoses.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.lvFaces.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvPoses.LargeImageList = this.ilPoses;
-            this.lvPoses.Location = new System.Drawing.Point(12, 12);
-            this.lvPoses.Name = "lvPoses";
-            this.lvPoses.Size = new System.Drawing.Size(760, 510);
-            this.lvPoses.TabIndex = 14;
-            this.lvPoses.UseCompatibleStateImageBehavior = false;
+            this.lvFaces.LargeImageList = this.ilFaces;
+            this.lvFaces.Location = new System.Drawing.Point(12, 12);
+            this.lvFaces.Name = "lvFaces";
+            this.lvFaces.Size = new System.Drawing.Size(760, 510);
+            this.lvFaces.TabIndex = 14;
+            this.lvFaces.UseCompatibleStateImageBehavior = false;
+            this.lvFaces.DoubleClick += new System.EventHandler(this.lvFaces_DoubleClick);
             // 
-            // ilPoses
+            // ilFaces
             // 
-            this.ilPoses.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
-            this.ilPoses.ImageSize = new System.Drawing.Size(128, 128);
-            this.ilPoses.TransparentColor = System.Drawing.Color.Transparent;
+            this.ilFaces.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
+            this.ilFaces.ImageSize = new System.Drawing.Size(128, 128);
+            this.ilFaces.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // Form3
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 563);
-            this.Controls.Add(this.btnGetPoses);
-            this.Controls.Add(this.lvPoses);
+            this.Controls.Add(this.btnGetFaces);
+            this.Controls.Add(this.lvFaces);
             this.Name = "Form3";
             this.Text = "Form3";
             this.ResumeLayout(false);
@@ -78,8 +79,8 @@
 
         #endregion
 
-        private System.Windows.Forms.Button btnGetPoses;
-        private System.Windows.Forms.ListView lvPoses;
-        private System.Windows.Forms.ImageList ilPoses;
+        private System.Windows.Forms.Button btnGetFaces;
+        private System.Windows.Forms.ListView lvFaces;
+        private System.Windows.Forms.ImageList ilFaces;
     }
 }
