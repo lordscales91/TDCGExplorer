@@ -101,7 +101,7 @@ public class Viewer : IDisposable
     }
 
     // 選択フィギュアindex
-    int figureIndex = 0;
+    int fig_index = 0;
 
     // スクリーンの中心座標
     private float screenCenterX = 800 / 2.0f;
@@ -190,14 +190,14 @@ public class Viewer : IDisposable
     /// <summary>
     /// フィギュアを選択します。
     /// </summary>
-    /// <param name="figureIndex">フィギュア番号</param>
-    public void SetFigureIndex(int figureIndex)
+    /// <param name="fig_index">フィギュア番号</param>
+    public void SetFigureIndex(int fig_index)
     {
-        if (figureIndex < 0)
-            figureIndex = 0;
-        if (figureIndex > FigureList.Count-1)
-            figureIndex = 0;
-        this.figureIndex = figureIndex;
+        if (fig_index < 0)
+            fig_index = 0;
+        if (fig_index > FigureList.Count - 1)
+            fig_index = 0;
+        this.fig_index = fig_index;
         if (FigureEvent != null)
             FigureEvent(this, EventArgs.Empty);
     }
@@ -247,7 +247,7 @@ public class Viewer : IDisposable
         if (FigureList.Count == 0)
             fig = null;
         else
-            fig = FigureList[figureIndex];
+            fig = FigureList[fig_index];
         return fig;
     }
 
@@ -260,7 +260,7 @@ public class Viewer : IDisposable
         if (FigureList.Count == 0)
             fig = new Figure();
         else
-            fig = FigureList[figureIndex];
+            fig = FigureList[fig_index];
         if (FigureList.Count == 0)
         {
             int idx = FigureList.Count;
@@ -310,15 +310,15 @@ public class Viewer : IDisposable
     public bool TryGetFigure(out Figure fig)
     {
         fig = null;
-        if (figureIndex < FigureList.Count)
-            fig = FigureList[figureIndex];
+        if (fig_index < FigureList.Count)
+            fig = FigureList[fig_index];
         return fig != null;
     }
 
     /// 次のフィギュアを選択します。
     public void NextFigure()
     {
-        SetFigureIndex(figureIndex+1);
+        SetFigureIndex(fig_index+1);
         Figure fig;
         if (TryGetFigure(out fig))
             camera.SetCenter(fig.Center);
@@ -672,7 +672,7 @@ public class Viewer : IDisposable
         {
             fig.Dispose();
             FigureList.Remove(fig);
-            SetFigureIndex(figureIndex-1);
+            SetFigureIndex(fig_index-1);
             GC.Collect(); // free meshes and textures.
         }
     }
