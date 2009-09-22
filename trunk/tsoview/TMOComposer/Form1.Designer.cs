@@ -90,6 +90,7 @@
             // gvTMOAnimItems
             // 
             this.gvTMOAnimItems.AllowUserToAddRows = false;
+            this.gvTMOAnimItems.AllowUserToDeleteRows = false;
             this.gvTMOAnimItems.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
             this.gvTMOAnimItems.AutoGenerateColumns = false;
@@ -101,9 +102,11 @@
             this.gvTMOAnimItems.DataSource = this.tmoAnimItemBindingSource;
             this.gvTMOAnimItems.Location = new System.Drawing.Point(12, 168);
             this.gvTMOAnimItems.Name = "gvTMOAnimItems";
+            this.gvTMOAnimItems.ReadOnly = true;
             this.gvTMOAnimItems.RowTemplate.Height = 21;
             this.gvTMOAnimItems.Size = new System.Drawing.Size(200, 354);
             this.gvTMOAnimItems.TabIndex = 2;
+            this.gvTMOAnimItems.DoubleClick += new System.EventHandler(this.gvTMOAnimItems_DoubleClick);
             // 
             // btnAnimate
             // 
@@ -215,12 +218,14 @@
             this.poseFileDataGridViewTextBoxColumn.DataPropertyName = "PoseFile";
             this.poseFileDataGridViewTextBoxColumn.HeaderText = "PoseFile";
             this.poseFileDataGridViewTextBoxColumn.Name = "poseFileDataGridViewTextBoxColumn";
+            this.poseFileDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // lengthDataGridViewTextBoxColumn
             // 
             this.lengthDataGridViewTextBoxColumn.DataPropertyName = "Length";
             this.lengthDataGridViewTextBoxColumn.HeaderText = "Length";
             this.lengthDataGridViewTextBoxColumn.Name = "lengthDataGridViewTextBoxColumn";
+            this.lengthDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // tmoAnimItemBindingSource
             // 
