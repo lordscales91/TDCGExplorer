@@ -224,24 +224,32 @@ namespace TDCG
             this.opt0 = frames.Length-1;
         }
 
-        public void CopyNodeFrom(TMOFile motion, string sname)
+        public void CopyNodeFrom(TMOFile motion, string sname, List<string> except_snames)
         {
-            TMONode node = this.FindNodeByShortName( sname );
+            TMONode node = this.FindNodeByShortName(sname);
             if (node == null)
                 return;
-            TMONode motion_node = motion.FindNodeByShortName( sname );
+            TMONode motion_node = motion.FindNodeByShortName(sname);
             if (motion_node == null)
                 return;
-            node.CopyMatFrom(motion_node);
+            node.CopyChildrenMatFrom(motion_node, except_snames);
+        }
+        public void CopyNodeFrom(TMOFile motion, string sname)
+        {
+            List<string> except_snames = new List<string>();
+            CopyNodeFrom(motion, sname, except_snames);
         }
 
-        public bool IsSameNodeTree(TMOFile motion) {
-            if (nodes.Length != motion.nodes.Length) {
+        public bool IsSameNodeTree(TMOFile motion)
+        {
+            if (nodes.Length != motion.nodes.Length)
+            {
                 //Console.WriteLine("nodes length mismatch {0} {1}", nodes.Length, motion.nodes.Length);
                 return false;
             }
             int i = 0;
-            foreach(TMONode node in nodes) {
+            foreach (TMONode node in nodes)
+            {
                 TMONode motion_node = motion.nodes[i];
                 //Console.WriteLine("node ShortName {0} {1}", node.ShortName, motion_node.ShortName);
                 if (motion_node.ShortName != node.ShortName)
@@ -527,22 +535,66 @@ namespace TDCG
 
         public TMONode FindChildByShortName(string sname)
         {
-            foreach(TMONode child in children)
+            foreach (TMONode child in children)
                 if (child.sname == sname)
                     return child;
             return null;
         }
 
-        public void CopyMatFrom(TMONode motion)
+        public void CopyThisMatFrom(TMONode motion)
         {
             Console.WriteLine("copy mat {0} {1}", sname, motion.ShortName);
             int i = 0;
-            foreach(TMOMat mat in frame_matrices) {
+            foreach (TMOMat mat in frame_matrices)
+            {
                 mat.m = motion.frame_matrices[ i % motion.frame_matrices.Count ].m;
                 i++;
             }
-            foreach(TMONode child in children) {
-                child.CopyMatFrom(motion.FindChildByShortName(child.sname));
+        }
+
+        void CopyChildrenMatFrom_0(TMONode motion, List<string> except_snames)
+        {
+            List<TMONode> select_children = new List<TMONode>();
+            foreach (TMONode child in children)
+            {
+                bool found = false;
+                foreach (string except_sname in except_snames)
+                {
+                    if (child.sname == except_sname)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found)
+                    except_snames.Remove(child.sname);
+                else
+                    select_children.Add(child);
+            }
+            foreach (TMONode child in select_children)
+            {
+                TMONode motion_child = motion.FindChildByShortName(child.sname);
+                child.CopyThisMatFrom(motion_child);
+                child.CopyChildrenMatFrom_0(motion_child, except_snames);
+            }
+        }
+        public void CopyChildrenMatFrom(TMONode motion, List<string> except_snames)
+        {
+            List<string> dup_except_snames = new List<string>();
+            foreach (string except_sname in except_snames)
+            {
+                dup_except_snames.Add(except_sname);
+            }
+            CopyChildrenMatFrom_0(motion, dup_except_snames);
+        }
+
+        public void CopyMatFrom(TMONode motion)
+        {
+            CopyThisMatFrom(motion);
+            foreach (TMONode child in children)
+            {
+                TMONode motion_child = motion.FindChildByShortName(child.sname);
+                child.CopyMatFrom(motion_child);
             }
         }
 
@@ -550,7 +602,7 @@ namespace TDCG
         {
             Vector3 translation = new Vector3(x, y, z);
 
-            foreach(TMOMat i in frame_matrices)
+            foreach (TMOMat i in frame_matrices)
                 i.Move(translation);
         }
 
@@ -558,7 +610,7 @@ namespace TDCG
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
 
-            foreach(TMOMat i in frame_matrices)
+            foreach (TMOMat i in frame_matrices)
                 i.Scale(scaling);
         }
 
@@ -566,7 +618,7 @@ namespace TDCG
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
 
-            foreach(TMOMat i in frame_matrices)
+            foreach (TMOMat i in frame_matrices)
                 i.Scale0(scaling);
         }
 
@@ -574,34 +626,34 @@ namespace TDCG
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
 
-            foreach(TMOMat i in frame_matrices)
+            foreach (TMOMat i in frame_matrices)
                 i.Scale1(scaling);
 
-            foreach(TMONode child in children)
+            foreach (TMONode child in children)
                 child.Scale0(x, y, z);
         }
 
         public void RotateX(float angle)
         {
-            foreach(TMOMat i in frame_matrices)
+            foreach (TMOMat i in frame_matrices)
                 i.RotateX(angle);
         }
 
         public void RotateY(float angle)
         {
-            foreach(TMOMat i in frame_matrices)
+            foreach (TMOMat i in frame_matrices)
                 i.RotateY(angle);
         }
 
         public void RotateZ(float angle)
         {
-            foreach(TMOMat i in frame_matrices)
+            foreach (TMOMat i in frame_matrices)
                 i.RotateZ(angle);
         }
 
         public void RotateWorldY(float angle)
         {
-            foreach(TMOMat i in frame_matrices)
+            foreach (TMOMat i in frame_matrices)
                 i.RotateWorldY(angle);
         }
     }

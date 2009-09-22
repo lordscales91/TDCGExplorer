@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace TDCG
@@ -15,7 +16,9 @@ namespace TDCG
 
             string source_file = args[0];
             string motion_file = args[1];
-            string node_name = "W_Hips";
+            string node_name = "face_oya";
+            List<string> except_node_names = new List<string>();
+            except_node_names.Add("Kami_Oya");
 
             if (args.Length > 2)
                 node_name = args[2];
@@ -44,7 +47,7 @@ namespace TDCG
                 return;
             }
 
-            source.CopyNodeFrom(motion, node_name);
+            source.CopyNodeFrom(motion, node_name, except_node_names);
 
             Console.WriteLine("Save File: " + source_file);
             source.Save(source_file);
