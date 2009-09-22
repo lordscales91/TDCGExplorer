@@ -16,6 +16,8 @@ namespace TMOComposer
         Viewer viewer = null;
         PngSave pngsave;
         Form2 form2 = null;
+        Form3 form3 = null;
+        TmoAnimItemForm tmoAnimItemForm = null;
         TSOConfig tso_config;
 
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
@@ -35,6 +37,8 @@ namespace TMOComposer
                 timer1.Enabled = true;
             }
             form2 = new Form2();
+            form3 = new Form3();
+            tmoAnimItemForm = new TmoAnimItemForm();
             this.tso_config = tso_config;
         }
 
@@ -272,6 +276,27 @@ namespace TMOComposer
             PngSaveItem item = pngsave.items[pngsave_row];
             tmoAnimItemBindingSource.DataSource = null;
             pngSaveItemBindingSource.Remove(item);
+        }
+
+        private void gvTMOAnimItems_DoubleClick(object sender, EventArgs e)
+        {
+            int pngsave_row = pngSaveItemBindingSource.Position;
+            int tmoanim_row = tmoAnimItemBindingSource.Position;
+
+            if (pngsave_row == -1)
+                return;
+
+            TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;
+
+            if (tmoanim_row == -1)
+                return;
+
+            TMOAnimItem item = tmoanim.items[tmoanim_row];
+            tmoAnimItemForm.SetTmoAnimItem(item);
+            if (tmoAnimItemForm.ShowDialog(this) == DialogResult.OK)
+            {
+                tmoAnimItemBindingSource.ResetBindings(false);
+            }
         }
     }
 }
