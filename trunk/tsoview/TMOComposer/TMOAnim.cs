@@ -87,6 +87,7 @@ namespace TMOComposer
             except_snames.Add("Kami_Oya");
 
             source = LoadPNGFile(GetSourcePath(SourceFile));
+            source.TruncateFrame(0); // forced pose
 
             if (SourceItem.FaceFile != null)
             {
@@ -133,6 +134,7 @@ namespace TMOComposer
             {
                 Console.WriteLine("Load File: " + item.PoseFile);
                 TMOFile motion = LoadPNGFile(GetMotionPath(item.PoseFile));
+                motion.TruncateFrame(0); // forced pose
 
                 if (item.FaceFile != null)
                 {
