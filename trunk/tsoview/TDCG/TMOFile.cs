@@ -222,7 +222,8 @@ namespace TDCG
         /// </summary>
         /// <param name="motion">tmo</param>
         /// <param name="append_length">補間するフレーム長さ</param>
-        public void SlerpFrameEndTo(TMOFile motion, int append_length)
+        /// <param name="p1">補間速度係数</param>
+        public void SlerpFrameEndTo(TMOFile motion, int append_length, float p1)
         {
             int[] id_pair = CreateNodeIdPair(motion);
 
@@ -236,7 +237,7 @@ namespace TDCG
             TMOFrame frame2 = motion.frames[i2];
             TMOFrame frame3 = motion.frames[i3];
 
-            TMOFrame[] interp_frames = TMOFrame.Slerp(frame0, frame1, frame2, frame3, append_length, id_pair);
+            TMOFrame[] interp_frames = TMOFrame.Slerp(frame0, frame1, frame2, frame3, append_length, p1, id_pair);
             int old_length = frames.Length;
             Array.Resize(ref frames, frames.Length + append_length);
             Array.Copy(interp_frames, 0, frames, old_length, append_length);
@@ -247,9 +248,19 @@ namespace TDCG
         /// 指定tmoへフレームを補間します。
         /// </summary>
         /// <param name="motion">tmo</param>
+        /// <param name="append_length">補間するフレーム長さ</param>
+        public void SlerpFrameEndTo(TMOFile motion, int append_length)
+        {
+            SlerpFrameEndTo(motion, append_length, 0.5f);
+        }
+
+        /// <summary>
+        /// 指定tmoへフレームを補間します。
+        /// </summary>
+        /// <param name="motion">tmo</param>
         public void SlerpFrameEndTo(TMOFile motion)
         {
-            SlerpFrameEndTo(motion, 200);
+            SlerpFrameEndTo(motion, 200, 0.5f);
         }
 
         /// <summary>
@@ -557,6 +568,11 @@ namespace TDCG
         /// <returns>分割数だけTMOMatを持つ配列</returns>
         public static TMOMat[] Slerp(TMOMat mat0, TMOMat mat1, TMOMat mat2, TMOMat mat3, int length)
         {
+            return Slerp(mat0, mat1, mat2, mat3, length, 0.5f);
+        }
+
+        public static TMOMat[] Slerp(TMOMat mat0, TMOMat mat1, TMOMat mat2, TMOMat mat3, int length, float p1)
+        {
             TMOMat[] ret = new TMOMat[length];
 
             Quaternion q1 = Quaternion.RotationMatrix(mat1.m);
@@ -567,9 +583,15 @@ namespace TDCG
             Vector3 v2 = new Vector3(mat2.m.M41, mat2.m.M42, mat2.m.M43);
             Vector3 v3 = new Vector3(mat3.m.M41, mat3.m.M42, mat3.m.M43);
 
-            float dt = 1.0f / length;
+            float p0 = 0.0f;
+            float p2 = 1.0f;
+            float dt = 1.0f/length;
             for (int i = 0; i < length; i++)
-                ret[i] = new TMOMat(Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, dt*i)) * Matrix.Translation(Vector3.CatmullRom(v0, v1, v2, v3, dt*i)));
+            {
+                float t = dt*i;
+                float p = t*t*(p2-2*p1+p0) + t*(2*p1-2*p0) + p0;
+                ret[i] = new TMOMat(Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, p)) * Matrix.Translation(Vector3.CatmullRom(v0, v1, v2, v3, p)));
+            }
             return ret;
         }
 
@@ -674,7 +696,7 @@ namespace TDCG
         /// <param name="length"></param>
         /// <param name="id_pair">node idのペア</param>
         /// <returns></returns>
-        public static TMOFrame[] Slerp(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, TMOFrame frame3, int length, int[] id_pair)
+        public static TMOFrame[] Slerp(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, TMOFrame frame3, int length, float p1, int[] id_pair)
         {
             TMOFrame[] frames = new TMOFrame[length];
 
@@ -691,7 +713,8 @@ namespace TDCG
                         frame1.matrices[i],
                         frame2.matrices[id_pair[i]],
                         frame3.matrices[id_pair[i]],
-                        length);
+                        length,
+                        p1);
 
                 for (int frame_index = 0; frame_index < length; frame_index++)
                     frames[frame_index].matrices[i] = interpolated_matrices[frame_index];

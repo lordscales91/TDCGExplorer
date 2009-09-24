@@ -31,6 +31,7 @@ namespace TMOComposer
             tbPoseFile.Text = item.PoseFile;
             tbLength.Text = item.Length.ToString();
             tbFaceFile.Text = item.FaceFile;
+            tbAccel.Value = (int)(item.Accel*10);
         }
 
         private void btnOK_Click(object sender, EventArgs e)
@@ -38,6 +39,7 @@ namespace TMOComposer
             item.PoseFile = tbPoseFile.Text;
             item.Length = int.Parse(tbLength.Text);
             item.FaceFile = tbFaceFile.Text;
+            item.Accel = tbAccel.Value*0.1f;
         }
 
         private void btnOpenFaces_Click(object sender, EventArgs e)
