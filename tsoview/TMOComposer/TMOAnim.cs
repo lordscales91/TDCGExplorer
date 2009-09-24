@@ -13,6 +13,13 @@ namespace TMOComposer
         public string PoseFile { get; set; }
         public int Length { get; set; }
         public string FaceFile { get; set; }
+        public float Accel { get; set; }
+
+        public TMOAnimItem()
+        {
+            this.Length = 30;
+            this.Accel = 0.5f;
+        }
     }
 
     public class TMOAnim
@@ -152,7 +159,7 @@ namespace TMOComposer
                         motion.CopyChildrenNodeFrom(face_motion, "face_oya", except_snames);
                 }
 
-                source.SlerpFrameEndTo(motion, item.Length);
+                source.SlerpFrameEndTo(motion, item.Length, item.Accel);
                 Console.WriteLine("source nodes Length {0}", source.nodes.Length);
                 Console.WriteLine("motion nodes Length {0}", motion.nodes.Length);
                 Console.WriteLine("source frames Length {0}", source.frames.Length);

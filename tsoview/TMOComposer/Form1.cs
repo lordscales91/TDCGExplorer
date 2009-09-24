@@ -176,7 +176,6 @@ namespace TMOComposer
 
             TMOAnimItem item = new TMOAnimItem();
             item.PoseFile = lvPoses.SelectedItems[0].Text;
-            item.Length = 30;
             tmoAnimItemBindingSource.Add(item);
         }
 
