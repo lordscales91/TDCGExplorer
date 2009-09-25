@@ -40,6 +40,8 @@ namespace TMOComposer
                 viewer.SwitchMotionEnabled();
                 timer1.Enabled = true;
             }
+            TMOAnim.PoseRoot = tso_config.PosePath;
+            TMOAnim.FaceRoot = tso_config.FacePath;
             form2 = new Form2();
             form2.SavePath = tso_config.SavePath;
             form3 = new Form3();
