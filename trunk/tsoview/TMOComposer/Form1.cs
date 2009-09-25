@@ -31,6 +31,8 @@ namespace TMOComposer
             this.ClientSize = tso_config.ClientSize;
             save_path = tso_config.SavePath;
             pose_path = tso_config.PosePath;
+            TMOAnim.PoseRoot = tso_config.PosePath;
+            TMOAnim.FaceRoot = tso_config.FacePath;
 
             viewer = new Viewer();
             if (viewer.InitializeApplication(this))
@@ -40,8 +42,6 @@ namespace TMOComposer
                 viewer.SwitchMotionEnabled();
                 timer1.Enabled = true;
             }
-            TMOAnim.PoseRoot = tso_config.PosePath;
-            TMOAnim.FaceRoot = tso_config.FacePath;
             form2 = new Form2();
             form2.SavePath = tso_config.SavePath;
             form3 = new Form3();
