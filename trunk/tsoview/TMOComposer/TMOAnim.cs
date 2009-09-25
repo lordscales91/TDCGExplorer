@@ -76,16 +76,17 @@ namespace TMOComposer
             source = new TMOFile();
         }
 
-        string pose_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG\pose";
+        public static string PoseRoot { get; set; }
+        public static string FaceRoot { get; set; }
 
-        string GetSourcePath(string source_file)
+        string GetPosePath(string motion_file)
         {
-            return pose_path + @"\" + source_file;
+            return PoseRoot + @"\" + motion_file;
         }
 
-        string GetMotionPath(string motion_file)
+        string GetFacePath(string face_file)
         {
-            return pose_path + @"\" + motion_file;
+            return FaceRoot + @"\" + face_file;
         }
 
         public void LoadSource()
@@ -93,7 +94,7 @@ namespace TMOComposer
             List<string> except_snames = new List<string>();
             except_snames.Add("Kami_Oya");
 
-            source = LoadPNGFile(GetSourcePath(SourceFile));
+            source = LoadPNGFile(GetPosePath(SourceFile));
 
             if (source.frames == null)
                 return;
@@ -103,7 +104,7 @@ namespace TMOComposer
             if (SourceItem.FaceFile != null)
             {
                 Console.WriteLine("Load File: " + SourceItem.FaceFile);
-                TMOFile face_motion = LoadPNGFile(GetMotionPath(SourceItem.FaceFile));
+                TMOFile face_motion = LoadPNGFile(GetFacePath(SourceItem.FaceFile));
                 if (face_motion.frames != null)
                     source.CopyChildrenNodeFrom(face_motion, "face_oya", except_snames);
             }
@@ -144,7 +145,7 @@ namespace TMOComposer
             foreach (TMOAnimItem item in items)
             {
                 Console.WriteLine("Load File: " + item.PoseFile);
-                TMOFile motion = LoadPNGFile(GetMotionPath(item.PoseFile));
+                TMOFile motion = LoadPNGFile(GetPosePath(item.PoseFile));
 
                 if (motion.frames == null)
                     continue;
@@ -154,7 +155,7 @@ namespace TMOComposer
                 if (item.FaceFile != null)
                 {
                     Console.WriteLine("Load File: " + item.FaceFile);
-                    TMOFile face_motion = LoadPNGFile(GetMotionPath(item.FaceFile));
+                    TMOFile face_motion = LoadPNGFile(GetFacePath(item.FaceFile));
                     if (face_motion.frames != null)
                         motion.CopyChildrenNodeFrom(face_motion, "face_oya", except_snames);
                 }
