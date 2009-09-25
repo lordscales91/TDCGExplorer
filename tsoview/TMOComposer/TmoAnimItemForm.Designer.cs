@@ -37,9 +37,7 @@
             this.tbFaceFile = new System.Windows.Forms.TextBox();
             this.lbFaceFile = new System.Windows.Forms.Label();
             this.btnOpenFaces = new System.Windows.Forms.Button();
-            this.lbAccel = new System.Windows.Forms.Label();
-            this.tbAccel = new System.Windows.Forms.TrackBar();
-            ((System.ComponentModel.ISupportInitialize)(this.tbAccel)).BeginInit();
+            this.accelSlider1 = new TMOComposer.AccelSlider();
             this.SuspendLayout();
             // 
             // lbPoseFile
@@ -121,22 +119,13 @@
             this.btnOpenFaces.UseVisualStyleBackColor = true;
             this.btnOpenFaces.Click += new System.EventHandler(this.btnOpenFaces_Click);
             // 
-            // lbAccel
+            // accelSlider1
             // 
-            this.lbAccel.AutoSize = true;
-            this.lbAccel.Location = new System.Drawing.Point(10, 120);
-            this.lbAccel.Name = "lbAccel";
-            this.lbAccel.Size = new System.Drawing.Size(34, 12);
-            this.lbAccel.TabIndex = 9;
-            this.lbAccel.Text = "Accel";
-            // 
-            // tbAccel
-            // 
-            this.tbAccel.Location = new System.Drawing.Point(14, 135);
-            this.tbAccel.Name = "tbAccel";
-            this.tbAccel.Size = new System.Drawing.Size(198, 45);
-            this.tbAccel.TabIndex = 10;
-            this.tbAccel.Value = 5;
+            this.accelSlider1.Accel = 0.5F;
+            this.accelSlider1.Location = new System.Drawing.Point(12, 122);
+            this.accelSlider1.Name = "accelSlider1";
+            this.accelSlider1.Size = new System.Drawing.Size(250, 100);
+            this.accelSlider1.TabIndex = 9;
             // 
             // TmoAnimItemForm
             // 
@@ -145,8 +134,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(284, 263);
-            this.Controls.Add(this.tbAccel);
-            this.Controls.Add(this.lbAccel);
+            this.Controls.Add(this.accelSlider1);
             this.Controls.Add(this.btnOpenFaces);
             this.Controls.Add(this.tbFaceFile);
             this.Controls.Add(this.lbFaceFile);
@@ -159,7 +147,6 @@
             this.Name = "TmoAnimItemForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "TmoAnimItemForm";
-            ((System.ComponentModel.ISupportInitialize)(this.tbAccel)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -176,7 +163,6 @@
         private System.Windows.Forms.TextBox tbFaceFile;
         private System.Windows.Forms.Label lbFaceFile;
         private System.Windows.Forms.Button btnOpenFaces;
-        private System.Windows.Forms.Label lbAccel;
-        private System.Windows.Forms.TrackBar tbAccel;
+        private AccelSlider accelSlider1;
     }
 }
