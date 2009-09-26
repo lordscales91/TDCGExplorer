@@ -63,7 +63,7 @@ namespace TAHTool
             }
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnCompress_Click(object sender, EventArgs e)
         {
             lbStatus.Text = "Processing...";
             btnCompress.Enabled = false;
@@ -71,7 +71,7 @@ namespace TAHTool
             DumpFiles();
         }
 
-        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        private void bwCompress_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
