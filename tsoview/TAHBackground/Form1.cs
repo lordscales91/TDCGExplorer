@@ -54,13 +54,29 @@ namespace TAHBackground
                 string ext = Path.GetExtension(file_name).ToLower();
                 if (ext == ".tbn")
                 {
-                    string[] row = { entry.file_name, entry.offset.ToString(), entry.length.ToString() };
-                    gvEntries.Rows.Add(row);
+                    if (file_name.StartsWith("script/backgrounds/"))
+                    {
+                        string[] row = { entry.file_name, entry.offset.ToString(), entry.length.ToString() };
+                        gvEntries.Rows.Add(row);
+                    }
                 }
-                else if (ext == ".psd")
+                else
+                if (ext == ".psd")
                 {
-                    string[] row = { entry.file_name, entry.offset.ToString(), entry.length.ToString() };
-                    gvEntries.Rows.Add(row);
+                    if (file_name.StartsWith("data/icon/backgrounds/"))
+                    {
+                        string[] row = { entry.file_name, entry.offset.ToString(), entry.length.ToString() };
+                        gvEntries.Rows.Add(row);
+                    }
+                }
+                else
+                if (ext == ".tso")
+                {
+                    if (file_name.StartsWith("data/bgmodel/"))
+                    {
+                        string[] row = { entry.file_name, entry.offset.ToString(), entry.length.ToString() };
+                        gvEntries.Rows.Add(row);
+                    }
                 }
             }
         }
@@ -70,9 +86,13 @@ namespace TAHBackground
             List<string> ret = new List<string>();
             foreach (TAHEntry entry in decrypter.Entries)
             {
-                string ext = Path.GetExtension(entry.file_name).ToLower();
-                if (ext == ".psd" && entry.file_name.StartsWith("data/icon/backgrounds/"))
-                    ret.Add(entry.file_name);
+                string file_name = entry.file_name.ToLower();
+                string ext = Path.GetExtension(file_name);
+                if (ext == ".psd")
+                {
+                    if (file_name.StartsWith("data/icon/backgrounds/"))
+                        ret.Add(file_name);
+                }
             }
             return ret;
         }
@@ -121,7 +141,7 @@ namespace TAHBackground
             Dictionary<string, TAHEntry> entries = new Dictionary<string, TAHEntry>();
             foreach (TAHEntry entry in decrypter.Entries)
             {
-                string file_name = entry.file_name;
+                string file_name = entry.file_name.ToLower();
 
                 if (entry.flag % 2 == 1)
                 {
@@ -133,17 +153,20 @@ namespace TAHBackground
                 string ext = Path.GetExtension(file_name).ToLower();
                 if (ext == ".tbn")
                 {
-                    entries[file_name] = entry;
+                    if (file_name.StartsWith("script/backgrounds/"))
+                        entries[file_name] = entry;
                 }
                 else
                 if (ext == ".psd")
                 {
-                    entries[file_name] = entry;
+                    if (file_name.StartsWith("data/icon/backgrounds/"))
+                        entries[file_name] = entry;
                 }
                 else
                 if (ext == ".tso")
                 {
-                    entries[file_name] = entry;
+                    if (file_name.StartsWith("data/bgmodel/"))
+                        entries[file_name] = entry;
                 }
             }
 
