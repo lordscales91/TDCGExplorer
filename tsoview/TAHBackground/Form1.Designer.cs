@@ -51,6 +51,9 @@
             // bwCompress
             // 
             this.bwCompress.WorkerReportsProgress = true;
+            this.bwCompress.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwCompress_DoWork);
+            this.bwCompress.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwCompress_RunWorkerCompleted);
+            this.bwCompress.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bwCompress_ProgressChanged);
             // 
             // staStrip1
             // 
@@ -83,6 +86,7 @@
             this.btnCompress.TabIndex = 7;
             this.btnCompress.Text = "&Compress";
             this.btnCompress.UseVisualStyleBackColor = true;
+            this.btnCompress.Click += new System.EventHandler(this.btnCompress_Click);
             // 
             // gvEntries
             // 
