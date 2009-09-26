@@ -64,7 +64,10 @@ namespace TAHBackground
             foreach (string str in strings)
             {
                 if (re_tsofile.IsMatch(str))
-                    ret.Add(str);
+                {
+                    string tso_path = str.ToLower();
+                    ret.Add(tso_path);
+                }
             }
             return ret;
         }

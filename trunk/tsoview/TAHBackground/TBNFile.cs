@@ -73,7 +73,7 @@ namespace TAHBackground
                 throw new Exception("File is not TBN");
 
             float opt1 = reader.ReadSingle();
-            Console.WriteLine(opt1);
+            //Console.WriteLine(opt1);
 
             uint WC = reader.ReadUInt32();
             W = new _W[WC];
