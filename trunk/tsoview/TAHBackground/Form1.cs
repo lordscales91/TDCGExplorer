@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -190,8 +190,9 @@ namespace TAHBackground
 
                 PngBack back = new PngBack();
                 back.Load(tbn_stream, psd_stream);
-                foreach (string tso_path in PngBack.GetTSOPathListFromTBNFile(back.Tbn))
+                foreach (string str in PngBack.GetTSOPathListFromTBNFile(back.Tbn))
                 {
+                    string tso_path = str.ToLower();
                     Console.WriteLine("tso {0}", tso_path);
                     TAHEntry tso_entry;
                     if (entries.TryGetValue(tso_path, out tso_entry))
