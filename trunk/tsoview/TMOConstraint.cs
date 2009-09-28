@@ -5,26 +5,34 @@ using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
+using System.Xml;
+using System.Xml.Serialization;
 using TDCG;
 
-class TMOConstraintItem
+public class TMOConstraintItem
 {
     public string ShortName { get; set; }
     public Vector3 Min { get; set; }
     public Vector3 Max { get; set; }
 }
 
-class TMOTest
+public class TMOConstraint
 {
-    static void Main(string[] args)
-    {
-        if (args.Length < 1)
-        {
-            Console.WriteLine("TMOTest.exe <tmo directory>");
-            return;
-        }
-        string source_file = args[0];
+    public List<TMOConstraintItem> items = new List<TMOConstraintItem>();
 
+    public void Dump()
+    {
+        XmlSerializer serializer = new XmlSerializer(typeof(TMOConstraint));
+        XmlWriterSettings settings = new XmlWriterSettings();
+        settings.Encoding = Encoding.GetEncoding("Shift_JIS");
+        settings.Indent = true;
+        XmlWriter writer = XmlWriter.Create(Console.Out, settings);
+        serializer.Serialize(writer, this);
+        writer.Close();
+    }
+
+    public void AddItemFromTMODirectory(string source_file)
+    {
         TMOFile tmo = new TMOFile();
 
         Dictionary<string, Vector3> min_dic = new Dictionary<string, Vector3>();
@@ -69,8 +77,15 @@ class TMOTest
                 max_dic[sname] = max;
             }
         }
+
         foreach (string sname in min_dic.Keys)
         {
+            TMOConstraintItem item = new TMOConstraintItem();
+            item.ShortName = sname;
+            item.Min = min_dic[sname];
+            item.Max = max_dic[sname];
+            items.Add(item);
+            /*
             Console.WriteLine("node {0} yaw {1:F2}..{2:F2} pitch {3:F2}..{4:F2} roll {5:F2}..{6:F2}", sname,
                     Geometry.RadianToDegree(min_dic[sname].Y),
                     Geometry.RadianToDegree(max_dic[sname].Y),
@@ -78,6 +93,21 @@ class TMOTest
                     Geometry.RadianToDegree(max_dic[sname].X),
                     Geometry.RadianToDegree(min_dic[sname].Z),
                     Geometry.RadianToDegree(max_dic[sname].Z));
+                    */
         }
+    }
+
+    static void Main(string[] args)
+    {
+        if (args.Length < 1)
+        {
+            Console.WriteLine("TMOConstraint.exe <tmo directory>");
+            return;
+        }
+        string source_file = args[0];
+
+        TMOConstraint program = new TMOConstraint();
+        program.AddItemFromTMODirectory(source_file);
+        program.Dump();
     }
 }
