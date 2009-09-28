@@ -7,6 +7,13 @@ using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
 using TDCG;
 
+class TMOConstraintItem
+{
+    public string ShortName { get; set; }
+    public Vector3 Min { get; set; }
+    public Vector3 Max { get; set; }
+}
+
 class TMOTest
 {
     static void Main(string[] args)
@@ -20,14 +27,8 @@ class TMOTest
 
         TMOFile tmo = new TMOFile();
 
-        Dictionary<string, float> min_yaw_dic = new Dictionary<string, float>();
-        Dictionary<string, float> max_yaw_dic = new Dictionary<string, float>();
-
-        Dictionary<string, float> min_pitch_dic = new Dictionary<string, float>();
-        Dictionary<string, float> max_pitch_dic = new Dictionary<string, float>();
-
-        Dictionary<string, float> min_roll_dic = new Dictionary<string, float>();
-        Dictionary<string, float> max_roll_dic = new Dictionary<string, float>();
+        Dictionary<string, Vector3> min_dic = new Dictionary<string, Vector3>();
+        Dictionary<string, Vector3> max_dic = new Dictionary<string, Vector3>();
 
         string[] files = Directory.GetFiles(source_file, "*.tmo");
         foreach (string file in files)
@@ -40,48 +41,43 @@ class TMOTest
                 float yaw, pitch, roll;
                 string sname = node.ShortName;
                 TMOMat.RotationToYawPitchRoll(ref mat.m, out yaw, out pitch, out roll);
-                //Console.WriteLine("node {0} yaw {1:F2} pitch {2:F2} roll {3:F2}", sname, Geometry.RadianToDegree(yaw), Geometry.RadianToDegree(pitch), Geometry.RadianToDegree(roll));
 
-                if (! min_yaw_dic.ContainsKey(sname))
-                    min_yaw_dic[sname] = 0.0f;
-                if (! max_yaw_dic.ContainsKey(sname))
-                    max_yaw_dic[sname] = 0.0f;
+                if (! min_dic.ContainsKey(sname))
+                    min_dic[sname] = Vector3.Empty;
+                if (! max_dic.ContainsKey(sname))
+                    max_dic[sname] = Vector3.Empty;
 
-                if (yaw < min_yaw_dic[sname])
-                    min_yaw_dic[sname] = yaw;
-                if (yaw > max_yaw_dic[sname])
-                    max_yaw_dic[sname] = yaw;
+                Vector3 min = min_dic[sname];
+                Vector3 max = max_dic[sname]; 
 
-                if (! min_pitch_dic.ContainsKey(sname))
-                    min_pitch_dic[sname] = 0.0f;
-                if (! max_pitch_dic.ContainsKey(sname))
-                    max_pitch_dic[sname] = 0.0f;
+                if (yaw < min_dic[sname].Y)
+                    min.Y = yaw;
+                if (yaw > max_dic[sname].Y)
+                    max.Y = yaw;
 
-                if (pitch < min_pitch_dic[sname])
-                    min_pitch_dic[sname] = pitch;
-                if (pitch > max_pitch_dic[sname])
-                    max_pitch_dic[sname] = pitch;
+                if (pitch < min_dic[sname].X)
+                    min.X = pitch;
+                if (pitch > max_dic[sname].X)
+                    max.X = pitch;
 
-                if (! min_roll_dic.ContainsKey(sname))
-                    min_roll_dic[sname] = 0.0f;
-                if (! max_roll_dic.ContainsKey(sname))
-                    max_roll_dic[sname] = 0.0f;
+                if (roll < min_dic[sname].Z)
+                    min.Z = roll;
+                if (roll > max_dic[sname].Z)
+                    max.Z = roll;
 
-                if (roll < min_roll_dic[sname])
-                    min_roll_dic[sname] = roll;
-                if (roll > max_roll_dic[sname])
-                    max_roll_dic[sname] = roll;
+                min_dic[sname] = min;
+                max_dic[sname] = max;
             }
         }
-        foreach (string sname in min_yaw_dic.Keys)
+        foreach (string sname in min_dic.Keys)
         {
             Console.WriteLine("node {0} yaw {1:F2}..{2:F2} pitch {3:F2}..{4:F2} roll {5:F2}..{6:F2}", sname,
-                    Geometry.RadianToDegree(min_yaw_dic[sname]),
-                    Geometry.RadianToDegree(max_yaw_dic[sname]),
-                    Geometry.RadianToDegree(min_pitch_dic[sname]),
-                    Geometry.RadianToDegree(max_pitch_dic[sname]),
-                    Geometry.RadianToDegree(min_roll_dic[sname]),
-                    Geometry.RadianToDegree(max_roll_dic[sname]));
+                    Geometry.RadianToDegree(min_dic[sname].Y),
+                    Geometry.RadianToDegree(max_dic[sname].Y),
+                    Geometry.RadianToDegree(min_dic[sname].X),
+                    Geometry.RadianToDegree(max_dic[sname].X),
+                    Geometry.RadianToDegree(min_dic[sname].Z),
+                    Geometry.RadianToDegree(max_dic[sname].Z));
         }
     }
 }
