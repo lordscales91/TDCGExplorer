@@ -41,13 +41,53 @@ public class Viewer : IDisposable
     internal Surface dev_surface = null;
     internal Surface dev_zbuf = null;
 
+    internal Mesh sphere = null;
+
     /// <summary>
     /// viewerが保持しているフィギュアリスト
     /// </summary>
     public List<Figure> FigureList = new List<Figure>();
 
+    TMOFile baseTMO = null;
+
     // ライト方向
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
+
+    Vector3 target = new Vector3(5.0f, 10.0f, 0.0f);
+
+    /// <summary>
+    /// 逆運動学における目標を移動します。
+    /// </summary>
+    public void MoveTarget(float dx, float dy, float dz)
+    {
+        if (dx == 0 && dy == 0 && dz == 0)
+            return;
+        target.X -= dx;
+        target.Y -= dy;
+        target.Z -= dz;
+        solved = false;
+    }
+
+    /// <summary>
+    /// 逆運動学における目標をスクリーン座標で指定します。
+    /// </summary>
+    private void SetTargetOnScreen(float x, float y)
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+            TMONode bone;
+            if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
+            {
+                Vector3 v = target;
+                v = Vector3.TransformCoordinate(v, Transform_View);
+                v = Vector3.TransformCoordinate(v, Transform_Projection);
+                target = ScreenToWorld(x, y, v.Z, ref Transform_View, ref Transform_Projection);
+                solved = false;
+            }
+        }
+    }
 
     // マウスポイントしているスクリーン座標
     private Point lastScreenPoint = Point.Empty;
@@ -61,6 +101,8 @@ public class Viewer : IDisposable
                 1000.0f );
     }
 
+    private bool clicked = false;
+
     private void form_OnMouseDown(object sender, MouseEventArgs e)
     {
         switch (e.Button)
@@ -73,6 +115,12 @@ public class Viewer : IDisposable
 
         lastScreenPoint.X = e.X;
         lastScreenPoint.Y = e.Y;
+        clicked = true;
+    }
+
+    private void form_OnMouseUp(object sender, MouseEventArgs e)
+    {
+        clicked = false;
     }
 
     private void form_OnMouseMove(object sender, MouseEventArgs e)
@@ -86,6 +134,9 @@ public class Viewer : IDisposable
             if (Control.ModifierKeys == Keys.Control)
                 lightDir = ScreenToOrientation(e.X, e.Y);
             else
+            if (Control.ModifierKeys == Keys.Shift)
+                SetTargetOnScreen(e.X, e.Y);
+            else
                 camera.Move(-dx, dy, 0.0f);
             break;
         case MouseButtons.Middle:
@@ -98,6 +149,7 @@ public class Viewer : IDisposable
 
         lastScreenPoint.X = e.X;
         lastScreenPoint.Y = e.Y;
+        clicked = false;  // correct?
     }
 
     // 選択フィギュアindex
@@ -142,6 +194,52 @@ public class Viewer : IDisposable
             z = (float)Math.Sqrt(1.0f - mag);
 
         return new Vector3(x, y, z);
+    }
+
+    /// 球とレイの衝突を見つけます。
+    public bool DetectSphereRayCollision(float sphereRadius, ref Vector3 sphereCenter, ref Vector3 rayStart, ref Vector3 rayOrientation, out Vector3 collisionPoint, out float collisionTime)
+    {
+        collisionTime = 0.0f;
+        collisionPoint = Vector3.Empty;
+
+        Vector3 u = rayStart - sphereCenter;
+        float a = Vector3.Dot(rayOrientation, rayOrientation);
+        float b = Vector3.Dot(rayOrientation, u);
+        float c = Vector3.Dot(u, u) - sphereRadius*sphereRadius;
+        if (a <= float.Epsilon)
+            //誤差
+            return false;
+        float d = b*b - a*c;
+        if (d < 0.0f)
+            //衝突しない
+            return false;
+        collisionTime = (-b - (float)Math.Sqrt(d))/a;
+        collisionPoint = rayStart + rayOrientation*collisionTime;
+        return true;
+    }
+
+    /// スクリーン位置をワールド座標へ変換します。
+    public Vector3 ScreenToWorld(float screenX, float screenY, float z, ref Matrix view, ref Matrix proj)
+    {
+        //viewport行列を作成
+        Matrix m = Matrix.Identity;
+        Viewport vp = device.Viewport;
+        m.M11 = (float)vp.Width/2;
+        m.M22 = -1.0f*(float)vp.Height/2;
+        m.M33 = (float)vp.MaxZ - (float)vp.MinZ;
+        m.M41 = (float)(vp.X + vp.Width/2);
+        m.M42 = (float)(vp.Y + vp.Height/2);
+        m.M43 = vp.MinZ;
+
+        //スクリーン位置
+        Vector3 v = new Vector3(screenX, screenY,  z);
+
+        Matrix inv_m = Matrix.Invert(m);
+        Matrix inv_proj = Matrix.Invert(proj);
+        Matrix inv_view = Matrix.Invert(view);
+
+        //スクリーン位置をワールド座標へ変換
+        return Vector3.TransformCoordinate(v, inv_m * inv_proj * inv_view);
     }
 
     /// <summary>
@@ -229,6 +327,8 @@ public class Viewer : IDisposable
             tso.Open(device, effect);
             fig.AddTSO(tso);
         }
+        if (fig.Tmo.frames == null)
+            fig.Tmo = BaseTMO;
         fig.UpdateNodeMapAndBoneMatrices();
         int idx = FigureList.Count;
         FigureList.Add(fig);
@@ -263,6 +363,8 @@ public class Viewer : IDisposable
             fig = FigureList[fig_index];
         if (FigureList.Count == 0)
         {
+            if (fig.Tmo.frames == null)
+                fig.Tmo = BaseTMO;
             int idx = FigureList.Count;
             FigureList.Add(fig);
             SetFigureIndex(idx);
@@ -391,6 +493,8 @@ public class Viewer : IDisposable
             foreach (Figure fig in fig_list)
             {
                 fig.OpenTSOFile(device, effect);
+                if (fig.Tmo.frames == null)
+                    fig.Tmo = BaseTMO;
                 fig.UpdateNodeMapAndBoneMatrices();
                 FigureList.Add(fig);
             }
@@ -449,6 +553,7 @@ public class Viewer : IDisposable
 
         control.SizeChanged += new EventHandler(control_OnSizeChanged);
         control.MouseDown += new MouseEventHandler(form_OnMouseDown);
+        control.MouseUp += new MouseEventHandler(form_OnMouseUp);
         control.MouseMove += new MouseEventHandler(form_OnMouseMove);
 
         PresentParameters pp = new PresentParameters();
@@ -526,10 +631,59 @@ public class Viewer : IDisposable
 
             sprite = new Sprite(device);
         }
+        sphere = Mesh.Sphere(device, 0.25f, 8, 6);
         camera.Update();
         OnDeviceReset(device, null);
 
+        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand"] =
+            new string[] {
+                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm",
+                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm",
+                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder" };
+
+        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm|W_RightForeArmRoll|W_RightHand"] =
+            new string[] {
+                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm",
+                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm",
+                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder" };
+
+        effector_dictionary["|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot"] =
+            new string[] {
+                "|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg",
+                "|W_Hips|W_RightHips_Dummy|W_RightUpLeg" };
+
+        effector_dictionary["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot"] =
+            new string[] {
+                "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg",
+                "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg" };
+
+        current_effector_name = "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand";
+
+        //should be update target when select figure
+        this.FigureEvent += delegate(object sender, EventArgs e)
+        {
+            Figure fig;
+            if (TryGetFigure(out fig))
+            {
+                Debug.Assert(fig.TSOList[0].nodemap != null, "fig.TSOList[0].nodemap should not be null");
+                TSONode bone;
+                if (fig.TSOList[0].nodemap.TryGetValue(current_effector_name, out bone))
+                    target = bone.GetWorldPosition();
+            }
+        };
+
+        baseTMO = new TMOFile();
+        baseTMO.Load(Application.StartupPath + @"\" + @"base.tmo");
+
+        constraint = TMOConstraint.Load(@"ypr-GRABIA.xml");
+
         return true;
+    }
+    string current_effector_name = null;
+
+    TMOFile BaseTMO
+    {
+        get { return baseTMO; }
     }
 
     private void OnDeviceLost(object sender, EventArgs e)
@@ -778,7 +932,18 @@ public class Viewer : IDisposable
             foreach (Figure fig in FigureList)
                 fig.UpdateBoneMatrices();
         }
+        else if (! solved)
+        {
+            Figure fig;
+            if (TryGetFigure(out fig))
+            {
+                foreach (TSOFile tso in fig.TSOList)
+                    Solve(tso, current_effector_name);
+                fig.UpdateBoneMatricesWithoutTMOFrame();
+            }
+        }
     }
+    bool solved = false;
     long wait = (long)(10000000.0f / 60.0f);
 
     //フレーム番号
@@ -833,6 +998,45 @@ public class Viewer : IDisposable
             DrawSprite();
         }
  
+    //衝突判定
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Debug.Assert(fig.TSOList[0].nodemap != null, "fig.TSOList[0].nodemap should not be null");
+            TSONode effector;
+            if (fig.TSOList[0].nodemap.TryGetValue(current_effector_name, out effector))
+            {
+                foreach (string effector_name in effector_dictionary.Keys)
+                {
+                    TSONode bone;
+                    if (fig.TSOList[0].nodemap.TryGetValue(effector_name, out bone))
+                    {
+                        bool found = FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone);
+                        if (found && clicked)
+                        {
+                            current_effector_name = bone.Name;
+                            effector = bone;
+                            target = bone.GetWorldPosition();
+                        }
+                        Vector4 color;
+                        if (found)
+                            color = new Vector4(1,1,1,1);
+                        else
+                            color = ( bone == effector ) ? new Vector4(0,1,0,0.5f) : new Vector4(1,0,0,0.5f);
+
+                        DrawMeshSub(sphere, bone.combined_matrix * world_matrix, color);
+                    }
+                }
+            }
+        }
+    }
+
+    //逆運動学における目標を描画
+    {
+        DrawMeshSub(sphere, Matrix.Translation(target), new Vector4(1,1,0,0.5f));
+    }
+
         device.EndScene();
         {
             int ret;
@@ -1046,6 +1250,121 @@ public class Viewer : IDisposable
         effect.End();
     }
 
+    private bool FindBoneOnScreenPoint(float x, float y, TSONode bone)
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Matrix m = bone.combined_matrix * world_matrix;
+
+            float sphereRadius = 0.25f;
+            Vector3 sphereCenter = new Vector3(m.M41, m.M42, m.M43);
+            Vector3 rayStart = ScreenToWorld(x, y, 0.0f, ref Transform_View, ref Transform_Projection);
+            Vector3 rayEnd = ScreenToWorld(x, y, 1.0f, ref Transform_View, ref Transform_Projection);
+            Vector3 rayOrientation = rayEnd - rayStart;
+
+            Vector3 collisionPoint;
+            float collisionTime;
+
+            return DetectSphereRayCollision(sphereRadius, ref sphereCenter, ref rayStart, ref rayOrientation, out collisionPoint, out collisionTime);
+        }
+        return false;
+    }
+
+    Dictionary<string, string[]> effector_dictionary = new Dictionary<string, string[]>();
+    TMOConstraint constraint = null;
+
+    /// <summary>
+    /// 逆運動学による解を得ます。
+    /// </summary>
+    /// <param name="tso">tso</param>
+    /// <param name="effector_name">エフェクタnode名称</param>
+    private void Solve(TSOFile tso, string effector_name)
+    {
+        Debug.Assert(tso.nodemap != null, "tso.nodemap should not be null");
+        TSONode effector;
+        if (tso.nodemap.TryGetValue(effector_name, out effector))
+        {
+            foreach (string node_name in effector_dictionary[effector_name])
+            {
+                TSONode node;
+                if (tso.nodemap.TryGetValue(node_name, out node))
+                {
+                    Solve(effector, node);
+
+                    Matrix m = node.RotationMatrix;
+                    float yaw, pitch, roll;
+                    TMOMat.RotationToYawPitchRoll(ref m, out yaw, out pitch, out roll);
+                    TMOConstraintItem item = constraint.GetItem(node.ShortName);
+
+                    if (yaw < item.Min.Y)
+                        yaw = item.Min.Y;
+                    if (yaw > item.Max.Y)
+                        yaw = item.Max.Y;
+
+                    if (pitch < item.Min.X)
+                        pitch = item.Min.X;
+                    if (pitch > item.Max.X)
+                        pitch = item.Max.X;
+
+                    if (roll < item.Min.Z)
+                        roll = item.Min.Z;
+                    if (roll > item.Max.Z)
+                        roll = item.Max.Z;
+
+                    node.Rotation = Quaternion.RotationYawPitchRoll(yaw, pitch, roll);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Cyclic-Coordinate-Descent (CCD) 法による逆運動学の実装です。
+    /// </summary>
+    /// <param name="effector">エフェクタnode</param>
+    /// <param name="node">対象node</param>
+    public void Solve(TSONode effector, TSONode node)
+    {
+        Vector3 worldTargetP = target;
+
+        Vector3 worldEffectorP = effector.GetWorldPosition();
+        Vector3 worldNodeP = node.GetWorldPosition();
+
+        Matrix invCoord = Matrix.Invert(node.GetWorldCoordinate());
+        Vector3 localEffectorP = Vector3.TransformCoordinate(worldEffectorP, invCoord);
+        Vector3 localTargetP = Vector3.TransformCoordinate(worldTargetP, invCoord);
+
+        Quaternion q;
+        if (RotationVectorToVector(localEffectorP, localTargetP, out q))
+            node.Rotation = q * node.Rotation;
+        if ((localEffectorP - localTargetP).LengthSq() < 0.1f)
+            solved = true;
+    }
+
+    /// <summary>
+    /// v1をv2に合わせる回転を得ます。
+    /// </summary>
+    /// <param name="v1">v1</param>
+    /// <param name="v2">v2</param>
+    /// <param name="q">q</param>
+    /// <returns>回転が必要であるか</returns>
+    public bool RotationVectorToVector(Vector3 v1, Vector3 v2, out Quaternion q)
+    {
+        Vector3 n1 = Vector3.Normalize(v1);
+        Vector3 n2 = Vector3.Normalize(v2);
+        float dotProduct = Vector3.Dot(n1, n2);
+        float angle = (float)Math.Acos(dotProduct);
+        bool needRotate = (angle > float.Epsilon);
+        if (needRotate)
+        {
+            Vector3 axis = Vector3.Cross(n1, n2);
+            q = Quaternion.RotationAxis(axis, angle);
+        }
+        else
+            q = Quaternion.Identity;
+        return needRotate;
+    }
+
     /// <summary>
     /// 内部objectを破棄します。
     /// </summary>
@@ -1053,6 +1372,8 @@ public class Viewer : IDisposable
     {
         foreach (Figure fig in FigureList)
             fig.Dispose();
+        if (sphere != null)
+            sphere.Dispose();
         if (sprite != null)
             sprite.Dispose();
         if (renderZ != null)
