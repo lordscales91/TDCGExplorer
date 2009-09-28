@@ -31,6 +31,15 @@ public class TMOConstraint
         writer.Close();
     }
 
+    public static TMOConstraint Load(string source_file)
+    {
+        XmlReader reader = XmlReader.Create(source_file);
+        XmlSerializer serializer = new XmlSerializer(typeof(TMOConstraint));
+        TMOConstraint program = serializer.Deserialize(reader) as TMOConstraint;
+        reader.Close();
+        return program;
+    }
+
     public void AddItemFromTMODirectory(string source_file)
     {
         TMOFile tmo = new TMOFile();
@@ -95,6 +104,16 @@ public class TMOConstraint
                     Geometry.RadianToDegree(max_dic[sname].Z));
                     */
         }
+    }
+
+    public TMOConstraintItem GetItem(string sname)
+    {
+        foreach (TMOConstraintItem item in items)
+        {
+            if (item.ShortName == sname)
+                return item;
+        }
+        return null;
     }
 
     static void Main(string[] args)
