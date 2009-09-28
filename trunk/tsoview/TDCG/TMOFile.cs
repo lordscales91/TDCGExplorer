@@ -676,6 +676,25 @@ namespace TDCG
             Vector3 t = t1 - t2 + t0;
             return new TMOMat(m * Matrix.Translation(t));
         }
+
+        /// equivalent of Matrix.RotationYawPitchRoll
+        public static Matrix RotationFromYawPitchRoll(float yaw, float pitch, float roll)
+        {
+            return Matrix.RotationZ(roll) * Matrix.RotationX(pitch) * Matrix.RotationY(yaw);
+        }
+
+        public static void RotationToYawPitchRoll(ref Matrix m, out float yaw, out float pitch, out float roll)
+        {
+            roll = (float)Math.Atan2(m.M12, m.M22);
+            pitch = (float)Math.Asin(-m.M32);
+            yaw  = (float)Math.Atan2(m.M31, m.M33);
+            
+            if (Math.Abs(Math.Cos(pitch)) <= float.Epsilon)
+            {
+                roll += (float)(m.M12 > 0.0f ? Math.PI : -Math.PI);
+                yaw  += (float)(m.M31 > 0.0f ? Math.PI : -Math.PI);
+            }
+        }
     }
 
     /// <summary>
