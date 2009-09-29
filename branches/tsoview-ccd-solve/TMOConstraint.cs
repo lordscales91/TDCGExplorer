@@ -55,9 +55,8 @@ public class TMOConstraint
             {
                 TMOMat mat = node.frame_matrices[0];
 
-                float yaw, pitch, roll;
                 string sname = node.ShortName;
-                TMOMat.RotationToYawPitchRoll(ref mat.m, out yaw, out pitch, out roll);
+                Vector3 angle = TMOMat.ToAngle(mat.m);
 
                 if (! min_dic.ContainsKey(sname))
                     min_dic[sname] = Vector3.Empty;
@@ -67,20 +66,20 @@ public class TMOConstraint
                 Vector3 min = min_dic[sname];
                 Vector3 max = max_dic[sname]; 
 
-                if (yaw < min_dic[sname].Y)
-                    min.Y = yaw;
-                if (yaw > max_dic[sname].Y)
-                    max.Y = yaw;
+                if (angle.X < min_dic[sname].X)
+                    min.X = angle.X;
+                if (angle.X > max_dic[sname].X)
+                    max.X = angle.X;
 
-                if (pitch < min_dic[sname].X)
-                    min.X = pitch;
-                if (pitch > max_dic[sname].X)
-                    max.X = pitch;
+                if (angle.Y < min_dic[sname].Y)
+                    min.Y = angle.Y;
+                if (angle.Y > max_dic[sname].Y)
+                    max.Y = angle.Y;
 
-                if (roll < min_dic[sname].Z)
-                    min.Z = roll;
-                if (roll > max_dic[sname].Z)
-                    max.Z = roll;
+                if (angle.Z < min_dic[sname].Z)
+                    min.Z = angle.Z;
+                if (angle.Z > max_dic[sname].Z)
+                    max.Z = angle.Z;
 
                 min_dic[sname] = min;
                 max_dic[sname] = max;
@@ -95,13 +94,13 @@ public class TMOConstraint
             item.Max = max_dic[sname];
             items.Add(item);
             /*
-            Console.WriteLine("node {0} yaw {1:F2}..{2:F2} pitch {3:F2}..{4:F2} roll {5:F2}..{6:F2}", sname,
-                    Geometry.RadianToDegree(min_dic[sname].Y),
-                    Geometry.RadianToDegree(max_dic[sname].Y),
-                    Geometry.RadianToDegree(min_dic[sname].X),
-                    Geometry.RadianToDegree(max_dic[sname].X),
-                    Geometry.RadianToDegree(min_dic[sname].Z),
-                    Geometry.RadianToDegree(max_dic[sname].Z));
+            Console.WriteLine("node {0} x {1:F2}..{2:F2} y {3:F2}..{4:F2} z {5:F2}..{6:F2}", sname,
+                    min_dic[sname].X,
+                    max_dic[sname].X,
+                    min_dic[sname].Y,
+                    max_dic[sname].Y,
+                    min_dic[sname].Z,
+                    max_dic[sname].Z);
                     */
         }
     }

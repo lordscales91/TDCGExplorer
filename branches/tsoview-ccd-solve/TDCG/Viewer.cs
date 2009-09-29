@@ -675,7 +675,7 @@ public class Viewer : IDisposable
         baseTMO = new TMOFile();
         baseTMO.Load(Application.StartupPath + @"\" + @"base.tmo");
 
-        constraint = TMOConstraint.Load(@"ypr-GRABIA.xml");
+        constraint = TMOConstraint.Load(@"angle-GRABIA.xml");
 
         return true;
     }
@@ -1292,27 +1292,25 @@ public class Viewer : IDisposable
                 {
                     Solve(effector, node);
 
-                    Matrix m = node.RotationMatrix;
-                    float yaw, pitch, roll;
-                    TMOMat.RotationToYawPitchRoll(ref m, out yaw, out pitch, out roll);
+                    Vector3 angle = TMOMat.ToAngle(node.Rotation);
                     TMOConstraintItem item = constraint.GetItem(node.ShortName);
 
-                    if (yaw < item.Min.Y)
-                        yaw = item.Min.Y;
-                    if (yaw > item.Max.Y)
-                        yaw = item.Max.Y;
+                    if (angle.X < item.Min.X)
+                        angle.X = item.Min.X;
+                    if (angle.X > item.Max.X)
+                        angle.X = item.Max.X;
 
-                    if (pitch < item.Min.X)
-                        pitch = item.Min.X;
-                    if (pitch > item.Max.X)
-                        pitch = item.Max.X;
+                    if (angle.Y < item.Min.Y)
+                        angle.Y = item.Min.Y;
+                    if (angle.Y > item.Max.Y)
+                        angle.Y = item.Max.Y;
 
-                    if (roll < item.Min.Z)
-                        roll = item.Min.Z;
-                    if (roll > item.Max.Z)
-                        roll = item.Max.Z;
+                    if (angle.Z < item.Min.Z)
+                        angle.Z = item.Min.Z;
+                    if (angle.Z > item.Max.Z)
+                        angle.Z = item.Max.Z;
 
-                    node.Rotation = Quaternion.RotationYawPitchRoll(yaw, pitch, roll);
+                    node.Rotation = TMOMat.ToQuaternion(angle);
                 }
             }
         }

@@ -695,6 +695,42 @@ namespace TDCG
                 yaw  += (float)(m.M31 > 0.0f ? Math.PI : -Math.PI);
             }
         }
+
+        public static Quaternion ToQuaternion(Vector3 angle)
+        {
+            Quaternion qx, qy, qz;
+            qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), Geometry.DegreeToRadian(angle.X));
+            qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), Geometry.DegreeToRadian(angle.Y));
+            qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), Geometry.DegreeToRadian(angle.Z));
+            return qx * qy * qz;
+        }
+
+        public static Vector3 ToAngle(Matrix m)
+        {
+            Vector3 angle;
+            double r = -Math.Asin(m.M13);
+            double cr = Math.Cos(r);
+            if (Math.Abs(cr) < 1e-12)
+            {
+                angle.Z = Geometry.RadianToDegree((float)Math.Atan2(-m.M21, m.M22));
+                angle.Y = Geometry.RadianToDegree((float)-Math.Asin(m.M13));
+                angle.X = 0.0f;
+            }
+            else
+            {
+                angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
+                angle.Y = Geometry.RadianToDegree((float)r);
+                angle.X = Geometry.RadianToDegree((float)(Math.Asin(m.M23) / cr));
+                if (m.M33 < 0)
+                    angle.X = 180 - angle.X;
+            }
+            return angle;
+        }
+
+        public static Vector3 ToAngle(Quaternion q)
+        {
+            return ToAngle(Matrix.RotationQuaternion(q));
+        }
     }
 
     /// <summary>
