@@ -103,24 +103,14 @@ namespace TDCG
 
             int node_count = reader.ReadInt32();
             nodes = new TMONode[node_count];
-            nodemap = new Dictionary<string, TMONode>();
 
             for (int i = 0; i < node_count; i++)
             {
                 string name = ReadString();
                 nodes[i] = new TMONode(i, name);
-                nodemap.Add(name, nodes[i]);
             }
 
-            for (int i = 0; i < node_count; i++)
-            {
-                int index = nodes[i].Name.LastIndexOf('|');
-                if (index <= 0)
-                    continue;
-                string pname = nodes[i].Name.Substring(0, index);
-                nodes[i].parent = nodemap[pname];
-                nodes[i].parent.child_nodes.Add(nodes[i]);
-            }
+            GenerateNodemapAndTree();
 
             int frame_count = reader.ReadInt32();
             frames = new TMOFrame[frame_count];
@@ -135,15 +125,33 @@ namespace TDCG
 
                 for (int j = 0; j < matrix_count; j++)
                 {
-                    TMOMat m = frames[i].matrices[j] = new TMOMat();
-                    ReadMatrix(ref m.m);
-                    nodes[j].frame_matrices.Add(m);
-
-                    //Console.WriteLine(m.m);
+                    TMOMat mat = frames[i].matrices[j] = new TMOMat();
+                    ReadMatrix(ref mat.m);
+                    nodes[j].frame_matrices.Add(mat);
                 }
             }
 
             this.footer = reader.ReadBytes(4);
+        }
+
+        internal void GenerateNodemapAndTree()
+        {
+            nodemap = new Dictionary<string, TMONode>();
+
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                nodemap.Add(nodes[i].Name, nodes[i]);
+            }
+
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                int index = nodes[i].Name.LastIndexOf('|');
+                if (index <= 0)
+                    continue;
+                string pname = nodes[i].Name.Substring(0, index);
+                nodes[i].parent = nodemap[pname];
+                nodes[i].parent.child_nodes.Add(nodes[i]);
+            }
         }
 
         /// <summary>

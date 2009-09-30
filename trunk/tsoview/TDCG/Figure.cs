@@ -96,9 +96,14 @@ public class Figure : IDisposable
 
     /// <summary>
     /// nodemapとbone行列を更新します。
+    /// tmoが読み込まれていない場合は先頭のtsoから生成します。
     /// </summary>
     public void UpdateNodeMapAndBoneMatrices()
     {
+        if (tmo.frames == null)
+            if (TSOList.Count != 0)
+                Tmo = GenerateTMOFromTSO(TSOList[0]);
+
         nodemap.Clear();
         if (tmo.frames != null)
         foreach (TSOFile tso in TSOList)
@@ -211,6 +216,43 @@ public class Figure : IDisposable
         //CopyBoneMatricesToTSO(tso);
 
         TSOList.Add(tso);
+    }
+
+    public static TMOFile GenerateTMOFromTSO(TSOFile tso)
+    {
+        TMOFile tmo = new TMOFile();
+
+        int node_count = tso.nodes.Length;
+        tmo.nodes = new TMONode[node_count];
+
+        for (int i = 0; i < node_count; i++)
+        {
+            string name = tso.nodes[i].Name;
+            tmo.nodes[i] = new TMONode(i, name);
+        }
+
+        tmo.GenerateNodemapAndTree();
+
+        int frame_count = 1;
+        tmo.frames = new TMOFrame[frame_count];
+
+        for (int i = 0; i < frame_count; i++)
+        {
+            tmo.frames[i] = new TMOFrame();
+            tmo.frames[i].id = i;
+
+            int matrix_count = node_count;
+            tmo.frames[i].matrices = new TMOMat[matrix_count];
+
+            for (int j = 0; j < matrix_count; j++)
+            {
+                TMOMat mat = tmo.frames[i].matrices[j] = new TMOMat();
+                mat.m = tso.nodes[j].TransformationMatrix;
+                tmo.nodes[j].frame_matrices.Add(mat);
+            }
+        }
+
+        return tmo;
     }
 
     /// <summary>
