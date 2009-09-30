@@ -56,17 +56,16 @@
   -->
   <ItemGroup>
     <Compile Include="Camera.cs" />
-    <Compile Include="CameraMotion.cs" />
     <Compile Include="Figure.cs" />
     <Compile Include="FigureForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FigureMotion.cs" />
     <Compile Include="IProportion.cs" />
     <Compile Include="PNGFile.cs" />
     <Compile Include="PNGWriter.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="SimpleCamera.cs" />
+    <Compile Include="TMOConstraint.cs" />
     <Compile Include="TMOFile.cs" />
     <Compile Include="TMOWriter.cs" />
     <Compile Include="TPOFile.cs" />

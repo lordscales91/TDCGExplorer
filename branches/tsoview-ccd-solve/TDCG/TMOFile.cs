@@ -103,24 +103,14 @@ namespace TDCG
 
             int node_count = reader.ReadInt32();
             nodes = new TMONode[node_count];
-            nodemap = new Dictionary<string, TMONode>();
 
             for (int i = 0; i < node_count; i++)
             {
                 string name = ReadString();
                 nodes[i] = new TMONode(i, name);
-                nodemap.Add(name, nodes[i]);
             }
 
-            for (int i = 0; i < node_count; i++)
-            {
-                int index = nodes[i].Name.LastIndexOf('|');
-                if (index <= 0)
-                    continue;
-                string pname = nodes[i].Name.Substring(0, index);
-                nodes[i].parent = nodemap[pname];
-                nodes[i].parent.child_nodes.Add(nodes[i]);
-            }
+            GenerateNodemapAndTree();
 
             int frame_count = reader.ReadInt32();
             frames = new TMOFrame[frame_count];
@@ -135,15 +125,33 @@ namespace TDCG
 
                 for (int j = 0; j < matrix_count; j++)
                 {
-                    TMOMat m = frames[i].matrices[j] = new TMOMat();
-                    ReadMatrix(ref m.m);
-                    nodes[j].frame_matrices.Add(m);
-
-                    //Console.WriteLine(m.m);
+                    TMOMat mat = frames[i].matrices[j] = new TMOMat();
+                    ReadMatrix(ref mat.m);
+                    nodes[j].frame_matrices.Add(mat);
                 }
             }
 
             this.footer = reader.ReadBytes(4);
+        }
+
+        internal void GenerateNodemapAndTree()
+        {
+            nodemap = new Dictionary<string, TMONode>();
+
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                nodemap.Add(nodes[i].Name, nodes[i]);
+            }
+
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                int index = nodes[i].Name.LastIndexOf('|');
+                if (index <= 0)
+                    continue;
+                string pname = nodes[i].Name.Substring(0, index);
+                nodes[i].parent = nodemap[pname];
+                nodes[i].parent.child_nodes.Add(nodes[i]);
+            }
         }
 
         /// <summary>
@@ -826,6 +834,12 @@ namespace TDCG
         private string name;
         private string sname;
 
+        private Quaternion rotation;
+        private Vector3 translation;
+
+        private Matrix transformation_matrix;
+        private bool need_update_transformation;
+
         /// <summary>
         /// TMONodeを生成します。
         /// </summary>
@@ -834,6 +848,34 @@ namespace TDCG
             this.id = id;
             this.name = name;
             this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
+        }
+
+        /// <summary>
+        /// 回転変位
+        /// </summary>
+        public Quaternion Rotation
+        {
+            get {
+                return rotation;
+            }
+            set {
+                rotation = value;
+                need_update_transformation = true;
+            }
+        }
+
+        /// <summary>
+        /// 位置変位
+        /// </summary>
+        public Vector3 Translation
+        {
+            get {
+                return translation;
+            }
+            set {
+                translation = value;
+                need_update_transformation = true;
+            }
         }
 
         /// <summary>
@@ -850,6 +892,11 @@ namespace TDCG
         /// 行列リスト
         /// </summary>
         internal List<TMOMat> frame_matrices = new List<TMOMat>();
+
+        /// <summary>
+        /// ワールド座標系での位置と向きを表します。これはviewerから更新されます。
+        /// </summary>
+        public Matrix combined_matrix;
 
         /// <summary>
         /// ID
@@ -1046,6 +1093,79 @@ namespace TDCG
 
             foreach (TMOMat i in frame_matrices)
                 i.Move(translation);
+        }
+
+        /// <summary>
+        /// ワールド座標系での位置を得ます。
+        /// </summary>
+        /// <returns></returns>
+        public Vector3 GetWorldPosition()
+        {
+            TMONode bone = this;
+            Vector3 v = Vector3.Empty;
+            while (bone != null)
+            {
+                v = Vector3.TransformCoordinate(v, bone.TransformationMatrix);
+                bone = bone.parent;
+            }
+            return v;
+        }
+
+        /// <summary>
+        /// ワールド座標系での位置と向きを得ます。
+        /// </summary>
+        /// <returns></returns>
+        public Matrix GetWorldCoordinate()
+        {
+            TMONode bone = this;
+            Matrix m = Matrix.Identity;
+            while (bone != null)
+            {
+                m.Multiply(bone.TransformationMatrix);
+                bone = bone.parent;
+            }
+            return m;
+        }
+
+        /// <summary>
+        /// 回転行列
+        /// </summary>
+        public Matrix RotationMatrix
+        {
+            get {
+                return Matrix.RotationQuaternion(rotation);
+            }
+        }
+
+        /// <summary>
+        /// 位置行列
+        /// </summary>
+        public Matrix TranslationMatrix
+        {
+            get {
+                return Matrix.Translation(translation);
+            }
+        }
+
+        /// <summary>
+        /// 変形行列。これは 回転行列 x 位置行列 です。
+        /// </summary>
+        public Matrix TransformationMatrix
+        {
+            get {
+                if (need_update_transformation)
+                {
+                    transformation_matrix = RotationMatrix * TranslationMatrix;
+                    need_update_transformation = false;
+                }
+                return transformation_matrix;
+            }
+            set {
+                transformation_matrix = value;
+                Matrix m = transformation_matrix;
+                translation = TMOMat.DecomposeMatrix(ref m);
+                rotation = Quaternion.RotationMatrix(m);
+            }
         }
     }
 }

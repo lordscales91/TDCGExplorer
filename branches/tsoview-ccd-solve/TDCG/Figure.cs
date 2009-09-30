@@ -96,9 +96,14 @@ public class Figure : IDisposable
 
     /// <summary>
     /// nodemapとbone行列を更新します。
+    /// tmoが読み込まれていない場合は先頭のtsoから生成します。
     /// </summary>
     public void UpdateNodeMapAndBoneMatrices()
     {
+        if (tmo.frames == null)
+            if (TSOList.Count != 0)
+                Tmo = GenerateTMOFromTSO(TSOList[0]);
+
         nodemap.Clear();
         if (tmo.frames != null)
         foreach (TSOFile tso in TSOList)
@@ -204,23 +209,44 @@ public class Figure : IDisposable
         if (tmo.frames != null)
             AddNodeMap(tso);
 
-        current_frame_index = frame_index;
-
-        TMOFrame tmo_frame = GetTMOFrame();
-        UpdateBoneMatrices(tso, tmo_frame);
-        //CopyBoneMatricesToTSO(tso);
-
         TSOList.Add(tso);
     }
 
-    /// <summary>
-    /// bone行列を更新します。ただしtmo frameを無視します。
-    /// </summary>
-    public void UpdateBoneMatricesWithoutTMOFrame()
+    public static TMOFile GenerateTMOFromTSO(TSOFile tso)
     {
-        foreach (TSOFile tso in TSOList)
-            UpdateBoneMatrices(tso, null);
-            //CopyBoneMatricesToTSO(tso);
+        TMOFile tmo = new TMOFile();
+
+        int node_count = tso.nodes.Length;
+        tmo.nodes = new TMONode[node_count];
+
+        for (int i = 0; i < node_count; i++)
+        {
+            string name = tso.nodes[i].Name;
+            tmo.nodes[i] = new TMONode(i, name);
+        }
+
+        tmo.GenerateNodemapAndTree();
+
+        int frame_count = 1;
+        tmo.frames = new TMOFrame[frame_count];
+
+        for (int i = 0; i < frame_count; i++)
+        {
+            tmo.frames[i] = new TMOFrame();
+            tmo.frames[i].id = i;
+
+            int matrix_count = node_count;
+            tmo.frames[i].matrices = new TMOMat[matrix_count];
+
+            for (int j = 0; j < matrix_count; j++)
+            {
+                TMOMat mat = tmo.frames[i].matrices[j] = new TMOMat();
+                mat.m = tso.nodes[j].TransformationMatrix;
+                tmo.nodes[j].frame_matrices.Add(mat);
+            }
+        }
+
+        return tmo;
     }
 
     /// <summary>
@@ -243,38 +269,34 @@ public class Figure : IDisposable
 
         TMOFrame tmo_frame = GetTMOFrame();
 
-        foreach (TSOFile tso in TSOList)
-            UpdateBoneMatrices(tso, tmo_frame);
-            //CopyBoneMatricesToTSO(tso);
+        UpdateBoneMatrices(tmo, tmo_frame);
     }
     
     /// <summary>
     /// bone行列を更新します。
     /// </summary>
-    protected void UpdateBoneMatrices(TSOFile tso, TMOFrame tmo_frame)
+    protected void UpdateBoneMatrices(TMOFile tmo, TMOFrame tmo_frame)
     {
         matrixStack.LoadMatrix(Matrix.Translation(translation));
-        UpdateBoneMatrices(tso.nodes[0], tmo_frame);
+        UpdateBoneMatrices(tmo.nodes[0], tmo_frame);
     }
 
     /// <summary>
     /// bone行列を更新します。
     /// </summary>
-    protected void UpdateBoneMatrices(TSONode tso_node, TMOFrame tmo_frame)
+    protected void UpdateBoneMatrices(TMONode tmo_node, TMOFrame tmo_frame)
     {
         matrixStack.Push();
 
         if (tmo_frame != null)
         {
             // TMO animation
-            TMONode tmo_node;
-            if (nodemap.TryGetValue(tso_node, out tmo_node))
-            tso_node.TransformationMatrix = tmo_frame.matrices[tmo_node.ID].m;
+            tmo_node.TransformationMatrix = tmo_frame.matrices[tmo_node.ID].m;
         }
-        matrixStack.MultiplyMatrixLocal(tso_node.TransformationMatrix);
-        tso_node.combined_matrix = matrixStack.Top;
+        matrixStack.MultiplyMatrixLocal(tmo_node.TransformationMatrix);
+        tmo_node.combined_matrix = matrixStack.Top;
 
-        foreach (TSONode child_node in tso_node.child_nodes)
+        foreach (TMONode child_node in tmo_node.child_nodes)
             UpdateBoneMatrices(child_node, tmo_frame);
 
         matrixStack.Pop();
@@ -289,43 +311,6 @@ public class Figure : IDisposable
     {
         foreach (TSOFile tso in TSOList)
             tso.Open(device, effect);
-    }
-
-    private FigureMotion motion = new FigureMotion();
-    
-    /// <summary>
-    /// フィギュアモーション
-    /// </summary>
-    public FigureMotion Motion
-    {
-        get { return motion; }
-    }
-
-    /// <summary>
-    /// フィギュアモーションを設定します。
-    /// </summary>
-    /// <param name="frame_index">フレーム番号</param>
-    /// <param name="tmo">tmo</param>
-    public void SetMotion(int frame_index, TMOFile tmo)
-    {
-        motion.Add(frame_index, tmo);
-    }
-
-    /// <summary>
-    /// 次のモーションフレームに進みます。
-    /// </summary>
-    public void NextFrame()
-    {
-        if (motion.Count != 0)
-        {
-            TMOFile tmo = motion.GetTMO();
-            if (tmo != Tmo)
-            {
-                Tmo = tmo;
-                UpdateNodeMapAndBoneMatrices();
-            }
-            motion.NextFrame();
-        }
     }
 
     /// <summary>

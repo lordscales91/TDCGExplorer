@@ -939,7 +939,7 @@ public class Viewer : IDisposable
             {
                 foreach (TSOFile tso in fig.TSOList)
                     Solve(tso, current_effector_name);
-                fig.UpdateBoneMatricesWithoutTMOFrame();
+                fig.UpdateBoneMatrices();
             }
         }
     }
@@ -1088,8 +1088,9 @@ public class Viewer : IDisposable
                 for (int numPalettes = 0; numPalettes < tm_sub.maxPalettes; numPalettes++)
                 {
                     //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
-                    TSONode bone = tm_sub.GetBone(numPalettes);
-                    clipped_boneMatrices[numPalettes] = bone.GetOffsetMatrix() * bone.combined_matrix;
+                    TSONode tso_node = tm_sub.GetBone(numPalettes);
+                    TMONode tmo_node = fig.nodemap[tso_node];
+                    clipped_boneMatrices[numPalettes] = tso_node.GetOffsetMatrix() * tmo_node.combined_matrix;
                 }
                 effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
 
@@ -1191,8 +1192,9 @@ public class Viewer : IDisposable
                 for (int numPalettes = 0; numPalettes < tm_sub.maxPalettes; numPalettes++)
                 {
                     //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
-                    TSONode bone = tm_sub.GetBone(numPalettes);
-                    clipped_boneMatrices[numPalettes] = bone.GetOffsetMatrix() * bone.combined_matrix;
+                    TSONode tso_node = tm_sub.GetBone(numPalettes);
+                    TMONode tmo_node = fig.nodemap[tso_node];
+                    clipped_boneMatrices[numPalettes] = tso_node.GetOffsetMatrix() * tmo_node.combined_matrix;
                 }
                 effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
 
