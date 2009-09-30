@@ -885,8 +885,9 @@ public class Viewer : IDisposable
                 {
                     //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
                     TSONode tso_node = tm_sub.GetBone(numPalettes);
-                    TMONode tmo_node = fig.nodemap[tso_node];
-                    clipped_boneMatrices[numPalettes] = tso_node.GetOffsetMatrix() * tmo_node.combined_matrix;
+                    TMONode tmo_node;
+                    if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
+                        clipped_boneMatrices[numPalettes] = tso_node.GetOffsetMatrix() * tmo_node.combined_matrix;
                 }
                 effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
 
@@ -989,8 +990,9 @@ public class Viewer : IDisposable
                 {
                     //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
                     TSONode tso_node = tm_sub.GetBone(numPalettes);
-                    TMONode tmo_node = fig.nodemap[tso_node];
-                    clipped_boneMatrices[numPalettes] = tso_node.GetOffsetMatrix() * tmo_node.combined_matrix;
+                    TMONode tmo_node;
+                    if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
+                        clipped_boneMatrices[numPalettes] = tso_node.GetOffsetMatrix() * tmo_node.combined_matrix;
                 }
                 effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
 
