@@ -291,43 +291,6 @@ public class Figure : IDisposable
             tso.Open(device, effect);
     }
 
-    private FigureMotion motion = new FigureMotion();
-    
-    /// <summary>
-    /// フィギュアモーション
-    /// </summary>
-    public FigureMotion Motion
-    {
-        get { return motion; }
-    }
-
-    /// <summary>
-    /// フィギュアモーションを設定します。
-    /// </summary>
-    /// <param name="frame_index">フレーム番号</param>
-    /// <param name="tmo">tmo</param>
-    public void SetMotion(int frame_index, TMOFile tmo)
-    {
-        motion.Add(frame_index, tmo);
-    }
-
-    /// <summary>
-    /// 次のモーションフレームに進みます。
-    /// </summary>
-    public void NextFrame()
-    {
-        if (motion.Count != 0)
-        {
-            TMOFile tmo = motion.GetTMO();
-            if (tmo != Tmo)
-            {
-                Tmo = tmo;
-                UpdateNodeMapAndBoneMatrices();
-            }
-            motion.NextFrame();
-        }
-    }
-
     /// <summary>
     /// 指定モーションフレームに進みます。
     /// </summary>
