@@ -249,6 +249,11 @@ public class Figure : IDisposable
         return tmo;
     }
 
+    public void UpdateBoneMatricesWithoutTMOFrame()
+    {
+        UpdateBoneMatrices(tmo, null);
+    }
+
     /// <summary>
     /// bone行列を更新します。
     /// </summary>
