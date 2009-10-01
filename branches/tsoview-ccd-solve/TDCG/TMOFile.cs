@@ -288,13 +288,33 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 現在の行列を指定フレームに保存します。
+        /// </summary>
+        /// <param name="frame_index">index</param>
+        public void SaveTransformationMatrix(int frame_index)
+        {
+            foreach (TMONode node in nodes)
+                node.frame_matrices[frame_index].m = node.TransformationMatrix;
+        }
+
+        /// <summary>
+        /// 指定フレームの行列を保持します。
+        /// </summary>
+        /// <param name="frame_index">index</param>
+        public void LoadTransformationMatrix(int frame_index)
+        {
+            foreach (TMONode node in nodes)
+                node.TransformationMatrix = node.frame_matrices[frame_index].m;
+        }
+
+        /// <summary>
         /// 指定名称（短い形式）を持つnodeを検索します。
         /// </summary>
         /// <param name="sname">node名称（短い形式）</param>
         /// <returns></returns>
         public TMONode FindNodeByShortName(string sname)
         {
-            foreach(TMONode node in nodes)
+            foreach (TMONode node in nodes)
                 if (node.ShortName == sname)
                     return node;
             return null;
@@ -361,13 +381,16 @@ namespace TDCG
         /// </summary>
         /// <param name="motion">tmo</param>
         /// <returns></returns>
-        public bool IsSameNodeTree(TMOFile motion) {
-            if (nodes.Length != motion.nodes.Length) {
+        public bool IsSameNodeTree(TMOFile motion)
+        {
+            if (nodes.Length != motion.nodes.Length)
+            {
                 //Console.WriteLine("nodes length mismatch {0} {1}", nodes.Length, motion.nodes.Length);
                 return false;
             }
             int i = 0;
-            foreach(TMONode node in nodes) {
+            foreach (TMONode node in nodes)
+            {
                 TMONode motion_node = motion.nodes[i];
                 //Console.WriteLine("node ShortName {0} {1}", node.ShortName, motion_node.ShortName);
                 if (motion_node.ShortName != node.ShortName)
