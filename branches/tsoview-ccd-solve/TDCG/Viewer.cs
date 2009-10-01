@@ -665,9 +665,9 @@ public class Viewer : IDisposable
             Figure fig;
             if (TryGetFigure(out fig))
             {
-                Debug.Assert(fig.TSOList[0].nodemap != null, "fig.TSOList[0].nodemap should not be null");
-                TSONode bone;
-                if (fig.TSOList[0].nodemap.TryGetValue(current_effector_name, out bone))
+                Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+                TMONode bone;
+                if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
                     target = bone.GetWorldPosition();
             }
         };
