@@ -48,8 +48,6 @@ public class Viewer : IDisposable
     /// </summary>
     public List<Figure> FigureList = new List<Figure>();
 
-    TMOFile baseTMO = null;
-
     // ƒ‰ƒCƒg•ûŒü
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
 
@@ -366,8 +364,6 @@ public class Viewer : IDisposable
             tso.Open(device, effect);
             fig.AddTSO(tso);
         }
-        if (fig.Tmo.frames == null)
-            fig.Tmo = BaseTMO;
         fig.UpdateNodeMapAndBoneMatrices();
         int idx = FigureList.Count;
         FigureList.Add(fig);
@@ -402,8 +398,6 @@ public class Viewer : IDisposable
             fig = FigureList[fig_index];
         if (FigureList.Count == 0)
         {
-            if (fig.Tmo.frames == null)
-                fig.Tmo = BaseTMO;
             int idx = FigureList.Count;
             FigureList.Add(fig);
             SetFigureIndex(idx);
@@ -532,8 +526,6 @@ public class Viewer : IDisposable
             foreach (Figure fig in fig_list)
             {
                 fig.OpenTSOFile(device, effect);
-                if (fig.Tmo.frames == null)
-                    fig.Tmo = BaseTMO;
                 fig.UpdateNodeMapAndBoneMatrices();
                 FigureList.Add(fig);
             }
@@ -767,18 +759,10 @@ public class Viewer : IDisposable
             }
         };
 
-        baseTMO = new TMOFile();
-        baseTMO.Load(Application.StartupPath + @"\" + @"base.tmo");
-
         return true;
     }
     string current_effector_name = null;
     Vector3 current_handle_dir = Vector3.Empty;
-
-    TMOFile BaseTMO
-    {
-        get { return baseTMO; }
-    }
 
     private void OnDeviceLost(object sender, EventArgs e)
     {
