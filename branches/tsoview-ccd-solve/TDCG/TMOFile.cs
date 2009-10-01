@@ -293,6 +293,9 @@ namespace TDCG
         /// <param name="frame_index">index</param>
         public void SaveTransformationMatrix(int frame_index)
         {
+            if (frames == null)
+                return;
+
             foreach (TMONode node in nodes)
                 node.frame_matrices[frame_index].m = node.TransformationMatrix;
         }
@@ -303,6 +306,9 @@ namespace TDCG
         /// <param name="frame_index">index</param>
         public void LoadTransformationMatrix(int frame_index)
         {
+            if (frames == null)
+                return;
+
             foreach (TMONode node in nodes)
                 node.TransformationMatrix = node.frame_matrices[frame_index].m;
         }
