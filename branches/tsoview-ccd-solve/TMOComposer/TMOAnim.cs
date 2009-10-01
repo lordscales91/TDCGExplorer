@@ -91,23 +91,7 @@ namespace TMOComposer
 
         public void LoadSource()
         {
-            List<string> except_snames = new List<string>();
-            except_snames.Add("Kami_Oya");
-
-            source = LoadPNGFile(GetPosePath(SourceFile));
-
-            if (source.frames == null)
-                return;
-
-            source.TruncateFrame(0); // forced pose
-
-            if (SourceItem.FaceFile != null)
-            {
-                Console.WriteLine("Load File: " + SourceItem.FaceFile);
-                TMOFile face_motion = LoadPNGFile(GetFacePath(SourceItem.FaceFile));
-                if (face_motion.frames != null)
-                    source.CopyChildrenNodeFrom(face_motion, "face_oya", except_snames);
-            }
+            source = GetTmo(SourceItem);
         }
 
         public void SaveSourceToFile(string dest_path)
@@ -116,7 +100,7 @@ namespace TMOComposer
                 source.Save(dest_path);
         }
 
-        public TMOFile LoadPNGFile(string source_file)
+        public static TMOFile LoadPNGFile(string source_file)
         {
             TMOFile tmo = new TMOFile();
             if (File.Exists(source_file))
@@ -137,28 +121,39 @@ namespace TMOComposer
             return tmo;
         }
 
-        public void Process()
+        TMOFile GetTmo(TMOAnimItem item)
         {
             List<string> except_snames = new List<string>();
             except_snames.Add("Kami_Oya");
 
+            Console.WriteLine("Load File: " + item.PoseFile);
+            TMOFile motion = LoadPNGFile(GetPosePath(item.PoseFile));
+
+            if (motion.frames == null)
+                return motion;
+
+            motion.TruncateFrame(0); // forced pose
+
+            if (item.FaceFile != null)
+            {
+                Console.WriteLine("Load File: " + item.FaceFile);
+                TMOFile face_motion = LoadPNGFile(GetFacePath(item.FaceFile));
+                if (face_motion.frames != null)
+                    motion.CopyChildrenNodeFrom(face_motion, "face_oya", except_snames);
+            }
+
+            return motion;
+        }
+
+        public void Process()
+        {
             foreach (TMOAnimItem item in items)
             {
                 Console.WriteLine("Load File: " + item.PoseFile);
-                TMOFile motion = LoadPNGFile(GetPosePath(item.PoseFile));
+                TMOFile motion = GetTmo(item);
 
                 if (motion.frames == null)
                     continue;
-
-                motion.TruncateFrame(0); // forced pose
-
-                if (item.FaceFile != null)
-                {
-                    Console.WriteLine("Load File: " + item.FaceFile);
-                    TMOFile face_motion = LoadPNGFile(GetFacePath(item.FaceFile));
-                    if (face_motion.frames != null)
-                        motion.CopyChildrenNodeFrom(face_motion, "face_oya", except_snames);
-                }
 
                 source.SlerpFrameEndTo(motion, item.Length, item.Accel);
                 Console.WriteLine("source nodes Length {0}", source.nodes.Length);
