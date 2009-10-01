@@ -107,6 +107,7 @@
             this.gvTMOAnimItems.Size = new System.Drawing.Size(200, 354);
             this.gvTMOAnimItems.TabIndex = 2;
             this.gvTMOAnimItems.DoubleClick += new System.EventHandler(this.gvTMOAnimItems_DoubleClick);
+            this.gvTMOAnimItems.SelectionChanged += new System.EventHandler(this.gvTMOAnimItems_SelectionChanged);
             // 
             // btnAnimate
             // 

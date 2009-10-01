@@ -130,6 +130,12 @@ namespace TMOComposer
             PngSaveItem item = pngsave.items[pngsave_row];
 
             pngsave.Dump(pngsave_file);
+
+            gvTMOAnimItems.ClearSelection();
+
+            if (!viewer.IsMotionEnabled())
+                viewer.SwitchMotionEnabled();
+
             Animate(item);
         }
 
@@ -144,6 +150,7 @@ namespace TMOComposer
                 return;
 
             TMOAnim tmoanim = item.tmoanim;
+            tmoanim.SavePoseToFile();
             tmoanim.LoadSource();
             if (tmoanim.SourceTmo.frames != null)
             {
@@ -305,6 +312,29 @@ namespace TMOComposer
             {
                 tmoAnimItemBindingSource.ResetBindings(false);
             }
+        }
+
+        private void gvTMOAnimItems_SelectionChanged(object sender, EventArgs e)
+        {
+            int pngsave_row = pngSaveItemBindingSource.Position;
+            int tmoanim_row = tmoAnimItemBindingSource.Position;
+
+            if (pngsave_row == -1)
+                return;
+
+            TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;
+
+            if (tmoanim_row == -1)
+                return;
+
+            TMOAnimItem item = tmoanim.items[tmoanim_row];
+
+            if (viewer.IsMotionEnabled())
+                viewer.SwitchMotionEnabled();
+
+            Figure fig = viewer.FigureList[pngsave_row];
+            fig.Tmo = tmoanim.GetTmo(item);
+            fig.UpdateNodeMapAndBoneMatrices();
         }
     }
 }

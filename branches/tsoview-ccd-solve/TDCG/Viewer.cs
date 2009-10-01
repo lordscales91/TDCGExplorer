@@ -903,6 +903,14 @@ public class Viewer : IDisposable
     internal bool SpriteShown = false;
 
     /// <summary>
+    /// モーションが有効であるか。
+    /// </summary>
+    public bool IsMotionEnabled()
+    {
+        return motionEnabled;
+    }
+
+    /// <summary>
     /// モーションの有無を切り替えます。
     /// </summary>
     public void SwitchMotionEnabled()

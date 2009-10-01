@@ -20,6 +20,8 @@ namespace TMOComposer
             this.Length = 30;
             this.Accel = 0.5f;
         }
+        [XmlIgnore]
+        public TMOFile Tmo { get; set; }
     }
 
     public class TMOAnim
@@ -91,22 +93,13 @@ namespace TMOComposer
 
         public void LoadSource()
         {
-            source = GetTmo(SourceItem);
+            source = CreateTmo(SourceItem);
         }
 
         public void SaveSourceToFile(string dest_path)
         {
             if (source.frames != null)
                 source.Save(dest_path);
-        }
-
-        public void SavePoseToFile(TMOFile tmo, string dest_path)
-        {
-            if (tmo.frames != null)
-            {
-                tmo.SaveTransformationMatrix(0);
-                tmo.Save(dest_path);
-            }
         }
 
         public static TMOFile LoadPNGFile(string source_file)
@@ -134,59 +127,87 @@ namespace TMOComposer
         {
             TMOFile tmo;
 
+            if (item.Tmo != null)
+            {
+                tmo = item.Tmo;
+                tmo.SaveTransformationMatrix(0);
+            }
+            else
+            {
+                tmo = CreateTmo(item);
+                tmo.LoadTransformationMatrix(0);
+                item.Tmo = tmo;
+            }
+
+            return tmo;
+        }
+
+        public TMOFile CreateTmo(TMOAnimItem item)
+        {
+            TMOFile tmo;
+
             string tmo_file = Path.GetFileNameWithoutExtension(item.PoseFile) + ".tmo";
             if (File.Exists(tmo_file))
             {
                 Console.WriteLine("Load File: " + tmo_file);
                 tmo = new TMOFile();
                 tmo.Load(tmo_file);
-                tmo.LoadTransformationMatrix(0);
-                return tmo;
+
+                if (tmo.frames == null)
+                    return tmo;
+
+                tmo.TruncateFrame(0); // forced pose
             }
-
-            List<string> except_snames = new List<string>();
-            except_snames.Add("Kami_Oya");
-
-            Console.WriteLine("Load File: " + item.PoseFile);
-            tmo = LoadPNGFile(GetPosePath(item.PoseFile));
-
-            if (tmo.frames == null)
-                return tmo;
-
-            tmo.TruncateFrame(0); // forced pose
-
-            if (item.FaceFile != null)
+            else
             {
-                Console.WriteLine("Load File: " + item.FaceFile);
-                TMOFile face_tmo = LoadPNGFile(GetFacePath(item.FaceFile));
-                if (face_tmo.frames != null)
-                    tmo.CopyChildrenNodeFrom(face_tmo, "face_oya", except_snames);
+                List<string> except_snames = new List<string>();
+                except_snames.Add("Kami_Oya");
+
+                Console.WriteLine("Load File: " + item.PoseFile);
+                tmo = LoadPNGFile(GetPosePath(item.PoseFile));
+
+                if (tmo.frames == null)
+                    return tmo;
+
+                tmo.TruncateFrame(0); // forced pose
+
+                if (item.FaceFile != null)
+                {
+                    Console.WriteLine("Load File: " + item.FaceFile);
+                    TMOFile face_tmo = LoadPNGFile(GetFacePath(item.FaceFile));
+                    if (face_tmo.frames != null)
+                        tmo.CopyChildrenNodeFrom(face_tmo, "face_oya", except_snames);
+                }
             }
-            tmo.LoadTransformationMatrix(0);
 
             return tmo;
+        }
+        
+        public void SavePoseToFile()
+        {
+            foreach (TMOAnimItem item in items)
+            {
+                TMOFile tmo = GetTmo(item);
+
+                if (tmo.frames != null)
+                    tmo.Save(Path.GetFileNameWithoutExtension(item.PoseFile) + ".tmo");
+            }
         }
 
         public void Process()
         {
             foreach (TMOAnimItem item in items)
             {
-                TMOFile motion = GetTmo(item);
-                SavePoseToFile(motion, Path.GetFileNameWithoutExtension(item.PoseFile) + ".tmo");
-            }
+                TMOFile tmo = GetTmo(item);
 
-            foreach (TMOAnimItem item in items)
-            {
-                TMOFile motion = GetTmo(item);
-
-                if (motion.frames == null)
+                if (tmo.frames == null)
                     continue;
 
-                source.SlerpFrameEndTo(motion, item.Length, item.Accel);
+                source.SlerpFrameEndTo(tmo, item.Length, item.Accel);
                 Console.WriteLine("source nodes Length {0}", source.nodes.Length);
-                Console.WriteLine("motion nodes Length {0}", motion.nodes.Length);
+                Console.WriteLine("motion nodes Length {0}", tmo.nodes.Length);
                 Console.WriteLine("source frames Length {0}", source.frames.Length);
-                Console.WriteLine("motion frames Length {0}", motion.frames.Length);
+                Console.WriteLine("motion frames Length {0}", tmo.frames.Length);
             }
         }
     }
