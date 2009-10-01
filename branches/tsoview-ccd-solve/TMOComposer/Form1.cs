@@ -308,9 +308,12 @@ namespace TMOComposer
 
             TMOAnimItem item = tmoanim.items[tmoanim_row];
             tmoAnimItemForm.SetTmoAnimItem(item);
+            item.Tmo.SaveTransformationMatrix(0);
             if (tmoAnimItemForm.ShowDialog(this) == DialogResult.OK)
             {
                 tmoAnimItemBindingSource.ResetBindings(false);
+                item.CopyFace();
+                item.Tmo.LoadTransformationMatrix(0);
             }
         }
 
