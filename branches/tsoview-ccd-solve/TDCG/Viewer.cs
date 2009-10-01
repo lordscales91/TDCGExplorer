@@ -125,6 +125,11 @@ public class Viewer : IDisposable
             current_effector_name = effector.Name;
             target = effector.GetWorldPosition();
         }
+        Vector3 dir;
+        if (FindCurrentEffectorHandleOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, out dir))
+            current_handle_dir = dir;
+        else
+            current_handle_dir = Vector3.Empty;
     }
 
     private void form_OnMouseUp(object sender, MouseEventArgs e)
@@ -145,6 +150,9 @@ public class Viewer : IDisposable
             if (Control.ModifierKeys == Keys.Shift)
                 SetTargetOnScreen(e.X, e.Y);
             else
+            if (current_handle_dir != Vector3.Empty)
+                RotateOnScreen(dx, dy);
+            else
                 camera.Move(-dx, dy, 0.0f);
             break;
         case MouseButtons.Middle:
@@ -157,6 +165,22 @@ public class Viewer : IDisposable
 
         lastScreenPoint.X = e.X;
         lastScreenPoint.Y = e.Y;
+    }
+
+    void RotateOnScreen(int dx, int dy)
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+            TMONode bone;
+            if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
+            {
+                float angle = dx * 0.01f;
+                bone.Rotation = Quaternion.RotationAxis(current_handle_dir, angle) * bone.Rotation;
+            }
+            fig.UpdateBoneMatricesWithoutTMOFrame();
+        }
     }
 
     // 選択フィギュアindex
@@ -692,6 +716,7 @@ public class Viewer : IDisposable
         return true;
     }
     string current_effector_name = null;
+    Vector3 current_handle_dir = Vector3.Empty;
 
     TMOFile BaseTMO
     {
@@ -1051,9 +1076,21 @@ public class Viewer : IDisposable
                     //if (found)
                     //    color = new Vector4(1,1,1,1);
                     //else
-                        color = ( bone.Name == current_effector_name ) ? new Vector4(0,1,0,0.5f) : new Vector4(1,0,0,0.5f);
+                        color = ( bone.Name == current_effector_name ) ? new Vector4(1,1,1,0.5f) : new Vector4(0.5f,0.5f,0.5f,0.5f);
 
-                    DrawMeshSub(sphere, Matrix.Translation(bone.GetWorldPosition()), color);
+                    Vector3 pos = bone.GetWorldPosition();
+                    DrawMeshSub(sphere, Matrix.Translation(pos), color);
+                }
+            }
+
+            {
+                TMONode bone;
+                if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
+                {
+                    Matrix m = bone.GetWorldCoordinate();
+                    DrawMeshSub(sphere, Matrix.Translation(new Vector3(1,0,0)) * m, new Vector4(1,0,0,0.5f));
+                    DrawMeshSub(sphere, Matrix.Translation(new Vector3(0,1,0)) * m, new Vector4(0,1,0,0.5f));
+                    DrawMeshSub(sphere, Matrix.Translation(new Vector3(0,0,1)) * m, new Vector4(0,0,1,0.5f));
                 }
             }
         }
@@ -1289,6 +1326,54 @@ public class Viewer : IDisposable
         if (TryGetFigure(out fig))
         {
             Matrix m = bone.combined_matrix * world_matrix;
+
+            float sphereRadius = 0.25f;
+            Vector3 sphereCenter = new Vector3(m.M41, m.M42, m.M43);
+            Vector3 rayStart = ScreenToWorld(x, y, 0.0f);
+            Vector3 rayEnd = ScreenToWorld(x, y, 1.0f);
+            Vector3 rayOrientation = rayEnd - rayStart;
+
+            Vector3 collisionPoint;
+            float collisionTime;
+
+            return DetectSphereRayCollision(sphereRadius, ref sphereCenter, ref rayStart, ref rayOrientation, out collisionPoint, out collisionTime);
+        }
+        return false;
+    }
+
+    private bool FindCurrentEffectorHandleOnScreenPoint(float x, float y, out Vector3 dir)
+    {
+        dir = Vector3.Empty;
+
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+            {
+                TMONode bone;
+                if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
+                {
+                    dir = new Vector3(1,0,0);
+                    if (FindBoneHandleOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone, dir))
+                        return true;
+                    dir = new Vector3(0,1,0);
+                    if (FindBoneHandleOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone, dir))
+                        return true;
+                    dir = new Vector3(0,0,1);
+                    if (FindBoneHandleOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone, dir))
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private bool FindBoneHandleOnScreenPoint(float x, float y, TMONode bone, Vector3 dir)
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Matrix m = Matrix.Translation(dir) * bone.combined_matrix * world_matrix;
 
             float sphereRadius = 0.25f;
             Vector3 sphereCenter = new Vector3(m.M41, m.M42, m.M43);
