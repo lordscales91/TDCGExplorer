@@ -1009,33 +1009,8 @@ public class Viewer : IDisposable
             DrawSprite();
         }
  
-    //effector‚ð•`‰æ
-    {
-        Figure fig;
-        if (TryGetFigure(out fig))
-        {
-            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
-            foreach (string effector_name in effector_dictionary.Keys)
-            {
-                TMONode bone;
-                if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
-                {
-                    Vector4 color;
-                    //if (found)
-                    //    color = new Vector4(1,1,1,1);
-                    //else
-                        color = ( bone.Name == current_effector_name ) ? new Vector4(0,1,0,0.5f) : new Vector4(1,0,0,0.5f);
-
-                    DrawMeshSub(sphere, Matrix.Translation(bone.GetWorldPosition()), color);
-                }
-            }
-        }
-    }
-
-    //‹t‰^“®Šw‚É‚¨‚¯‚é–Ú•W‚ð•`‰æ
-    {
-        DrawMeshSub(sphere, Matrix.Translation(target), new Vector4(1,1,0,0.5f));
-    }
+        DrawEffector();
+        DrawTarget();
 
         device.EndScene();
         {
@@ -1059,6 +1034,34 @@ public class Viewer : IDisposable
 
         device.Present();
         Thread.Sleep(30);
+    }
+
+    void DrawEffector()
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+            foreach (string effector_name in effector_dictionary.Keys)
+            {
+                TMONode bone;
+                if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
+                {
+                    Vector4 color;
+                    //if (found)
+                    //    color = new Vector4(1,1,1,1);
+                    //else
+                        color = ( bone.Name == current_effector_name ) ? new Vector4(0,1,0,0.5f) : new Vector4(1,0,0,0.5f);
+
+                    DrawMeshSub(sphere, Matrix.Translation(bone.GetWorldPosition()), color);
+                }
+            }
+        }
+    }
+
+    void DrawTarget()
+    {
+        DrawMeshSub(sphere, Matrix.Translation(target), new Vector4(1,1,0,0.5f));
     }
 
     void DrawShadowMap()
