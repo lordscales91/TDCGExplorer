@@ -83,7 +83,7 @@ public class Viewer : IDisposable
                 Vector3 v = target;
                 v = Vector3.TransformCoordinate(v, Transform_View);
                 v = Vector3.TransformCoordinate(v, Transform_Projection);
-                target = ScreenToWorld(x, y, v.Z, ref Transform_View, ref Transform_Projection);
+                target = ScreenToWorld(x, y, v.Z);
                 solved = false;
             }
         }
@@ -115,7 +115,6 @@ public class Viewer : IDisposable
 
         lastScreenPoint.X = e.X;
         lastScreenPoint.Y = e.Y;
-
     }
 
     private void SelectEffector()
@@ -264,6 +263,11 @@ public class Viewer : IDisposable
 
         //スクリーン位置をワールド座標へ変換
         return Vector3.TransformCoordinate(v, inv_m * inv_proj * inv_view);
+    }
+
+    public Vector3 ScreenToWorld(float screenX, float screenY, float z)
+    {
+        return ScreenToWorld(screenX, screenY, z, ref Transform_View, ref Transform_Projection);
     }
 
     /// <summary>
@@ -1273,8 +1277,8 @@ public class Viewer : IDisposable
 
             float sphereRadius = 0.25f;
             Vector3 sphereCenter = new Vector3(m.M41, m.M42, m.M43);
-            Vector3 rayStart = ScreenToWorld(x, y, 0.0f, ref Transform_View, ref Transform_Projection);
-            Vector3 rayEnd = ScreenToWorld(x, y, 1.0f, ref Transform_View, ref Transform_Projection);
+            Vector3 rayStart = ScreenToWorld(x, y, 0.0f);
+            Vector3 rayEnd = ScreenToWorld(x, y, 1.0f);
             Vector3 rayOrientation = rayEnd - rayStart;
 
             Vector3 collisionPoint;
