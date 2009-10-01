@@ -770,8 +770,6 @@ public class Viewer : IDisposable
         baseTMO = new TMOFile();
         baseTMO.Load(Application.StartupPath + @"\" + @"base.tmo");
 
-        constraint = TMOConstraint.Load(@"angle-GRABIA.xml");
-
         return true;
     }
     string current_effector_name = null;
@@ -1449,7 +1447,6 @@ public class Viewer : IDisposable
     }
 
     Dictionary<string, string[]> effector_dictionary = new Dictionary<string, string[]>();
-    TMOConstraint constraint = null;
 
     /// <summary>
     /// ãtâ^ìÆäwÇ…ÇÊÇÈâÇìæÇ‹Ç∑ÅB
@@ -1468,26 +1465,6 @@ public class Viewer : IDisposable
                 if (tmo.nodemap.TryGetValue(node_name, out node))
                 {
                     Solve(effector, node);
-
-                    Vector3 angle = TMOMat.ToAngle(node.Rotation);
-                    TMOConstraintItem item = constraint.GetItem(node.ShortName);
-
-                    if (angle.X < item.Min.X)
-                        angle.X = item.Min.X;
-                    if (angle.X > item.Max.X)
-                        angle.X = item.Max.X;
-
-                    if (angle.Y < item.Min.Y)
-                        angle.Y = item.Min.Y;
-                    if (angle.Y > item.Max.Y)
-                        angle.Y = item.Max.Y;
-
-                    if (angle.Z < item.Min.Z)
-                        angle.Z = item.Min.Z;
-                    if (angle.Z > item.Max.Z)
-                        angle.Z = item.Max.Z;
-
-                    node.Rotation = TMOMat.ToQuaternion(angle);
                 }
             }
         }
