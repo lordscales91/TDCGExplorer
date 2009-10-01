@@ -101,8 +101,6 @@ public class Viewer : IDisposable
                 1000.0f );
     }
 
-    private bool clicked = false;
-
     private void form_OnMouseDown(object sender, MouseEventArgs e)
     {
         switch (e.Button)
@@ -110,17 +108,44 @@ public class Viewer : IDisposable
         case MouseButtons.Left:
             if (Control.ModifierKeys == Keys.Control)
                 lightDir = ScreenToOrientation(e.X, e.Y);
+            else
+                SelectEffector();
             break;
         }
 
         lastScreenPoint.X = e.X;
         lastScreenPoint.Y = e.Y;
-        clicked = true;
+
+    }
+
+    private void SelectEffector()
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+            TMONode effector;
+            if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out effector))
+            {
+                foreach (string effector_name in effector_dictionary.Keys)
+                {
+                    TMONode bone;
+                    if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
+                    {
+                        if (FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone))
+                        {
+                            current_effector_name = bone.Name;
+                            effector = bone;
+                            target = bone.GetWorldPosition();
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void form_OnMouseUp(object sender, MouseEventArgs e)
     {
-        clicked = false;
     }
 
     private void form_OnMouseMove(object sender, MouseEventArgs e)
@@ -149,7 +174,6 @@ public class Viewer : IDisposable
 
         lastScreenPoint.X = e.X;
         lastScreenPoint.Y = e.Y;
-        clicked = false;  // correct?
     }
 
     // ëIëÉtÉBÉMÉÖÉAindex
@@ -997,35 +1021,24 @@ public class Viewer : IDisposable
             DrawSprite();
         }
  
-    //è’ìÀîªíË
+    //effectorÇï`âÊ
     {
         Figure fig;
         if (TryGetFigure(out fig))
         {
             Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
-            TMONode effector;
-            if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out effector))
+            foreach (string effector_name in effector_dictionary.Keys)
             {
-                foreach (string effector_name in effector_dictionary.Keys)
+                TMONode bone;
+                if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
                 {
-                    TMONode bone;
-                    if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
-                    {
-                        bool found = FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone);
-                        if (found && clicked)
-                        {
-                            current_effector_name = bone.Name;
-                            effector = bone;
-                            target = bone.GetWorldPosition();
-                        }
-                        Vector4 color;
-                        if (found)
-                            color = new Vector4(1,1,1,1);
-                        else
-                            color = ( bone == effector ) ? new Vector4(0,1,0,0.5f) : new Vector4(1,0,0,0.5f);
+                    Vector4 color;
+                    //if (found)
+                    //    color = new Vector4(1,1,1,1);
+                    //else
+                        color = ( bone.Name == current_effector_name ) ? new Vector4(0,1,0,0.5f) : new Vector4(1,0,0,0.5f);
 
-                        DrawMeshSub(sphere, bone.combined_matrix * world_matrix, color);
-                    }
+                    DrawMeshSub(sphere, Matrix.Translation(bone.GetWorldPosition()), color);
                 }
             }
         }
