@@ -119,27 +119,11 @@ public class Viewer : IDisposable
 
     private void SelectEffector()
     {
-        Figure fig;
-        if (TryGetFigure(out fig))
+        TMONode effector;
+        if (FindEffectorOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, out effector))
         {
-            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
-            TMONode effector;
-            if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out effector))
-            {
-                foreach (string effector_name in effector_dictionary.Keys)
-                {
-                    TMONode bone;
-                    if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
-                    {
-                        if (FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone))
-                        {
-                            current_effector_name = bone.Name;
-                            effector = bone;
-                            target = bone.GetWorldPosition();
-                        }
-                    }
-                }
-            }
+            current_effector_name = effector.Name;
+            target = effector.GetWorldPosition();
         }
     }
 
@@ -1266,6 +1250,32 @@ public class Viewer : IDisposable
             effect.EndPass();
         }
         effect.End();
+    }
+
+    /// スクリーン座標からエフェクタを見つけます。
+    /// TODO: 衝突するエフェクタの中で最も近い位置にあるエフェクタを返す。
+    private bool FindEffectorOnScreenPoint(float x, float y, out TMONode effector)
+    {
+        effector = null;
+
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+            foreach (string effector_name in effector_dictionary.Keys)
+            {
+                TMONode bone;
+                if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
+                {
+                    if (FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone))
+                    {
+                        effector = bone;
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private bool FindBoneOnScreenPoint(float x, float y, TMONode bone)
