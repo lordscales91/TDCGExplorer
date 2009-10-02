@@ -107,6 +107,7 @@ public class Viewer : IDisposable
             if (Control.ModifierKeys == Keys.Control)
                 lightDir = ScreenToOrientation(e.X, e.Y);
             else
+            if (! motionEnabled)
                 SelectEffector();
             break;
         }
@@ -148,11 +149,16 @@ public class Viewer : IDisposable
             if (Control.ModifierKeys == Keys.Control)
                 lightDir = ScreenToOrientation(e.X, e.Y);
             else
-            if (Control.ModifierKeys == Keys.Shift)
-                SetTargetOnScreen(e.X, e.Y);
-            else
-            if (current_handle_dir != Vector3.Empty)
-                RotateOnScreen(dx, dy);
+            if (! motionEnabled)
+            {
+                if (Control.ModifierKeys == Keys.Shift)
+                    SetTargetOnScreen(e.X, e.Y);
+                else
+                if (current_handle_dir != Vector3.Empty)
+                    RotateOnScreen(dx, dy);
+                else
+                    camera.Move(-dx, dy, 0.0f);
+            }
             else
                 camera.Move(-dx, dy, 0.0f);
             break;
@@ -1072,8 +1078,11 @@ public class Viewer : IDisposable
             DrawSprite();
         }
  
-        DrawEffector();
-        DrawTarget();
+        if (! motionEnabled)
+        {
+            DrawEffector();
+            DrawTarget();
+        }
 
         device.EndScene();
         {
