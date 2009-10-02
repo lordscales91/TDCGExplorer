@@ -23,6 +23,11 @@ namespace TMOComposer
         [XmlIgnore]
         public TMOFile Tmo { get; set; }
 
+        public string GetPoseFileWithTmoExtension()
+        {
+            return Path.GetFileNameWithoutExtension(this.PoseFile) + ".tmo";
+        }
+
         public void CopyFace()
         {
             if (Tmo.frames == null)
@@ -161,13 +166,15 @@ namespace TMOComposer
 
         public TMOFile CreateTmo(TMOAnimItem item)
         {
-            TMOFile tmo;
+            TMOFile tmo = new TMOFile();
 
-            string tmo_file = Path.GetFileNameWithoutExtension(item.PoseFile) + ".tmo";
+            if (item == null)
+                return tmo;
+
+            string tmo_file = item.GetPoseFileWithTmoExtension();
             if (File.Exists(tmo_file))
             {
                 Console.WriteLine("Load File: " + tmo_file);
-                tmo = new TMOFile();
                 tmo.Load(tmo_file);
             }
             else
@@ -191,7 +198,7 @@ namespace TMOComposer
                 TMOFile tmo = GetTmo(item);
 
                 if (tmo.frames != null)
-                    tmo.Save(Path.GetFileNameWithoutExtension(item.PoseFile) + ".tmo");
+                    tmo.Save(item.GetPoseFileWithTmoExtension());
             }
         }
 
