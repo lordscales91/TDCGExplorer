@@ -130,6 +130,7 @@ public class Viewer : IDisposable
             {
                 current_effector_name = effector.Name;
                 target = effector.GetWorldPosition();
+                solved = true;
             }
         }
     }
@@ -280,6 +281,7 @@ public class Viewer : IDisposable
         return Vector3.TransformCoordinate(v, inv_m * inv_proj * inv_view);
     }
 
+    /// スクリーン位置をワールド座標へ変換します。
     public Vector3 ScreenToWorld(float screenX, float screenY, float z)
     {
         return ScreenToWorld(screenX, screenY, z, ref Transform_View, ref Transform_Projection);
@@ -750,7 +752,10 @@ public class Viewer : IDisposable
                 Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
                 TMONode bone;
                 if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
+                {
                     target = bone.GetWorldPosition();
+                    solved = true;
+                }
             }
         };
 
@@ -971,6 +976,10 @@ public class Viewer : IDisposable
         FrameMove(frame_index);
     }
 
+    /// <summary>
+    /// 指定シーンフレームに進みます。
+    /// </summary>
+    /// <param name="frame_index">フレーム番号</param>
     public void FrameMove(int frame_index)
     {
         camera.Update();
@@ -1023,11 +1032,13 @@ public class Viewer : IDisposable
             }
         }
     }
-    bool solved = false;
+    bool solved = true;
     long wait = (long)(10000000.0f / 60.0f);
 
-    //フレーム番号
     private int frame_index = 0;
+    /// <summary>
+    /// フレーム番号
+    /// </summary>
     public int FrameIndex { get { return frame_index; } set { frame_index = value; } }
 
     /// <summary>
@@ -1604,7 +1615,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// バックバッファをBitmapファイルに保存します。
+    /// バックバッファをBMP形式でファイルに保存します。
     /// </summary>
     /// <param name="file">ファイル名</param>
     public void SaveToBitmap(string file)
@@ -1614,6 +1625,10 @@ public class Viewer : IDisposable
           SurfaceLoader.Save(file, ImageFileFormat.Bmp, sf);
     }
 
+    /// <summary>
+    /// バックバッファをPNG形式でファイルに保存します。
+    /// </summary>
+    /// <param name="file">ファイル名</param>
     public void SaveToPng(string file)
     {
       using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))

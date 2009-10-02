@@ -16,9 +16,6 @@ namespace TAHBackground
         internal List<byte[]> TSOOpt1List = new List<byte[]>();
 
         internal TMOFile tmo = null;
-
-        internal byte[] lgta;
-        internal byte[] figu;
     }
 
     public class PngBack
@@ -35,7 +32,6 @@ namespace TAHBackground
         TSOFigure fig = null;
         public TSOFigure Figure { get { return fig; } }
 
-        string source_file = null;
         protected BinaryWriter writer = null;
 
         public void Load(Stream tbn_stream, Stream psd_stream)

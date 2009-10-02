@@ -212,6 +212,10 @@ public class Figure : IDisposable
         TSOList.Add(tso);
     }
 
+    /// <summary>
+    /// tsoからtmoを生成します。
+    /// </summary>
+    /// <param name="tso">tso</param>
     public static TMOFile GenerateTMOFromTSO(TSOFile tso)
     {
         TMOFile tmo = new TMOFile();
@@ -249,6 +253,10 @@ public class Figure : IDisposable
         return tmo;
     }
 
+    /// <summary>
+    /// bone行列を更新します。
+    /// ただしtmo frameを無視します。
+    /// </summary>
     public void UpdateBoneMatricesWithoutTMOFrame()
     {
         UpdateBoneMatrices(tmo, null);

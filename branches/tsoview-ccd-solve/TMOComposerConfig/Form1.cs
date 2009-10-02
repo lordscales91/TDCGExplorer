@@ -13,7 +13,7 @@ namespace TMOComposerConfig
     public partial class Form1 : Form
     {
         public TSOConfig config;
-        string config_file = @"config.xml";
+        string config_file = Path.Combine(Application.StartupPath, @"config.xml");
 
         public Form1()
         {

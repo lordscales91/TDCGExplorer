@@ -608,6 +608,16 @@ namespace TDCG
             return Slerp(mat0, mat1, mat2, mat3, length, 0.5f);
         }
 
+        /// <summary>
+        /// 補間を行います。
+        /// </summary>
+        /// <param name="mat0">行列0</param>
+        /// <param name="mat1">行列1</param>
+        /// <param name="mat2">行列2</param>
+        /// <param name="mat3">行列3</param>
+        /// <param name="length">分割数</param>
+        /// <param name="p1">補間速度係数</param>
+        /// <returns>分割数だけTMOMatを持つ配列</returns>
         public static TMOMat[] Slerp(TMOMat mat0, TMOMat mat1, TMOMat mat2, TMOMat mat3, int length, float p1)
         {
             TMOMat[] ret = new TMOMat[length];
@@ -714,25 +724,7 @@ namespace TDCG
             return new TMOMat(m * Matrix.Translation(t));
         }
 
-        /// equivalent of Matrix.RotationYawPitchRoll
-        public static Matrix RotationFromYawPitchRoll(float yaw, float pitch, float roll)
-        {
-            return Matrix.RotationZ(roll) * Matrix.RotationX(pitch) * Matrix.RotationY(yaw);
-        }
-
-        public static void RotationToYawPitchRoll(ref Matrix m, out float yaw, out float pitch, out float roll)
-        {
-            roll = (float)Math.Atan2(m.M12, m.M22);
-            pitch = (float)Math.Asin(-m.M32);
-            yaw  = (float)Math.Atan2(m.M31, m.M33);
-            
-            if (Math.Abs(Math.Cos(pitch)) <= float.Epsilon)
-            {
-                roll += (float)(m.M12 > 0.0f ? Math.PI : -Math.PI);
-                yaw  += (float)(m.M31 > 0.0f ? Math.PI : -Math.PI);
-            }
-        }
-
+        /// euler角をquaternionに変換
         public static Quaternion ToQuaternion(Vector3 angle)
         {
             Quaternion qx, qy, qz;
@@ -742,6 +734,7 @@ namespace TDCG
             return qx * qy * qz;
         }
 
+        /// 回転行列をeuler角に変換
         public static Vector3 ToAngle(Matrix m)
         {
             Vector3 angle;
@@ -764,6 +757,7 @@ namespace TDCG
             return angle;
         }
 
+        /// quaternionをeuler角に変換
         public static Vector3 ToAngle(Quaternion q)
         {
             return ToAngle(Matrix.RotationQuaternion(q));
@@ -781,11 +775,12 @@ namespace TDCG
         /// <summary>
         /// フレームを補間します。
         /// </summary>
-        /// <param name="frame0"></param>
-        /// <param name="frame1"></param>
-        /// <param name="frame2"></param>
-        /// <param name="frame3"></param>
-        /// <param name="length"></param>
+        /// <param name="frame0">フレーム0</param>
+        /// <param name="frame1">フレーム1</param>
+        /// <param name="frame2">フレーム2</param>
+        /// <param name="frame3">フレーム3</param>
+        /// <param name="length">分割数</param>
+        /// <param name="p1">補間速度係数</param>
         /// <param name="id_pair">node idのペア</param>
         /// <returns></returns>
         public static TMOFrame[] Slerp(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, TMOFrame frame3, int length, float p1, int[] id_pair)
