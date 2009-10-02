@@ -1027,7 +1027,10 @@ public class Viewer : IDisposable
             Figure fig;
             if (TryGetFigure(out fig))
             {
-                Solve(fig.Tmo, current_effector_name);
+                if (current_effector_name == "|W_Hips")
+                    SolveRootNode(fig.Tmo, current_effector_name);
+                else
+                    Solve(fig.Tmo, current_effector_name);
                 fig.UpdateBoneMatricesWithoutTMOFrame();
             }
         }
@@ -1469,6 +1472,16 @@ public class Viewer : IDisposable
     }
 
     Dictionary<string, string[]> effector_dictionary = new Dictionary<string, string[]>();
+
+    private void SolveRootNode(TMOFile tmo, string effector_name)
+    {
+        Debug.Assert(tmo.nodemap != null, "tso.nodemap should not be null");
+        TMONode effector;
+        if (tmo.nodemap.TryGetValue(effector_name, out effector))
+        {
+            effector.Translation = target;
+        }
+    }
 
     /// <summary>
     /// ãtâ^ìÆäwÇ…ÇÊÇÈâÇìæÇ‹Ç∑ÅB
