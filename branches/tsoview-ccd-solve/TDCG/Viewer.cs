@@ -1033,6 +1033,11 @@ public class Viewer : IDisposable
         }
     }
     bool solved = true;
+    /// <summary>
+    /// ‹t‰^“®Šw‚É‚æ‚é‰ğ‚ğ“¾‚ç‚ê‚½‚©B
+    /// </summary>
+    public bool Solved { get { return solved; } set { solved = value; }}
+
     long wait = (long)(10000000.0f / 60.0f);
 
     private int frame_index = 0;

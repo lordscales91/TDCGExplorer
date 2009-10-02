@@ -92,7 +92,10 @@ namespace TMOComposer
         private void CreatePngSave()
         {
             if (File.Exists(pngsave_file))
+            {
                 pngsave = PngSave.Load(pngsave_file);
+                pngsave.UpdateID();
+            }
             else
                 pngsave = new PngSave();
             pngSaveItemBindingSource.DataSource = pngsave.items;
@@ -158,7 +161,7 @@ namespace TMOComposer
             if (tmoanim.SourceTmo.frames != null)
             {
                 tmoanim.Process();
-                tmoanim.SaveSourceToFile(String.Format("out-{0:D3}.tmo", pngsave_row));
+                tmoanim.SaveSourceToFile();
 
                 Figure fig = viewer.FigureList[pngsave_row];
                 fig.Tmo = tmoanim.SourceTmo;
@@ -189,6 +192,7 @@ namespace TMOComposer
             TMOAnimItem item = new TMOAnimItem();
             item.PoseFile = lvPoses.SelectedItems[0].Text;
             tmoAnimItemBindingSource.Add(item);
+            pngsave.UpdateID();
         }
 
         private void btnDelete_Click(object sender, EventArgs e)
@@ -206,6 +210,7 @@ namespace TMOComposer
 
             TMOAnimItem item = tmoanim.items[tmoanim_row];
             tmoAnimItemBindingSource.Remove(item);
+            pngsave.UpdateID();
         }
 
         private void btnUp_Click(object sender, EventArgs e)
@@ -228,6 +233,7 @@ namespace TMOComposer
             tmoAnimItemBindingSource.Remove(item);
             tmoAnimItemBindingSource.Insert(tmoanim_row - 1, item);
             tmoAnimItemBindingSource.Position = tmoanim_row - 1;
+            pngsave.UpdateID();
         }
 
         private void btnDown_Click(object sender, EventArgs e)
@@ -250,6 +256,7 @@ namespace TMOComposer
             tmoAnimItemBindingSource.Remove(item);
             tmoAnimItemBindingSource.Insert(tmoanim_row + 1, item);
             tmoAnimItemBindingSource.Position = tmoanim_row + 1;
+            pngsave.UpdateID();
         }
 
         private void btnRec_Click(object sender, EventArgs e)
@@ -294,6 +301,7 @@ namespace TMOComposer
             PngSaveItem item = pngsave.items[pngsave_row];
             tmoAnimItemBindingSource.DataSource = null;
             pngSaveItemBindingSource.Remove(item);
+            pngsave.UpdateID();
         }
 
         private void gvTMOAnimItems_DoubleClick(object sender, EventArgs e)
@@ -347,6 +355,7 @@ namespace TMOComposer
             TMOFile tmo = tmoanim.GetTmo(item);
             if (tmo.frames != null)
             {
+                viewer.Solved = true;
                 fig.Tmo = tmo;
                 fig.UpdateNodeMapAndBoneMatrices();
             }

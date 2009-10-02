@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 using TDCG;
@@ -23,9 +24,18 @@ namespace TMOComposer
         [XmlIgnore]
         public TMOFile Tmo { get; set; }
 
-        public string GetPoseFileWithTmoExtension()
+        int png_id;
+        int id;
+
+        public void UpdateID(int png_id, int id)
         {
-            return Path.GetFileNameWithoutExtension(this.PoseFile) + ".tmo";
+            this.png_id = png_id;
+            this.id = id;
+        }
+
+        public string GetTmoPath()
+        {
+            return Path.Combine(Application.StartupPath, String.Format(@"motion\{0}\{1}.tmo", png_id, id));
         }
 
         public void CopyFace()
@@ -100,6 +110,16 @@ namespace TMOComposer
             source = new TMOFile();
         }
 
+        int png_id;
+
+        public void UpdateID(int png_id)
+        {
+            this.png_id = png_id;
+
+            for (int i = 0; i < items.Count; i++)
+                items[i].UpdateID(png_id, i);
+        }
+
         public static string PoseRoot { get; set; }
         public static string FaceRoot { get; set; }
 
@@ -118,10 +138,19 @@ namespace TMOComposer
             source = CreateTmo(SourceItem);
         }
 
-        public void SaveSourceToFile(string dest_path)
+        public string GetTmoPath()
+        {
+            return String.Format(@"out-{0:D3}.tmo", png_id);
+        }
+
+        public void SaveSourceToFile()
         {
             if (source.frames != null)
-                source.Save(dest_path);
+            {
+                string tmo_path = GetTmoPath();
+                Console.WriteLine("Save File: " + tmo_path);
+                source.Save(tmo_path);
+            }
         }
 
         public static TMOFile LoadPNGFile(string source_file)
@@ -171,7 +200,7 @@ namespace TMOComposer
             if (item == null)
                 return tmo;
 
-            string tmo_file = item.GetPoseFileWithTmoExtension();
+            string tmo_file = item.GetTmoPath();
             if (File.Exists(tmo_file))
             {
                 Console.WriteLine("Load File: " + tmo_file);
@@ -198,7 +227,12 @@ namespace TMOComposer
                 TMOFile tmo = GetTmo(item);
 
                 if (tmo.frames != null)
-                    tmo.Save(item.GetPoseFileWithTmoExtension());
+                {
+                    string tmo_file = item.GetTmoPath();
+                    Console.WriteLine("Save File: " + tmo_file);
+                    Directory.CreateDirectory(Path.GetDirectoryName(tmo_file));
+                    tmo.Save(tmo_file);
+                }
             }
         }
 
@@ -212,10 +246,6 @@ namespace TMOComposer
                     continue;
 
                 source.SlerpFrameEndTo(tmo, item.Length, item.Accel);
-                Console.WriteLine("source nodes Length {0}", source.nodes.Length);
-                Console.WriteLine("motion nodes Length {0}", tmo.nodes.Length);
-                Console.WriteLine("source frames Length {0}", source.frames.Length);
-                Console.WriteLine("motion frames Length {0}", tmo.frames.Length);
             }
         }
     }
