@@ -1333,7 +1333,7 @@ public class Viewer : IDisposable
     }
 
     /// スクリーン座標からエフェクタを見つけます。
-    /// TODO: 衝突するエフェクタの中で最も近い位置にあるエフェクタを返す。
+    /// 衝突するエフェクタの中で最も近い位置にあるエフェクタを返します。
     private bool FindEffectorOnScreenPoint(float x, float y, out TMONode effector)
     {
         effector = null;
@@ -1342,24 +1342,43 @@ public class Viewer : IDisposable
         if (TryGetFigure(out fig))
         {
             Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+            float min_time = 1e12f;
             foreach (string effector_name in effector_dictionary.Keys)
             {
                 TMONode bone;
                 if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
                 {
-                    if (FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone))
+                    Vector3 collisionPoint;
+                    float collisionTime;
+                    if (FindBoneOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone, out collisionPoint, out collisionTime))
                     {
-                        effector = bone;
-                        return true;
+                        if (collisionTime < min_time)
+                        {
+                            min_time = collisionTime;
+                            effector = bone;
+                        }
                     }
                 }
             }
+            if (effector != null)
+                return true;
         }
         return false;
     }
 
     private bool FindBoneOnScreenPoint(float x, float y, TMONode bone)
     {
+        float collisionTime;
+        Vector3 collisionPoint;
+
+        return FindBoneOnScreenPoint(x, y, bone, out collisionPoint, out collisionTime);
+    }
+
+    private bool FindBoneOnScreenPoint(float x, float y, TMONode bone, out Vector3 collisionPoint, out float collisionTime)
+    {
+        collisionTime = 0.0f;
+        collisionPoint = Vector3.Empty;
+
         Figure fig;
         if (TryGetFigure(out fig))
         {
@@ -1370,9 +1389,6 @@ public class Viewer : IDisposable
             Vector3 rayStart = ScreenToWorld(x, y, 0.0f);
             Vector3 rayEnd = ScreenToWorld(x, y, 1.0f);
             Vector3 rayOrientation = rayEnd - rayStart;
-
-            Vector3 collisionPoint;
-            float collisionTime;
 
             return DetectSphereRayCollision(sphereRadius, ref sphereCenter, ref rayStart, ref rayOrientation, out collisionPoint, out collisionTime);
         }
