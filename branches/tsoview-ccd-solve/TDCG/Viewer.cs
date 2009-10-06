@@ -186,6 +186,7 @@ public class Viewer : IDisposable
             {
                 float angle = dx * 0.01f;
                 bone.Rotation = Quaternion.RotationAxis(current_handle_dir, angle) * bone.Rotation;
+                LimitRotation(bone);
             }
             fig.UpdateBoneMatricesWithoutTMOFrame();
         }
@@ -743,6 +744,8 @@ public class Viewer : IDisposable
 
         current_effector_name = "|W_Hips";
 
+        constraint = TMOConstraint.Load(@"angle-GRABIA-1.xml");
+
         //should be update target when select figure
         this.FigureEvent += delegate(object sender, EventArgs e)
         {
@@ -763,6 +766,7 @@ public class Viewer : IDisposable
     }
     string current_effector_name = null;
     Vector3 current_handle_dir = Vector3.Empty;
+    TMOConstraint constraint = null;
 
     private void OnDeviceLost(object sender, EventArgs e)
     {
@@ -1500,9 +1504,18 @@ public class Viewer : IDisposable
                 if (tmo.nodemap.TryGetValue(node_name, out node))
                 {
                     Solve(effector, node);
+                    LimitRotation(node);
                 }
             }
         }
+    }
+
+    private void LimitRotation(TMONode node)
+    {
+        TMOConstraintItem item = constraint.GetItem(node.ShortName);
+        Vector3 angle1 = TMOMat.ToAngle(node.Rotation);
+        Vector3 angle0 = item.Limit(angle1);
+        node.Rotation = TMOMat.ToQuaternion(angle0);
     }
 
     /// <summary>

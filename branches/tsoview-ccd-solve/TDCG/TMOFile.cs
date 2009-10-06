@@ -738,21 +738,26 @@ namespace TDCG
         public static Vector3 ToAngle(Matrix m)
         {
             Vector3 angle;
-            double r = -Math.Asin(m.M13);
-            double cr = Math.Cos(r);
-            if (Math.Abs(cr) < 1e-12)
+            if (m.M13 < +1.0f - float.Epsilon)
             {
-                angle.Z = Geometry.RadianToDegree((float)Math.Atan2(-m.M21, m.M22));
-                angle.Y = Geometry.RadianToDegree((float)-Math.Asin(m.M13));
-                angle.X = 0.0f;
+                if (m.M13 > -1.0f + float.Epsilon)
+                {
+                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
+                    angle.Y = Geometry.RadianToDegree((float)Math.Asin(-m.M13));
+                    angle.X = Geometry.RadianToDegree((float)Math.Atan2(m.M23, m.M33));
+                }
+                else
+                {
+                    angle.Z = -Geometry.RadianToDegree((float)Math.Atan2(+m.M21, +m.M31));
+                    angle.Y = +90.0f;
+                    angle.X = 0.0f;
+                }
             }
             else
             {
-                angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
-                angle.Y = Geometry.RadianToDegree((float)r);
-                angle.X = Geometry.RadianToDegree((float)(Math.Asin(m.M23) / cr));
-                if (m.M33 < 0)
-                    angle.X = 180 - angle.X;
+                    angle.Z = +Geometry.RadianToDegree((float)Math.Atan2(-m.M21, -m.M31));
+                    angle.Y = -90.0f;
+                    angle.X = 0.0f;
             }
             return angle;
         }

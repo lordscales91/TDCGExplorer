@@ -7,7 +7,6 @@ using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
 using System.Xml;
 using System.Xml.Serialization;
-using TDCG;
 
 namespace TDCG
 {
@@ -28,6 +27,67 @@ public class TMOConstraintItem
     /// 角度の最大値
     /// </summary>
     public Vector3 Max { get; set; }
+    /// 象限X
+    public int SectorX { get; set; }
+    /// 象限Y
+    public int SectorY { get; set; }
+    /// 象限Z
+    public int SectorZ { get; set; }
+
+    /// euler角の範囲を制限します。
+    public Vector3 Limit(Vector3 angle1)
+    {
+        Vector3 angle0 = Vector3.Empty;
+        Vector3 angle2 = angle1;
+
+        if (angle2.X < 0) angle2.X += 360;
+        if (angle2.Y < 0) angle2.Y += 360;
+        if (angle2.Z < 0) angle2.Z += 360;
+
+        if (SectorX == 1)
+        {
+            if (angle1.X < Min.X) angle1.X = Min.X;
+            if (angle1.X > Max.X) angle1.X = Max.X;
+            angle0.X = angle1.X;
+        }
+        else
+        {
+            if (angle2.X < Min.X) angle2.X = Min.X;
+            if (angle2.X > Max.X) angle2.X = Max.X;
+            if (angle2.X > 180) angle2.X -= 360;
+            angle0.X = angle2.X;
+        }
+
+        if (SectorY == 1)
+        {
+            if (angle1.Y < Min.Y) angle1.Y = Min.Y;
+            if (angle1.Y > Max.Y) angle1.Y = Max.Y;
+            angle0.Y = angle1.Y;
+        }
+        else
+        {
+            if (angle2.Y < Min.Y) angle2.Y = Min.Y;
+            if (angle2.Y > Max.Y) angle2.Y = Max.Y;
+            if (angle2.Y > 180) angle2.Y -= 360;
+            angle0.Y = angle2.Y;
+        }
+
+        if (SectorZ == 1)
+        {
+            if (angle1.Z < Min.Z) angle1.Z = Min.Z;
+            if (angle1.Z > Max.Z) angle1.Z = Max.Z;
+            angle0.Z = angle1.Z;
+        }
+        else
+        {
+            if (angle2.Z < Min.Z) angle2.Z = Min.Z;
+            if (angle2.Z > Max.Z) angle2.Z = Max.Z;
+            if (angle2.Z > 180) angle2.Z -= 360;
+            angle0.Z = angle2.Z;
+        }
+
+        return angle0;
+    }
 }
 
 /// <summary>
@@ -73,8 +133,11 @@ public class TMOConstraint
     {
         TMOFile tmo = new TMOFile();
 
-        Dictionary<string, Vector3> min_dic = new Dictionary<string, Vector3>();
-        Dictionary<string, Vector3> max_dic = new Dictionary<string, Vector3>();
+        Dictionary<string, Vector3> min1_dic = new Dictionary<string, Vector3>();
+        Dictionary<string, Vector3> max1_dic = new Dictionary<string, Vector3>();
+
+        Dictionary<string, Vector3> min2_dic = new Dictionary<string, Vector3>();
+        Dictionary<string, Vector3> max2_dic = new Dictionary<string, Vector3>();
 
         string[] files = Directory.GetFiles(source_file, "*.tmo");
         foreach (string file in files)
@@ -85,57 +148,119 @@ public class TMOConstraint
                 TMOMat mat = node.frame_matrices[0];
 
                 string sname = node.ShortName;
-                Vector3 angle = TMOMat.ToAngle(mat.m);
+                Vector3 angle1 = TMOMat.ToAngle(mat.m);
+                Vector3 angle2 = angle1;
 
-                if (! min_dic.ContainsKey(sname))
-                    min_dic[sname] = Vector3.Empty;
-                if (! max_dic.ContainsKey(sname))
-                    max_dic[sname] = Vector3.Empty;
+                if (angle2.X < 0) angle2.X += 360;
+                if (angle2.Y < 0) angle2.Y += 360;
+                if (angle2.Z < 0) angle2.Z += 360;
 
-                Vector3 min = min_dic[sname];
-                Vector3 max = max_dic[sname]; 
+                if (! min1_dic.ContainsKey(sname))
+                    min1_dic[sname] = new Vector3(+180.0f, +180.0f, +180.0f);
+                if (! max1_dic.ContainsKey(sname))
+                    max1_dic[sname] = new Vector3(-180.0f, -180.0f, -180.0f);
 
-                if (angle.X < min_dic[sname].X)
-                    min.X = angle.X;
-                if (angle.X > max_dic[sname].X)
-                    max.X = angle.X;
+                Vector3 min1 = min1_dic[sname];
+                Vector3 max1 = max1_dic[sname]; 
 
-                if (angle.Y < min_dic[sname].Y)
-                    min.Y = angle.Y;
-                if (angle.Y > max_dic[sname].Y)
-                    max.Y = angle.Y;
+                if (angle1.X < min1_dic[sname].X) min1.X = angle1.X;
+                if (angle1.X > max1_dic[sname].X) max1.X = angle1.X;
 
-                if (angle.Z < min_dic[sname].Z)
-                    min.Z = angle.Z;
-                if (angle.Z > max_dic[sname].Z)
-                    max.Z = angle.Z;
+                if (angle1.Y < min1_dic[sname].Y) min1.Y = angle1.Y;
+                if (angle1.Y > max1_dic[sname].Y) max1.Y = angle1.Y;
 
-                min_dic[sname] = min;
-                max_dic[sname] = max;
+                if (angle1.Z < min1_dic[sname].Z) min1.Z = angle1.Z;
+                if (angle1.Z > max1_dic[sname].Z) max1.Z = angle1.Z;
+
+                min1_dic[sname] = min1;
+                max1_dic[sname] = max1;
+
+                if (! min2_dic.ContainsKey(sname))
+                    min2_dic[sname] = new Vector3(360.0f, 360.0f, 360.0f);
+                if (! max2_dic.ContainsKey(sname))
+                    max2_dic[sname] = new Vector3(0.0f, 0.0f, 0.0f);
+
+                Vector3 min2 = min2_dic[sname];
+                Vector3 max2 = max2_dic[sname]; 
+
+                if (angle2.X < min2_dic[sname].X) min2.X = angle2.X;
+                if (angle2.X > max2_dic[sname].X) max2.X = angle2.X;
+
+                if (angle2.Y < min2_dic[sname].Y) min2.Y = angle2.Y;
+                if (angle2.Y > max2_dic[sname].Y) max2.Y = angle2.Y;
+
+                if (angle2.Z < min2_dic[sname].Z) min2.Z = angle2.Z;
+                if (angle2.Z > max2_dic[sname].Z) max2.Z = angle2.Z;
+
+                min2_dic[sname] = min2;
+                max2_dic[sname] = max2;
             }
         }
 
-        foreach (string sname in min_dic.Keys)
+        foreach (string sname in min1_dic.Keys)
         {
             TMOConstraintItem item = new TMOConstraintItem();
             item.ShortName = sname;
-            item.Min = min_dic[sname];
-            item.Max = max_dic[sname];
+
+            Vector3 min1 = min1_dic[sname];
+            Vector3 max1 = max1_dic[sname];
+
+            Vector3 min2 = min2_dic[sname];
+            Vector3 max2 = max2_dic[sname];
+
+            Vector3 sub1 = max1 - min1;
+            Vector3 sub2 = max2 - min2;
+
+            Vector3 min;
+            Vector3 max;
+
+            if (sub1.X <= sub2.X)
+            {
+                min.X = min1.X;
+                max.X = max1.X;
+                item.SectorX = 1;
+            }
+            else
+            {
+                min.X = min2.X;
+                max.X = max2.X;
+                item.SectorX = 2;
+            }
+
+            if (sub1.Y <= sub2.Y)
+            {
+                min.Y = min1.Y;
+                max.Y = max1.Y;
+                item.SectorY = 1;
+            }
+            else
+            {
+                min.Y = min2.Y;
+                max.Y = max2.Y;
+                item.SectorY = 2;
+            }
+
+            if (sub1.Z <= sub2.Z)
+            {
+                min.Z = min1.Z;
+                max.Z = max1.Z;
+                item.SectorZ = 1;
+            }
+            else
+            {
+                min.Z = min2.Z;
+                max.Z = max2.Z;
+                item.SectorZ = 2;
+            }
+            item.Min = min;
+            item.Max = max;
+
             items.Add(item);
-            /*
-            Console.WriteLine("node {0} x {1:F2}..{2:F2} y {3:F2}..{4:F2} z {5:F2}..{6:F2}", sname,
-                    min_dic[sname].X,
-                    max_dic[sname].X,
-                    min_dic[sname].Y,
-                    max_dic[sname].Y,
-                    min_dic[sname].Z,
-                    max_dic[sname].Z);
-                    */
         }
     }
 
     /// <summary>
-    /// node名（短い形式）に対応する要素を得る。
+    /// node名（短い形式）に対応する要素を得ます。
     /// </summary>
     /// <param name="sname">node名（短い形式）</param>
     public TMOConstraintItem GetItem(string sname)
