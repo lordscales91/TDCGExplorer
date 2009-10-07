@@ -724,40 +724,40 @@ namespace TDCG
             return new TMOMat(m * Matrix.Translation(t));
         }
 
-        /// eulerŠp‚ğquaternion‚É•ÏŠ·
+        /// eulerŠp (zxy‰ñ“]) ‚ğquaternion‚É•ÏŠ·
         public static Quaternion ToQuaternion(Vector3 angle)
         {
             Quaternion qx, qy, qz;
             qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), Geometry.DegreeToRadian(angle.X));
             qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), Geometry.DegreeToRadian(angle.Y));
             qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), Geometry.DegreeToRadian(angle.Z));
-            return qx * qy * qz;
+            return qy * qx * qz;
         }
 
-        /// ‰ñ“]s—ñ‚ğeulerŠp‚É•ÏŠ·
+        /// ‰ñ“]s—ñ‚ğeulerŠp (zxy‰ñ“]) ‚É•ÏŠ·
         public static Vector3 ToAngle(Matrix m)
         {
             Vector3 angle;
-            if (m.M13 < +1.0f - float.Epsilon)
+            if (m.M23 < +1.0f - float.Epsilon)
             {
-                if (m.M13 > -1.0f + float.Epsilon)
+                if (m.M23 > -1.0f + float.Epsilon)
                 {
-                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
-                    angle.Y = Geometry.RadianToDegree((float)Math.Asin(-m.M13));
-                    angle.X = Geometry.RadianToDegree((float)Math.Atan2(m.M23, m.M33));
+                    angle.X = Geometry.RadianToDegree((float)Math.Asin(m.M23));
+                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(-m.M21, m.M22));
+                    angle.Y = Geometry.RadianToDegree((float)Math.Atan2(-m.M13, m.M33));
                 }
                 else
                 {
-                    angle.Z = -Geometry.RadianToDegree((float)Math.Atan2(+m.M21, +m.M31));
-                    angle.Y = +90.0f;
-                    angle.X = 0.0f;
+                    angle.X = -90.0f;
+                    angle.Y = 0.0f;
+                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
                 }
             }
             else
             {
-                    angle.Z = +Geometry.RadianToDegree((float)Math.Atan2(-m.M21, -m.M31));
-                    angle.Y = -90.0f;
-                    angle.X = 0.0f;
+                angle.X = +90.0f;
+                angle.Y = 0.0f;
+                angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
             }
             return angle;
         }
