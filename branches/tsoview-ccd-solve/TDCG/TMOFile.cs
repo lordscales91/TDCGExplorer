@@ -725,47 +725,75 @@ namespace TDCG
         }
 
         /// eulerŠp (zxy‰ñ“]) ‚ğquaternion‚É•ÏŠ·
-        public static Quaternion ToQuaternion(Vector3 angle)
+        public static Quaternion ToQuaternionZXY(Vector3 angle)
         {
             Quaternion qx, qy, qz;
             qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), Geometry.DegreeToRadian(angle.X));
             qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), Geometry.DegreeToRadian(angle.Y));
             qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), Geometry.DegreeToRadian(angle.Z));
-            return qy * qx * qz;
+            return qz * qx * qy;
         }
 
         /// ‰ñ“]s—ñ‚ğeulerŠp (zxy‰ñ“]) ‚É•ÏŠ·
-        public static Vector3 ToAngle(Matrix m)
+        public static Vector3 ToAngleZXY(Matrix m)
         {
             Vector3 angle;
-            if (m.M23 < +1.0f - float.Epsilon)
+            double cy = Math.Sqrt(m.M33 * m.M33 + m.M31 * m.M31);
+            if (cy > 16 * float.Epsilon)
             {
-                if (m.M23 > -1.0f + float.Epsilon)
-                {
-                    angle.X = Geometry.RadianToDegree((float)Math.Asin(m.M23));
-                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(-m.M21, m.M22));
-                    angle.Y = Geometry.RadianToDegree((float)Math.Atan2(-m.M13, m.M33));
-                }
-                else
-                {
-                    angle.X = -90.0f;
-                    angle.Y = 0.0f;
-                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
-                }
+                angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M22));
+                angle.X = Geometry.RadianToDegree((float)Math.Atan2(-m.M32, cy));
+                angle.Y = Geometry.RadianToDegree((float)Math.Atan2(m.M31, m.M33));
             }
             else
             {
-                angle.X = +90.0f;
-                angle.Y = 0.0f;
-                angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
+                angle.Z = Geometry.RadianToDegree((float)Math.Atan2(-m.M21, m.M11));
+                angle.X = Geometry.RadianToDegree((float)Math.Atan2(-m.M32, cy));
+                angle.Y = 0;
             }
             return angle;
         }
 
-        /// quaternion‚ğeulerŠp‚É•ÏŠ·
-        public static Vector3 ToAngle(Quaternion q)
+        /// quaternion‚ğeulerŠp (zxy‰ñ“]) ‚É•ÏŠ·
+        public static Vector3 ToAngleZXY(Quaternion q)
         {
-            return ToAngle(Matrix.RotationQuaternion(q));
+            return ToAngleZXY(Matrix.RotationQuaternion(q));
+        }
+
+        /// eulerŠp (xyz‰ñ“]) ‚ğquaternion‚É•ÏŠ·
+        public static Quaternion ToQuaternionXYZ(Vector3 angle)
+        {
+            Quaternion qx, qy, qz;
+            qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), Geometry.DegreeToRadian(angle.X));
+            qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), Geometry.DegreeToRadian(angle.Y));
+            qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), Geometry.DegreeToRadian(angle.Z));
+            return qx * qy * qz;
+        }
+
+        /// ‰ñ“]s—ñ‚ğeulerŠp (xyz‰ñ“]) ‚É•ÏŠ·
+        public static Vector3 ToAngleXYZ(Matrix m)
+        {
+            Vector3 angle;
+            double cy = Math.Sqrt(m.M11 * m.M11 + m.M12 * m.M12);
+            if (cy > 16 * float.Epsilon)
+            {
+                angle.X = Geometry.RadianToDegree((float)Math.Atan2(m.M23, m.M33));
+                angle.Y = Geometry.RadianToDegree((float)Math.Atan2(-m.M13, cy));
+                angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
+            }
+            else
+            {
+                angle.X = Geometry.RadianToDegree((float)Math.Atan2(-m.M32, m.M22));
+                angle.Y = Geometry.RadianToDegree((float)Math.Atan2(-m.M13, cy));
+                angle.Z = 0;
+            }
+            return angle;
+        }
+
+        /// quaternion‚ğeulerŠp (xyz‰ñ“]) ‚É•ÏŠ·
+        public static Vector3 ToAngleXYZ(Quaternion q)
+        {
+            return ToAngleXYZ(Matrix.RotationQuaternion(q));
         }
     }
 

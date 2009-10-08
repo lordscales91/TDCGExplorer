@@ -6,6 +6,8 @@ using System.Threading;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
@@ -108,7 +110,11 @@ public class Viewer : IDisposable
                 lightDir = ScreenToOrientation(e.X, e.Y);
             else
             if (! motionEnabled)
+            {
                 SelectEffector();
+                if (current_effector_name == "|W_Hips")
+                    SaveTarget();
+            }
             break;
         }
 
@@ -131,6 +137,24 @@ public class Viewer : IDisposable
                 current_effector_name = effector.Name;
                 target = effector.GetWorldPosition();
                 solved = true;
+            }
+        }
+    }
+
+    private void SaveTarget()
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+            target_dictionary.Clear();
+            foreach (string effector_name in effector_list)
+            {
+                TMONode bone;
+                if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
+                {
+                    target_dictionary[effector_name] = bone.GetWorldPosition();
+                }
             }
         }
     }
@@ -744,7 +768,11 @@ public class Viewer : IDisposable
 
         current_effector_name = "|W_Hips";
 
-        constraint = TMOConstraint.Load(@"angle-GRABIA-1.xml");
+        effector_list.Add("|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot");
+        effector_list.Add("|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot");
+
+        constraint_xyz = TMOConstraint.Load(@"angle-GRABIA-xyz.xml");
+        constraint_zxy = TMOConstraint.Load(@"angle-GRABIA-zxy.xml");
 
         //should be update target when select figure
         this.FigureEvent += delegate(object sender, EventArgs e)
@@ -766,7 +794,8 @@ public class Viewer : IDisposable
     }
     string current_effector_name = null;
     Vector3 current_handle_dir = Vector3.Empty;
-    TMOConstraint constraint = null;
+    TMOConstraint constraint_xyz = null;
+    TMOConstraint constraint_zxy = null;
 
     private void OnDeviceLost(object sender, EventArgs e)
     {
@@ -1034,7 +1063,7 @@ public class Viewer : IDisposable
                 if (current_effector_name == "|W_Hips")
                     SolveRootNode(fig.Tmo, current_effector_name);
                 else
-                    Solve(fig.Tmo, current_effector_name);
+                    Solve(fig.Tmo, current_effector_name, target);
                 fig.UpdateBoneMatricesWithoutTMOFrame();
             }
         }
@@ -1476,6 +1505,8 @@ public class Viewer : IDisposable
     }
 
     Dictionary<string, string[]> effector_dictionary = new Dictionary<string, string[]>();
+    List<string> effector_list = new List<string>();
+    Dictionary<string, Vector3> target_dictionary = new Dictionary<string, Vector3>();
 
     private void SolveRootNode(TMOFile tmo, string effector_name)
     {
@@ -1485,6 +1516,10 @@ public class Viewer : IDisposable
         {
             effector.Translation = target;
         }
+        foreach (string ename in effector_list)
+        {
+            Solve(tmo, ename, target_dictionary[ename]);
+        }
     }
 
     /// <summary>
@@ -1492,7 +1527,8 @@ public class Viewer : IDisposable
     /// </summary>
     /// <param name="tmo">tmo</param>
     /// <param name="effector_name">エフェクタnode名称</param>
-    private void Solve(TMOFile tmo, string effector_name)
+    /// <param name="target">目標</param>
+    private void Solve(TMOFile tmo, string effector_name, Vector3 target)
     {
         Debug.Assert(tmo.nodemap != null, "tso.nodemap should not be null");
         TMONode effector;
@@ -1503,19 +1539,39 @@ public class Viewer : IDisposable
                 TMONode node;
                 if (tmo.nodemap.TryGetValue(node_name, out node))
                 {
-                    Solve(effector, node);
+                    Solve(effector, node, target);
                     LimitRotation(node);
                 }
             }
         }
     }
 
+    static Regex re_legnode = new Regex(@"Leg");
+
     private void LimitRotation(TMONode node)
     {
-        TMOConstraintItem item = constraint.GetItem(node.ShortName);
-        Vector3 angle1 = TMOMat.ToAngle(node.Rotation);
+        if (re_legnode.IsMatch(node.ShortName))
+            LimitRotationXYZ(node);
+        else
+            LimitRotationZXY(node);
+    }
+
+    private void LimitRotationXYZ(TMONode node)
+    {
+        TMOConstraintItem item = constraint_xyz.GetItem(node.ShortName);
+        Vector3 angle1 = TMOMat.ToAngleXYZ(node.Rotation);
         Vector3 angle0 = item.Limit(angle1);
-        node.Rotation = TMOMat.ToQuaternion(angle0);
+        node.Rotation = TMOMat.ToQuaternionXYZ(angle0);
+        //Console.WriteLine("node {0} x {1:F2} y {2:F2} z {3:F2}", node.ShortName, angle0.X, angle0.Y, angle0.Z);
+    }
+
+    private void LimitRotationZXY(TMONode node)
+    {
+        TMOConstraintItem item = constraint_zxy.GetItem(node.ShortName);
+        Vector3 angle1 = TMOMat.ToAngleZXY(node.Rotation);
+        Vector3 angle0 = item.Limit(angle1);
+        node.Rotation = TMOMat.ToQuaternionZXY(angle0);
+        //Console.WriteLine("node {0} x {1:F2} y {2:F2} z {3:F2}", node.ShortName, angle0.X, angle0.Y, angle0.Z);
     }
 
     /// <summary>
@@ -1523,7 +1579,8 @@ public class Viewer : IDisposable
     /// </summary>
     /// <param name="effector">エフェクタnode</param>
     /// <param name="node">対象node</param>
-    public void Solve(TMONode effector, TMONode node)
+    /// <param name="target">目標</param>
+    public void Solve(TMONode effector, TMONode node, Vector3 target)
     {
         Vector3 worldTargetP = target;
 

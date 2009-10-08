@@ -148,7 +148,7 @@ public class TMOConstraint
                 TMOMat mat = node.frame_matrices[0];
 
                 string sname = node.ShortName;
-                Vector3 angle1 = TMOMat.ToAngle(mat.m);
+                Vector3 angle1 = TMOMat.ToAngleXYZ(mat.m);
                 Vector3 angle2 = angle1;
 
                 if (angle2.X < 0) angle2.X += 360;
