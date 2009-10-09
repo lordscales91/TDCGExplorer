@@ -219,6 +219,9 @@ public class Figure : IDisposable
     public static TMOFile GenerateTMOFromTSO(TSOFile tso)
     {
         TMOFile tmo = new TMOFile();
+        tmo.header = new byte[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+        tmo.opt0 = 1;
+        tmo.opt1 = 0;
 
         int node_count = tso.nodes.Length;
         tmo.nodes = new TMONode[node_count];
@@ -244,11 +247,11 @@ public class Figure : IDisposable
 
             for (int j = 0; j < matrix_count; j++)
             {
-                TMOMat mat = tmo.frames[i].matrices[j] = new TMOMat();
-                mat.m = tso.nodes[j].TransformationMatrix;
+                TMOMat mat = tmo.frames[i].matrices[j] = new TMOMat(tso.nodes[j].TransformationMatrix);
                 tmo.nodes[j].frame_matrices.Add(mat);
             }
         }
+        tmo.footer = new byte[4] { 0, 0, 0, 0 };
 
         return tmo;
     }

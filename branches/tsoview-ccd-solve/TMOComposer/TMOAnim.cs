@@ -54,6 +54,22 @@ namespace TMOComposer
                     Tmo.CopyChildrenNodeFrom(face_tmo, "face_oya", except_snames);
             }
         }
+
+        public TMOAnimItem Dup()
+        {
+            TMOAnimItem item = new TMOAnimItem();
+            item.PoseFile = PoseFile;
+            item.Length = Length;
+            item.FaceFile = FaceFile;
+            item.Accel = Accel;
+            if (Tmo != null)
+            {
+                item.Tmo = Tmo.Dup();
+                item.Tmo.LoadTransformationMatrix(0);
+            }
+
+            return item;
+        }
     }
 
     public class TMOAnim

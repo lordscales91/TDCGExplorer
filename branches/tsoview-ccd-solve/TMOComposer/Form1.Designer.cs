@@ -46,6 +46,7 @@
             this.gvFigures = new System.Windows.Forms.DataGridView();
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnDel = new System.Windows.Forms.Button();
+            this.btnCopy = new System.Windows.Forms.Button();
             this.fileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pngSaveItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.poseFileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -127,7 +128,7 @@
             // 
             // btnUp
             // 
-            this.btnUp.Location = new System.Drawing.Point(218, 168);
+            this.btnUp.Location = new System.Drawing.Point(218, 197);
             this.btnUp.Name = "btnUp";
             this.btnUp.Size = new System.Drawing.Size(50, 23);
             this.btnUp.TabIndex = 5;
@@ -137,7 +138,7 @@
             // 
             // btnDown
             // 
-            this.btnDown.Location = new System.Drawing.Point(218, 197);
+            this.btnDown.Location = new System.Drawing.Point(218, 226);
             this.btnDown.Name = "btnDown";
             this.btnDown.Size = new System.Drawing.Size(50, 23);
             this.btnDown.TabIndex = 6;
@@ -147,7 +148,7 @@
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(218, 226);
+            this.btnDelete.Location = new System.Drawing.Point(218, 255);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(50, 23);
             this.btnDelete.TabIndex = 7;
@@ -203,6 +204,16 @@
             this.btnDel.UseVisualStyleBackColor = true;
             this.btnDel.Click += new System.EventHandler(this.btnDel_Click);
             // 
+            // btnCopy
+            // 
+            this.btnCopy.Location = new System.Drawing.Point(218, 168);
+            this.btnCopy.Name = "btnCopy";
+            this.btnCopy.Size = new System.Drawing.Size(50, 23);
+            this.btnCopy.TabIndex = 12;
+            this.btnCopy.Text = "&Copy";
+            this.btnCopy.UseVisualStyleBackColor = true;
+            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
+            // 
             // fileDataGridViewTextBoxColumn
             // 
             this.fileDataGridViewTextBoxColumn.DataPropertyName = "File";
@@ -237,6 +248,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 563);
+            this.Controls.Add(this.btnCopy);
             this.Controls.Add(this.btnDel);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.gvFigures);
@@ -278,6 +290,7 @@
         private System.Windows.Forms.BindingSource pngSaveItemBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn fileDataGridViewTextBoxColumn;
         private System.Windows.Forms.Button btnDel;
+        private System.Windows.Forms.Button btnCopy;
     }
 }
 

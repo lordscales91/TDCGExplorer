@@ -360,5 +360,24 @@ namespace TMOComposer
                 fig.UpdateNodeMapAndBoneMatrices();
             }
         }
+
+        private void btnCopy_Click(object sender, EventArgs e)
+        {
+            int pngsave_row = pngSaveItemBindingSource.Position;
+            int tmoanim_row = tmoAnimItemBindingSource.Position;
+
+            if (pngsave_row == -1)
+                return;
+
+            TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;
+
+            if (tmoanim_row == -1)
+                return;
+
+            TMOAnimItem item = tmoanim.items[tmoanim_row].Dup();
+            tmoAnimItemBindingSource.Insert(tmoanim_row + 1, item);
+            tmoAnimItemBindingSource.Position = tmoanim_row + 1;
+            pngsave.UpdateID();
+        }
     }
 }

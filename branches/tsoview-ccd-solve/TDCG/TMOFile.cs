@@ -444,6 +444,49 @@ namespace TDCG
             m.M43 = reader.ReadSingle();
             m.M44 = reader.ReadSingle();
         }
+
+        /// <summary>
+        /// tmoÇ©ÇÁtmoÇê∂ê¨ÇµÇ‹Ç∑ÅB
+        /// </summary>
+        public TMOFile Dup()
+        {
+            TMOFile tmo = new TMOFile();
+            tmo.header = new byte[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            tmo.opt0 = 1;
+            tmo.opt1 = 0;
+
+            int node_count = nodes.Length;
+            tmo.nodes = new TMONode[node_count];
+
+            for (int i = 0; i < node_count; i++)
+            {
+                string name = nodes[i].Name;
+                tmo.nodes[i] = new TMONode(i, name);
+            }
+
+            tmo.GenerateNodemapAndTree();
+
+            int frame_count = 1;
+            tmo.frames = new TMOFrame[frame_count];
+
+            for (int i = 0; i < frame_count; i++)
+            {
+                tmo.frames[i] = new TMOFrame();
+                tmo.frames[i].id = i;
+
+                int matrix_count = node_count;
+                tmo.frames[i].matrices = new TMOMat[matrix_count];
+
+                for (int j = 0; j < matrix_count; j++)
+                {
+                    TMOMat mat = tmo.frames[i].matrices[j] = new TMOMat(frames[i].matrices[j].m);
+                    tmo.nodes[j].frame_matrices.Add(mat);
+                }
+            }
+            tmo.footer = new byte[4] { 0, 0, 0, 0 };
+
+            return tmo;
+        }
     }
 
     /// <summary>
