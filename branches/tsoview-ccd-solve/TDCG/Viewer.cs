@@ -56,6 +56,15 @@ public class Viewer : IDisposable
     Vector3 target = new Vector3(5.0f, 10.0f, 0.0f);
 
     /// <summary>
+    /// viewerを生成します。
+    /// </summary>
+    public Viewer()
+    {
+        LimitRotationEnabled = true;
+        FloorEnabled = true;
+    }
+
+    /// <summary>
     /// 逆運動学における目標を移動します。
     /// </summary>
     public void MoveTarget(float dx, float dy, float dz)
@@ -945,6 +954,16 @@ public class Viewer : IDisposable
     internal bool motionEnabled = false;
     internal bool shadowShown = false;
     internal bool SpriteShown = false;
+    
+    /// <summary>
+    /// 回転角制限が有効であるか。
+    /// </summary>
+    public bool LimitRotationEnabled { get; set; }
+    
+    /// <summary>
+    /// 接地が有効であるか。
+    /// </summary>
+    public bool FloorEnabled { get; set; }
 
     /// <summary>
     /// モーションが有効であるか。
@@ -1516,10 +1535,11 @@ public class Viewer : IDisposable
         {
             effector.Translation = target;
         }
-        foreach (string ename in effector_list)
-        {
-            Solve(tmo, ename, target_dictionary[ename]);
-        }
+        if (FloorEnabled)
+            foreach (string ename in effector_list)
+            {
+                Solve(tmo, ename, target_dictionary[ename]);
+            }
     }
 
     /// <summary>
@@ -1550,10 +1570,11 @@ public class Viewer : IDisposable
 
     private void LimitRotation(TMONode node)
     {
-        if (re_legnode.IsMatch(node.ShortName))
-            LimitRotationXYZ(node);
-        else
-            LimitRotationZXY(node);
+        if (LimitRotationEnabled)
+            if (re_legnode.IsMatch(node.ShortName))
+                LimitRotationXYZ(node);
+            else
+                LimitRotationZXY(node);
     }
 
     private void LimitRotationXYZ(TMONode node)
