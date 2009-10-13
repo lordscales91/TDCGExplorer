@@ -17,7 +17,7 @@ namespace TDCGExplorer
     public class TDCGExplorer
     {
         public const string CONST_DBVERSION = "1.00";
-        public const string CONST_APPVERSION = "1.01";
+        public const string CONST_APPVERSION = "1.07";
         public const string CONST_COPYRIGHT = "Copyright © 2009 3DCG Craftsmen's Guild.";
 
         private static SystemDatabase systemDatabase;
@@ -27,9 +27,9 @@ namespace TDCGExplorer
         private static TagNamesDictionary tagNames;
         private static MainForm form;
         private static Byte[] defaultTMO;
+        private static bool figureloaded = false;
         private static string lastAccessFile = null;
 
-//        public static volatile bool fThreadRun = false;
         private static volatile string toolTipsMessage = "";
         private static volatile object lockObject = new Object();
 
@@ -58,8 +58,10 @@ namespace TDCGExplorer
         [STAThread]
         static void Main()
         {
+#if false
             try
             {
+#endif
                 Directory.SetCurrentDirectory(Application.StartupPath);
 
                 systemDatabase = new SystemDatabase();
@@ -79,6 +81,7 @@ namespace TDCGExplorer
                 Application.EnableVisualStyles();
                 Application.SetCompatibleTextRenderingDefault(false);
                 Application.Run(form = new MainForm());
+#if false
             }
             catch (Exception ex)
             {
@@ -137,6 +140,7 @@ namespace TDCGExplorer
                     stream.Close();
                 }
             }
+#endif
             arcsDatabase.Dispose();
             systemDatabase.Dispose();
         }
@@ -157,6 +161,12 @@ namespace TDCGExplorer
         public static void ResetDefaultPose()
         {
             defaultTMO = LoadTMO("SnapShotPose.tmo");
+        }
+
+        public static bool FigureLoad
+        {
+            get { return figureloaded; }
+            set { figureloaded = value; }
         }
 
         public static Stream defaultpose
@@ -283,6 +293,9 @@ namespace TDCGExplorer
             edit.delete_tahcache = SystemDB.delete_tahcache;
             edit.taheditorprevire = SystemDB.taheditorpreview;
             edit.alwaysnewtab = SystemDB.alwaysnewtab;
+            edit.tahversioncollision = SystemDB.tahversioncollision;
+            edit.explorerzipfolder = SystemDB.explorerzipfolder;
+            edit.posedir = SystemDB.posefile_savedirectory;
             edit.Owner = MainFormWindow;
             if (edit.ShowDialog() == DialogResult.OK)
             {
@@ -308,6 +321,9 @@ namespace TDCGExplorer
                 SystemDB.delete_tahcache = edit.delete_tahcache;
                 SystemDB.taheditorpreview = edit.taheditorprevire;
                 SystemDB.alwaysnewtab = edit.alwaysnewtab;
+                SystemDB.tahversioncollision = edit.tahversioncollision;
+                SystemDB.explorerzipfolder = edit.explorerzipfolder;
+                SystemDB.posefile_savedirectory = edit.posedir;
                 SystemDB.appversion = CONST_APPVERSION;
             }
         }
@@ -418,6 +434,7 @@ namespace TDCGExplorer
 
         public static void MakeCollisionTreeView(TreeView tvTree)
         {
+            bool collsiondup = false;
             ArcsDatabase db = ArcsDB;
             GenericCollisionTahNode arcs = new GenericCollisionTahNode(SystemDB.arcs_path);
             tvTree.Nodes.Add(arcs);
@@ -431,10 +448,28 @@ namespace TDCGExplorer
             else
             {
                 colldomain = db.GetDuplicateDomain();
+                collsiondup = true;
             }
             foreach (ArcsTahEntry entry in list)
             {
                 if (colldomain.ContainsKey(entry.id) == false) continue;
+
+                if (systemDatabase.tahversioncollision && collsiondup)
+                {
+                    bool collsioned = false;
+                    // 衝突先のバージョンをチェックする.
+                    ArcsTahEntry tah1 = ArcsDB.GetTah(entry.id);
+                    foreach(ArcsCollisionRecord to in colldomain[entry.id]){
+                        ArcsTahEntry tah2 = ArcsDB.GetTah(to.toTahID);
+                        if (tah1.version == tah2.version)
+                        {
+                            collsioned = true;
+                            break;
+                        }
+                    }
+                    // 全部バージョン違いならスキップする.
+                    if (collsioned == false) continue;
+                }
 
                 char[] separetor = { '\\', '/' };
                 string[] toplevel = entry.path.Split(separetor);
@@ -681,6 +716,44 @@ namespace TDCGExplorer
             savenode.Expand();
         }
 
+        public static TreeNode FindNode(TreeNodeCollection nodes,string key)
+        {
+            foreach (TreeNode node in nodes)
+                if (node.FullPath.ToLower() == key.ToLower()) return node;
+            foreach (TreeNode node in nodes)
+            {
+                TreeNode subnode = FindNode(node.Nodes, key);
+                if (subnode != null) return subnode;
+            }
+            return null;
+        }
+
+        public static void AddFileTree(string path)
+        {
+            string diretory = Path.GetDirectoryName(path);
+            TreeView sftree = MainFormWindow.SaveFileTreeView;
+            GenericSavefileTreeNode node = (GenericSavefileTreeNode)FindNode(sftree.Nodes, diretory);
+            if (node != null)
+            {
+                node.Add(path);
+                sftree.SelectedNode = node;
+                node.DoTvTreeSelect();
+            }
+        }
+
+        public static void DeleteFileTree(string path)
+        {
+            string diretory = Path.GetDirectoryName(path);
+            TreeView sftree = MainFormWindow.SaveFileTreeView;
+            GenericSavefileTreeNode node = (GenericSavefileTreeNode)FindNode(sftree.Nodes, diretory);
+            if (node != null)
+            {
+                node.Del(path);
+                sftree.SelectedNode = node;
+                node.DoTvTreeSelect();
+            }
+        }
+
         // データベースがビルド済みならツリーを展開する.
         public static void IfReadyDbDisplayArcsDB()
         {
@@ -699,7 +772,7 @@ namespace TDCGExplorer
             // 展開に成功したらzipのノードの色を変える.
             if (ZipFileUtil.ExtractZipFile(zipsource, destpath) == true)
             {
-                ExplorerSelectPath(destpath);
+                if( SystemDB.explorerzipfolder ) ExplorerSelectPath(destpath);
                 sender.ForeColor = Color.Magenta;
                 return true;
             }

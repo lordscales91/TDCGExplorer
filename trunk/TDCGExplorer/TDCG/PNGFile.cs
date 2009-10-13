@@ -5,7 +5,7 @@ using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Checksums;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
-namespace TDCGExplorer
+namespace TDCG
 {
     /// <summary>
     /// PNGファイルを扱います。
@@ -30,17 +30,28 @@ namespace TDCGExplorer
         /// </summary>
         /// <param name="bw"></param>
         public delegate void BinaryWriterHandler(BinaryWriter bw);
+
         /// <summary>
         /// TaObチャンクを書き出すハンドラ
         /// </summary>
         public BinaryWriterHandler WriteTaOb;
+
         /// <summary>
         /// 指定パスに保存します。
         /// </summary>
         /// <param name="dest_file">パス</param>
-        public void Save(Stream stream /*string dest_file*/)
+        public void Save(string dest_file)
         {
-            BinaryWriter bw = new BinaryWriter(stream, System.Text.Encoding.Default);
+            using (Stream dest_stream = File.Create(dest_file))
+                Save(dest_stream);
+        }
+        /// <summary>
+        /// 指定ストリームに保存します。
+        /// </summary>
+        /// <param name="dest_stream">ストリーム</param>
+        public void Save(Stream dest_stream)
+        {
+            BinaryWriter bw = new BinaryWriter(dest_stream, System.Text.Encoding.Default);
 
             PNGWriter.Write(bw, header);
             PNGWriter.WriteIHDR(bw, ihdr);
@@ -51,9 +62,8 @@ namespace TDCGExplorer
             if (WriteTaOb != null)
                 WriteTaOb(bw);
             PNGWriter.WriteIEND(bw);
-
-            bw.Close();
         }
+
         /// <summary>
         /// pngヘッダを処理するのに用いるデリゲート型
         /// </summary>
@@ -86,9 +96,18 @@ namespace TDCGExplorer
         /// 指定パスから読み込みます。
         /// </summary>
         /// <param name="source_file">パス</param>
-        public void Load(Stream stream)
+        public void Load(string source_file)
         {
-            this.reader = new BinaryReader(stream, System.Text.Encoding.Default);
+            using (Stream source_stream = File.OpenRead(source_file))
+                Load(source_stream);
+        }
+        /// <summary>
+        /// 指定ストリームから読み込みます。
+        /// </summary>
+        /// <param name="source_stream">ストリーム</param>
+        public void Load(Stream source_stream)
+        {
+            this.reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
             this.header = reader.ReadBytes(8);
             if(header[0] != 0x89
             || header[1] != (byte)'P'
@@ -143,7 +162,6 @@ namespace TDCGExplorer
                     break;
                 }
             }
-            //reader.Close();
         }
 
         /// <summary>
@@ -216,6 +234,10 @@ namespace TDCGExplorer
         /// </summary>
         public TaobFtsoHandler Ftso;
 
+        /// <summary>
+        /// TaObチャンクを読みとります。
+        /// </summary>
+        /// <param name="chunk_data">チャンク</param>
         protected void ReadTaOb(byte[] chunk_data)
         {
             String type = System.Text.Encoding.ASCII.GetString(chunk_data, 0, 4);
