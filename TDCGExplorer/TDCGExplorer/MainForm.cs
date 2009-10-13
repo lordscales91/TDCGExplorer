@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -20,6 +21,8 @@ namespace TDCGExplorer
         private Color lastSelectTreeNodeColor = Color.Transparent;
         private TreeNode lastSelectTreeNodeForColor = null;
 
+        private Rectangle normalsize;
+
         public MainForm()
         {
             InitializeComponent();
@@ -28,24 +31,31 @@ namespace TDCGExplorer
         public TabControl TabControlMainView
         {
             get { return tabMainView; }
-            set { }
         }
 
         public ListBox ListBoxMainView
         {
             get { return listBoxMainListBox; }
-            set { }
         }
 
         public Viewer Viewer
         {
             get { return viewer; }
-            set { }
         }
 
         public TreeView ArcsTreeView
         {
             get { return treeViewArcs; }
+        }
+
+        public TreeView SaveFileTreeView
+        {
+            get { return treeViewSaveFile; }
+        }
+
+        public PictureBox PictureBox
+        {
+            get { return pictureBoxImage; }
         }
 
         // スレッド実行時はエラーにする.
@@ -82,6 +92,7 @@ namespace TDCGExplorer
                 Left = int.Parse(rect[0]);
                 Top = int.Parse(rect[1]);
                 Size = new Size(int.Parse(rect[2]), int.Parse(rect[3]));
+                normalsize = new Rectangle(Location, Size);
 
                 string splitterDistance = TDCGExplorer.SystemDB.splitter_distance;
                 string[] distance = splitterDistance.Split(',');
@@ -142,7 +153,7 @@ namespace TDCGExplorer
             if (threadCheck() == true){
                 e.Cancel = true;
             }
-            string widnowRect = Left.ToString() + "," + Top.ToString() + "," + Size.Width.ToString() + ","+Size.Height.ToString();
+            string widnowRect = normalsize.Left.ToString() + "," + normalsize.Top.ToString() + "," + normalsize.Width.ToString() + ","+ normalsize.Height.ToString();
             TDCGExplorer.SystemDB.window_rectangle = widnowRect;
 
             string splitterDistance = splitContainerV.SplitterDistance.ToString()+","+
@@ -218,6 +229,7 @@ namespace TDCGExplorer
                 viewer.Dispose();
                 viewer = null;
                 TDCGExplorer.ResetDefaultPose(); // ポーズをデフォルトに戻す.
+                TDCGExplorer.FigureLoad = false;
             }
         }
 
@@ -529,13 +541,13 @@ namespace TDCGExplorer
                 TDCGExplorer.SetToolTips("Error occured : " + e.Message);
             }
         }
-
+#if false
         public void UpdateSaveFileTree()
         {
             treeViewSaveFile.Nodes.Clear();
             TDCGExplorer.MakeSavefileTreeView(treeViewSaveFile);
         }
-
+#endif
         private void SetColor(TreeNode node)
         {
             // 以前に設定していた色は戻す.
@@ -1024,7 +1036,7 @@ namespace TDCGExplorer
 
         private void ShowManualToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(@"AcroRd32.exe", @"manuarl.pdf");
+            System.Diagnostics.Process.Start(@"iexplore.exe", Path.Combine(Directory.GetCurrentDirectory(), @"manual.mht"));
         }
 
         private void ShowVersionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1037,5 +1049,89 @@ namespace TDCGExplorer
             string copyright = TDCGExplorer.CONST_COPYRIGHT;
             MessageBox.Show(appVersion+cr+sysDbVersion+cr+arcsDbVersion+cr+directXVersion+cr+cr+copyright , "Version", MessageBoxButtons.OK);
         }
+
+        private void OpenArchiveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            TDCGExplorer.ExplorerPath(TDCGExplorer.SystemDB.work_path);
+        }
+
+        private void ToolStripMenuItemRename_Click(object sender, EventArgs e)
+        {
+            if (TDCGExplorer.BusyTest()==true) return;
+
+            try
+            {
+                int index = listBoxMainListBox.SelectedIndex;
+                if (index >= 0)
+                {
+                    LbSaveFileItem item = listBoxMainListBox.Items[index] as LbSaveFileItem;
+                    if (item != null)
+                    {
+                        item.Rename();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void toolStripMenuItemTouch_Click(object sender, EventArgs e)
+        {
+            if (TDCGExplorer.BusyTest() == true) return;
+
+            try
+            {
+                int index = listBoxMainListBox.SelectedIndex;
+                if (index >= 0)
+                {
+                    LbSaveFileItem item = listBoxMainListBox.Items[index] as LbSaveFileItem;
+                    if (item != null)
+                    {
+                        item.Touch();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        private void toolStripMenuItemTouchAll_Click(object sender, EventArgs e)
+        {
+            if (TDCGExplorer.BusyTest() == true) return;
+
+            try
+            {
+                SimpleTextDialog dialog = new SimpleTextDialog();
+                dialog.Owner = TDCGExplorer.MainFormWindow;
+                dialog.dialogtext = "タイムスタンプの変更";
+                dialog.labeltext = "日時";
+                dialog.textfield = DateTime.Now.ToString();
+
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    DateTime newtime = DateTime.Parse(dialog.textfield);
+                    foreach (Object itemobject in ListBoxMainView.Items)
+                    {
+                        LbSaveFileItem item = itemobject as LbSaveFileItem;
+                        if (item != null)
+                        {
+                            item.SetDate(newtime);
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+        }
+
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        {
+            normalsize = new Rectangle(Location, Size);
+        }
+
     }
 }

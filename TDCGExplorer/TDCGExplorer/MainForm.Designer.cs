@@ -34,6 +34,7 @@
             this.extractZipFileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.ResearchAssumptionArchiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.InstallPreferredModsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenArchiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findNoBaseModToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.FindDialogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditAnnotationToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -89,8 +90,12 @@
             this.ExpandTahFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteTahEditorFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExtractTahFileDirectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pictureBoxImage = new System.Windows.Forms.PictureBox();
             this.contextMenuStripSaveFile = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.ToolStripMenuItemRename = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemTouch = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemTouchAll = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.cmContextMenu.SuspendLayout();
             this.StatusStrip.SuspendLayout();
@@ -109,8 +114,10 @@
             this.splitContainerH.Panel2.SuspendLayout();
             this.splitContainerH.SuspendLayout();
             this.splitContainerWithView.Panel1.SuspendLayout();
+            this.splitContainerWithView.Panel2.SuspendLayout();
             this.splitContainerWithView.SuspendLayout();
             this.ListBoxContextMenuStripTahFile.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImage)).BeginInit();
             this.contextMenuStripSaveFile.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -134,6 +141,7 @@
             this.extractZipFileToolStripMenuItem1,
             this.ResearchAssumptionArchiveToolStripMenuItem,
             this.InstallPreferredModsToolStripMenuItem,
+            this.OpenArchiveToolStripMenuItem,
             this.findNoBaseModToolStripMenuItem,
             this.FindDialogToolStripMenuItem,
             this.EditAnnotationToolStripMenuItem1,
@@ -163,6 +171,13 @@
             this.InstallPreferredModsToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
             this.InstallPreferredModsToolStripMenuItem.Text = "前提アーカイブファイルを展開";
             this.InstallPreferredModsToolStripMenuItem.Click += new System.EventHandler(this.ExtractPreferZipMainMenuToolStripMenuItem_Click);
+            // 
+            // OpenArchiveToolStripMenuItem
+            // 
+            this.OpenArchiveToolStripMenuItem.Name = "OpenArchiveToolStripMenuItem";
+            this.OpenArchiveToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.OpenArchiveToolStripMenuItem.Text = "アーカイブ展開フォルダを開く";
+            this.OpenArchiveToolStripMenuItem.Click += new System.EventHandler(this.OpenArchiveToolStripMenuItem_Click);
             // 
             // findNoBaseModToolStripMenuItem
             // 
@@ -292,25 +307,25 @@
             this.CloseTabToolStripMenuItem.Text = "タブを閉じる";
             this.CloseTabToolStripMenuItem.Click += new System.EventHandler(this.CloseTabToolStripMenuItem_Click);
             // 
-            // ヘルプToolStripMenuItem
+            // HelpToolStripMenuItem
             // 
             this.HelpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ShowManualToolStripMenuItem,
             this.ShowVersionToolStripMenuItem});
-            this.HelpToolStripMenuItem.Name = "ヘルプToolStripMenuItem";
+            this.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem";
             this.HelpToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.HelpToolStripMenuItem.Text = "ヘルプ";
             // 
-            // マニュアルの表示ToolStripMenuItem
+            // ShowManualToolStripMenuItem
             // 
-            this.ShowManualToolStripMenuItem.Name = "マニュアルの表示ToolStripMenuItem";
+            this.ShowManualToolStripMenuItem.Name = "ShowManualToolStripMenuItem";
             this.ShowManualToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.ShowManualToolStripMenuItem.Text = "マニュアルの表示";
             this.ShowManualToolStripMenuItem.Click += new System.EventHandler(this.ShowManualToolStripMenuItem_Click);
             // 
-            // バージョンToolStripMenuItem
+            // ShowVersionToolStripMenuItem
             // 
-            this.ShowVersionToolStripMenuItem.Name = "バージョンToolStripMenuItem";
+            this.ShowVersionToolStripMenuItem.Name = "ShowVersionToolStripMenuItem";
             this.ShowVersionToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
             this.ShowVersionToolStripMenuItem.Text = "バージョン...";
             this.ShowVersionToolStripMenuItem.Click += new System.EventHandler(this.ShowVersionToolStripMenuItem_Click);
@@ -660,6 +675,7 @@
             // splitContainerWithView.Panel2
             // 
             this.splitContainerWithView.Panel2.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.splitContainerWithView.Panel2.Controls.Add(this.pictureBoxImage);
             this.splitContainerWithView.Panel2.Margin = new System.Windows.Forms.Padding(4);
             this.splitContainerWithView.Size = new System.Drawing.Size(612, 152);
             this.splitContainerWithView.SplitterDistance = 289;
@@ -718,19 +734,51 @@
             this.ExtractTahFileDirectToolStripMenuItem.Text = "TAHファイルを展開する";
             this.ExtractTahFileDirectToolStripMenuItem.Click += new System.EventHandler(this.ExtractTahFileToolStripMenuItem_Click);
             // 
+            // pictureBoxImage
+            // 
+            this.pictureBoxImage.Location = new System.Drawing.Point(4, 4);
+            this.pictureBoxImage.Name = "pictureBoxImage";
+            this.pictureBoxImage.Size = new System.Drawing.Size(0, 0);
+            this.pictureBoxImage.TabIndex = 0;
+            this.pictureBoxImage.TabStop = false;
+            // 
             // contextMenuStripSaveFile
             // 
             this.contextMenuStripSaveFile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem1});
+            this.toolStripMenuItem1,
+            this.ToolStripMenuItemRename,
+            this.toolStripMenuItemTouch,
+            this.toolStripMenuItemTouchAll});
             this.contextMenuStripSaveFile.Name = "contextMenuStrip1";
-            this.contextMenuStripSaveFile.Size = new System.Drawing.Size(171, 26);
+            this.contextMenuStripSaveFile.Size = new System.Drawing.Size(279, 92);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(170, 22);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(278, 22);
             this.toolStripMenuItem1.Text = "新しいタブを開く";
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
+            // 
+            // ToolStripMenuItemRename
+            // 
+            this.ToolStripMenuItemRename.Name = "ToolStripMenuItemRename";
+            this.ToolStripMenuItemRename.Size = new System.Drawing.Size(278, 22);
+            this.ToolStripMenuItemRename.Text = "ファイル名を変更する";
+            this.ToolStripMenuItemRename.Click += new System.EventHandler(this.ToolStripMenuItemRename_Click);
+            // 
+            // toolStripMenuItemTouch
+            // 
+            this.toolStripMenuItemTouch.Name = "toolStripMenuItemTouch";
+            this.toolStripMenuItemTouch.Size = new System.Drawing.Size(278, 22);
+            this.toolStripMenuItemTouch.Text = "ファイルのタイムスタンプを変更する";
+            this.toolStripMenuItemTouch.Click += new System.EventHandler(this.toolStripMenuItemTouch_Click);
+            // 
+            // toolStripMenuItemTouchAll
+            // 
+            this.toolStripMenuItemTouchAll.Name = "toolStripMenuItemTouchAll";
+            this.toolStripMenuItemTouchAll.Size = new System.Drawing.Size(278, 22);
+            this.toolStripMenuItemTouchAll.Text = "全てのファイルの日時を変更する";
+            this.toolStripMenuItemTouchAll.Click += new System.EventHandler(this.toolStripMenuItemTouchAll_Click);
             // 
             // MainForm
             // 
@@ -748,6 +796,7 @@
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainForm_DragEnter);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
             this.MainMenu.ResumeLayout(false);
             this.MainMenu.PerformLayout();
             this.cmContextMenu.ResumeLayout(false);
@@ -768,8 +817,10 @@
             this.splitContainerH.Panel2.ResumeLayout(false);
             this.splitContainerH.ResumeLayout(false);
             this.splitContainerWithView.Panel1.ResumeLayout(false);
+            this.splitContainerWithView.Panel2.ResumeLayout(false);
             this.splitContainerWithView.ResumeLayout(false);
             this.ListBoxContextMenuStripTahFile.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxImage)).EndInit();
             this.contextMenuStripSaveFile.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -840,6 +891,11 @@
         private System.Windows.Forms.ToolStripMenuItem HelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ShowManualToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ShowVersionToolStripMenuItem;
+        private System.Windows.Forms.PictureBox pictureBoxImage;
+        private System.Windows.Forms.ToolStripMenuItem OpenArchiveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemRename;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemTouch;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemTouchAll;
 
     }
 }
