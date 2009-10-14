@@ -312,6 +312,9 @@ namespace TMOComposer
             if (pngsave_row == -1)
                 return;
 
+            if (pngsave_row >= viewer.FigureList.Count)
+                return;
+
             TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;
 
             if (tmoanim_row == -1)
@@ -320,10 +323,12 @@ namespace TMOComposer
             TMOAnimItem item = tmoanim.items[tmoanim_row];
             tmoAnimItemForm.SetTmoAnimItem(item);
 
+            Figure fig = viewer.FigureList[pngsave_row];
             if (tmoAnimItemForm.ShowDialog(this) == DialogResult.OK)
             {
                 tmoAnimItemBindingSource.ResetBindings(false);
                 item.CopyFace();
+                fig.UpdateBoneMatrices(true);
             }
         }
 
