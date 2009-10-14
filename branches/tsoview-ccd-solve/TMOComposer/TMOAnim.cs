@@ -51,7 +51,11 @@ namespace TMOComposer
                 Console.WriteLine("Load File: " + this.FaceFile);
                 TMOFile face_tmo = TMOAnim.LoadPNGFile(TMOAnim.GetFacePath(this.FaceFile));
                 if (face_tmo.frames != null)
+                {
+                    Tmo.SaveTransformationMatrix(0);
                     Tmo.CopyChildrenNodeFrom(face_tmo, "face_oya", except_snames);
+                    Tmo.LoadTransformationMatrix(0);
+                }
             }
         }
 

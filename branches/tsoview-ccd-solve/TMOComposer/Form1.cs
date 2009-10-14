@@ -320,13 +320,10 @@ namespace TMOComposer
             TMOAnimItem item = tmoanim.items[tmoanim_row];
             tmoAnimItemForm.SetTmoAnimItem(item);
 
-            TMOFile tmo = tmoanim.GetTmo(item);
-            tmo.SaveTransformationMatrix(0);
             if (tmoAnimItemForm.ShowDialog(this) == DialogResult.OK)
             {
                 tmoAnimItemBindingSource.ResetBindings(false);
                 item.CopyFace();
-                tmo.LoadTransformationMatrix(0);
             }
         }
 
