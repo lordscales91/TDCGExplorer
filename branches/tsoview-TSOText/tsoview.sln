@@ -37,6 +37,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAHBackground", "TAHBackgro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSDTest", "PSDTest\PSDTest.csproj", "{3E5DF5EA-6A2B-4192-837B-17F97B48D781}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSOText", "TSOText\TSOText.csproj", "{FCCC1372-BA3E-44F3-894D-1B477A8BAA8A}"
+	ProjectSection(ProjectDependencies) = postProject
+		{30D26679-E876-46FC-B8C0-E55146316C8C} = {30D26679-E876-46FC-B8C0-E55146316C8C}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -141,6 +146,14 @@ Global
 		{3E5DF5EA-6A2B-4192-837B-17F97B48D781}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3E5DF5EA-6A2B-4192-837B-17F97B48D781}.Release|x86.ActiveCfg = Release|x86
 		{3E5DF5EA-6A2B-4192-837B-17F97B48D781}.Release|x86.Build.0 = Release|x86
+		{FCCC1372-BA3E-44F3-894D-1B477A8BAA8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCCC1372-BA3E-44F3-894D-1B477A8BAA8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCCC1372-BA3E-44F3-894D-1B477A8BAA8A}.Debug|x86.ActiveCfg = Debug|x86
+		{FCCC1372-BA3E-44F3-894D-1B477A8BAA8A}.Debug|x86.Build.0 = Debug|x86
+		{FCCC1372-BA3E-44F3-894D-1B477A8BAA8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCCC1372-BA3E-44F3-894D-1B477A8BAA8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FCCC1372-BA3E-44F3-894D-1B477A8BAA8A}.Release|x86.ActiveCfg = Release|x86
+		{FCCC1372-BA3E-44F3-894D-1B477A8BAA8A}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

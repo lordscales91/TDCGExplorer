@@ -49,6 +49,14 @@ public class Viewer : IDisposable
     // ライト方向
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
 
+    /// <summary>
+    /// viewerを生成します。
+    /// </summary>
+    public Viewer()
+    {
+        Positions.Add(Vector3.Empty);
+    }
+
     // マウスポイントしているスクリーン座標
     private Point lastScreenPoint = Point.Empty;
 
@@ -959,7 +967,12 @@ public class Viewer : IDisposable
         device.DepthStencilSurface = renderZ;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
     }
-    
+
+    /// <summary>
+    /// 出現位置の配列
+    /// </summary>
+    public List<Vector3> Positions = new List<Vector3>();
+
     void DrawFigure()
     {
         device.RenderState.AlphaBlendEnable = true;
@@ -973,40 +986,100 @@ public class Viewer : IDisposable
             effect.SetValue("texShadowMap", renderTextures[2]);
         }
 
-        foreach (Figure fig in FigureList)
+        if (FigureList.Count != 0)
+        {
+            RenderFigureEachPosition(FigureList[0]);
+        }
+
+        for (int i = 1; i < FigureList.Count; i++ )
+        {
+            RenderFigure(FigureList[i]);
+        }
+    }
+
+    private void RenderFigure(Figure fig)
+    {
         foreach (TSOFile tso in fig.TSOList)
         {
             tso.BeginRender();
 
             foreach (TSOMesh tm in tso.meshes)
-            foreach (TSOSubMesh tm_sub in tm.sub_meshes)
-            {
-                device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-
-                tso.SwitchShader(tm_sub);
-                Matrix[] clipped_boneMatrices = new Matrix[tm_sub.maxPalettes];
-
-                for (int numPalettes = 0; numPalettes < tm_sub.maxPalettes; numPalettes++)
+                foreach (TSOSubMesh tm_sub in tm.sub_meshes)
                 {
-                    //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
-                    TSONode tso_node = tm_sub.GetBone(numPalettes);
-                    TMONode tmo_node;
-                    if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
-                        clipped_boneMatrices[numPalettes] = tso_node.GetOffsetMatrix() * tmo_node.combined_matrix;
-                }
-                effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
+                    device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
-                int npass = effect.Begin(0);
-                for (int ipass = 0; ipass < npass; ipass++)
-                {
-                    effect.BeginPass(ipass);
-                    tm_sub.dm.DrawSubset(0);
-                    effect.EndPass();
+                    tso.SwitchShader(tm_sub);
+                    Matrix[] clipped_boneMatrices = new Matrix[tm_sub.maxPalettes];
+
+                    for (int numPalettes = 0; numPalettes < tm_sub.maxPalettes; numPalettes++)
+                    {
+                        //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
+                        TSONode tso_node = tm_sub.GetBone(numPalettes);
+                        TMONode tmo_node;
+                        if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
+                            clipped_boneMatrices[numPalettes] = tso_node.GetOffsetMatrix() * tmo_node.combined_matrix;
+                    }
+                    effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
+
+                    int npass = effect.Begin(0);
+                    for (int ipass = 0; ipass < npass; ipass++)
+                    {
+                        effect.BeginPass(ipass);
+                        tm_sub.dm.DrawSubset(0);
+                        effect.EndPass();
+                    }
+                    effect.End();
                 }
-                effect.End();
-            }
             tso.EndRender();
         }
+    }
+    
+    private void RenderFigureEachPosition(Figure fig)
+    {
+        foreach (TSOFile tso in fig.TSOList)
+        {
+            tso.BeginRender();
+
+            foreach (TSOMesh tm in tso.meshes)
+                foreach (TSOSubMesh tm_sub in tm.sub_meshes)
+                {
+                    device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+
+                    tso.SwitchShader(tm_sub);
+                    Matrix[] clipped_boneMatrices = new Matrix[tm_sub.maxPalettes];
+
+                    for (int numPalettes = 0; numPalettes < tm_sub.maxPalettes; numPalettes++)
+                    {
+                        //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
+                        TSONode tso_node = tm_sub.GetBone(numPalettes);
+                        TMONode tmo_node;
+                        if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
+                            clipped_boneMatrices[numPalettes] = tso_node.GetOffsetMatrix() * tmo_node.combined_matrix;
+                    }
+                    effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
+
+                    foreach (Vector3 position in Positions)
+                    {
+                        world_matrix = Matrix.Translation(position);
+                        Matrix world_view_matrix = world_matrix * Transform_View;
+                        Matrix world_view_projection_matrix = world_view_matrix * Transform_Projection;
+                        effect.SetValue("wld", world_matrix);
+                        effect.SetValue("wv", world_view_matrix);
+                        effect.SetValue("wvp", world_view_projection_matrix);
+
+                        int npass = effect.Begin(0);
+                        for (int ipass = 0; ipass < npass; ipass++)
+                        {
+                            effect.BeginPass(ipass);
+                            tm_sub.dm.DrawSubset(0);
+                            effect.EndPass();
+                        }
+                        effect.End();
+                    }
+                }
+            tso.EndRender();
+        }
+        world_matrix = Matrix.Identity;
     }
 
     void DrawSprite()
