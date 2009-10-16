@@ -64,7 +64,7 @@ namespace TMOComposer
             {
                 viewer.FrameMove(frame_idx);
                 viewer.Render();
-                viewer.SaveToPng(dest_path + @"\" + String.Format("{0:D3}.png", frame_idx));
+                viewer.SaveToPng(Path.Combine(dest_path, String.Format("{0:D3}.png", frame_idx)));
             }
             viewer.FrameIndex = orig_frame_idx; // restore
             timer1.Enabled = true;
@@ -98,7 +98,7 @@ namespace TMOComposer
             foreach (PngSaveItem item in pngsave.items)
             {
                 pngSaveItemBindingSource.Position = position;
-                viewer.LoadAnyFile(save_path + @"\" + item.File, true);
+                viewer.LoadAnyFile(Path.Combine(save_path, item.File), true);
                 Animate(item);
                 position++;
             }
@@ -116,7 +116,7 @@ namespace TMOComposer
             pngSaveItemBindingSource.Add(item);
 
             pngSaveItemBindingSource.Position = pngSaveItemBindingSource.Count - 1;
-            viewer.LoadAnyFile(save_path + @"\" + item.File, true);
+            viewer.LoadAnyFile(Path.Combine(save_path, item.File), true);
         }
 
         private void btnAnimate_Click(object sender, EventArgs e)
