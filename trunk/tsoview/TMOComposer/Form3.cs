@@ -23,6 +23,9 @@ namespace TMOComposer
 
         private void btnGetFaces_Click(object sender, EventArgs e)
         {
+            if (! Directory.Exists(FacePath))
+                return;
+
             string[] files = Directory.GetFiles(FacePath, "*.png");
             lvFaces.Items.Clear();
             ilFaces.Images.Clear();
