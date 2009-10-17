@@ -235,7 +235,6 @@ public class Viewer : IDisposable
         SetFigureIndex(idx);
         if (FigureEvent != null)
             FigureEvent(this, EventArgs.Empty);
-        camera.SetCenter(fig.Center);
     }
 
     /// <summary>
@@ -301,7 +300,6 @@ public class Viewer : IDisposable
         fig.UpdateNodeMapAndBoneMatrices();
         if (FigureEvent != null)
             FigureEvent(this, EventArgs.Empty);
-        camera.SetCenter(fig.Center);
     }
 
     /// <summary>
@@ -319,9 +317,6 @@ public class Viewer : IDisposable
     public void NextFigure()
     {
         SetFigureIndex(fig_index+1);
-        Figure fig;
-        if (TryGetFigure(out fig))
-            camera.SetCenter(fig.Center);
     }
 
     /// <summary>
@@ -356,7 +351,6 @@ public class Viewer : IDisposable
             fig.UpdateNodeMapAndBoneMatrices();
             if (FigureEvent != null)
                 FigureEvent(this, EventArgs.Empty);
-            camera.SetCenter(fig.Center);
         }
     }
 
@@ -395,11 +389,6 @@ public class Viewer : IDisposable
                 FigureList.Add(fig);
             }
             SetFigureIndex(idx);
-        }
-        {
-            Figure fig;
-            if (TryGetFigure(out fig))
-                camera.SetCenter(fig.Center);
         }
     }
 
