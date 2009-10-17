@@ -23,6 +23,9 @@ namespace TMOComposer
 
         private void btnGetSaves_Click(object sender, EventArgs e)
         {
+            if (! Directory.Exists(SavePath))
+                return;
+
             string[] files = Directory.GetFiles(SavePath, "*.png");
             lvSaves.Items.Clear();
             ilSaves.Images.Clear();

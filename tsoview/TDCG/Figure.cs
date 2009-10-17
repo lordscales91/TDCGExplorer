@@ -212,6 +212,10 @@ public class Figure : IDisposable
         TSOList.Add(tso);
     }
 
+    /// <summary>
+    /// tsoÇ©ÇÁtmoÇê∂ê¨ÇµÇ‹Ç∑ÅB
+    /// </summary>
+    /// <param name="tso">tso</param>
     public static TMOFile GenerateTMOFromTSO(TSOFile tso)
     {
         TMOFile tmo = new TMOFile();

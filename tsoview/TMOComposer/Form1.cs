@@ -72,6 +72,9 @@ namespace TMOComposer
 
         private void btnGetPoses_Click(object sender, EventArgs e)
         {
+            if (! Directory.Exists(pose_path))
+                return;
+
             string[] files = Directory.GetFiles(pose_path, "*.png");
             lvPoses.Items.Clear();
             ilPoses.Images.Clear();
@@ -292,6 +295,9 @@ namespace TMOComposer
             int tmoanim_row = tmoAnimItemBindingSource.Position;
 
             if (pngsave_row == -1)
+                return;
+
+            if (pngsave_row >= viewer.FigureList.Count)
                 return;
 
             TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;

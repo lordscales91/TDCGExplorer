@@ -736,6 +736,10 @@ public class Viewer : IDisposable
         FrameMove(frame_index);
     }
 
+    /// <summary>
+    /// 指定シーンフレームに進みます。
+    /// </summary>
+    /// <param name="frame_index">フレーム番号</param>
     public void FrameMove(int frame_index)
     {
         camera.Update();
@@ -781,8 +785,10 @@ public class Viewer : IDisposable
     }
     long wait = (long)(10000000.0f / 60.0f);
 
-    //フレーム番号
     private int frame_index = 0;
+    /// <summary>
+    /// フレーム番号
+    /// </summary>
     public int FrameIndex { get { return frame_index; } set { frame_index = value; } }
 
     /// <summary>
@@ -1129,7 +1135,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// バックバッファをBitmapファイルに保存します。
+    /// バックバッファをBMP形式でファイルに保存します。
     /// </summary>
     /// <param name="file">ファイル名</param>
     public void SaveToBitmap(string file)
@@ -1139,6 +1145,10 @@ public class Viewer : IDisposable
           SurfaceLoader.Save(file, ImageFileFormat.Bmp, sf);
     }
 
+    /// <summary>
+    /// バックバッファをPNG形式でファイルに保存します。
+    /// </summary>
+    /// <param name="file">ファイル名</param>
     public void SaveToPng(string file)
     {
       using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))

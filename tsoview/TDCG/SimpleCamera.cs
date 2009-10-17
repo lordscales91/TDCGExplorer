@@ -117,6 +117,12 @@ namespace TDCG
             this.center = center;
             needUpdate = true;
         }
+        /// <summary>
+        /// 回転中心を設定します。
+        /// </summary>
+        /// <param name="x">回転中心x座標</param>
+        /// <param name="y">回転中心y座標</param>
+        /// <param name="z">回転中心z座標</param>
         public void SetCenter(float x, float y, float z)
         {
             SetCenter(new Vector3(x, y, z));
@@ -131,6 +137,12 @@ namespace TDCG
             this.translation = translation;
             needUpdate = true;
         }
+        /// <summary>
+        /// view座標上の位置を設定します。
+        /// </summary>
+        /// <param name="x">view座標上の位置x座標</param>
+        /// <param name="y">view座標上の位置y座標</param>
+        /// <param name="z">view座標上の位置z座標</param>
         public void SetTranslation(float x, float y, float z)
         {
             SetTranslation(new Vector3(x, y, z));
