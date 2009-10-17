@@ -20,9 +20,8 @@ public class Figure : IDisposable
     /// フィギュアが保持しているtsoリスト
     /// </summary>
     public List<TSOFile> TSOList = new List<TSOFile>();
-    internal TMOFile tmo = null;
 
-    internal Vector3 center = Vector3.Empty;
+    Vector3 center = Vector3.Empty;
     /// <summary>
     /// 中心座標
     /// </summary>
@@ -31,7 +30,7 @@ public class Figure : IDisposable
         get { return center; }
     }
 
-    internal Vector3 translation = Vector3.Empty;
+    Vector3 translation = Vector3.Empty;
     /// <summary>
     /// 移動変位
     /// </summary>
@@ -40,6 +39,7 @@ public class Figure : IDisposable
         get { return translation; }
     }
 
+    TMOFile tmo = null;
     /// <summary>
     /// tmo
     /// </summary>
@@ -212,6 +212,10 @@ public class Figure : IDisposable
         TSOList.Add(tso);
     }
 
+    /// <summary>
+    /// tsoからtmoを生成します。
+    /// </summary>
+    /// <param name="tso">tso</param>
     public static TMOFile GenerateTMOFromTSO(TSOFile tso)
     {
         TMOFile tmo = new TMOFile();
