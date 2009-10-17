@@ -49,11 +49,17 @@ namespace TDCG
         List<string> effector_list = new List<string>();
         Dictionary<string, Vector3> target_dictionary = new Dictionary<string, Vector3>();
 
+        /// <summary>
+        /// 各エフェクタの名称を返します。
+        /// </summary>
         public Dictionary<string, string[]>.KeyCollection EachEffecterNames
         {
             get { return effector_dictionary.Keys; }
         }
         
+        /// <summary>
+        /// 逆運動学の解法を生成します。
+        /// </summary>
         public CCDSolver()
         {
             Target = new Vector3(5.0f, 10.0f, 0.0f);
@@ -141,20 +147,29 @@ namespace TDCG
 
         }
 
-        public void SaveTarget(Figure fig)
+        /// <summary>
+        /// 接地の目標を設定します。
+        /// </summary>
+        /// <param name="tmo">tmo</param>
+        public void SaveFloorTargets(TMOFile tmo)
         {
-            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+            Debug.Assert(tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
             target_dictionary.Clear();
             foreach (string effector_name in effector_list)
             {
                 TMONode bone;
-                if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
+                if (tmo.nodemap.TryGetValue(effector_name, out bone))
                 {
                     target_dictionary[effector_name] = bone.GetWorldPosition();
                 }
             }
         }
 
+        /// <summary>
+        /// root nodeに対する解を得ます。
+        /// </summary>
+        /// <param name="tmo">tmo</param>
+        /// <param name="effector_name">エフェクタnode名称</param>
         public void SolveRootNode(TMOFile tmo, string effector_name)
         {
             Debug.Assert(tmo.nodemap != null, "tso.nodemap should not be null");

@@ -117,11 +117,7 @@ public class Viewer : IDisposable
             {
                 SelectEffector();
                 if (current_effector_name == "|W_Hips")
-                {
-                    Figure fig;
-                    if (TryGetFigure(out fig))
-                        solver.SaveTarget(fig);
-                }
+                    SaveFloorTargets();
             }
             break;
         }
@@ -146,6 +142,15 @@ public class Viewer : IDisposable
                 solver.Target = effector.GetWorldPosition();
                 solver.Solved = true;
             }
+        }
+    }
+
+    private void SaveFloorTargets()
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            solver.SaveFloorTargets(fig.Tmo);
         }
     }
 
