@@ -53,7 +53,11 @@ public class Viewer : IDisposable
     // ライト方向
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
 
-    Vector3 target = new Vector3(5.0f, 10.0f, 0.0f);
+    CCDSolver solver = new CCDSolver();
+    /// <summary>
+    /// 逆運動学の解法
+    /// </summary>
+    public CCDSolver Solver { get { return solver; } }
 
     /// <summary>
     /// viewerを生成します。
@@ -62,19 +66,10 @@ public class Viewer : IDisposable
     {
         LimitRotationEnabled = true;
         FloorEnabled = true;
-    }
-
-    /// <summary>
-    /// 逆運動学における目標を移動します。
-    /// </summary>
-    public void MoveTarget(float dx, float dy, float dz)
-    {
-        if (dx == 0 && dy == 0 && dz == 0)
-            return;
-        target.X -= dx;
-        target.Y -= dy;
-        target.Z -= dz;
-        solved = false;
+        solver.TMONodeRotation += delegate(TMONode node)
+        {
+            LimitRotation(node);
+        };
     }
 
     /// <summary>
@@ -89,11 +84,11 @@ public class Viewer : IDisposable
             TMONode bone;
             if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
             {
-                Vector3 v = target;
+                Vector3 v = solver.Target;
                 v = Vector3.TransformCoordinate(v, Transform_View);
                 v = Vector3.TransformCoordinate(v, Transform_Projection);
-                target = ScreenToWorld(x, y, v.Z);
-                solved = false;
+                solver.Target = ScreenToWorld(x, y, v.Z);
+                solver.Solved = false;
             }
         }
     }
@@ -122,7 +117,11 @@ public class Viewer : IDisposable
             {
                 SelectEffector();
                 if (current_effector_name == "|W_Hips")
-                    SaveTarget();
+                {
+                    Figure fig;
+                    if (TryGetFigure(out fig))
+                        solver.SaveTarget(fig);
+                }
             }
             break;
         }
@@ -144,26 +143,8 @@ public class Viewer : IDisposable
             if (FindEffectorOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, out effector))
             {
                 current_effector_name = effector.Name;
-                target = effector.GetWorldPosition();
-                solved = true;
-            }
-        }
-    }
-
-    private void SaveTarget()
-    {
-        Figure fig;
-        if (TryGetFigure(out fig))
-        {
-            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
-            target_dictionary.Clear();
-            foreach (string effector_name in effector_list)
-            {
-                TMONode bone;
-                if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
-                {
-                    target_dictionary[effector_name] = bone.GetWorldPosition();
-                }
+                solver.Target = effector.GetWorldPosition();
+                solver.Solved = true;
             }
         }
     }
@@ -697,88 +678,7 @@ public class Viewer : IDisposable
         camera.Update();
         OnDeviceReset(device, null);
 
-        //左腕
-        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand"] =
-            new string[] {
-                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm",
-                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm",
-                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder" };
-
-        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm"] =
-            new string[] {
-                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm",
-                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder" };
-
-        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm"] =
-            new string[] {
-                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder" };
-
-        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder"] =
-            new string[] { };
-
-        //右腕
-        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm|W_RightForeArmRoll|W_RightHand"] =
-            new string[] {
-                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm",
-                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm",
-                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder" };
-
-        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm"] =
-            new string[] {
-                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm",
-                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder" };
-
-        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm"] =
-            new string[] {
-                "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder" };
-
-        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder"] =
-            new string[] { };
-
-        //右足
-        effector_dictionary["|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot"] =
-            new string[] {
-                "|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg",
-                "|W_Hips|W_RightHips_Dummy|W_RightUpLeg" };
-
-        effector_dictionary["|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg"] =
-            new string[] {
-                "|W_Hips|W_RightHips_Dummy|W_RightUpLeg" };
-
-        effector_dictionary["|W_Hips|W_RightHips_Dummy|W_RightUpLeg"] =
-            new string[] { };
-
-        //左足
-        effector_dictionary["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot"] =
-            new string[] {
-                "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg",
-                "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg" };
-
-        effector_dictionary["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg"] =
-            new string[] {
-                "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg" };
-
-        effector_dictionary["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg"] =
-            new string[] { };
-
-        //頭
-        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck|Head"] =
-            new string[] { };
-
-        //腰
-        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3"] =
-            new string[] { };
-
-        effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1"] =
-            new string[] { };
-
-        effector_dictionary["|W_Hips"] =
-            new string[] { };
-
         current_effector_name = "|W_Hips";
-
-        effector_list.Add("|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot");
-        effector_list.Add("|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot");
 
         constraint_xyz = TMOConstraint.Load(@"angle-GRABIA-xyz.xml");
         constraint_zxy = TMOConstraint.Load(@"angle-GRABIA-zxy.xml");
@@ -793,8 +693,8 @@ public class Viewer : IDisposable
                 TMONode bone;
                 if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
                 {
-                    target = bone.GetWorldPosition();
-                    solved = true;
+                    solver.Target = bone.GetWorldPosition();
+                    solver.Solved = true;
                 }
             }
         };
@@ -963,7 +863,7 @@ public class Viewer : IDisposable
     /// <summary>
     /// 接地が有効であるか。
     /// </summary>
-    public bool FloorEnabled { get; set; }
+    public bool FloorEnabled { get { return solver.FloorEnabled; } set { solver.FloorEnabled = value; } }
 
     /// <summary>
     /// モーションが有効であるか。
@@ -1074,25 +974,19 @@ public class Viewer : IDisposable
             foreach (Figure fig in FigureList)
                 fig.UpdateBoneMatrices();
         }
-        else if (! solved)
+        else if (! solver.Solved)
         {
             Figure fig;
             if (TryGetFigure(out fig))
             {
                 if (current_effector_name == "|W_Hips")
-                    SolveRootNode(fig.Tmo, current_effector_name);
+                    solver.SolveRootNode(fig.Tmo, current_effector_name);
                 else
-                    Solve(fig.Tmo, current_effector_name, target);
+                    solver.Solve(fig.Tmo, current_effector_name, solver.Target);
                 fig.UpdateBoneMatricesWithoutTMOFrame();
             }
         }
     }
-    bool solved = true;
-    /// <summary>
-    /// 逆運動学による解を得られたか。
-    /// </summary>
-    public bool Solved { get { return solved; } set { solved = value; }}
-
     long wait = (long)(10000000.0f / 60.0f);
 
     private int frame_index = 0;
@@ -1185,17 +1079,12 @@ public class Viewer : IDisposable
         if (TryGetFigure(out fig))
         {
             Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
-            foreach (string effector_name in effector_dictionary.Keys)
+            foreach (string effector_name in solver.EachEffecterNames)
             {
                 TMONode bone;
                 if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
                 {
-                    Vector4 color;
-                    //if (found)
-                    //    color = new Vector4(1,1,1,1);
-                    //else
-                        color = ( bone.Name == current_effector_name ) ? new Vector4(1,1,1,0.5f) : new Vector4(0.5f,0.5f,0.5f,0.5f);
-
+                    Vector4 color = (bone.Name == current_effector_name) ? new Vector4(1, 1, 1, 0.5f) : new Vector4(0.5f, 0.5f, 0.5f, 0.5f);
                     Vector3 pos = bone.GetWorldPosition();
                     DrawMeshSub(sphere, Matrix.Translation(pos), color);
                 }
@@ -1206,9 +1095,9 @@ public class Viewer : IDisposable
                 if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
                 {
                     Matrix m = bone.GetWorldCoordinate();
-                    DrawMeshSub(sphere, Matrix.Translation(new Vector3(1,0,0)) * m, new Vector4(1,0,0,0.5f));
-                    DrawMeshSub(sphere, Matrix.Translation(new Vector3(0,1,0)) * m, new Vector4(0,1,0,0.5f));
-                    DrawMeshSub(sphere, Matrix.Translation(new Vector3(0,0,1)) * m, new Vector4(0,0,1,0.5f));
+                    DrawMeshSub(sphere, Matrix.Translation(new Vector3(1, 0, 0)) * m, new Vector4(1, 0, 0, 0.5f));
+                    DrawMeshSub(sphere, Matrix.Translation(new Vector3(0, 1, 0)) * m, new Vector4(0, 1, 0, 0.5f));
+                    DrawMeshSub(sphere, Matrix.Translation(new Vector3(0, 0, 1)) * m, new Vector4(0, 0, 1, 0.5f));
                 }
             }
         }
@@ -1216,7 +1105,7 @@ public class Viewer : IDisposable
 
     void DrawTarget()
     {
-        DrawMeshSub(sphere, Matrix.Translation(target), new Vector4(1,1,0,0.5f));
+        DrawMeshSub(sphere, Matrix.Translation(solver.Target), new Vector4(1, 1, 0, 0.5f));
     }
 
     void DrawShadowMap()
@@ -1423,7 +1312,7 @@ public class Viewer : IDisposable
         {
             Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
             float min_time = 1e12f;
-            foreach (string effector_name in effector_dictionary.Keys)
+            foreach (string effector_name in solver.EachEffecterNames)
             {
                 TMONode bone;
                 if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
@@ -1523,49 +1412,6 @@ public class Viewer : IDisposable
         return false;
     }
 
-    Dictionary<string, string[]> effector_dictionary = new Dictionary<string, string[]>();
-    List<string> effector_list = new List<string>();
-    Dictionary<string, Vector3> target_dictionary = new Dictionary<string, Vector3>();
-
-    private void SolveRootNode(TMOFile tmo, string effector_name)
-    {
-        Debug.Assert(tmo.nodemap != null, "tso.nodemap should not be null");
-        TMONode effector;
-        if (tmo.nodemap.TryGetValue(effector_name, out effector))
-        {
-            effector.Translation = target;
-        }
-        if (FloorEnabled)
-            foreach (string ename in effector_list)
-            {
-                Solve(tmo, ename, target_dictionary[ename]);
-            }
-    }
-
-    /// <summary>
-    /// 逆運動学による解を得ます。
-    /// </summary>
-    /// <param name="tmo">tmo</param>
-    /// <param name="effector_name">エフェクタnode名称</param>
-    /// <param name="target">目標</param>
-    private void Solve(TMOFile tmo, string effector_name, Vector3 target)
-    {
-        Debug.Assert(tmo.nodemap != null, "tso.nodemap should not be null");
-        TMONode effector;
-        if (tmo.nodemap.TryGetValue(effector_name, out effector))
-        {
-            foreach (string node_name in effector_dictionary[effector_name])
-            {
-                TMONode node;
-                if (tmo.nodemap.TryGetValue(node_name, out node))
-                {
-                    Solve(effector, node, target);
-                    LimitRotation(node);
-                }
-            }
-        }
-    }
-
     static Regex re_legnode = new Regex(@"Leg");
 
     private void LimitRotation(TMONode node)
@@ -1593,54 +1439,6 @@ public class Viewer : IDisposable
         Vector3 angle0 = item.Limit(angle1);
         node.Rotation = TMOMat.ToQuaternionZXY(angle0);
         //Console.WriteLine("node {0} x {1:F2} y {2:F2} z {3:F2}", node.ShortName, angle0.X, angle0.Y, angle0.Z);
-    }
-
-    /// <summary>
-    /// Cyclic-Coordinate-Descent (CCD) 法による逆運動学の実装です。
-    /// </summary>
-    /// <param name="effector">エフェクタnode</param>
-    /// <param name="node">対象node</param>
-    /// <param name="target">目標</param>
-    public void Solve(TMONode effector, TMONode node, Vector3 target)
-    {
-        Vector3 worldTargetP = target;
-
-        Vector3 worldEffectorP = effector.GetWorldPosition();
-        Vector3 worldNodeP = node.GetWorldPosition();
-
-        Matrix invCoord = Matrix.Invert(node.GetWorldCoordinate());
-        Vector3 localEffectorP = Vector3.TransformCoordinate(worldEffectorP, invCoord);
-        Vector3 localTargetP = Vector3.TransformCoordinate(worldTargetP, invCoord);
-
-        Quaternion q;
-        if (RotationVectorToVector(localEffectorP, localTargetP, out q))
-            node.Rotation = q * node.Rotation;
-        if ((localEffectorP - localTargetP).LengthSq() < 0.1f)
-            solved = true;
-    }
-
-    /// <summary>
-    /// v1をv2に合わせる回転を得ます。
-    /// </summary>
-    /// <param name="v1">v1</param>
-    /// <param name="v2">v2</param>
-    /// <param name="q">q</param>
-    /// <returns>回転が必要であるか</returns>
-    public bool RotationVectorToVector(Vector3 v1, Vector3 v2, out Quaternion q)
-    {
-        Vector3 n1 = Vector3.Normalize(v1);
-        Vector3 n2 = Vector3.Normalize(v2);
-        float dotProduct = Vector3.Dot(n1, n2);
-        float angle = (float)Math.Acos(dotProduct);
-        bool needRotate = (angle > float.Epsilon);
-        if (needRotate)
-        {
-            Vector3 axis = Vector3.Cross(n1, n2);
-            q = Quaternion.RotationAxis(axis, angle);
-        }
-        else
-            q = Quaternion.Identity;
-        return needRotate;
     }
 
     /// <summary>

@@ -357,7 +357,7 @@ namespace TMOComposer
             TMOFile tmo = tmoanim.GetTmo(item);
             if (tmo.frames != null)
             {
-                viewer.Solved = true;
+                viewer.Solver.Solved = true;
                 fig.Tmo = tmo;
                 fig.UpdateNodeMapAndBoneMatrices();
             }
