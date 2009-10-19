@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -36,6 +37,11 @@ namespace TMOComposer
         public string GetTmoPath()
         {
             return Path.Combine(Application.StartupPath, String.Format(@"motion\{0}\{1}.tmo", png_id, id));
+        }
+
+        public string GetPngPath()
+        {
+            return Path.Combine(Application.StartupPath, String.Format(@"motion\{0}\{1}.png", png_id, id));
         }
 
         public void CopyFace()
@@ -252,8 +258,76 @@ namespace TMOComposer
                     Console.WriteLine("Save File: " + tmo_file);
                     Directory.CreateDirectory(Path.GetDirectoryName(tmo_file));
                     tmo.Save(tmo_file);
+
+                    string png_file = item.GetPngPath();
+                    Console.WriteLine("Save File: " + png_file);
+                    PNGFile png = CreatePNGFile();
+                    png.WriteTaOb += delegate(BinaryWriter bw)
+                    {
+                        PNGWriter pw = new PNGWriter(bw);
+                        WritePose(pw, tmo);
+                    };
+                    png.Save(png_file);
                 }
             }
+        }
+
+        public PNGFile CreatePNGFile()
+        {
+            MemoryStream ms = new MemoryStream();
+            using (Bitmap bmp = new Bitmap(180, 180))
+            {
+                bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            }
+            ms.Seek(0, SeekOrigin.Begin);
+
+            PNGFile png = new PNGFile();
+            png.Load(ms);
+
+            return png;
+        }
+
+        protected byte[] ReadFloats(string dest_file)
+        {
+            List<float> floats = new List<float>();
+            string line;
+            using (StreamReader source = new StreamReader(File.OpenRead(dest_file)))
+            while ((line = source.ReadLine()) != null)
+            {
+                floats.Add(Single.Parse(line));
+            }
+
+            byte[] data = new byte[ sizeof(Single) * floats.Count ];
+            int offset = 0;
+            foreach (float flo in floats)
+            {
+                byte[] buf_flo = BitConverter.GetBytes(flo);
+                buf_flo.CopyTo(data, offset);
+                offset += buf_flo.Length;
+            }
+            return data;
+        }
+
+        string GetCameraPath()
+        {
+            return Path.Combine(Application.StartupPath, "Camera.txt");
+        }
+
+        string GetLightAPath()
+        {
+            return Path.Combine(Application.StartupPath, "LightA.txt");
+        }
+
+        void WritePose(PNGWriter pw, TMOFile tmo)
+        {
+            byte[] cami = ReadFloats(GetCameraPath());
+            byte[] lgta = ReadFloats(GetLightAPath());
+
+            pw.WriteTDCG();
+            pw.WritePOSE();
+            pw.WriteCAMI(cami);
+            pw.WriteLGTA(lgta);
+            pw.WriteFTMO(tmo);
         }
 
         public void Process()
