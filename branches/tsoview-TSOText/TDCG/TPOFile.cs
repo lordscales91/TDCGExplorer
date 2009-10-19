@@ -90,11 +90,12 @@ public class TPOFileList
     /// 指定番号のフレームに含まれるモーション行列値を変形します。
     /// </summary>
     /// <param name="i">フレーム番号</param>
-    public void Transform(int i)
+    /// <param name="frame_count">フレーム数</param>
+    public void Transform(int i, int frame_count)
     {
         LoadMatrix();
         foreach (TPOFile tpo in list)
-            tpo.Transform(i);
+            tpo.Transform(i, frame_count);
     }
 
     /// <summary>
@@ -300,7 +301,7 @@ public class TPOFile
         int frame_count = tmo.frames.Length;
         for (int i = 0; i < frame_count; i++)
         {
-            Transform(i);
+            Transform(i, frame_count);
         }
     }
 
@@ -308,18 +309,38 @@ public class TPOFile
     /// 指定番号のフレームに含まれるモーション行列値を変形します。
     /// </summary>
     /// <param name="i">フレーム番号</param>
-    public void Transform(int i)
+    /// <param name="frame_count">フレーム数</param>
+    public void Transform(int i, int frame_count)
     {
         if (tmo.frames == null)
             return;
 
         int matrix_count = tmo.frames[i].matrices.Length;
-        for (int j = 0; j < matrix_count; j++)
+        int frame_mid = frame_count / 2;
+        if (frame_mid != 0)
         {
-            TPONode node = nodes[j];
-            Debug.Assert(node != null, "node should not be null j=" + j.ToString());
-            TMOMat mat = tmo.frames[i].matrices[j];//変形対象モーション行列
-            node.Transform(mat, ratio);
+            for (int j = 0; j < matrix_count; j++)
+            {
+                TPONode node = nodes[j];
+                Debug.Assert(node != null, "node should not be null j=" + j.ToString());
+                TMOMat mat = tmo.frames[i].matrices[j];//変形対象モーション行列
+                float power;
+                if ((i / frame_mid) % 2 == 0)
+                    power = (i % frame_mid) / (float)frame_mid;
+                else
+                    power = (frame_mid - (i % frame_mid) - 1) / (float)frame_mid;
+                node.Transform(mat, ratio * power);
+            }
+        }
+        else
+        {
+            for (int j = 0; j < matrix_count; j++)
+            {
+                TPONode node = nodes[j];
+                Debug.Assert(node != null, "node should not be null j=" + j.ToString());
+                TMOMat mat = tmo.frames[i].matrices[j];//変形対象モーション行列
+                node.Transform(mat, ratio);
+            }
         }
     }
 }

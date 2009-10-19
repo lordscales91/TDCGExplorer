@@ -194,10 +194,22 @@ public class Figure : IDisposable
     /// <summary>
     /// 現在のフレーム番号を得ます。
     /// </summary>
-    /// <returns></returns>
+    /// <returns>現在のフレーム番号</returns>
     public int GetFrameIndex()
     {
         return current_frame_index;
+    }
+
+    /// <summary>
+    /// フレーム数を得ます。
+    /// </summary>
+    /// <returns>フレーム数</returns>
+    public int GetFrameCount()
+    {
+        if (tmo.frames != null)
+            return tmo.frames.Length;
+        else
+            return 0;
     }
 
     /// <summary>

@@ -69,6 +69,12 @@ public class TSOForm : Form
             {
                 Figure fig;
                 if (viewer.TryGetFigure(out fig))
+                    viewer.Camera.SetCenter(fig.Center);
+            };
+            viewer.FigureEvent += delegate(object sender, EventArgs e)
+            {
+                Figure fig;
+                if (viewer.TryGetFigure(out fig))
                     fig_form.SetFigure(fig);
                 else
                     fig_form.Clear();
