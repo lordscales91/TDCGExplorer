@@ -95,7 +95,7 @@ namespace TMOProportion
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                tpo_list.Transform(fig.GetFrameIndex());
+                tpo_list.Transform(fig.GetFrameIndex(), fig.GetFrameCount());
                 fig.UpdateBoneMatrices(true);
             }
         }
@@ -117,7 +117,7 @@ namespace TMOProportion
                     tpo.Ratio = bar_list[i].Ratio;
                 }
 
-                tpo_list.Transform(fig.GetFrameIndex());
+                tpo_list.Transform(fig.GetFrameIndex(), fig.GetFrameCount());
                 fig.UpdateBoneMatrices(true);
             }
         }
