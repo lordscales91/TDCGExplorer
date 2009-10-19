@@ -198,16 +198,26 @@ namespace TDCG
 
         public void WriteFTMO(TMOFile tmo)
         {
-            MemoryStream dest = new MemoryStream();
-            tmo.Save(dest);
-            dest.Seek(0, SeekOrigin.Begin);
-            WriteFile("FTMO", 0xADCFB72F, 0, dest);
+            MemoryStream ms = new MemoryStream();
+            tmo.Save(ms);
+            ms.Seek(0, SeekOrigin.Begin);
+            WriteFTMO(ms);
+        }
+
+        public void WriteFTMO(Stream stream)
+        {
+            WriteFile("FTMO", 0xADCFB72F, 0, stream);
         }
 
         public void WriteFTSO(uint opt1, byte[] data)
         {
-            MemoryStream dest = new MemoryStream(data);
-            WriteFile("FTSO", 0x26F5B8FE, opt1, dest);
+            MemoryStream ms = new MemoryStream(data);
+            WriteFTSO(opt1, ms);
+        }
+
+        public void WriteFTSO(uint opt1, Stream stream)
+        {
+            WriteFile("FTSO", 0x26F5B8FE, opt1, stream);
         }
     }
 }
