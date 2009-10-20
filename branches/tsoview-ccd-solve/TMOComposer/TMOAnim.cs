@@ -60,10 +60,11 @@ namespace TMOComposer
 
         public void LoadPose()
         {
-            if (this.PoseFile != null)
+            if (!string.IsNullOrEmpty(this.PoseFile))
             {
                 Console.WriteLine("Load File: " + this.PoseFile);
                 Tmo = TMOAnim.LoadPNGFile(this.PosePath);
+                Tmo.LoadTransformationMatrix(0);
             }
             Tmo.TruncateFrame(0); // forced pose
         }
@@ -76,7 +77,7 @@ namespace TMOComposer
             List<string> except_snames = new List<string>();
             except_snames.Add("Kami_Oya");
 
-            if (this.FaceFile != null)
+            if (!string.IsNullOrEmpty(this.FaceFile))
             {
                 Console.WriteLine("Load File: " + this.FaceFile);
                 TMOFile face_tmo = TMOAnim.LoadPNGFile(this.FacePath);
@@ -262,6 +263,7 @@ namespace TMOComposer
                 tmo = LoadPNGFile(item.PosePath);
             }
             tmo.TruncateFrame(0); // forced pose
+            item.PoseFile = null;
 
             return tmo;
         }

@@ -330,11 +330,18 @@ namespace TMOComposer
             tmoAnimItemForm.SetTmoAnimItem(item);
 
             Figure fig = viewer.FigureList[pngsave_row];
+
             if (tmoAnimItemForm.ShowDialog(this) == DialogResult.OK)
             {
                 tmoAnimItemBindingSource.ResetBindings(false);
+                item.LoadPose();
+                item.PoseFile = null;
                 item.CopyFace();
-                fig.UpdateBoneMatrices(true);
+                item.FaceFile = null;
+                TMOFile tmo = tmoanim.GetTmo(item);
+                viewer.Solver.Solved = true;
+                fig.Tmo = tmo;
+                fig.UpdateNodeMapAndBoneMatrices();
             }
         }
 
@@ -360,9 +367,8 @@ namespace TMOComposer
                 viewer.SwitchMotionEnabled();
 
             Figure fig = viewer.FigureList[pngsave_row];
-            TMOFile tmo = tmoanim.GetTmo(item);
-            if (tmo.frames != null)
             {
+                TMOFile tmo = tmoanim.GetTmo(item);
                 viewer.Solver.Solved = true;
                 fig.Tmo = tmo;
                 fig.UpdateNodeMapAndBoneMatrices();

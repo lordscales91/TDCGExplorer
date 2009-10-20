@@ -154,7 +154,9 @@ public class Figure : IDisposable
     /// </summary>
     protected void SetCenterToHips()
     {
-        Debug.Assert(tmo != null);
+        if (tmo.frames == null)
+            return;
+
         TMONode tmo_node;
         if (tmo.nodemap.TryGetValue("|W_Hips", out tmo_node))
         {
