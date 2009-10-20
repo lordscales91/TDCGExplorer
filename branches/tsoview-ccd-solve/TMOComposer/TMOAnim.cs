@@ -226,8 +226,14 @@ namespace TMOComposer
             if (item == null)
                 return tmo;
 
+            string png_file = item.GetPngPath();
             string tmo_file = item.GetTmoPath();
-            if (File.Exists(tmo_file))
+            if (File.Exists(png_file))
+            {
+                Console.WriteLine("Load File: " + png_file);
+                tmo = LoadPNGFile(png_file);
+            }
+            else if (File.Exists(tmo_file))
             {
                 Console.WriteLine("Load File: " + tmo_file);
                 tmo.Load(tmo_file);
@@ -254,10 +260,12 @@ namespace TMOComposer
 
                 if (tmo.frames != null)
                 {
+                    /*
                     string tmo_file = item.GetTmoPath();
                     Console.WriteLine("Save File: " + tmo_file);
                     Directory.CreateDirectory(Path.GetDirectoryName(tmo_file));
                     tmo.Save(tmo_file);
+                    */
 
                     string png_file = item.GetPngPath();
                     Console.WriteLine("Save File: " + png_file);
