@@ -19,7 +19,7 @@ namespace TMOComposer
             InitializeComponent();
         }
 
-        public string File { get; set; }
+        public string FileName { get; set; }
 
         private void btnGetFaces_Click(object sender, EventArgs e)
         {
@@ -43,9 +43,9 @@ namespace TMOComposer
         private void lvFaces_DoubleClick(object sender, EventArgs e)
         {
             if (lvFaces.SelectedItems.Count != 0)
-                File = lvFaces.SelectedItems[0].Text;
+                FileName = lvFaces.SelectedItems[0].Text;
             else
-                File = null;
+                FileName = null;
             this.DialogResult = DialogResult.OK;
             Close();
         }

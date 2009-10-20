@@ -52,10 +52,10 @@ namespace TMOComposer
         {
             if (faceListForm.ShowDialog(this) == DialogResult.OK)
             {
-                if (faceListForm.File == null)
+                if (faceListForm.FileName == null)
                     return;
 
-                tbFaceFile.Text = faceListForm.File;
+                tbFaceFile.Text = faceListForm.FileName;
             }
         }
 
@@ -63,10 +63,10 @@ namespace TMOComposer
         {
             if (poseListForm.ShowDialog(this) == DialogResult.OK)
             {
-                if (poseListForm.File == null)
+                if (poseListForm.FileName == null)
                     return;
 
-                tbPoseFile.Text = poseListForm.File;
+                tbPoseFile.Text = poseListForm.FileName;
             }
         }
     }

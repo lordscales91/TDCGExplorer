@@ -16,17 +16,45 @@ namespace TMOComposer
         public PoseListForm()
         {
             InitializeComponent();
+            AddListView(lvPoses);
         }
 
-        public string File { get; set; }
+        public string FileName { get; set; }
+
+        List<ListView> listviews = new List<ListView>();
+
+        public void AddListView(ListView lv)
+        {
+            lv.LargeImageList = ilPoses;
+            listviews.Add(lv);
+        }
 
         private void btnGetPoses_Click(object sender, EventArgs e)
         {
-            if (!Directory.Exists(PosePath))
-                return;
+            string[] files = GetFiles();
+            UpdateImageList(files);
+            UpdateViewItems(files);
+        }
 
-            string[] files = Directory.GetFiles(PosePath, "*.png");
-            lvPoses.Items.Clear();
+        private static int CompareFiles(string x, string y)
+        {
+            return DateTime.Compare(File.GetCreationTime(y), File.GetCreationTime(x));
+        }
+
+        public string[] GetFiles()
+        {
+            if (Directory.Exists(PosePath))
+            {
+                string[] files = Directory.GetFiles(PosePath, "*.png");
+                Array.Sort(files, CompareFiles);
+                return files;
+            }
+            else
+                return null;
+        }
+
+        public void UpdateImageList(string[] files)
+        {
             ilPoses.Images.Clear();
             for (int i = 0; i < files.Length; i++)
             {
@@ -35,16 +63,28 @@ namespace TMOComposer
                 {
                     ilPoses.Images.Add(thumbnail);
                 }
-                lvPoses.Items.Add(Path.GetFileName(file), i);
+            }
+        }
+
+        public void UpdateViewItems(string[] files)
+        {
+            foreach (ListView lv in listviews)
+            {
+                lv.Items.Clear();
+                for (int i = 0; i < files.Length; i++)
+                {
+                    string file = files[i];
+                    lv.Items.Add(Path.GetFileName(file), i);
+                }
             }
         }
 
         private void lvPoses_DoubleClick(object sender, EventArgs e)
         {
             if (lvPoses.SelectedItems.Count != 0)
-                File = lvPoses.SelectedItems[0].Text;
+                FileName = lvPoses.SelectedItems[0].Text;
             else
-                File = null;
+                FileName = null;
             this.DialogResult = DialogResult.OK;
             Close();
         }

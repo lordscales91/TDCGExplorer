@@ -36,6 +36,9 @@
             this.lvPoses = new System.Windows.Forms.ListView();
             this.btnGetPoses = new System.Windows.Forms.Button();
             this.gvTMOAnimItems = new System.Windows.Forms.DataGridView();
+            this.poseFileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lengthDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tmoAnimItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.btnAnimate = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btnUp = new System.Windows.Forms.Button();
@@ -43,28 +46,23 @@
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnRec = new System.Windows.Forms.Button();
             this.gvFigures = new System.Windows.Forms.DataGridView();
+            this.fileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.pngSaveItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.btnAdd = new System.Windows.Forms.Button();
             this.btnDel = new System.Windows.Forms.Button();
             this.btnCopy = new System.Windows.Forms.Button();
             this.cbLimitRotation = new System.Windows.Forms.CheckBox();
             this.cbFloor = new System.Windows.Forms.CheckBox();
-            this.fileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pngSaveItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.poseFileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lengthDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tmoAnimItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.ilPoses = new System.Windows.Forms.ImageList(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.gvTMOAnimItems)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tmoAnimItemBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvFigures)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pngSaveItemBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tmoAnimItemBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // lvPoses
             // 
             this.lvPoses.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvPoses.LargeImageList = this.ilPoses;
             this.lvPoses.Location = new System.Drawing.Point(572, 168);
             this.lvPoses.Name = "lvPoses";
             this.lvPoses.Size = new System.Drawing.Size(200, 354);
@@ -105,6 +103,24 @@
             this.gvTMOAnimItems.TabIndex = 2;
             this.gvTMOAnimItems.DoubleClick += new System.EventHandler(this.gvTMOAnimItems_DoubleClick);
             this.gvTMOAnimItems.SelectionChanged += new System.EventHandler(this.gvTMOAnimItems_SelectionChanged);
+            // 
+            // poseFileDataGridViewTextBoxColumn
+            // 
+            this.poseFileDataGridViewTextBoxColumn.DataPropertyName = "PoseFile";
+            this.poseFileDataGridViewTextBoxColumn.HeaderText = "PoseFile";
+            this.poseFileDataGridViewTextBoxColumn.Name = "poseFileDataGridViewTextBoxColumn";
+            this.poseFileDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // lengthDataGridViewTextBoxColumn
+            // 
+            this.lengthDataGridViewTextBoxColumn.DataPropertyName = "Length";
+            this.lengthDataGridViewTextBoxColumn.HeaderText = "Length";
+            this.lengthDataGridViewTextBoxColumn.Name = "lengthDataGridViewTextBoxColumn";
+            this.lengthDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // tmoAnimItemBindingSource
+            // 
+            this.tmoAnimItemBindingSource.DataSource = typeof(TMOComposer.TMOAnimItem);
             // 
             // btnAnimate
             // 
@@ -180,6 +196,17 @@
             this.gvFigures.TabIndex = 9;
             this.gvFigures.SelectionChanged += new System.EventHandler(this.gvFigures_SelectionChanged);
             // 
+            // fileDataGridViewTextBoxColumn
+            // 
+            this.fileDataGridViewTextBoxColumn.DataPropertyName = "File";
+            this.fileDataGridViewTextBoxColumn.HeaderText = "SaveFile";
+            this.fileDataGridViewTextBoxColumn.Name = "fileDataGridViewTextBoxColumn";
+            this.fileDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // pngSaveItemBindingSource
+            // 
+            this.pngSaveItemBindingSource.DataSource = typeof(TMOComposer.PngSaveItem);
+            // 
             // btnAdd
             // 
             this.btnAdd.Location = new System.Drawing.Point(218, 41);
@@ -236,41 +263,6 @@
             this.cbFloor.UseVisualStyleBackColor = true;
             this.cbFloor.CheckedChanged += new System.EventHandler(this.cbFloor_CheckedChanged);
             // 
-            // fileDataGridViewTextBoxColumn
-            // 
-            this.fileDataGridViewTextBoxColumn.DataPropertyName = "File";
-            this.fileDataGridViewTextBoxColumn.HeaderText = "SaveFile";
-            this.fileDataGridViewTextBoxColumn.Name = "fileDataGridViewTextBoxColumn";
-            this.fileDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // pngSaveItemBindingSource
-            // 
-            this.pngSaveItemBindingSource.DataSource = typeof(TMOComposer.PngSaveItem);
-            // 
-            // poseFileDataGridViewTextBoxColumn
-            // 
-            this.poseFileDataGridViewTextBoxColumn.DataPropertyName = "PoseFile";
-            this.poseFileDataGridViewTextBoxColumn.HeaderText = "PoseFile";
-            this.poseFileDataGridViewTextBoxColumn.Name = "poseFileDataGridViewTextBoxColumn";
-            this.poseFileDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // lengthDataGridViewTextBoxColumn
-            // 
-            this.lengthDataGridViewTextBoxColumn.DataPropertyName = "Length";
-            this.lengthDataGridViewTextBoxColumn.HeaderText = "Length";
-            this.lengthDataGridViewTextBoxColumn.Name = "lengthDataGridViewTextBoxColumn";
-            this.lengthDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // tmoAnimItemBindingSource
-            // 
-            this.tmoAnimItemBindingSource.DataSource = typeof(TMOComposer.TMOAnimItem);
-            // 
-            // ilPoses
-            // 
-            this.ilPoses.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
-            this.ilPoses.ImageSize = new System.Drawing.Size(128, 128);
-            this.ilPoses.TransparentColor = System.Drawing.Color.Transparent;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -293,9 +285,9 @@
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.gvTMOAnimItems)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tmoAnimItemBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvFigures)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pngSaveItemBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tmoAnimItemBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -322,7 +314,6 @@
         private System.Windows.Forms.Button btnCopy;
         private System.Windows.Forms.CheckBox cbLimitRotation;
         private System.Windows.Forms.CheckBox cbFloor;
-        private System.Windows.Forms.ImageList ilPoses;
     }
 }
 

@@ -52,6 +52,7 @@ namespace TMOComposer
             tmoAnimItemForm = new TmoAnimItemForm();
             tmoAnimItemForm.SetPoseListForm(poseListForm);
             tmoAnimItemForm.SetFaceListForm(faceListForm);
+            poseListForm.AddListView(lvPoses);
             this.tso_config = tso_config;
         }
 
@@ -74,29 +75,11 @@ namespace TMOComposer
             timer1.Enabled = true;
         }
 
-        private static int CompareFiles(string x, string y)
-        {
-            return DateTime.Compare(File.GetCreationTime(y), File.GetCreationTime(x));
-        }
-
         private void btnGetPoses_Click(object sender, EventArgs e)
         {
-            if (! Directory.Exists(pose_path))
-                return;
-
-            string[] files = Directory.GetFiles(pose_path, "*.png");
-            Array.Sort(files, CompareFiles);
-            lvPoses.Items.Clear();
-            ilPoses.Images.Clear();
-            for (int i = 0; i < files.Length; i++)
-            {
-                string file = files[i];
-                using (Image thumbnail = Bitmap.FromFile(file))
-                {
-                    ilPoses.Images.Add(thumbnail);
-                }
-                lvPoses.Items.Add(Path.GetFileName(file), i);
-            }
+            string[] files = poseListForm.GetFiles();
+            poseListForm.UpdateImageList(files);
+            poseListForm.UpdateViewItems(files);
         }
 
         private void CreatePngSave()
@@ -291,10 +274,10 @@ namespace TMOComposer
         {
             if (saveListForm.ShowDialog(this) == DialogResult.OK)
             {
-                if (saveListForm.File == null)
+                if (saveListForm.FileName == null)
                     return;
 
-                CreatePngSaveItem(saveListForm.File);
+                CreatePngSaveItem(saveListForm.FileName);
             }
         }
 
