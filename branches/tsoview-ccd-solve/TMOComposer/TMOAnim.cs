@@ -34,6 +34,13 @@ namespace TMOComposer
             this.id = id;
         }
 
+        public static string PoseRoot { get; set; }
+
+        public string PosePath
+        {
+            get { return Path.Combine(PoseRoot, PoseFile); }
+        }
+
         public string GetTmoPath()
         {
             return Path.Combine(Application.StartupPath, String.Format(@"motion\{0}\{1}.tmo", png_id, id));
@@ -146,17 +153,11 @@ namespace TMOComposer
                 items[i].UpdateID(png_id, i);
         }
 
-        public static string PoseRoot { get; set; }
         public static string FaceRoot { get; set; }
-
-        public static string GetPosePath(string pose_file)
-        {
-            return PoseRoot + @"\" + pose_file;
-        }
 
         public static string GetFacePath(string face_file)
         {
-            return FaceRoot + @"\" + face_file;
+            return Path.Combine(FaceRoot, face_file);
         }
 
         public void LoadSource()
@@ -241,7 +242,7 @@ namespace TMOComposer
             else
             {
                 Console.WriteLine("Load File: " + item.PoseFile);
-                tmo = LoadPNGFile(GetPosePath(item.PoseFile));
+                tmo = LoadPNGFile(item.PosePath);
             }
 
             if (tmo.frames == null)

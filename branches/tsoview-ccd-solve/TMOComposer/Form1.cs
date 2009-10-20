@@ -31,7 +31,7 @@ namespace TMOComposer
             this.ClientSize = tso_config.ClientSize;
             save_path = tso_config.SavePath;
             pose_path = tso_config.PosePath;
-            TMOAnim.PoseRoot = tso_config.PosePath;
+            TMOAnimItem.PoseRoot = tso_config.PosePath;
             TMOAnim.FaceRoot = tso_config.FacePath;
 
             viewer = new Viewer();
