@@ -48,7 +48,7 @@ namespace TMOComposer
 
         public string GetPngPath()
         {
-            return Path.Combine(Application.StartupPath, String.Format(@"motion\{0}\{1}.png", png_id, id));
+            return Path.Combine(PoseRoot, String.Format(@"tmo-{0}-{1:D3}.tdcgpose.png", png_id, id));
         }
 
         public void CopyFace()
