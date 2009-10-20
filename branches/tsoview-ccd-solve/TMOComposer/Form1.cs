@@ -50,6 +50,7 @@ namespace TMOComposer
             faceListForm = new FaceListForm();
             faceListForm.FacePath = tso_config.FacePath;
             tmoAnimItemForm = new TmoAnimItemForm();
+            tmoAnimItemForm.SetPoseListForm(poseListForm);
             tmoAnimItemForm.SetFaceListForm(faceListForm);
             this.tso_config = tso_config;
         }

@@ -11,7 +11,13 @@ namespace TMOComposer
 {
     public partial class TmoAnimItemForm : Form
     {
+        PoseListForm poseListForm = null;
         FaceListForm faceListForm = null;
+
+        public void SetPoseListForm(PoseListForm form)
+        {
+            this.poseListForm = form;
+        }
 
         public void SetFaceListForm(FaceListForm form)
         {
@@ -50,6 +56,17 @@ namespace TMOComposer
                     return;
 
                 tbFaceFile.Text = faceListForm.File;
+            }
+        }
+
+        private void btnOpenPoses_Click(object sender, EventArgs e)
+        {
+            if (poseListForm.ShowDialog(this) == DialogResult.OK)
+            {
+                if (poseListForm.File == null)
+                    return;
+
+                tbPoseFile.Text = poseListForm.File;
             }
         }
     }
