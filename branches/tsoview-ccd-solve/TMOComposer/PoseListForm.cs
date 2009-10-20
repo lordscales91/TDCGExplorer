@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -56,9 +56,8 @@ namespace TMOComposer
         public void UpdateImageList(string[] files)
         {
             ilPoses.Images.Clear();
-            for (int i = 0; i < files.Length; i++)
+            foreach (string file in files)
             {
-                string file = files[i];
                 using (Image thumbnail = Bitmap.FromFile(file))
                 {
                     ilPoses.Images.Add(thumbnail);

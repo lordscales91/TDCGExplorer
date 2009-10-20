@@ -23,19 +23,46 @@ namespace TMOComposer
 
         private void btnGetFaces_Click(object sender, EventArgs e)
         {
-            if (! Directory.Exists(FacePath))
-                return;
+            string[] files = GetFiles();
+            UpdateImageList(files);
+            UpdateViewItems(files);
+        }
 
-            string[] files = Directory.GetFiles(FacePath, "*.png");
-            lvFaces.Items.Clear();
-            ilFaces.Images.Clear();
-            for (int i = 0; i < files.Length; i++)
+        private static int CompareFiles(string x, string y)
+        {
+            return DateTime.Compare(File.GetCreationTime(y), File.GetCreationTime(x));
+        }
+
+        public string[] GetFiles()
+        {
+            if (Directory.Exists(FacePath))
             {
-                string file = files[i];
+                string[] files = Directory.GetFiles(FacePath, "*.png");
+                Array.Sort(files, CompareFiles);
+                return files;
+            }
+            else
+                return null;
+        }
+
+        public void UpdateImageList(string[] files)
+        {
+            ilFaces.Images.Clear();
+            foreach (string file in files)
+            {
                 using (Image thumbnail = Bitmap.FromFile(file))
                 {
                     ilFaces.Images.Add(thumbnail);
                 }
+            }
+        }
+
+        public void UpdateViewItems(string[] files)
+        {
+            lvFaces.Items.Clear();
+            for (int i = 0; i < files.Length; i++)
+            {
+                string file = files[i];
                 lvFaces.Items.Add(Path.GetFileName(file), i);
             }
         }
