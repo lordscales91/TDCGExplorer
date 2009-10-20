@@ -23,12 +23,15 @@ namespace TMOComposer
         [XmlIgnore]
         public TMOFile Tmo { get; set; }
 
-        int png_id;
-        int id;
+        int save_id;
+        public int SaveID { get { return save_id; } }
 
-        public void UpdateID(int png_id, int id)
+        int id;
+        public int ID { get { return id; } }
+
+        public void UpdateID(int save_id, int id)
         {
-            this.png_id = png_id;
+            this.save_id = save_id;
             this.id = id;
         }
 
@@ -38,12 +41,12 @@ namespace TMOComposer
 
         public string GetTmoPath()
         {
-            return Path.Combine(Application.StartupPath, String.Format(@"motion\{0}\{1}.tmo", png_id, id));
+            return Path.Combine(Application.StartupPath, String.Format(@"motion\{0}\{1}.tmo", save_id, id));
         }
-
+        
         public string PoseFile
         {
-            get { return String.Format(@"tmo-{0}-{1:D3}.tdcgpose.png", png_id, id); }
+            get { return String.Format(@"tmo-{0}-{1:D3}.tdcgpose.png", save_id, id); }
         }
 
         public string GetPngPath()
@@ -152,14 +155,14 @@ namespace TMOComposer
             source = new TMOFile();
         }
 
-        int png_id;
+        int save_id;
 
-        public void UpdateID(int png_id)
+        public void UpdateID(int save_id)
         {
-            this.png_id = png_id;
+            this.save_id = save_id;
 
             for (int i = 0; i < items.Count; i++)
-                items[i].UpdateID(png_id, i);
+                items[i].UpdateID(save_id, i);
         }
 
         public static string FaceRoot { get; set; }
@@ -176,7 +179,7 @@ namespace TMOComposer
 
         public string GetTmoPath()
         {
-            return String.Format(@"out-{0:D3}.tmo", png_id);
+            return String.Format(@"out-{0:D3}.tmo", save_id);
         }
 
         public void SaveSourceToFile()
@@ -270,7 +273,7 @@ namespace TMOComposer
 
                     string png_file = item.GetPngPath();
                     Console.WriteLine("Save File: " + png_file);
-                    PNGFile png = CreatePNGFile();
+                    PNGFile png = CreatePNGFile(item);
                     png.WriteTaOb += delegate(BinaryWriter bw)
                     {
                         PNGWriter pw = new PNGWriter(bw);
@@ -281,11 +284,16 @@ namespace TMOComposer
             }
         }
 
-        public PNGFile CreatePNGFile()
+        public PNGFile CreatePNGFile(TMOAnimItem item)
         {
             MemoryStream ms = new MemoryStream();
-            using (Bitmap bmp = new Bitmap(180, 180))
+            using (Bitmap bmp = new Bitmap(180, 180, System.Drawing.Imaging.PixelFormat.Format24bppRgb))
             {
+                Graphics g = Graphics.FromImage(bmp);
+                Brush brush = new SolidBrush(Color.FromArgb(0xfb, 0xc6, 0xc6));
+                g.FillRectangle(brush, 0, 0, 180, 180);
+                Font font = new Font(FontFamily.GenericSerif, 36, FontStyle.Bold);
+                g.DrawString(string.Format("{0:D1}-{1:D3}", item.SaveID, item.ID), font, Brushes.Black, 0, 0);
                 bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
             }
             ms.Seek(0, SeekOrigin.Begin);
