@@ -11,11 +11,11 @@ namespace TMOComposer
 {
     public partial class TmoAnimItemForm : Form
     {
-        Form3 form3 = null;
+        FaceListForm faceListForm = null;
 
-        public void SetForm3(Form3 form3)
+        public void SetFaceListForm(FaceListForm form)
         {
-            this.form3 = form3;
+            this.faceListForm = form;
         }
 
         public TmoAnimItemForm()
@@ -44,12 +44,12 @@ namespace TMOComposer
 
         private void btnOpenFaces_Click(object sender, EventArgs e)
         {
-            if (form3.ShowDialog(this) == DialogResult.OK)
+            if (faceListForm.ShowDialog(this) == DialogResult.OK)
             {
-                if (form3.File == null)
+                if (faceListForm.File == null)
                     return;
 
-                tbFaceFile.Text = form3.File;
+                tbFaceFile.Text = faceListForm.File;
             }
         }
     }

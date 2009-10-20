@@ -1,49 +1,48 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
 namespace TMOComposer
 {
-    public partial class Form2 : Form
+    public partial class PoseListForm : Form
     {
-        public string SavePath { get; set; }
+        public string PosePath { get; set; }
 
-        public Form2()
+        public PoseListForm()
         {
             InitializeComponent();
         }
-        
+
         public string File { get; set; }
 
-        private void btnGetSaves_Click(object sender, EventArgs e)
+        private void btnGetPoses_Click(object sender, EventArgs e)
         {
-            if (! Directory.Exists(SavePath))
+            if (!Directory.Exists(PosePath))
                 return;
 
-            string[] files = Directory.GetFiles(SavePath, "*.png");
-            lvSaves.Items.Clear();
-            ilSaves.Images.Clear();
+            string[] files = Directory.GetFiles(PosePath, "*.png");
+            lvPoses.Items.Clear();
+            ilPoses.Images.Clear();
             for (int i = 0; i < files.Length; i++)
             {
                 string file = files[i];
                 using (Image thumbnail = Bitmap.FromFile(file))
                 {
-                    ilSaves.Images.Add(thumbnail);
+                    ilPoses.Images.Add(thumbnail);
                 }
-                lvSaves.Items.Add(Path.GetFileName(file), i);
+                lvPoses.Items.Add(Path.GetFileName(file), i);
             }
         }
 
-        private void lvSaves_DoubleClick(object sender, EventArgs e)
+        private void lvPoses_DoubleClick(object sender, EventArgs e)
         {
-            if (lvSaves.SelectedItems.Count != 0)
-                File = lvSaves.SelectedItems[0].Text;
+            if (lvPoses.SelectedItems.Count != 0)
+                File = lvPoses.SelectedItems[0].Text;
             else
                 File = null;
             this.DialogResult = DialogResult.OK;

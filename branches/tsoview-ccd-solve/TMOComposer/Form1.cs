@@ -15,8 +15,9 @@ namespace TMOComposer
     {
         Viewer viewer = null;
         PngSave pngsave;
-        Form2 form2 = null;
-        Form3 form3 = null;
+        SaveListForm saveListForm = null;
+        PoseListForm poseListForm = null;
+        FaceListForm faceListForm = null;
         TmoAnimItemForm tmoAnimItemForm = null;
         TSOConfig tso_config;
 
@@ -42,12 +43,14 @@ namespace TMOComposer
                 viewer.SwitchMotionEnabled();
                 timer1.Enabled = true;
             }
-            form2 = new Form2();
-            form2.SavePath = tso_config.SavePath;
-            form3 = new Form3();
-            form3.FacePath = tso_config.FacePath;
+            saveListForm = new SaveListForm();
+            saveListForm.SavePath = tso_config.SavePath;
+            poseListForm = new PoseListForm();
+            poseListForm.PosePath = tso_config.PosePath;
+            faceListForm = new FaceListForm();
+            faceListForm.FacePath = tso_config.FacePath;
             tmoAnimItemForm = new TmoAnimItemForm();
-            tmoAnimItemForm.SetForm3(form3);
+            tmoAnimItemForm.SetFaceListForm(faceListForm);
             this.tso_config = tso_config;
         }
 
@@ -285,12 +288,12 @@ namespace TMOComposer
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            if (form2.ShowDialog(this) == DialogResult.OK)
+            if (saveListForm.ShowDialog(this) == DialogResult.OK)
             {
-                if (form2.File == null)
+                if (saveListForm.File == null)
                     return;
 
-                CreatePngSaveItem(form2.File);
+                CreatePngSaveItem(saveListForm.File);
             }
         }
 
