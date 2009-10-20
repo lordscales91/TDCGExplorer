@@ -12,9 +12,7 @@ namespace TMOComposer
 {
     public class TMOAnimItem
     {
-        public string PoseFile { get; set; }
         public int Length { get; set; }
-        public string FaceFile { get; set; }
         public float Accel { get; set; }
 
         public TMOAnimItem()
@@ -36,40 +34,35 @@ namespace TMOComposer
 
         public static string PoseRoot { get; set; }
 
-        public string PosePath
-        {
-            get { return Path.Combine(PoseRoot, PoseFile); }
-        }
-
         public static string FaceRoot { get; set; }
-
-        public string FacePath
-        {
-            get { return Path.Combine(FaceRoot, FaceFile); }
-        }
 
         public string GetTmoPath()
         {
             return Path.Combine(Application.StartupPath, String.Format(@"motion\{0}\{1}.tmo", png_id, id));
         }
 
-        public string GetPngPath()
+        public string PoseFile
         {
-            return Path.Combine(PoseRoot, String.Format(@"tmo-{0}-{1:D3}.tdcgpose.png", png_id, id));
+            get { return String.Format(@"tmo-{0}-{1:D3}.tdcgpose.png", png_id, id); }
         }
 
-        public void LoadPose()
+        public string GetPngPath()
         {
-            if (!string.IsNullOrEmpty(this.PoseFile))
+            return Path.Combine(PoseRoot, PoseFile);
+        }
+
+        public void LoadPoseFile(string pose_file)
+        {
+            if (!string.IsNullOrEmpty(pose_file))
             {
-                Console.WriteLine("Load File: " + this.PoseFile);
-                Tmo = TMOAnim.LoadPNGFile(this.PosePath);
+                Console.WriteLine("Load File: " + pose_file);
+                Tmo = TMOAnim.LoadPNGFile(Path.Combine(PoseRoot, pose_file));
                 Tmo.LoadTransformationMatrix(0);
             }
             Tmo.TruncateFrame(0); // forced pose
         }
 
-        public void CopyFace()
+        public void CopyFaceFile(string face_file)
         {
             if (Tmo.frames == null)
                 return;
@@ -77,10 +70,10 @@ namespace TMOComposer
             List<string> except_snames = new List<string>();
             except_snames.Add("Kami_Oya");
 
-            if (!string.IsNullOrEmpty(this.FaceFile))
+            if (!string.IsNullOrEmpty(face_file))
             {
-                Console.WriteLine("Load File: " + this.FaceFile);
-                TMOFile face_tmo = TMOAnim.LoadPNGFile(this.FacePath);
+                Console.WriteLine("Load File: " + face_file);
+                TMOFile face_tmo = TMOAnim.LoadPNGFile(Path.Combine(FaceRoot, face_file));
                 if (face_tmo.frames != null)
                 {
                     Tmo.SaveTransformationMatrix(0);
@@ -93,9 +86,7 @@ namespace TMOComposer
         public TMOAnimItem Dup()
         {
             TMOAnimItem item = new TMOAnimItem();
-            item.PoseFile = PoseFile;
             item.Length = Length;
-            item.FaceFile = FaceFile;
             item.Accel = Accel;
             if (Tmo != null)
             {
@@ -257,13 +248,7 @@ namespace TMOComposer
                 Console.WriteLine("Load File: " + tmo_file);
                 tmo.Load(tmo_file);
             }
-            else
-            {
-                Console.WriteLine("Load File: " + item.PoseFile);
-                tmo = LoadPNGFile(item.PosePath);
-            }
             tmo.TruncateFrame(0); // forced pose
-            item.PoseFile = null;
 
             return tmo;
         }

@@ -28,17 +28,17 @@ namespace TMOComposer
         public void SetTmoAnimItem(TMOAnimItem item)
         {
             this.item = item;
-            tbPoseFile.Text = item.PoseFile;
+            tbPoseFile.Text = "";
             tbLength.Text = item.Length.ToString();
-            tbFaceFile.Text = item.FaceFile;
+            tbFaceFile.Text = "";
             accelSlider1.Accel = item.Accel;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            item.PoseFile = tbPoseFile.Text;
+            item.LoadPoseFile(tbPoseFile.Text);
             item.Length = int.Parse(tbLength.Text);
-            item.FaceFile = tbFaceFile.Text;
+            item.CopyFaceFile(tbFaceFile.Text);
             item.Accel = accelSlider1.Accel;
         }
 

@@ -196,7 +196,7 @@ namespace TMOComposer
                 return;
 
             TMOAnimItem item = new TMOAnimItem();
-            item.PoseFile = lvPoses.SelectedItems[0].Text;
+            item.LoadPoseFile(lvPoses.SelectedItems[0].Text);
             tmoAnimItemBindingSource.Add(item);
             pngsave.UpdateID();
         }
@@ -334,10 +334,6 @@ namespace TMOComposer
             if (tmoAnimItemForm.ShowDialog(this) == DialogResult.OK)
             {
                 tmoAnimItemBindingSource.ResetBindings(false);
-                item.LoadPose();
-                item.PoseFile = null;
-                item.CopyFace();
-                item.FaceFile = null;
                 TMOFile tmo = tmoanim.GetTmo(item);
                 viewer.Solver.Solved = true;
                 fig.Tmo = tmo;
