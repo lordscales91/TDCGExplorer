@@ -70,12 +70,18 @@ namespace TMOComposer
             timer1.Enabled = true;
         }
 
+        private static int CompareFiles(string x, string y)
+        {
+            return DateTime.Compare(File.GetCreationTime(y), File.GetCreationTime(x));
+        }
+
         private void btnGetPoses_Click(object sender, EventArgs e)
         {
             if (! Directory.Exists(pose_path))
                 return;
 
             string[] files = Directory.GetFiles(pose_path, "*.png");
+            Array.Sort(files, CompareFiles);
             lvPoses.Items.Clear();
             ilPoses.Images.Clear();
             for (int i = 0; i < files.Length; i++)
