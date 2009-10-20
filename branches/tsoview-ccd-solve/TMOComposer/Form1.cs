@@ -32,7 +32,7 @@ namespace TMOComposer
             save_path = tso_config.SavePath;
             pose_path = tso_config.PosePath;
             TMOAnimItem.PoseRoot = tso_config.PosePath;
-            TMOAnim.FaceRoot = tso_config.FacePath;
+            TMOAnimItem.FaceRoot = tso_config.FacePath;
 
             viewer = new Viewer();
             if (viewer.InitializeApplication(this))

@@ -41,6 +41,13 @@ namespace TMOComposer
             get { return Path.Combine(PoseRoot, PoseFile); }
         }
 
+        public static string FaceRoot { get; set; }
+
+        public string FacePath
+        {
+            get { return Path.Combine(FaceRoot, FaceFile); }
+        }
+
         public string GetTmoPath()
         {
             return Path.Combine(Application.StartupPath, String.Format(@"motion\{0}\{1}.tmo", png_id, id));
@@ -49,6 +56,16 @@ namespace TMOComposer
         public string GetPngPath()
         {
             return Path.Combine(PoseRoot, String.Format(@"tmo-{0}-{1:D3}.tdcgpose.png", png_id, id));
+        }
+
+        public void LoadPose()
+        {
+            if (this.PoseFile != null)
+            {
+                Console.WriteLine("Load File: " + this.PoseFile);
+                Tmo = TMOAnim.LoadPNGFile(this.PosePath);
+            }
+            Tmo.TruncateFrame(0); // forced pose
         }
 
         public void CopyFace()
@@ -62,7 +79,7 @@ namespace TMOComposer
             if (this.FaceFile != null)
             {
                 Console.WriteLine("Load File: " + this.FaceFile);
-                TMOFile face_tmo = TMOAnim.LoadPNGFile(TMOAnim.GetFacePath(this.FaceFile));
+                TMOFile face_tmo = TMOAnim.LoadPNGFile(this.FacePath);
                 if (face_tmo.frames != null)
                 {
                     Tmo.SaveTransformationMatrix(0);
@@ -244,10 +261,6 @@ namespace TMOComposer
                 Console.WriteLine("Load File: " + item.PoseFile);
                 tmo = LoadPNGFile(item.PosePath);
             }
-
-            if (tmo.frames == null)
-                return tmo;
-
             tmo.TruncateFrame(0); // forced pose
 
             return tmo;

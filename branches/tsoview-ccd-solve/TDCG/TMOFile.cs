@@ -277,6 +277,8 @@ namespace TDCG
         /// <param name="frame_index">index</param>
         public void TruncateFrame(int frame_index)
         {
+            if (frames == null)
+                return;
             if (frame_index < 0)
                 return;
             if (frame_index > frames.Length-1)
