@@ -23,19 +23,46 @@ namespace TMOComposer
 
         private void btnGetSaves_Click(object sender, EventArgs e)
         {
-            if (! Directory.Exists(SavePath))
-                return;
+            string[] files = GetFiles();
+            UpdateImageList(files);
+            UpdateViewItems(files);
+        }
 
-            string[] files = Directory.GetFiles(SavePath, "*.png");
-            lvSaves.Items.Clear();
-            ilSaves.Images.Clear();
-            for (int i = 0; i < files.Length; i++)
+        private static int CompareFiles(string x, string y)
+        {
+            return DateTime.Compare(File.GetCreationTime(y), File.GetCreationTime(x));
+        }
+
+        public string[] GetFiles()
+        {
+            if (Directory.Exists(SavePath))
             {
-                string file = files[i];
+                string[] files = Directory.GetFiles(SavePath, "*.png");
+                Array.Sort(files, CompareFiles);
+                return files;
+            }
+            else
+                return null;
+        }
+
+        public void UpdateImageList(string[] files)
+        {
+            ilSaves.Images.Clear();
+            foreach (string file in files)
+            {
                 using (Image thumbnail = Bitmap.FromFile(file))
                 {
                     ilSaves.Images.Add(thumbnail);
                 }
+            }
+        }
+
+        public void UpdateViewItems(string[] files)
+        {
+            lvSaves.Items.Clear();
+            for (int i = 0; i < files.Length; i++)
+            {
+                string file = files[i];
                 lvSaves.Items.Add(Path.GetFileName(file), i);
             }
         }
