@@ -6,6 +6,8 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 using TDCG;
 using CSScriptLibrary;
 
@@ -98,6 +100,79 @@ namespace TPOEditor
             TPONode tponode = tpo.nodes[tponode_row];
 
             tpoCommandBindingSource.DataSource = tponode.commands;
+
+            gvCommands.Rows.Clear();
+            bool inv_scale_on_children;
+            Vector3 scaling = tponode.GetScaling(out inv_scale_on_children);
+            gvCommands.Rows.Add(new string[] { "Scale", scaling.X.ToString(), scaling.Y.ToString(), scaling.Z.ToString() });
+            cbInverseScaleOnChildren.Checked = inv_scale_on_children;
+        }
+
+        float GetFloatFromGridViewCell(DataGridViewCell gvcell)
+        {
+            string str = gvcell.Value.ToString();
+            float flo = 0.0f;
+            try
+            {
+                flo = float.Parse(str);
+            }
+            catch (FormatException)
+            {
+            }
+            return flo;
+        }
+
+        Vector3 GetVector3FromGridViewRow(DataGridViewRow gvrow)
+        {
+            float x = GetFloatFromGridViewCell(gvrow.Cells[1]);
+            float y = GetFloatFromGridViewCell(gvrow.Cells[2]);
+            float z = GetFloatFromGridViewCell(gvrow.Cells[3]);
+            return new Vector3(x, y, z);
+        }
+
+        private void gvCommands_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            DataGridViewRow gvrow = gvCommands.Rows[e.RowIndex];
+            if (e.RowIndex == 0)
+            {
+                int tpofile_row = tpoFileBindingSource.Position;
+                TPOFile tpo = tpo_list[tpofile_row];
+
+                int tponode_row = tpoNodeBindingSource.Position;
+                TPONode tponode = tpo.nodes[tponode_row];
+
+                tponode.SetScaling(GetVector3FromGridViewRow(gvrow), cbInverseScaleOnChildren.Checked);
+
+                tpoCommandBindingSource.ResetBindings(false);
+
+                Figure fig;
+                if (viewer.TryGetFigure(out fig))
+                {
+                    tpo_list.Transform(0);
+                    fig.UpdateBoneMatrices(true);
+                }
+            }
+        }
+
+        private void cbInverseScaleOnChildren_CheckedChanged(object sender, EventArgs e)
+        {
+            int tpofile_row = tpoFileBindingSource.Position;
+            TPOFile tpo = tpo_list[tpofile_row];
+
+            int tponode_row = tpoNodeBindingSource.Position;
+            TPONode tponode = tpo.nodes[tponode_row];
+
+            bool inv_scale_on_children;
+            tponode.SetScaling(tponode.GetScaling(out inv_scale_on_children), cbInverseScaleOnChildren.Checked);
+
+            tpoCommandBindingSource.ResetBindings(false);
+
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
+            {
+                tpo_list.Transform(0);
+                fig.UpdateBoneMatrices(true);
+            }
         }
     }
 }

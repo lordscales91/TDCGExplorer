@@ -583,5 +583,135 @@ public class TPONode
     {
         AddCommand(TPOCommandType.Move, x, y, z);
     }
+
+    public Vector3 GetScaling(out bool inverse_scale_on_children)
+    {
+        inverse_scale_on_children = false;
+        TPOCommand scaling_command = null;
+        foreach (TPOCommand command in commands)
+        {
+            switch (command.Type)
+            {
+                case TPOCommandType.Scale:
+                    scaling_command = command;
+                    break;
+                case TPOCommandType.Scale1:
+                    scaling_command = command;
+                    inverse_scale_on_children = true;
+                    break;
+            }
+        }
+        if (scaling_command != null)
+            return scaling_command.GetVector3();
+        else
+            return new Vector3(1, 1, 1);
+    }
+
+    public void SetScaling(Vector3 scaling, bool inv_scale_on_children)
+    {
+        if (scaling == new Vector3(1, 1, 1))
+        {
+            RemoveScaling();
+            return;
+        }
+        TPOCommand scaling_command = null;
+        foreach (TPOCommand command in commands)
+        {
+            switch (command.Type)
+            {
+                case TPOCommandType.Scale:
+                case TPOCommandType.Scale1:
+                    scaling_command = command;
+                    break;
+            }
+        }
+        if (scaling_command == null)
+        {
+            scaling_command = new TPOCommand();
+            scaling_command.type = TPOCommandType.Scale;
+            commands.Insert(0, scaling_command);
+        }
+        if (inv_scale_on_children)
+            scaling_command.type = TPOCommandType.Scale1;
+        else
+            scaling_command.type = TPOCommandType.Scale;
+
+        scaling_command.x = scaling.X;
+        scaling_command.y = scaling.Y;
+        scaling_command.z = scaling.Z;
+
+        if (inv_scale_on_children)
+        {
+            foreach (TPONode child in children)
+                child.SetInverseScaling(scaling);
+        }
+        else
+        {
+            foreach (TPONode child in children)
+                child.RemoveInverseScaling();
+        }
+    }
+
+    public void SetInverseScaling(Vector3 scaling)
+    {
+        TPOCommand scaling_command = null;
+        foreach (TPOCommand command in commands)
+        {
+            switch (command.Type)
+            {
+                case TPOCommandType.Scale0:
+                    scaling_command = command;
+                    break;
+            }
+        }
+        if (scaling_command == null)
+        {
+            scaling_command = new TPOCommand();
+            scaling_command.type = TPOCommandType.Scale0;
+            commands.Insert(0, scaling_command);
+        }
+        scaling_command.x = scaling.X;
+        scaling_command.y = scaling.Y;
+        scaling_command.z = scaling.Z;
+    }
+
+    public void RemoveScaling()
+    {
+        TPOCommand scaling_command = null;
+        foreach (TPOCommand command in commands)
+        {
+            switch (command.Type)
+            {
+                case TPOCommandType.Scale:
+                case TPOCommandType.Scale1:
+                    scaling_command = command;
+                    break;
+            }
+        }
+        if (scaling_command != null)
+        {
+            commands.Remove(scaling_command);
+
+            if (scaling_command.Type == TPOCommandType.Scale1)
+                foreach (TPONode child in children)
+                    child.RemoveInverseScaling();
+        }
+    }
+
+    public void RemoveInverseScaling()
+    {
+        TPOCommand scaling_command = null;
+        foreach (TPOCommand command in commands)
+        {
+            switch (command.Type)
+            {
+                case TPOCommandType.Scale0:
+                    scaling_command = command;
+                    break;
+            }
+        }
+        if (scaling_command != null)
+            commands.Remove(scaling_command);
+    }
 }
 }
