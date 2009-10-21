@@ -13,7 +13,8 @@ namespace TDCG
 /// </summary>
 public class TPOFileList
 {
-    private List<TPOFile> list = new List<TPOFile>();
+    public List<TPOFile> files = new List<TPOFile>();
+
     //èâä˙ÉÇÅ[ÉVÉáÉìçsóÒílÇï€éùÇ∑ÇÈÉtÉåÅ[ÉÄîzóÒ
     private TMOFrame[] frames;
 
@@ -28,7 +29,7 @@ public class TPOFileList
     {
         get
         {
-            return list[i];
+            return files[i];
         }
     }
 
@@ -39,7 +40,7 @@ public class TPOFileList
     {
         get
         {
-            return list.Count;
+            return files.Count;
         }
     }
     
@@ -50,7 +51,7 @@ public class TPOFileList
     public void Add(TPOFile tpo)
     {
         tpo.Tmo = tmo;
-        list.Add(tpo);
+        files.Add(tpo);
     }
 
     /// <summary>
@@ -58,7 +59,7 @@ public class TPOFileList
     /// </summary>
     public void Clear()
     {
-        list.Clear();
+        files.Clear();
     }
 
     /// <summary>
@@ -82,7 +83,7 @@ public class TPOFileList
     public void Transform()
     {
         LoadMatrix();
-        foreach (TPOFile tpo in list)
+        foreach (TPOFile tpo in files)
             tpo.Transform();
     }
 
@@ -93,7 +94,7 @@ public class TPOFileList
     public void Transform(int i)
     {
         LoadMatrix();
-        foreach (TPOFile tpo in list)
+        foreach (TPOFile tpo in files)
             tpo.Transform(i);
     }
 
@@ -110,7 +111,7 @@ public class TPOFileList
         {
             tmo = value;
 
-            foreach (TPOFile tpo in list)
+            foreach (TPOFile tpo in files)
                 tpo.Tmo = tmo;
 
             CreateFrames();
@@ -266,6 +267,14 @@ public class TPOFile
     public IProportion Proportion { get { return proportion; } set { proportion = value; }}
 
     /// <summary>
+    /// ëÃå^ÇÃñºëOÇìæÇ‹Ç∑ÅB
+    /// </summary>
+    public string ProportionName
+    {
+        get { return proportion.ToString(); }
+    }
+
+    /// <summary>
     /// TPONodeÇ…ïœå`åWêîÇê›íËÇµÇ‹Ç∑ÅB
     /// </summary>
     public void ExecuteProportion()
@@ -324,47 +333,59 @@ public class TPOFile
     }
 }
 
-    /// <summary>
-    /// ëÃå^ïœçXëÄçÏ
-    /// </summary>
-public class TPOCommand
+/// <summary>
+/// ëÄçÏÉ^ÉCÉv
+/// </summary>
+public enum TPOCommandType
 {
     /// <summary>
-    /// ëÄçÏÉ^ÉCÉv
+    /// ägëÂ
     /// </summary>
-    public enum Type {
-        /// <summary>
-        /// ägëÂ
-        /// </summary>
-        Scale,
-        /// <summary>
-        /// ägëÂÅiéqboneÇÕÇªÇÍÇºÇÍèkè¨Åj
-        /// </summary>
-        Scale1,
-        /// <summary>
-        /// èkè¨
-        /// </summary>
-        Scale0,
-        /// <summary>
-        /// Xé≤âÒì]
-        /// </summary>
-        RotateX,
-        /// <summary>
-        /// Yé≤âÒì]
-        /// </summary>
-        RotateY,
-        /// <summary>
-        /// Zé≤âÒì]
-        /// </summary>
-        RotateZ,
-        /// <summary>
-        /// à⁄ìÆ
-        /// </summary>
-        Move
-    };
-    internal Type type;
-    internal Vector3 v;
-    internal float angle;
+    Scale,
+    /// <summary>
+    /// ägëÂÅiéqboneÇÕÇªÇÍÇºÇÍèkè¨Åj
+    /// </summary>
+    Scale1,
+    /// <summary>
+    /// èkè¨
+    /// </summary>
+    Scale0,
+    /// <summary>
+    /// Xé≤âÒì]
+    /// </summary>
+    RotateX,
+    /// <summary>
+    /// Yé≤âÒì]
+    /// </summary>
+    RotateY,
+    /// <summary>
+    /// Zé≤âÒì]
+    /// </summary>
+    RotateZ,
+    /// <summary>
+    /// à⁄ìÆ
+    /// </summary>
+    Move
+};
+
+/// <summary>
+/// ëÃå^ïœçXëÄçÏ
+/// </summary>
+public class TPOCommand
+{
+    internal TPOCommandType type;
+    public TPOCommandType Type { get { return type; } }
+    internal float x;
+    public float X { get { return x; } }
+    internal float y;
+    public float Y { get { return y; } }
+    internal float z;
+    public float Z { get { return z; } }
+
+    public Vector3 GetVector3()
+    {
+        return new Vector3(x, y, z);
+    }
 }
 
     /// <summary>
@@ -392,7 +413,7 @@ public class TPONode
     /// </summary>
     public string ShortName { get { return sname; } }
 
-    internal List<TPOCommand> command_list = new List<TPOCommand>();
+    public List<TPOCommand> commands = new List<TPOCommand>();
 
     /// <summary>
     /// ïœå`ëÄçÏÇí«â¡ÇµÇ‹Ç∑ÅB
@@ -400,7 +421,7 @@ public class TPONode
     /// <param name="command"></param>
     public void AddCommand(TPOCommand command)
     {
-        command_list.Add(command);
+        commands.Add(command);
     }
     
     /// <summary>
@@ -408,27 +429,16 @@ public class TPONode
     /// </summary>
     /// <param name="type"></param>
     /// <param name="v"></param>
-    public void AddCommand(TPOCommand.Type type, Vector3 v)
+    public void AddCommand(TPOCommandType type, float x, float y, float z)
     {
         TPOCommand command = new TPOCommand();
         command.type = type;
-        command.v = v;
-        command_list.Add(command);
+        command.x = x;
+        command.y = y;
+        command.z = z;
+        commands.Add(command);
     }
     
-    /// <summary>
-    /// ïœå`ëÄçÏÇí«â¡ÇµÇ‹Ç∑ÅB
-    /// </summary>
-    /// <param name="type"></param>
-    /// <param name="angle"></param>
-    public void AddCommand(TPOCommand.Type type, float angle)
-    {
-        TPOCommand command = new TPOCommand();
-        command.type = type;
-        command.angle = angle;
-        command_list.Add(command);
-    }
-
     /// <summary>
     /// TPONodeÇê∂ê¨ÇµÇ‹Ç∑ÅB
     /// </summary>
@@ -448,43 +458,43 @@ public class TPONode
     /// <param name="ratio">î‰ó¶</param>
     public void Transform(TMOMat mat, float ratio)
     {
-        foreach (TPOCommand command in command_list)
+        foreach (TPOCommand command in commands)
         {
             Matrix scaling = Matrix.Identity;
             switch (command.type)
             {
-                case TPOCommand.Type.Scale:
-                case TPOCommand.Type.Scale1:
-                case TPOCommand.Type.Scale0:
+                case TPOCommandType.Scale:
+                case TPOCommandType.Scale1:
+                case TPOCommandType.Scale0:
                     Vector3 v;
-                    v.X = (float)Math.Pow(command.v.X, ratio);
-                    v.Y = (float)Math.Pow(command.v.Y, ratio);
-                    v.Z = (float)Math.Pow(command.v.Z, ratio);
+                    v.X = (float)Math.Pow(command.X, ratio);
+                    v.Y = (float)Math.Pow(command.Y, ratio);
+                    v.Z = (float)Math.Pow(command.Z, ratio);
                     scaling = Matrix.Scaling(v);
                     break;
             }
             switch (command.type)
             {
-                case TPOCommand.Type.Scale:
+                case TPOCommandType.Scale:
                     mat.Scale(scaling);
                     break;
-                case TPOCommand.Type.Scale1:
+                case TPOCommandType.Scale1:
                     mat.Scale1(scaling);
                     break;
-                case TPOCommand.Type.Scale0:
+                case TPOCommandType.Scale0:
                     mat.Scale0(scaling);
                     break;
-                case TPOCommand.Type.RotateX:
-                    mat.RotateX(command.angle * ratio);
+                case TPOCommandType.RotateX:
+                    mat.RotateX(command.X * ratio);
                     break;
-                case TPOCommand.Type.RotateY:
-                    mat.RotateY(command.angle * ratio);
+                case TPOCommandType.RotateY:
+                    mat.RotateY(command.Y * ratio);
                     break;
-                case TPOCommand.Type.RotateZ:
-                    mat.RotateZ(command.angle * ratio);
+                case TPOCommandType.RotateZ:
+                    mat.RotateZ(command.Z * ratio);
                     break;
-                case TPOCommand.Type.Move:
-                    mat.Move(command.v * ratio);
+                case TPOCommandType.Move:
+                    mat.Move(command.GetVector3() * ratio);
                     break;
             }
         }
@@ -498,7 +508,7 @@ public class TPONode
     /// <param name="z"></param>
     public void Scale(float x, float y, float z)
     {
-        AddCommand(TPOCommand.Type.Scale, new Vector3(x, y, z));
+        AddCommand(TPOCommandType.Scale, x, y, z);
     }
 
     /// <summary>
@@ -509,7 +519,7 @@ public class TPONode
     /// <param name="z"></param>
     public void Scale1(float x, float y, float z)
     {
-        AddCommand(TPOCommand.Type.Scale1, new Vector3(x, y, z));
+        AddCommand(TPOCommandType.Scale1, x, y, z);
 
         foreach (TPONode child in children)
             child.Scale0(x, y, z);
@@ -523,7 +533,7 @@ public class TPONode
     /// <param name="z"></param>
     public void Scale0(float x, float y, float z)
     {
-        AddCommand(TPOCommand.Type.Scale0, new Vector3(x, y, z));
+        AddCommand(TPOCommandType.Scale0, x, y, z);
     }
 
     /// <summary>
@@ -532,7 +542,7 @@ public class TPONode
     /// <param name="angle"></param>
     public void RotateX(float angle)
     {
-        AddCommand(TPOCommand.Type.RotateX, angle);
+        AddCommand(TPOCommandType.RotateX, angle, 0, 0);
     }
 
     /// <summary>
@@ -541,7 +551,7 @@ public class TPONode
     /// <param name="angle"></param>
     public void RotateY(float angle)
     {
-        AddCommand(TPOCommand.Type.RotateY, angle);
+        AddCommand(TPOCommandType.RotateY, 0, angle, 0);
     }
 
     /// <summary>
@@ -550,7 +560,7 @@ public class TPONode
     /// <param name="angle"></param>
     public void RotateZ(float angle)
     {
-        AddCommand(TPOCommand.Type.RotateZ, angle);
+        AddCommand(TPOCommandType.RotateZ, 0, 0, angle);
     }
 
     /// <summary>
@@ -561,7 +571,7 @@ public class TPONode
     /// <param name="z"></param>
     public void Move(float x, float y, float z)
     {
-        AddCommand(TPOCommand.Type.Move, new Vector3(x, y, z));
+        AddCommand(TPOCommandType.Move, x, y, z);
     }
 }
 }
