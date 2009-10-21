@@ -78,15 +78,17 @@ namespace TDCG
             WriteChunk(bw, "IEND", new byte[] {});
         }
 
+        /// 書き出し先となるライタ
         protected BinaryWriter writer;
 
+        /// PNGWriterを生成します。
         public PNGWriter(BinaryWriter bw)
         {
             this.writer = bw;
         }
 
+        /// TaObチャンクを書き込みます。
         protected void WriteTaOb(string type, uint opt0, uint opt1, byte[] data)
-
         {
             //Console.WriteLine("WriteTaOb {0}", type);
             //Console.WriteLine("taOb extract length {0}", data.Length);
@@ -117,50 +119,59 @@ namespace TDCG
             PNGWriter.WriteChunk(writer, "taOb", chunk_data);
         }
 
+        /// TaObチャンクを書き込みます。
         protected void WriteTaOb(string type, byte[] data)
         {
             WriteTaOb(type, 0, 0, data);
         }
 
+        /// TDCGチャンクを書き込みます。
         public void WriteTDCG()
         {
             byte[] data = System.Text.Encoding.ASCII.GetBytes("$XP$");
             WriteTaOb("TDCG", data);
         }
 
+        /// HSAVチャンクを書き込みます。
         public void WriteHSAV()
         {
             byte[] data = System.Text.Encoding.ASCII.GetBytes("$XP$");
             WriteTaOb("HSAV", data);
         }
 
+        /// POSEチャンクを書き込みます。
         public void WritePOSE()
         {
             byte[] data = System.Text.Encoding.ASCII.GetBytes("$XP$");
             WriteTaOb("POSE", data);
         }
 
+        /// SCNEチャンクを書き込みます。
         public void WriteSCNE(int figure_count)
         {
             byte[] data = System.Text.Encoding.ASCII.GetBytes("$XP$");
             WriteTaOb("SCNE", 0, (uint)figure_count, data);
         }
 
+        /// CAMIチャンクを書き込みます。
         public void WriteCAMI(byte[] data)
         {
             WriteTaOb("CAMI", data);
         }
 
+        /// LGTAチャンクを書き込みます。
         public void WriteLGTA(byte[] data)
         {
             WriteTaOb("LGTA", data);
         }
 
+        /// FIGUチャンクを書き込みます。
         public void WriteFIGU(byte[] data)
         {
             WriteTaOb("FIGU", data);
         }
 
+        /// ファイルを書き込みます。
         protected void WriteFile(string type, uint opt0, uint opt1, Stream source)
         {
             //Console.WriteLine("taOb extract length {0}", source.Length);
@@ -196,6 +207,7 @@ namespace TDCG
             PNGWriter.WriteChunk(writer, "taOb", chunk_data);
         }
 
+        /// FTMOチャンクを書き込みます。
         public void WriteFTMO(TMOFile tmo)
         {
             MemoryStream ms = new MemoryStream();
@@ -204,17 +216,20 @@ namespace TDCG
             WriteFTMO(ms);
         }
 
+        /// FTMOチャンクを書き込みます。
         public void WriteFTMO(Stream stream)
         {
             WriteFile("FTMO", 0xADCFB72F, 0, stream);
         }
 
+        /// FTSOチャンクを書き込みます。
         public void WriteFTSO(uint opt1, byte[] data)
         {
             MemoryStream ms = new MemoryStream(data);
             WriteFTSO(opt1, ms);
         }
 
+        /// FTSOチャンクを書き込みます。
         public void WriteFTSO(uint opt1, Stream stream)
         {
             WriteFile("FTSO", 0x26F5B8FE, opt1, stream);
