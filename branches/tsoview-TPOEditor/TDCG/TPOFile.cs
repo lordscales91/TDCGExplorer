@@ -13,6 +13,7 @@ namespace TDCG
 /// </summary>
 public class TPOFileList
 {
+    /// TPOファイルリスト
     public List<TPOFile> files = new List<TPOFile>();
 
     //初期モーション行列値を保持するフレーム配列
@@ -374,14 +375,20 @@ public enum TPOCommandType
 public class TPOCommand
 {
     internal TPOCommandType type;
-    public TPOCommandType Type { get { return type; } }
     internal float x;
-    public float X { get { return x; } }
     internal float y;
-    public float Y { get { return y; } }
     internal float z;
+
+    /// 操作タイプ
+    public TPOCommandType Type { get { return type; } }
+    /// X座標変位
+    public float X { get { return x; } }
+    /// Y座標変位
+    public float Y { get { return y; } }
+    /// Z座標変位
     public float Z { get { return z; } }
 
+    /// 変位ベクトルを得ます。
     public Vector3 GetVector3()
     {
         return new Vector3(x, y, z);
@@ -413,6 +420,7 @@ public class TPONode
     /// </summary>
     public string ShortName { get { return sname; } }
 
+    /// 変形操作リスト
     public List<TPOCommand> commands = new List<TPOCommand>();
 
     /// <summary>
@@ -428,7 +436,9 @@ public class TPONode
     /// 変形操作を追加します。
     /// </summary>
     /// <param name="type"></param>
-    /// <param name="v"></param>
+    /// <param name="x"></param>
+    /// <param name="y"></param>
+    /// <param name="z"></param>
     public void AddCommand(TPOCommandType type, float x, float y, float z)
     {
         TPOCommand command = new TPOCommand();
