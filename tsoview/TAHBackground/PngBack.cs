@@ -20,9 +20,6 @@ namespace TAHBackground
     {
         internal List<TSOData> TSOList = new List<TSOData>();
         internal TMOFile tmo = null;
-
-        internal byte[] lgta;
-        internal byte[] figu;
     }
 
     public class PngBack
