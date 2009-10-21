@@ -34,24 +34,24 @@
         {
             this.components = new System.ComponentModel.Container();
             this.gvTPONodes = new System.Windows.Forms.DataGridView();
+            this.shortNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tpoNodeBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gvTPOCommands = new System.Windows.Forms.DataGridView();
+            this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.X = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Y = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Z = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.gvPortions = new System.Windows.Forms.DataGridView();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
-            this.tpoFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tpoCommandBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.tpoNodeBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.ProportionName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.shortNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.gvPortions = new System.Windows.Forms.DataGridView();
+            this.tpoFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.proportionNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.gvTPONodes)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tpoNodeBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvTPOCommands)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tpoCommandBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvPortions)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tpoFileBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tpoCommandBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tpoNodeBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // gvTPONodes
@@ -72,6 +72,17 @@
             this.gvTPONodes.TabIndex = 0;
             this.gvTPONodes.SelectionChanged += new System.EventHandler(this.gvTPONodes_SelectionChanged);
             // 
+            // shortNameDataGridViewTextBoxColumn
+            // 
+            this.shortNameDataGridViewTextBoxColumn.DataPropertyName = "ShortName";
+            this.shortNameDataGridViewTextBoxColumn.HeaderText = "ShortName";
+            this.shortNameDataGridViewTextBoxColumn.Name = "shortNameDataGridViewTextBoxColumn";
+            this.shortNameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // tpoNodeBindingSource
+            // 
+            this.tpoNodeBindingSource.DataSource = typeof(TDCG.TPONode);
+            // 
             // gvTPOCommands
             // 
             this.gvTPOCommands.AllowUserToAddRows = false;
@@ -90,6 +101,13 @@
             this.gvTPOCommands.RowTemplate.Height = 21;
             this.gvTPOCommands.Size = new System.Drawing.Size(240, 150);
             this.gvTPOCommands.TabIndex = 1;
+            // 
+            // typeDataGridViewTextBoxColumn
+            // 
+            this.typeDataGridViewTextBoxColumn.DataPropertyName = "Type";
+            this.typeDataGridViewTextBoxColumn.HeaderText = "Type";
+            this.typeDataGridViewTextBoxColumn.Name = "typeDataGridViewTextBoxColumn";
+            this.typeDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // X
             // 
@@ -112,6 +130,10 @@
             this.Z.Name = "Z";
             this.Z.ReadOnly = true;
             // 
+            // tpoCommandBindingSource
+            // 
+            this.tpoCommandBindingSource.DataSource = typeof(TDCG.TPOCommand);
+            // 
             // gvPortions
             // 
             this.gvPortions.AllowUserToAddRows = false;
@@ -119,7 +141,7 @@
             this.gvPortions.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.gvPortions.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gvPortions.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.ProportionName});
+            this.proportionNameDataGridViewTextBoxColumn});
             this.gvPortions.DataSource = this.tpoFileBindingSource;
             this.gvPortions.Location = new System.Drawing.Point(12, 12);
             this.gvPortions.Name = "gvPortions";
@@ -128,43 +150,21 @@
             this.gvPortions.TabIndex = 2;
             this.gvPortions.SelectionChanged += new System.EventHandler(this.gvPortions_SelectionChanged);
             // 
+            // tpoFileBindingSource
+            // 
+            this.tpoFileBindingSource.DataSource = typeof(TDCG.TPOFile);
+            // 
             // timer1
             // 
             this.timer1.Interval = 30;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // tpoFileBindingSource
+            // proportionNameDataGridViewTextBoxColumn
             // 
-            this.tpoFileBindingSource.DataSource = typeof(TDCG.TPOFile);
-            // 
-            // typeDataGridViewTextBoxColumn
-            // 
-            this.typeDataGridViewTextBoxColumn.DataPropertyName = "Type";
-            this.typeDataGridViewTextBoxColumn.HeaderText = "Type";
-            this.typeDataGridViewTextBoxColumn.Name = "typeDataGridViewTextBoxColumn";
-            this.typeDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // tpoCommandBindingSource
-            // 
-            this.tpoCommandBindingSource.DataSource = typeof(TDCG.TPOCommand);
-            // 
-            // tpoNodeBindingSource
-            // 
-            this.tpoNodeBindingSource.DataSource = typeof(TDCG.TPONode);
-            // 
-            // ProportionName
-            // 
-            this.ProportionName.DataPropertyName = "ProportionName";
-            this.ProportionName.HeaderText = "Proportion";
-            this.ProportionName.Name = "ProportionName";
-            this.ProportionName.ReadOnly = true;
-            // 
-            // shortNameDataGridViewTextBoxColumn
-            // 
-            this.shortNameDataGridViewTextBoxColumn.DataPropertyName = "ShortName";
-            this.shortNameDataGridViewTextBoxColumn.HeaderText = "ShortName";
-            this.shortNameDataGridViewTextBoxColumn.Name = "shortNameDataGridViewTextBoxColumn";
-            this.shortNameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.proportionNameDataGridViewTextBoxColumn.DataPropertyName = "ProportionName";
+            this.proportionNameDataGridViewTextBoxColumn.HeaderText = "ProportionName";
+            this.proportionNameDataGridViewTextBoxColumn.Name = "proportionNameDataGridViewTextBoxColumn";
+            this.proportionNameDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // Form1
             // 
@@ -177,11 +177,11 @@
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.gvTPONodes)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tpoNodeBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvTPOCommands)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tpoCommandBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvPortions)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tpoFileBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tpoCommandBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tpoNodeBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -199,8 +199,8 @@
         private System.Windows.Forms.DataGridView gvPortions;
         private System.Windows.Forms.BindingSource tpoFileBindingSource;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn ProportionName;
         private System.Windows.Forms.DataGridViewTextBoxColumn shortNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn proportionNameDataGridViewTextBoxColumn;
     }
 }
 
