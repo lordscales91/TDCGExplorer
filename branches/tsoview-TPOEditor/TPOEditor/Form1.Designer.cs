@@ -193,8 +193,6 @@
         private System.Windows.Forms.DataGridView gvTPONodes;
         private System.Windows.Forms.DataGridView gvTPOCommands;
         private System.Windows.Forms.DataGridViewTextBoxColumn typeDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn vDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn angleDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn X;
         private System.Windows.Forms.DataGridViewTextBoxColumn Y;
         private System.Windows.Forms.DataGridViewTextBoxColumn Z;
