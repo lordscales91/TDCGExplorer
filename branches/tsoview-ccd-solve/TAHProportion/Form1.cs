@@ -14,21 +14,6 @@ using CSScriptLibrary;
 
 namespace TAHTool
 {
-    public class TSOData
-    {
-        internal uint opt1;
-        internal byte[] ftso;
-    }
-
-    public class TSOFigure
-    {
-        internal List<TSOData> TSOList = new List<TSOData>();
-        internal TMOFile tmo = null;
-
-        internal byte[] lgta;
-        internal byte[] figu;
-    }
-
     public partial class Form1 : Form
     {
         string source_file = null;
@@ -457,5 +442,20 @@ namespace TAHTool
         {
             return TSOFigureList.Count;
         }
+    }
+
+    public class TSOData
+    {
+        internal uint opt1;
+        internal byte[] ftso;
+    }
+
+    public class TSOFigure
+    {
+        internal List<TSOData> TSOList = new List<TSOData>();
+        internal TMOFile tmo = null;
+
+        internal byte[] lgta;
+        internal byte[] figu;
     }
 }
