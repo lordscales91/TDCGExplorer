@@ -135,44 +135,29 @@ namespace TPOEditor
 
         private void gvCommands_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
+            int tpofile_row = tpoFileBindingSource.Position;
+            TPOFile tpo = tpo_list[tpofile_row];
+
+            int tponode_row = tpoNodeBindingSource.Position;
+            TPONode tponode = tpo.nodes[tponode_row];
+
             DataGridViewRow gvrow = gvCommands.Rows[e.RowIndex];
             if (e.RowIndex == 0)
             {
-                int tpofile_row = tpoFileBindingSource.Position;
-                TPOFile tpo = tpo_list[tpofile_row];
-
-                int tponode_row = tpoNodeBindingSource.Position;
-                TPONode tponode = tpo.nodes[tponode_row];
-
                 tponode.SetScaling(GetVector3FromGridViewRow(gvrow), cbInverseScaleOnChildren.Checked);
-
-                tpoCommandBindingSource.ResetBindings(false);
-
-                Figure fig;
-                if (viewer.TryGetFigure(out fig))
-                {
-                    tpo_list.Transform(0);
-                    fig.UpdateBoneMatrices(true);
-                }
             }
             if (e.RowIndex == 1)
             {
-                int tpofile_row = tpoFileBindingSource.Position;
-                TPOFile tpo = tpo_list[tpofile_row];
-
-                int tponode_row = tpoNodeBindingSource.Position;
-                TPONode tponode = tpo.nodes[tponode_row];
-
                 tponode.SetAngle(GetVector3FromGridViewRow(gvrow));
+            }
 
-                tpoCommandBindingSource.ResetBindings(false);
+            tpoCommandBindingSource.ResetBindings(false);
 
-                Figure fig;
-                if (viewer.TryGetFigure(out fig))
-                {
-                    tpo_list.Transform(0);
-                    fig.UpdateBoneMatrices(true);
-                }
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
+            {
+                tpo_list.Transform(0);
+                fig.UpdateBoneMatrices(true);
             }
         }
 

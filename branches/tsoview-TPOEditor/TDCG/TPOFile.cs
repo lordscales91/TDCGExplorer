@@ -534,21 +534,6 @@ public class TPONode
         AddCommand(TPOCommandType.Scale0, x, y, z);
     }
 
-    public TPOCommand FindRotationCommand()
-    {
-        TPOCommand rotation_command = null;
-        foreach (TPOCommand command in commands)
-        {
-            switch (command.Type)
-            {
-                case TPOCommandType.Rotate:
-                    rotation_command = command;
-                    break;
-            }
-        }
-        return rotation_command;
-    }
-
     /// <summary>
     /// Xé≤âÒì]ÇçsÇ¢Ç‹Ç∑ÅB
     /// </summary>
@@ -599,25 +584,79 @@ public class TPONode
         AddCommand(TPOCommandType.Move, x, y, z);
     }
 
-    public Vector3 GetScaling(out bool inverse_scale_on_children)
+    public TPOCommand FindScalingCommand()
     {
-        inverse_scale_on_children = false;
         TPOCommand scaling_command = null;
         foreach (TPOCommand command in commands)
         {
             switch (command.Type)
             {
                 case TPOCommandType.Scale:
-                    scaling_command = command;
-                    break;
                 case TPOCommandType.Scale1:
                     scaling_command = command;
-                    inverse_scale_on_children = true;
                     break;
             }
         }
+        return scaling_command;
+    }
+
+    private TPOCommand FindInverseScalingCommand()
+    {
+        TPOCommand scaling_command = null;
+        foreach (TPOCommand command in commands)
+        {
+            switch (command.Type)
+            {
+                case TPOCommandType.Scale0:
+                    scaling_command = command;
+                    break;
+            }
+        }
+        return scaling_command;
+    }
+
+    public TPOCommand FindScalingOrInverseScalingCommand()
+    {
+        TPOCommand scaling_command = null;
+        foreach (TPOCommand command in commands)
+        {
+            switch (command.Type)
+            {
+                case TPOCommandType.Scale:
+                case TPOCommandType.Scale1:
+                case TPOCommandType.Scale0:
+                    scaling_command = command;
+                    break;
+            }
+        }
+        return scaling_command;
+    }
+
+    public TPOCommand FindRotationCommand()
+    {
+        TPOCommand rotation_command = null;
+        foreach (TPOCommand command in commands)
+        {
+            switch (command.Type)
+            {
+                case TPOCommandType.Rotate:
+                    rotation_command = command;
+                    break;
+            }
+        }
+        return rotation_command;
+    }
+
+    public Vector3 GetScaling(out bool inv_scale_on_children)
+    {
+        inv_scale_on_children = false;
+        TPOCommand scaling_command = FindScalingCommand();
         if (scaling_command != null)
+        {
+            if (scaling_command.Type == TPOCommandType.Scale1)
+                inv_scale_on_children = true;
             return scaling_command.GetVector3();
+        }
         else
             return new Vector3(1, 1, 1);
     }
@@ -644,17 +683,7 @@ public class TPONode
             RemoveScaling();
             return;
         }
-        TPOCommand scaling_command = null;
-        foreach (TPOCommand command in commands)
-        {
-            switch (command.Type)
-            {
-                case TPOCommandType.Scale:
-                case TPOCommandType.Scale1:
-                    scaling_command = command;
-                    break;
-            }
-        }
+        TPOCommand scaling_command = FindScalingCommand();
         if (scaling_command == null)
         {
             scaling_command = new TPOCommand();
@@ -682,20 +711,18 @@ public class TPONode
         }
     }
 
-    public TPOCommand FindScalingCommand()
+    public void SetInverseScaling(Vector3 scaling)
     {
-        TPOCommand scaling_command = null;
-        foreach (TPOCommand command in commands)
+        TPOCommand scaling_command = FindInverseScalingCommand();
+        if (scaling_command == null)
         {
-            switch (command.Type)
-            {
-                case TPOCommandType.Scale:
-                case TPOCommandType.Scale1:
-                    scaling_command = command;
-                    break;
-            }
+            scaling_command = new TPOCommand();
+            scaling_command.type = TPOCommandType.Scale0;
+            commands.Insert(0, scaling_command);
         }
-        return scaling_command;
+        scaling_command.x = scaling.X;
+        scaling_command.y = scaling.Y;
+        scaling_command.z = scaling.Z;
     }
 
     public void SetAngle(Vector3 angle)
@@ -712,9 +739,9 @@ public class TPONode
             rotation_command.type = TPOCommandType.Rotate;
 
             int idx = 0;
-            TPOCommand scaling_command = FindScalingCommand();
+            TPOCommand scaling_command = FindScalingOrInverseScalingCommand();
             if (scaling_command != null)
-                idx = commands.IndexOf(scaling_command)+1;
+                idx = commands.IndexOf(scaling_command) + 1;
 
             commands.Insert(idx, rotation_command);
         }
@@ -723,64 +750,24 @@ public class TPONode
         rotation_command.z = Geometry.DegreeToRadian(angle.Z);
     }
 
-    public void SetInverseScaling(Vector3 scaling)
-    {
-        TPOCommand scaling_command = null;
-        foreach (TPOCommand command in commands)
-        {
-            switch (command.Type)
-            {
-                case TPOCommandType.Scale0:
-                    scaling_command = command;
-                    break;
-            }
-        }
-        if (scaling_command == null)
-        {
-            scaling_command = new TPOCommand();
-            scaling_command.type = TPOCommandType.Scale0;
-            commands.Insert(0, scaling_command);
-        }
-        scaling_command.x = scaling.X;
-        scaling_command.y = scaling.Y;
-        scaling_command.z = scaling.Z;
-    }
-
     public void RemoveScaling()
     {
-        TPOCommand scaling_command = null;
-        foreach (TPOCommand command in commands)
-        {
-            switch (command.Type)
-            {
-                case TPOCommandType.Scale:
-                case TPOCommandType.Scale1:
-                    scaling_command = command;
-                    break;
-            }
-        }
+        TPOCommand scaling_command = FindScalingCommand();
         if (scaling_command != null)
         {
             commands.Remove(scaling_command);
 
             if (scaling_command.Type == TPOCommandType.Scale1)
+            {
                 foreach (TPONode child in children)
                     child.RemoveInverseScaling();
+            }
         }
     }
 
     public void RemoveInverseScaling()
     {
-        TPOCommand scaling_command = null;
-        foreach (TPOCommand command in commands)
-        {
-            switch (command.Type)
-            {
-                case TPOCommandType.Scale0:
-                    scaling_command = command;
-                    break;
-            }
-        }
+        TPOCommand scaling_command = FindInverseScalingCommand();
         if (scaling_command != null)
             commands.Remove(scaling_command);
     }
