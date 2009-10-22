@@ -40,7 +40,7 @@ namespace TPOEditor
             string[] script_files = Directory.GetFiles(GetProportionPath(), "*.cs");
             foreach (string script_file in script_files)
             {
-                string class_name = "TDCG.Proportion." + Path.GetFileNameWithoutExtension(script_file);
+                string class_name = name_space + "." + Path.GetFileNameWithoutExtension(script_file);
                 var script = CSScript.Load(script_file).CreateInstance(class_name).AlignToInterface<IProportion>();
                 pro_list.Add(script);
             }
@@ -52,6 +52,113 @@ namespace TPOEditor
             {
                 tpo_list.Tmo = fig.Tmo;
             }
+        }
+
+        string name_space = "TDCG.Proportion";
+
+        string GetProportionClassName(TPOFile tpo)
+        {
+            return tpo.ProportionName.Substring(name_space.Length + 1);
+        }
+
+        void SaveTpoScript(TPOFile tpo)
+        {
+            string script_file = Path.Combine(GetProportionPath(), GetProportionClassName(tpo) + ".cs");
+            using (StreamWriter sw = File.CreateText(script_file))
+            {
+                DumpTpoScript(tpo, sw);
+            }
+        }
+
+        string indent = "            ";
+
+        void WriteRotationTpoCommandLine(string axis, float angle, StreamWriter sw)
+        {
+            sw.Write(indent);
+            sw.WriteLine(@"node.Rotate{1}(Geometry.DegreeToRadian({0:F}F));", Geometry.RadianToDegree(angle), axis);
+        }
+
+        void WriteTpoCommandLine(TPOCommand command, StreamWriter sw)
+        {
+            string method_name = null;
+            switch (command.Type)
+            {
+                case TPOCommandType.Scale:
+                    method_name = "Scale";
+                    break;
+                case TPOCommandType.Scale1:
+                    method_name = "Scale1";
+                    break;
+                case TPOCommandType.Rotate:
+                    method_name = "Rotate";
+                    break;
+                case TPOCommandType.Move:
+                    method_name = "Move";
+                    break;
+            }
+            switch (command.Type)
+            {
+                case TPOCommandType.Scale:
+                case TPOCommandType.Scale1:
+                case TPOCommandType.Move:
+                    sw.Write(indent);
+                    sw.WriteLine(@"node.{3}({0:F}F, {1:F}F, {2:F}F);", command.X, command.Y, command.Z, method_name);
+                    break;
+                case TPOCommandType.Rotate:
+                    if (command.X != 0.0f)
+                        WriteRotationTpoCommandLine("X", command.X, sw);
+                    if (command.Y != 0.0f)
+                        WriteRotationTpoCommandLine("Y", command.Y, sw);
+                    if (command.Z != 0.0f)
+                        WriteRotationTpoCommandLine("Z", command.Z, sw);
+                    break;
+            }
+        }
+
+        void DumpTpoScript(TPOFile tpo, StreamWriter sw)
+        {
+            sw.WriteLine("using System;");
+            sw.WriteLine("using System.Collections.Generic;");
+            sw.WriteLine("using System.IO;");
+            sw.WriteLine("using Microsoft.DirectX;");
+            sw.WriteLine("using Microsoft.DirectX.Direct3D;");
+            sw.WriteLine("using TDCG;");
+            sw.WriteLine("");
+            sw.WriteLine("namespace {0}", name_space);
+            sw.WriteLine("{");
+            sw.WriteLine("    public class {0} : IProportion", GetProportionClassName(tpo));
+            sw.WriteLine("    {");
+            sw.WriteLine("        Dictionary<string, TPONode> nodes;");
+            sw.WriteLine("        public Dictionary<string, TPONode> Nodes { set { nodes = value; }}");
+            sw.WriteLine("");
+            sw.WriteLine("        public void Execute()");
+            sw.WriteLine("        {");
+
+            sw.Write(indent); sw.WriteLine("TPONode node;");
+            foreach (TPONode tponode in tpo.nodes)
+            {
+                bool command_exist = false;
+                foreach (TPOCommand command in tponode.commands)
+                {
+                    if (command.Type != TPOCommandType.Scale0)
+                    {
+                        command_exist = true;
+                        break;
+                    }
+                }
+                if (command_exist)
+                {
+                    sw.WriteLine("");
+                    sw.Write(indent); sw.WriteLine("node = nodes[\"{0}\"];", tponode.ShortName);
+                }
+                foreach (TPOCommand command in tponode.commands)
+                {
+                    WriteTpoCommandLine(command, sw);
+                }
+            }
+            sw.WriteLine("        }");
+            sw.WriteLine("    }");
+            sw.WriteLine("}");
         }
 
         private void ClearTpoRatios()
@@ -166,6 +273,7 @@ namespace TPOEditor
                 tpo_list.Transform(0);
                 fig.UpdateBoneMatrices(true);
             }
+            SaveTpoScript(tpo);
         }
 
         private void cbInverseScaleOnChildren_CheckedChanged(object sender, EventArgs e)
@@ -187,6 +295,7 @@ namespace TPOEditor
                 tpo_list.Transform(0);
                 fig.UpdateBoneMatrices(true);
             }
+            SaveTpoScript(tpo);
         }
     }
 }
