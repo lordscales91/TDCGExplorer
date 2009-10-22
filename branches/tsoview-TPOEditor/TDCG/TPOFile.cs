@@ -304,6 +304,9 @@ public class TPOFile
     /// </summary>
     public void Transform()
     {
+        if (ratio == 0)
+            return;
+
         if (tmo.frames == null)
             return;
 
@@ -320,6 +323,9 @@ public class TPOFile
     /// <param name="i">ƒtƒŒ[ƒ€”Ô†</param>
     public void Transform(int i)
     {
+        if (ratio == 0)
+            return;
+
         if (tmo.frames == null)
             return;
 

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using CSScriptLibrary;
@@ -85,6 +86,7 @@ namespace TMOProportion
 
             foreach (TPOFile tpo in tpo_list.files)
             {
+                Debug.Assert(tpo.Proportion != null, "tpo.Proportion should not be null");
                 Proportion portion;
                 if (portion_map.TryGetValue(tpo.ProportionName, out portion))
                     tpo.Ratio = portion.Ratio;
