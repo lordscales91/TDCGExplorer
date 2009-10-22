@@ -109,6 +109,9 @@ namespace TPOEditor
 
             Vector3 angle = tponode.GetAngle();
             gvCommands.Rows.Add(new string[] { "Rotate", angle.X.ToString(), angle.Y.ToString(), angle.Z.ToString() });
+
+            Vector3 translation = tponode.GetTranslation();
+            gvCommands.Rows.Add(new string[] { "Move", translation.X.ToString(), translation.Y.ToString(), translation.Z.ToString() });
         }
 
         float GetFloatFromGridViewCell(DataGridViewCell gvcell)
@@ -149,6 +152,10 @@ namespace TPOEditor
             if (e.RowIndex == 1)
             {
                 tponode.SetAngle(GetVector3FromGridViewRow(gvrow));
+            }
+            if (e.RowIndex == 2)
+            {
+                tponode.SetTranslation(GetVector3FromGridViewRow(gvrow));
             }
 
             tpoCommandBindingSource.ResetBindings(false);

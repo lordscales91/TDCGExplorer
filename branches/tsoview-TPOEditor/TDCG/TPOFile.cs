@@ -615,7 +615,7 @@ public class TPONode
         return scaling_command;
     }
 
-    public TPOCommand FindScalingOrInverseScalingCommand()
+    public TPOCommand LastScalingOrInverseScalingCommand()
     {
         TPOCommand scaling_command = null;
         foreach (TPOCommand command in commands)
@@ -647,6 +647,39 @@ public class TPONode
         return rotation_command;
     }
 
+    public TPOCommand LastScalingOrInverseScalingOrRotationCommand()
+    {
+        TPOCommand scaling_or_rotation_command = null;
+        foreach (TPOCommand command in commands)
+        {
+            switch (command.Type)
+            {
+                case TPOCommandType.Scale:
+                case TPOCommandType.Scale1:
+                case TPOCommandType.Scale0:
+                case TPOCommandType.Rotate:
+                    scaling_or_rotation_command = command;
+                    break;
+            }
+        }
+        return scaling_or_rotation_command;
+    }
+
+    public TPOCommand FindTranslationCommand()
+    {
+        TPOCommand translation_command = null;
+        foreach (TPOCommand command in commands)
+        {
+            switch (command.Type)
+            {
+                case TPOCommandType.Move:
+                    translation_command = command;
+                    break;
+            }
+        }
+        return translation_command;
+    }
+
     public Vector3 GetScaling(out bool inv_scale_on_children)
     {
         inv_scale_on_children = false;
@@ -672,6 +705,15 @@ public class TPONode
             angle.Z = Geometry.RadianToDegree(rotation_command.Z);
             return angle;
         }
+        else
+            return new Vector3(0, 0, 0);
+    }
+
+    public Vector3 GetTranslation()
+    {
+        TPOCommand translation_command = FindTranslationCommand();
+        if (translation_command != null)
+            return translation_command.GetVector3();
         else
             return new Vector3(0, 0, 0);
     }
@@ -739,7 +781,7 @@ public class TPONode
             rotation_command.type = TPOCommandType.Rotate;
 
             int idx = 0;
-            TPOCommand scaling_command = FindScalingOrInverseScalingCommand();
+            TPOCommand scaling_command = LastScalingOrInverseScalingCommand();
             if (scaling_command != null)
                 idx = commands.IndexOf(scaling_command) + 1;
 
@@ -748,6 +790,31 @@ public class TPONode
         rotation_command.x = Geometry.DegreeToRadian(angle.X);
         rotation_command.y = Geometry.DegreeToRadian(angle.Y);
         rotation_command.z = Geometry.DegreeToRadian(angle.Z);
+    }
+
+    public void SetTranslation(Vector3 translation)
+    {
+        if (translation == new Vector3(0, 0, 0))
+        {
+            RemoveTranslation();
+            return;
+        }
+        TPOCommand translation_command = FindTranslationCommand();
+        if (translation_command == null)
+        {
+            translation_command = new TPOCommand();
+            translation_command.type = TPOCommandType.Move;
+
+            int idx = 0;
+            TPOCommand scaling_or_rotation_command = LastScalingOrInverseScalingOrRotationCommand();
+            if (scaling_or_rotation_command != null)
+                idx = commands.IndexOf(scaling_or_rotation_command) + 1;
+
+            commands.Insert(idx, translation_command);
+        }
+        translation_command.x = translation.X;
+        translation_command.y = translation.Y;
+        translation_command.z = translation.Z;
     }
 
     public void RemoveScaling()
@@ -777,6 +844,13 @@ public class TPONode
         TPOCommand rotation_command = FindRotationCommand();
         if (rotation_command != null)
             commands.Remove(rotation_command);
+    }
+
+    public void RemoveTranslation()
+    {
+        TPOCommand translation_command = FindTranslationCommand();
+        if (translation_command != null)
+            commands.Remove(translation_command);
     }
 }
 }
