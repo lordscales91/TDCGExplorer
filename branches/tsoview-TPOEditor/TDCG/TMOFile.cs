@@ -516,6 +516,9 @@ namespace TDCG
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateX(float angle)
         {
+            if (angle == 0.0f)
+                return;
+
             Vector3 v = new Vector3(m.M11, m.M12, m.M13);
             Quaternion qt = Quaternion.RotationAxis(v, angle);
             m *= Matrix.RotationQuaternion(qt);
@@ -527,6 +530,9 @@ namespace TDCG
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateY(float angle)
         {
+            if (angle == 0.0f)
+                return;
+
             Vector3 v = new Vector3(m.M21, m.M22, m.M23);
             Quaternion qt = Quaternion.RotationAxis(v, angle);
             m *= Matrix.RotationQuaternion(qt);
@@ -538,6 +544,9 @@ namespace TDCG
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateZ(float angle)
         {
+            if (angle == 0.0f)
+                return;
+
             Vector3 v = new Vector3(m.M31, m.M32, m.M33);
             Quaternion qt = Quaternion.RotationAxis(v, angle);
             m *= Matrix.RotationQuaternion(qt);

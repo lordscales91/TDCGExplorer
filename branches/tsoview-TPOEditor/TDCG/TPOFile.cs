@@ -352,17 +352,9 @@ public enum TPOCommandType
     /// </summary>
     Scale0,
     /// <summary>
-    /// Xé≤âÒì]
+    /// âÒì]
     /// </summary>
-    RotateX,
-    /// <summary>
-    /// Yé≤âÒì]
-    /// </summary>
-    RotateY,
-    /// <summary>
-    /// Zé≤âÒì]
-    /// </summary>
-    RotateZ,
+    Rotate,
     /// <summary>
     /// à⁄ìÆ
     /// </summary>
@@ -494,13 +486,9 @@ public class TPONode
                 case TPOCommandType.Scale0:
                     mat.Scale0(scaling);
                     break;
-                case TPOCommandType.RotateX:
+                case TPOCommandType.Rotate:
                     mat.RotateX(command.X * ratio);
-                    break;
-                case TPOCommandType.RotateY:
                     mat.RotateY(command.Y * ratio);
-                    break;
-                case TPOCommandType.RotateZ:
                     mat.RotateZ(command.Z * ratio);
                     break;
                 case TPOCommandType.Move:
@@ -546,13 +534,32 @@ public class TPONode
         AddCommand(TPOCommandType.Scale0, x, y, z);
     }
 
+    public TPOCommand FindRotationCommand()
+    {
+        TPOCommand rotation_command = null;
+        foreach (TPOCommand command in commands)
+        {
+            switch (command.Type)
+            {
+                case TPOCommandType.Rotate:
+                    rotation_command = command;
+                    break;
+            }
+        }
+        return rotation_command;
+    }
+
     /// <summary>
     /// Xé≤âÒì]ÇçsÇ¢Ç‹Ç∑ÅB
     /// </summary>
     /// <param name="angle"></param>
     public void RotateX(float angle)
     {
-        AddCommand(TPOCommandType.RotateX, angle, 0, 0);
+        TPOCommand rotation_command = FindRotationCommand();
+        if (rotation_command != null)
+            rotation_command.x = angle;
+        else
+            AddCommand(TPOCommandType.Rotate, angle, 0, 0);
     }
 
     /// <summary>
@@ -561,7 +568,11 @@ public class TPONode
     /// <param name="angle"></param>
     public void RotateY(float angle)
     {
-        AddCommand(TPOCommandType.RotateY, 0, angle, 0);
+        TPOCommand rotation_command = FindRotationCommand();
+        if (rotation_command != null)
+            rotation_command.y = angle;
+        else
+            AddCommand(TPOCommandType.Rotate, 0, angle, 0);
     }
 
     /// <summary>
@@ -570,7 +581,11 @@ public class TPONode
     /// <param name="angle"></param>
     public void RotateZ(float angle)
     {
-        AddCommand(TPOCommandType.RotateZ, 0, 0, angle);
+        TPOCommand rotation_command = FindRotationCommand();
+        if (rotation_command != null)
+            rotation_command.z = angle;
+        else
+            AddCommand(TPOCommandType.Rotate, 0, 0, angle);
     }
 
     /// <summary>
@@ -605,6 +620,21 @@ public class TPONode
             return scaling_command.GetVector3();
         else
             return new Vector3(1, 1, 1);
+    }
+
+    public Vector3 GetAngle()
+    {
+        TPOCommand rotation_command = FindRotationCommand();
+        if (rotation_command != null)
+        {
+            Vector3 angle;
+            angle.X = Geometry.RadianToDegree(rotation_command.X);
+            angle.Y = Geometry.RadianToDegree(rotation_command.Y);
+            angle.Z = Geometry.RadianToDegree(rotation_command.Z);
+            return angle;
+        }
+        else
+            return new Vector3(0, 0, 0);
     }
 
     public void SetScaling(Vector3 scaling, bool inv_scale_on_children)
@@ -650,6 +680,47 @@ public class TPONode
             foreach (TPONode child in children)
                 child.RemoveInverseScaling();
         }
+    }
+
+    public TPOCommand FindScalingCommand()
+    {
+        TPOCommand scaling_command = null;
+        foreach (TPOCommand command in commands)
+        {
+            switch (command.Type)
+            {
+                case TPOCommandType.Scale:
+                case TPOCommandType.Scale1:
+                    scaling_command = command;
+                    break;
+            }
+        }
+        return scaling_command;
+    }
+
+    public void SetAngle(Vector3 angle)
+    {
+        if (angle == new Vector3(0, 0, 0))
+        {
+            RemoveAngle();
+            return;
+        }
+        TPOCommand rotation_command = FindRotationCommand();
+        if (rotation_command == null)
+        {
+            rotation_command = new TPOCommand();
+            rotation_command.type = TPOCommandType.Rotate;
+
+            int idx = 0;
+            TPOCommand scaling_command = FindScalingCommand();
+            if (scaling_command != null)
+                idx = commands.IndexOf(scaling_command)+1;
+
+            commands.Insert(idx, rotation_command);
+        }
+        rotation_command.x = Geometry.DegreeToRadian(angle.X);
+        rotation_command.y = Geometry.DegreeToRadian(angle.Y);
+        rotation_command.z = Geometry.DegreeToRadian(angle.Z);
     }
 
     public void SetInverseScaling(Vector3 scaling)
@@ -712,6 +783,13 @@ public class TPONode
         }
         if (scaling_command != null)
             commands.Remove(scaling_command);
+    }
+
+    public void RemoveAngle()
+    {
+        TPOCommand rotation_command = FindRotationCommand();
+        if (rotation_command != null)
+            commands.Remove(rotation_command);
     }
 }
 }

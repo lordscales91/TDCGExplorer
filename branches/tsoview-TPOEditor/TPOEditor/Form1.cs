@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -106,6 +106,9 @@ namespace TPOEditor
             Vector3 scaling = tponode.GetScaling(out inv_scale_on_children);
             gvCommands.Rows.Add(new string[] { "Scale", scaling.X.ToString(), scaling.Y.ToString(), scaling.Z.ToString() });
             cbInverseScaleOnChildren.Checked = inv_scale_on_children;
+
+            Vector3 angle = tponode.GetAngle();
+            gvCommands.Rows.Add(new string[] { "Rotate", angle.X.ToString(), angle.Y.ToString(), angle.Z.ToString() });
         }
 
         float GetFloatFromGridViewCell(DataGridViewCell gvcell)
@@ -142,6 +145,25 @@ namespace TPOEditor
                 TPONode tponode = tpo.nodes[tponode_row];
 
                 tponode.SetScaling(GetVector3FromGridViewRow(gvrow), cbInverseScaleOnChildren.Checked);
+
+                tpoCommandBindingSource.ResetBindings(false);
+
+                Figure fig;
+                if (viewer.TryGetFigure(out fig))
+                {
+                    tpo_list.Transform(0);
+                    fig.UpdateBoneMatrices(true);
+                }
+            }
+            if (e.RowIndex == 1)
+            {
+                int tpofile_row = tpoFileBindingSource.Position;
+                TPOFile tpo = tpo_list[tpofile_row];
+
+                int tponode_row = tpoNodeBindingSource.Position;
+                TPONode tponode = tpo.nodes[tponode_row];
+
+                tponode.SetAngle(GetVector3FromGridViewRow(gvrow));
 
                 tpoCommandBindingSource.ResetBindings(false);
 
