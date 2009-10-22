@@ -25,14 +25,17 @@ namespace TPOEditor
             return Path.Combine(Application.StartupPath, @"Proportion");
         }
 
-        public Form1()
+        public Form1(TSOConfig tso_config, string[] args)
         {
             InitializeComponent();
-            this.ClientSize = new Size(1024, 800);
+            this.ClientSize = tso_config.ClientSize;
             viewer = new Viewer();
             if (viewer.InitializeApplication(this))
             {
-                viewer.LoadAnyFile(Path.Combine(save_path, "system.tdcgsav.png"), true);
+                foreach (string arg in args)
+                    viewer.LoadAnyFile(arg, true);
+                if (viewer.FigureList.Count == 0)
+                    viewer.LoadAnyFile(Path.Combine(save_path, "system.tdcgsav.png"), true);
                 viewer.Camera.SetTranslation(0.0f, +10.0f, -44.0f);
                 timer1.Enabled = true;
             }

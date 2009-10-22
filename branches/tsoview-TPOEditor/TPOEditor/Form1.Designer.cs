@@ -248,7 +248,7 @@
             this.Controls.Add(this.gvTPOCommands);
             this.Controls.Add(this.gvTPONodes);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "tpo editor";
             ((System.ComponentModel.ISupportInitialize)(this.gvTPONodes)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tpoNodeBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvTPOCommands)).EndInit();
