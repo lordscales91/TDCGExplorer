@@ -590,6 +590,7 @@ public class TPONode
         AddCommand(TPOCommandType.Move, x, y, z);
     }
 
+    /// Šg‘å‘€ì‚ğ“¾‚Ü‚·B
     public TPOCommand FindScalingCommand()
     {
         TPOCommand scaling_command = null;
@@ -606,6 +607,7 @@ public class TPONode
         return scaling_command;
     }
 
+    /// k¬‘€ì‚ğ“¾‚Ü‚·B
     private TPOCommand FindInverseScalingCommand()
     {
         TPOCommand scaling_command = null;
@@ -621,6 +623,7 @@ public class TPONode
         return scaling_command;
     }
 
+    /// Šg‘å‘€ì‚Ü‚½‚Ík¬‘€ì‚ğ“¾‚Ü‚·B
     public TPOCommand LastScalingOrInverseScalingCommand()
     {
         TPOCommand scaling_command = null;
@@ -638,6 +641,7 @@ public class TPONode
         return scaling_command;
     }
 
+    /// ‰ñ“]‘€ì‚ğ“¾‚Ü‚·B
     public TPOCommand FindRotationCommand()
     {
         TPOCommand rotation_command = null;
@@ -653,6 +657,7 @@ public class TPONode
         return rotation_command;
     }
 
+    /// Šg‘å‘€ì‚Ü‚½‚Ík¬‘€ì‚Ü‚½‚Í‰ñ“]‘€ì‚ğ“¾‚Ü‚·B
     public TPOCommand LastScalingOrInverseScalingOrRotationCommand()
     {
         TPOCommand scaling_or_rotation_command = null;
@@ -671,6 +676,7 @@ public class TPONode
         return scaling_or_rotation_command;
     }
 
+    /// ˆÚ“®‘€ì‚ğ“¾‚Ü‚·B
     public TPOCommand FindTranslationCommand()
     {
         TPOCommand translation_command = null;
@@ -686,6 +692,7 @@ public class TPONode
         return translation_command;
     }
 
+    /// Šg‘å•ÏˆÊ‚ğ“¾‚Ü‚·B
     public Vector3 GetScaling(out bool inv_scale_on_children)
     {
         inv_scale_on_children = false;
@@ -700,6 +707,7 @@ public class TPONode
             return new Vector3(1, 1, 1);
     }
 
+    /// ‰ñ“]Šp‚ğ“¾‚Ü‚·B
     public Vector3 GetAngle()
     {
         TPOCommand rotation_command = FindRotationCommand();
@@ -715,6 +723,7 @@ public class TPONode
             return new Vector3(0, 0, 0);
     }
 
+    /// ˆÚ“®•ÏˆÊ‚ğ“¾‚Ü‚·B
     public Vector3 GetTranslation()
     {
         TPOCommand translation_command = FindTranslationCommand();
@@ -724,6 +733,7 @@ public class TPONode
             return new Vector3(0, 0, 0);
     }
 
+    /// Šg‘å•ÏˆÊ‚ğİ’è‚µ‚Ü‚·B
     public void SetScaling(Vector3 scaling, bool inv_scale_on_children)
     {
         if (scaling == new Vector3(1, 1, 1))
@@ -759,6 +769,7 @@ public class TPONode
         }
     }
 
+    /// k¬•ÏˆÊ‚ğİ’è‚µ‚Ü‚·B
     public void SetInverseScaling(Vector3 scaling)
     {
         TPOCommand scaling_command = FindInverseScalingCommand();
@@ -773,6 +784,7 @@ public class TPONode
         scaling_command.z = scaling.Z;
     }
 
+    /// ‰ñ“]Šp‚ğİ’è‚µ‚Ü‚·B
     public void SetAngle(Vector3 angle)
     {
         if (angle == new Vector3(0, 0, 0))
@@ -798,6 +810,7 @@ public class TPONode
         rotation_command.z = Geometry.DegreeToRadian(angle.Z);
     }
 
+    /// ˆÚ“®•ÏˆÊ‚ğİ’è‚µ‚Ü‚·B
     public void SetTranslation(Vector3 translation)
     {
         if (translation == new Vector3(0, 0, 0))
@@ -823,6 +836,7 @@ public class TPONode
         translation_command.z = translation.Z;
     }
 
+    /// Šg‘å‘€ì‚ğíœ‚µ‚Ü‚·B
     public void RemoveScaling()
     {
         TPOCommand scaling_command = FindScalingCommand();
@@ -838,6 +852,7 @@ public class TPONode
         }
     }
 
+    /// k¬‘€ì‚ğíœ‚µ‚Ü‚·B
     public void RemoveInverseScaling()
     {
         TPOCommand scaling_command = FindInverseScalingCommand();
@@ -845,6 +860,7 @@ public class TPONode
             commands.Remove(scaling_command);
     }
 
+    /// ‰ñ“]‘€ì‚ğíœ‚µ‚Ü‚·B
     public void RemoveAngle()
     {
         TPOCommand rotation_command = FindRotationCommand();
@@ -852,6 +868,7 @@ public class TPONode
             commands.Remove(rotation_command);
     }
 
+    /// ˆÚ“®‘€ì‚ğíœ‚µ‚Ü‚·B
     public void RemoveTranslation()
     {
         TPOCommand translation_command = FindTranslationCommand();
