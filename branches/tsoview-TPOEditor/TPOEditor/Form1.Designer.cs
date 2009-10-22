@@ -52,6 +52,7 @@
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cbInverseScaleOnChildren = new System.Windows.Forms.CheckBox();
+            this.btnSave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.gvTPONodes)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tpoNodeBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvTPOCommands)).BeginInit();
@@ -224,11 +225,23 @@
             this.cbInverseScaleOnChildren.UseVisualStyleBackColor = true;
             this.cbInverseScaleOnChildren.CheckedChanged += new System.EventHandler(this.cbInverseScaleOnChildren_CheckedChanged);
             // 
+            // btnSave
+            // 
+            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnSave.Location = new System.Drawing.Point(697, 528);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 5;
+            this.btnSave.Text = "&Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 563);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.cbInverseScaleOnChildren);
             this.Controls.Add(this.gvCommands);
             this.Controls.Add(this.gvPortions);
@@ -269,6 +282,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column3;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column4;
+        private System.Windows.Forms.Button btnSave;
     }
 }
 

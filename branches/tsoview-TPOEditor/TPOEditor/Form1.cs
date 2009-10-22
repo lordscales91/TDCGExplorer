@@ -272,7 +272,6 @@ namespace TPOEditor
                 tpo_list.Transform(0);
                 fig.UpdateBoneMatrices(true);
             }
-            SaveTpoScript(tpo);
         }
 
         private void cbInverseScaleOnChildren_CheckedChanged(object sender, EventArgs e)
@@ -294,7 +293,6 @@ namespace TPOEditor
                 tpo_list.Transform(0);
                 fig.UpdateBoneMatrices(true);
             }
-            SaveTpoScript(tpo);
         }
 
         private void gvCommands_MouseWheel(object sender, MouseEventArgs e)
@@ -339,8 +337,13 @@ namespace TPOEditor
                     tpo_list.Transform(0);
                     fig.UpdateBoneMatrices(true);
                 }
-                SaveTpoScript(tpo);
             }
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            foreach (TPOFile tpo in tpo_list.files)
+                SaveTpoScript(tpo);
         }
     }
 }
