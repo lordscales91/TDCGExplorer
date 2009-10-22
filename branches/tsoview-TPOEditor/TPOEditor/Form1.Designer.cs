@@ -34,31 +34,31 @@
         {
             this.components = new System.ComponentModel.Container();
             this.gvTPONodes = new System.Windows.Forms.DataGridView();
+            this.shortNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tpoNodeBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gvTPOCommands = new System.Windows.Forms.DataGridView();
+            this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.X = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Y = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Z = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tpoCommandBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gvPortions = new System.Windows.Forms.DataGridView();
+            this.proportionNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tpoFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.gvCommands = new System.Windows.Forms.DataGridView();
-            this.cbInverseScaleOnChildren = new System.Windows.Forms.CheckBox();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.proportionNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tpoFileBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tpoCommandBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.shortNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tpoNodeBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.cbInverseScaleOnChildren = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.gvTPONodes)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gvTPOCommands)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gvPortions)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gvCommands)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tpoFileBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tpoCommandBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tpoNodeBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gvTPOCommands)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tpoCommandBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gvPortions)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tpoFileBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gvCommands)).BeginInit();
             this.SuspendLayout();
             // 
             // gvTPONodes
@@ -79,6 +79,17 @@
             this.gvTPONodes.TabIndex = 0;
             this.gvTPONodes.SelectionChanged += new System.EventHandler(this.gvTPONodes_SelectionChanged);
             // 
+            // shortNameDataGridViewTextBoxColumn
+            // 
+            this.shortNameDataGridViewTextBoxColumn.DataPropertyName = "ShortName";
+            this.shortNameDataGridViewTextBoxColumn.HeaderText = "ShortName";
+            this.shortNameDataGridViewTextBoxColumn.Name = "shortNameDataGridViewTextBoxColumn";
+            this.shortNameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // tpoNodeBindingSource
+            // 
+            this.tpoNodeBindingSource.DataSource = typeof(TDCG.TPONode);
+            // 
             // gvTPOCommands
             // 
             this.gvTPOCommands.AllowUserToAddRows = false;
@@ -97,6 +108,13 @@
             this.gvTPOCommands.RowTemplate.Height = 21;
             this.gvTPOCommands.Size = new System.Drawing.Size(240, 150);
             this.gvTPOCommands.TabIndex = 1;
+            // 
+            // typeDataGridViewTextBoxColumn
+            // 
+            this.typeDataGridViewTextBoxColumn.DataPropertyName = "Type";
+            this.typeDataGridViewTextBoxColumn.HeaderText = "Type";
+            this.typeDataGridViewTextBoxColumn.Name = "typeDataGridViewTextBoxColumn";
+            this.typeDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // X
             // 
@@ -119,6 +137,10 @@
             this.Z.Name = "Z";
             this.Z.ReadOnly = true;
             // 
+            // tpoCommandBindingSource
+            // 
+            this.tpoCommandBindingSource.DataSource = typeof(TDCG.TPOCommand);
+            // 
             // gvPortions
             // 
             this.gvPortions.AllowUserToAddRows = false;
@@ -134,6 +156,17 @@
             this.gvPortions.Size = new System.Drawing.Size(240, 150);
             this.gvPortions.TabIndex = 2;
             this.gvPortions.SelectionChanged += new System.EventHandler(this.gvPortions_SelectionChanged);
+            // 
+            // proportionNameDataGridViewTextBoxColumn
+            // 
+            this.proportionNameDataGridViewTextBoxColumn.DataPropertyName = "ProportionName";
+            this.proportionNameDataGridViewTextBoxColumn.HeaderText = "ProportionName";
+            this.proportionNameDataGridViewTextBoxColumn.Name = "proportionNameDataGridViewTextBoxColumn";
+            this.proportionNameDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // tpoFileBindingSource
+            // 
+            this.tpoFileBindingSource.DataSource = typeof(TDCG.TPOFile);
             // 
             // timer1
             // 
@@ -156,19 +189,8 @@
             this.gvCommands.RowTemplate.Height = 21;
             this.gvCommands.Size = new System.Drawing.Size(240, 150);
             this.gvCommands.TabIndex = 3;
+            this.gvCommands.MouseWheel += new System.Windows.Forms.MouseEventHandler(this.gvCommands_MouseWheel);
             this.gvCommands.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.gvCommands_CellEndEdit);
-            // 
-            // cbInverseScaleOnChildren
-            // 
-            this.cbInverseScaleOnChildren.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbInverseScaleOnChildren.AutoSize = true;
-            this.cbInverseScaleOnChildren.Location = new System.Drawing.Point(532, 324);
-            this.cbInverseScaleOnChildren.Name = "cbInverseScaleOnChildren";
-            this.cbInverseScaleOnChildren.Size = new System.Drawing.Size(152, 16);
-            this.cbInverseScaleOnChildren.TabIndex = 4;
-            this.cbInverseScaleOnChildren.Text = "&inverse scale on children";
-            this.cbInverseScaleOnChildren.UseVisualStyleBackColor = true;
-            this.cbInverseScaleOnChildren.CheckedChanged += new System.EventHandler(this.cbInverseScaleOnChildren_CheckedChanged);
             // 
             // Column1
             // 
@@ -190,38 +212,17 @@
             this.Column4.HeaderText = "Z";
             this.Column4.Name = "Column4";
             // 
-            // proportionNameDataGridViewTextBoxColumn
+            // cbInverseScaleOnChildren
             // 
-            this.proportionNameDataGridViewTextBoxColumn.DataPropertyName = "ProportionName";
-            this.proportionNameDataGridViewTextBoxColumn.HeaderText = "ProportionName";
-            this.proportionNameDataGridViewTextBoxColumn.Name = "proportionNameDataGridViewTextBoxColumn";
-            this.proportionNameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // tpoFileBindingSource
-            // 
-            this.tpoFileBindingSource.DataSource = typeof(TDCG.TPOFile);
-            // 
-            // typeDataGridViewTextBoxColumn
-            // 
-            this.typeDataGridViewTextBoxColumn.DataPropertyName = "Type";
-            this.typeDataGridViewTextBoxColumn.HeaderText = "Type";
-            this.typeDataGridViewTextBoxColumn.Name = "typeDataGridViewTextBoxColumn";
-            this.typeDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // tpoCommandBindingSource
-            // 
-            this.tpoCommandBindingSource.DataSource = typeof(TDCG.TPOCommand);
-            // 
-            // shortNameDataGridViewTextBoxColumn
-            // 
-            this.shortNameDataGridViewTextBoxColumn.DataPropertyName = "ShortName";
-            this.shortNameDataGridViewTextBoxColumn.HeaderText = "ShortName";
-            this.shortNameDataGridViewTextBoxColumn.Name = "shortNameDataGridViewTextBoxColumn";
-            this.shortNameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // tpoNodeBindingSource
-            // 
-            this.tpoNodeBindingSource.DataSource = typeof(TDCG.TPONode);
+            this.cbInverseScaleOnChildren.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbInverseScaleOnChildren.AutoSize = true;
+            this.cbInverseScaleOnChildren.Location = new System.Drawing.Point(532, 324);
+            this.cbInverseScaleOnChildren.Name = "cbInverseScaleOnChildren";
+            this.cbInverseScaleOnChildren.Size = new System.Drawing.Size(152, 16);
+            this.cbInverseScaleOnChildren.TabIndex = 4;
+            this.cbInverseScaleOnChildren.Text = "&inverse scale on children";
+            this.cbInverseScaleOnChildren.UseVisualStyleBackColor = true;
+            this.cbInverseScaleOnChildren.CheckedChanged += new System.EventHandler(this.cbInverseScaleOnChildren_CheckedChanged);
             // 
             // Form1
             // 
@@ -236,12 +237,12 @@
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.gvTPONodes)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gvTPOCommands)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gvPortions)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.gvCommands)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tpoFileBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tpoCommandBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tpoNodeBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gvTPOCommands)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tpoCommandBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gvPortions)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tpoFileBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.gvCommands)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

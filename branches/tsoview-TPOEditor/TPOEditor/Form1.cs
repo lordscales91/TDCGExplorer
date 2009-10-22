@@ -252,19 +252,18 @@ namespace TPOEditor
             TPONode tponode = tpo.nodes[tponode_row];
 
             DataGridViewRow gvrow = gvCommands.Rows[e.RowIndex];
-            if (e.RowIndex == 0)
+            switch (e.RowIndex)
             {
-                tponode.SetScaling(GetVector3FromGridViewRow(gvrow), cbInverseScaleOnChildren.Checked);
+                case 0:
+                    tponode.SetScaling(GetVector3FromGridViewRow(gvrow), cbInverseScaleOnChildren.Checked);
+                    break;
+                case 1:
+                    tponode.SetAngle(GetVector3FromGridViewRow(gvrow));
+                    break;
+                case 2:
+                    tponode.SetTranslation(GetVector3FromGridViewRow(gvrow));
+                    break;
             }
-            if (e.RowIndex == 1)
-            {
-                tponode.SetAngle(GetVector3FromGridViewRow(gvrow));
-            }
-            if (e.RowIndex == 2)
-            {
-                tponode.SetTranslation(GetVector3FromGridViewRow(gvrow));
-            }
-
             tpoCommandBindingSource.ResetBindings(false);
 
             Figure fig;
@@ -296,6 +295,52 @@ namespace TPOEditor
                 fig.UpdateBoneMatrices(true);
             }
             SaveTpoScript(tpo);
+        }
+
+        private void gvCommands_MouseWheel(object sender, MouseEventArgs e)
+        {
+            DataGridView.HitTestInfo hit = gvCommands.HitTest(e.X, e.Y);
+            if (hit.Type == DataGridViewHitTestType.Cell)
+            {
+                //Console.WriteLine("col {0} row {1} delta {2}", hit.ColumnIndex, hit.RowIndex, e.Delta);
+                DataGridViewCell gvcell = gvCommands.Rows[hit.RowIndex].Cells[hit.ColumnIndex];
+                float flo = GetFloatFromGridViewCell(gvcell);
+                float power;
+                if (hit.RowIndex == 1)
+                    power = 1.0f;
+                else
+                    power = 0.1f;
+                gvcell.Value = (flo + (e.Delta / 120) * power).ToString();
+
+                int tpofile_row = tpoFileBindingSource.Position;
+                TPOFile tpo = tpo_list[tpofile_row];
+
+                int tponode_row = tpoNodeBindingSource.Position;
+                TPONode tponode = tpo.nodes[tponode_row];
+
+                DataGridViewRow gvrow = gvCommands.Rows[hit.RowIndex];
+                switch (hit.RowIndex)
+                {
+                    case 0:
+                        tponode.SetScaling(GetVector3FromGridViewRow(gvrow), cbInverseScaleOnChildren.Checked);
+                        break;
+                    case 1:
+                        tponode.SetAngle(GetVector3FromGridViewRow(gvrow));
+                        break;
+                    case 2:
+                        tponode.SetTranslation(GetVector3FromGridViewRow(gvrow));
+                        break;
+                }
+                tpoCommandBindingSource.ResetBindings(false);
+
+                Figure fig;
+                if (viewer.TryGetFigure(out fig))
+                {
+                    tpo_list.Transform(0);
+                    fig.UpdateBoneMatrices(true);
+                }
+                SaveTpoScript(tpo);
+            }
         }
     }
 }
