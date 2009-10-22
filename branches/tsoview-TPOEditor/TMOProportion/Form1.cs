@@ -35,7 +35,7 @@ namespace TMOProportion
             this.ClientSize = tso_config.ClientSize;
             viewer = new Viewer();
 
-            if (viewer.InitializeApplication(this, true))
+            if (viewer.InitializeApplication(this))
             {
                 viewer.FigureEvent += delegate(object sender, EventArgs e)
                 {

@@ -126,6 +126,9 @@ namespace TPOEditor
             sw.WriteLine("using Microsoft.DirectX;");
             sw.WriteLine("using Microsoft.DirectX.Direct3D;");
             sw.WriteLine("using TDCG;");
+            sw.WriteLine("//css_reference Microsoft.DirectX.dll;");
+            sw.WriteLine("//css_reference Microsoft.DirectX.Direct3D.dll;");
+            sw.WriteLine("//css_reference Microsoft.DirectX.Direct3DX.dll;");
             sw.WriteLine("");
             sw.WriteLine("namespace {0}", name_space);
             sw.WriteLine("{");
