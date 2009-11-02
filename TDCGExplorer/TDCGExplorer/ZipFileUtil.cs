@@ -15,7 +15,7 @@ namespace TDCGExplorer
         {
             try
             {
-                TDCGExplorer.SetLastAccessFile = srcfile;
+                TDCGExplorer.LastAccessFile = srcfile;
                 arc.Open(srcfile);
                 if (arc == null) return false;
                 foreach (IArchiveEntry entry in arc)

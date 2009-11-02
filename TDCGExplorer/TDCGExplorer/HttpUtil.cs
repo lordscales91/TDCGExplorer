@@ -49,7 +49,7 @@ namespace TDCGExplorer
             }
             catch (Exception e)
             {
-                TDCGExplorer.SetToolTips("Error occured : " + e.Message);
+                TDCGExplorer.SetToolTips("Error DownloadFile : " + e.Message);
             }
             return false;
         }

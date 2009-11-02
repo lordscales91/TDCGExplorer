@@ -152,7 +152,7 @@ namespace TDCGExplorer
             TAHLocalDbEntry entry = null;
             using (SQLiteCommand cmd = cnn.CreateCommand())
             {
-                cmd.CommandText = "SELECT PATH,DATAID,HASH FROM Entry WHERE PATH=@path";
+                cmd.CommandText = "SELECT PATH,DATAID,HASH FROM Entry WHERE UPPER(PATH)=UPPER(@path)";
                 cmd.Parameters.AddWithValue("path", path);
                 using (SQLiteDataReader reader = cmd.ExecuteReader())
                 {

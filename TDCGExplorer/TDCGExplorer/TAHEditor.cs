@@ -26,6 +26,8 @@ namespace System.Windows.Forms
         private ToolStripMenuItem toolStripMenuItemChangeColor;
         private ToolStripMenuItem toolStripMenuItemDeleteItem;
         private EventHandler formTimer;
+        private ToolStripMenuItem toolStripMenuItemMakeTBN;
+        private ToolStripMenuItem toolStripMenuItemSelectAll;
         private string tahdbpath;
 
         public TAHEditor(string dbpath, GenericTahInfo info)
@@ -238,7 +240,9 @@ namespace System.Windows.Forms
             this.toolStripMenuItemChangeColor = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemDeleteItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSaveTAHFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemMakeTBN = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemSelectAll = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -262,6 +266,7 @@ namespace System.Windows.Forms
             // contextMenuStrip
             // 
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemSelectAll,
             this.toolStripMenuItemTAHInfoEdit,
             this.toolStripMenuItemSaveSelectFile,
             this.toolStripMenuItemEditIdentify,
@@ -269,9 +274,10 @@ namespace System.Windows.Forms
             this.toolStripMenuItemChangeColor,
             this.toolStripMenuItemDeleteItem,
             this.toolStripMenuItemSaveTAHFile,
+            this.toolStripMenuItemMakeTBN,
             this.toolStripMenuItemClose});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(291, 180);
+            this.contextMenuStrip.Size = new System.Drawing.Size(291, 224);
             // 
             // toolStripMenuItemTAHInfoEdit
             // 
@@ -322,12 +328,26 @@ namespace System.Windows.Forms
             this.toolStripMenuItemSaveTAHFile.Text = "選択したファイルをTAHに梱包する";
             this.toolStripMenuItemSaveTAHFile.Click += new System.EventHandler(this.toolStripMenuItemSaveTAHFile_Click);
             // 
+            // toolStripMenuItemMakeTBN
+            // 
+            this.toolStripMenuItemMakeTBN.Name = "toolStripMenuItemMakeTBN";
+            this.toolStripMenuItemMakeTBN.Size = new System.Drawing.Size(290, 22);
+            this.toolStripMenuItemMakeTBN.Text = "選択したtsoファイルのtbnを生成する";
+            this.toolStripMenuItemMakeTBN.Click += new System.EventHandler(this.toolStripMenuItemMakeTBN_Click);
+            // 
             // toolStripMenuItemClose
             // 
             this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
             this.toolStripMenuItemClose.Size = new System.Drawing.Size(290, 22);
             this.toolStripMenuItemClose.Text = "閉じる";
             this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
+            // 
+            // toolStripMenuItemSelectAll
+            // 
+            this.toolStripMenuItemSelectAll.Name = "toolStripMenuItemSelectAll";
+            this.toolStripMenuItemSelectAll.Size = new System.Drawing.Size(290, 22);
+            this.toolStripMenuItemSelectAll.Text = "全て選択";
+            this.toolStripMenuItemSelectAll.Click += new System.EventHandler(this.toolStripMenuItemSelectAll_Click);
             // 
             // TAHEditor
             // 
@@ -444,14 +464,21 @@ namespace System.Windows.Forms
                                             database.UpdateData(dataentry);
                                         }
                                     }
-                                    // データグリッドを更新する.
-                                    string[] newitem = { entry[0].ToString(), newfilename, entry[2].ToString() };
-                                    row.ItemArray = newitem;
                                 }
                             }
                         }
                     }
                     transaction.Commit();
+
+                    DataTable data = newDataTable();
+                    List<string> directory = database.GetDirectory();
+                    foreach (string file in directory)
+                    {
+                        DataRow row = data.NewRow();
+                        row.ItemArray = getDataEntity(file);
+                        data.Rows.Add(row);
+                    }
+                    dataGridView.DataSource = data;
                 }
                 catch (Exception ex)
                 {
@@ -520,14 +547,21 @@ namespace System.Windows.Forms
                                             database.UpdateData(dataentry);
                                         }
                                     }
-                                    // データグリッドを更新する.
-                                    string[] newitem = { entry[0].ToString(), newfilename, entry[2].ToString() };
-                                    row.ItemArray = newitem;
                                 }
                             }
                         }
                     }
                     transaction.Commit();
+
+                    DataTable data = newDataTable();
+                    List<string> directory = database.GetDirectory();
+                    foreach (string file in directory)
+                    {
+                        DataRow row = data.NewRow();
+                        row.ItemArray = getDataEntity(file);
+                        data.Rows.Add(row);
+                    }
+                    dataGridView.DataSource = data;
                 }
                 catch (Exception ex)
                 {
@@ -578,7 +612,7 @@ namespace System.Windows.Forms
             }
         }
 
-        // ファイル名の置換
+        // カテゴリの置換
         private void ReplaceCategory(TBNCategoryData type)
         {
             using (SQLiteTransaction transaction = database.BeginTransaction())
@@ -625,20 +659,27 @@ namespace System.Windows.Forms
                                             string oldtsoname = pathelement[pathelement.Length - 1];
                                             string newtsopath = tsopath + oldtsoname.Substring(0, 9) + type.symbol.ToString() + oldtsoname.Substring(10, 6);
                                             // ファイル名を書き換える
+                                            byte[]tbn=ReadTbnData(typechartotype(type.symbol)); // 適切なtbnを読み込む.
+                                            dataentry.data = tbn;
                                             TDCGTbnUtil.SetTsoName(dataentry.data, newtsopath);
-                                            // 属性値を書き換える
-                                            TDCGTbnUtil.SetTsoSignature(dataentry.data, type);
                                             database.UpdateData(dataentry);
                                         }
                                     }
-                                    // データグリッドを更新する.
-                                    string[] newitem = { dir, newfilename, ext };
-                                    row.ItemArray = newitem;
                                 }
                             }
                         }
                     }
                     transaction.Commit();
+
+                    DataTable data = newDataTable();
+                    List<string> directory = database.GetDirectory();
+                    foreach (string file in directory)
+                    {
+                        DataRow row = data.NewRow();
+                        row.ItemArray = getDataEntity(file);
+                        data.Rows.Add(row);
+                    }
+                    dataGridView.DataSource = data;
                 }
                 catch (Exception ex)
                 {
@@ -659,6 +700,130 @@ namespace System.Windows.Forms
             }
         }
 
+        private int typechartotype(char typecode)
+        {
+            int type = 0;
+            string typestring = new string(typecode,1);
+            switch(typestring.ToUpper()){
+                case "A": type = 0; break;
+                case "B": type = 1; break;
+                case "C": type = 2; break;
+                case "D": type = 3; break;
+                case "E": type = 4; break;
+                case "F": type = 5; break;
+                case "G": type = 6; break;
+                case "H": type = 7; break;
+                case "I": type = 8; break;
+                case "J": type = 9; break;
+                case "K": type = 10; break;
+                case "L": type = 11; break;
+                case "M": type = 12; break;
+                case "N": type = 13; break;
+                case "O": type = 14; break;
+                case "P": type = 15; break;
+                case "Q": type = 16; break;
+                case "R": type = 17; break;
+                case "S": type = 18; break;
+                case "T": type = 19; break;
+                case "U": type = 20; break;
+                case "V": type = 21; break;
+                case "W": type = 22; break;
+                case "X": type = 23; break;
+                case "Y": type = 24; break;
+                case "Z": type = 25; break;
+                case "0": type = 26; break;
+                case "1": type = 27; break;
+                case "2": type = 28; break;
+                case "3": type = 29; break;
+            }
+            return type;
+        }
+
+        private byte[] ReadTbnData(int type)
+        {
+            string[] tbnname = {    "script/items/n001body_a00.tbn",    //00
+                                    "script/items/n001fhea_b00.tbn",    //01
+                                    "script/items/n001bhea_c00.tbn",    //02
+                                    "script/items/n001hskn_d00.tbn",    //03
+                                    "script/items/n001eyes_e00.tbn",    //04
+                                    "script/items/n001bura_f00.tbn",    //05
+                                    "script/items/n002scho_g00.tbn",    //06
+                                    "script/items/n001pant_h00.tbn",    //07
+                                    "script/items/n001hsox_i00.tbn",    //08
+                                    "script/items/n003sail_j00.tbn",    //09
+                                    "script/items/n001nurs_k00.tbn",    //10
+                                    "script/items/n001nksk_l00.tbn",    //11
+                                    "script/items/n001sail_m00.tbn",    //12
+                                    "script/items/n001tail_n00.tbn",    //13
+                                    "script/items/n001rofr_o00.tbn",    //14
+                                    "script/items/n001nek1_p00.tbn",    //15
+                                    "script/items/n001mega_q00.tbn",    //16
+                                    "script/items/n001neck_r00.tbn",    //17
+                                    "script/items/n004cffs_s00.tbn",    //18
+                                    "script/items/n001wing_t00.tbn",    //19
+                                    "script/items/n001ahog_u00.tbn",    //20
+                                    "script/items/n001gant_v00.tbn",    //21
+                                    "script/items/n001loos_w00.tbn",    //22
+                                    "script/items/n001cffs_x00.tbn",    //23
+                                    "script/items/n001head_y00.tbn",    //24
+                                    "script/items/n001obon_z00.tbn",    //25
+                                    "script/items/n001mayu_000.tbn",    //26
+                                    "script/items/n001kiba_100.tbn",    //27
+                                    "script/items/n001hoku_200.tbn",    //28
+                                    "script/items/n001head_300.tbn" };  //29
+
+            // Zカテゴリはファイルから。それ以外はbase.tahから読み込む.
+            if (type==25)
+            {
+                // 変更先が手持ちの場合
+                // tbnファイルを読み込んで書き換える.
+                try
+                {
+                    using (Stream stream = File.OpenRead("N001OBON_Z00.tbn"))
+                    using (MemoryStream memorystream = new MemoryStream())
+                    {
+                        ZipFileUtil.CopyStream(stream, memorystream);
+                        byte[] tbn = memorystream.ToArray();
+                        return tbn;
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("tbnの読み込みでエラーが発生しました。", "エラー", MessageBoxButtons.OK);
+                    Debug.WriteLine("tbn.open.error");
+                }
+            }
+            else
+            {
+                // base.tahから手持ちアイテム以外のファイルを読み込む.
+                using (Stream file_stream = File.OpenRead(Path.Combine(TDCGExplorer.TDCGExplorer.SystemDB.arcs_path, "base.tah")))
+                {
+                    TAHFile tah = new TAHFile(file_stream);
+                    try
+                    {
+                        tah.LoadEntries();
+                        foreach (TAHEntry ent in tah.EntrySet.Entries)
+                        {
+                            for (int id = 0; id < tbnname.Length; id++)
+                            {
+                                if (ent.FileName != null && ent.FileName.ToLower() == tbnname[type])
+                                {
+                                    byte[] content = TAHUtil.ReadEntryData(tah.Reader, ent);
+                                    return content;
+                                }
+                            }
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("base.tahの読み込みでエラーが発生しました。", "エラー", MessageBoxButtons.OK);
+                        Debug.WriteLine("basetah.open.error");
+                    }
+                }
+            }
+            return null;
+        }
+
         // 選択しているファイルのカテゴリを変更する
         private void toolStripMenuItemEditCategory_Click(object sender, EventArgs e)
         {
@@ -677,10 +842,12 @@ namespace System.Windows.Forms
                 int index = dialog.selectedIndex;
                 if (index >= 0)
                 {
+#if false
                     if (index == 25)
                     {
                         MessageBox.Show("手持ちアイテムに変更する事はできません。", "エラー", MessageBoxButtons.OK);
                     }
+#endif
                     try
                     {
                         ReplaceCategory(TDCGTbnUtil.CategoryData[index]);
@@ -699,57 +866,77 @@ namespace System.Windows.Forms
         {
             if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
 
-            string destpath = TDCGExplorer.TDCGExplorer.SystemDB.tahpath;
-            string destfilename = Path.Combine(destpath,Path.GetFileName(database["source"]));
+//            string destpath = TDCGExplorer.TDCGExplorer.SystemDB.tahpath;
+//            string destfilename = Path.Combine(destpath,Path.GetFileName(database["source"]));
 
-            TAHWriter tah = new TAHWriter();
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.FileName = Path.GetFileName(database["source"]);
+            dialog.InitialDirectory = TDCGExplorer.TDCGExplorer.SystemDB.tahpath;
+            dialog.Filter = "TAHファイル(*.tah)|*.tah";
+            dialog.FilterIndex = 0;
+            dialog.Title = "保存先のファイルを選択してください";
+            dialog.RestoreDirectory = true;
+            dialog.OverwritePrompt = true;
+            dialog.CheckPathExists = true;
 
-            // TAHにデータを追加していく.
-            foreach (DataGridViewRow viewrow in dataGridView.SelectedRows)
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
-                DataRowView vrow = viewrow.DataBoundItem as DataRowView;
-                DataRow row = null;
-                if (vrow != null)
+                string destfilename = dialog.FileName;
+
+                TAHWriter tah = new TAHWriter();
+
+                List<String> tahpath = new List<string>();
+
+                // TAHにデータを追加していく.
+                foreach (DataGridViewRow viewrow in dataGridView.SelectedRows)
                 {
-                    row = vrow.Row;
-                    if (row != null)
+                    DataRowView vrow = viewrow.DataBoundItem as DataRowView;
+                    DataRow row = null;
+                    if (vrow != null)
                     {
-                        Object[] entry = row.ItemArray;
-                        if (entry != null)
+                        row = vrow.Row;
+                        if (row != null)
                         {
-                            string path = entry[0].ToString() + entry[1].ToString();
-                            tah.Add(path);
+                            Object[] entry = row.ItemArray;
+                            if (entry != null)
+                            {
+                                string path = entry[0].ToString() + entry[1].ToString();
+                                tahpath.Add(path);
+                            }
                         }
                     }
                 }
-            }
-            // TAHバージョンを設定する
-            tah.Version=uint.Parse(database["version"]);
-            // TAHファイルを書き出す.
-            Directory.CreateDirectory(Path.GetDirectoryName(destfilename));
-            int count = 1;
-            File.Delete(destfilename);
-            using (Stream stream = File.Create(destfilename))
-            {
-                // データ取得delegate
-                tah.Data += delegate(string filename)
+                tahpath.Sort();
+                foreach (string tahfile in tahpath) tah.Add(tahfile);
+
+                // TAHバージョンを設定する
+                tah.Version=uint.Parse(database["version"]);
+                // TAHファイルを書き出す.
+                Directory.CreateDirectory(Path.GetDirectoryName(destfilename));
+                int count = 1;
+                File.Delete(destfilename);
+                using (Stream stream = File.Create(destfilename))
                 {
-                    TDCGExplorer.TDCGExplorer.SetToolTips(filename + " 梱包中 ("+count++.ToString()+"/"+tah.Count.ToString()+")");
-                    TAHLocalDbEntry tahentry = database.GetEntry(filename);
-                    TAHLocalDBDataEntry dataentry = database.GetData(tahentry.dataid);
+                    // データ取得delegate
+                    tah.Data += delegate(string filename)
+                    {
+                        TDCGExplorer.TDCGExplorer.SetToolTips(filename + " 梱包中 ("+count++.ToString()+"/"+tah.Count.ToString()+")");
+                        TAHLocalDbEntry tahentry = database.GetEntry(filename);
+                        TAHLocalDBDataEntry dataentry = database.GetData(tahentry.dataid);
 
-                    TDCGExplorer.TDCGExplorer.IncBusy();
-                    Application.DoEvents();
-                    TDCGExplorer.TDCGExplorer.DecBusy();
+                        TDCGExplorer.TDCGExplorer.IncBusy();
+                        Application.DoEvents();
+                        TDCGExplorer.TDCGExplorer.DecBusy();
 
-                    return dataentry.data;
-                };
-                // データを書き込む.
-                tah.Write(stream);
-                stream.Close();
+                        return dataentry.data;
+                    };
+                    // データを書き込む.
+                    tah.Write(stream);
+                    stream.Close();
+                }
+                TDCGExplorer.TDCGExplorer.SetToolTips("梱包完了");
+                TDCGExplorer.TDCGExplorer.ExplorerSelectPath(destfilename);
             }
-            TDCGExplorer.TDCGExplorer.SetToolTips("梱包完了");
-            TDCGExplorer.TDCGExplorer.ExplorerSelectPath(destfilename);
         }
 
         // TAHの情報を変更する.
@@ -804,7 +991,7 @@ namespace System.Windows.Forms
 
             SimpleTextDialog dialog = new SimpleTextDialog();
             dialog.labeltext = "新しい色番号";
-            dialog.dialogtext = "色番号のへ工";
+            dialog.dialogtext = "色番号の変更";
             dialog.Owner = TDCGExplorer.TDCGExplorer.MainFormWindow;
             if (dialog.ShowDialog() == DialogResult.OK)
             {
@@ -979,44 +1166,17 @@ namespace System.Windows.Forms
                     // 次回カメラが必ずリセットされる様にする.
                     TDCGExplorer.TDCGExplorer.MainFormWindow.setNeedCameraReset();
                 }
+                TDCGExplorer.TDCGExplorer.FigureLoad = false;
             }
         }
 
-#if false
-        string[] editBeginItemRow;
-        // セルの値が変更されようとしている.
-        private void dataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        // 選択されたtsoファイルからpsd,tbnを生成する.
+        private void toolStripMenuItemMakeTBN_Click(object sender, EventArgs e)
         {
-            // 編集される前の値をコピーする.
-            DataGridViewRow viewrow = dataGridView.CurrentRow;
-            DataRowView vrow = viewrow.DataBoundItem as DataRowView;
-            if (vrow != null)
+            HashSet<string> tsoFileList = new HashSet<string>();
+            // 表示するTSOの一覧を取得する.
+            foreach (DataGridViewRow viewrow in dataGridView.SelectedRows)
             {
-                DataRow row = vrow.Row;
-                if (row != null)
-                {
-                    Object[] entry = row.ItemArray;
-                    if (entry != null)
-                    {
-                        editBeginItemRow = new string[] { entry[0].ToString(), entry[1].ToString(), entry[2].ToString() };
-                    }
-                }
-            }
-        }
-#endif
-#if false
-        private void dataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            if (editBeginItemRow != null)
-            {
-                string newdirectory = editBeginItemRow[0];
-                string newfilename = editBeginItemRow[1];
-                string newextension = editBeginItemRow[2];
-                string key = editBeginItemRow[0] + editBeginItemRow[1];
-
-                Object[] entry = null;
-
-                DataGridViewRow viewrow = dataGridView.CurrentRow;
                 DataRowView vrow = viewrow.DataBoundItem as DataRowView;
                 DataRow row = null;
                 if (vrow != null)
@@ -1024,56 +1184,300 @@ namespace System.Windows.Forms
                     row = vrow.Row;
                     if (row != null)
                     {
-                        entry = row.ItemArray;
-
+                        Object[] entry = row.ItemArray;
                         if (entry != null)
                         {
-                            switch (e.ColumnIndex)
+                            string filename = entry[1].ToString();
+                            if (entry[2].ToString().ToLower() == "tso")
                             {
-                                case 0:
-                                    newdirectory = entry[0].ToString();
-                                    break;
-                                case 1:
-                                    newfilename = entry[1].ToString();
-                                    break;
-                                case 2:
-                                    newextension = entry[2].ToString();
-                                    break;
-                            }
-                            if (newextension != "")
-                            {
-                                newfilename = TAHInternalPath.GetFileNameWithoutExtension(newfilename) + "." + newextension;
+                                tsoFileList.Add(filename);
                             }
                             else
                             {
-                                newfilename = TAHInternalPath.GetFileNameWithoutExtension(newfilename);
+                                // tsoファイル以外は無視する.
+                                Debug.WriteLine("invalid file format");
                             }
-                        }
-
-                        // データベースの中身を書き換える.
-                        DataTable table = dataGridView.DataSource as DataTable;
-                        if (table != null)
-                        {
-                            string newkey = newdirectory + newfilename;
-                            TAHDataBaseEntry checkentry = database.GetEntry(newkey);
-                            if (checkentry != null)
-                            {
-                                // 重複していたら編集をキャンセルする.
-                                row.ItemArray = new string[] { editBeginItemRow[0], editBeginItemRow[1], editBeginItemRow[2] };
-                                SystemSounds.Exclamation.Play();
-                                return;
-                            }
-                            row.ItemArray = new string[] { newdirectory, newfilename, newextension };
-                            TAHDataBaseEntry oldentry = database.GetEntry(key);
-                            oldentry.path = newkey;
-                            database.DeleteEntry(key);
-                            database.AddContent(oldentry);
                         }
                     }
                 }
             }
+            if (tsoFileList.Count == 0)
+            {
+                MessageBox.Show("tsoファイルを選択してください。", "tbnファイルの生成", MessageBoxButtons.OK);
+                return;
+            }
+            TbnSelectForm form = new TbnSelectForm();
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                string tbncat="ABCDEFGHIJKLMNOPQRSTUVWXYZ0123";
+                // tbnの選択状態を取得する.
+                TDCGTbnCreateInfo info = form.getResult();
+                // 選択されたtbnを生成する.
+                foreach (string tsoname in tsoFileList)
+                {
+                    string tsopath = "data/model/" + tsoname;
+                    string psdpath = "data/icon/items/" + tsoname.Substring(0, 12) + ".psd";
+
+                    // アイコンがあるなら読み込む.
+                    TAHLocalDbEntry iconentry = database.GetEntry(psdpath);
+                    TAHLocalDBDataEntry icondata = null;
+                    if (iconentry != null)
+                    {
+                        icondata = database.GetData(iconentry.dataid);
+                    }
+
+                    // オリジナルの名前
+                    string org_tbnname = tsoname.Substring(0, 12) + ".tbn";
+                    string org_psdname = tsoname.Substring(0, 12) + ".psd";
+
+                    // tbnの種類は30個
+                    for (int i = 0; i < 30; i++)
+                    {
+                        // tbn生成フラグがon
+                        if (info.tbnFlags[i])
+                        {
+                            string new_tbnname = "script/items/" + org_tbnname.Substring(0, 9) + tbncat[i] + org_tbnname.Substring(10, 6);
+
+                            // tbnの生成
+                            TAHLocalDbEntry tbnentry = database.GetEntry(new_tbnname);
+                            if (tbnentry == null) // 既にtbnがある時はスキップする
+                            {
+                                // tbnデータを作成する.
+                                byte[] tbn = ReadTbnData(i); // 適切なtbnを読み込む.
+                                TDCGTbnUtil.SetTsoName(tbn, tsopath);
+                                AddItem(new_tbnname, tbn);
+                            }
+                        }
+                    }
+
+                    for (int i = 0; i < 30; i++)
+                    {
+                        // tbn生成フラグがon
+                        if (info.tbnFlags[i])
+                        {
+                            string new_psdname = "data/icon/items/" + org_psdname.Substring(0, 9) + tbncat[i] + org_psdname.Substring(10, 6);
+
+                            // アイコンデータのコピー
+                            TAHLocalDbEntry psdentry = database.GetEntry(new_psdname);
+                            if (psdentry == null && icondata != null)
+                            {
+                                AddItem(new_psdname, icondata.data);
+                            }
+                        }
+                    }
+
+                }
+            }
         }
-#endif
+
+        // tahファイル作成ユーティリティ
+        public void makeTAHFile(string filename,List<PNGTsoData> tsoDataList)
+        {
+            string[] tbnname = {    "script/items/n001body_a00.tbn",
+                                    "script/items/n001fhea_b00.tbn",
+                                    "script/items/n001bhea_c00.tbn",
+                                    "script/items/n001hskn_d00.tbn",
+                                    "script/items/n001eyes_e00.tbn",
+                                    "script/items/n001bura_f00.tbn",
+                                    "script/items/n002scho_g00.tbn",
+                                    "script/items/n001pant_h00.tbn",
+                                    "script/items/n001hsox_i00.tbn",
+                                    "script/items/n003sail_j00.tbn",
+                                    "script/items/n001nurs_k00.tbn",
+                                    "script/items/n001nksk_l00.tbn",
+                                    "script/items/n001sail_m00.tbn",
+                                    "script/items/n001tail_n00.tbn",
+                                    "script/items/n001rofr_o00.tbn",
+                                    "script/items/n001nek1_p00.tbn",
+                                    "script/items/n001mega_q00.tbn",
+                                    "script/items/n001neck_r00.tbn",
+                                    "script/items/n004cffs_s00.tbn",
+                                    "script/items/n001wing_t00.tbn",
+                                    "script/items/n001ahog_u00.tbn",
+                                    "script/items/n001gant_v00.tbn",
+                                    "script/items/n001loos_w00.tbn",
+                                    "script/items/n001cffs_x00.tbn",
+                                    "script/items/n001head_y00.tbn",
+                                    "script/items/n001obon_z00.tbn",
+                                    "script/items/n001mayu_000.tbn",
+                                    "script/items/n001kiba_100.tbn",
+                                    "script/items/n001hoku_200.tbn",
+                                    "script/items/n001head_300.tbn" };
+
+            string[] newtbnname = { "script/items/N999SAVE_A00.tbn",
+                                    "script/items/N999SAVE_B00.tbn",
+                                    "script/items/N999SAVE_C00.tbn",
+                                    "script/items/N999SAVE_D00.tbn",
+                                    "script/items/N999SAVE_E00.tbn",
+                                    "script/items/N999SAVE_F00.tbn",
+                                    "script/items/N999SAVE_G00.tbn",
+                                    "script/items/N999SAVE_H00.tbn",
+                                    "script/items/N999SAVE_I00.tbn",
+                                    "script/items/N999SAVE_J00.tbn",
+                                    "script/items/N999SAVE_K00.tbn",
+                                    "script/items/N999SAVE_L00.tbn",
+                                    "script/items/N999SAVE_M00.tbn",
+                                    "script/items/N999SAVE_N00.tbn",
+                                    "script/items/N999SAVE_O00.tbn",
+                                    "script/items/N999SAVE_P00.tbn",
+                                    "script/items/N999SAVE_Q00.tbn",
+                                    "script/items/N999SAVE_R00.tbn",
+                                    "script/items/N999SAVE_S00.tbn",
+                                    "script/items/N999SAVE_T00.tbn",
+                                    "script/items/N999SAVE_U00.tbn",
+                                    "script/items/N999SAVE_V00.tbn",
+                                    "script/items/N999SAVE_W00.tbn",
+                                    "script/items/N999SAVE_X00.tbn",
+                                    "script/items/N999SAVE_Y00.tbn",
+                                    "script/items/N999SAVE_Z00.tbn",
+                                    "script/items/N999SAVE_000.tbn",
+                                    "script/items/N999SAVE_100.tbn",
+                                    "script/items/N999SAVE_200.tbn",
+                                    "script/items/N999SAVE_300.tbn" };
+
+            string[] newtsoname = { "data/model/N999SAVE_A00.tso",
+                                    "data/model/N999SAVE_B00.tso",
+                                    "data/model/N999SAVE_C00.tso",
+                                    "data/model/N999SAVE_D00.tso",
+                                    "data/model/N999SAVE_E00.tso",
+                                    "data/model/N999SAVE_F00.tso",
+                                    "data/model/N999SAVE_G00.tso",
+                                    "data/model/N999SAVE_H00.tso",
+                                    "data/model/N999SAVE_I00.tso",
+                                    "data/model/N999SAVE_J00.tso",
+                                    "data/model/N999SAVE_K00.tso",
+                                    "data/model/N999SAVE_L00.tso",
+                                    "data/model/N999SAVE_M00.tso",
+                                    "data/model/N999SAVE_N00.tso",
+                                    "data/model/N999SAVE_O00.tso",
+                                    "data/model/N999SAVE_P00.tso",
+                                    "data/model/N999SAVE_Q00.tso",
+                                    "data/model/N999SAVE_R00.tso",
+                                    "data/model/N999SAVE_S00.tso",
+                                    "data/model/N999SAVE_T00.tso",
+                                    "data/model/N999SAVE_U00.tso",
+                                    "data/model/N999SAVE_V00.tso",
+                                    "data/model/N999SAVE_W00.tso",
+                                    "data/model/N999SAVE_X00.tso",
+                                    "data/model/N999SAVE_Y00.tso",
+                                    "data/model/N999SAVE_Z00.tso",
+                                    "data/model/N999SAVE_000.tso",
+                                    "data/model/N999SAVE_100.tso",
+                                    "data/model/N999SAVE_200.tso",
+                                    "data/model/N999SAVE_300.tso" };
+
+            string[] newpsdname = { "data/icon/items/N999SAVE_A00.psd",
+                                    "data/icon/items/N999SAVE_B00.psd",
+                                    "data/icon/items/N999SAVE_C00.psd",
+                                    "data/icon/items/N999SAVE_D00.psd",
+                                    "data/icon/items/N999SAVE_E00.psd",
+                                    "data/icon/items/N999SAVE_F00.psd",
+                                    "data/icon/items/N999SAVE_G00.psd",
+                                    "data/icon/items/N999SAVE_H00.psd",
+                                    "data/icon/items/N999SAVE_I00.psd",
+                                    "data/icon/items/N999SAVE_J00.psd",
+                                    "data/icon/items/N999SAVE_K00.psd",
+                                    "data/icon/items/N999SAVE_L00.psd",
+                                    "data/icon/items/N999SAVE_M00.psd",
+                                    "data/icon/items/N999SAVE_N00.psd",
+                                    "data/icon/items/N999SAVE_O00.psd",
+                                    "data/icon/items/N999SAVE_P00.psd",
+                                    "data/icon/items/N999SAVE_Q00.psd",
+                                    "data/icon/items/N999SAVE_R00.psd",
+                                    "data/icon/items/N999SAVE_S00.psd",
+                                    "data/icon/items/N999SAVE_T00.psd",
+                                    "data/icon/items/N999SAVE_U00.psd",
+                                    "data/icon/items/N999SAVE_V00.psd",
+                                    "data/icon/items/N999SAVE_W00.psd",
+                                    "data/icon/items/N999SAVE_X00.psd",
+                                    "data/icon/items/N999SAVE_Y00.psd",
+                                    "data/icon/items/N999SAVE_Z00.psd",
+                                    "data/icon/items/N999SAVE_000.psd",
+                                    "data/icon/items/N999SAVE_100.psd",
+                                    "data/icon/items/N999SAVE_200.psd",
+                                    "data/icon/items/N999SAVE_300.psd" };
+
+            // base.tahから手持ちアイテム以外のファイルを読み込む.
+            Dictionary<uint, byte[]> tbndata = new Dictionary<uint, byte[]>();
+            using (Stream file_stream = File.OpenRead(Path.Combine(TDCGExplorer.TDCGExplorer.SystemDB.arcs_path, "base.tah")))
+            {
+                TAHFile tah = new TAHFile(file_stream);
+                try
+                {
+                    tah.LoadEntries();
+                    foreach (TAHEntry ent in tah.EntrySet.Entries)
+                    {
+                        for (int id = 0; id < tbnname.Length; id++)
+                        {
+                            if (ent.FileName != null && ent.FileName.ToLower() == tbnname[id])
+                            {
+                                byte[] content = TAHUtil.ReadEntryData(tah.Reader, ent);
+                                TDCGTbnUtil.SetTsoName(content, newtsoname[id]);
+                                tbndata.Add((uint)id, content);
+                            }
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("base.tahの読み込みでエラーが発生しました。", "エラー", MessageBoxButtons.OK);
+                    Debug.WriteLine("basetah.open.error");
+                }
+            }
+
+            // 手持ちアイテムTBNを読み込む.
+            try
+            {
+                using (Stream stream = File.OpenRead("N001OBON_Z00.tbn"))
+                using (MemoryStream memorystream = new MemoryStream())
+                {
+                    ZipFileUtil.CopyStream(stream, memorystream);
+                    byte[] content = memorystream.ToArray();
+                    TDCGTbnUtil.SetTsoName(content, newtsoname[25]);
+                    tbndata.Add(25, content);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("tbnの読み込みでエラーが発生しました。", "エラー", MessageBoxButtons.OK);
+                Debug.WriteLine("tbn.open.error");
+            }
+
+            byte[] icondata = null;
+
+            // アイコンを読み込む
+            try
+            {
+                using (Stream stream = File.OpenRead("N999SAVE_A00.PSD"))
+                using (MemoryStream memorystream = new MemoryStream())
+                {
+                    ZipFileUtil.CopyStream(stream, memorystream);
+                    icondata = memorystream.ToArray();
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("PSDの読み込みでエラーが発生しました。", "エラー", MessageBoxButtons.OK);
+                Debug.WriteLine("PSD.open.error");
+            }
+
+            // 新規TAHを作成する.
+            // 常に新規タブで.
+            SetInformation(filename + ".tah", 1);
+            Object transaction = BeginTransaction();
+            foreach (PNGTsoData data in tsoDataList)
+            {
+                AddItem(newtbnname[data.tsoID & 0xff], tbndata[data.tsoID & 0xff]);
+                AddItem(newpsdname[data.tsoID & 0xff], icondata);
+                AddItem(newtsoname[data.tsoID & 0xff], data.tsodata);
+            }
+            Commit(transaction);
+        }
+
+        private void toolStripMenuItemSelectAll_Click(object sender, EventArgs e)
+        {
+            SelectAll();
+        }
     }
 
     static class TAHInternalPath
@@ -1111,5 +1515,5 @@ namespace System.Windows.Forms
             if (file.Length == 1) return "";
             return file[1];
         }
-    }
+    }  
 }

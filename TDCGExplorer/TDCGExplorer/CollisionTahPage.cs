@@ -201,6 +201,7 @@ namespace System.Windows.Forms
                         // 次回カメラが必ずリセットされる様にする.
                         TDCGExplorer.TDCGExplorer.MainFormWindow.setNeedCameraReset();
                         Cursor.Current = Cursors.Default;
+                        TDCGExplorer.TDCGExplorer.FigureLoad = false;
                     }
                 }
             }

@@ -13,6 +13,8 @@ namespace TDCGExplorer
     {
         public TAHInfoDialog()
         {
+            StartPosition = FormStartPosition.CenterScreen;
+
             InitializeComponent();
         }
 

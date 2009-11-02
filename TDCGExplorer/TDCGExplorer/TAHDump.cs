@@ -63,7 +63,7 @@ namespace TDCGExplorer
                         db.DeleteTah(tah.id);
                     }
                 }
-                TDCGExplorer.SetLastAccessFile = file;
+                TDCGExplorer.LastAccessFile = file;
                 using (FileStream source = File.OpenRead(file))
                 {
                     ArcsDumpTAHEntries(source, db, file);
@@ -287,7 +287,7 @@ namespace TDCGExplorer
         {
             try
             {
-                TDCGExplorer.SetLastAccessFile = source_file;
+                TDCGExplorer.LastAccessFile = source_file;
                 arc.Open(source_file);
 
                 foreach (IArchiveEntry entry in arc)

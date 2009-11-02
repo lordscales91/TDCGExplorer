@@ -13,6 +13,8 @@ namespace TDCGExplorer
     {
         public SimpleDropDownDialog()
         {
+            StartPosition = FormStartPosition.CenterScreen;
+
             InitializeComponent();
         }
 
