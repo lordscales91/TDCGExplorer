@@ -143,7 +143,7 @@ namespace TDCGExplorer
                     break;
                 }
             }
-            //reader.Close();
+            reader.Close();
         }
 
         /// <summary>

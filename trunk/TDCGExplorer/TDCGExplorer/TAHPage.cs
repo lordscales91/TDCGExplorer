@@ -53,8 +53,6 @@ namespace System.Windows.Forms
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView.AllowUserToAddRows = false;
 
-            LoadPsdFile(0);
-
             TDCGExplorer.TDCGExplorer.SetToolTips(info.shortname + " : tsoクリックで単体表示,ctrlキー+tsoクリックで複数表示,tmoでポーズ・アニメーションを設定");
         }
 
@@ -168,51 +166,13 @@ namespace System.Windows.Forms
                                 TDCGExplorer.TDCGExplorer.defaultpose = tahstream.stream;
                             }
                             Cursor.Current = Cursors.Default;
-                            TDCGExplorer.TDCGExplorer.FigureLoad = false;
                         }
                     }
-                    LoadPsdFile(index);
                 }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Error occured:" + ex.Message, "Error", MessageBoxButtons.OK);
-            }
-        }
-
-        private void LoadPsdFile(int index)
-        {
-            try
-            {
-                string ext = Path.GetExtension(filesEntries[index].path).ToLower();
-                string psdfilename = filesEntries[index].path;
-                string psdpath = "data/icon/items/";
-                if (Path.GetDirectoryName(filesEntries[index].path).ToLower() == "script\\backgrounds")
-                    psdpath = "data/icon/backgrounds/";
-                if (ext != ".psd")
-                {
-                    string fname = Path.GetFileNameWithoutExtension(psdfilename);
-                    psdfilename = psdpath + fname + ".psd";
-                }
-                psdfilename = psdfilename.ToLower();
-                foreach (ArcsTahFilesEntry fentry in filesEntries)
-                {
-                    if (fentry.path.ToLower() == psdfilename)
-                    {
-                        using (GenericTAHStream tahstream = new GenericTAHStream(info, fentry))
-                        {
-                            PSDFile psd = new PSDFile();
-                            psd.Load(tahstream.stream);
-                            TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Image = psd.Bitmap;
-                            TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Width = psd.Bitmap.Width;
-                            TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Height = psd.Bitmap.Height;
-                        }
-                        break;
-                    }
-                }
-            }
-            catch (Exception)
-            {
             }
         }
 

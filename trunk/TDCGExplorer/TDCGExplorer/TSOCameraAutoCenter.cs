@@ -197,12 +197,10 @@ namespace TDCGExplorer
                 position_origin = new Vector3(m.M41, m.M42, -m.M43);
                 if (nodemap.TryGetValue(bone, out tso_node))
                 {
-                    Vector3 pan_out = new Vector3(0, 0, -10);
-
                     m = tso_node.combined_matrix;
                     position_bone = new Vector3(m.M41, m.M42, -m.M43);
 
-                    viewer.Camera.SetTranslation(position_bone - position_origin + pan_out);
+                    viewer.Camera.SetTranslation(position_bone - position_origin);
                 }
             }
         }

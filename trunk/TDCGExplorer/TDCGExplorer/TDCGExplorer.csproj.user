@@ -13,6 +13,5 @@
     </ErrorReportUrlHistory>
     <FallbackCulture>ja-JP</FallbackCulture>
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
-    <ProjectView>ShowAllFiles</ProjectView>
   </PropertyGroup>
 </Project>

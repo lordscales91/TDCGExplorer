@@ -204,7 +204,7 @@ namespace TDCGExplorer
             string[] files = Directory.GetFiles(directory, "*.*");
             foreach (string file in files)
             {
-                if (file.EndsWith(".tdcgsav.png") || file.EndsWith(".tdcgsav.bmp") || file.EndsWith(".tdcgpose.png") )
+                if (file.EndsWith(".tdcgsav.png") || file.EndsWith(".tdcgsav.bmp"))
                 {
                     Files.Add(file);
                 }
@@ -224,29 +224,6 @@ namespace TDCGExplorer
         public int Count
         {
             get { return Files.Count; }
-        }
-
-        public void Add(string path)
-        {
-            foreach (string file in Files)
-            {
-                if (file.ToLower() == path.ToLower()) return; // 既にある.
-            }
-            Files.Add(path);
-        }
-
-        public void Del(string path)
-        {
-            int index = 0;
-            foreach (string file in Files)
-            {
-                if (file.ToLower() == path.ToLower())
-                {
-                    Files.RemoveAt(index);
-                    break;
-                }
-                index++;
-            }
         }
     }
 }
