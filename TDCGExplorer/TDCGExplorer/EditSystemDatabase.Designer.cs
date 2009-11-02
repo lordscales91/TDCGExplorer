@@ -72,10 +72,6 @@
             this.checkBoxTahPreview = new System.Windows.Forms.CheckBox();
             this.checkBoxAlwaysNewTab = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.checkBoxTahVersionCollision = new System.Windows.Forms.CheckBox();
-            this.checkBoxExplorerzipfolder = new System.Windows.Forms.CheckBox();
-            this.textBoxPoseDir = new System.Windows.Forms.TextBox();
-            this.label16 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -85,7 +81,7 @@
             // OKButton
             // 
             this.OKButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.OKButton.Location = new System.Drawing.Point(447, 533);
+            this.OKButton.Location = new System.Drawing.Point(448, 485);
             this.OKButton.Name = "OKButton";
             this.OKButton.Size = new System.Drawing.Size(75, 23);
             this.OKButton.TabIndex = 0;
@@ -111,7 +107,7 @@
             // DialoogCancelButton
             // 
             this.DialoogCancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.DialoogCancelButton.Location = new System.Drawing.Point(528, 533);
+            this.DialoogCancelButton.Location = new System.Drawing.Point(529, 485);
             this.DialoogCancelButton.Name = "DialoogCancelButton";
             this.DialoogCancelButton.Size = new System.Drawing.Size(75, 23);
             this.DialoogCancelButton.TabIndex = 3;
@@ -121,7 +117,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 93);
+            this.label2.Location = new System.Drawing.Point(12, 67);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(73, 13);
             this.label2.TabIndex = 4;
@@ -129,7 +125,7 @@
             // 
             // tbZipDirectory
             // 
-            this.tbZipDirectory.Location = new System.Drawing.Point(102, 90);
+            this.tbZipDirectory.Location = new System.Drawing.Point(102, 64);
             this.tbZipDirectory.Name = "tbZipDirectory";
             this.tbZipDirectory.Size = new System.Drawing.Size(502, 20);
             this.tbZipDirectory.TabIndex = 5;
@@ -137,7 +133,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 171);
+            this.label3.Location = new System.Drawing.Point(12, 145);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(77, 13);
             this.label3.TabIndex = 6;
@@ -145,14 +141,14 @@
             // 
             // tbModRefServer
             // 
-            this.tbModRefServer.Location = new System.Drawing.Point(102, 168);
+            this.tbModRefServer.Location = new System.Drawing.Point(102, 142);
             this.tbModRefServer.Name = "tbModRefServer";
             this.tbModRefServer.Size = new System.Drawing.Size(502, 20);
             this.tbModRefServer.TabIndex = 7;
             // 
             // tbZipRegexp
             // 
-            this.tbZipRegexp.Location = new System.Drawing.Point(102, 246);
+            this.tbZipRegexp.Location = new System.Drawing.Point(102, 220);
             this.tbZipRegexp.Name = "tbZipRegexp";
             this.tbZipRegexp.Size = new System.Drawing.Size(502, 20);
             this.tbZipRegexp.TabIndex = 9;
@@ -160,7 +156,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(12, 249);
+            this.label4.Location = new System.Drawing.Point(12, 223);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(72, 13);
             this.label4.TabIndex = 8;
@@ -168,7 +164,7 @@
             // 
             // tbArcnamesServer
             // 
-            this.tbArcnamesServer.Location = new System.Drawing.Point(101, 194);
+            this.tbArcnamesServer.Location = new System.Drawing.Point(101, 168);
             this.tbArcnamesServer.Name = "tbArcnamesServer";
             this.tbArcnamesServer.Size = new System.Drawing.Size(502, 20);
             this.tbArcnamesServer.TabIndex = 11;
@@ -176,7 +172,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(11, 197);
+            this.label5.Location = new System.Drawing.Point(11, 171);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(85, 13);
             this.label5.TabIndex = 10;
@@ -184,7 +180,7 @@
             // 
             // tbWorkPath
             // 
-            this.tbWorkPath.Location = new System.Drawing.Point(102, 116);
+            this.tbWorkPath.Location = new System.Drawing.Point(102, 90);
             this.tbWorkPath.Name = "tbWorkPath";
             this.tbWorkPath.Size = new System.Drawing.Size(502, 20);
             this.tbWorkPath.TabIndex = 13;
@@ -192,7 +188,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(12, 119);
+            this.label6.Location = new System.Drawing.Point(12, 93);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(60, 13);
             this.label6.TabIndex = 12;
@@ -201,7 +197,7 @@
             // checkBoxLookupModRef
             // 
             this.checkBoxLookupModRef.AutoSize = true;
-            this.checkBoxLookupModRef.Location = new System.Drawing.Point(109, 422);
+            this.checkBoxLookupModRef.Location = new System.Drawing.Point(109, 396);
             this.checkBoxLookupModRef.Name = "checkBoxLookupModRef";
             this.checkBoxLookupModRef.Size = new System.Drawing.Size(310, 17);
             this.checkBoxLookupModRef.TabIndex = 14;
@@ -210,7 +206,7 @@
             // 
             // textBoxTagNameServer
             // 
-            this.textBoxTagNameServer.Location = new System.Drawing.Point(101, 220);
+            this.textBoxTagNameServer.Location = new System.Drawing.Point(101, 194);
             this.textBoxTagNameServer.Name = "textBoxTagNameServer";
             this.textBoxTagNameServer.Size = new System.Drawing.Size(502, 20);
             this.textBoxTagNameServer.TabIndex = 19;
@@ -218,7 +214,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(11, 223);
+            this.label8.Location = new System.Drawing.Point(11, 197);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(85, 13);
             this.label8.TabIndex = 18;
@@ -230,7 +226,7 @@
             this.groupBox1.Controls.Add(this.radioButtonBehaviorImage);
             this.groupBox1.Controls.Add(this.radioButtonBehaviorServer);
             this.groupBox1.Controls.Add(this.radioButtonBehaviorNone);
-            this.groupBox1.Location = new System.Drawing.Point(102, 298);
+            this.groupBox1.Location = new System.Drawing.Point(102, 272);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(269, 118);
             this.groupBox1.TabIndex = 20;
@@ -284,7 +280,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(12, 423);
+            this.label9.Location = new System.Drawing.Point(12, 397);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(77, 13);
             this.label9.TabIndex = 21;
@@ -293,7 +289,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(12, 275);
+            this.label7.Location = new System.Drawing.Point(12, 249);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(80, 13);
             this.label7.TabIndex = 15;
@@ -301,7 +297,7 @@
             // 
             // textBoxModRegexp
             // 
-            this.textBoxModRegexp.Location = new System.Drawing.Point(102, 272);
+            this.textBoxModRegexp.Location = new System.Drawing.Point(102, 246);
             this.textBoxModRegexp.Name = "textBoxModRegexp";
             this.textBoxModRegexp.Size = new System.Drawing.Size(502, 20);
             this.textBoxModRegexp.TabIndex = 16;
@@ -325,7 +321,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(12, 446);
+            this.label11.Location = new System.Drawing.Point(12, 420);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(56, 13);
             this.label11.TabIndex = 25;
@@ -334,7 +330,7 @@
             // checkBoxCameraReset
             // 
             this.checkBoxCameraReset.AutoSize = true;
-            this.checkBoxCameraReset.Location = new System.Drawing.Point(109, 445);
+            this.checkBoxCameraReset.Location = new System.Drawing.Point(109, 419);
             this.checkBoxCameraReset.Name = "checkBoxCameraReset";
             this.checkBoxCameraReset.Size = new System.Drawing.Size(229, 17);
             this.checkBoxCameraReset.TabIndex = 24;
@@ -343,14 +339,14 @@
             // 
             // textBoxCenterBone
             // 
-            this.textBoxCenterBone.Location = new System.Drawing.Point(175, 468);
+            this.textBoxCenterBone.Location = new System.Drawing.Point(175, 442);
             this.textBoxCenterBone.Name = "textBoxCenterBone";
             this.textBoxCenterBone.Size = new System.Drawing.Size(178, 20);
             this.textBoxCenterBone.TabIndex = 26;
             // 
             // textBoxTranslateBone
             // 
-            this.textBoxTranslateBone.Location = new System.Drawing.Point(175, 494);
+            this.textBoxTranslateBone.Location = new System.Drawing.Point(175, 468);
             this.textBoxTranslateBone.Name = "textBoxTranslateBone";
             this.textBoxTranslateBone.Size = new System.Drawing.Size(178, 20);
             this.textBoxTranslateBone.TabIndex = 27;
@@ -358,7 +354,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(106, 471);
+            this.label12.Location = new System.Drawing.Point(106, 445);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(55, 13);
             this.label12.TabIndex = 28;
@@ -367,7 +363,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(106, 497);
+            this.label13.Location = new System.Drawing.Point(106, 471);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(55, 13);
             this.label13.TabIndex = 29;
@@ -375,7 +371,7 @@
             // 
             // textBoxTahEditor
             // 
-            this.textBoxTahEditor.Location = new System.Drawing.Point(102, 142);
+            this.textBoxTahEditor.Location = new System.Drawing.Point(102, 116);
             this.textBoxTahEditor.Name = "textBoxTahEditor";
             this.textBoxTahEditor.Size = new System.Drawing.Size(502, 20);
             this.textBoxTahEditor.TabIndex = 31;
@@ -383,7 +379,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(12, 145);
+            this.label14.Location = new System.Drawing.Point(12, 119);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(65, 13);
             this.label14.TabIndex = 30;
@@ -392,7 +388,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(12, 521);
+            this.label15.Location = new System.Drawing.Point(12, 495);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(55, 13);
             this.label15.TabIndex = 33;
@@ -401,7 +397,7 @@
             // checkBoxDuplicate
             // 
             this.checkBoxDuplicate.AutoSize = true;
-            this.checkBoxDuplicate.Location = new System.Drawing.Point(109, 520);
+            this.checkBoxDuplicate.Location = new System.Drawing.Point(109, 494);
             this.checkBoxDuplicate.Name = "checkBoxDuplicate";
             this.checkBoxDuplicate.Size = new System.Drawing.Size(209, 17);
             this.checkBoxDuplicate.TabIndex = 32;
@@ -411,7 +407,7 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.checkBoxFindZipLevel);
-            this.groupBox2.Location = new System.Drawing.Point(378, 299);
+            this.groupBox2.Location = new System.Drawing.Point(378, 273);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(200, 44);
             this.groupBox2.TabIndex = 34;
@@ -442,7 +438,7 @@
             // 
             this.groupBox3.Controls.Add(this.checkBoxTahPreview);
             this.groupBox3.Controls.Add(this.checkBoxDeleteTahCache);
-            this.groupBox3.Location = new System.Drawing.Point(378, 346);
+            this.groupBox3.Location = new System.Drawing.Point(378, 320);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(200, 70);
             this.groupBox3.TabIndex = 35;
@@ -472,58 +468,18 @@
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.checkBoxAlwaysNewTab);
-            this.groupBox4.Location = new System.Drawing.Point(378, 440);
+            this.groupBox4.Location = new System.Drawing.Point(378, 414);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(200, 44);
             this.groupBox4.TabIndex = 35;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "タブブラウザ";
             // 
-            // checkBoxTahVersionCollision
-            // 
-            this.checkBoxTahVersionCollision.AutoSize = true;
-            this.checkBoxTahVersionCollision.Location = new System.Drawing.Point(109, 537);
-            this.checkBoxTahVersionCollision.Name = "checkBoxTahVersionCollision";
-            this.checkBoxTahVersionCollision.Size = new System.Drawing.Size(199, 17);
-            this.checkBoxTahVersionCollision.TabIndex = 36;
-            this.checkBoxTahVersionCollision.Text = "tahバージョン違いは衝突とみなさない";
-            this.checkBoxTahVersionCollision.UseVisualStyleBackColor = true;
-            // 
-            // checkBoxExplorerzipfolder
-            // 
-            this.checkBoxExplorerzipfolder.AutoSize = true;
-            this.checkBoxExplorerzipfolder.Location = new System.Drawing.Point(385, 497);
-            this.checkBoxExplorerzipfolder.Name = "checkBoxExplorerzipfolder";
-            this.checkBoxExplorerzipfolder.Size = new System.Drawing.Size(175, 17);
-            this.checkBoxExplorerzipfolder.TabIndex = 37;
-            this.checkBoxExplorerzipfolder.Text = "ZIP展開時にフォルダを表示する";
-            this.checkBoxExplorerzipfolder.UseVisualStyleBackColor = true;
-            // 
-            // textBoxPoseDir
-            // 
-            this.textBoxPoseDir.Location = new System.Drawing.Point(102, 64);
-            this.textBoxPoseDir.Name = "textBoxPoseDir";
-            this.textBoxPoseDir.Size = new System.Drawing.Size(502, 20);
-            this.textBoxPoseDir.TabIndex = 39;
-            // 
-            // label16
-            // 
-            this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(12, 67);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(80, 13);
-            this.label16.TabIndex = 38;
-            this.label16.Text = "Poseディレクトリ";
-            // 
             // EditSystemDatabase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(615, 565);
-            this.Controls.Add(this.textBoxPoseDir);
-            this.Controls.Add(this.label16);
-            this.Controls.Add(this.checkBoxExplorerzipfolder);
-            this.Controls.Add(this.checkBoxTahVersionCollision);
+            this.ClientSize = new System.Drawing.Size(615, 521);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
@@ -622,9 +578,5 @@
         private System.Windows.Forms.CheckBox checkBoxTahPreview;
         private System.Windows.Forms.CheckBox checkBoxAlwaysNewTab;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.CheckBox checkBoxTahVersionCollision;
-        private System.Windows.Forms.CheckBox checkBoxExplorerzipfolder;
-        private System.Windows.Forms.TextBox textBoxPoseDir;
-        private System.Windows.Forms.Label label16;
     }
 }

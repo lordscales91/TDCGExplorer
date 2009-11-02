@@ -197,12 +197,6 @@ namespace TDCGExplorer
                 TDCGExplorer.MainFormWindow.AssignTagPageControl(new SaveFilePage(new GenericZipsTahInfo(entry)));
                 return;
             }
-            if (savefilpath.EndsWith(".tdcgpose.png"))
-            {
-                TDCGExplorer.MainFormWindow.AssignTagPageControl(new PoseFilePage(new GenericZipsTahInfo(entry)));
-                return;
-            }
-            
             // TAHファイル内容に関するフォームを追加する.
             switch (Path.GetExtension(entry.path.ToLower()))
             {
@@ -280,57 +274,8 @@ namespace TDCGExplorer
         }
         public override void DoClick()
         {
-            if(path.EndsWith(".tdcgsav.png") || path.EndsWith(".tdcgsav.bmp")){
-                TDCGExplorer.MainFormWindow.AssignTagPageControl(new SaveFilePage(path));
-            }else if( path.EndsWith(".tdcgpose.png")){
-                TDCGExplorer.MainFormWindow.AssignTagPageControl(new PoseFilePage(path));
-            }
+            TDCGExplorer.MainFormWindow.AssignTagPageControl(new SaveFilePage(path));
         }
-
-        //rename
-        public void Rename()
-        {
-            string directory = Path.GetDirectoryName(path);
-
-            SimpleTextDialog dialog = new SimpleTextDialog();
-            dialog.Owner = TDCGExplorer.MainFormWindow;
-            dialog.dialogtext = "ファイル名の変更";
-            dialog.labeltext = "ファイル名";
-            dialog.textfield = Path.GetFileName(path);
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                File.Move(path,Path.Combine(directory,dialog.textfield));
-                TDCGExplorer.DeleteFileTree(path);
-                TDCGExplorer.AddFileTree(Path.Combine(directory, dialog.textfield));
-            }
-        }
-
-        //rename
-        public void Touch()
-        {
-            DateTime datetime = System.IO.File.GetCreationTime(path);
-
-            SimpleTextDialog dialog = new SimpleTextDialog();
-            dialog.Owner = TDCGExplorer.MainFormWindow;
-            dialog.dialogtext = "タイムスタンプの変更";
-            dialog.labeltext = "日時";
-            dialog.textfield = datetime.ToString();
-
-            if (dialog.ShowDialog() == DialogResult.OK)
-            {
-                DateTime newtime = DateTime.Parse(dialog.textfield);
-                SetDate(newtime);
-            }
-        }
-
-        public void SetDate(DateTime newtime)
-        {
-            System.IO.File.SetCreationTime(path, newtime);
-            System.IO.File.SetLastWriteTime(path, newtime);
-            System.IO.File.SetLastAccessTime(path, newtime);
-        }
-
     }
 
 }
