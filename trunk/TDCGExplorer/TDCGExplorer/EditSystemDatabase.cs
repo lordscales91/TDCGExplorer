@@ -13,6 +13,8 @@ namespace TDCGExplorer
     {
         public EditSystemDatabase()
         {
+            StartPosition = FormStartPosition.CenterScreen;
+
             InitializeComponent();
         }
 
@@ -161,6 +163,21 @@ namespace TDCGExplorer
         {
             get { return checkBoxAlwaysNewTab.Checked; }
             set { checkBoxAlwaysNewTab.Checked = value; }
+        }
+        public bool tahversioncollision
+        {
+            get { return checkBoxTahVersionCollision.Checked; }
+            set { checkBoxTahVersionCollision.Checked = value; }
+        }
+        public bool explorerzipfolder
+        {
+            get { return checkBoxExplorerzipfolder.Checked; }
+            set { checkBoxExplorerzipfolder.Checked = value; }
+        }
+        public string posedir
+        {
+            get { return textBoxPoseDir.Text; }
+            set { textBoxPoseDir.Text = value; }
         }
     }
 }

@@ -13,6 +13,8 @@ namespace TDCGExplorer
     {
         public TbnSelectForm()
         {
+            StartPosition = FormStartPosition.CenterScreen;
+
             InitializeComponent();
         }
 

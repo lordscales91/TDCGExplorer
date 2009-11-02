@@ -56,7 +56,7 @@ namespace TDCGExplorer
             }
             catch (Exception e)
             {
-                TDCGExplorer.SetToolTips("Error occured : " + e.Message);
+                TDCGExplorer.SetToolTips("Error DownloadTagNamesZipFromServer : " + e.Message);
             }
             return status;
         }
@@ -132,7 +132,7 @@ namespace TDCGExplorer
             }
             catch (Exception e)
             {
-                TDCGExplorer.SetToolTips("Error occured : " + e.Message);
+                TDCGExplorer.SetToolTips("Error GetTagNamesZipInfo : " + e.Message);
             }
         }
 

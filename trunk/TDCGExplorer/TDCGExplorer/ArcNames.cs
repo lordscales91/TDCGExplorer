@@ -61,7 +61,7 @@ namespace TDCGExplorer
             }
             catch (Exception e)
             {
-                TDCGExplorer.SetToolTips("Error occured : " + e.Message);
+                TDCGExplorer.SetToolTips("Error DownloadArcNamesZipFromServer : " + e.Message);
             }
             return status;
         }
@@ -137,7 +137,7 @@ namespace TDCGExplorer
             }
             catch (Exception e)
             {
-                TDCGExplorer.SetToolTips("Error occured : " + e.Message);
+                TDCGExplorer.SetToolTips("Error GetArcNamesZipInfo : " + e.Message);
             }
         }
 

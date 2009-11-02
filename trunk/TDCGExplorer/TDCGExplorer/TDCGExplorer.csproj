@@ -12,6 +12,8 @@
     <AssemblyName>TDCGExplorer</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ApplicationIcon>ICON.ICO</ApplicationIcon>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -24,7 +26,6 @@
     <MapFileExtensions>true</MapFileExtensions>
     <ApplicationRevision>0</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
@@ -94,10 +95,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="TDCG, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>TDCG\TDCG.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnnotationDB.cs" />
@@ -106,12 +103,24 @@
     <Compile Include="FindBaseModPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="PNGHSAVStream.cs" />
+    <Compile Include="PNGPOSEStream.cs" />
     <Compile Include="PNGWriter.cs" />
+    <Compile Include="PoseFilePage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PSDFile.cs" />
     <Compile Include="SimpleDropDownDialog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="SimpleDropDownDialog.Designer.cs">
       <DependentUpon>SimpleDropDownDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SplashForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SplashForm.Designer.cs">
+      <DependentUpon>SplashForm.cs</DependentUpon>
     </Compile>
     <Compile Include="TAHInfoDialog.cs">
       <SubType>Form</SubType>
@@ -161,7 +170,6 @@
     </Compile>
     <Compile Include="mt19937.cs" />
     <Compile Include="PNGFile.cs" />
-    <Compile Include="PNGStream.cs" />
     <Compile Include="SaveFilePage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -180,10 +188,19 @@
     </Compile>
     <Compile Include="TAHStream.cs" />
     <Compile Include="TAHUtil.cs" />
+    <Compile Include="TbnSelectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TbnSelectForm.Designer.cs">
+      <DependentUpon>TbnSelectForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TDCGExplorer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="FindBaseModPage.resx">
       <DependentUpon>FindBaseModPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PoseFilePage.resx">
+      <DependentUpon>PoseFilePage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SimpleDropDownDialog.resx">
       <DependentUpon>SimpleDropDownDialog.cs</DependentUpon>
@@ -217,6 +234,9 @@
     <EmbeddedResource Include="SaveFilePage.resx">
       <DependentUpon>SaveFilePage.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SplashForm.resx">
+      <DependentUpon>SplashForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TAHEditor.resx">
       <DependentUpon>TAHEditor.cs</DependentUpon>
     </EmbeddedResource>
@@ -225,6 +245,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TAHPage.resx">
       <DependentUpon>TAHPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TbnSelectForm.resx">
+      <DependentUpon>TbnSelectForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TextPage.resx">
       <DependentUpon>TextPage.cs</DependentUpon>
@@ -236,6 +259,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="ifpsd.spi">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="manual.mht">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="N001OBON_Z00.tbn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -303,15 +332,31 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="default.tdcgsav.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ICON.ICO" />
     <Content Include="names.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NOIMAGE.jpg">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="title.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="unrar.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TDCG\TDCG.csproj">
+      <Project>{8FF03D76-4977-411C-8C17-E9268D1B799F}</Project>
+      <Name>TDCG</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

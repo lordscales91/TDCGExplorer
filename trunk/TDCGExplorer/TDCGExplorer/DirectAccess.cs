@@ -91,7 +91,7 @@ namespace TDCGExplorer
         // 使う.
         public void Extract(ArchiveLib.IArchiveEntry entry, System.IO.Stream output)
         {
-            TDCGExplorer.SetLastAccessFile = entry.FileName;
+            TDCGExplorer.LastAccessFile = entry.FileName;
             Stream input = File.OpenRead(Path.Combine(basepath, entry.FileName));
 
             // streamにコピーする.

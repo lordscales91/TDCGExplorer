@@ -138,6 +138,9 @@ namespace TDCGExplorer
             findziplevel = findziplevel;
             delete_tahcache = delete_tahcache;
             taheditorpreview = taheditorpreview;
+            explorerzipfolder = explorerzipfolder;
+            tahversioncollision = tahversioncollision;
+            posefile_savedirectory = posefile_savedirectory;
         }
 
         // arcpathの取得・設定.
@@ -316,5 +319,33 @@ namespace TDCGExplorer
             }
         }
 
+        // zipファイル展開時にフォルダを開くか
+        public bool explorerzipfolder
+        {
+            get { return GetSqlValue("explorerzipfolder", "false") == "true"; }
+            set
+            {
+                if (value == true) SetSqlValue("explorerzipfolder", "true");
+                else SetSqlValue("explorerzipfolder", "false");
+            }
+        }
+
+        // tahバージョン違いは衝突とみなさない
+        public bool tahversioncollision
+        {
+            get { return GetSqlValue("tahversioncollision", "true") == "true"; }
+            set
+            {
+                if (value == true) SetSqlValue("tahversioncollision", "true");
+                else SetSqlValue("tahversioncollision", "false");
+            }
+        }
+
+        // ポーズファイル保存先
+        public string posefile_savedirectory
+        {
+            get { return GetSqlValue("posefile_savedirectory", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "TechArts3D\\TDCG\\pose")); }
+            set { SetSqlValue("posefile_savedirectory", value); }
+        }
     }
 }

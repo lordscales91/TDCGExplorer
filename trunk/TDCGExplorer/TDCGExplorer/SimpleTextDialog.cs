@@ -13,6 +13,8 @@ namespace TDCGExplorer
     {
         public SimpleTextDialog()
         {
+            StartPosition = FormStartPosition.CenterScreen;
+
             InitializeComponent();
         }
 

@@ -23,6 +23,11 @@ namespace System.Windows.Forms
         private ToolStripMenuItem toolStripMenuItemSaveTmo;
         private ToolStripMenuItem toolStripMenuItemMakeTahFile;
         private PNGPoseData posedata;
+        private ToolStripMenuItem toolStripMenuItemShowPose;
+
+        private MemoryStream streamdata = null;
+
+        private bool fDisplayed = false;
 
         // zipファイルの中から
         public PoseFilePage(GenericTahInfo tahInfo) : base(tahInfo)
@@ -50,7 +55,7 @@ namespace System.Windows.Forms
                 InitializeComponent();
                 Text = Path.GetFileName(path);
                 filename = Path.GetFileName(path);
-                TDCGExplorer.TDCGExplorer.SetLastAccessFile = path;
+                TDCGExplorer.TDCGExplorer.LastAccessFile = path;
                 using (FileStream fs = File.OpenRead(path))
                 {
                     Byte[] buffer;
@@ -77,6 +82,7 @@ namespace System.Windows.Forms
             this.toolStripMenuItemThumbs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemSaveTmo = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemMakeTahFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemShowPose = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
             this.PoseTreeView = new System.Windows.Forms.TreeView();
             this.contextMenuStripPoseSaveData.SuspendLayout();
@@ -88,9 +94,10 @@ namespace System.Windows.Forms
             this.toolStripMenuItemThumbs,
             this.toolStripMenuItemSaveTmo,
             this.toolStripMenuItemMakeTahFile,
+            this.toolStripMenuItemShowPose,
             this.toolStripMenuItemClose});
             this.contextMenuStripPoseSaveData.Name = "contextMenuStripSaveData";
-            this.contextMenuStripPoseSaveData.Size = new System.Drawing.Size(265, 92);
+            this.contextMenuStripPoseSaveData.Size = new System.Drawing.Size(265, 114);
             // 
             // toolStripMenuItemThumbs
             // 
@@ -113,6 +120,13 @@ namespace System.Windows.Forms
             this.toolStripMenuItemMakeTahFile.Text = "選択されたtahファイルを作成する";
             this.toolStripMenuItemMakeTahFile.Click += new System.EventHandler(this.toolStripMenuItemMakeTahFile_Click);
             // 
+            // toolStripMenuItemShowPose
+            // 
+            this.toolStripMenuItemShowPose.Name = "toolStripMenuItemShowPose";
+            this.toolStripMenuItemShowPose.Size = new System.Drawing.Size(264, 22);
+            this.toolStripMenuItemShowPose.Text = "TSOビューワにポーズを表示する";
+            this.toolStripMenuItemShowPose.Click += new System.EventHandler(this.toolStripMenuItemShowPose_Click);
+            // 
             // toolStripMenuItemClose
             // 
             this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
@@ -131,6 +145,7 @@ namespace System.Windows.Forms
             this.PoseTreeView.Name = "PoseTreeView";
             this.PoseTreeView.Size = new System.Drawing.Size(121, 97);
             this.PoseTreeView.TabIndex = 0;
+            this.PoseTreeView.DoubleClick += new System.EventHandler(this.PoseTreeView_DoubleClick);
             // 
             // PoseFilePage
             // 
@@ -147,11 +162,14 @@ namespace System.Windows.Forms
 
         public override void BindingStream(MemoryStream ms)
         {
+            // データの複製を作る.
+            streamdata = new MemoryStream();
+            ZipFileUtil.CopyStream(ms, streamdata);
+
             ms.Seek(0, SeekOrigin.Begin);
             Bitmap savefilebitmap = new Bitmap(ms);
 
             if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
-            TDCG.Viewer viewer = TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer;
 
             PNGPOSEStream posestream = new PNGPOSEStream();
             ms.Seek(0, SeekOrigin.Begin);
@@ -160,7 +178,8 @@ namespace System.Windows.Forms
             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Image = savefilebitmap;
             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Width = savefilebitmap.Width;
             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Height = savefilebitmap.Height;
-
+#if false
+            TDCG.Viewer viewer = TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer;
             if (posedata.scene == false)
             {
                 // キャラが無い時はデフォ子
@@ -190,10 +209,47 @@ namespace System.Windows.Forms
             viewer.Camera.Angle = ypr;
 
             TDCGExplorer.TDCGExplorer.MainFormWindow.setNeedCameraReset();
-
+#endif
             // データ階層ツリーを構築する.
 
             MakeTreeView();
+        }
+
+        public void DisplayPose()
+        {
+            if (fDisplayed) return;
+            fDisplayed = true;
+
+            TDCG.Viewer viewer = TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer;
+            if (posedata.scene == false)
+            {
+                // キャラが無い時はデフォ子
+                if (TDCGExplorer.TDCGExplorer.FigureLoad == false)
+                {
+                    viewer.AddFigureFromPNGFile("default.tdcgsav.png", false);
+                    TDCGExplorer.TDCGExplorer.FigureLoad = true;
+                }
+                using (MemoryStream tmo = new MemoryStream(posedata.figures[0].tmo.data))
+                {
+                    viewer.LoadTMOFile(tmo);
+                }
+            }
+            else
+            {
+                // 全部ロードする.
+                streamdata.Seek(0, SeekOrigin.Begin);
+                viewer.AddFigureFromPNGStream(streamdata, false);
+                TDCGExplorer.TDCGExplorer.FigureLoad = false;
+            }
+            List<float> camera = posedata.GetCamera();
+            Vector3 eye = new Vector3(camera[0], camera[1], camera[2]);
+            Vector3 ypr = new Vector3(camera[5], camera[4], camera[6]);
+            Matrix m = Matrix.RotationYawPitchRoll(ypr.Y, ypr.X, ypr.Z) * Matrix.Translation(eye.X, eye.Y, eye.Z);
+            viewer.Camera.Reset();
+            viewer.Camera.Translation = new Vector3(-m.M41, -m.M42, m.M43);
+            viewer.Camera.Angle = ypr;
+
+            TDCGExplorer.TDCGExplorer.MainFormWindow.setNeedCameraReset();
         }
 
         private void PoseTreeeView_Resize(object sender, EventArgs e)
@@ -418,11 +474,19 @@ namespace System.Windows.Forms
                     }
 
                     // 常に新規タブで.
-                    TAHEditor editor = new TAHEditor(dbfilename, null);
-                    editor.SetInformation(filename + ".tah", 1);
-                    editor.makeTAHFile(filename, node.tso);
-                    TDCGExplorer.TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
-                    editor.SelectAll();
+                    TAHEditor editor = null;
+                    try
+                    {
+                        editor = new TAHEditor(dbfilename, null);
+                        editor.SetInformation(filename + ".tah", 1);
+                        editor.makeTAHFile(filename, node.tso);
+                        TDCGExplorer.TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
+                        editor.SelectAll();
+                    }
+                    catch (Exception)
+                    {
+                        if (editor != null) editor.Dispose();
+                    }
                 }
             }
             catch (Exception ex)
@@ -436,6 +500,22 @@ namespace System.Windows.Forms
         {
             if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
             Parent.Dispose();
+        }
+
+        private void toolStripMenuItemShowPose_Click(object sender, EventArgs e)
+        {
+            if (streamdata != null)
+            {
+                DisplayPose();
+            }
+        }
+
+        private void PoseTreeView_DoubleClick(object sender, EventArgs e)
+        {
+            if (streamdata != null)
+            {
+                DisplayPose();
+            }
         }
 
     }

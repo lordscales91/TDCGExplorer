@@ -7,6 +7,7 @@ using ArchiveLib;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Data;
+using System.Drawing;
 
 //using System.Windows.Forms;
 using TDCGExplorer;
@@ -21,6 +22,7 @@ namespace System.Windows.Forms
         private System.ComponentModel.IContainer components;
         private ToolStripMenuItem toolStripMenuItemClose;
         private ToolStripMenuItem toolStripMenuItemEditMode;
+        private ToolStripMenuItem toolStripMenuItemSaveFile;
         GenericTahInfo info;
 
         public TAHPageControl(GenericTahInfo entryinfo, List<ArcsTahFilesEntry> filesentries)
@@ -53,6 +55,8 @@ namespace System.Windows.Forms
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView.AllowUserToAddRows = false;
 
+            LoadPsdFile(0);
+
             TDCGExplorer.TDCGExplorer.SetToolTips(info.shortname + " : tsoクリックで単体表示,ctrlキー+tsoクリックで複数表示,tmoでポーズ・アニメーションを設定");
         }
 
@@ -61,8 +65,9 @@ namespace System.Windows.Forms
             this.components = new System.ComponentModel.Container();
             this.dataGridView = new System.Windows.Forms.DataGridView();
             this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemEditMode = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemSaveFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
             this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
@@ -86,23 +91,31 @@ namespace System.Windows.Forms
             // 
             this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItemEditMode,
+            this.toolStripMenuItemSaveFile,
             this.toolStripMenuItemClose});
             this.contextMenuStrip.Name = "contextMenuStrip";
-            this.contextMenuStrip.Size = new System.Drawing.Size(123, 48);
-            // 
-            // toolStripMenuItemClose
-            // 
-            this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
-            this.toolStripMenuItemClose.Size = new System.Drawing.Size(122, 22);
-            this.toolStripMenuItemClose.Text = "閉じる";
-            this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
+            this.contextMenuStrip.Size = new System.Drawing.Size(207, 70);
             // 
             // toolStripMenuItemEditMode
             // 
             this.toolStripMenuItemEditMode.Name = "toolStripMenuItemEditMode";
-            this.toolStripMenuItemEditMode.Size = new System.Drawing.Size(122, 22);
+            this.toolStripMenuItemEditMode.Size = new System.Drawing.Size(206, 22);
             this.toolStripMenuItemEditMode.Text = "編集する";
             this.toolStripMenuItemEditMode.Click += new System.EventHandler(this.toolStripMenuItemEditMode_Click);
+            // 
+            // toolStripMenuItemSaveFile
+            // 
+            this.toolStripMenuItemSaveFile.Name = "toolStripMenuItemSaveFile";
+            this.toolStripMenuItemSaveFile.Size = new System.Drawing.Size(206, 22);
+            this.toolStripMenuItemSaveFile.Text = "TAHファイルを展開する";
+            this.toolStripMenuItemSaveFile.Click += new System.EventHandler(this.toolStripMenuItemSaveFile_Click);
+            // 
+            // toolStripMenuItemClose
+            // 
+            this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
+            this.toolStripMenuItemClose.Size = new System.Drawing.Size(206, 22);
+            this.toolStripMenuItemClose.Text = "閉じる";
+            this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
             // 
             // TAHPageControl
             // 
@@ -166,14 +179,61 @@ namespace System.Windows.Forms
                                 TDCGExplorer.TDCGExplorer.defaultpose = tahstream.stream;
                             }
                             Cursor.Current = Cursors.Default;
+                            TDCGExplorer.TDCGExplorer.FigureLoad = false;
                         }
                     }
+                    LoadPsdFile(index);
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error occured:" + ex.Message, "Error", MessageBoxButtons.OK);
+                MessageBox.Show("Error dataGridView_CellClick:" + ex.Message, "Error", MessageBoxButtons.OK);
             }
+        }
+
+        private void LoadPsdFile(int index)
+        {
+            try
+            {
+                string ext = Path.GetExtension(filesEntries[index].path).ToLower();
+                string psdfilename = filesEntries[index].path;
+                string psdpath = "data/icon/items/";
+                if (Path.GetDirectoryName(filesEntries[index].path).ToLower() == "script\\backgrounds")
+                    psdpath = "data/icon/backgrounds/";
+                if (ext != ".psd")
+                {
+                    string fname = Path.GetFileNameWithoutExtension(psdfilename);
+                    psdfilename = psdpath + fname + ".psd";
+                }
+                psdfilename = psdfilename.ToLower();
+                foreach (ArcsTahFilesEntry fentry in filesEntries)
+                {
+                    if (fentry.path.ToLower() == psdfilename)
+                    {
+                        using (GenericTAHStream tahstream = new GenericTAHStream(info, fentry))
+                        {
+                            PSDFile psd = new PSDFile();
+                            psd.Load(tahstream.stream);
+                            TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Image = psd.Bitmap;
+                            TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Width = psd.Bitmap.Width;
+                            TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Height = psd.Bitmap.Height;
+                        }
+                        return;
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+            NoImageIcon();
+        }
+
+        private void NoImageIcon()
+        {
+            Bitmap noimage = new Bitmap("noimage.jpg");
+            TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Image = noimage;
+            TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Width = noimage.Width;
+            TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Height = noimage.Height;
         }
 
         private void dataGridView_MouseEnter(object sender, EventArgs e)
@@ -202,6 +262,11 @@ namespace System.Windows.Forms
         {
             if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
             LBFileTahUtl.OpenTahEditor(info);
+        }
+
+        private void toolStripMenuItemSaveFile_Click(object sender, EventArgs e)
+        {
+            TDCGExplorer.TDCGExplorer.TAHDecrypt(new GenericZipsTahInfo(info));
         }
     }
 }
