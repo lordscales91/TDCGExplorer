@@ -774,24 +774,14 @@ namespace TDCG
 
             int node_count = reader.ReadInt32();
             nodes = new TSONode[node_count];
-            nodemap = new Dictionary<string, TSONode>();
 
             for (int i = 0; i < node_count; i++)
             {
                 string name = ReadString();
                 nodes[i] = new TSONode(i, name);
-                nodemap.Add(name, nodes[i]);
             }
 
-            for (int i = 0; i < node_count; i++)
-            {
-                int index = nodes[i].Name.LastIndexOf('|');
-                if (index <= 0)
-                    continue;
-                string pname = nodes[i].Name.Substring(0, index);
-                nodes[i].parent = nodemap[pname];
-                nodes[i].parent.child_nodes.Add(nodes[i]);
-            }
+            GenerateNodemapAndTree();
 
             int node_matrix_count = reader.ReadInt32();
             Matrix m = Matrix.Identity;
@@ -834,6 +824,26 @@ namespace TDCG
                 meshes[i] = mesh;
 
                 //Console.WriteLine("mesh name {0} len {1}", mesh.name, mesh.sub_meshes.Length);
+            }
+        }
+
+        internal void GenerateNodemapAndTree()
+        {
+            nodemap = new Dictionary<string, TSONode>();
+
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                nodemap.Add(nodes[i].Name, nodes[i]);
+            }
+
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                int index = nodes[i].Name.LastIndexOf('|');
+                if (index <= 0)
+                    continue;
+                string pname = nodes[i].Name.Substring(0, index);
+                nodes[i].parent = nodemap[pname];
+                nodes[i].parent.child_nodes.Add(nodes[i]);
             }
         }
 

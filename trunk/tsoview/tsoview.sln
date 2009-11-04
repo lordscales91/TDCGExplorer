@@ -9,6 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSOView", "TSOView\TSOView.
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMOProportion", "TMOProportion\TMOProportion.csproj", "{56EBE466-6A63-448E-B8FC-BC29A456752B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{30D26679-E876-46FC-B8C0-E55146316C8C} = {30D26679-E876-46FC-B8C0-E55146316C8C}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAHProportion", "TAHProportion\TAHProportion.csproj", "{A99FA50A-C976-4ACA-B0CB-22F273ADC0F2}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -21,6 +24,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PNGProportion", "PNGProport
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMOProp", "TMOProp\TMOProp.csproj", "{7999DA98-17BB-4734-AF2A-7C03CA117CF9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{30D26679-E876-46FC-B8C0-E55146316C8C} = {30D26679-E876-46FC-B8C0-E55146316C8C}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMOComposer", "TMOComposer\TMOComposer.csproj", "{638BC13A-83B2-4AAA-AD53-48BD918B7368}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -34,6 +40,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TBNTest", "TBNTest\TBNTest.csproj", "{14DD80FD-70A6-4074-96FF-16D3C541D9DC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAHBackground", "TAHBackground\TAHBackground.csproj", "{D50962BC-AEA1-43E8-951E-0AB706776914}"
+	ProjectSection(ProjectDependencies) = postProject
+		{30D26679-E876-46FC-B8C0-E55146316C8C} = {30D26679-E876-46FC-B8C0-E55146316C8C}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSDTest", "PSDTest\PSDTest.csproj", "{3E5DF5EA-6A2B-4192-837B-17F97B48D781}"
 EndProject
