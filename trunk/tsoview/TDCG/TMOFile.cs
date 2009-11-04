@@ -154,6 +154,14 @@ namespace TDCG
             }
         }
 
+        public void UpdateRootNodeName(string name)
+        {
+            TMONode root_node = nodes[0];
+            root_node.SetName(name);
+            foreach (TMONode node in nodes)
+                node.UpdateName();
+        }
+
         /// <summary>
         /// çsóÒÇìæÇ‹Ç∑ÅB
         /// </summary>
@@ -804,6 +812,24 @@ namespace TDCG
             this.id = id;
             this.name = name;
             this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
+        }
+
+        public void SetName(string name)
+        {
+            this.name = name;
+            this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
+        }
+
+        public void UpdateName()
+        {
+            string name = "";
+            TMONode bone = this;
+            while (bone != null)
+            {
+                name = "|" + bone.ShortName + name;
+                bone = bone.parent;
+            }
+            this.name = name;
         }
 
         /// <summary>
