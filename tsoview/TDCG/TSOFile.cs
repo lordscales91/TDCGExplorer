@@ -747,6 +747,32 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 指定パスに保存します。
+        /// </summary>
+        /// <param name="dest_file">パス</param>
+        public void Save(string dest_file)
+        {
+            using (Stream dest_stream = File.Create(dest_file))
+                Save(dest_stream);
+        }
+
+        /// <summary>
+        /// 指定ストリームに保存します。
+        /// </summary>
+        /// <param name="dest_stream">ストリーム</param>
+        public void Save(Stream dest_stream)
+        {
+            BinaryWriter bw = new BinaryWriter(dest_stream);
+
+            TSOWriter.WriteMagic(bw);
+            TSOWriter.Write(bw, nodes);
+            TSOWriter.Write(bw, textures);
+            TSOWriter.Write(bw, scripts);
+            TSOWriter.Write(bw, sub_scripts);
+            TSOWriter.Write(bw, meshes);
+        }
+
+        /// <summary>
         /// 指定パスから読み込みます。
         /// </summary>
         /// <param name="source_file">パス</param>

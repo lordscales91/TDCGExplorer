@@ -5,4 +5,5 @@
 TDCG\TMOFile.cs
 TDCG\TMOWriter.cs
 TDCG\TSOFile.cs
+TDCG\TSOWriter.cs
 TDCG\Shader.cs

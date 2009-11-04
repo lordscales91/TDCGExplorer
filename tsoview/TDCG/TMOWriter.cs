@@ -53,7 +53,7 @@ namespace TDCG
         {
             bw.Write(items.Length);
 
-            foreach(var i in items)
+            foreach (TMONode i in items)
                 Write(bw, i);
         }
 
@@ -76,7 +76,7 @@ namespace TDCG
         {
             bw.Write(items.Length);
 
-            foreach(var i in items)
+            foreach (TMOFrame i in items)
             {
                 Write(bw, i);
             }
@@ -101,7 +101,7 @@ namespace TDCG
         {
             bw.Write(items.Length);
 
-            foreach(var i in items)
+            foreach (TMOMat i in items)
                 Write(bw, i);
         }
 
@@ -113,7 +113,16 @@ namespace TDCG
         public static void Write(BinaryWriter bw, TMOMat item)
         {
             Matrix m = item.m;
+            Write(bw, ref m);
+        }
 
+        /// <summary>
+        /// 指定ライタに行列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="m">行列</param>
+        public static void Write(BinaryWriter bw, ref Matrix m)
+        {
             bw.Write(m.M11); bw.Write(m.M12); bw.Write(m.M13); bw.Write(m.M14);
             bw.Write(m.M21); bw.Write(m.M22); bw.Write(m.M23); bw.Write(m.M24);
             bw.Write(m.M31); bw.Write(m.M32); bw.Write(m.M33); bw.Write(m.M34);
