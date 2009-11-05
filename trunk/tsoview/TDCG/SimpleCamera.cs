@@ -14,7 +14,7 @@ namespace TDCG
     public class SimpleCamera
     {
         private Vector3 center = Vector3.Empty;
-        private Vector3 translation = new Vector3(0.0f, 0.0f, -10.0f);
+        private Vector3 translation = new Vector3(0.0f, 0.0f, +10.0f);
         private Vector3 dirD = Vector3.Empty; //カメラ移動方向ベクトル
         private float zD = 0.0f;      //カメラ奥行オフセット値
         private bool needUpdate = true;    //更新する必要があるか
@@ -39,7 +39,7 @@ namespace TDCG
         public void Reset()
         {
             center = Vector3.Empty;
-            translation = new Vector3(0.0f, 0.0f, -10.0f);
+            translation = new Vector3(0.0f, 0.0f, +10.0f);
             angle = Vector3.Empty;
             needUpdate = true;
         }

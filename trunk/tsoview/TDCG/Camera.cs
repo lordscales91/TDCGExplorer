@@ -15,7 +15,7 @@ public class Camera
 {
     private Vector3 center = Vector3.Empty;
     private Vector3 translation = Vector3.Empty;
-    private Vector3 localP = new Vector3(0.0f, 0.0f, -10.0f);
+    private Vector3 localP = new Vector3(0.0f, 0.0f, +10.0f);
     private Vector3 dirD = Vector3.Empty; //カメラ移動方向ベクトル
     private float zD = 0.0f;      //カメラ奥行オフセット値
     private bool needUpdate = true;    //更新する必要があるか
@@ -151,7 +151,7 @@ public class Camera
     {
         center = Vector3.Empty;
         translation = Vector3.Empty;
-        localP = new Vector3(0.0f, 0.0f, -10.0f);
+        localP = new Vector3(0.0f, 0.0f, +10.0f);
         pose = Matrix.Identity;
         needUpdate = true;
     }
