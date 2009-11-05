@@ -1028,7 +1028,7 @@ namespace TDCG
         }
 
         internal Shader current_shader = null;
-        internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
+        internal Vector3 lightDir = new Vector3(0.0f, 0.0f, -1.0f);
 
         /// <summary>
         /// 光源方向ベクトルを得ます。
@@ -1036,7 +1036,7 @@ namespace TDCG
         /// <returns></returns>
         public Vector4 LightDirForced()
         {
-            return new Vector4(lightDir.X, lightDir.Y, -lightDir.Z, 0.0f);
+            return new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 0.0f);
         }
 
         /// <summary>

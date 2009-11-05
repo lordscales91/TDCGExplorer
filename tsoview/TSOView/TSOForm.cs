@@ -193,7 +193,7 @@ public class TSOForm : Form
         if (keys[(int)Keys.D])
             keyZRol = +2.0f;
 
-        camera.Move(keyL - keyR, keyD - keyU, keyPush - keyPull);
+        camera.Move(keyR - keyL, keyU - keyD, keyPush - keyPull);
         camera.RotZ(DegreeToRadian(keyZRol));
     }
 
