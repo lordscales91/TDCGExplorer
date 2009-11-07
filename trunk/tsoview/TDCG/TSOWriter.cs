@@ -114,6 +114,11 @@ namespace TDCG
             Write(bw, buf);
         }
 
+        /// <summary>
+        /// 指定ライタにスクリプト配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="items">スクリプト配列</param>
         public static void Write(BinaryWriter bw, TSOScript[] items)
         {
             bw.Write(items.Length);
@@ -122,6 +127,11 @@ namespace TDCG
                 Write(bw, i);
         }
 
+        /// <summary>
+        /// 指定ライタにスクリプトを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="item">スクリプト</param>
         public static void Write(BinaryWriter bw, TSOScript item)
         {
             Write(bw, item.name);
@@ -131,6 +141,11 @@ namespace TDCG
                 Write(bw, i);
         }
 
+        /// <summary>
+        /// 指定ライタにサブスクリプト配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="items">サブスクリプト配列</param>
         public static void Write(BinaryWriter bw, TSOSubScript[] items)
         {
             bw.Write(items.Length);
@@ -139,6 +154,11 @@ namespace TDCG
                 Write(bw, i);
         }
 
+        /// <summary>
+        /// 指定ライタにサブスクリプトを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="item">サブスクリプト</param>
         public static void Write(BinaryWriter bw, TSOSubScript item)
         {
             Write(bw, item.name);
@@ -149,6 +169,11 @@ namespace TDCG
                 Write(bw, i);
         }
 
+        /// <summary>
+        /// 指定ライタにメッシュ配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="items">メッシュ配列</param>
         public static void Write(BinaryWriter bw, TSOMesh[] items)
         {
             bw.Write(items.Length);
@@ -157,6 +182,11 @@ namespace TDCG
                 Write(bw, i);
         }
 
+        /// <summary>
+        /// 指定ライタにメッシュを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="item">メッシュ</param>
         public static void Write(BinaryWriter bw, TSOMesh item)
         {
             Write(bw, item.name);
@@ -169,6 +199,11 @@ namespace TDCG
                 Write(bw, i);
         }
 
+        /// <summary>
+        /// 指定ライタにサブメッシュ配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="items">サブメッシュ配列</param>
         public static void Write(BinaryWriter bw, TSOSubMesh[] items)
         {
             bw.Write(items.Length);
@@ -177,6 +212,11 @@ namespace TDCG
                 Write(bw, i);
         }
 
+        /// <summary>
+        /// 指定ライタにサブメッシュを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="item">サブメッシュ</param>
         public static void Write(BinaryWriter bw, TSOSubMesh item)
         {
             bw.Write(item.spec);
@@ -192,6 +232,11 @@ namespace TDCG
             }
         }
 
+        /// <summary>
+        /// 指定ライタに頂点を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="v">頂点</param>
         public static void Write(BinaryWriter bw, ref vertex_field v)
         {
             Write(bw, ref v.position);
@@ -217,6 +262,11 @@ namespace TDCG
             }
         }
 
+        /// <summary>
+        /// 指定ライタにベクトルを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="v">ベクトル</param>
         public static void Write(BinaryWriter bw, ref Vector3 v)
         {
             bw.Write(v.X);

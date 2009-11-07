@@ -97,15 +97,15 @@ namespace TDCG
                 {
                     for (int i = 0; i < vertices.Length; i++)
                     {
-                        vertex_field tv = vertices[i];
+                        vertex_field v = vertices[i];
 
-                        gs.Write(tv.position);
+                        gs.Write(v.position);
                         for (int j = 0; j < 4; j++)
-                            gs.Write(tv.skin_weights[j].weight);
-                        gs.Write(tv.skin_weight_indices);
-                        gs.Write(tv.normal);
-                        gs.Write(tv.u);
-                        gs.Write(tv.v);
+                            gs.Write(v.skin_weights[j].weight);
+                        gs.Write(v.skin_weight_indices);
+                        gs.Write(v.normal);
+                        gs.Write(v.u);
+                        gs.Write(v.v);
                     }
                 }
                 dm.UnlockVertexBuffer();
