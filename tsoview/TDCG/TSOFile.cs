@@ -403,24 +403,6 @@ namespace TDCG
             this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
         }
 
-        public void SetName(string name)
-        {
-            this.name = name;
-            this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
-        }
-
-        public void UpdateName()
-        {
-            string name = "";
-            TSONode bone = this;
-            while (bone != null)
-            {
-                name = "|" + bone.ShortName + name;
-                bone = bone.parent;
-            }
-            this.name = name;
-        }
-
         /// <summary>
         /// ‰ñ“]•ÏˆÊ
         /// </summary>
@@ -889,14 +871,6 @@ namespace TDCG
                 nodes[i].parent = nodemap[pname];
                 nodes[i].parent.child_nodes.Add(nodes[i]);
             }
-        }
-
-        public void UpdateRootNodeName(string name)
-        {
-            TSONode root_node = nodes[0];
-            root_node.SetName(name);
-            foreach (TSONode node in nodes)
-                node.UpdateName();
         }
 
         /// <summary>
