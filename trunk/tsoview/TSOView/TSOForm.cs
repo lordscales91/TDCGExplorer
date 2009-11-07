@@ -177,13 +177,13 @@ public class TSOForm : Form
         float keyZRol = 0.0f;
 
         if (keys[(int)Keys.Left])
-            keyL = 1.0f;
+            keyL = 2.0f;
         if (keys[(int)Keys.Right])
-            keyR = 1.0f;
+            keyR = 2.0f;
         if (keys[(int)Keys.PageUp])
-            keyU = 1.0f;
+            keyU = 2.0f;
         if (keys[(int)Keys.PageDown])
-            keyD = 1.0f;
+            keyD = 2.0f;
         if (keys[(int)Keys.Up])
             keyPush = 1.0f;
         if (keys[(int)Keys.Down])
@@ -193,7 +193,7 @@ public class TSOForm : Form
         if (keys[(int)Keys.D])
             keyZRol = +2.0f;
 
-        camera.Move(keyR - keyL, keyU - keyD, keyPush - keyPull);
+        camera.Move(keyR - keyL, keyU - keyD, keyPull - keyPush);
         camera.RotZ(DegreeToRadian(keyZRol));
     }
 
