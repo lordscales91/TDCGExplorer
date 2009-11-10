@@ -53,13 +53,13 @@ namespace TDCG
         {
             bw.Write(items.Length);
 
-            foreach(var i in items)
+            foreach (TSONode i in items)
                 Write(bw, i);
 
             bw.Write(items.Length);
 
             Matrix m = Matrix.Identity;
-            foreach (var i in items)
+            foreach (TSONode i in items)
             {
                 m = i.TransformationMatrix;
                 Write(bw, ref m);
@@ -85,7 +85,7 @@ namespace TDCG
         {
             bw.Write(items.Length);
 
-            foreach(var i in items)
+            foreach (TSOTex i in items)
                 Write(bw, i);
         }
 
@@ -101,7 +101,177 @@ namespace TDCG
             bw.Write(item.width);
             bw.Write(item.height);
             bw.Write(item.depth);
-            Write(bw, item.data);
+
+            byte[] buf = new byte[item.data.Length];
+            Array.Copy(item.data, 0, buf, 0, buf.Length);
+
+            for(int j = 0; j < buf.Length; j += 4)
+            {
+                byte tmp = buf[j+2];
+                buf[j+2] = buf[j+0];
+                buf[j+0] = tmp;
+            }
+            Write(bw, buf);
+        }
+
+        /// <summary>
+        /// 指定ライタにスクリプト配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="items">スクリプト配列</param>
+        public static void Write(BinaryWriter bw, TSOScript[] items)
+        {
+            bw.Write(items.Length);
+
+            foreach (TSOScript i in items)
+                Write(bw, i);
+        }
+
+        /// <summary>
+        /// 指定ライタにスクリプトを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="item">スクリプト</param>
+        public static void Write(BinaryWriter bw, TSOScript item)
+        {
+            Write(bw, item.name);
+            bw.Write(item.script_data.Length);
+
+            foreach (string i in item.script_data)
+                Write(bw, i);
+        }
+
+        /// <summary>
+        /// 指定ライタにサブスクリプト配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="items">サブスクリプト配列</param>
+        public static void Write(BinaryWriter bw, TSOSubScript[] items)
+        {
+            bw.Write(items.Length);
+
+            foreach (TSOSubScript i in items)
+                Write(bw, i);
+        }
+
+        /// <summary>
+        /// 指定ライタにサブスクリプトを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="item">サブスクリプト</param>
+        public static void Write(BinaryWriter bw, TSOSubScript item)
+        {
+            Write(bw, item.name);
+            Write(bw, item.file);
+            bw.Write(item.script_data.Length);
+
+            foreach (string i in item.script_data)
+                Write(bw, i);
+        }
+
+        /// <summary>
+        /// 指定ライタにメッシュ配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="items">メッシュ配列</param>
+        public static void Write(BinaryWriter bw, TSOMesh[] items)
+        {
+            bw.Write(items.Length);
+
+            foreach (TSOMesh i in items)
+                Write(bw, i);
+        }
+
+        /// <summary>
+        /// 指定ライタにメッシュを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="item">メッシュ</param>
+        public static void Write(BinaryWriter bw, TSOMesh item)
+        {
+            Write(bw, item.name);
+            Matrix m = item.transform_matrix;
+            Write(bw, ref m);
+            bw.Write(item.unknown1);
+            bw.Write(item.sub_meshes.Length);
+
+            foreach (TSOSubMesh i in item.sub_meshes)
+                Write(bw, i);
+        }
+
+        /// <summary>
+        /// 指定ライタにサブメッシュ配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="items">サブメッシュ配列</param>
+        public static void Write(BinaryWriter bw, TSOSubMesh[] items)
+        {
+            bw.Write(items.Length);
+
+            foreach (TSOSubMesh i in items)
+                Write(bw, i);
+        }
+
+        /// <summary>
+        /// 指定ライタにサブメッシュを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="item">サブメッシュ</param>
+        public static void Write(BinaryWriter bw, TSOSubMesh item)
+        {
+            bw.Write(item.spec);
+            bw.Write(item.bone_index_LUT.Count);
+
+            foreach (uint i in item.bone_index_LUT)
+                bw.Write(i);
+            bw.Write(item.vertices.Length);
+
+            for (int i = 0; i < item.vertices.Length; i++)
+            {
+                Write(bw, ref item.vertices[i]);
+            }
+        }
+
+        /// <summary>
+        /// 指定ライタに頂点を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="v">頂点</param>
+        public static void Write(BinaryWriter bw, ref vertex_field v)
+        {
+            Write(bw, ref v.position);
+            Write(bw, ref v.normal);
+            bw.Write(v.u);
+            bw.Write(v.v);
+
+            int bone_weight_entry_count = 0;
+            SkinWeight[] skin_weights = new SkinWeight[4];
+            foreach (SkinWeight i in v.skin_weights)
+            {
+                if (i.weight == 0.0f)
+                    continue;
+
+                skin_weights[bone_weight_entry_count++] = i;
+            }
+            bw.Write(bone_weight_entry_count);
+
+            for (int i = 0; i < bone_weight_entry_count; i++)
+            {
+                bw.Write(skin_weights[i].index);
+                bw.Write(skin_weights[i].weight);
+            }
+        }
+
+        /// <summary>
+        /// 指定ライタにベクトルを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="v">ベクトル</param>
+        public static void Write(BinaryWriter bw, ref Vector3 v)
+        {
+            bw.Write(v.X);
+            bw.Write(v.Y);
+            bw.Write(v.Z);
         }
 
         /// <summary>

@@ -45,7 +45,7 @@ namespace TMOProportion
                     viewer.LoadAnyFile(arg, true);
                 if (viewer.FigureList.Count == 0)
                     viewer.LoadAnyFile(Path.Combine(save_path, "system.tdcgsav.png"), true);
-                viewer.Camera.SetTranslation(0.0f, +10.0f, -44.0f);
+                viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
 
                 timer1.Enabled = true;
             }
