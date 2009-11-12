@@ -51,7 +51,7 @@ public class Viewer : IDisposable
     public List<Figure> FigureList = new List<Figure>();
 
     // ƒ‰ƒCƒg•ûŒü
-    internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
+    internal Vector3 lightDir = new Vector3(0.0f, 0.0f, -1.0f);
 
     CCDSolver solver = new CCDSolver();
     /// <summary>
@@ -98,7 +98,7 @@ public class Viewer : IDisposable
 
     private void control_OnSizeChanged(object sender, EventArgs e)
     {
-        Transform_Projection = Matrix.PerspectiveFovLH(
+        Transform_Projection = Matrix.PerspectiveFovRH(
                 Geometry.DegreeToRadian(30.0f),
                 (float)control.Width / (float)control.Height,
                 1.0f,
@@ -177,16 +177,16 @@ public class Viewer : IDisposable
                 if (current_handle_dir != Vector3.Empty)
                     RotateOnScreen(dx, dy);
                 else
-                    camera.Move(-dx, dy, 0.0f);
+                    camera.Move(dx, -dy, 0.0f);
             }
             else
-                camera.Move(-dx, dy, 0.0f);
+                camera.Move(dx, -dy, 0.0f);
             break;
         case MouseButtons.Middle:
             camera.MoveView(-dx*0.125f, dy*0.125f);
             break;
         case MouseButtons.Right:
-            camera.Move(0.0f, 0.0f, dy*0.125f);
+            camera.Move(0.0f, 0.0f, -dy*0.125f);
             break;
         }
 
@@ -250,7 +250,7 @@ public class Viewer : IDisposable
             y *= scale;
         }
         else
-            z = (float)Math.Sqrt(1.0f - mag);
+            z = (float)-Math.Sqrt(1.0f - mag);
 
         return new Vector3(x, y, z);
     }
@@ -771,17 +771,19 @@ public class Viewer : IDisposable
             w_scale = (float)devw / ztexw;
             h_scale = (float)devh / ztexh;
         }
-        Transform_Projection = Matrix.PerspectiveFovLH(
+        Transform_Projection = Matrix.PerspectiveFovRH(
                 Geometry.DegreeToRadian(30.0f),
                 (float)device.Viewport.Width / (float)device.Viewport.Height,
                 1.0f,
                 1000.0f );
         if (shadowMapEnabled)
+        {
             Light_Projection = Matrix.PerspectiveFovLH(
                 Geometry.DegreeToRadian(45.0f),
                 1.0f,
                 20.0f,
                 250.0f );
+        }
 
         // xxx: for w-buffering
         device.Transform.Projection = Transform_Projection;
@@ -942,10 +944,6 @@ public class Viewer : IDisposable
         camera.Update();
 
         Transform_View = camera.GetViewMatrix();
-        Transform_View.M31 = -Transform_View.M31;
-        Transform_View.M32 = -Transform_View.M32;
-        Transform_View.M33 = -Transform_View.M33;
-        Transform_View.M34 = -Transform_View.M34;
 
         // xxx: for w-buffering
         device.Transform.View = Transform_View;
@@ -959,10 +957,6 @@ public class Viewer : IDisposable
                     lightDir * -scale,
                     new Vector3( 0.0f, 5.0f, 0.0f ), 
                     new Vector3( 0.0f, 1.0f, 0.0f ) );
-            Light_View.M31 = -Light_View.M31;
-            Light_View.M32 = -Light_View.M32;
-            Light_View.M33 = -Light_View.M33;
-            Light_View.M34 = -Light_View.M34;
         }
 
         foreach (Figure fig in FigureList)

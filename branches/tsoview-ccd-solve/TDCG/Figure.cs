@@ -162,7 +162,7 @@ public class Figure : IDisposable
         {
             Debug.Assert(tmo_node.frame_matrices.Count > 0);
             Matrix m = tmo_node.frame_matrices[0].m;
-            center = new Vector3(m.M41, m.M42, -m.M43);
+            center = new Vector3(m.M41, m.M42, m.M43);
         }
     }
 
