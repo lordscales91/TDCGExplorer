@@ -61,6 +61,7 @@ public class Viewer : IDisposable
                 1000.0f );
     }
 
+    /// マウスボタンを押したときに実行するハンドラ
     protected virtual void form_OnMouseDown(object sender, MouseEventArgs e)
     {
         switch (e.Button)
@@ -75,6 +76,7 @@ public class Viewer : IDisposable
         lastScreenPoint.Y = e.Y;
     }
 
+    /// マウスを移動したときに実行するハンドラ
     protected virtual void form_OnMouseMove(object sender, MouseEventArgs e)
     {
         int dx = e.X - lastScreenPoint.X;
@@ -795,7 +797,14 @@ public class Viewer : IDisposable
         return max;
     }
 
+    /// <summary>
+    /// レンダリングするのに用いるデリゲート型
+    /// </summary>
     public delegate void RenderingHandler();
+
+    /// <summary>
+    /// レンダリングするハンドラ
+    /// </summary>
     public RenderingHandler Rendering;
 
     /// <summary>

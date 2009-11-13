@@ -37,6 +37,7 @@ public class CCDViewer : Viewer
         };
     }
 
+    /// マウスボタンを押したときに実行するハンドラ
     protected override void form_OnMouseDown(object sender, MouseEventArgs e)
     {
         switch (e.Button)
@@ -58,6 +59,7 @@ public class CCDViewer : Viewer
         lastScreenPoint.Y = e.Y;
     }
 
+    /// マウスを移動したときに実行するハンドラ
     protected override void form_OnMouseMove(object sender, MouseEventArgs e)
     {
         int dx = e.X - lastScreenPoint.X;
