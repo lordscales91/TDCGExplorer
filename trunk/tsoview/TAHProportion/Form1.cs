@@ -133,15 +133,12 @@ namespace TAHTool
                     {
                         tpo_list.Tmo = tmo;
 
-                        for (int i = 0; i < tpo_list.Count; i++)
+                        foreach (TPOFile tpo in tpo_list.files)
                         {
-                            TPOFile tpo = tpo_list[i];
-                            {
-                                Debug.Assert(tpo.Proportion != null, "tpo.Proportion should not be null");
-                                Proportion portion;
-                                if (portion_map.TryGetValue(tpo.Proportion.ToString(), out portion))
-                                    tpo.Ratio = portion.Ratio;
-                            }
+                            Debug.Assert(tpo.Proportion != null, "tpo.Proportion should not be null");
+                            Proportion portion;
+                            if (portion_map.TryGetValue(tpo.ProportionName, out portion))
+                                tpo.Ratio = portion.Ratio;
                         }
 
                         tpo_list.Transform();
