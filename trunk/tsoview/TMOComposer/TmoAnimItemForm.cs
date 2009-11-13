@@ -11,11 +11,17 @@ namespace TMOComposer
 {
     public partial class TmoAnimItemForm : Form
     {
-        Form3 form3 = null;
+        PoseListForm poseListForm = null;
+        FaceListForm faceListForm = null;
 
-        public void SetForm3(Form3 form3)
+        public void SetPoseListForm(PoseListForm form)
         {
-            this.form3 = form3;
+            this.poseListForm = form;
+        }
+
+        public void SetFaceListForm(FaceListForm form)
+        {
+            this.faceListForm = form;
         }
 
         public TmoAnimItemForm()
@@ -28,28 +34,39 @@ namespace TMOComposer
         public void SetTmoAnimItem(TMOAnimItem item)
         {
             this.item = item;
-            tbPoseFile.Text = item.PoseFile;
+            tbPoseFile.Text = "";
             tbLength.Text = item.Length.ToString();
-            tbFaceFile.Text = item.FaceFile;
+            tbFaceFile.Text = "";
             accelSlider1.Accel = item.Accel;
         }
 
         private void btnOK_Click(object sender, EventArgs e)
         {
-            item.PoseFile = tbPoseFile.Text;
+            item.LoadPoseFile(tbPoseFile.Text);
             item.Length = int.Parse(tbLength.Text);
-            item.FaceFile = tbFaceFile.Text;
+            item.CopyFaceFile(tbFaceFile.Text);
             item.Accel = accelSlider1.Accel;
         }
 
         private void btnOpenFaces_Click(object sender, EventArgs e)
         {
-            if (form3.ShowDialog(this) == DialogResult.OK)
+            if (faceListForm.ShowDialog(this) == DialogResult.OK)
             {
-                if (form3.File == null)
+                if (faceListForm.FileName == null)
                     return;
 
-                tbFaceFile.Text = form3.File;
+                tbFaceFile.Text = faceListForm.FileName;
+            }
+        }
+
+        private void btnOpenPoses_Click(object sender, EventArgs e)
+        {
+            if (poseListForm.ShowDialog(this) == DialogResult.OK)
+            {
+                if (poseListForm.FileName == null)
+                    return;
+
+                tbPoseFile.Text = poseListForm.FileName;
             }
         }
     }

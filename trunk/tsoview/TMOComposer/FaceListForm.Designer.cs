@@ -1,6 +1,6 @@
 ﻿namespace TMOComposer
 {
-    partial class Form3
+    partial class FaceListForm
     {
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -64,15 +64,15 @@
             this.ilFaces.ImageSize = new System.Drawing.Size(128, 128);
             this.ilFaces.TransparentColor = System.Drawing.Color.Transparent;
             // 
-            // Form3
+            // FaceListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 563);
             this.Controls.Add(this.btnGetFaces);
             this.Controls.Add(this.lvFaces);
-            this.Name = "Form3";
-            this.Text = "Form3";
+            this.Name = "FaceListForm";
+            this.Text = "FaceListForm";
             this.ResumeLayout(false);
 
         }

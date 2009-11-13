@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,6 +29,12 @@ namespace TMOComposer
             PngSave program = serializer.Deserialize(reader) as PngSave;
             reader.Close();
             return program;
+        }
+
+        public void UpdateID()
+        {
+            for (int i = 0; i < items.Count; i++)
+                items[i].UpdateID(i);
         }
     }
 }

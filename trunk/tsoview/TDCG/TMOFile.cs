@@ -277,6 +277,8 @@ namespace TDCG
         /// <param name="frame_index">index</param>
         public void TruncateFrame(int frame_index)
         {
+            if (frames == null)
+                return;
             if (frame_index < 0)
                 return;
             if (frame_index > frames.Length-1)
@@ -288,13 +290,39 @@ namespace TDCG
         }
 
         /// <summary>
+        /// åªç›ÇÃçsóÒÇéwíËÉtÉåÅ[ÉÄÇ…ï€ë∂ÇµÇ‹Ç∑ÅB
+        /// </summary>
+        /// <param name="frame_index">index</param>
+        public void SaveTransformationMatrix(int frame_index)
+        {
+            if (frames == null)
+                return;
+
+            foreach (TMONode node in nodes)
+                node.frame_matrices[frame_index].m = node.TransformationMatrix;
+        }
+
+        /// <summary>
+        /// éwíËÉtÉåÅ[ÉÄÇÃçsóÒÇï€éùÇµÇ‹Ç∑ÅB
+        /// </summary>
+        /// <param name="frame_index">index</param>
+        public void LoadTransformationMatrix(int frame_index)
+        {
+            if (frames == null)
+                return;
+
+            foreach (TMONode node in nodes)
+                node.TransformationMatrix = node.frame_matrices[frame_index].m;
+        }
+
+        /// <summary>
         /// éwíËñºèÃÅiíZÇ¢å`éÆÅjÇéùÇ¬nodeÇåüçıÇµÇ‹Ç∑ÅB
         /// </summary>
         /// <param name="sname">nodeñºèÃÅiíZÇ¢å`éÆÅj</param>
         /// <returns></returns>
         public TMONode FindNodeByShortName(string sname)
         {
-            foreach(TMONode node in nodes)
+            foreach (TMONode node in nodes)
                 if (node.ShortName == sname)
                     return node;
             return null;
@@ -361,13 +389,16 @@ namespace TDCG
         /// </summary>
         /// <param name="motion">tmo</param>
         /// <returns></returns>
-        public bool IsSameNodeTree(TMOFile motion) {
-            if (nodes.Length != motion.nodes.Length) {
+        public bool IsSameNodeTree(TMOFile motion)
+        {
+            if (nodes.Length != motion.nodes.Length)
+            {
                 //Console.WriteLine("nodes length mismatch {0} {1}", nodes.Length, motion.nodes.Length);
                 return false;
             }
             int i = 0;
-            foreach(TMONode node in nodes) {
+            foreach (TMONode node in nodes)
+            {
                 TMONode motion_node = motion.nodes[i];
                 //Console.WriteLine("node ShortName {0} {1}", node.ShortName, motion_node.ShortName);
                 if (motion_node.ShortName != node.ShortName)
@@ -414,6 +445,49 @@ namespace TDCG
             m.M42 = reader.ReadSingle();
             m.M43 = reader.ReadSingle();
             m.M44 = reader.ReadSingle();
+        }
+
+        /// <summary>
+        /// tmoÇ©ÇÁtmoÇê∂ê¨ÇµÇ‹Ç∑ÅB
+        /// </summary>
+        public TMOFile Dup()
+        {
+            TMOFile tmo = new TMOFile();
+            tmo.header = new byte[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            tmo.opt0 = 1;
+            tmo.opt1 = 0;
+
+            int node_count = nodes.Length;
+            tmo.nodes = new TMONode[node_count];
+
+            for (int i = 0; i < node_count; i++)
+            {
+                string name = nodes[i].Name;
+                tmo.nodes[i] = new TMONode(i, name);
+            }
+
+            tmo.GenerateNodemapAndTree();
+
+            int frame_count = 1;
+            tmo.frames = new TMOFrame[frame_count];
+
+            for (int i = 0; i < frame_count; i++)
+            {
+                tmo.frames[i] = new TMOFrame();
+                tmo.frames[i].id = i;
+
+                int matrix_count = node_count;
+                tmo.frames[i].matrices = new TMOMat[matrix_count];
+
+                for (int j = 0; j < matrix_count; j++)
+                {
+                    TMOMat mat = tmo.frames[i].matrices[j] = new TMOMat(frames[i].matrices[j].m);
+                    tmo.nodes[j].frame_matrices.Add(mat);
+                }
+            }
+            tmo.footer = new byte[4] { 0, 0, 0, 0 };
+
+            return tmo;
         }
     }
 
@@ -702,6 +776,94 @@ namespace TDCG
             Matrix m = m1 * Matrix.Invert(m2) * m0;
             Vector3 t = t1 - t2 + t0;
             return new TMOMat(m * Matrix.Translation(t));
+        }
+
+        /// euleräp (zxyâÒì]) ÇquaternionÇ…ïœä∑
+        public static Quaternion ToQuaternionZXY(Vector3 angle)
+        {
+            Quaternion qx, qy, qz;
+            qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), Geometry.DegreeToRadian(angle.X));
+            qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), Geometry.DegreeToRadian(angle.Y));
+            qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), Geometry.DegreeToRadian(angle.Z));
+            return qy * qx * qz;
+        }
+
+        /// âÒì]çsóÒÇeuleräp (zxyâÒì]) Ç…ïœä∑
+        public static Vector3 ToAngleZXY(Matrix m)
+        {
+            Vector3 angle;
+            if (m.M23 < +1.0f - float.Epsilon)
+            {
+                if (m.M23 > -1.0f + float.Epsilon)
+                {
+                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(-m.M21, m.M22));
+                    angle.X = Geometry.RadianToDegree((float)Math.Asin(m.M23));
+                    angle.Y = Geometry.RadianToDegree((float)Math.Atan2(-m.M13, m.M33));
+                }
+                else
+                {
+                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
+                    angle.X = -90.0f;
+                    angle.Y = 0.0f;
+                }
+            }
+            else
+            {
+                angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
+                angle.X = +90.0f;
+                angle.Y = 0.0f;
+            }
+            return angle;
+        }
+
+        /// quaternionÇeuleräp (zxyâÒì]) Ç…ïœä∑
+        public static Vector3 ToAngleZXY(Quaternion q)
+        {
+            return ToAngleZXY(Matrix.RotationQuaternion(q));
+        }
+
+        /// euleräp (xyzâÒì]) ÇquaternionÇ…ïœä∑
+        public static Quaternion ToQuaternionXYZ(Vector3 angle)
+        {
+            Quaternion qx, qy, qz;
+            qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), Geometry.DegreeToRadian(angle.X));
+            qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), Geometry.DegreeToRadian(angle.Y));
+            qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), Geometry.DegreeToRadian(angle.Z));
+            return qz * qy * qx;
+        }
+
+        /// âÒì]çsóÒÇeuleräp (xyzâÒì]) Ç…ïœä∑
+        public static Vector3 ToAngleXYZ(Matrix m)
+        {
+            Vector3 angle;
+            if (m.M31 < +1.0f - float.Epsilon)
+            {
+                if (m.M31 > -1.0f + float.Epsilon)
+                {
+                    angle.X = Geometry.RadianToDegree((float)Math.Atan2(-m.M32, m.M33));
+                    angle.Y = Geometry.RadianToDegree((float)Math.Asin(m.M31));
+                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(-m.M21, m.M11));
+                }
+                else
+                {
+                    angle.X = Geometry.RadianToDegree((float)Math.Atan2(m.M21, m.M22));
+                    angle.Y = -90.0f;
+                    angle.Z = 0.0f;
+                }
+            }
+            else
+            {
+                angle.X = Geometry.RadianToDegree((float)Math.Atan2(m.M21, m.M22));
+                angle.Y = +90.0f;
+                angle.Z = 0.0f;
+            }
+            return angle;
+        }
+
+        /// quaternionÇeuleräp (xyzâÒì]) Ç…ïœä∑
+        public static Vector3 ToAngleXYZ(Quaternion q)
+        {
+            return ToAngleXYZ(Matrix.RotationQuaternion(q));
         }
     }
 

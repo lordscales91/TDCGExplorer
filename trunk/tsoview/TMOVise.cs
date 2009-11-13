@@ -20,36 +20,36 @@ public static class TMOVise
 
         TMOFile tmo = new TMOFile();
         tmo.Load(source_file);
-        TMOConstraint constraint = TMOConstraint.Load(@"ypr-GRABIA.xml");
+        TMOConstraint constraint = TMOConstraint.Load(@"angle-GRABIA.xml");
 
         foreach (TMONode node in tmo.nodes)
         {
             TMOMat mat = node.frame_matrices[0];
 
-            float yaw, pitch, roll;
             string sname = node.ShortName;
             Vector3 scaling;
             Vector3 translation = TMOMat.DecomposeMatrix(ref mat.m, out scaling);
-            TMOMat.RotationToYawPitchRoll(ref mat.m, out yaw, out pitch, out roll);
+            Vector3 angle = TMOMat.ToAngle(mat.m);
 
             TMOConstraintItem item = constraint.GetItem(sname);
 
-            if (yaw < item.Min.Y)
-                yaw = item.Min.Y;
-            if (yaw > item.Max.Y)
-                yaw = item.Max.Y;
+            if (angle.X < item.Min.X)
+                angle.X = item.Min.X;
+            if (angle.X > item.Max.X)
+                angle.X = item.Max.X;
 
-            if (pitch < item.Min.X)
-                pitch = item.Min.X;
-            if (pitch > item.Max.X)
-                pitch = item.Max.X;
+            if (angle.Y < item.Min.Y)
+                angle.Y = item.Min.Y;
+            if (angle.Y > item.Max.Y)
+                angle.Y = item.Max.Y;
 
-            if (roll < item.Min.Z)
-                roll = item.Min.Z;
-            if (roll > item.Max.Z)
-                roll = item.Max.Z;
+            if (angle.Z < item.Min.Z)
+                angle.Z = item.Min.Z;
+            if (angle.Z > item.Max.Z)
+                angle.Z = item.Max.Z;
 
-            mat.m = Matrix.Scaling(scaling) * Matrix.RotationYawPitchRoll(yaw, pitch, roll) * Matrix.Translation(translation);
+            Quaternion q = TMOMat.ToQuaternion(angle);
+            mat.m = Matrix.Scaling(scaling) * Matrix.RotationQuaternion(q) * Matrix.Translation(translation);
         }
         tmo.Save(@"out.tmo");
     }

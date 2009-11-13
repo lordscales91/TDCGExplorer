@@ -1,6 +1,6 @@
 ﻿namespace TMOComposer
 {
-    partial class Form2
+    partial class SaveListForm
     {
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -64,15 +64,15 @@
             this.ilSaves.ImageSize = new System.Drawing.Size(128, 256);
             this.ilSaves.TransparentColor = System.Drawing.Color.Transparent;
             // 
-            // Form2
+            // SaveListForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 563);
             this.Controls.Add(this.btnGetSaves);
             this.Controls.Add(this.lvSaves);
-            this.Name = "Form2";
-            this.Text = "Form2";
+            this.Name = "SaveListForm";
+            this.Text = "SaveListForm";
             this.ResumeLayout(false);
 
         }

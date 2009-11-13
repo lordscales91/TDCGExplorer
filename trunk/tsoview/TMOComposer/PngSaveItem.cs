@@ -15,5 +15,10 @@ namespace TMOComposer
         {
             tmoanim = new TMOAnim();
         }
+
+        public void UpdateID(int i)
+        {
+            tmoanim.UpdateID(i);
+        }
     }
 }
