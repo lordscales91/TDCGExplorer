@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using CSScriptLibrary;
@@ -16,7 +16,8 @@ namespace TMOProportion
     {
         internal Viewer viewer = null;
         List<IProportion> pro_list = new List<IProportion>();
-        List<ProportionSlider> bar_list = new List<ProportionSlider>();
+        TPOFileList tpo_list = new TPOFileList();
+        string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
 
         public string GetProportionPath()
         {
@@ -34,7 +35,7 @@ namespace TMOProportion
             this.ClientSize = tso_config.ClientSize;
             viewer = new Viewer();
 
-            if (viewer.InitializeApplication(this, true))
+            if (viewer.InitializeApplication(this))
             {
                 viewer.FigureEvent += delegate(object sender, EventArgs e)
                 {
@@ -42,6 +43,9 @@ namespace TMOProportion
                 };
                 foreach (string arg in args)
                     viewer.LoadAnyFile(arg, true);
+                if (viewer.FigureList.Count == 0)
+                    viewer.LoadAnyFile(Path.Combine(save_path, "system.tdcgsav.png"), true);
+                viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
 
                 timer1.Enabled = true;
             }
@@ -53,28 +57,39 @@ namespace TMOProportion
                 var script = CSScript.Load(script_file).CreateInstance(class_name).AlignToInterface<IProportion>();
                 pro_list.Add(script);
             }
+            tpo_list.SetProportionList(pro_list);
+            ReadTPOConfig();
 
+            for (int i = 0; i < tpo_list.Count; i++)
+            {
+                TPOFile tpo = tpo_list[i];
+                ProportionSlider slider = new ProportionSlider();
+                slider.Tag = tpo;
+                slider.ClassName = tpo.ProportionName;
+                slider.Ratio = tpo.Ratio;
+
+                slider.Location = new System.Drawing.Point(10, 10 + i * 95);
+                slider.ValueChanged += new System.EventHandler(this.slider_ValueChanged);
+                this.Controls.Add(slider);
+            }
+            UpdateTpoList();
+        }
+
+        private void ReadTPOConfig()
+        {
             TPOConfig tpo_config = TPOConfig.Load(GetTPOConfigPath());
+
             Dictionary<string, Proportion> portion_map = new Dictionary<string, Proportion>();
             foreach (Proportion portion in tpo_config.Proportions)
                 portion_map[portion.ClassName] = portion;
 
-            foreach (IProportion pro in pro_list)
+            foreach (TPOFile tpo in tpo_list.files)
             {
-                ProportionSlider slider = new ProportionSlider();
-                slider.ClassName = pro.ToString();
-                {
-                    Proportion portion;
-                    if (portion_map.TryGetValue(slider.ClassName, out portion))
-                        slider.Ratio = portion.Ratio;
-                }
-                slider.Location = new System.Drawing.Point(10, 10 + bar_list.Count * 95);
-                slider.ValueChanged += new System.EventHandler(this.slider_ValueChanged);
-                this.Controls.Add(slider);
-
-                bar_list.Add(slider);
+                Debug.Assert(tpo.Proportion != null, "tpo.Proportion should not be null");
+                Proportion portion;
+                if (portion_map.TryGetValue(tpo.ProportionName, out portion))
+                    tpo.Ratio = portion.Ratio;
             }
-            UpdateTpoList();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -100,24 +115,13 @@ namespace TMOProportion
             }
         }
 
-        TPOFileList tpo_list = new TPOFileList();
-    
         private void UpdateTpoList()
         {
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
                 tpo_list.Tmo = fig.Tmo;
-                tpo_list.SetProportionList(pro_list);
-
-                for (int i = 0; i < tpo_list.Count; i++)
-                {
-                    TPOFile tpo = tpo_list[i];
-                    bar_list[i].Tag = tpo;
-                    tpo.Ratio = bar_list[i].Ratio;
-                }
-
-                tpo_list.Transform(fig.GetFrameIndex());
+                tpo_list.Transform(0);
                 fig.UpdateBoneMatrices(true);
             }
         }
@@ -145,23 +149,22 @@ namespace TMOProportion
         private void btnSave_Click(object sender, EventArgs e)
         {
             SaveTPOConfig();
-            Close();
         }
 
         private void SaveTPOConfig()
         {
             TPOConfig config = new TPOConfig();
 
-            config.Proportions = new Proportion[bar_list.Count];
-            for (int i = 0; i < bar_list.Count; i++)
+            config.Proportions = new Proportion[tpo_list.Count];
+            for (int i = 0; i < tpo_list.Count; i++)
                 config.Proportions[i] = new Proportion();
 
-            for (int i = 0; i < bar_list.Count; i++)
+            for (int i = 0; i < tpo_list.Count; i++)
             {
+                TPOFile tpo = tpo_list[i];
                 Proportion portion = config.Proportions[i];
-                ProportionSlider slider = bar_list[i];
-                portion.ClassName = slider.ClassName;
-                portion.Ratio = slider.Ratio;
+                portion.ClassName = tpo.ProportionName;
+                portion.Ratio = tpo.Ratio;
             }
             config.Save(GetTPOConfigPath());
         }
