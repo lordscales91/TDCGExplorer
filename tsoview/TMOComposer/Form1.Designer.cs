@@ -34,9 +34,11 @@
         {
             this.components = new System.ComponentModel.Container();
             this.lvPoses = new System.Windows.Forms.ListView();
-            this.ilPoses = new System.Windows.Forms.ImageList(this.components);
             this.btnGetPoses = new System.Windows.Forms.Button();
             this.gvTMOAnimItems = new System.Windows.Forms.DataGridView();
+            this.poseFileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lengthDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tmoAnimItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.btnAnimate = new System.Windows.Forms.Button();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btnUp = new System.Windows.Forms.Button();
@@ -44,37 +46,30 @@
             this.btnDelete = new System.Windows.Forms.Button();
             this.btnRec = new System.Windows.Forms.Button();
             this.gvFigures = new System.Windows.Forms.DataGridView();
-            this.btnAdd = new System.Windows.Forms.Button();
-            this.btnDel = new System.Windows.Forms.Button();
             this.fileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.pngSaveItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
-            this.poseFileDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lengthDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.tmoAnimItemBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.btnAdd = new System.Windows.Forms.Button();
+            this.btnDel = new System.Windows.Forms.Button();
+            this.btnCopy = new System.Windows.Forms.Button();
+            this.cbLimitRotation = new System.Windows.Forms.CheckBox();
+            this.cbFloor = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.gvTMOAnimItems)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tmoAnimItemBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvFigures)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pngSaveItemBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tmoAnimItemBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // lvPoses
             // 
             this.lvPoses.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvPoses.LargeImageList = this.ilPoses;
-            this.lvPoses.Location = new System.Drawing.Point(572, 12);
+            this.lvPoses.Location = new System.Drawing.Point(572, 168);
             this.lvPoses.Name = "lvPoses";
-            this.lvPoses.Size = new System.Drawing.Size(200, 510);
+            this.lvPoses.Size = new System.Drawing.Size(200, 354);
             this.lvPoses.TabIndex = 0;
             this.lvPoses.UseCompatibleStateImageBehavior = false;
             this.lvPoses.DoubleClick += new System.EventHandler(this.lvPoses_DoubleClick);
             this.lvPoses.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listView1_KeyDown);
-            // 
-            // ilPoses
-            // 
-            this.ilPoses.ColorDepth = System.Windows.Forms.ColorDepth.Depth24Bit;
-            this.ilPoses.ImageSize = new System.Drawing.Size(128, 128);
-            this.ilPoses.TransparentColor = System.Drawing.Color.Transparent;
             // 
             // btnGetPoses
             // 
@@ -107,6 +102,25 @@
             this.gvTMOAnimItems.Size = new System.Drawing.Size(200, 354);
             this.gvTMOAnimItems.TabIndex = 2;
             this.gvTMOAnimItems.DoubleClick += new System.EventHandler(this.gvTMOAnimItems_DoubleClick);
+            this.gvTMOAnimItems.SelectionChanged += new System.EventHandler(this.gvTMOAnimItems_SelectionChanged);
+            // 
+            // poseFileDataGridViewTextBoxColumn
+            // 
+            this.poseFileDataGridViewTextBoxColumn.DataPropertyName = "PoseFile";
+            this.poseFileDataGridViewTextBoxColumn.HeaderText = "PoseFile";
+            this.poseFileDataGridViewTextBoxColumn.Name = "poseFileDataGridViewTextBoxColumn";
+            this.poseFileDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // lengthDataGridViewTextBoxColumn
+            // 
+            this.lengthDataGridViewTextBoxColumn.DataPropertyName = "Length";
+            this.lengthDataGridViewTextBoxColumn.HeaderText = "Length";
+            this.lengthDataGridViewTextBoxColumn.Name = "lengthDataGridViewTextBoxColumn";
+            this.lengthDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // tmoAnimItemBindingSource
+            // 
+            this.tmoAnimItemBindingSource.DataSource = typeof(TMOComposer.TMOAnimItem);
             // 
             // btnAnimate
             // 
@@ -126,7 +140,7 @@
             // 
             // btnUp
             // 
-            this.btnUp.Location = new System.Drawing.Point(218, 168);
+            this.btnUp.Location = new System.Drawing.Point(218, 197);
             this.btnUp.Name = "btnUp";
             this.btnUp.Size = new System.Drawing.Size(50, 23);
             this.btnUp.TabIndex = 5;
@@ -136,7 +150,7 @@
             // 
             // btnDown
             // 
-            this.btnDown.Location = new System.Drawing.Point(218, 197);
+            this.btnDown.Location = new System.Drawing.Point(218, 226);
             this.btnDown.Name = "btnDown";
             this.btnDown.Size = new System.Drawing.Size(50, 23);
             this.btnDown.TabIndex = 6;
@@ -146,7 +160,7 @@
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(218, 226);
+            this.btnDelete.Location = new System.Drawing.Point(218, 255);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(50, 23);
             this.btnDelete.TabIndex = 7;
@@ -182,6 +196,17 @@
             this.gvFigures.TabIndex = 9;
             this.gvFigures.SelectionChanged += new System.EventHandler(this.gvFigures_SelectionChanged);
             // 
+            // fileDataGridViewTextBoxColumn
+            // 
+            this.fileDataGridViewTextBoxColumn.DataPropertyName = "File";
+            this.fileDataGridViewTextBoxColumn.HeaderText = "SaveFile";
+            this.fileDataGridViewTextBoxColumn.Name = "fileDataGridViewTextBoxColumn";
+            this.fileDataGridViewTextBoxColumn.ReadOnly = true;
+            // 
+            // pngSaveItemBindingSource
+            // 
+            this.pngSaveItemBindingSource.DataSource = typeof(TMOComposer.PngSaveItem);
+            // 
             // btnAdd
             // 
             this.btnAdd.Location = new System.Drawing.Point(218, 41);
@@ -202,40 +227,50 @@
             this.btnDel.UseVisualStyleBackColor = true;
             this.btnDel.Click += new System.EventHandler(this.btnDel_Click);
             // 
-            // fileDataGridViewTextBoxColumn
+            // btnCopy
             // 
-            this.fileDataGridViewTextBoxColumn.DataPropertyName = "File";
-            this.fileDataGridViewTextBoxColumn.HeaderText = "SaveFile";
-            this.fileDataGridViewTextBoxColumn.Name = "fileDataGridViewTextBoxColumn";
-            this.fileDataGridViewTextBoxColumn.ReadOnly = true;
+            this.btnCopy.Location = new System.Drawing.Point(218, 168);
+            this.btnCopy.Name = "btnCopy";
+            this.btnCopy.Size = new System.Drawing.Size(50, 23);
+            this.btnCopy.TabIndex = 12;
+            this.btnCopy.Text = "&Copy";
+            this.btnCopy.UseVisualStyleBackColor = true;
+            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
             // 
-            // pngSaveItemBindingSource
+            // cbLimitRotation
             // 
-            this.pngSaveItemBindingSource.DataSource = typeof(TMOComposer.PngSaveItem);
+            this.cbLimitRotation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbLimitRotation.Checked = true;
+            this.cbLimitRotation.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbLimitRotation.Location = new System.Drawing.Point(572, 12);
+            this.cbLimitRotation.Name = "cbLimitRotation";
+            this.cbLimitRotation.Size = new System.Drawing.Size(100, 16);
+            this.cbLimitRotation.TabIndex = 13;
+            this.cbLimitRotation.Text = "&Limit Rotation";
+            this.cbLimitRotation.UseVisualStyleBackColor = true;
+            this.cbLimitRotation.CheckedChanged += new System.EventHandler(this.cbLimitRotation_CheckedChanged);
             // 
-            // poseFileDataGridViewTextBoxColumn
+            // cbFloor
             // 
-            this.poseFileDataGridViewTextBoxColumn.DataPropertyName = "PoseFile";
-            this.poseFileDataGridViewTextBoxColumn.HeaderText = "PoseFile";
-            this.poseFileDataGridViewTextBoxColumn.Name = "poseFileDataGridViewTextBoxColumn";
-            this.poseFileDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // lengthDataGridViewTextBoxColumn
-            // 
-            this.lengthDataGridViewTextBoxColumn.DataPropertyName = "Length";
-            this.lengthDataGridViewTextBoxColumn.HeaderText = "Length";
-            this.lengthDataGridViewTextBoxColumn.Name = "lengthDataGridViewTextBoxColumn";
-            this.lengthDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // tmoAnimItemBindingSource
-            // 
-            this.tmoAnimItemBindingSource.DataSource = typeof(TMOComposer.TMOAnimItem);
+            this.cbFloor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbFloor.Checked = true;
+            this.cbFloor.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbFloor.Location = new System.Drawing.Point(572, 34);
+            this.cbFloor.Name = "cbFloor";
+            this.cbFloor.Size = new System.Drawing.Size(100, 16);
+            this.cbFloor.TabIndex = 14;
+            this.cbFloor.Text = "&Floor";
+            this.cbFloor.UseVisualStyleBackColor = true;
+            this.cbFloor.CheckedChanged += new System.EventHandler(this.cbFloor_CheckedChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 563);
+            this.Controls.Add(this.cbFloor);
+            this.Controls.Add(this.cbLimitRotation);
+            this.Controls.Add(this.btnCopy);
             this.Controls.Add(this.btnDel);
             this.Controls.Add(this.btnAdd);
             this.Controls.Add(this.gvFigures);
@@ -250,9 +285,9 @@
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.gvTMOAnimItems)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tmoAnimItemBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvFigures)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pngSaveItemBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tmoAnimItemBindingSource)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -260,7 +295,6 @@
         #endregion
 
         private System.Windows.Forms.ListView lvPoses;
-        private System.Windows.Forms.ImageList ilPoses;
         private System.Windows.Forms.Button btnGetPoses;
         private System.Windows.Forms.DataGridView gvTMOAnimItems;
         private System.Windows.Forms.Button btnAnimate;
@@ -277,6 +311,9 @@
         private System.Windows.Forms.BindingSource pngSaveItemBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn fileDataGridViewTextBoxColumn;
         private System.Windows.Forms.Button btnDel;
+        private System.Windows.Forms.Button btnCopy;
+        private System.Windows.Forms.CheckBox cbLimitRotation;
+        private System.Windows.Forms.CheckBox cbFloor;
     }
 }
 

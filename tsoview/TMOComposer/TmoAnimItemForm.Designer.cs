@@ -38,6 +38,7 @@
             this.lbFaceFile = new System.Windows.Forms.Label();
             this.btnOpenFaces = new System.Windows.Forms.Button();
             this.accelSlider1 = new TMOComposer.AccelSlider();
+            this.btnOpenPoses = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // lbPoseFile
@@ -127,6 +128,16 @@
             this.accelSlider1.Size = new System.Drawing.Size(250, 100);
             this.accelSlider1.TabIndex = 9;
             // 
+            // btnOpenPoses
+            // 
+            this.btnOpenPoses.Location = new System.Drawing.Point(218, 24);
+            this.btnOpenPoses.Name = "btnOpenPoses";
+            this.btnOpenPoses.Size = new System.Drawing.Size(50, 23);
+            this.btnOpenPoses.TabIndex = 10;
+            this.btnOpenPoses.Text = "Open...";
+            this.btnOpenPoses.UseVisualStyleBackColor = true;
+            this.btnOpenPoses.Click += new System.EventHandler(this.btnOpenPoses_Click);
+            // 
             // TmoAnimItemForm
             // 
             this.AcceptButton = this.btnOK;
@@ -134,6 +145,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.btnCancel;
             this.ClientSize = new System.Drawing.Size(284, 263);
+            this.Controls.Add(this.btnOpenPoses);
             this.Controls.Add(this.accelSlider1);
             this.Controls.Add(this.btnOpenFaces);
             this.Controls.Add(this.tbFaceFile);
@@ -164,5 +176,6 @@
         private System.Windows.Forms.Label lbFaceFile;
         private System.Windows.Forms.Button btnOpenFaces;
         private AccelSlider accelSlider1;
+        private System.Windows.Forms.Button btnOpenPoses;
     }
 }

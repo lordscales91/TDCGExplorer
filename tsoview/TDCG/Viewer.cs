@@ -50,7 +50,7 @@ public class Viewer : IDisposable
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, -1.0f);
 
     // マウスポイントしているスクリーン座標
-    private Point lastScreenPoint = Point.Empty;
+    internal Point lastScreenPoint = Point.Empty;
 
     private void control_OnSizeChanged(object sender, EventArgs e)
     {
@@ -61,7 +61,7 @@ public class Viewer : IDisposable
                 1000.0f );
     }
 
-    private void form_OnMouseDown(object sender, MouseEventArgs e)
+    protected virtual void form_OnMouseDown(object sender, MouseEventArgs e)
     {
         switch (e.Button)
         {
@@ -75,7 +75,7 @@ public class Viewer : IDisposable
         lastScreenPoint.Y = e.Y;
     }
 
-    private void form_OnMouseMove(object sender, MouseEventArgs e)
+    protected virtual void form_OnMouseMove(object sender, MouseEventArgs e)
     {
         int dx = e.X - lastScreenPoint.X;
         int dy = e.Y - lastScreenPoint.Y;
@@ -86,13 +86,13 @@ public class Viewer : IDisposable
             if (Control.ModifierKeys == Keys.Control)
                 lightDir = ScreenToOrientation(e.X, e.Y);
             else
-                camera.Move(dx, -dy, 0.0f);
+                Camera.Move(dx, -dy, 0.0f);
             break;
         case MouseButtons.Middle:
-            camera.MoveView(-dx*0.125f, dy*0.125f);
+            Camera.MoveView(-dx*0.125f, dy*0.125f);
             break;
         case MouseButtons.Right:
-            camera.Move(0.0f, 0.0f, -dy*0.125f);
+            Camera.Move(0.0f, 0.0f, -dy*0.125f);
             break;
         }
 
@@ -407,11 +407,11 @@ public class Viewer : IDisposable
         }
     }
 
-    private Matrix world_matrix = Matrix.Identity;
-    private Matrix Transform_View = Matrix.Identity;
-    private Matrix Transform_Projection = Matrix.Identity;
-    private Matrix Light_View = Matrix.Identity;
-    private Matrix Light_Projection = Matrix.Identity;
+    internal Matrix world_matrix = Matrix.Identity;
+    internal Matrix Transform_View = Matrix.Identity;
+    internal Matrix Transform_Projection = Matrix.Identity;
+    internal Matrix Light_View = Matrix.Identity;
+    internal Matrix Light_Projection = Matrix.Identity;
 
     private VertexBuffer vbGauss;
 
@@ -673,6 +673,14 @@ public class Viewer : IDisposable
     internal bool SpriteShown = false;
 
     /// <summary>
+    /// モーションが有効であるか。
+    /// </summary>
+    public bool IsMotionEnabled()
+    {
+        return motionEnabled;
+    }
+
+    /// <summary>
     /// モーションの有無を切り替えます。
     /// </summary>
     public void SwitchMotionEnabled()
@@ -787,6 +795,9 @@ public class Viewer : IDisposable
         return max;
     }
 
+    public delegate void RenderingHandler();
+    public RenderingHandler Rendering;
+
     /// <summary>
     /// シーンをレンダリングします。
     /// </summary>
@@ -821,7 +832,10 @@ public class Viewer : IDisposable
         {
             DrawSprite();
         }
- 
+
+        if (Rendering != null)
+            Rendering();
+
         device.EndScene();
         {
             int ret;
