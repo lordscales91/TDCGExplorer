@@ -13,7 +13,7 @@ namespace TMOComposer
 {
     public partial class Form1 : Form
     {
-        Viewer viewer = null;
+        CCDViewer viewer = null;
         PngSave pngsave;
         SaveListForm saveListForm = null;
         PoseListForm poseListForm = null;
@@ -35,7 +35,11 @@ namespace TMOComposer
             TMOAnimItem.PoseRoot = tso_config.PosePath;
             TMOAnimItem.FaceRoot = tso_config.FacePath;
 
-            viewer = new Viewer();
+            viewer = new CCDViewer();
+            viewer.Rendering += delegate()
+            {
+                viewer.RenderDerived();
+            };
             if (viewer.InitializeApplication(this))
             {
                 CreatePngSave();
@@ -165,6 +169,7 @@ namespace TMOComposer
         private void timer1_Tick(object sender, EventArgs e)
         {
             viewer.FrameMove();
+            viewer.FrameMoveDerived();
             viewer.Render();
         }
 
