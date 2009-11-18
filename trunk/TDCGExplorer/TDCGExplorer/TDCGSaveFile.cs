@@ -9,7 +9,7 @@ using System.IO;
 
 namespace TDCGExplorer
 {
-    public class TDCGSaveFileInfo
+    public static class TDCGSaveFileStatic
     {
         public static readonly DataPair[] PARTS;
         public static readonly DataPair[] SLIDER;
@@ -18,41 +18,7 @@ namespace TDCGExplorer
         private const int PARTS_FILE_NAME_SIZE = 32;
         public const int SLIDER_SIZE = 7;
 
-        private byte[] m_saveData;
-        private Bitmap m_bitmap;
-
-        public byte[] SaveData
-        {
-            get { return m_saveData; }
-        }
-        public Bitmap Bitmap
-        {
-            get { return m_bitmap; }
-        }
-        public bool IsValid
-        {
-            get { return IsValidFile(); }
-        }
-
-        public TDCGSaveFileInfo(string saveFileName)
-        {
-            m_bitmap = new Bitmap(saveFileName);
-            if (IsValidFile())
-            {
-                m_saveData = ExtractSaveData(m_bitmap);
-            }
-        }
-
-        public TDCGSaveFileInfo(Stream stream)
-        {
-            m_bitmap = new Bitmap(stream);
-            if (IsValidFile())
-            {
-                m_saveData = ExtractSaveData(m_bitmap);
-            }
-        }
-
-        static TDCGSaveFileInfo()
+        static TDCGSaveFileStatic()
         {
             PARTS = new DataPair[PARTS_SIZE];
             PARTS[0].Set("身体", 0 * PARTS_FILE_NAME_SIZE);
@@ -97,7 +63,53 @@ namespace TDCGExplorer
             SLIDER[5].Set("ツリ眼たれ眼", PARTS_FILE_NAME_SIZE * PARTS_SIZE + 4 * 8);
             SLIDER[6].Set("やわらか", PARTS_FILE_NAME_SIZE * PARTS_SIZE + 4 * 11);
         }
+    }
 
+    public class TDCGSaveFileInfo : IDisposable
+    {
+        private byte[] m_saveData;
+        private Bitmap m_bitmap;
+
+        public byte[] SaveData
+        {
+            get { return m_saveData; }
+        }
+        public Bitmap Bitmap
+        {
+            get { return m_bitmap; }
+        }
+        public bool IsValid
+        {
+            get { return IsValidFile(); }
+        }
+
+        public TDCGSaveFileInfo(string saveFileName)
+        {
+            m_bitmap = new Bitmap(saveFileName);
+            if (IsValidFile())
+            {
+                m_saveData = ExtractSaveData(m_bitmap);
+            }
+        }
+
+        public TDCGSaveFileInfo(Stream stream)
+        {
+            m_bitmap = new Bitmap(stream);
+            if (IsValidFile())
+            {
+                m_saveData = ExtractSaveData(m_bitmap);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (m_bitmap != null)
+            {
+                m_bitmap.Dispose();
+                m_bitmap = null;
+            }
+        }
+#if false
         public override string ToString()
         {
             unsafe
@@ -174,22 +186,23 @@ namespace TDCGExplorer
                 return str;
             }
         }
+#endif
 
         public string GetPartsName(int index)
         {
-            return PARTS[index].Name;
+            return TDCGSaveFileStatic.PARTS[index].Name;
         }
         public string GetPartsFileName(int index)
         {
-            return GetString(PARTS[index].Offset);
+            return GetString(TDCGSaveFileStatic.PARTS[index].Offset);
         }
         public string GetSliderName(int index)
         {
-            return SLIDER[index].Name;
+            return TDCGSaveFileStatic.SLIDER[index].Name;
         }
         public string GetSliderValue(int index)
         {
-            return GetFloat(SLIDER[index].Offset).ToString();
+            return GetFloat(TDCGSaveFileStatic.SLIDER[index].Offset).ToString();
         }
 
         public string GetFileName(int index)
@@ -198,7 +211,7 @@ namespace TDCGExplorer
             {
                 fixed (byte* pb = m_saveData)
                 {
-                    return new String((sbyte*)pb + PARTS[index].Offset);
+                    return new String((sbyte*)pb + TDCGSaveFileStatic.PARTS[index].Offset);
                 }
             }
         }

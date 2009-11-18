@@ -194,7 +194,7 @@ namespace System.Windows.Forms
                         TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
                         TDCGExplorer.TDCGExplorer.MainFormWindow.clearTSOViewer();
                         TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
-                        TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad(); // 初期tmoを読み込む.
+                        if(TDCGExplorer.TDCGExplorer.SystemDB.loadinitialpose) TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad(); // 初期tmoを読み込む.
                         // カメラをセンター位置に.
                         TSOCameraAutoCenter camera = new TSOCameraAutoCenter(TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer);
                         camera.UpdateCenterPosition(fromfile.path.ToUpper());

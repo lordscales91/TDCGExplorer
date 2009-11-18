@@ -141,6 +141,7 @@ namespace TDCGExplorer
             explorerzipfolder = explorerzipfolder;
             tahversioncollision = tahversioncollision;
             posefile_savedirectory = posefile_savedirectory;
+            arcsvacume = arcsvacume;
         }
 
         // arcpathの取得・設定.
@@ -347,5 +348,28 @@ namespace TDCGExplorer
             get { return GetSqlValue("posefile_savedirectory", Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "TechArts3D\\TDCG\\pose")); }
             set { SetSqlValue("posefile_savedirectory", value); }
         }
+
+        // TSO表示時にtmoファイルを読み込むか? (隠し設定)
+        public bool loadinitialpose
+        {
+            get { return GetSqlValue("loadinitialpose", "false") == "true"; }
+            set
+            {
+                if (value == true) SetSqlValue("loadinitialpose", "true");
+                else SetSqlValue("loadinitialpose", "false");
+            }
+        }
+
+        // arcsを毎回vacumeするか?
+        public bool arcsvacume
+        {
+            get { return GetSqlValue("arcsvacume", "true") == "true"; }
+            set
+            {
+                if (value == true) SetSqlValue("arcsvacume", "true");
+                else SetSqlValue("arcsvacume", "false");
+            }
+        }
+
     }
 }

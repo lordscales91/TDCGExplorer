@@ -91,6 +91,7 @@ namespace System.Windows.Forms
                             ms.Seek(0, SeekOrigin.Begin);
 
                             BindingStream(ms);
+                            ms.Close();
                         }
                     }
                 }

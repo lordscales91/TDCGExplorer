@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace TDCGExplorer
 {
@@ -48,7 +49,62 @@ namespace TDCGExplorer
         {
             get { return categoryTable; }
         }
- 
+
+        public static string GetCategoryText(string pathname)
+        {
+            string file = Path.GetFileNameWithoutExtension(pathname);
+            string ext = Path.GetExtension(pathname).ToLower();
+            if(file.Length!=12) return "";
+            if (ext == ".psd" || ext == ".tbn" || ext == ".tso")
+            {
+                string typechar = file.Substring(9, 1);
+                int type = typechartotype(typechar[0]);
+                return "" + CategoryData[type].symbol + ":" + CategoryData[type].name;
+            }
+            return "";
+        }
+
+        public static int typechartotype(char typecode)
+        {
+            int type = 0;
+            string typestring = new string(typecode, 1);
+            switch (typestring.ToUpper())
+            {
+                case "A": type = 0; break;
+                case "B": type = 1; break;
+                case "C": type = 2; break;
+                case "D": type = 3; break;
+                case "E": type = 4; break;
+                case "F": type = 5; break;
+                case "G": type = 6; break;
+                case "H": type = 7; break;
+                case "I": type = 8; break;
+                case "J": type = 9; break;
+                case "K": type = 10; break;
+                case "L": type = 11; break;
+                case "M": type = 12; break;
+                case "N": type = 13; break;
+                case "O": type = 14; break;
+                case "P": type = 15; break;
+                case "Q": type = 16; break;
+                case "R": type = 17; break;
+                case "S": type = 18; break;
+                case "T": type = 19; break;
+                case "U": type = 20; break;
+                case "V": type = 21; break;
+                case "W": type = 22; break;
+                case "X": type = 23; break;
+                case "Y": type = 24; break;
+                case "Z": type = 25; break;
+                case "0": type = 26; break;
+                case "1": type = 27; break;
+                case "2": type = 28; break;
+                case "3": type = 29; break;
+            }
+            return type;
+        }
+
+
         public static void SetTsoName(byte[] tbndata, string tsoname)
         {
             int offset=-1;

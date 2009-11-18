@@ -17,7 +17,6 @@ namespace TDCGExplorer
         public int version;
         public DateTime datetime;
     }
-
     public class ArcsTahFilesEntry
     {
         public int id;
@@ -65,7 +64,6 @@ namespace TDCGExplorer
             return Path.GetFileName(path);
         }
     }
-
     public class ArcsZipTahEntry
     {
         public int id;
@@ -81,7 +79,6 @@ namespace TDCGExplorer
         public int fromFilesID;
         public int toFilesID;
     }
-
     public class ArcsDatabase : IDisposable
     {
         private SQLiteConnection cnn;

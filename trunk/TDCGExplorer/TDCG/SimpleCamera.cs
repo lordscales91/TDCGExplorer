@@ -14,7 +14,7 @@ namespace TDCG
     public class SimpleCamera
     {
         private Vector3 center = Vector3.Empty;
-        private Vector3 translation = new Vector3(0.0f, 0.0f, -10.0f);
+        private Vector3 translation = new Vector3(0.0f, 0.0f, +10.0f);
         private Vector3 dirD = Vector3.Empty; //カメラ移動方向ベクトル
         private float zD = 0.0f;      //カメラ奥行オフセット値
         private bool needUpdate = true;    //更新する必要があるか
@@ -39,7 +39,7 @@ namespace TDCG
         public void Reset()
         {
             center = Vector3.Empty;
-            translation = new Vector3(0.0f, 0.0f, 0.0f -10.0f);
+            translation = new Vector3(0.0f, 0.0f, +10.0f);
             angle = Vector3.Empty;
             needUpdate = true;
         }
@@ -72,12 +72,6 @@ namespace TDCG
 
             rotZD = angle;
             needUpdate = true;
-        }
-
-        public Vector3 Angle
-        {
-            get { return angle; }
-            set { angle = value; needUpdate = true; }
         }
 
         /// <summary>
@@ -123,6 +117,12 @@ namespace TDCG
             this.center = center;
             needUpdate = true;
         }
+        /// <summary>
+        /// 回転中心を設定します。
+        /// </summary>
+        /// <param name="x">回転中心x座標</param>
+        /// <param name="y">回転中心y座標</param>
+        /// <param name="z">回転中心z座標</param>
         public void SetCenter(float x, float y, float z)
         {
             SetCenter(new Vector3(x, y, z));
@@ -137,6 +137,12 @@ namespace TDCG
             this.translation = translation;
             needUpdate = true;
         }
+        /// <summary>
+        /// view座標上の位置を設定します。
+        /// </summary>
+        /// <param name="x">view座標上の位置x座標</param>
+        /// <param name="y">view座標上の位置y座標</param>
+        /// <param name="z">view座標上の位置z座標</param>
         public void SetTranslation(float x, float y, float z)
         {
             SetTranslation(new Vector3(x, y, z));
@@ -162,5 +168,13 @@ namespace TDCG
             dirD = Vector3.Empty;
             zD = 0.0f;
         }
+
+        // konoa modified.
+        public Vector3 Angle
+        {
+            get { return angle; }
+            set { angle = value; needUpdate = true; }
+        }
+
     }
 }

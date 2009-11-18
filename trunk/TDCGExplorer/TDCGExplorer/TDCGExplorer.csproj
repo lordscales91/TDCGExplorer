@@ -100,7 +100,11 @@
     <Compile Include="AnnotationDB.cs" />
     <Compile Include="ArcNames.cs" />
     <Compile Include="ArcsDataBase.cs" />
+    <Compile Include="DefaultTMOPng.cs" />
     <Compile Include="FindBaseModPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FindItemPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="PNGHSAVStream.cs" />
@@ -199,6 +203,9 @@
     <EmbeddedResource Include="FindBaseModPage.resx">
       <DependentUpon>FindBaseModPage.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FindItemPage.resx">
+      <DependentUpon>FindItemPage.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="PoseFilePage.resx">
       <DependentUpon>PoseFilePage.cs</DependentUpon>
     </EmbeddedResource>
@@ -262,9 +269,6 @@
     <None Include="ifpsd.spi">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="manual.mht">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="N001OBON_Z00.tbn">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -275,9 +279,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="SnapShotPose.tmo">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="title.psd" />
     <None Include="toonshader.cgfx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -343,6 +345,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SnapShotPose.tdcgpose.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="title.jpg">

@@ -363,7 +363,7 @@ namespace System.Windows.Forms
 
         private void dataGridView_Resize(object sender, EventArgs e)
         {
-            dataGridView.Size = Size;
+            dataGridView.Size = ClientSize;//Size;
         }
 
         private void dataGridView_MouseEnter(object sender, EventArgs e)
@@ -659,7 +659,7 @@ namespace System.Windows.Forms
                                             string oldtsoname = pathelement[pathelement.Length - 1];
                                             string newtsopath = tsopath + oldtsoname.Substring(0, 9) + type.symbol.ToString() + oldtsoname.Substring(10, 6);
                                             // ファイル名を書き換える
-                                            byte[]tbn=ReadTbnData(typechartotype(type.symbol)); // 適切なtbnを読み込む.
+                                            byte[]tbn=ReadTbnData(TDCGTbnUtil.typechartotype(type.symbol)); // 適切なtbnを読み込む.
                                             dataentry.data = tbn;
                                             TDCGTbnUtil.SetTsoName(dataentry.data, newtsopath);
                                             database.UpdateData(dataentry);
@@ -698,45 +698,6 @@ namespace System.Windows.Forms
                     throw ex;
                 }
             }
-        }
-
-        private int typechartotype(char typecode)
-        {
-            int type = 0;
-            string typestring = new string(typecode,1);
-            switch(typestring.ToUpper()){
-                case "A": type = 0; break;
-                case "B": type = 1; break;
-                case "C": type = 2; break;
-                case "D": type = 3; break;
-                case "E": type = 4; break;
-                case "F": type = 5; break;
-                case "G": type = 6; break;
-                case "H": type = 7; break;
-                case "I": type = 8; break;
-                case "J": type = 9; break;
-                case "K": type = 10; break;
-                case "L": type = 11; break;
-                case "M": type = 12; break;
-                case "N": type = 13; break;
-                case "O": type = 14; break;
-                case "P": type = 15; break;
-                case "Q": type = 16; break;
-                case "R": type = 17; break;
-                case "S": type = 18; break;
-                case "T": type = 19; break;
-                case "U": type = 20; break;
-                case "V": type = 21; break;
-                case "W": type = 22; break;
-                case "X": type = 23; break;
-                case "Y": type = 24; break;
-                case "Z": type = 25; break;
-                case "0": type = 26; break;
-                case "1": type = 27; break;
-                case "2": type = 28; break;
-                case "3": type = 29; break;
-            }
-            return type;
         }
 
         private byte[] ReadTbnData(int type)
@@ -960,6 +921,17 @@ namespace System.Windows.Forms
         // データを追加する.
         public void AddItem(string path, byte[] bytedata)
         {
+            // もし既にエントリがある場合はデータを更新する.
+            TAHLocalDbEntry past = database.GetEntry(path);
+            if (past != null)
+            {
+                TAHLocalDBDataEntry updatedata = new TAHLocalDBDataEntry();
+                updatedata.data = bytedata;
+                updatedata.dataid = past.dataid;
+                database.UpdateData(updatedata);
+                return;
+            }
+
             // データベースにデータを追加する.
             TAHLocalDBDataEntry tahdata = new TAHLocalDBDataEntry();
             tahdata.data = bytedata;
@@ -1156,7 +1128,7 @@ namespace System.Windows.Forms
                         }
                     }
                 }
-                TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad(); // 初期tmoを読み込む.
+                if (TDCGExplorer.TDCGExplorer.SystemDB.loadinitialpose) TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad(); // 初期tmoを読み込む.
                 // 選んだアイテムが１個の時は自動センタリングする.
                 if (tsoFileList.Count == 1 && thetsoname != "")
                 {

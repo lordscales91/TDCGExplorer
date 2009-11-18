@@ -403,6 +403,24 @@ namespace TDCG
             this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
         }
 
+        public void SetName(string name)
+        {
+            this.name = name;
+            this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
+        }
+
+        public void UpdateName()
+        {
+            string name = "";
+            TSONode bone = this;
+            while (bone != null)
+            {
+                name = "|" + bone.ShortName + name;
+                bone = bone.parent;
+            }
+            this.name = name;
+        }
+
         /// <summary>
         /// 回転変位
         /// </summary>
@@ -747,6 +765,32 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 指定パスに保存します。
+        /// </summary>
+        /// <param name="dest_file">パス</param>
+        public void Save(string dest_file)
+        {
+            using (Stream dest_stream = File.Create(dest_file))
+                Save(dest_stream);
+        }
+
+        /// <summary>
+        /// 指定ストリームに保存します。
+        /// </summary>
+        /// <param name="dest_stream">ストリーム</param>
+        public void Save(Stream dest_stream)
+        {
+            BinaryWriter bw = new BinaryWriter(dest_stream);
+
+            TSOWriter.WriteMagic(bw);
+            TSOWriter.Write(bw, nodes);
+            TSOWriter.Write(bw, textures);
+            TSOWriter.Write(bw, scripts);
+            TSOWriter.Write(bw, sub_scripts);
+            TSOWriter.Write(bw, meshes);
+        }
+
+        /// <summary>
         /// 指定パスから読み込みます。
         /// </summary>
         /// <param name="source_file">パス</param>
@@ -774,24 +818,14 @@ namespace TDCG
 
             int node_count = reader.ReadInt32();
             nodes = new TSONode[node_count];
-            nodemap = new Dictionary<string, TSONode>();
 
             for (int i = 0; i < node_count; i++)
             {
                 string name = ReadString();
                 nodes[i] = new TSONode(i, name);
-                nodemap.Add(name, nodes[i]);
             }
 
-            for (int i = 0; i < node_count; i++)
-            {
-                int index = nodes[i].Name.LastIndexOf('|');
-                if (index <= 0)
-                    continue;
-                string pname = nodes[i].Name.Substring(0, index);
-                nodes[i].parent = nodemap[pname];
-                nodes[i].parent.child_nodes.Add(nodes[i]);
-            }
+            GenerateNodemapAndTree();
 
             int node_matrix_count = reader.ReadInt32();
             Matrix m = Matrix.Identity;
@@ -835,6 +869,34 @@ namespace TDCG
 
                 //Console.WriteLine("mesh name {0} len {1}", mesh.name, mesh.sub_meshes.Length);
             }
+        }
+
+        internal void GenerateNodemapAndTree()
+        {
+            nodemap = new Dictionary<string, TSONode>();
+
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                nodemap.Add(nodes[i].Name, nodes[i]);
+            }
+
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                int index = nodes[i].Name.LastIndexOf('|');
+                if (index <= 0)
+                    continue;
+                string pname = nodes[i].Name.Substring(0, index);
+                nodes[i].parent = nodemap[pname];
+                nodes[i].parent.child_nodes.Add(nodes[i]);
+            }
+        }
+
+        public void UpdateRootNodeName(string name)
+        {
+            TSONode root_node = nodes[0];
+            root_node.SetName(name);
+            foreach (TSONode node in nodes)
+                node.UpdateName();
         }
 
         /// <summary>
@@ -966,7 +1028,7 @@ namespace TDCG
         }
 
         internal Shader current_shader = null;
-        internal Vector3 lightDir = new Vector3(0.0f, 0.0f, 1.0f);
+        internal Vector3 lightDir = new Vector3(0.0f, 0.0f, -1.0f);
 
         /// <summary>
         /// 光源方向ベクトルを得ます。
@@ -974,7 +1036,7 @@ namespace TDCG
         /// <returns></returns>
         public Vector4 LightDirForced()
         {
-            return new Vector4(lightDir.X, lightDir.Y, -lightDir.Z, 0.0f);
+            return new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 0.0f);
         }
 
         /// <summary>

@@ -179,5 +179,11 @@ namespace TDCGExplorer
             get { return textBoxPoseDir.Text; }
             set { textBoxPoseDir.Text = value; }
         }
+        public bool arcsvacume
+        {
+            get { return checkBoxArcsVacume.Checked; }
+            set { checkBoxArcsVacume.Checked = value; }
+        }
+
     }
 }

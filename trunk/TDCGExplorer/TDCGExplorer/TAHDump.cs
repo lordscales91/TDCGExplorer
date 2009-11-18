@@ -252,6 +252,18 @@ namespace TDCGExplorer
                     entry.id = db.SetZipEntry(entry);
                     ZipDumpArcEntries(db, entry);
                 }
+                else
+                {
+                    DateTime datetime = File.GetLastWriteTime(zipname);
+                    ArcsZipArcEntry entry = new ArcsZipArcEntry();
+                    entry.id = 0;
+                    entry.path = zipname.Substring(zipspath.Length + 1);
+                    entry.code = Path.GetFileNameWithoutExtension(zipname);
+                    entry.exist = 1;
+                    entry.datetime = datetime;
+                    entry.id = db.SetZipEntry(entry);
+                    ZipDumpArcEntries(db, entry);
+                }
             }
         }
 

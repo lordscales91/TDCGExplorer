@@ -83,17 +83,9 @@ namespace TDCGExplorer
         {
             //Splashフォームを作成
             _form = new SplashForm();
-            //Splashフォームをクリックして閉じられるようにする
-            _form.Click += new EventHandler(_form_Click);
             //Splashフォームを表示する
             Application.Run(_form);
         }
 
-        //Splashフォームがクリックされた時
-        private static void _form_Click(object sender, EventArgs e)
-        {
-            //Splashフォームを閉じる
-            CloseSplash();
-        }
     }
 }

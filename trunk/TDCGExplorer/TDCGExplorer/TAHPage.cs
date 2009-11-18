@@ -39,10 +39,11 @@ namespace System.Windows.Forms
             data.Columns.Add("ファイルタイプ", Type.GetType("System.String"));
             data.Columns.Add("ハッシュ値", Type.GetType("System.String"));
             data.Columns.Add("データサイズ", Type.GetType("System.String"));
+            data.Columns.Add("属性", Type.GetType("System.String"));
             foreach (ArcsTahFilesEntry file in filesentries)
             {
                 DataRow row = data.NewRow();
-                string[] content = { file.tahentry.ToString(), file.GetDisplayPath(), Path.GetExtension(file.path), file.hash.ToString("x8"), file.length.ToString() };
+                string[] content = { file.tahentry.ToString(), file.GetDisplayPath(), Path.GetExtension(file.path), file.hash.ToString("x8"), file.length.ToString(), TDCGTbnUtil.GetCategoryText(file.GetDisplayPath()) };
                 row.ItemArray = content;
                 data.Rows.Add(row);
             }
@@ -131,7 +132,7 @@ namespace System.Windows.Forms
 
         private void dataGridView_Resize(object sender, EventArgs e)
         {
-            dataGridView.Size = Size;
+            dataGridView.Size = ClientSize;//Size;
         }
 
         private void dataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -159,13 +160,13 @@ namespace System.Windows.Forms
                                 if ((Control.ModifierKeys & Keys.Control) == Keys.Control)
                                 {
                                     TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
-                                    TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad(); // 初期tmoを読み込む.
+                                    if (TDCGExplorer.TDCGExplorer.SystemDB.loadinitialpose) TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad(); // 初期tmoを読み込む.
                                 }
                                 else
                                 {
                                     TDCGExplorer.TDCGExplorer.MainFormWindow.clearTSOViewer();
                                     TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(tahstream.stream);
-                                    TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad(); // 初期tmoを読み込む.
+                                    if (TDCGExplorer.TDCGExplorer.SystemDB.loadinitialpose) TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad(); // 初期tmoを読み込む.
                                     // カメラをセンター位置に.
                                     TSOCameraAutoCenter camera = new TSOCameraAutoCenter(TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer);
                                     camera.UpdateCenterPosition(Path.GetFileName(filesEntries[index].path).ToUpper());

@@ -27,7 +27,7 @@ namespace TDCGExplorer
         public DWORD  biClrImportant; 
     };
 
-    public unsafe class PSDFile
+    public unsafe class PSDFile : IDisposable
     {
         public Bitmap Bitmap { get { return bmp; } }
         Bitmap bmp = null;
@@ -100,6 +100,15 @@ namespace TDCGExplorer
 
                 LocalUnlock(pHBInfo);
                 LocalUnlock(pHBm);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (bmp != null)
+            {
+                bmp.Dispose();
+                bmp = null;
             }
         }
 
