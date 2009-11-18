@@ -101,7 +101,7 @@
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "TAHInfoDialog";
-            this.Text = "TAHInfoDialog";
+            this.Text = "TAH情報設定";
             this.ResumeLayout(false);
             this.PerformLayout();
 

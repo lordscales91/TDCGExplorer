@@ -176,7 +176,7 @@ namespace TDCGExplorer
                     // バッファをフラッシュして完了.
                     binarywriter.Flush();
                     binarywriter.Close();
-                    stream.Flush();
+                    //stream.Flush();
                 }
             }
             catch (Exception ex)

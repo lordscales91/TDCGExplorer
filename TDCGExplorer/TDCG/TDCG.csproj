@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8FF03D76-4977-411C-8C17-E9268D1B799F}</ProjectGuid>
+    <ProjectGuid>{30D26679-E876-46FC-B8C0-E55146316C8C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TDCG</RootNamespace>

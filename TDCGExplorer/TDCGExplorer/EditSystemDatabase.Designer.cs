@@ -76,6 +76,7 @@
             this.checkBoxExplorerzipfolder = new System.Windows.Forms.CheckBox();
             this.textBoxPoseDir = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
+            this.checkBoxArcsVacume = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -492,7 +493,7 @@
             // checkBoxExplorerzipfolder
             // 
             this.checkBoxExplorerzipfolder.AutoSize = true;
-            this.checkBoxExplorerzipfolder.Location = new System.Drawing.Point(385, 497);
+            this.checkBoxExplorerzipfolder.Location = new System.Drawing.Point(385, 490);
             this.checkBoxExplorerzipfolder.Name = "checkBoxExplorerzipfolder";
             this.checkBoxExplorerzipfolder.Size = new System.Drawing.Size(175, 17);
             this.checkBoxExplorerzipfolder.TabIndex = 37;
@@ -515,11 +516,22 @@
             this.label16.TabIndex = 38;
             this.label16.Text = "Poseディレクトリ";
             // 
+            // checkBoxArcsVacume
+            // 
+            this.checkBoxArcsVacume.AutoSize = true;
+            this.checkBoxArcsVacume.Location = new System.Drawing.Point(385, 510);
+            this.checkBoxArcsVacume.Name = "checkBoxArcsVacume";
+            this.checkBoxArcsVacume.Size = new System.Drawing.Size(112, 17);
+            this.checkBoxArcsVacume.TabIndex = 40;
+            this.checkBoxArcsVacume.Text = "arcsをvacumeする";
+            this.checkBoxArcsVacume.UseVisualStyleBackColor = true;
+            // 
             // EditSystemDatabase
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(615, 565);
+            this.Controls.Add(this.checkBoxArcsVacume);
             this.Controls.Add(this.textBoxPoseDir);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.checkBoxExplorerzipfolder);
@@ -626,5 +638,6 @@
         private System.Windows.Forms.CheckBox checkBoxExplorerzipfolder;
         private System.Windows.Forms.TextBox textBoxPoseDir;
         private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.CheckBox checkBoxArcsVacume;
     }
 }

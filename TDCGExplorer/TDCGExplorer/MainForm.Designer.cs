@@ -37,7 +37,8 @@
             this.InstallPreferredModsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenArchiveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.findNoBaseModToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.FindDialogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.labelSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tahfilesearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.EditAnnotationToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenFolderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -64,6 +65,7 @@
             this.EditAnnotationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.LookUpModrefToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.OpenFolderCXToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OpenAllTAHToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.MainTimer = new System.Windows.Forms.Timer(this.components);
@@ -144,7 +146,8 @@
             this.InstallPreferredModsToolStripMenuItem,
             this.OpenArchiveToolStripMenuItem,
             this.findNoBaseModToolStripMenuItem,
-            this.FindDialogToolStripMenuItem,
+            this.labelSearchToolStripMenuItem,
+            this.tahfilesearchToolStripMenuItem,
             this.EditAnnotationToolStripMenuItem1,
             this.OpenFolderToolStripMenuItem,
             this.exitToolStripMenuItem});
@@ -187,12 +190,19 @@
             this.findNoBaseModToolStripMenuItem.Text = "前提TAHを検索する";
             this.findNoBaseModToolStripMenuItem.Click += new System.EventHandler(this.findNoBaseModToolStripMenuItem_Click);
             // 
-            // FindDialogToolStripMenuItem
+            // labelSearchToolStripMenuItem
             // 
-            this.FindDialogToolStripMenuItem.Name = "FindDialogToolStripMenuItem";
-            this.FindDialogToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.FindDialogToolStripMenuItem.Text = "検索...";
-            this.FindDialogToolStripMenuItem.Click += new System.EventHandler(this.FindItemToolStripMenuItem_Click);
+            this.labelSearchToolStripMenuItem.Name = "labelSearchToolStripMenuItem";
+            this.labelSearchToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.labelSearchToolStripMenuItem.Text = "検索...";
+            this.labelSearchToolStripMenuItem.Click += new System.EventHandler(this.labelSearchToolStripMenuItem_Click);
+            // 
+            // tahfilesearchToolStripMenuItem
+            // 
+            this.tahfilesearchToolStripMenuItem.Name = "tahfilesearchToolStripMenuItem";
+            this.tahfilesearchToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.tahfilesearchToolStripMenuItem.Text = "TAH内部ファイル検索...";
+            this.tahfilesearchToolStripMenuItem.Click += new System.EventHandler(this.tahfilesearchToolStripMenuItem_Click);
             // 
             // EditAnnotationToolStripMenuItem1
             // 
@@ -355,51 +365,59 @@
             this.InstallPreferredModToolStripMenuItem,
             this.EditAnnotationToolStripMenuItem,
             this.LookUpModrefToolStripMenuItem,
-            this.OpenFolderCXToolStripMenuItem});
+            this.OpenFolderCXToolStripMenuItem,
+            this.OpenAllTAHToolStripMenuItem});
             this.cmContextMenu.Name = "cmContextMenu";
-            this.cmContextMenu.Size = new System.Drawing.Size(243, 136);
+            this.cmContextMenu.Size = new System.Drawing.Size(339, 158);
             // 
             // expandAllToolStripMenuItem
             // 
             this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
-            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
             this.expandAllToolStripMenuItem.Text = "ツリーを展開";
             this.expandAllToolStripMenuItem.Click += new System.EventHandler(this.expandAllToolStripMenuItem1_Click);
             // 
             // extractZipToolStripMenuItem
             // 
             this.extractZipToolStripMenuItem.Name = "extractZipToolStripMenuItem";
-            this.extractZipToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.extractZipToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
             this.extractZipToolStripMenuItem.Text = "アーカイブファイルを展開";
             this.extractZipToolStripMenuItem.Click += new System.EventHandler(this.extractZipToolStripMenuItem_Click);
             // 
             // InstallPreferredModToolStripMenuItem
             // 
             this.InstallPreferredModToolStripMenuItem.Name = "InstallPreferredModToolStripMenuItem";
-            this.InstallPreferredModToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.InstallPreferredModToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
             this.InstallPreferredModToolStripMenuItem.Text = "前提アーカイブファイルを展開";
             this.InstallPreferredModToolStripMenuItem.Click += new System.EventHandler(this.ExtractPreferZipToolStripMenuItem_Click);
             // 
             // EditAnnotationToolStripMenuItem
             // 
             this.EditAnnotationToolStripMenuItem.Name = "EditAnnotationToolStripMenuItem";
-            this.EditAnnotationToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.EditAnnotationToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
             this.EditAnnotationToolStripMenuItem.Text = "注訳を入力";
             this.EditAnnotationToolStripMenuItem.Click += new System.EventHandler(this.EditAnnotationToolStripMenuItem_Click);
             // 
             // LookUpModrefToolStripMenuItem
             // 
             this.LookUpModrefToolStripMenuItem.Name = "LookUpModrefToolStripMenuItem";
-            this.LookUpModrefToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.LookUpModrefToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
             this.LookUpModrefToolStripMenuItem.Text = "関連アーカイブを調べる";
             this.LookUpModrefToolStripMenuItem.Click += new System.EventHandler(this.LookupModRefToolStripMenuItem_Click);
             // 
             // OpenFolderCXToolStripMenuItem
             // 
             this.OpenFolderCXToolStripMenuItem.Name = "OpenFolderCXToolStripMenuItem";
-            this.OpenFolderCXToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
+            this.OpenFolderCXToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
             this.OpenFolderCXToolStripMenuItem.Text = "フォルダを開く";
             this.OpenFolderCXToolStripMenuItem.Click += new System.EventHandler(this.OpenFolderCXToolStripMenuItem_Click);
+            // 
+            // OpenAllTAHToolStripMenuItem
+            // 
+            this.OpenAllTAHToolStripMenuItem.Name = "OpenAllTAHToolStripMenuItem";
+            this.OpenAllTAHToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
+            this.OpenAllTAHToolStripMenuItem.Text = "選択されている階層以下のTAHをエディタで開く";
+            this.OpenAllTAHToolStripMenuItem.Click += new System.EventHandler(this.OpenAllTAHToolStripMenuItem_Click);
             // 
             // StatusStrip
             // 
@@ -857,7 +875,6 @@
         private System.Windows.Forms.ToolStripMenuItem extractZipFileToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem editSystemDatabaseToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem EditAnnotationToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem FindDialogToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip ListBoxContextMenuStripTahFile;
         private System.Windows.Forms.ToolStripMenuItem NewTabToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem EditAnnotationToolStripMenuItem1;
@@ -899,6 +916,9 @@
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemRename;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemTouch;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItemTouchAll;
+        private System.Windows.Forms.ToolStripMenuItem OpenAllTAHToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem labelSearchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tahfilesearchToolStripMenuItem;
 
     }
 }

@@ -35,7 +35,6 @@ namespace TDCGExplorer
             switch (current_row)
             {
                 case 'S'://手首
-                case 'X'://腕装備(手甲など)
                 case 'Z'://手持ちの小物
                     return 1;
                 case 'W'://タイツ・ガーター
@@ -43,6 +42,8 @@ namespace TDCGExplorer
                     return 2;
                 case 'O'://靴
                     return 3;
+                case 'X'://腕装備(手甲など)
+                    return 4;
                 default:
                     return 0;
             }
@@ -100,17 +101,16 @@ namespace TDCGExplorer
 
         public void UpdateCenterPosition(string tsoname)
         {
-            Vector3 position = new Vector3(0,10,0);
+            Vector3 position = new Vector3(0, 0, 0);
 
-            TSOFile tso = viewer.FigureList[0].TSOList[0];
+            TMOFile tmo = viewer.FigureList[0].Tmo;
 
-            Dictionary<string, TSONode> nodemap = new Dictionary<string, TSONode>();
-            foreach (TSONode node in tso.nodes)
+            Dictionary<string, TMONode> nodemap = new Dictionary<string, TMONode>();
+            foreach (TMONode node in tmo.nodes)
             {
                 if (nodemap.ContainsKey(node.ShortName) == false)
                     nodemap.Add(node.ShortName, node);
             }
-
 
             SetCurrentTSOFileName(tsoname);
 
@@ -118,54 +118,80 @@ namespace TDCGExplorer
             {
                 case 1://Hand
                     {
-                        TSONode tso_nodeR;
-                        TSONode tso_nodeL;
+#if false
+                        TMONode tmo_nodeR;
+                        TMONode tmo_nodeL;
                         string boneR = "W_RightHand";
                         string boneL = "W_LeftHand";
-                        if (nodemap.TryGetValue(boneR, out tso_nodeR) && nodemap.TryGetValue(boneL, out tso_nodeL))
+                        if (nodemap.TryGetValue(boneR, out tmo_nodeR) && nodemap.TryGetValue(boneL, out tmo_nodeL))
                         {
-                            Matrix mR = tso_nodeR.combined_matrix;
-                            Matrix mL = tso_nodeL.combined_matrix;
-                            position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, -(mR.M43 + mL.M43) / 2.0f);
+                            Matrix mR = tmo_nodeR.combined_matrix;
+                            Matrix mL = tmo_nodeL.combined_matrix;
+                            position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, (mR.M43 + mL.M43) / 2.0f);
                         }
+#else
+                        // 両手はあまりにも離れているので右手にセンターを置く
+                        TMONode tmo_nodeR;
+                        string boneR = "W_RightHand";
+                        if (nodemap.TryGetValue(boneR, out tmo_nodeR))
+                        {
+                            Matrix mR = tmo_nodeR.combined_matrix;
+                            position = new Vector3(mR.M41, mR.M42, mR.M43);
+                        }
+#endif
                     }
                     break;
                 case 2://Leg
                     {
-                        TSONode tso_nodeR;
-                        TSONode tso_nodeL;
+                        TMONode tmo_nodeR;
+                        TMONode tmo_nodeL;
                         string boneR = "W_RightLeg";
                         string boneL = "W_LeftLeg";
-                        if (nodemap.TryGetValue(boneR, out tso_nodeR) && nodemap.TryGetValue(boneL, out tso_nodeL))
+                        if (nodemap.TryGetValue(boneR, out tmo_nodeR) && nodemap.TryGetValue(boneL, out tmo_nodeL))
                         {
-                            Matrix mR = tso_nodeR.combined_matrix;
-                            Matrix mL = tso_nodeL.combined_matrix;
-                            position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, -(mR.M43 + mL.M43) / 2.0f);
+                            Matrix mR = tmo_nodeR.combined_matrix;
+                            Matrix mL = tmo_nodeL.combined_matrix;
+                            position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, (mR.M43 + mL.M43) / 2.0f);
                         }
                     }
                     break;
                 case 3://Foot
                     {
-                        TSONode tso_nodeR;
-                        TSONode tso_nodeL;
+                        TMONode tmo_nodeR;
+                        TMONode tmo_nodeL;
                         string boneR = "W_RightFoot";
                         string boneL = "W_LeftFoot";
-                        if (nodemap.TryGetValue(boneR, out tso_nodeR) && nodemap.TryGetValue(boneL, out tso_nodeL))
+                        if (nodemap.TryGetValue(boneR, out tmo_nodeR) && nodemap.TryGetValue(boneL, out tmo_nodeL))
                         {
-                            Matrix mR = tso_nodeR.combined_matrix;
-                            Matrix mL = tso_nodeL.combined_matrix;
-                            position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, -(mR.M43 + mL.M43) / 2.0f);
+                            Matrix mR = tmo_nodeR.combined_matrix;
+                            Matrix mL = tmo_nodeL.combined_matrix;
+                            position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, (mR.M43 + mL.M43) / 2.0f);
                         }
                     }
                     break;
+                case 4://Shoulder
+                    {
+                        TMONode tmo_nodeR;
+                        TMONode tmo_nodeL;
+                        string boneR = "W_RightHand";
+                        string boneL = "W_LeftHand";
+                        if (nodemap.TryGetValue(boneR, out tmo_nodeR) && nodemap.TryGetValue(boneL, out tmo_nodeL))
+                        {
+                            Matrix mR = tmo_nodeR.combined_matrix;
+                            Matrix mL = tmo_nodeL.combined_matrix;
+                            position = new Vector3((mR.M41 + mL.M41) / 2.0f, (mR.M42 + mL.M42) / 2.0f, (mR.M43 + mL.M43) / 2.0f);
+                        }
+                    }
+                    break;
+
                 default:
                     {
-                        TSONode tso_node;
+                        TMONode tmo_node;
                         string bone = GetCenterBoneName();
-                        if (nodemap.TryGetValue(bone, out tso_node))
+                        if (nodemap.TryGetValue(bone, out tmo_node))
                         {
-                            Matrix m = tso_node.combined_matrix;
-                            position = new Vector3(m.M41, m.M42, -m.M43);
+                            Matrix m = tmo_node.combined_matrix;
+                            position = new Vector3(m.M41, m.M42, m.M43);
                         }
                     }
                     break;
@@ -174,33 +200,33 @@ namespace TDCGExplorer
             viewer.Camera.SetCenter(position);
         }
 
-        public void TranslateToBone(string origin,string bone)
+        public void TranslateToBone(string origin, string bone)
         {
-            Vector3 position_origin = new Vector3(0,0,0);
-            Vector3 position_bone = new Vector3(0,0,0);
+            Vector3 position_origin = new Vector3(0, 0, 0);
+            Vector3 position_bone = new Vector3(0, 0, 0);
 
-            TSONode tso_node;
+            TMONode tmo_node;
             Matrix m;
 
-            TSOFile tso = viewer.FigureList[0].TSOList[0];
+            TMOFile tmo = viewer.FigureList[0].Tmo;
 
-            Dictionary<string, TSONode> nodemap = new Dictionary<string, TSONode>();
-            foreach (TSONode node in tso.nodes)
+            Dictionary<string, TMONode> nodemap = new Dictionary<string, TMONode>();
+            foreach (TMONode node in tmo.nodes)
             {
                 if (nodemap.ContainsKey(node.ShortName) == false)
                     nodemap.Add(node.ShortName, node);
             }
 
-            if (nodemap.TryGetValue(origin, out tso_node))
+            if (nodemap.TryGetValue(origin, out tmo_node))
             {
-                m = tso_node.combined_matrix;
-                position_origin = new Vector3(m.M41, m.M42, -m.M43);
-                if (nodemap.TryGetValue(bone, out tso_node))
+                m = tmo_node.combined_matrix;
+                position_origin = new Vector3(m.M41, m.M42, m.M43);
+                if (nodemap.TryGetValue(bone, out tmo_node))
                 {
-                    Vector3 pan_out = new Vector3(0, 0, -10);
+                    Vector3 pan_out = new Vector3(0, 0, 10);
 
-                    m = tso_node.combined_matrix;
-                    position_bone = new Vector3(m.M41, m.M42, -m.M43);
+                    m = tmo_node.combined_matrix;
+                    position_bone = new Vector3(m.M41, m.M42, m.M43);
 
                     viewer.Camera.SetTranslation(position_bone - position_origin + pan_out);
                 }
@@ -211,20 +237,20 @@ namespace TDCGExplorer
         {
             Vector3 position;
 
-            TSOFile tso = viewer.FigureList[0].TSOList[0];
+            TMOFile tmo = viewer.FigureList[0].Tmo;
 
-            Dictionary<string, TSONode> nodemap = new Dictionary<string, TSONode>();
-            foreach (TSONode node in tso.nodes)
+            Dictionary<string, TMONode> nodemap = new Dictionary<string, TMONode>();
+            foreach (TMONode node in tmo.nodes)
             {
                 if (nodemap.ContainsKey(node.ShortName) == false)
                     nodemap.Add(node.ShortName, node);
             }
 
-            TSONode tso_node;
-            if (nodemap.TryGetValue(bone, out tso_node))
+            TMONode tmo_node;
+            if (nodemap.TryGetValue(bone, out tmo_node))
             {
-                Matrix m = tso_node.combined_matrix;
-                position = new Vector3(m.M41, m.M42, -m.M43);
+                Matrix m = tmo_node.combined_matrix;
+                position = new Vector3(m.M41, m.M42, m.M43);
                 viewer.Camera.SetCenter(position);
             }
         }

@@ -58,13 +58,13 @@ namespace System.Windows.Forms
                 TDCGExplorer.TDCGExplorer.LastAccessFile = path;
                 using (FileStream fs = File.OpenRead(path))
                 {
-                    Byte[] buffer;
-                    BinaryReader reader = new BinaryReader(fs, System.Text.Encoding.Default);
-                    buffer = reader.ReadBytes((int)fs.Length);
-                    using (MemoryStream ms = new MemoryStream(buffer))
+                    using (MemoryStream ms = new MemoryStream())
                     {
+                        ZipFileUtil.CopyStream(fs, ms);
                         BindingStream(ms);
+                        ms.Close();
                     }
+                    fs.Close();
                 }
                 TDCGExplorer.TDCGExplorer.SetToolTips(Text);
             }
@@ -73,6 +73,12 @@ namespace System.Windows.Forms
                 Debug.WriteLine(ex.Message);
             }
             Cursor.Current = Cursors.Default;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (streamdata != null) streamdata.Dispose();
+            streamdata = null;
         }
 
         private void InitializeComponent()
@@ -231,7 +237,9 @@ namespace System.Windows.Forms
                 }
                 using (MemoryStream tmo = new MemoryStream(posedata.figures[0].tmo.data))
                 {
+                    // あらかじめFigureは全部消去する.
                     viewer.LoadTMOFile(tmo);
+                    viewer.BackColor = Color.LightPink;
                 }
             }
             else
@@ -240,13 +248,14 @@ namespace System.Windows.Forms
                 streamdata.Seek(0, SeekOrigin.Begin);
                 viewer.AddFigureFromPNGStream(streamdata, false);
                 TDCGExplorer.TDCGExplorer.FigureLoad = false;
+                viewer.BackColor = Color.Yellow;
             }
             List<float> camera = posedata.GetCamera();
             Vector3 eye = new Vector3(camera[0], camera[1], camera[2]);
-            Vector3 ypr = new Vector3(camera[5], camera[4], camera[6]);
+            Vector3 ypr = new Vector3(-camera[5], -camera[4], -camera[6]);
             Matrix m = Matrix.RotationYawPitchRoll(ypr.Y, ypr.X, ypr.Z) * Matrix.Translation(eye.X, eye.Y, eye.Z);
             viewer.Camera.Reset();
-            viewer.Camera.Translation = new Vector3(-m.M41, -m.M42, m.M43);
+            viewer.Camera.Translation = new Vector3(-m.M41, -m.M42, -m.M43);
             viewer.Camera.Angle = ypr;
 
             TDCGExplorer.TDCGExplorer.MainFormWindow.setNeedCameraReset();
@@ -467,6 +476,7 @@ namespace System.Windows.Forms
                 {
                     // 新規TAHを作成する.
                     string dbfilename = LBFileTahUtl.GetTahDbPath(dialog.textfield);
+                    string tahfilename = Path.GetFileNameWithoutExtension(dialog.textfield);
                     if (File.Exists(dbfilename))
                     {
                         MessageBox.Show("既にデータベースファイルがあります。\n" + dbfilename + "\n削除してから操作してください。", "エラー", MessageBoxButtons.OK);
@@ -478,8 +488,8 @@ namespace System.Windows.Forms
                     try
                     {
                         editor = new TAHEditor(dbfilename, null);
-                        editor.SetInformation(filename + ".tah", 1);
-                        editor.makeTAHFile(filename, node.tso);
+                        editor.SetInformation(tahfilename + ".tah", 1);
+                        editor.makeTAHFile(tahfilename, node.tso);
                         TDCGExplorer.TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
                         editor.SelectAll();
                     }

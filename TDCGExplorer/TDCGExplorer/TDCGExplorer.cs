@@ -17,7 +17,7 @@ namespace TDCGExplorer
     public class TDCGExplorer
     {
         public const string CONST_DBVERSION = "1.00";
-        public const string CONST_APPVERSION = "1.07";
+        public const string CONST_APPVERSION = "1.08";
         public const string CONST_COPYRIGHT = "Copyright © 2009 3DCG Craftsmen's Guild.";
 
         private static SystemDatabase systemDatabase;
@@ -73,6 +73,8 @@ namespace TDCGExplorer
             arcNames.Init();
             tagNames.Init();
 
+            DefaultTMOPng.InitialDefaultTMOPng();
+
             ResetDefaultPose();
 
             SetToolTips(CONST_COPYRIGHT);
@@ -91,17 +93,15 @@ namespace TDCGExplorer
             get { return lastAccessFile; }
         }
 
-        private static Byte[] LoadTMO(string path)
+        private static Byte[] LoadTMO()
         {
-            //TDCGExplorer.SetLastAccessFile = path;
-            FileStream fs = File.OpenRead(path);
-            BinaryReader reader = new BinaryReader(fs, System.Text.Encoding.Default);
-            return reader.ReadBytes((int)fs.Length);
+            BinaryReader reader = new BinaryReader(DefaultTMOPng.tmo, System.Text.Encoding.Default);
+            return reader.ReadBytes((int)DefaultTMOPng.tmo.Length);
         }
 
         public static void ResetDefaultPose()
         {
-            defaultTMO = LoadTMO("SnapShotPose.tmo");
+            defaultTMO = LoadTMO();
         }
 
         public static bool FigureLoad
@@ -237,6 +237,7 @@ namespace TDCGExplorer
             edit.tahversioncollision = SystemDB.tahversioncollision;
             edit.explorerzipfolder = SystemDB.explorerzipfolder;
             edit.posedir = SystemDB.posefile_savedirectory;
+            edit.arcsvacume = systemDatabase.arcsvacume;
             edit.Owner = MainFormWindow;
             if (edit.ShowDialog() == DialogResult.OK)
             {
@@ -265,7 +266,9 @@ namespace TDCGExplorer
                 SystemDB.tahversioncollision = edit.tahversioncollision;
                 SystemDB.explorerzipfolder = edit.explorerzipfolder;
                 SystemDB.posefile_savedirectory = edit.posedir;
+                SystemDB.arcsvacume = edit.arcsvacume;
                 SystemDB.appversion = CONST_APPVERSION;
+                MainFormWindow.DisplayDB();
             }
         }
 
@@ -733,7 +736,7 @@ namespace TDCGExplorer
                 return false;
             }
         }
-
+#if false
         public static void FindTreeNode(TreeNode node, string key)
         {
             if (HasString(node.Text.ToLower(), key.ToLower()) == true)
@@ -755,6 +758,7 @@ namespace TDCGExplorer
                 FindTreeNode(subnode, key);
             }
         }
+#endif
 
         private static void FindArcsTreeNode(TreeView view,TreeNode node, string path)
         {
@@ -782,6 +786,35 @@ namespace TDCGExplorer
             if (arcsTree.Nodes[0] != null)
             {
                 FindArcsTreeNode(arcsTree,arcsTree.Nodes[0], Path.GetDirectoryName(path) );
+            }
+        }
+
+        private static void FindZipsTreeNode(TreeView view, TreeNode node, string path)
+        {
+            if (node.FullPath == path)
+            {
+                TreeNode parent = node.Parent;
+                while (parent != null)
+                {
+                    parent.Expand();
+                    parent = parent.Parent;
+                }
+                MainFormWindow.SelectZipsTreeNode(node);
+                return;
+            }
+            foreach (TreeNode subnode in node.Nodes)
+            {
+                FindZipsTreeNode(view, subnode, path);
+            }
+        }
+
+        // 指定されたパスのノードを選択する.
+        public static void SelectZipsTreeNode(string path)
+        {
+            TreeView zipsTree = MainFormWindow.ZipsTreeView;
+            if (zipsTree.Nodes[0] != null)
+            {
+                FindZipsTreeNode(zipsTree, zipsTree.Nodes[0], path);
             }
         }
 
@@ -1035,7 +1068,23 @@ namespace TDCGExplorer
                     {
                         TDCGExplorer.MainFormWindow.NewTab();
                     }
-                    TDCGExplorer.MainFormWindow.AssignTagPageControl(new SaveFilePage(fullpath));
+                    SaveFilePage control;
+                    TDCGExplorer.MainFormWindow.AssignTagPageControl(control=new SaveFilePage(fullpath));
+                    control.DisplayTso();
+                    continue;
+                }
+
+                // ポーズファイルか?
+                if (fullpath.ToLower().EndsWith(".tdcgpose.png") == true)
+                {
+                    // ファイルが複数の時は新規タブで連続してオープンする.
+                    if (files.Length > 1)
+                    {
+                        TDCGExplorer.MainFormWindow.NewTab();
+                    }
+                    PoseFilePage control;
+                    TDCGExplorer.MainFormWindow.AssignTagPageControl(control=new PoseFilePage(fullpath));
+                    control.DisplayPose();
                     continue;
                 }
 
@@ -1151,6 +1200,186 @@ namespace TDCGExplorer
             }
         }
 
+        // 指定されたパス以下にあるtahを全部一つのtahエディタで開く.
+        public static void TAHCompaction(string startwith)
+        {
+            if (TDCGExplorer.BusyTest()) return;
+            UInt64 size = 0;
+
+            Dictionary<UInt32, uint> versiontable = new Dictionary<uint, uint>();
+
+            TAHEditor editor = null;
+            try
+            {
+                TAHInfoDialog dialog = new TAHInfoDialog();
+                dialog.Owner = TDCGExplorer.MainFormWindow;
+                dialog.tahVersion = 2;
+                dialog.tahSource = Path.GetFileNameWithoutExtension(startwith) + ".tah";
+
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    // 新規TAHを作成する.
+                    string dbfilename = LBFileTahUtl.GetTahDbPath(dialog.tahSource);
+
+                    if (File.Exists(dbfilename))
+                    {
+                        MessageBox.Show("既にデータベースファイルがあります。\n" + dbfilename + "\n削除してから操作してください。", "エラー", MessageBoxButtons.OK);
+                        return;
+                    }
+
+                    // 常に新規タブで.
+                    editor = new TAHEditor(dbfilename, null);
+                    editor.SetInformation(dialog.tahSource, dialog.tahVersion);
+
+                    Object transaction = editor.BeginTransaction();
+
+                    // とりあえずtahを全部getする.
+                    List<ArcsTahEntry> list = arcsDatabase.GetTahs();
+
+                    // まずファイルサイズチェック.
+                    foreach (ArcsTahEntry entry in list)
+                    {
+                        // 指定された階層以下なばら
+                        if (entry.path.StartsWith(startwith + "\\") == true)
+                        {
+                            using (Stream file_stream = File.OpenRead(Path.Combine(SystemDB.arcs_path, entry.path)))
+                            {
+                                // ファイル長を足していく.
+                                UInt64 filesize = (UInt64)file_stream.Length;
+                                size = size + filesize;
+                                if (size >= 0x100000000L) break;
+                            }
+                        }
+                    }
+                    if (size >= 0x100000000L)
+                    {
+                        MessageBox.Show("tahファイルが4GBを超えます。\n集約するtahファイルは4GB以下にしてください。", "展開エラー", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        throw new Exception("File Limit Over");
+                    }
+
+                    // ファイルサイズに問題が無いなら集約
+                    foreach (ArcsTahEntry entry in list)
+                    {
+                        // 指定された階層以下なばら
+                        if (entry.path.StartsWith(startwith+"\\") == true)
+                        {
+                            using (Stream file_stream = File.OpenRead(Path.Combine(SystemDB.arcs_path, entry.path)))
+                            {
+#if false
+                                // ファイル長を足していく.
+                                UInt64 filesize = (UInt64) file_stream.Length;
+                                size = size + filesize;
+                                if (size >= 0x100000000L) break;
+#endif
+                                TAHFile tah = new TAHFile(file_stream);
+                                try
+                                {
+                                    tah.LoadEntries();
+
+                                    Dictionary<UInt32,string> tsohash = new Dictionary<uint,string>();
+                                    if (tah != null)
+                                    {
+                                        // tbnファイル名から推定されるハッシュ引き表を作る.
+                                        foreach (TAHEntry ent in tah.EntrySet.Entries)
+                                        {
+                                            if (ent.FileName != null)
+                                            {
+                                                if (Path.GetExtension(ent.FileName).ToLower() == ".tbn")
+                                                {
+                                                    byte[] bytedata = TAHUtil.ReadEntryData(tah.Reader, ent);
+                                                    string tsoname = TDCGTbnUtil.GetTsoName(bytedata);
+                                                    if (tsoname != null)
+                                                    {
+                                                        UInt32 hash = TAHUtil.CalcHash(tsoname);
+                                                        if (tsohash.ContainsKey(hash) == false)
+                                                        {
+                                                            tsohash[hash] = tsoname;
+                                                        }
+                                                        string psdpath = "data/icon/items/" + Path.GetFileNameWithoutExtension(tsoname) + ".psd";
+                                                        UInt32 psdhash = TAHUtil.CalcHash(psdpath);
+                                                        if (tsohash.ContainsKey(psdhash) == false)
+                                                        {
+                                                            tsohash[psdhash] = psdpath;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        string tahdirectory = TDCGExplorer.SystemDB.tahpath;
+                                        string savedirectory = Path.Combine(tahdirectory, Path.GetFileNameWithoutExtension(entry.shortname));
+                                        int id = 0;
+                                        foreach (TAHEntry ent in tah.EntrySet.Entries)
+                                        {
+                                            // ファイル名を復元する.
+                                            string filename = ent.FileName;
+                                            if (filename == null)
+                                            {
+                                                if (tsohash.ContainsKey(ent.Hash) == true)
+                                                {
+                                                    filename = tsohash[ent.Hash];
+                                                }
+                                                else
+                                                {
+                                                    byte[] bytedata = TAHUtil.ReadEntryData(tah.Reader, ent);
+                                                    filename = id.ToString("d8") + "_" + ent.Hash.ToString("x8");
+                                                    // 拡張子を推定する.
+                                                    filename += TDCGTbnUtil.ext(bytedata);
+                                                }
+                                            }
+                                            id++;
+
+                                            TDCGExplorer.SetToolTips("TAHファイル読み取り中... " + filename);
+                                            TDCGExplorer.IncBusy();
+                                            Application.DoEvents();
+                                            TDCGExplorer.DecBusy();
+
+                                            // バージョンテーブル未登録ならば登録する
+                                            if (versiontable.ContainsKey(ent.Hash) == false)
+                                            {
+                                                byte[] bytedata = TAHUtil.ReadEntryData(tah.Reader, ent);
+
+                                                versiontable.Add(ent.Hash, tah.Header.Version);
+                                                editor.AddItem(filename, bytedata);
+                                            }
+                                            else // 既に登録されている場合、新しい場合のみ更新する
+                                            {
+                                                if (versiontable[ent.Hash] < tah.Header.Version)
+                                                {
+                                                    byte[] bytedata = TAHUtil.ReadEntryData(tah.Reader, ent);
+
+                                                    editor.AddItem(filename, bytedata);
+                                                    versiontable[ent.Hash] = tah.Header.Version;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                catch (Exception)
+                                {
+                                }
+                            }
+                        }
+                    }
+#if false
+                    if (size >= 0x100000000L)
+                    {
+                        MessageBox.Show("読み込んだtahファイルが4GBを超えました。", "展開エラー", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        throw new Exception("File Limit Over");
+                    }
+#endif
+                    editor.Commit(transaction);
+                    MainFormWindow.AssignTagPageControl(editor);
+                    editor.SelectAll();
+                    TDCGExplorer.SetToolTips("TAHファイル読み取り完了");
+                }
+            }
+            catch (Exception)
+            {
+                if (editor != null) editor.Dispose();
+                TDCGExplorer.SetToolTips("TAHファイル読み取りエラーが発生しました");
+            }
+        }
+
         public static void ExplorerPath(string destpath)
         {
             if (Directory.Exists(destpath) == true || File.Exists(destpath)==true)
@@ -1242,7 +1471,7 @@ namespace TDCGExplorer
                         arcs.CreateInstalledZips();
                         transacion.Commit();
 
-                        arcs.Vacuum();
+                        if(TDCGExplorer.SystemDB.arcsvacume) arcs.Vacuum();
 
                         TDCGExplorer.SetToolTips("Database build complete");
                         TDCGExplorer.SystemDB.database_build = "yes";

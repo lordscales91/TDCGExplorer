@@ -27,11 +27,11 @@ namespace TDCGExplorer
                         arc.Extract(entry, ms);
                         ms.Seek(0, SeekOrigin.Begin);
 
-                        Directory.CreateDirectory(Path.GetDirectoryName(Path.Combine(destpath, entry.FileName)));
+                        Directory.CreateDirectory(ReplaceTilda(Path.GetDirectoryName(Path.Combine(destpath, entry.FileName))));
 
-                        string destfilepath = Path.Combine(destpath, entry.FileName);
+                        string destfilepath = ReplaceTilda(Path.Combine(destpath, entry.FileName));
                         File.Delete(destfilepath);
-                        using (Stream fileStream = File.Create(destfilepath))
+                        using (Stream fileStream = File.Create(ReplaceTilda(destfilepath)))
                         {
                             BufferedStream bufferedDataStream = new BufferedStream(ms);
                             BufferedStream bufferedFileStream = new BufferedStream(fileStream);
@@ -54,6 +54,7 @@ namespace TDCGExplorer
 
         public static void CopyStream(Stream input, Stream output)
         {
+            input.Seek(0, SeekOrigin.Begin);
             byte[] buf = new byte[1024];
             int len;
             while ((len = input.Read(buf, 0, buf.Length)) > 0)
@@ -107,6 +108,12 @@ namespace TDCGExplorer
                 node = node + " " + summary;
             }
             return node;
+        }
+
+        private static string ReplaceTilda(string input)
+        {
+            string retval = input.Replace('〜', '～');
+            return retval;
         }
     }
 }

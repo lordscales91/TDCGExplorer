@@ -1,7 +1,7 @@
 TDCGExplorer 始めにお読み下さい
 
 基本全自動でなんでもかんでも管理するツールです。
-Version 1.07になりました。
+Version 1.09になりました。
 
 ・重要なお知らせ
 
@@ -23,68 +23,62 @@ Version 1.07になりました。
 
 ※ N001OBON_Z00.tbnを再配布するには、次のいずれかを購入している
    方だけに許諾されています。
-   
+
    (1) 2008/12/24発売の特典tah付き3Dカスタム少女XP。
    (2) ワルキューレ調教・ザーメンタンクの戦乙女１０人姉妹。
-   
+
    (注) 現在発売中の3Dカスタム少女XPには特典tahは付属していません。
         このファイルを3Dカスタム少女に組み込む以外の用途は
         使用許諾に違反しますのでご遠慮ください。
 
 ・ファイル構成
 
-	ArchiveLib.dll
-	unrar.dll						圧縮ファイルコンポーネント
-	ICSharpCode.SharpZipLib.dll
+        ArchiveLib.dll
+        unrar.dll                               圧縮ファイルコンポーネント
+        ICSharpCode.SharpZipLib.dll
 
-	ifpsd.spi						Photoshopファイルパーサ
+        ifpsd.spi                               Photoshopファイルパーサ
 
-	TDCG.dll						TSOViewアセンブリ
-	TDCG.xml						(TDCGExplorer専用に修正が入っています)
+        TDCG.dll                                TSOViewアセンブリ
+        TDCG.xml                                (TDCGExplorer専用に修正が入っています)
 
-	manual.mht						リファレンスマニュアル
+        default.tdcgsav.png                     サムネイル作成用デフォルトヘビーセーブ
+                                                (このファイルを変更するとサムネ用キャラクタを変更できます)
+        N001OBON_Z00.tbn                        Zカテゴリ用TBNデータ
+        N999SAVE_A00.psd                        TAHファイル作成用デフォルトアイコンファイル
+                                                (このファイルを変更するとアイコンを変更できます)
+        names.txt                               ハッシュ逆引き用ファイル名一覧
+        readme.txt                              本ファイル
+        SnapShotPose.tdcgpose.png               セーブファイル表示用デフォルトポーズ
+                                                (このファイルを変更するとセーブファイルのポーズを変更できます)
+        System.Data.SQLite.DLL
+        System.Data.SQLite.xml                  SQLiteデータベースエンジン
 
-	default.tdcgsav.png				サムネイル作成用デフォルトヘビーセーブ
-									(このファイルを変更するとサムネ用キャラクタを変更できます)
-	N001OBON_Z00.tbn				Zカテゴリ用TBNデータ
-	N999SAVE_A00.psd				TAHファイル作成用デフォルトアイコンファイル
-									(このファイルを変更するとアイコンを変更できます)
-	names.txt						ハッシュ逆引き用ファイル名一覧
-	readme.txt						本ファイル
-	SnapShotPose.tmo				セーブファイル表示用デフォルトポーズ
-									(このファイルを変更するとセーブファイルのポーズを変更できます)
-	System.Data.SQLite.DLL
-	System.Data.SQLite.xml			SQLiteデータベースエンジン
-	
-	TDCGExplorer.exe				本体プログラム
-	
-	toonshader.cgfx					Toonshader2
+        TDCGExplorer.exe                        本体プログラム
 
-	source.zip						ソースコード
+        toonshader.cgfx                         Toonshader2
+
+        title.jpg                               スプラッシュスクリーン用JPEGファイル
+        noicon.jpg                              アイコン無しの場合のアイコンファイル
+
+        source.zip                              ソースコード
 
 ・注意事項
 
 .NET Framework 3.5SP1以降、DirectX9 Mar-2009以降が必要です。
 .NET Framework 3.5以前・DirectX9 Jan-2009以前では動作しません。
 
-まずオリジナルファイルを勝手に書き換える事は無いと思いますが
-万が一の事を考えて、必ずバックアップをとっておいてください。
+ご利用の前に全てのファイルは必ずバックアップを作成してください。
+操作によっては既存のファイルを上書きする事があります。
 
 Windows Vista Business "英語版" x86バージョンで動作確認しています。
 それ以外のOSでは現時点では未検証なのでご注意ください。
 
+WindowsXPで表示が重い事があります。これは.NET Framework 3.0以降の
+制限です。Windows Vista、Windows7にアップグレードすると解消します。
+
 x64プラットフォームでの動作報告を頂戴いたしました。
 作者はx64 Windowsを所有していない為、厳密な動作検証はしておりません
-
-ハードディスクの空き容量は少なくともMy Documentsもしくは
-Documentsフォルダのあるディスクに200MB以上必要です。
-
-メモリはかなり使います。少なくとも物理メモリが1GBないと
-動作がかなり遅くなります。2GB以上搭載を推奨します。
-
-CPUはintel Core2以上を推奨します。マルチスレッドですが、
-並列度は高くないので2GHz以上の2コアCPUで十分です（Core2Quad
-Q6600でデータベースのチューニングを行っています）。
 
 intel ATOMでlzhファイルにアクセスできないことがあります。
 最新のBIOS ROMにアップデートする事で対応できる場合があります。
@@ -104,8 +98,8 @@ TDCGExplorerの各種機能は3Dカスタム少女及び3Dカスタム少女XPの
 3Dカスタム少女XP公式サイトの使用許諾を良くお読みになって
 ご利用ください。
 
-機能要望バグ報告は2ch IRC #3Dカスタム少女か、職人ギルドに
-お願いいたします。
+機能要望バグ報告は2ch IRC #3Dカスタム少女か、職人ギルド、
+電子メールで3dcustomgirl@gmail.comにお願いいたします。
 
 ・初めてご利用になる方に
 
@@ -130,18 +124,6 @@ TDCGExplorerの各種機能は3Dカスタム少女及び3Dカスタム少女XPの
 　　構築・更新を実行してください（データベース上にあるデータを
 　　操作するだけなら実行しなくても問題はありませんが、アクセス
 　　出来なくなったtahやzipへの操作がエラーになります）。
-
-・マニュアル差分
-
-TAHエディタで、選択したtsoファイルからtbnファイルを生成する機能が
-追加されました。tsoファイルを選ぶと、自動的にそのtsoを参照する
-tbnファイルと、tsoファイル名から推定できたアイコンを自動的にコピー
-します。
-
-psdファイルとtsoファイルを用意すれば、tahファイルを作成する事が
-できます。なお自動生成されたtbnファイルをリネームするとtbnファイル中の
-tsoファイル名がtbnのファイル名から作られたtso名に書き換えられて
-しまいます。自動生成したtbnファイルはリネームしないで下さい。
 
 ・謝辞
 
@@ -186,11 +168,11 @@ kemokemo氏のtoonshader2シェーダーを使用しました。
    A C-program for MT19937, with initialization improved 2002/1/26.
    Coded by Takuji Nishimura and Makoto Matsumoto.
 
-   Before using, initialize the state by using init_genrand(seed)  
+   Before using, initialize the state by using init_genrand(seed)
    or init_by_array(init_key, key_length).
 
    Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
-   All rights reserved.                          
+   All rights reserved.
 
    Redistribution and use in source and binary forms, with or without
    modification, are permitted provided that the following conditions
@@ -203,8 +185,8 @@ kemokemo氏のtoonshader2シェーダーを使用しました。
         notice, this list of conditions and the following disclaimer in the
         documentation and/or other materials provided with the distribution.
 
-     3. The names of its contributors may not be used to endorse or promote 
-        products derived from this software without specific prior written 
+     3. The names of its contributors may not be used to endorse or promote
+        products derived from this software without specific prior written
         permission.
 
    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
@@ -259,7 +241,7 @@ CLI及びCLRはMicrosoftが権利を保有するインフラストラクチャです。
      特定のヘビーセーブがTAHに展開できない不具合を修正。
      TAH展開ルーチンで推定可能な名前を自動割付する様に修正。
 1.07.4
-     カテゴリ変更で数字のカテゴリに変更できないバグを修正     
+     カテゴリ変更で数字のカテゴリに変更できないバグを修正
 1.07.5
      TAHEditorでカテゴリ変更・ファイル名変更をした際にソートオーダーが破壊されて、
      エラーが発生するバグを修正。アイコンがないファイルを選択した時は、NO IMAGEを
@@ -269,6 +251,29 @@ CLI及びCLRはMicrosoftが権利を保有するインフラストラクチャです。
      コマンドを実行した時にデータを表示する様変更。
 1.07.7
      セーブファイル・ポーズファイルをダブりクリックでTSOビューワに表示。マニュアル改訂。
-1.10 開発中
+1.07.8
+     セーブファイル表示→新規タブ→ダブルクリックで落ちるバグを修正。
+1.08
+     TSOView ver 0.2.5 TDCG.DLLアセンブリにバージョンアップ。
+     BHL系テクニックで表示に不具合が出ていた問題に対応。
+     TDCG.DLLの座標系が変更になったので大規模修正。
+1.08.1
+     00番tbnがない迷子アイテム用のダミーtbn作成機能を追加。
+     TAH集約機能を追加。
+1.08.2
+     manualのアンカーが機能していない不具合を修正。
+     TAH集約再梱包の時、読み込めるTAHを4GBに制限。
+     シーンセーブ・ポーズセーブの背景色を変更。公式っぽい色に。
+1.08.3
+     英数字を含まないzipがアーカイブとして認識されない不具合を修正。
+     arcsで使えない文字を自動置換するように修正。
+1.08.4
+     セーブファイル表示をなるべく軽量化。
+     セーブファイルのアイテムから対応tah/zipへのジャンプを追加。
+1.09
+     検索機能を強化。検索結果をリストアップして、ダブルクリックで目的のファイルに
+     ジャンプする機能を追加。またUI統合の為、前提TAH検索でもクリックではなく
+     ダブルクリックでジャンプする様に仕様を変更。ポーズファイルのドラッグドロップに対応。
+     セーブファイルビューアのメモリリークを修正。
 
 Konoa/N765

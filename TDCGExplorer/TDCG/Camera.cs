@@ -15,7 +15,7 @@ public class Camera
 {
     private Vector3 center = Vector3.Empty;
     private Vector3 translation = Vector3.Empty;
-    private Vector3 localP = new Vector3(0.0f, 0.0f, -10.0f);
+    private Vector3 localP = new Vector3(0.0f, 0.0f, +10.0f);
     private Vector3 dirD = Vector3.Empty; //カメラ移動方向ベクトル
     private float zD = 0.0f;      //カメラ奥行オフセット値
     private bool needUpdate = true;    //更新する必要があるか
@@ -49,7 +49,6 @@ public class Camera
     /// </summary>
     public Camera()
     {
-        motion = new CameraMotion(this);
     }
 
     /// <summary>
@@ -152,7 +151,7 @@ public class Camera
     {
         center = Vector3.Empty;
         translation = Vector3.Empty;
-        localP = new Vector3(0.0f, 0.0f, -10.0f);
+        localP = new Vector3(0.0f, 0.0f, +10.0f);
         pose = Matrix.Identity;
         needUpdate = true;
     }
@@ -349,6 +348,12 @@ public class Camera
         this.center = center;
         needUpdate = true;
     }
+    /// <summary>
+    /// 回転中心を設定します。
+    /// </summary>
+    /// <param name="x">回転中心x座標</param>
+    /// <param name="y">回転中心y座標</param>
+    /// <param name="z">回転中心z座標</param>
     public void SetCenter(float x, float y, float z)
     {
         SetCenter(new Vector3(x, y, z));
@@ -363,6 +368,12 @@ public class Camera
         this.translation = translation;
         needUpdate = true;
     }
+    /// <summary>
+    /// view座標上の位置を設定します。
+    /// </summary>
+    /// <param name="x">view座標上の位置x座標</param>
+    /// <param name="y">view座標上の位置y座標</param>
+    /// <param name="z">view座標上の位置z座標</param>
     public void SetTranslation(float x, float y, float z)
     {
         SetTranslation(new Vector3(x, y, z));
@@ -390,79 +401,5 @@ public class Camera
         rotZD = 0.0f;
     }
 
-    private CameraMotion motion = null;
-
-    /// <summary>
-    /// カメラモーション
-    /// </summary>
-    public CameraMotion Motion
-    {
-        get { return motion; }
-    }
-
-    /// <summary>
-    /// カメラモーションを設定します。
-    /// </summary>
-    /// <param name="frame_index">フレーム番号</param>
-    /// <param name="eye">注視点</param>
-    /// <param name="center">カメラの位置</param>
-    public void SetMotion(int frame_index, Vector3 eye, Vector3 center)
-    {
-        motion.Add(frame_index, eye, center);
-    }
-
-    /// <summary>
-    /// カメラモーションを設定します。
-    /// </summary>
-    /// <param name="frame_index">フレーム番号</param>
-    /// <param name="eye">注視点</param>
-    /// <param name="center">カメラの位置</param>
-    /// <param name="interp_length">補間するフレーム長さ</param>
-    public void SetMotion(int frame_index, Vector3 eye, Vector3 center, int interp_length)
-    {
-        motion.Add(frame_index, eye, center, interp_length);
-    }
-
-    /// <summary>
-    /// カメラモーションを設定します。
-    /// </summary>
-    /// <param name="frame_index">フレーム番号</param>
-    /// <param name="eyex">注視点のX座標</param>
-    /// <param name="eyey">注視点のY座標</param>
-    /// <param name="eyez">注視点のZ座標</param>
-    /// <param name="centerx">カメラの位置のX座標</param>
-    /// <param name="centery">カメラの位置のY座標</param>
-    /// <param name="centerz">カメラの位置のZ座標</param>
-    public void SetMotion(int frame_index, float eyex, float eyey, float eyez, float centerx, float centery, float centerz)
-    {
-        motion.Add(frame_index, new Vector3(eyex, eyey, eyez), new Vector3(centerx, centery, centerz));
-    }
-
-    /// <summary>
-    /// カメラモーションを設定します。
-    /// </summary>
-    /// <param name="frame_index">フレーム番号</param>
-    /// <param name="eyex">注視点のX座標</param>
-    /// <param name="eyey">注視点のY座標</param>
-    /// <param name="eyez">注視点のZ座標</param>
-    /// <param name="centerx">カメラの位置のX座標</param>
-    /// <param name="centery">カメラの位置のY座標</param>
-    /// <param name="centerz">カメラの位置のZ座標</param>
-    /// <param name="interp_length">補間するフレーム長さ</param>
-    public void SetMotion(int frame_index, float eyex, float eyey, float eyez, float centerx, float centery, float centerz, int interp_length)
-    {
-        motion.Add(frame_index, new Vector3(eyex, eyey, eyez), new Vector3(centerx, centery, centerz), interp_length);
-    }
-
-    /// <summary>
-    /// 指定モーションフレームに進みます。
-    /// </summary>
-    public void SetFrameIndex(int frame_index)
-    {
-        if (motion.Count != 0)
-        {
-            motion.SetFrameIndex(frame_index);
-        }
-    }
 }
 }

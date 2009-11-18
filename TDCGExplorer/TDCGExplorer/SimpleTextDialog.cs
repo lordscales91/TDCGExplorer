@@ -44,5 +44,23 @@ namespace TDCGExplorer
                 Close();
             }
         }
+
+        public bool checkboxenable
+        {
+            get { return checkBox.Visible; }
+            set { checkBox.Visible = value; }
+        }
+
+        public string checkboxtext
+        {
+            get { return checkBox.Text; }
+            set { checkBox.Text = value; }
+        }
+
+        public bool checkboxchecked
+        {
+            get { return checkBox.Checked; }
+            set { checkBox.Checked = value; }
+        }
     }
 }

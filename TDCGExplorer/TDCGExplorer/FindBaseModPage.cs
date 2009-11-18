@@ -14,7 +14,12 @@ namespace System.Windows.Forms
         private bool firstdata = true;
         private DataGridView dataGridView;
         List<MissingEntryInformation> missings = new List<MissingEntryInformation>();
-    
+        private ContextMenuStrip contextMenuStrip;
+        private System.ComponentModel.IContainer components;
+        private ToolStripMenuItem toolStripMenuItemMakeTah;
+        private ToolStripMenuItem toolStripMenuItemClose;
+        internal Dictionary<string, List<string>> tbnfiles = null;
+        
         public FindBaseModPage()
         {
             InitializeComponent();
@@ -46,8 +51,13 @@ namespace System.Windows.Forms
 
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.dataGridView = new System.Windows.Forms.DataGridView();
+            this.contextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.toolStripMenuItemMakeTah = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItemClose = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).BeginInit();
+            this.contextMenuStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // dataGridView
@@ -56,14 +66,37 @@ namespace System.Windows.Forms
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView.ContextMenuStrip = this.contextMenuStrip;
             this.dataGridView.Location = new System.Drawing.Point(0, 0);
             this.dataGridView.Name = "dataGridView";
             this.dataGridView.ReadOnly = true;
             this.dataGridView.Size = new System.Drawing.Size(240, 150);
             this.dataGridView.TabIndex = 0;
+            this.dataGridView.DoubleClick += new System.EventHandler(this.dataGridView_DoubleClick);
             this.dataGridView.Resize += new System.EventHandler(this.dataGridView_Resize);
-            this.dataGridView.SelectionChanged += new System.EventHandler(this.dataGridView_SelectionChanged);
             this.dataGridView.MouseEnter += new System.EventHandler(this.dataGridView_MouseEnter);
+            // 
+            // contextMenuStrip
+            // 
+            this.contextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemMakeTah,
+            this.toolStripMenuItemClose});
+            this.contextMenuStrip.Name = "contextMenuStrip";
+            this.contextMenuStrip.Size = new System.Drawing.Size(219, 48);
+            // 
+            // toolStripMenuItemMakeTah
+            // 
+            this.toolStripMenuItemMakeTah.Name = "toolStripMenuItemMakeTah";
+            this.toolStripMenuItemMakeTah.Size = new System.Drawing.Size(218, 22);
+            this.toolStripMenuItemMakeTah.Text = "ダミーTAHファイルの作成";
+            this.toolStripMenuItemMakeTah.Click += new System.EventHandler(this.toolStripMenuItemMakeTah_Click);
+            // 
+            // toolStripMenuItemClose
+            // 
+            this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
+            this.toolStripMenuItemClose.Size = new System.Drawing.Size(218, 22);
+            this.toolStripMenuItemClose.Text = "閉じる";
+            this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
             // 
             // FindBaseModPage
             // 
@@ -72,6 +105,7 @@ namespace System.Windows.Forms
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.Controls.Add(this.dataGridView);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView)).EndInit();
+            this.contextMenuStrip.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -144,8 +178,138 @@ namespace System.Windows.Forms
                 col.SortMode = DataGridViewColumnSortMode.NotSortable;
             }
         }
-
+#if false
         private void dataGridView_SelectionChanged(object sender, EventArgs e)
+        {
+            int index = dataGridView.CurrentCell.RowIndex;
+            if (index >= 0)
+            {
+                // TAHを取得する.
+                ArcsTahEntry tah = TDCGExplorer.TDCGExplorer.ArcsDB.GetTah(missings[index].id);
+                TDCGExplorer.TDCGExplorer.SelectArcsTreeNode(Path.Combine(TDCGExplorer.TDCGExplorer.SystemDB.arcs_path, tah.path));
+            }
+        }
+#endif
+        private void toolStripMenuItemClose_Click(object sender, EventArgs e)
+        {
+            if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
+            Parent.Dispose();
+        }
+
+        private void toolStripMenuItemMakeTah_Click(object sender, EventArgs e)
+        {
+            if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
+
+            TAHEditor editor = null;
+            try
+            {
+                SimpleTextDialog dialog = new SimpleTextDialog();
+                dialog.Owner = TDCGExplorer.TDCGExplorer.MainFormWindow;
+                dialog.dialogtext = "TAH形式の保存";
+                dialog.labeltext = "ファイル名";
+                dialog.textfield = "dummy.tah";
+
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    // 新規TAHを作成する.
+                    string dbfilename = LBFileTahUtl.GetTahDbPath(dialog.textfield);
+                    string tahfilename = Path.GetFileNameWithoutExtension(dialog.textfield);
+
+                    if (File.Exists(dbfilename))
+                    {
+                        MessageBox.Show("既にデータベースファイルがあります。\n" + dbfilename + "\n削除してから操作してください。", "エラー", MessageBoxButtons.OK);
+                        return;
+                    }
+
+                    // 常に新規タブで.
+                    editor = new TAHEditor(dbfilename, null);
+                    editor.SetInformation(tahfilename + ".tah", 1);
+
+                    // baseがないtahを全て反復する.
+                    foreach (MissingEntryInformation missing in missings)
+                    {
+                        try
+                        {
+                            List<string> tbns = tbnfiles[missing.basetbn];
+                            tbns.Sort(); // 順番を並び替える.
+                            string tbnfile = tbns[0]; // 一番若いtbnファイル名を得る.
+                            if (tbnfile.StartsWith("script/items/")) // 背景以外のtbnのみ処理する.
+                            {
+                                // tbnファイルを取得する
+                                byte[] tbndata = getTahFile(tbnfile);
+                                // data/model/N765BODY_A00.TSO
+                                // 012345678901
+                                string tsoname = TDCGTbnUtil.GetTsoName(tbndata).Substring(11);
+                                string psdpath = "data/icon/items/" + tsoname.Substring(0, 12) + ".psd";
+                                // psdファイルを取得する
+                                byte[] psddata = getTahFile(psdpath);
+
+                                // 新しい名前を付け替える.
+                                //
+                                // script/items/N765BODY_A00.tbn
+                                // 12345678901234567890123456789
+                                string newtbn = tbnfile.Substring(0, 23) + "00.tbn";
+                                // data/icon/items/N765BODY_A00.tbn
+                                // 12345678901234567890123456789
+                                string newpsd = psdpath.Substring(0, 26) + "00.psd";
+
+                                editor.AddItem(newtbn, tbndata);
+                                if (psddata != null) editor.AddItem(newpsd, psddata);
+                            }
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    }
+
+                    TDCGExplorer.TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
+                    editor.SelectAll();
+                }
+            }
+            catch (Exception)
+            {
+                if (editor != null) editor.Dispose();
+            }
+        }
+        // TAHからファイルを読み取る.
+        private byte[] getTahFile(string file)
+        {
+            TDCGExplorer.ArcsDatabase arcDB = TDCGExplorer.TDCGExplorer.ArcsDB;
+            string filename = file.ToLower();
+            byte[] filedata = null;
+
+            List<ArcsTahFilesEntry> tahs = arcDB.GetTahFilesEntry(TDCGExplorer.TAHUtil.CalcHash(filename));
+            foreach (ArcsTahFilesEntry tahfile in tahs)
+            {
+                if (tahfile.path.ToLower() == filename)
+                {
+                    ArcsTahEntry arcs = arcDB.GetTah(tahfile.tahid);
+                    using (Stream file_stream = File.OpenRead(Path.Combine(TDCGExplorer.TDCGExplorer.SystemDB.arcs_path, arcs.path)))
+                    {
+                        TAHFile tah = new TAHFile(file_stream);
+                        try
+                        {
+                            tah.LoadEntries();
+                            foreach (TAHEntry ent in tah.EntrySet.Entries)
+                            {
+                                if (ent.FileName != null && ent.FileName.ToLower() == filename)
+                                {
+                                    filedata = TAHUtil.ReadEntryData(tah.Reader, ent);
+                                    break;
+                                }
+                            }
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    }
+                    break;
+                }
+            }
+            return filedata;
+        }
+
+        private void dataGridView_DoubleClick(object sender, EventArgs e)
         {
             int index = dataGridView.CurrentCell.RowIndex;
             if (index >= 0)
@@ -169,6 +333,8 @@ namespace System.Windows.Forms
     public class FindMissingModThread
     {
         internal FindBaseModPage control;
+        private Dictionary<string, List<string>> tbnfiles = new Dictionary<string, List<string>>();
+
         public void Run()
         {
             TDCGExplorer.TDCGExplorer.IncBusy();
@@ -195,6 +361,15 @@ namespace System.Windows.Forms
                                 string fullname = Path.GetFileNameWithoutExtension(file.path).ToLower();
                                 string basename = fullname.Substring(0, 10);
                                 string colbase = directory + "/" + basename + "00.tbn";
+
+                                // <<1.08.1
+                                // コード毎のtbnファイル名を全て集める.
+                                if (tbnfiles.ContainsKey(colbase) == false)
+                                {
+                                    tbnfiles.Add(colbase,new List<string>());
+                                }
+                                tbnfiles[colbase].Add(file.path);
+                                // 1.08.1>>
 
                                 if (tbnmap.ContainsKey(colbase) == true) continue; // 既に該当tbnの情報を見つけている.
                                 // baseとなるtbnそのものだった場合.
@@ -248,7 +423,9 @@ namespace System.Windows.Forms
                     }
                 }
             }
-            TDCGExplorer.TDCGExplorer.SetToolTips("検索完了");
+            // TBN辞書をセットして終了
+            control.tbnfiles = tbnfiles;
+            TDCGExplorer.TDCGExplorer.SetToolTips("検索完了。行をダブルクリックすると、そのファイルにジャンプします。");
             TDCGExplorer.TDCGExplorer.DecBusy();
         }
     }

@@ -50,6 +50,11 @@ namespace TDCGExplorer
             get { return treeViewArcs; }
         }
 
+        public TreeView ZipsTreeView
+        {
+            get { return treeViewZips; }
+        }
+
         public TreeView SaveFileTreeView
         {
             get { return treeViewSaveFile; }
@@ -204,7 +209,7 @@ namespace TDCGExplorer
                 GenericZipTreeNode node = (GenericZipTreeNode)lastSelectTreeNode;
                 if (TDCGExplorer.InstallZipFile(node))
                 {
-                    //MessageBox.Show("Extracted on work directory", "Extract", MessageBoxButtons.OK);
+                    MessageBox.Show("ファイルを展開しました", "展開成功", MessageBoxButtons.OK);
                 }
                 else
                 {
@@ -300,6 +305,7 @@ namespace TDCGExplorer
             {
                 viewer.ClearFigureList();
                 fInitialTmoLoad = false;
+                viewer.BackColor = Color.LightGray; // 背景色は灰色に.
             }
         }
 
@@ -308,6 +314,7 @@ namespace TDCGExplorer
         {
             if (threadCheck() == true) return;
             TDCGExplorer.EditSystemDatabase();
+            DisplayDB();
         }
 
         // アノテーションを編集.
@@ -331,7 +338,7 @@ namespace TDCGExplorer
                 Debug.WriteLine(exception.Message);
             }
         }
-
+#if false
         // 検索
         private void FindItemToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -358,7 +365,7 @@ namespace TDCGExplorer
                 Cursor.Current = Cursors.Default;
             }
         }
-
+#endif
         // ZIPファイルを展開する
         private void extractZipFileToolStripMenuItem1_Click_1(object sender, EventArgs e)
         {
@@ -458,7 +465,11 @@ namespace TDCGExplorer
             Control lastControl = null;
             if (currentPage.Controls.Count > 0) lastControl = currentPage.Controls[0];
             currentPage.Controls.Add(control);
-            if (lastControl != null) lastControl.Dispose();
+            if (lastControl != null)
+            {
+                lastControl.Dispose();
+                currentPage.Controls.Remove(lastControl);
+            }
         }
 
         // アノテーションを表示する
@@ -542,7 +553,7 @@ namespace TDCGExplorer
             try
             {
                 ClearTreeBox();
-                TDCGExplorer.MakeArcsTreeView(treeViewArcs );
+                TDCGExplorer.MakeArcsTreeView(treeViewArcs);
                 TDCGExplorer.MakeZipsTreeView(treeViewZips);
                 TDCGExplorer.MakeCollisionTreeView(treeViewCollision);
                 TDCGExplorer.MakeInstalledArcsTreeView(treeViewInstalled);
@@ -1048,13 +1059,29 @@ namespace TDCGExplorer
         public void SelectArcsTreeNode(TreeNode node)
         {
             ResetColor();
+            tabControlTreeView.SelectedIndex = 0;
             treeViewArcs.SelectedNode = node;
+            SetColor(node);
+        }
+
+        public void SelectZipsTreeNode(TreeNode node)
+        {
+            ResetColor();
+            tabControlTreeView.SelectedIndex = 1;
+            treeViewZips.SelectedNode = node;
             SetColor(node);
         }
 
         private void ShowManualToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(@"iexplore.exe", Path.Combine(Directory.GetCurrentDirectory(), @"manual.mht"));
+            //System.Diagnostics.Process.Start(@"iexplore.exe", Path.Combine(Directory.GetCurrentDirectory(), @"manual.mht"));
+            try
+            {
+                System.Diagnostics.Process.Start(Path.Combine(Directory.GetCurrentDirectory(), @"manual\\manual.html"));
+            }
+            catch (Exception)
+            {
+            }
         }
 
         private void ShowVersionToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1153,12 +1180,70 @@ namespace TDCGExplorer
 
         private void listBoxMainListBox_DoubleClick(object sender, EventArgs e)
         {
-            SaveFilePage savefile = tabMainView.SelectedTab.Controls[0] as SaveFilePage;
-            if (savefile != null) savefile.DisplayTso();
+            try
+            {
+                SaveFilePage savefile = tabMainView.SelectedTab.Controls[0] as SaveFilePage;
+                if (savefile != null) savefile.DisplayTso();
 
-            PoseFilePage posefile = tabMainView.SelectedTab.Controls[0] as PoseFilePage;
-            if (posefile != null) posefile.DisplayPose();
+                PoseFilePage posefile = tabMainView.SelectedTab.Controls[0] as PoseFilePage;
+                if (posefile != null) posefile.DisplayPose();
+            }
+            catch (Exception)
+            {
+            }
         }
 
+        private void OpenAllTAHToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                GenericFilesTreeNode node = lastSelectTreeNode as GenericFilesTreeNode;
+                if (node != null)
+                {
+                    //node.DoEditAnnotation();
+                    string startwith = node.FullPath.Substring(TDCGExplorer.SystemDB.arcs_path.Length+1);
+                    TDCGExplorer.TAHCompaction(startwith);
+                }
+                else
+                {
+                    MessageBox.Show("この操作はTAHディレクトリのみ実行できます", "エラー", MessageBoxButtons.OK);
+                }
+            }
+            catch (Exception exception)
+            {
+                TDCGExplorer.SetToolTips("error:" + exception.Message);
+                Debug.WriteLine(exception.Message);
+            }
+        }
+
+        private void labelSearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SimpleTextDialog dialog = new SimpleTextDialog();
+            dialog.Owner = this;
+            dialog.dialogtext = "検索";
+            dialog.labeltext = "検索文字列";
+            dialog.checkboxenable = true;
+            dialog.checkboxtext = "アーカイブも検索する";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                string text = dialog.textfield;
+                AssignTagPageControl(new FindItemPage(text, dialog.checkboxchecked));
+            }
+        }
+
+        private void tahfilesearchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SimpleTextDialog dialog = new SimpleTextDialog();
+            dialog.Owner = this;
+            dialog.dialogtext = "検索";
+            dialog.labeltext = "検索文字列";
+            dialog.checkboxenable = true;
+            dialog.checkboxtext = "アーカイブも検索する";
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                string text = dialog.textfield;
+                AssignTagPageControl(new FindItemPage(text, dialog.checkboxchecked, true));
+            }
+        }
     }
 }
