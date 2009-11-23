@@ -150,7 +150,7 @@ namespace TDCG
                     continue;
                 string pname = nodes[i].Name.Substring(0, index);
                 nodes[i].parent = nodemap[pname];
-                nodes[i].parent.child_nodes.Add(nodes[i]);
+                nodes[i].parent.children.Add(nodes[i]);
             }
         }
 
@@ -1008,7 +1008,7 @@ namespace TDCG
         /// <summary>
         /// 子nodeリスト
         /// </summary>
-        internal List<TMONode> child_nodes = new List<TMONode>();
+        internal List<TMONode> children = new List<TMONode>();
 
         /// <summary>
         /// 親node
@@ -1045,9 +1045,9 @@ namespace TDCG
         /// <returns></returns>
         public TMONode FindChildByShortName(string sname)
         {
-            foreach (TMONode child in child_nodes)
-                if (child.sname == sname)
-                    return child;
+            foreach (TMONode child_node in children)
+                if (child_node.sname == sname)
+                    return child_node;
             return null;
         }
 
@@ -1069,27 +1069,27 @@ namespace TDCG
         void CopyChildrenMatFrom_0(TMONode motion, List<string> except_snames)
         {
             List<TMONode> select_children = new List<TMONode>();
-            foreach (TMONode child in child_nodes)
+            foreach (TMONode child_node in children)
             {
                 bool found = false;
                 foreach (string except_sname in except_snames)
                 {
-                    if (child.sname == except_sname)
+                    if (child_node.sname == except_sname)
                     {
                         found = true;
                         break;
                     }
                 }
                 if (found)
-                    except_snames.Remove(child.sname);
+                    except_snames.Remove(child_node.sname);
                 else
-                    select_children.Add(child);
+                    select_children.Add(child_node);
             }
-            foreach (TMONode child in select_children)
+            foreach (TMONode child_node in select_children)
             {
-                TMONode motion_child = motion.FindChildByShortName(child.sname);
-                child.CopyThisMatFrom(motion_child);
-                child.CopyChildrenMatFrom_0(motion_child, except_snames);
+                TMONode motion_child = motion.FindChildByShortName(child_node.sname);
+                child_node.CopyThisMatFrom(motion_child);
+                child_node.CopyChildrenMatFrom_0(motion_child, except_snames);
             }
         }
 
@@ -1117,9 +1117,9 @@ namespace TDCG
         public void CopyMatFrom(TMONode motion)
         {
             CopyThisMatFrom(motion);
-            foreach (TMONode child in child_nodes)
+            foreach (TMONode child_node in children)
             {
-                child.CopyMatFrom(motion.FindChildByShortName(child.sname));
+                child_node.CopyMatFrom(motion.FindChildByShortName(child_node.sname));
             }
         }
 
@@ -1164,8 +1164,8 @@ namespace TDCG
             foreach (TMOMat i in frame_matrices)
                 i.Scale1(scaling);
 
-            foreach (TMONode child in child_nodes)
-                child.Scale0(x, y, z);
+            foreach (TMONode child_node in children)
+                child_node.Scale0(x, y, z);
         }
 
         /// <summary>
