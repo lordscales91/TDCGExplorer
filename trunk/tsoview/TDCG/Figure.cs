@@ -314,7 +314,7 @@ public class Figure : IDisposable
         matrixStack.MultiplyMatrixLocal(tmo_node.TransformationMatrix);
         tmo_node.combined_matrix = matrixStack.Top;
 
-        foreach (TMONode child_node in tmo_node.child_nodes)
+        foreach (TMONode child_node in tmo_node.children)
             UpdateBoneMatrices(child_node, tmo_frame);
 
         matrixStack.Pop();
