@@ -32,6 +32,19 @@ public class TPOFileList
     }
 
     /// <summary>
+    /// インデクサ
+    /// </summary>
+    /// <param name="name">proportion name</param>
+    /// <returns>tpo</returns>
+    public TPOFile this[string name]
+    {
+        get
+        {
+            return files.Find(delegate(TPOFile tpo) { return tpo.ProportionName == name; });
+        }
+    }
+
+    /// <summary>
     /// 要素数
     /// </summary>
     public int Count
@@ -75,6 +88,10 @@ public class TPOFileList
         }
     }
 
+    /// <summary>
+    /// 体型レシピから変形比率を設定します。
+    /// </summary>
+    /// <param name="config">体型レシピ</param>
     public void SetRatiosFromConfig(TPOConfig config)
     {
         Dictionary<string, Proportion> proportion_map = new Dictionary<string, Proportion>();

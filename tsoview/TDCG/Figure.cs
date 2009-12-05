@@ -60,11 +60,21 @@ public class Figure : IDisposable
     private int frame_index = 0;
     private int current_frame_index = 0;
 
+    /// <summary>
+    /// 体型スクリプトのリスト
+    /// </summary>
     public static ProportionList ProportionList { get; set; }
 
     TPOFileList tpo_list = new TPOFileList();
+    /// <summary>
+    /// TPOファイルのリスト
+    /// </summary>
     public TPOFileList TPOList { get { return tpo_list; } }
 
+    /// <summary>
+    /// 体型レシピのファイル名
+    /// </summary>
+    /// <returns></returns>
     public static string GetTPOConfigPath()
     {
         return Path.Combine(Application.StartupPath, @"TPOConfig.xml");
@@ -89,6 +99,9 @@ public class Figure : IDisposable
         }
     }
 
+    /// <summary>
+    /// 体型変形を行います。
+    /// </summary>
     public void TransformProportion()
     {
         if (tmo.frames == null)

@@ -6,15 +6,28 @@ using CSScriptLibrary;
 
 namespace TDCG
 {
+    /// <summary>
+    /// 体型スクリプトのリストを扱います。
+    /// </summary>
 public class ProportionList
 {
+    /// <summary>
+    /// 体型スクリプトのリスト
+    /// </summary>
     public List<IProportion> items = new List<IProportion>();
 
+    /// <summary>
+    /// 体型スクリプトフォルダのパスを得ます。
+    /// </summary>
+    /// <returns>体型スクリプトフォルダのパス</returns>
     public static string GetProportionPath()
     {
         return Path.Combine(Application.StartupPath, @"Proportion");
     }
 
+    /// <summary>
+    /// 体型スクリプトを読み込みます。
+    /// </summary>
     public void Load()
     {
         string[] script_files = Directory.GetFiles(GetProportionPath(), "*.cs");
