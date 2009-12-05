@@ -293,7 +293,7 @@ namespace TDCG
         /// 現在の行列を指定フレームに保存します。
         /// </summary>
         /// <param name="frame_index">index</param>
-        public void SaveTransformationMatrix(int frame_index)
+        public void SaveTransformationMatrixToFrame(int frame_index)
         {
             if (frames == null)
                 return;
@@ -306,7 +306,7 @@ namespace TDCG
         /// 指定フレームの行列を保持します。
         /// </summary>
         /// <param name="frame_index">index</param>
-        public void LoadTransformationMatrix(int frame_index)
+        public void LoadTransformationMatrixFromFrame(int frame_index)
         {
             if (frames == null)
                 return;

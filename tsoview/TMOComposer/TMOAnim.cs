@@ -60,7 +60,7 @@ namespace TMOComposer
             {
                 Console.WriteLine("Load File: " + pose_file);
                 Tmo = TMOAnim.LoadPNGFile(Path.Combine(PoseRoot, pose_file));
-                Tmo.LoadTransformationMatrix(0);
+                Tmo.LoadTransformationMatrixFromFrame(0);
             }
             Tmo.TruncateFrame(0); // forced pose
         }
@@ -79,9 +79,9 @@ namespace TMOComposer
                 TMOFile face_tmo = TMOAnim.LoadPNGFile(Path.Combine(FaceRoot, face_file));
                 if (face_tmo.frames != null)
                 {
-                    Tmo.SaveTransformationMatrix(0);
+                    Tmo.SaveTransformationMatrixToFrame(0);
                     Tmo.CopyChildrenNodeFrom(face_tmo, "face_oya", except_snames);
-                    Tmo.LoadTransformationMatrix(0);
+                    Tmo.LoadTransformationMatrixFromFrame(0);
                 }
             }
         }
@@ -94,7 +94,7 @@ namespace TMOComposer
             if (Tmo != null)
             {
                 item.Tmo = Tmo.Dup();
-                item.Tmo.LoadTransformationMatrix(0);
+                item.Tmo.LoadTransformationMatrixFromFrame(0);
             }
 
             return item;
@@ -220,12 +220,12 @@ namespace TMOComposer
             if (item.Tmo != null)
             {
                 tmo = item.Tmo;
-                tmo.SaveTransformationMatrix(0);
+                tmo.SaveTransformationMatrixToFrame(0);
             }
             else
             {
                 tmo = CreateTmo(item);
-                tmo.LoadTransformationMatrix(0);
+                tmo.LoadTransformationMatrixFromFrame(0);
                 item.Tmo = tmo;
             }
 
