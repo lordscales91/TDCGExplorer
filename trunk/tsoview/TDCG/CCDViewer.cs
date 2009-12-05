@@ -35,6 +35,10 @@ public class CCDViewer : Viewer
         {
             LimitRotation(node);
         };
+        this.Rendering += delegate()
+        {
+            RenderDerived();
+        };
     }
 
     /// マウスボタンを押したときに実行するハンドラ
