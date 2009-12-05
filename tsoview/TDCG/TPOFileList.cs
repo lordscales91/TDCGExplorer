@@ -108,6 +108,9 @@ public class TPOFileList
         }
     }
 
+    /// <summary>
+    /// •ÏŒ`”ä—¦‚ğÁ‹‚µ‚Ü‚·B
+    /// </summary>
     public void ClearRatios()
     {
         foreach (TPOFile tpo in files)
