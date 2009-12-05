@@ -36,10 +36,6 @@ namespace TMOComposer
             TMOAnimItem.FaceRoot = tso_config.FacePath;
 
             viewer = new CCDViewer();
-            viewer.Rendering += delegate()
-            {
-                viewer.RenderDerived();
-            };
             if (viewer.InitializeApplication(this))
             {
                 CreatePngSave();
