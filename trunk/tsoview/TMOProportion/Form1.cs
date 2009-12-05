@@ -46,7 +46,8 @@ namespace TMOProportion
 
             pro_list.Load();
             tpo_list.SetProportionList(pro_list);
-            ReadTPOConfig();
+            TPOConfig tpo_config = TPOConfig.Load(GetTPOConfigPath());
+            tpo_list.SetRatiosFromConfig(tpo_config);
 
             for (int i = 0; i < tpo_list.Count; i++)
             {
@@ -61,23 +62,6 @@ namespace TMOProportion
                 this.Controls.Add(slider);
             }
             UpdateTpoList();
-        }
-
-        private void ReadTPOConfig()
-        {
-            TPOConfig tpo_config = TPOConfig.Load(GetTPOConfigPath());
-
-            Dictionary<string, Proportion> portion_map = new Dictionary<string, Proportion>();
-            foreach (Proportion portion in tpo_config.Proportions)
-                portion_map[portion.ClassName] = portion;
-
-            foreach (TPOFile tpo in tpo_list.files)
-            {
-                Debug.Assert(tpo.Proportion != null, "tpo.Proportion should not be null");
-                Proportion portion;
-                if (portion_map.TryGetValue(tpo.ProportionName, out portion))
-                    tpo.Ratio = portion.Ratio;
-            }
         }
 
         private void timer1_Tick(object sender, EventArgs e)
