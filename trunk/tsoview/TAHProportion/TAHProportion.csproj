@@ -103,7 +103,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="TAHdecrypt.cs" />
-    <Compile Include="TPOConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="names.txt">
