@@ -56,6 +56,51 @@ public class Figure : IDisposable
 
     internal Dictionary<TSONode, TMONode> nodemap;
 
+    private MatrixStack matrixStack = null;
+    private int frame_index = 0;
+    private int current_frame_index = 0;
+
+    public static ProportionList ProportionList { get; set; }
+
+    TPOFileList tpo_list = new TPOFileList();
+    public TPOFileList TPOList { get { return tpo_list; } }
+
+    public static string GetTPOConfigPath()
+    {
+        return Path.Combine(Application.StartupPath, @"TPOConfig.xml");
+    }
+
+    /// <summary>
+    /// フィギュアを生成します。
+    /// </summary>
+    public Figure()
+    {
+        tmo = new TMOFile();
+        nodemap = new Dictionary<TSONode, TMONode>();
+        matrixStack = new MatrixStack();
+
+        tpo_list.SetProportionList(ProportionList);
+
+        string config_file = GetTPOConfigPath();
+        if (File.Exists(config_file))
+        {
+            TPOConfig config = TPOConfig.Load(config_file);
+            tpo_list.SetRatiosFromConfig(config);
+        }
+    }
+
+    public void TransformProportion()
+    {
+        if (tmo.frames == null)
+            return;
+
+        if (tmo.nodemap.ContainsKey("|W_Hips"))
+        {
+            tpo_list.Tmo = Tmo;
+            tpo_list.Transform();
+        }
+    }
+    
     /// <summary>
     /// フィギュアを移動します（相対座標）。
     /// </summary>
@@ -126,20 +171,6 @@ public class Figure : IDisposable
         }
     }
 
-    private MatrixStack matrixStack = null;
-    private int frame_index = 0;
-    private int current_frame_index = 0;
-
-    /// <summary>
-    /// フィギュアを生成します。
-    /// </summary>
-    public Figure()
-    {
-        tmo = new TMOFile();
-        nodemap = new Dictionary<TSONode, TMONode>();
-        matrixStack = new MatrixStack();
-    }
-    
     /// <summary>
     /// フレーム番号を0に設定します。
     /// </summary>

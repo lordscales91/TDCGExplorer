@@ -78,6 +78,22 @@ public class TPOFileList
         }
     }
 
+    public void SetRatiosFromConfig(TPOConfig config)
+    {
+        Dictionary<string, Proportion> proportion_map = new Dictionary<string, Proportion>();
+
+        foreach (Proportion proportion in config.Proportions)
+            proportion_map[proportion.ClassName] = proportion;
+
+        foreach (TPOFile tpo in files)
+        {
+            Debug.Assert(tpo.Proportion != null, "tpo.Proportion should not be null");
+            Proportion proportion;
+            if (proportion_map.TryGetValue(tpo.ProportionName, out proportion))
+                tpo.Ratio = proportion.Ratio;
+        }
+    }
+
     /// <summary>
     /// 全てのフレームに含まれるモーション行列値を変形します。
     /// </summary>

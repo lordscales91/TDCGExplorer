@@ -52,6 +52,17 @@ public class Viewer : IDisposable
     // マウスポイントしているスクリーン座標
     internal Point lastScreenPoint = Point.Empty;
 
+    ProportionList pro_list = new ProportionList();
+
+    /// <summary>
+    /// viewerを生成します。
+    /// </summary>
+    public Viewer()
+    {
+        pro_list.Load();
+        Figure.ProportionList = pro_list;
+    }
+
     private void control_OnSizeChanged(object sender, EventArgs e)
     {
         Transform_Projection = Matrix.PerspectiveFovRH(
