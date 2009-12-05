@@ -78,7 +78,7 @@ namespace TMOProportion
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                fig.TransformProportion(fig.GetFrameIndex());
+                fig.TransformTpo(fig.GetFrameIndex());
                 fig.UpdateBoneMatrices(true);
             }
         }

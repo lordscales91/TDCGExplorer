@@ -158,7 +158,7 @@ namespace TMOComposer
 
                 Figure fig = viewer.FigureList[pngsave_row];
                 fig.Tmo = tmoanim.SourceTmo;
-                fig.TransformProportion();
+                fig.TransformTpo();
                 fig.UpdateNodeMapAndBoneMatrices();
             }
         }

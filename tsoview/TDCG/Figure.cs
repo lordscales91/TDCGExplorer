@@ -103,7 +103,7 @@ public class Figure : IDisposable
     /// <summary>
     /// 体型変形を行います。
     /// </summary>
-    public void TransformProportion()
+    public void TransformTpo()
     {
         if (tmo.frames == null)
             return;
@@ -115,7 +115,7 @@ public class Figure : IDisposable
     /// 体型変形を行います。
     /// </summary>
     /// <param name="frame_index">フレーム番号</param>
-    public void TransformProportion(int frame_index)
+    public void TransformTpo(int frame_index)
     {
         if (tmo.frames == null)
             return;
