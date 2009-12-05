@@ -73,6 +73,7 @@
     <Compile Include="TMOWriter.cs" />
     <Compile Include="TPOConfig.cs" />
     <Compile Include="TPOFile.cs" />
+    <Compile Include="TPOFileList.cs" />
     <Compile Include="TSOFile.cs" />
     <Compile Include="TSOWriter.cs" />
     <Compile Include="Viewer.cs" />
