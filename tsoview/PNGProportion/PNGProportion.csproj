@@ -50,7 +50,6 @@
   -->
   <ItemGroup>
     <Compile Include="Program.cs" />
-    <Compile Include="TPOConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CSScriptLibrary, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
