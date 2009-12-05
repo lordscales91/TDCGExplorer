@@ -108,6 +108,14 @@ public class TPOFileList
         }
     }
 
+    public void ClearRatios()
+    {
+        foreach (TPOFile tpo in files)
+        {
+            tpo.Ratio = 0.0f;
+        }
+    }
+
     /// <summary>
     /// 全てのフレームに含まれるモーション行列値を変形します。
     /// </summary>
