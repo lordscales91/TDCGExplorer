@@ -652,7 +652,8 @@ public class Viewer : IDisposable
             fig.Dispose();
         FigureList.Clear();
         SetFigureIndex(0);
-        GC.Collect(); // free meshes and textures.
+        // free meshes and textures.
+        Console.WriteLine("Total Memory: {0}", GC.GetTotalMemory(true));
     }
 
     /// <summary>
@@ -666,8 +667,10 @@ public class Viewer : IDisposable
             fig.Dispose();
             FigureList.Remove(fig);
             SetFigureIndex(fig_index-1);
-            GC.Collect(); // free meshes and textures.
         }
+        fig = null;
+        // free meshes and textures.
+        Console.WriteLine("Total Memory: {0}", GC.GetTotalMemory(true));
     }
 
     internal bool motionEnabled = false;
