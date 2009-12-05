@@ -33,17 +33,6 @@ namespace TPOEditor
             }
 
             tpoFileBindingSource.DataSource = TPOList.files;
-
-            AssignTmo();
-        }
-
-        private void AssignTmo()
-        {
-            Figure fig;
-            if (viewer.TryGetFigure(out fig))
-            {
-                fig.TPOList.Tmo = fig.Tmo;
-            }
         }
 
         private void Transform()
@@ -51,7 +40,7 @@ namespace TPOEditor
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                fig.TPOList.Transform(fig.GetFrameIndex());
+                fig.TransformProportion(fig.GetFrameIndex());
                 fig.UpdateBoneMatrices(true);
             }
         }

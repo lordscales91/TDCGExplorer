@@ -51,6 +51,7 @@ public class Figure : IDisposable
             tmo = value;
             ResetFrameIndex();
             SetCenterToHips();
+            tpo_list.Tmo = tmo;
         }
     }
 
@@ -107,11 +108,15 @@ public class Figure : IDisposable
         if (tmo.frames == null)
             return;
 
-        if (tmo.nodemap.ContainsKey("|W_Hips"))
-        {
-            tpo_list.Tmo = Tmo;
-            tpo_list.Transform();
-        }
+        tpo_list.Transform();
+    }
+
+    public void TransformProportion(int frame_index)
+    {
+        if (tmo.frames == null)
+            return;
+
+        tpo_list.Transform(frame_index);
     }
     
     /// <summary>
