@@ -56,7 +56,7 @@ public class TPOFileList
     }
 
     /// <summary>
-    /// リストを消去します。
+    /// TPOファイルリストを消去します。
     /// </summary>
     public void Clear()
     {
@@ -79,7 +79,7 @@ public class TPOFileList
     }
 
     /// <summary>
-    /// Tpo.Tmoに含まれるモーション行列値を変形します。
+    /// 全てのフレームに含まれるモーション行列値を変形します。
     /// </summary>
     public void Transform()
     {
@@ -91,12 +91,12 @@ public class TPOFileList
     /// <summary>
     /// 指定番号のフレームに含まれるモーション行列値を変形します。
     /// </summary>
-    /// <param name="i">フレーム番号</param>
-    public void Transform(int i)
+    /// <param name="frame_index">フレーム番号</param>
+    public void Transform(int frame_index)
     {
         LoadMatrix();
         foreach (TPOFile tpo in files)
-            tpo.Transform(i);
+            tpo.Transform(frame_index);
     }
 
     /// <summary>
@@ -189,13 +189,14 @@ public class TPOFile
 {
     private float ratio = 0.0f;
     private TMOFile tmo = null;
-    private Dictionary<string, TPONode> nodemap = new Dictionary<string, TPONode>();
     private IProportion proportion = null;
 
     /// <summary>
     /// bone配列
     /// </summary>
     public TPONode[] nodes;
+
+    private Dictionary<string, TPONode> nodemap;
 
     /// <summary>
     /// TPONodeの変形係数に乗ずる変形比率
@@ -217,7 +218,7 @@ public class TPOFile
 
         set
         {
-            nodemap.Clear();
+            nodemap = null;
             nodes = null;
 
             tmo = value;
@@ -231,27 +232,34 @@ public class TPOFile
             int node_count = tmo.nodes.Length;
             nodes = new TPONode[node_count];
 
-            //tmo nodeからnameを得て設定する。
-            //そしてnodemapに追加する。
             for (int i = 0; i < node_count; i++)
             {
-                string name = tmo.nodes[i].Name;
-                nodes[i] = new TPONode(i, name);
-                nodemap.Add(name, nodes[i]);
+                nodes[i] = new TPONode(i, tmo.nodes[i].Name);
             }
 
-            //親子関係を設定する。
-            for (int i = 0; i < node_count; i++)
-            {
-                int index = nodes[i].Name.LastIndexOf('|');
-                if (index <= 0)
-                    continue;
-                string pname = nodes[i].Name.Substring(0, index);
-                nodes[i].parent = nodemap[pname];
-                nodes[i].parent.children.Add(nodes[i]);
-            }
+            GenerateNodemapAndTree();
 
             ExecuteProportion();
+        }
+    }
+
+    void GenerateNodemapAndTree()
+    {
+        nodemap = new Dictionary<string, TPONode>();
+
+        for (int i = 0; i < nodes.Length; i++)
+        {
+            nodemap.Add(nodes[i].Name, nodes[i]);
+        }
+
+        for (int i = 0; i < nodes.Length; i++)
+        {
+            int index = nodes[i].Name.LastIndexOf('|');
+            if (index <= 0)
+                continue;
+            string pname = nodes[i].Name.Substring(0, index);
+            nodes[i].parent = nodemap[pname];
+            nodes[i].parent.children.Add(nodes[i]);
         }
     }
 
@@ -300,7 +308,7 @@ public class TPOFile
     }
 
     /// <summary>
-    /// Tpo.Tmoに含まれるモーション行列値を変形します。
+    /// 全てのフレームに含まれるモーション行列値を変形します。
     /// </summary>
     public void Transform()
     {
@@ -320,8 +328,8 @@ public class TPOFile
     /// <summary>
     /// 指定番号のフレームに含まれるモーション行列値を変形します。
     /// </summary>
-    /// <param name="i">フレーム番号</param>
-    public void Transform(int i)
+    /// <param name="frame_index">フレーム番号</param>
+    public void Transform(int frame_index)
     {
         if (ratio == 0)
             return;
@@ -329,12 +337,12 @@ public class TPOFile
         if (tmo.frames == null)
             return;
 
-        int matrix_count = tmo.frames[i].matrices.Length;
+        int matrix_count = tmo.frames[frame_index].matrices.Length;
         for (int j = 0; j < matrix_count; j++)
         {
             TPONode node = nodes[j];
             Debug.Assert(node != null, "node should not be null j=" + j.ToString());
-            TMOMat mat = tmo.frames[i].matrices[j];//変形対象モーション行列
+            TMOMat mat = tmo.frames[frame_index].matrices[j];//変形対象モーション行列
             node.Transform(mat, ratio);
         }
     }
