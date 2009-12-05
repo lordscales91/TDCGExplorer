@@ -70,6 +70,7 @@
     <Compile Include="TMOConstraint.cs" />
     <Compile Include="TMOFile.cs" />
     <Compile Include="TMOWriter.cs" />
+    <Compile Include="TPOConfig.cs" />
     <Compile Include="TPOFile.cs" />
     <Compile Include="TSOFile.cs" />
     <Compile Include="TSOWriter.cs" />

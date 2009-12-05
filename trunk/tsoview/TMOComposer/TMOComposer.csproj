@@ -44,6 +44,10 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CSScriptLibrary, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CSScriptLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -138,6 +142,7 @@
       <DependentUpon>SaveListForm.cs</DependentUpon>
     </Compile>
     <Compile Include="TMOAnim.cs" />
+    <Compile Include="TMOAnimItem.cs" />
     <Compile Include="TmoAnimItemForm.cs">
       <SubType>Form</SubType>
     </Compile>
