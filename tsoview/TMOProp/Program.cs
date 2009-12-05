@@ -56,9 +56,9 @@ namespace TMOProp
             tmo = new TMOFile();
             tmo.Load(source_file);
             
-            TPOConfig config = TPOConfig.Load(GetTPOConfigPath());
+            TPOConfig tpo_config = TPOConfig.Load(GetTPOConfigPath());
             Dictionary<string, Proportion> portion_map = new Dictionary<string, Proportion>();
-            foreach (Proportion portion in config.Proportions)
+            foreach (Proportion portion in tpo_config.Proportions)
                 portion_map[portion.ClassName] = portion;
             
             if (tmo.nodes[0].Name == "|W_Hips")
