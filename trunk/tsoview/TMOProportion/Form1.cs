@@ -26,7 +26,6 @@ namespace TMOProportion
             {
                 viewer.FigureEvent += delegate(object sender, EventArgs e)
                 {
-                    AssignTmo();
                     Transform();
                 };
                 foreach (string arg in args)
@@ -74,21 +73,12 @@ namespace TMOProportion
             Transform();
         }
 
-        private void AssignTmo()
-        {
-            Figure fig;
-            if (viewer.TryGetFigure(out fig))
-            {
-                fig.TPOList.Tmo = fig.Tmo;
-            }
-        }
-
         private void Transform()
         {
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                fig.TPOList.Transform(fig.GetFrameIndex());
+                fig.TransformProportion(fig.GetFrameIndex());
                 fig.UpdateBoneMatrices(true);
             }
         }
