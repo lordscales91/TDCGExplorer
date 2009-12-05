@@ -14,14 +14,7 @@ namespace TMOProportion
     public partial class Form1 : Form
     {
         internal Viewer viewer = null;
-        ProportionList pro_list = new ProportionList();
-        TPOFileList tpo_list = new TPOFileList();
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
-
-        public string GetTPOConfigPath()
-        {
-            return Path.Combine(Application.StartupPath, @"TPOConfig.xml");
-        }
 
         public Form1(TSOConfig tso_config, string[] args)
         {
@@ -44,24 +37,22 @@ namespace TMOProportion
                 timer1.Enabled = true;
             }
 
-            pro_list.Load();
-            tpo_list.SetProportionList(pro_list);
-            TPOConfig tpo_config = TPOConfig.Load(GetTPOConfigPath());
-            tpo_list.SetRatiosFromConfig(tpo_config);
-
-            for (int i = 0; i < tpo_list.Count; i++)
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
             {
-                TPOFile tpo = tpo_list[i];
-                ProportionSlider slider = new ProportionSlider();
-                slider.Tag = tpo;
-                slider.ClassName = tpo.ProportionName;
-                slider.Ratio = tpo.Ratio;
+                for (int i = 0; i < fig.TPOList.Count; i++)
+                {
+                    TPOFile tpo = fig.TPOList[i];
+                    ProportionSlider slider = new ProportionSlider();
+                    slider.Tag = tpo;
+                    slider.ClassName = tpo.ProportionName;
+                    slider.Ratio = tpo.Ratio;
 
-                slider.Location = new System.Drawing.Point(10, 10 + i * 95);
-                slider.ValueChanged += new System.EventHandler(this.slider_ValueChanged);
-                this.Controls.Add(slider);
+                    slider.Location = new System.Drawing.Point(10, 10 + i * 95);
+                    slider.ValueChanged += new System.EventHandler(this.slider_ValueChanged);
+                    this.Controls.Add(slider);
+                }
             }
-            UpdateTpoList();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
@@ -82,7 +73,7 @@ namespace TMOProportion
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                tpo_list.Transform(fig.GetFrameIndex());
+                fig.TPOList.Transform(fig.GetFrameIndex());
                 fig.UpdateBoneMatrices(true);
             }
         }
@@ -92,8 +83,8 @@ namespace TMOProportion
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                tpo_list.Tmo = fig.Tmo;
-                tpo_list.Transform(0);
+                fig.TPOList.Tmo = fig.Tmo;
+                fig.TPOList.Transform(fig.GetFrameIndex());
                 fig.UpdateBoneMatrices(true);
             }
         }
@@ -127,18 +118,22 @@ namespace TMOProportion
         {
             TPOConfig config = new TPOConfig();
 
-            config.Proportions = new Proportion[tpo_list.Count];
-            for (int i = 0; i < tpo_list.Count; i++)
-                config.Proportions[i] = new Proportion();
-
-            for (int i = 0; i < tpo_list.Count; i++)
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
             {
-                TPOFile tpo = tpo_list[i];
-                Proportion portion = config.Proportions[i];
-                portion.ClassName = tpo.ProportionName;
-                portion.Ratio = tpo.Ratio;
+                config.Proportions = new Proportion[fig.TPOList.Count];
+                for (int i = 0; i < fig.TPOList.Count; i++)
+                    config.Proportions[i] = new Proportion();
+
+                for (int i = 0; i < fig.TPOList.Count; i++)
+                {
+                    TPOFile tpo = fig.TPOList[i];
+                    Proportion portion = config.Proportions[i];
+                    portion.ClassName = tpo.ProportionName;
+                    portion.Ratio = tpo.Ratio;
+                }
             }
-            config.Save(GetTPOConfigPath());
+            config.Save(Figure.GetTPOConfigPath());
         }
 
     }
