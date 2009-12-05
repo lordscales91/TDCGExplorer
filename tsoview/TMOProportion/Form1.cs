@@ -7,7 +7,6 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using CSScriptLibrary;
 using TDCG;
 
 namespace TMOProportion
@@ -15,14 +14,9 @@ namespace TMOProportion
     public partial class Form1 : Form
     {
         internal Viewer viewer = null;
-        List<IProportion> pro_list = new List<IProportion>();
+        ProportionList pro_list = new ProportionList();
         TPOFileList tpo_list = new TPOFileList();
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
-
-        public string GetProportionPath()
-        {
-            return Path.Combine(Application.StartupPath, @"Proportion");
-        }
 
         public string GetTPOConfigPath()
         {
@@ -50,13 +44,7 @@ namespace TMOProportion
                 timer1.Enabled = true;
             }
 
-            string[] script_files = Directory.GetFiles(GetProportionPath(), "*.cs");
-            foreach (string script_file in script_files)
-            {
-                string class_name = "TDCG.Proportion." + Path.GetFileNameWithoutExtension(script_file);
-                var script = CSScript.Load(script_file).CreateInstance(class_name).AlignToInterface<IProportion>();
-                pro_list.Add(script);
-            }
+            pro_list.Load();
             tpo_list.SetProportionList(pro_list);
             ReadTPOConfig();
 

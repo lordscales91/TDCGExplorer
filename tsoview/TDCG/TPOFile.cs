@@ -67,10 +67,10 @@ public class TPOFileList
     /// 体型リストを設定します。
     /// </summary>
     /// <param name="pro_list">体型リスト</param>
-    public void SetProportionList(List<IProportion> pro_list)
+    public void SetProportionList(ProportionList pro_list)
     {
         Clear();
-        foreach (IProportion pro in pro_list)
+        foreach (IProportion pro in pro_list.items)
         {
             TPOFile tpo = new TPOFile();
             tpo.Proportion = pro;

@@ -8,7 +8,6 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using TDCG;
-using CSScriptLibrary;
 
 namespace TMOComposer
 {
@@ -35,7 +34,7 @@ namespace TMOComposer
             pose_path = tso_config.PosePath;
             TMOAnimItem.PoseRoot = tso_config.PosePath;
             TMOAnimItem.FaceRoot = tso_config.FacePath;
-            LoadProportionList();
+            pro_list.Load();
             TMOAnim.ProportionList = pro_list;
 
             viewer = new CCDViewer();
@@ -85,23 +84,7 @@ namespace TMOComposer
             poseListForm.UpdateViewItems(files);
         }
 
-        List<IProportion> pro_list = new List<IProportion>();
-
-        public string GetProportionPath()
-        {
-            return Path.Combine(Application.StartupPath, @"Proportion");
-        }
-
-        private void LoadProportionList()
-        {
-            string[] script_files = Directory.GetFiles(GetProportionPath(), "*.cs");
-            foreach (string script_file in script_files)
-            {
-                string class_name = "TDCG.Proportion." + Path.GetFileNameWithoutExtension(script_file);
-                var script = CSScript.Load(script_file).CreateInstance(class_name).AlignToInterface<IProportion>();
-                pro_list.Add(script);
-            }
-        }
+        ProportionList pro_list = new ProportionList();
 
         private void CreatePngSave()
         {
