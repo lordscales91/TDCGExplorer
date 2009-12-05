@@ -34,8 +34,6 @@ namespace TMOComposer
             pose_path = tso_config.PosePath;
             TMOAnimItem.PoseRoot = tso_config.PosePath;
             TMOAnimItem.FaceRoot = tso_config.FacePath;
-            pro_list.Load();
-            TMOAnim.ProportionList = pro_list;
 
             viewer = new CCDViewer();
             if (viewer.InitializeApplication(this))
@@ -83,8 +81,6 @@ namespace TMOComposer
             poseListForm.UpdateImageList(files);
             poseListForm.UpdateViewItems(files);
         }
-
-        ProportionList pro_list = new ProportionList();
 
         private void CreatePngSave()
         {
@@ -162,6 +158,7 @@ namespace TMOComposer
 
                 Figure fig = viewer.FigureList[pngsave_row];
                 fig.Tmo = tmoanim.SourceTmo;
+                fig.TransformProportion();
                 fig.UpdateNodeMapAndBoneMatrices();
             }
         }
