@@ -62,10 +62,16 @@ namespace TMOComposer
 
         TPOFileList tpo_list = new TPOFileList();
 
+        public static string GetTPOConfigPath()
+        {
+            return Path.Combine(Application.StartupPath, @"TPOConfig.xml");
+        }
+
         public TMOAnim()
         {
             source = new TMOFile();
             tpo_list.SetProportionList(ProportionList);
+            LoadTPOConfig(GetTPOConfigPath());
         }
 
         int save_id;
@@ -85,7 +91,7 @@ namespace TMOComposer
             return Path.Combine(FaceRoot, face_file);
         }
 
-        public static List<IProportion> ProportionList { get; set; }
+        public static ProportionList ProportionList { get; set; }
 
         public void LoadSource()
         {
@@ -281,18 +287,22 @@ namespace TMOComposer
             }
         }
 
-        public string GetTPOConfigPath()
+        Dictionary<string, Proportion> proportion_map = new Dictionary<string, Proportion>();
+
+        public void LoadTPOConfig(string source_file)
         {
-            return Path.Combine(Application.StartupPath, @"TPOConfig.xml");
+            TPOConfig tpo_config = TPOConfig.Load(source_file);
+            GenerateProportionMap(tpo_config);
+        }
+
+        private void GenerateProportionMap(TPOConfig tpo_config)
+        {
+            foreach (Proportion proportion in tpo_config.Proportions)
+                proportion_map[proportion.ClassName] = proportion;
         }
 
         private void Transform()
         {
-            TPOConfig tpo_config = TPOConfig.Load(GetTPOConfigPath());
-            Dictionary<string, Proportion> portion_map = new Dictionary<string, Proportion>();
-            foreach (Proportion portion in tpo_config.Proportions)
-                portion_map[portion.ClassName] = portion;
-
             if (source.nodes[0].Name == "|W_Hips")
             {
                 tpo_list.Tmo = source;
@@ -302,9 +312,9 @@ namespace TMOComposer
                     TPOFile tpo = tpo_list[i];
                     {
                         Debug.Assert(tpo.Proportion != null, "tpo.Proportion should not be null");
-                        Proportion portion;
-                        if (portion_map.TryGetValue(tpo.Proportion.ToString(), out portion))
-                            tpo.Ratio = portion.Ratio;
+                        Proportion proportion;
+                        if (proportion_map.TryGetValue(tpo.Proportion.ToString(), out proportion))
+                            tpo.Ratio = proportion.Ratio;
                     }
                 }
 

@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using TDCG;
-using CSScriptLibrary;
 
 namespace PNGProportion
 {
@@ -46,14 +45,9 @@ namespace PNGProportion
 
         byte[] cami;
 
-        List<IProportion> pro_list = new List<IProportion>();
+        ProportionList pro_list = new ProportionList();
         TPOFileList tpo_list = new TPOFileList();
     
-        public string GetProportionPath()
-        {
-            return Path.Combine(Application.StartupPath, @"Proportion");
-        }
-
         public string GetTPOConfigPath()
         {
             return Path.Combine(Application.StartupPath, @"TPOConfig.xml");
@@ -61,13 +55,7 @@ namespace PNGProportion
 
         public void SetProportionList()
         {
-            string[] script_files = Directory.GetFiles(GetProportionPath(), "*.cs");
-            foreach (string script_file in script_files)
-            {
-                string class_name = "TDCG.Proportion." + Path.GetFileNameWithoutExtension(script_file);
-                var script = CSScript.Load(script_file).CreateInstance(class_name).AlignToInterface<IProportion>();
-                pro_list.Add(script);
-            }
+            pro_list.Load();
             tpo_list.SetProportionList(pro_list);
         }
 

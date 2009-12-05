@@ -9,21 +9,15 @@ using System.Windows.Forms;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using TDCG;
-using CSScriptLibrary;
 
 namespace TPOEditor
 {
     public partial class Form1 : Form
     {
         Viewer viewer = null;
-        List<IProportion> pro_list = new List<IProportion>();
+        ProportionList pro_list = new ProportionList();
         TPOFileList tpo_list = new TPOFileList();
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
-
-        public string GetProportionPath()
-        {
-            return Path.Combine(Application.StartupPath, @"Proportion");
-        }
 
         public Form1(TSOConfig tso_config, string[] args)
         {
@@ -40,13 +34,7 @@ namespace TPOEditor
                 timer1.Enabled = true;
             }
 
-            string[] script_files = Directory.GetFiles(GetProportionPath(), "*.cs");
-            foreach (string script_file in script_files)
-            {
-                string class_name = name_space + "." + Path.GetFileNameWithoutExtension(script_file);
-                var script = CSScript.Load(script_file).CreateInstance(class_name).AlignToInterface<IProportion>();
-                pro_list.Add(script);
-            }
+            pro_list.Load();
             tpo_list.SetProportionList(pro_list);
             tpoFileBindingSource.DataSource = tpo_list.files;
 
@@ -66,7 +54,7 @@ namespace TPOEditor
 
         void SaveTpoScript(TPOFile tpo)
         {
-            string script_file = Path.Combine(GetProportionPath(), GetProportionClassName(tpo) + ".cs");
+            string script_file = Path.Combine(ProportionList.GetProportionPath(), GetProportionClassName(tpo) + ".cs");
             using (StreamWriter sw = File.CreateText(script_file))
             {
                 DumpTpoScript(tpo, sw);

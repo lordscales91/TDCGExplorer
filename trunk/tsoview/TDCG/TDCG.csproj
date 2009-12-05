@@ -65,6 +65,7 @@
     <Compile Include="IProportion.cs" />
     <Compile Include="PNGFile.cs" />
     <Compile Include="PNGWriter.cs" />
+    <Compile Include="ProportionList.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="SimpleCamera.cs" />
     <Compile Include="TMOConstraint.cs" />
@@ -77,6 +78,10 @@
     <Compile Include="Viewer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="CSScriptLibrary, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\CSScriptLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\ICSharpCode.SharpZipLib.dll</HintPath>
