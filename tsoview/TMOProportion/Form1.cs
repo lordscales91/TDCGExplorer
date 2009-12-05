@@ -26,7 +26,8 @@ namespace TMOProportion
             {
                 viewer.FigureEvent += delegate(object sender, EventArgs e)
                 {
-                    UpdateTpoList();
+                    AssignTmo();
+                    Transform();
                 };
                 foreach (string arg in args)
                     viewer.LoadAnyFile(arg, true);
@@ -70,20 +71,23 @@ namespace TMOProportion
                     tpo.Ratio = slider.Ratio;
             }
 
-            Figure fig;
-            if (viewer.TryGetFigure(out fig))
-            {
-                fig.TPOList.Transform(fig.GetFrameIndex());
-                fig.UpdateBoneMatrices(true);
-            }
+            Transform();
         }
 
-        private void UpdateTpoList()
+        private void AssignTmo()
         {
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
                 fig.TPOList.Tmo = fig.Tmo;
+            }
+        }
+
+        private void Transform()
+        {
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
+            {
                 fig.TPOList.Transform(fig.GetFrameIndex());
                 fig.UpdateBoneMatrices(true);
             }

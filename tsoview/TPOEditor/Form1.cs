@@ -15,8 +15,6 @@ namespace TPOEditor
     public partial class Form1 : Form
     {
         Viewer viewer = null;
-        ProportionList pro_list = new ProportionList();
-        TPOFileList tpo_list = new TPOFileList();
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
 
         public Form1(TSOConfig tso_config, string[] args)
@@ -34,14 +32,40 @@ namespace TPOEditor
                 timer1.Enabled = true;
             }
 
-            pro_list.Load();
-            tpo_list.SetProportionList(pro_list);
-            tpoFileBindingSource.DataSource = tpo_list.files;
+            tpoFileBindingSource.DataSource = TPOList.files;
 
+            AssignTmo();
+        }
+
+        private void AssignTmo()
+        {
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                tpo_list.Tmo = fig.Tmo;
+                fig.TPOList.Tmo = fig.Tmo;
+            }
+        }
+
+        private void Transform()
+        {
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
+            {
+                fig.TPOList.Transform(fig.GetFrameIndex());
+                fig.UpdateBoneMatrices(true);
+            }
+        }
+
+        TPOFileList TPOList
+        {
+            get
+            {
+                Figure fig;
+                if (viewer.TryGetFigure(out fig))
+                {
+                    return fig.TPOList;
+                }
+                return null;
             }
         }
 
@@ -155,33 +179,18 @@ namespace TPOEditor
             sw.WriteLine("}");
         }
 
-        private void ClearTpoRatios()
-        {
-            for (int i = 0; i < tpo_list.Count; i++)
-            {
-                TPOFile tpo = tpo_list[i];
-                tpo.Ratio = 0.0f;
-            }
-        }
-
-        private void SetTpoRatio(TPOFile tpo)
-        {
-            ClearTpoRatios();
-            tpo.Ratio = 1.0f;
-        }
-
         private void gvPortions_SelectionChanged(object sender, EventArgs e)
         {
             int tpofile_row = tpoFileBindingSource.Position;
-            TPOFile tpo = tpo_list[tpofile_row];
+            TPOFile tpo = TPOList[tpofile_row];
 
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                SetTpoRatio(tpo);
-                tpo_list.Transform(0);
-                fig.UpdateBoneMatrices(true);
+                fig.TPOList.ClearRatios();
+                tpo.Ratio = 1.0f;
             }
+            Transform();
             
             tpoNodeBindingSource.DataSource = tpo.nodes;
         }
@@ -195,7 +204,7 @@ namespace TPOEditor
         private void gvTPONodes_SelectionChanged(object sender, EventArgs e)
         {
             int tpofile_row = tpoFileBindingSource.Position;
-            TPOFile tpo = tpo_list[tpofile_row];
+            TPOFile tpo = TPOList[tpofile_row];
 
             int tponode_row = tpoNodeBindingSource.Position;
             TPONode tponode = tpo.nodes[tponode_row];
@@ -240,7 +249,7 @@ namespace TPOEditor
         private void gvCommands_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
             int tpofile_row = tpoFileBindingSource.Position;
-            TPOFile tpo = tpo_list[tpofile_row];
+            TPOFile tpo = TPOList[tpofile_row];
 
             int tponode_row = tpoNodeBindingSource.Position;
             TPONode tponode = tpo.nodes[tponode_row];
@@ -248,12 +257,7 @@ namespace TPOEditor
             UpdateTpoNodeFactor(e.RowIndex, tponode);
             tpoCommandBindingSource.ResetBindings(false);
 
-            Figure fig;
-            if (viewer.TryGetFigure(out fig))
-            {
-                tpo_list.Transform(0);
-                fig.UpdateBoneMatrices(true);
-            }
+            Transform();
         }
 
         private void UpdateTpoNodeFactor(int row, TPONode tponode)
@@ -276,7 +280,7 @@ namespace TPOEditor
         private void cbInverseScaleOnChildren_CheckedChanged(object sender, EventArgs e)
         {
             int tpofile_row = tpoFileBindingSource.Position;
-            TPOFile tpo = tpo_list[tpofile_row];
+            TPOFile tpo = TPOList[tpofile_row];
 
             int tponode_row = tpoNodeBindingSource.Position;
             TPONode tponode = tpo.nodes[tponode_row];
@@ -286,12 +290,7 @@ namespace TPOEditor
 
             tpoCommandBindingSource.ResetBindings(false);
 
-            Figure fig;
-            if (viewer.TryGetFigure(out fig))
-            {
-                tpo_list.Transform(0);
-                fig.UpdateBoneMatrices(true);
-            }
+            Transform();
         }
 
         private void gvCommands_MouseWheel(object sender, MouseEventArgs e)
@@ -302,7 +301,7 @@ namespace TPOEditor
                 IncrementGridViewCell(hit.RowIndex, hit.ColumnIndex, e.Delta);
 
                 int tpofile_row = tpoFileBindingSource.Position;
-                TPOFile tpo = tpo_list[tpofile_row];
+                TPOFile tpo = TPOList[tpofile_row];
 
                 int tponode_row = tpoNodeBindingSource.Position;
                 TPONode tponode = tpo.nodes[tponode_row];
@@ -310,12 +309,7 @@ namespace TPOEditor
                 UpdateTpoNodeFactor(hit.RowIndex, tponode);
                 tpoCommandBindingSource.ResetBindings(false);
 
-                Figure fig;
-                if (viewer.TryGetFigure(out fig))
-                {
-                    tpo_list.Transform(0);
-                    fig.UpdateBoneMatrices(true);
-                }
+                Transform();
             }
         }
 
@@ -335,7 +329,7 @@ namespace TPOEditor
 
         private void btnSave_Click(object sender, EventArgs e)
         {
-            foreach (TPOFile tpo in tpo_list.files)
+            foreach (TPOFile tpo in TPOList.files)
                 SaveTpoScript(tpo);
         }
     }
