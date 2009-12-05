@@ -111,6 +111,10 @@ public class Figure : IDisposable
         tpo_list.Transform();
     }
 
+    /// <summary>
+    /// 体型変形を行います。
+    /// </summary>
+    /// <param name="frame_index">フレーム番号</param>
     public void TransformProportion(int frame_index)
     {
         if (tmo.frames == null)
