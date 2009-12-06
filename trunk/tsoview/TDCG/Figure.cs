@@ -100,6 +100,16 @@ public class Figure : IDisposable
         }
     }
 
+    string[] proportion_names = new string[] {"Age", "Arm", "Leg", "Waist", "Bust", "Eye"};
+
+    public void SetRatios(List<float> ratios)
+    {
+        for (int i = 0; i < proportion_names.Length; i++)
+        {
+            tpo_list["TDCG.Proportion." + proportion_names[i]].Ratio = ratios[i] * 2.0f - 1.0f;
+        }
+    }
+
     /// <summary>
     /// ëÃå^ïœå`ÇçsÇ¢Ç‹Ç∑ÅB
     /// </summary>
@@ -169,7 +179,10 @@ public class Figure : IDisposable
     {
         if (tmo.frames == null)
             if (TSOList.Count != 0)
+            {
                 Tmo = GenerateTMOFromTSO(TSOList[0]);
+                TransformTpo();
+            }
 
         nodemap.Clear();
         if (tmo.frames != null)

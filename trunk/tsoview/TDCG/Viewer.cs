@@ -384,6 +384,7 @@ public class Viewer : IDisposable
             if (TryGetFigure(out fig))
             {
                 fig.Tmo = tmo;
+                fig.TransformTpo();
                 fig.UpdateNodeMapAndBoneMatrices();
                 if (FigureEvent != null)
                     FigureEvent(this, EventArgs.Empty);
@@ -1138,6 +1139,17 @@ public class Viewer : IDisposable
             };
             png.Figu += delegate(Stream dest, int extract_length)
             {
+                byte[] buf = new byte[extract_length];
+                dest.Read(buf, 0, extract_length);
+
+                List<float> ratios = new List<float>();
+                for (int offset = 0; offset < extract_length; offset+= sizeof(float))
+                {
+                    float flo = BitConverter.ToSingle(buf, offset);
+                    ratios.Add(flo);
+                }
+                fig.SetRatios(ratios);
+                fig.TransformTpo();
             };
             png.Ftso += delegate(Stream dest, int extract_length, byte[] opt1)
             {
