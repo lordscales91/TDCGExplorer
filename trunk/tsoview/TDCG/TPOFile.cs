@@ -163,12 +163,12 @@ public class TPOFile
         if (tmo.frames == null)
             return;
 
-        int matrix_count = tmo.frames[frame_index].matrices.Length;
-        for (int j = 0; j < matrix_count; j++)
+        TMOFrame frame = tmo.frames[frame_index];
+        Debug.Assert(frame.matrices.Length == nodes.Length);
+        for (int j = 0; j < frame.matrices.Length; j++)
         {
             TPONode node = nodes[j];
-            Debug.Assert(node != null, "node should not be null j=" + j.ToString());
-            TMOMat mat = tmo.frames[frame_index].matrices[j];//変形対象モーション行列
+            TMOMat mat = frame.matrices[j];
             node.Transform(mat, ratio);
         }
     }
