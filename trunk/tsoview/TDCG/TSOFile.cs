@@ -621,7 +621,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// TSOMeshÇì«Ç›Ç∆ÇËÇ‹Ç∑ÅB
+        /// TSOFrameÇì«Ç›Ç∆ÇËÇ‹Ç∑ÅB
         /// </summary>
         /// <returns>TSOFrame</returns>
         public TSOFrame ReadFrame()
@@ -630,7 +630,7 @@ namespace TDCG
 
             frame.name = ReadString(reader);
             frame.name = frame.name.Replace(":", "_colon_").Replace("#", "_sharp_"); //should be compatible with directx naming conventions 
-            ReadMatrix(ref frame.transform_matrix);
+            ReadMatrix(reader, ref frame.transform_matrix);
             frame.unknown1 = reader.ReadUInt32();
             UInt32 sub_mesh_count = reader.ReadUInt32();
             frame.meshes = new TSOMesh[sub_mesh_count];
@@ -679,8 +679,9 @@ namespace TDCG
         /// <summary>
         /// MatrixÇì«Ç›Ç∆ÇËÇ‹Ç∑ÅB
         /// </summary>
+        /// <param name="reader">BinaryReader</param>
         /// <param name="m">Matrix</param>
-        public void ReadMatrix(ref Matrix m)
+        public static void ReadMatrix(BinaryReader reader, ref Matrix m)
         {
             m.M11 = reader.ReadSingle();
             m.M12 = reader.ReadSingle();
@@ -813,7 +814,7 @@ namespace TDCG
             Matrix m = Matrix.Identity;
             for (int i = 0; i < node_matrix_count; i++)
             {
-                ReadMatrix(ref m);
+                ReadMatrix(reader, ref m);
                 nodes[i].TransformationMatrix = m;
             }
             for (int i = 0; i < node_matrix_count; i++)
