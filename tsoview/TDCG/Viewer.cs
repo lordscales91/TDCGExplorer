@@ -900,18 +900,18 @@ public class Viewer : IDisposable
         {
             //tso.BeginRender();
 
-            foreach (TSOMesh tm in tso.meshes)
-            foreach (TSOSubMesh tm_sub in tm.sub_meshes)
+            foreach (TSOFrame frame in tso.frames)
+            foreach (TSOMesh mesh in frame.meshes)
             {
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
-                //tso.SwitchShader(tm_sub);
-                Matrix[] clipped_boneMatrices = new Matrix[tm_sub.maxPalettes];
+                //tso.SwitchShader(mesh);
+                Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
 
-                for (int numPalettes = 0; numPalettes < tm_sub.maxPalettes; numPalettes++)
+                for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
                 {
                     //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
-                    TSONode tso_node = tm_sub.GetBone(numPalettes);
+                    TSONode tso_node = mesh.GetBone(numPalettes);
                     TMONode tmo_node;
                     if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
                         clipped_boneMatrices[numPalettes] = tso_node.GetOffsetMatrix() * tmo_node.combined_matrix;
@@ -922,7 +922,7 @@ public class Viewer : IDisposable
                 for (int ipass = 0; ipass < npass; ipass++)
                 {
                     effect.BeginPass(ipass);
-                    tm_sub.dm.DrawSubset(0);
+                    mesh.dm.DrawSubset(0);
                     effect.EndPass();
                 }
                 effect.End();
@@ -1005,18 +1005,18 @@ public class Viewer : IDisposable
         {
             tso.BeginRender();
 
-            foreach (TSOMesh tm in tso.meshes)
-            foreach (TSOSubMesh tm_sub in tm.sub_meshes)
+            foreach (TSOFrame frame in tso.frames)
+            foreach (TSOMesh mesh in frame.meshes)
             {
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
-                tso.SwitchShader(tm_sub);
-                Matrix[] clipped_boneMatrices = new Matrix[tm_sub.maxPalettes];
+                tso.SwitchShader(mesh);
+                Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
 
-                for (int numPalettes = 0; numPalettes < tm_sub.maxPalettes; numPalettes++)
+                for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
                 {
                     //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
-                    TSONode tso_node = tm_sub.GetBone(numPalettes);
+                    TSONode tso_node = mesh.GetBone(numPalettes);
                     TMONode tmo_node;
                     if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
                         clipped_boneMatrices[numPalettes] = tso_node.GetOffsetMatrix() * tmo_node.combined_matrix;
@@ -1027,7 +1027,7 @@ public class Viewer : IDisposable
                 for (int ipass = 0; ipass < npass; ipass++)
                 {
                     effect.BeginPass(ipass);
-                    tm_sub.dm.DrawSubset(0);
+                    mesh.dm.DrawSubset(0);
                     effect.EndPass();
                 }
                 effect.End();
@@ -1054,7 +1054,7 @@ public class Viewer : IDisposable
     /// <param name="mesh">メッシュ</param>
     /// <param name="wld">ワールド変換行列</param>
     /// <param name="color">描画色</param>
-    public void DrawMeshSub(Mesh mesh, Matrix wld, Vector4 color)
+    public void DrawMesh(Mesh mesh, Matrix wld, Vector4 color)
     {
         effect.Technique = "BONE";
 

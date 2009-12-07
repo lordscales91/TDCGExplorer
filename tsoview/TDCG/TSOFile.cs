@@ -9,9 +9,9 @@ using Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
-    /// サブメッシュ
+    /// メッシュ
     /// </summary>
-    public class TSOSubMesh : IDisposable
+    public class TSOMesh : IDisposable
     {
         /// <summary>
         /// 名前
@@ -155,9 +155,9 @@ namespace TDCG
     }
 
     /// <summary>
-    /// メッシュ
+    /// フレーム
     /// </summary>
-    public class TSOMesh : IDisposable
+    public class TSOFrame : IDisposable
     {
         /// <summary>
         /// 名称
@@ -173,17 +173,17 @@ namespace TDCG
         public UInt32 unknown1;
         //public UInt32 sub_mesh_count;
         /// <summary>
-        /// サブメッシュ配列
+        /// メッシュ配列
         /// </summary>
-        public TSOSubMesh[] sub_meshes;
+        public TSOMesh[] meshes;
 
         /// <summary>
         /// 内部objectを破棄します。
         /// </summary>
         public void Dispose()
         {
-            if (sub_meshes != null)
-            foreach (TSOSubMesh tm_sub in sub_meshes)
+            if (meshes != null)
+            foreach (TSOMesh tm_sub in meshes)
                 tm_sub.Dispose();
         }
     }
@@ -599,9 +599,9 @@ namespace TDCG
         /// </summary>
         public TSOSubScript[] sub_scripts;
         /// <summary>
-        /// メッシュ配列
+        /// フレーム配列
         /// </summary>
-        public TSOMesh[] meshes;
+        public TSOFrame[] frames;
 
         internal Dictionary<string, TSONode> nodemap;
 
@@ -623,57 +623,57 @@ namespace TDCG
         /// <summary>
         /// TSOMeshを読みとります。
         /// </summary>
-        /// <returns>TSOMesh</returns>
-        public TSOMesh ReadMesh()
+        /// <returns>TSOFrame</returns>
+        public TSOFrame ReadFrame()
         {
-            TSOMesh mesh = new TSOMesh();
+            TSOFrame frame = new TSOFrame();
 
-            mesh.name = ReadString();
-            mesh.name = mesh.name.Replace(":", "_colon_").Replace("#", "_sharp_"); //should be compatible with directx naming conventions 
-            ReadMatrix(ref mesh.transform_matrix);
-            mesh.unknown1 = reader.ReadUInt32();
+            frame.name = ReadString();
+            frame.name = frame.name.Replace(":", "_colon_").Replace("#", "_sharp_"); //should be compatible with directx naming conventions 
+            ReadMatrix(ref frame.transform_matrix);
+            frame.unknown1 = reader.ReadUInt32();
             UInt32 sub_mesh_count = reader.ReadUInt32();
-            mesh.sub_meshes = new TSOSubMesh[sub_mesh_count];
+            frame.meshes = new TSOMesh[sub_mesh_count];
 
             for (int a = 0; a < sub_mesh_count; a++)
             {
-                TSOSubMesh act_mesh = new TSOSubMesh();
-                mesh.sub_meshes[a] = act_mesh;
+                TSOMesh mesh = new TSOMesh();
+                frame.meshes[a] = mesh;
 
-                act_mesh.name = mesh.name + "_sub_" + a.ToString();
+                mesh.name = frame.name + "_sub_" + a.ToString();
 
-                act_mesh.spec = reader.ReadInt32();
+                mesh.spec = reader.ReadInt32();
                 int bone_index_LUT_entry_count = reader.ReadInt32(); //numbones
-                act_mesh.maxPalettes = 16;
-                if (act_mesh.maxPalettes > bone_index_LUT_entry_count)
-                    act_mesh.maxPalettes = bone_index_LUT_entry_count;
-                act_mesh.bone_index_LUT = new List<UInt32>();
-                act_mesh.bone_LUT = new List<TSONode>();
+                mesh.maxPalettes = 16;
+                if (mesh.maxPalettes > bone_index_LUT_entry_count)
+                    mesh.maxPalettes = bone_index_LUT_entry_count;
+                mesh.bone_index_LUT = new List<UInt32>();
+                mesh.bone_LUT = new List<TSONode>();
                 for (int i = 0; i < bone_index_LUT_entry_count; i++)
                 {
-                    act_mesh.bone_index_LUT.Add(reader.ReadUInt32());
+                    mesh.bone_index_LUT.Add(reader.ReadUInt32());
                 }
                 int vertex_count = reader.ReadInt32(); //numvertices
-                act_mesh.vertices = new vertex_field[vertex_count];
+                mesh.vertices = new vertex_field[vertex_count];
                 for (int i = 0; i < vertex_count; i++)
                 {
-                    ReadVertex(ref act_mesh.vertices[i]);
+                    ReadVertex(ref mesh.vertices[i]);
                 }
             }
 
             for (int a = 0; a < sub_mesh_count; a++)
             {
-                TSOSubMesh sub_mesh = mesh.sub_meshes[a];
+                TSOMesh mesh = frame.meshes[a];
 
-                for (int i = 0; i < sub_mesh.bone_index_LUT.Count; i++)
+                for (int i = 0; i < mesh.bone_index_LUT.Count; i++)
                 {
-                    UInt32 bone_index = sub_mesh.bone_index_LUT[i];
+                    UInt32 bone_index = mesh.bone_index_LUT[i];
                     TSONode bone = nodes[bone_index];
-                    sub_mesh.bone_LUT.Add(bone);
+                    mesh.bone_LUT.Add(bone);
                 }
             }
 
-            return mesh;
+            return frame;
         }
 
         /// <summary>
@@ -769,7 +769,7 @@ namespace TDCG
             TSOWriter.Write(bw, textures);
             TSOWriter.Write(bw, scripts);
             TSOWriter.Write(bw, sub_scripts);
-            TSOWriter.Write(bw, meshes);
+            TSOWriter.Write(bw, frames);
         }
 
         /// <summary>
@@ -843,13 +843,13 @@ namespace TDCG
             }
 
             UInt32 mesh_count = reader.ReadUInt32();
-            meshes = new TSOMesh[mesh_count];
+            frames = new TSOFrame[mesh_count];
             for (int i = 0; i < mesh_count; i++)
             {
-                TSOMesh mesh = ReadMesh();
-                meshes[i] = mesh;
+                TSOFrame frame = ReadFrame();
+                frames[i] = frame;
 
-                //Console.WriteLine("mesh name {0} len {1}", mesh.name, mesh.sub_meshes.Length);
+                //Console.WriteLine("frame name {0} len {1}", frame.name, frame.meshes.Length);
             }
         }
 
@@ -965,9 +965,9 @@ namespace TDCG
             this.device = device;
             this.effect = effect;
 
-            foreach (TSOMesh tm in meshes)
-            foreach (TSOSubMesh tm_sub in tm.sub_meshes)
-                tm_sub.LoadMesh(device);
+            foreach (TSOFrame frame in frames)
+            foreach (TSOMesh mesh in frame.meshes)
+                mesh.LoadMesh(device);
 
             texmap = new Dictionary<string, TSOTex>();
 
@@ -1085,10 +1085,10 @@ namespace TDCG
         /// <summary>
         /// シェーダ設定を切り替えます。
         /// </summary>
-        /// <param name="tm_sub">切り替え対象となるサブメッシュ</param>
-        public void SwitchShader(TSOSubMesh tm_sub)
+        /// <param name="mesh">切り替え対象となるメッシュ</param>
+        public void SwitchShader(TSOMesh mesh)
         {
-            SwitchShader(sub_scripts[tm_sub.spec].shader);
+            SwitchShader(sub_scripts[mesh.spec].shader);
         }
 
         /// <summary>
@@ -1104,8 +1104,8 @@ namespace TDCG
         /// </summary>
         public void Dispose()
         {
-            foreach (TSOMesh tm in meshes)
-                tm.Dispose();
+            foreach (TSOFrame frame in frames)
+                frame.Dispose();
             foreach (TSOTex tex in textures)
                 tex.Dispose();
         }

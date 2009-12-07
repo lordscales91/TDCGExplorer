@@ -170,6 +170,36 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 指定ライタにフレーム配列を書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="items">フレーム配列</param>
+        public static void Write(BinaryWriter bw, TSOFrame[] items)
+        {
+            bw.Write(items.Length);
+
+            foreach (TSOFrame i in items)
+                Write(bw, i);
+        }
+
+        /// <summary>
+        /// 指定ライタにフレームを書き出します。
+        /// </summary>
+        /// <param name="bw">ライタ</param>
+        /// <param name="item">フレーム</param>
+        public static void Write(BinaryWriter bw, TSOFrame item)
+        {
+            Write(bw, item.name);
+            Matrix m = item.transform_matrix;
+            Write(bw, ref m);
+            bw.Write(item.unknown1);
+            bw.Write(item.meshes.Length);
+
+            foreach (TSOMesh i in item.meshes)
+                Write(bw, i);
+        }
+
+        /// <summary>
         /// 指定ライタにメッシュ配列を書き出します。
         /// </summary>
         /// <param name="bw">ライタ</param>
@@ -188,36 +218,6 @@ namespace TDCG
         /// <param name="bw">ライタ</param>
         /// <param name="item">メッシュ</param>
         public static void Write(BinaryWriter bw, TSOMesh item)
-        {
-            Write(bw, item.name);
-            Matrix m = item.transform_matrix;
-            Write(bw, ref m);
-            bw.Write(item.unknown1);
-            bw.Write(item.sub_meshes.Length);
-
-            foreach (TSOSubMesh i in item.sub_meshes)
-                Write(bw, i);
-        }
-
-        /// <summary>
-        /// 指定ライタにサブメッシュ配列を書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="items">サブメッシュ配列</param>
-        public static void Write(BinaryWriter bw, TSOSubMesh[] items)
-        {
-            bw.Write(items.Length);
-
-            foreach (TSOSubMesh i in items)
-                Write(bw, i);
-        }
-
-        /// <summary>
-        /// 指定ライタにサブメッシュを書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="item">サブメッシュ</param>
-        public static void Write(BinaryWriter bw, TSOSubMesh item)
         {
             bw.Write(item.spec);
             bw.Write(item.bone_index_LUT.Count);
