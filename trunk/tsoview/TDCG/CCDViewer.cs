@@ -327,7 +327,7 @@ public class CCDViewer : Viewer
                 {
                     Vector4 color = (bone.Name == current_effector_name) ? new Vector4(1, 1, 1, 0.5f) : new Vector4(0.5f, 0.5f, 0.5f, 0.5f);
                     Vector3 pos = bone.GetWorldPosition();
-                    DrawMeshSub(sphere, Matrix.Translation(pos), color);
+                    DrawMesh(sphere, Matrix.Translation(pos), color);
                 }
             }
 
@@ -336,9 +336,9 @@ public class CCDViewer : Viewer
                 if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
                 {
                     Matrix m = bone.GetWorldCoordinate();
-                    DrawMeshSub(sphere, Matrix.Translation(new Vector3(1, 0, 0)) * m, new Vector4(1, 0, 0, 0.5f));
-                    DrawMeshSub(sphere, Matrix.Translation(new Vector3(0, 1, 0)) * m, new Vector4(0, 1, 0, 0.5f));
-                    DrawMeshSub(sphere, Matrix.Translation(new Vector3(0, 0, 1)) * m, new Vector4(0, 0, 1, 0.5f));
+                    DrawMesh(sphere, Matrix.Translation(new Vector3(1, 0, 0)) * m, new Vector4(1, 0, 0, 0.5f));
+                    DrawMesh(sphere, Matrix.Translation(new Vector3(0, 1, 0)) * m, new Vector4(0, 1, 0, 0.5f));
+                    DrawMesh(sphere, Matrix.Translation(new Vector3(0, 0, 1)) * m, new Vector4(0, 0, 1, 0.5f));
                 }
             }
         }
@@ -346,7 +346,7 @@ public class CCDViewer : Viewer
 
     void DrawTarget()
     {
-        DrawMeshSub(sphere, Matrix.Translation(solver.Target), new Vector4(1, 1, 0, 0.5f));
+        DrawMesh(sphere, Matrix.Translation(solver.Target), new Vector4(1, 1, 0, 0.5f));
     }
 
     /// スクリーン座標からエフェクタを見つけます。
