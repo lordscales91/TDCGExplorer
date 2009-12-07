@@ -609,7 +609,7 @@ namespace TDCG
         /// nullèIí[ï∂éöóÒÇì«Ç›Ç∆ÇËÇ‹Ç∑ÅB
         /// </summary>
         /// <returns>ï∂éöóÒ</returns>
-        public string ReadString()
+        public static string ReadString(BinaryReader reader)
         {
             StringBuilder string_builder = new StringBuilder();
             while ( true ) {
@@ -628,7 +628,7 @@ namespace TDCG
         {
             TSOFrame frame = new TSOFrame();
 
-            frame.name = ReadString();
+            frame.name = ReadString(reader);
             frame.name = frame.name.Replace(":", "_colon_").Replace("#", "_sharp_"); //should be compatible with directx naming conventions 
             ReadMatrix(ref frame.transform_matrix);
             frame.unknown1 = reader.ReadUInt32();
@@ -803,7 +803,7 @@ namespace TDCG
 
             for (int i = 0; i < node_count; i++)
             {
-                string name = ReadString();
+                string name = ReadString(reader);
                 nodes[i] = new TSONode(i, name);
             }
 
@@ -880,12 +880,12 @@ namespace TDCG
         public TSOScript ReadScript()
         {
             TSOScript script = new TSOScript();
-            script.name = ReadString();
+            script.name = ReadString(reader);
             UInt32 line_count = reader.ReadUInt32();
             string[] read_lines = new string[line_count];
             for (int i = 0; i < line_count; i++)
             {
-                read_lines[i] = ReadString();
+                read_lines[i] = ReadString(reader);
             }
             script.script_data = read_lines;
 
@@ -899,13 +899,13 @@ namespace TDCG
         public TSOSubScript ReadSubScript()
         {
             TSOSubScript sub_script = new TSOSubScript();
-            sub_script.name = ReadString();
-            sub_script.file = ReadString();
+            sub_script.name = ReadString(reader);
+            sub_script.file = ReadString(reader);
             UInt32 sub_line_counts = reader.ReadUInt32();
             sub_script.script_data = new string[sub_line_counts];
             for (int j = 0; j < sub_line_counts; j++)
             {
-                sub_script.script_data[j] = ReadString();
+                sub_script.script_data[j] = ReadString(reader);
             }
 
             //Console.WriteLine("name {0} file {1}", sub_script.name, sub_script.file);
@@ -924,8 +924,8 @@ namespace TDCG
         {
             TSOTex tex = new TSOTex();
 
-            tex.name = ReadString();
-            tex.file = ReadString();
+            tex.name = ReadString(reader);
+            tex.file = ReadString(reader);
             tex.width = reader.ReadInt32();
             tex.height = reader.ReadInt32();
             tex.depth = reader.ReadInt32();
