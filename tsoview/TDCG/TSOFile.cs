@@ -614,7 +614,7 @@ namespace TDCG
         {
             TSOFrame frame = new TSOFrame();
 
-            frame.name = reader.ReadString();
+            frame.name = reader.ReadCString();
             frame.name = frame.name.Replace(":", "_colon_").Replace("#", "_sharp_"); //should be compatible with directx naming conventions 
             reader.ReadMatrix(ref frame.transform_matrix);
             frame.unknown1 = reader.ReadUInt32();
@@ -762,7 +762,7 @@ namespace TDCG
 
             for (int i = 0; i < node_count; i++)
             {
-                string name = reader.ReadString();
+                string name = reader.ReadCString();
                 nodes[i] = new TSONode(i, name);
             }
 
@@ -839,12 +839,12 @@ namespace TDCG
         public TSOScript ReadScript()
         {
             TSOScript script = new TSOScript();
-            script.name = reader.ReadString();
+            script.name = reader.ReadCString();
             UInt32 line_count = reader.ReadUInt32();
             string[] read_lines = new string[line_count];
             for (int i = 0; i < line_count; i++)
             {
-                read_lines[i] = reader.ReadString();
+                read_lines[i] = reader.ReadCString();
             }
             script.script_data = read_lines;
 
@@ -858,13 +858,13 @@ namespace TDCG
         public TSOSubScript ReadSubScript()
         {
             TSOSubScript sub_script = new TSOSubScript();
-            sub_script.name = reader.ReadString();
-            sub_script.file = reader.ReadString();
+            sub_script.name = reader.ReadCString();
+            sub_script.file = reader.ReadCString();
             UInt32 sub_line_counts = reader.ReadUInt32();
             sub_script.script_data = new string[sub_line_counts];
             for (int j = 0; j < sub_line_counts; j++)
             {
-                sub_script.script_data[j] = reader.ReadString();
+                sub_script.script_data[j] = reader.ReadCString();
             }
 
             //Console.WriteLine("name {0} file {1}", sub_script.name, sub_script.file);
@@ -883,8 +883,8 @@ namespace TDCG
         {
             TSOTex tex = new TSOTex();
 
-            tex.name = reader.ReadString();
-            tex.file = reader.ReadString();
+            tex.name = reader.ReadCString();
+            tex.file = reader.ReadCString();
             tex.width = reader.ReadInt32();
             tex.height = reader.ReadInt32();
             tex.depth = reader.ReadInt32();

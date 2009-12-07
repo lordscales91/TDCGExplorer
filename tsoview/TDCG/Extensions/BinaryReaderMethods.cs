@@ -16,7 +16,7 @@ namespace TDCG.Extensions
         /// nullI’[•¶š—ñ‚ğ“Ç‚İ‚Æ‚è‚Ü‚·B
         /// </summary>
         /// <returns>•¶š—ñ</returns>
-        public static string ReadString(this BinaryReader reader)
+        public static string ReadCString(this BinaryReader reader)
         {
             StringBuilder string_builder = new StringBuilder();
             while ( true ) {
