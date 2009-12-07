@@ -126,7 +126,7 @@ namespace TDCG
                 for (int j = 0; j < matrix_count; j++)
                 {
                     TMOMat mat = frames[i].matrices[j] = new TMOMat();
-                    ReadMatrix(ref mat.m);
+                    ReadMatrix(reader, ref mat.m);
                     nodes[j].frame_matrices.Add(mat);
                 }
             }
@@ -426,8 +426,9 @@ namespace TDCG
         /// <summary>
         /// Matrix‚ğ“Ç‚İ‚Æ‚è‚Ü‚·B
         /// </summary>
+        /// <param name="reader">BinaryReader</param>
         /// <param name="m">Matrix</param>
-        public void ReadMatrix(ref Matrix m)
+        public static void ReadMatrix(BinaryReader reader, ref Matrix m)
         {
             m.M11 = reader.ReadSingle();
             m.M12 = reader.ReadSingle();
