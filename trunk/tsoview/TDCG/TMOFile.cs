@@ -107,7 +107,7 @@ namespace TDCG
 
             for (int i = 0; i < node_count; i++)
             {
-                string name = reader.ReadString();
+                string name = reader.ReadCString();
                 nodes[i] = new TMONode(i, name);
             }
 
