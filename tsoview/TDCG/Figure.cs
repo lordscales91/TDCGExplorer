@@ -102,6 +102,9 @@ public class Figure : IDisposable
 
     string[] proportion_names = new string[] {"Age", "Arm", "Leg", "Waist", "Bust", "Eye"};
 
+    /// <summary>
+    /// ‘ÌŒ^•ÏŒ`”ä—¦‚ğİ’è‚µ‚Ü‚·B
+    /// </summary>
     public void SetRatios(List<float> ratios)
     {
         for (int i = 0; i < proportion_names.Length; i++)
