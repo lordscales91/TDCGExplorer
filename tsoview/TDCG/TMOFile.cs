@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
+using TDCG.Extensions;
 
 namespace TDCG
 {
@@ -106,7 +107,7 @@ namespace TDCG
 
             for (int i = 0; i < node_count; i++)
             {
-                string name = ReadString(reader);
+                string name = reader.ReadString();
                 nodes[i] = new TMONode(i, name);
             }
 
@@ -126,7 +127,7 @@ namespace TDCG
                 for (int j = 0; j < matrix_count; j++)
                 {
                     TMOMat mat = frames[i].matrices[j] = new TMOMat();
-                    ReadMatrix(reader, ref mat.m);
+                    reader.ReadMatrix(ref mat.m);
                     nodes[j].frame_matrices.Add(mat);
                 }
             }
@@ -406,46 +407,6 @@ namespace TDCG
                 i++;
             }
             return true;
-        }
-
-        /// <summary>
-        /// null終端文字列を読みとります。
-        /// </summary>
-        /// <returns>文字列</returns>
-        public static string ReadString(BinaryReader reader)
-        {
-            StringBuilder string_builder = new StringBuilder();
-            while ( true ) {
-                char c = reader.ReadChar();
-                if (c == 0) break;
-                string_builder.Append(c);
-            }
-            return string_builder.ToString();
-        }
-
-        /// <summary>
-        /// Matrixを読みとります。
-        /// </summary>
-        /// <param name="reader">BinaryReader</param>
-        /// <param name="m">Matrix</param>
-        public static void ReadMatrix(BinaryReader reader, ref Matrix m)
-        {
-            m.M11 = reader.ReadSingle();
-            m.M12 = reader.ReadSingle();
-            m.M13 = reader.ReadSingle();
-            m.M14 = reader.ReadSingle();
-            m.M21 = reader.ReadSingle();
-            m.M22 = reader.ReadSingle();
-            m.M23 = reader.ReadSingle();
-            m.M24 = reader.ReadSingle();
-            m.M31 = reader.ReadSingle();
-            m.M32 = reader.ReadSingle();
-            m.M33 = reader.ReadSingle();
-            m.M34 = reader.ReadSingle();
-            m.M41 = reader.ReadSingle();
-            m.M42 = reader.ReadSingle();
-            m.M43 = reader.ReadSingle();
-            m.M44 = reader.ReadSingle();
         }
 
         /// <summary>

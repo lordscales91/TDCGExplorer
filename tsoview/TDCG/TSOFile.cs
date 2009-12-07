@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
+using TDCG.Extensions;
 
 namespace TDCG
 {
@@ -606,21 +607,6 @@ namespace TDCG
         internal Dictionary<string, TSONode> nodemap;
 
         /// <summary>
-        /// null終端文字列を読みとります。
-        /// </summary>
-        /// <returns>文字列</returns>
-        public static string ReadString(BinaryReader reader)
-        {
-            StringBuilder string_builder = new StringBuilder();
-            while ( true ) {
-                char c = reader.ReadChar();
-                if (c == 0) break;
-                string_builder.Append(c);
-            }
-            return string_builder.ToString();
-        }
-
-        /// <summary>
         /// TSOFrameを読みとります。
         /// </summary>
         /// <returns>TSOFrame</returns>
@@ -628,9 +614,9 @@ namespace TDCG
         {
             TSOFrame frame = new TSOFrame();
 
-            frame.name = ReadString(reader);
+            frame.name = reader.ReadString();
             frame.name = frame.name.Replace(":", "_colon_").Replace("#", "_sharp_"); //should be compatible with directx naming conventions 
-            ReadMatrix(reader, ref frame.transform_matrix);
+            reader.ReadMatrix(ref frame.transform_matrix);
             frame.unknown1 = reader.ReadUInt32();
             UInt32 sub_mesh_count = reader.ReadUInt32();
             frame.meshes = new TSOMesh[sub_mesh_count];
@@ -674,34 +660,6 @@ namespace TDCG
             }
 
             return frame;
-        }
-
-        /// <summary>
-        /// Matrixを読みとります。
-        /// </summary>
-        /// <param name="reader">BinaryReader</param>
-        /// <param name="m">Matrix</param>
-        public static void ReadMatrix(BinaryReader reader, ref Matrix m)
-        {
-            m.M11 = reader.ReadSingle();
-            m.M12 = reader.ReadSingle();
-            m.M13 = reader.ReadSingle();
-            m.M14 = reader.ReadSingle();
-
-            m.M21 = reader.ReadSingle();
-            m.M22 = reader.ReadSingle();
-            m.M23 = reader.ReadSingle();
-            m.M24 = reader.ReadSingle();
-
-            m.M31 = reader.ReadSingle();
-            m.M32 = reader.ReadSingle();
-            m.M33 = reader.ReadSingle();
-            m.M34 = reader.ReadSingle();
-
-            m.M41 = reader.ReadSingle();
-            m.M42 = reader.ReadSingle();
-            m.M43 = reader.ReadSingle();
-            m.M44 = reader.ReadSingle();
         }
 
         /// <summary>
@@ -804,7 +762,7 @@ namespace TDCG
 
             for (int i = 0; i < node_count; i++)
             {
-                string name = ReadString(reader);
+                string name = reader.ReadString();
                 nodes[i] = new TSONode(i, name);
             }
 
@@ -814,7 +772,7 @@ namespace TDCG
             Matrix m = Matrix.Identity;
             for (int i = 0; i < node_matrix_count; i++)
             {
-                ReadMatrix(reader, ref m);
+                reader.ReadMatrix(ref m);
                 nodes[i].TransformationMatrix = m;
             }
             for (int i = 0; i < node_matrix_count; i++)
@@ -881,12 +839,12 @@ namespace TDCG
         public TSOScript ReadScript()
         {
             TSOScript script = new TSOScript();
-            script.name = ReadString(reader);
+            script.name = reader.ReadString();
             UInt32 line_count = reader.ReadUInt32();
             string[] read_lines = new string[line_count];
             for (int i = 0; i < line_count; i++)
             {
-                read_lines[i] = ReadString(reader);
+                read_lines[i] = reader.ReadString();
             }
             script.script_data = read_lines;
 
@@ -900,13 +858,13 @@ namespace TDCG
         public TSOSubScript ReadSubScript()
         {
             TSOSubScript sub_script = new TSOSubScript();
-            sub_script.name = ReadString(reader);
-            sub_script.file = ReadString(reader);
+            sub_script.name = reader.ReadString();
+            sub_script.file = reader.ReadString();
             UInt32 sub_line_counts = reader.ReadUInt32();
             sub_script.script_data = new string[sub_line_counts];
             for (int j = 0; j < sub_line_counts; j++)
             {
-                sub_script.script_data[j] = ReadString(reader);
+                sub_script.script_data[j] = reader.ReadString();
             }
 
             //Console.WriteLine("name {0} file {1}", sub_script.name, sub_script.file);
@@ -925,8 +883,8 @@ namespace TDCG
         {
             TSOTex tex = new TSOTex();
 
-            tex.name = ReadString(reader);
-            tex.file = ReadString(reader);
+            tex.name = reader.ReadString();
+            tex.file = reader.ReadString();
             tex.width = reader.ReadInt32();
             tex.height = reader.ReadInt32();
             tex.depth = reader.ReadInt32();
