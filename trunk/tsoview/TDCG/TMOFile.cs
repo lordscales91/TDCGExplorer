@@ -106,7 +106,7 @@ namespace TDCG
 
             for (int i = 0; i < node_count; i++)
             {
-                string name = ReadString();
+                string name = ReadString(reader);
                 nodes[i] = new TMONode(i, name);
             }
 
@@ -412,7 +412,7 @@ namespace TDCG
         /// nullI’[•¶Žš—ñ‚ð“Ç‚Ý‚Æ‚è‚Ü‚·B
         /// </summary>
         /// <returns>•¶Žš—ñ</returns>
-        public string ReadString()
+        public static string ReadString(BinaryReader reader)
         {
             StringBuilder string_builder = new StringBuilder();
             while ( true ) {
