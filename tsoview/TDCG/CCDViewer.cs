@@ -53,7 +53,7 @@ public class CCDViewer : Viewer
                 if (!motionEnabled)
                 {
                     SelectEffector();
-                    if (current_effector_name == "|W_Hips")
+                    if (current_effector_path == "|W_Hips")
                         SaveFloorTargets();
                 }
             break;
@@ -114,10 +114,10 @@ public class CCDViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            if (current_effector_name == "|W_Hips")
-                solver.SolveRootNode(fig.Tmo, current_effector_name);
+            if (current_effector_path == "|W_Hips")
+                solver.SolveRootNode(fig.Tmo, current_effector_path);
             else
-                solver.Solve(fig.Tmo, current_effector_name, solver.Target);
+                solver.Solve(fig.Tmo, current_effector_path, solver.Target);
             fig.UpdateBoneMatricesWithoutTMOFrame();
         }
     }
@@ -144,7 +144,7 @@ public class CCDViewer : Viewer
         {
             Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
             TMONode bone;
-            if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
+            if (fig.Tmo.nodemap.TryGetValue(current_effector_path, out bone))
             {
                 Vector3 v = solver.Target;
                 v = Vector3.TransformCoordinate(v, Transform_View);
@@ -167,7 +167,7 @@ public class CCDViewer : Viewer
             TMONode effector;
             if (FindEffectorOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, out effector))
             {
-                current_effector_name = effector.Name;
+                current_effector_path = effector.Path;
                 solver.Target = effector.GetWorldPosition();
                 solver.Solved = true;
             }
@@ -190,7 +190,7 @@ public class CCDViewer : Viewer
         {
             Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
             TMONode bone;
-            if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
+            if (fig.Tmo.nodemap.TryGetValue(current_effector_path, out bone))
             {
                 float angle = dx * 0.01f;
                 bone.Rotation = Quaternion.RotationAxis(current_handle_dir, angle) * bone.Rotation;
@@ -275,7 +275,7 @@ public class CCDViewer : Viewer
 
         sphere = Mesh.Sphere(device, 0.25f, 8, 6);
 
-        current_effector_name = "|W_Hips";
+        current_effector_path = "|W_Hips";
 
         constraint_xyz = TMOConstraint.Load(@"angle-GRABIA-xyz.xml");
         constraint_zxy = TMOConstraint.Load(@"angle-GRABIA-zxy.xml");
@@ -288,7 +288,7 @@ public class CCDViewer : Viewer
             {
                 Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
                 TMONode bone;
-                if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
+                if (fig.Tmo.nodemap.TryGetValue(current_effector_path, out bone))
                 {
                     solver.Target = bone.GetWorldPosition();
                     solver.Solved = true;
@@ -299,7 +299,7 @@ public class CCDViewer : Viewer
         return true;
     }
 
-    string current_effector_name = null;
+    string current_effector_path = null;
     Vector3 current_handle_dir = Vector3.Empty;
     TMOConstraint constraint_xyz = null;
     TMOConstraint constraint_zxy = null;
@@ -320,12 +320,12 @@ public class CCDViewer : Viewer
         if (TryGetFigure(out fig))
         {
             Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
-            foreach (string effector_name in solver.EachEffecterNames)
+            foreach (string effector_path in solver.EachEffecterNames)
             {
                 TMONode bone;
-                if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
+                if (fig.Tmo.nodemap.TryGetValue(effector_path, out bone))
                 {
-                    Vector4 color = (bone.Name == current_effector_name) ? new Vector4(1, 1, 1, 0.5f) : new Vector4(0.5f, 0.5f, 0.5f, 0.5f);
+                    Vector4 color = (bone.Path == current_effector_path) ? new Vector4(1, 1, 1, 0.5f) : new Vector4(0.5f, 0.5f, 0.5f, 0.5f);
                     Vector3 pos = bone.GetWorldPosition();
                     DrawMesh(sphere, Matrix.Translation(pos), color);
                 }
@@ -333,7 +333,7 @@ public class CCDViewer : Viewer
 
             {
                 TMONode bone;
-                if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
+                if (fig.Tmo.nodemap.TryGetValue(current_effector_path, out bone))
                 {
                     Matrix m = bone.GetWorldCoordinate();
                     DrawMesh(sphere, Matrix.Translation(new Vector3(1, 0, 0)) * m, new Vector4(1, 0, 0, 0.5f));
@@ -360,10 +360,10 @@ public class CCDViewer : Viewer
         {
             Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
             float min_time = 1e12f;
-            foreach (string effector_name in solver.EachEffecterNames)
+            foreach (string effector_path in solver.EachEffecterNames)
             {
                 TMONode bone;
-                if (fig.Tmo.nodemap.TryGetValue(effector_name, out bone))
+                if (fig.Tmo.nodemap.TryGetValue(effector_path, out bone))
                 {
                     Vector3 collisionPoint;
                     float collisionTime;
@@ -422,7 +422,7 @@ public class CCDViewer : Viewer
             Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
             {
                 TMONode bone;
-                if (fig.Tmo.nodemap.TryGetValue(current_effector_name, out bone))
+                if (fig.Tmo.nodemap.TryGetValue(current_effector_path, out bone))
                 {
                     dir = new Vector3(1,0,0);
                     if (FindBoneHandleOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, bone, dir))

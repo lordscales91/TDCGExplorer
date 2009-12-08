@@ -514,7 +514,7 @@ namespace TDCG
     public class TSONode
     {
         private int id;
-        private string name;
+        private string path;
         private string sname;
 
         private Quaternion rotation;
@@ -536,7 +536,7 @@ namespace TDCG
         /// </summary>
         public void Read(BinaryReader reader)
         {
-            this.Name = reader.ReadCString();
+            this.Path = reader.ReadCString();
         }
 
         /// <summary>
@@ -595,13 +595,13 @@ namespace TDCG
         /// <summary>
         /// ñºèÃ
         /// </summary>
-        public string Name
+        public string Path
         {
-            get { return name; }
+            get { return path; }
             set
             {
-                name = value;
-                sname = name.Substring(name.LastIndexOf('|') + 1);
+                path = value;
+                sname = path.Substring(path.LastIndexOf('|') + 1);
             }
         }
 
@@ -865,15 +865,15 @@ namespace TDCG
 
             for (int i = 0; i < nodes.Length; i++)
             {
-                nodemap.Add(nodes[i].Name, nodes[i]);
+                nodemap.Add(nodes[i].Path, nodes[i]);
             }
 
             for (int i = 0; i < nodes.Length; i++)
             {
-                int index = nodes[i].Name.LastIndexOf('|');
+                int index = nodes[i].Path.LastIndexOf('|');
                 if (index <= 0)
                     continue;
-                string pname = nodes[i].Name.Substring(0, index);
+                string pname = nodes[i].Path.Substring(0, index);
                 nodes[i].parent = nodemap[pname];
                 nodes[i].parent.child_nodes.Add(nodes[i]);
             }

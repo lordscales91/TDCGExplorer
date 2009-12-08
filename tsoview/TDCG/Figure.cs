@@ -191,7 +191,7 @@ public class Figure : IDisposable
         foreach (TSONode tso_node in tso.nodes)
         {
             TMONode tmo_node;
-            if (tmo.nodemap.TryGetValue(tso_node.Name, out tmo_node))
+            if (tmo.nodemap.TryGetValue(tso_node.Path, out tmo_node))
                 nodemap.Add(tso_node, tmo_node);
         }
     }
@@ -287,7 +287,7 @@ public class Figure : IDisposable
         for (int i = 0; i < node_count; i++)
         {
             tmo.nodes[i] = new TMONode(i);
-            tmo.nodes[i].Name = tso.nodes[i].Name;
+            tmo.nodes[i].Path = tso.nodes[i].Path;
         }
 
         tmo.GenerateNodemapAndTree();
