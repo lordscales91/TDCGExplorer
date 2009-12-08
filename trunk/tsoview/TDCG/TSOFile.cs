@@ -33,7 +33,7 @@ namespace TDCG
         /// <summary>
         /// 頂点配列
         /// </summary>
-        public vertex_field[] vertices;
+        public Vertex[] vertices;
 
         internal Mesh dm = null;
 
@@ -98,7 +98,7 @@ namespace TDCG
                 {
                     for (int i = 0; i < vertices.Length; i++)
                     {
-                        vertex_field v = vertices[i];
+                        Vertex v = vertices[i];
 
                         gs.Write(v.position);
                         for (int j = 0; j < 4; j++)
@@ -192,7 +192,7 @@ namespace TDCG
     /// <summary>
     /// 頂点
     /// </summary>
-    public struct vertex_field
+    public struct Vertex
     {
         /// <summary>
         /// 位置
@@ -640,7 +640,7 @@ namespace TDCG
                     mesh.bone_index_LUT.Add(reader.ReadUInt32());
                 }
                 int vertex_count = reader.ReadInt32(); //numvertices
-                mesh.vertices = new vertex_field[vertex_count];
+                mesh.vertices = new Vertex[vertex_count];
                 for (int i = 0; i < vertex_count; i++)
                 {
                     ReadVertex(ref mesh.vertices[i]);
@@ -677,7 +677,7 @@ namespace TDCG
         /// 頂点を読みとります。
         /// </summary>
         /// <param name="v">頂点</param>
-        public void ReadVertex(ref vertex_field v)
+        public void ReadVertex(ref Vertex v)
         {
             ReadVector3(ref v.position);
             ReadVector3(ref v.normal);

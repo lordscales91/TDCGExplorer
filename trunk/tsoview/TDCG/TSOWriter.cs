@@ -237,7 +237,7 @@ namespace TDCG
         /// </summary>
         /// <param name="bw">ƒ‰ƒCƒ^</param>
         /// <param name="v">’¸“_</param>
-        public static void Write(BinaryWriter bw, ref vertex_field v)
+        public static void Write(BinaryWriter bw, ref Vertex v)
         {
             Write(bw, ref v.position);
             Write(bw, ref v.normal);
