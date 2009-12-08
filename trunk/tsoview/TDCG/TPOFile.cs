@@ -75,15 +75,15 @@ public class TPOFile
 
         for (int i = 0; i < nodes.Length; i++)
         {
-            nodemap.Add(nodes[i].Name, nodes[i]);
+            nodemap.Add(nodes[i].Path, nodes[i]);
         }
 
         for (int i = 0; i < nodes.Length; i++)
         {
-            int index = nodes[i].Name.LastIndexOf('|');
+            int index = nodes[i].Path.LastIndexOf('|');
             if (index <= 0)
                 continue;
-            string pname = nodes[i].Name.Substring(0, index);
+            string pname = nodes[i].Path.Substring(0, index);
             nodes[i].parent = nodemap[pname];
             nodes[i].parent.children.Add(nodes[i]);
         }
@@ -233,7 +233,7 @@ public class TPOCommand
 public class TPONode
 {
     private int id;
-    private string name;
+    private string path;
     private string sname;
     
     internal List<TPONode> children = new List<TPONode>();
@@ -246,7 +246,7 @@ public class TPONode
     /// <summary>
     /// ñºèÃ
     /// </summary>
-    public string Name { get { return name; } }
+    public string Path { get { return path; } }
     /// <summary>
     /// ñºèÃÅiíZÇ¢å`éÆÅj
     /// </summary>
@@ -289,8 +289,8 @@ public class TPONode
     public TPONode(int id, string name)
     {
         this.id = id;
-        this.name = name;
-        this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
+        this.path = name;
+        this.sname = this.path.Substring(this.path.LastIndexOf('|') + 1);
     }
 
     /// <summary>
