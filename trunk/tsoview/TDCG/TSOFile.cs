@@ -356,6 +356,21 @@ namespace TDCG
         /// テキスト行配列
         /// </summary>
         public string[] script_data;
+
+        /// <summary>
+        /// スクリプトを読み込みます。
+        /// </summary>
+        /// <returns></returns>
+        public void Read(BinaryReader reader)
+        {
+            this.name = reader.ReadCString();
+            UInt32 line_count = reader.ReadUInt32();
+            string[] script_data = new string[line_count];
+            for (int i = 0; i < line_count; i++)
+            {
+                script_data[i] = reader.ReadCString();
+            }
+        }
     }
 
     /// <summary>
@@ -781,7 +796,8 @@ namespace TDCG
             scripts = new TSOScript[script_count];
             for (int i = 0; i < script_count; i++)
             {
-                scripts[i] = ReadScript();
+                scripts[i] = new TSOScript();
+                scripts[i].Read(reader);
             }
 
             UInt32 sub_script_count = reader.ReadUInt32();
@@ -822,25 +838,6 @@ namespace TDCG
                 nodes[i].parent = nodemap[pname];
                 nodes[i].parent.child_nodes.Add(nodes[i]);
             }
-        }
-
-        /// <summary>
-        /// スクリプトを読み込みます。
-        /// </summary>
-        /// <returns></returns>
-        public TSOScript ReadScript()
-        {
-            TSOScript script = new TSOScript();
-            script.name = reader.ReadCString();
-            UInt32 line_count = reader.ReadUInt32();
-            string[] read_lines = new string[line_count];
-            for (int i = 0; i < line_count; i++)
-            {
-                read_lines[i] = reader.ReadCString();
-            }
-            script.script_data = read_lines;
-
-            return script;
         }
 
         /// <summary>
