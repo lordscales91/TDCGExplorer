@@ -1136,20 +1136,10 @@ public class Viewer : IDisposable
                 tmo = new TMOFile();
                 tmo.Load(dest);
                 fig.Tmo = tmo;
+                fig.TransformTpo();
             };
             png.Figu += delegate(Stream dest, int extract_length)
             {
-                byte[] buf = new byte[extract_length];
-                dest.Read(buf, 0, extract_length);
-
-                List<float> ratios = new List<float>();
-                for (int offset = 0; offset < extract_length; offset+= sizeof(float))
-                {
-                    float flo = BitConverter.ToSingle(buf, offset);
-                    ratios.Add(flo);
-                }
-                fig.SetRatios(ratios);
-                fig.TransformTpo();
             };
             png.Ftso += delegate(Stream dest, int extract_length, byte[] opt1)
             {

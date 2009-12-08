@@ -100,19 +100,6 @@ public class Figure : IDisposable
         }
     }
 
-    string[] proportion_names = new string[] {"Age", "Arm", "Leg", "Waist", "Bust", "Eye"};
-
-    /// <summary>
-    /// 体型変形比率を設定します。
-    /// </summary>
-    public void SetRatios(List<float> ratios)
-    {
-        for (int i = 0; i < proportion_names.Length; i++)
-        {
-            tpo_list["TDCG.Proportion." + proportion_names[i]].Ratio = ratios[i] * 2.0f - 1.0f;
-        }
-    }
-
     /// <summary>
     /// 体型変形を行います。
     /// </summary>
