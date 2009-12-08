@@ -1136,10 +1136,10 @@ public class Viewer : IDisposable
                 tmo = new TMOFile();
                 tmo.Load(dest);
                 fig.Tmo = tmo;
-                fig.TransformTpo();
             };
             png.Figu += delegate(Stream dest, int extract_length)
             {
+                fig.TransformTpo();
             };
             png.Ftso += delegate(Stream dest, int extract_length, byte[] opt1)
             {
