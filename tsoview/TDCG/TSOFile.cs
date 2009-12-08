@@ -67,7 +67,6 @@ namespace TDCG
             if (this.maxPalettes > bone_index_LUT_entry_count)
                 this.maxPalettes = bone_index_LUT_entry_count;
             this.bone_index_LUT = new List<UInt32>();
-            this.bone_LUT = new List<TSONode>();
             for (int i = 0; i < bone_index_LUT_entry_count; i++)
             {
                 this.bone_index_LUT.Add(reader.ReadUInt32());
@@ -78,6 +77,17 @@ namespace TDCG
             {
                 this.vertices[i].Read(reader);
             }
+        }
+
+        /// <summary>
+        /// ボーン参照リストを生成します。
+        /// </summary>
+        public void GenerateBone_LUT(TSONode[] nodes)
+        {
+            this.bone_LUT = new List<TSONode>();
+
+            foreach (UInt32 bone_index in bone_index_LUT)
+                this.bone_LUT.Add(nodes[bone_index]);
         }
 
         static VertexElement[] ve = new VertexElement[]
@@ -199,13 +209,41 @@ namespace TDCG
         public TSOMesh[] meshes;
 
         /// <summary>
+        /// フレームを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            this.name = reader.ReadCString().Replace(":", "_colon_").Replace("#", "_sharp_"); //should be compatible with directx naming conventions 
+            reader.ReadMatrix(ref this.transform_matrix);
+            this.unknown1 = reader.ReadUInt32();
+            UInt32 mesh_count = reader.ReadUInt32();
+            this.meshes = new TSOMesh[mesh_count];
+
+            for (int a = 0; a < mesh_count; a++)
+            {
+                TSOMesh mesh = new TSOMesh();
+                mesh.Read(reader);
+                this.meshes[a] = mesh;
+            }
+        }
+
+        /// <summary>
+        /// ボーン参照リストを生成します。
+        /// </summary>
+        public void GenerateBone_LUT(TSONode[] nodes)
+        {
+            foreach (TSOMesh mesh in meshes)
+                mesh.GenerateBone_LUT(nodes);
+        }
+
+        /// <summary>
         /// 内部objectを破棄します。
         /// </summary>
         public void Dispose()
         {
             if (meshes != null)
-            foreach (TSOMesh tm_sub in meshes)
-                tm_sub.Dispose();
+            foreach (TSOMesh mesh in meshes)
+                mesh.Dispose();
         }
     }
 
@@ -658,43 +696,6 @@ namespace TDCG
         internal Dictionary<string, TSONode> nodemap;
 
         /// <summary>
-        /// TSOFrameを読みとります。
-        /// </summary>
-        /// <returns>TSOFrame</returns>
-        public TSOFrame ReadFrame()
-        {
-            TSOFrame frame = new TSOFrame();
-
-            frame.name = reader.ReadCString();
-            frame.name = frame.name.Replace(":", "_colon_").Replace("#", "_sharp_"); //should be compatible with directx naming conventions 
-            reader.ReadMatrix(ref frame.transform_matrix);
-            frame.unknown1 = reader.ReadUInt32();
-            UInt32 sub_mesh_count = reader.ReadUInt32();
-            frame.meshes = new TSOMesh[sub_mesh_count];
-
-            for (int a = 0; a < sub_mesh_count; a++)
-            {
-                TSOMesh mesh = new TSOMesh();
-                mesh.Read(reader);
-                frame.meshes[a] = mesh;
-            }
-
-            for (int a = 0; a < sub_mesh_count; a++)
-            {
-                TSOMesh mesh = frame.meshes[a];
-
-                for (int i = 0; i < mesh.bone_index_LUT.Count; i++)
-                {
-                    UInt32 bone_index = mesh.bone_index_LUT[i];
-                    TSONode bone = nodes[bone_index];
-                    mesh.bone_LUT.Add(bone);
-                }
-            }
-
-            return frame;
-        }
-
-        /// <summary>
         /// 指定パスに保存します。
         /// </summary>
         /// <param name="dest_file">パス</param>
@@ -790,12 +791,14 @@ namespace TDCG
                 sub_scripts[i] = ReadSubScript();
             }
 
-            UInt32 mesh_count = reader.ReadUInt32();
-            frames = new TSOFrame[mesh_count];
-            for (int i = 0; i < mesh_count; i++)
+            UInt32 frame_count = reader.ReadUInt32();
+            frames = new TSOFrame[frame_count];
+            for (int i = 0; i < frame_count; i++)
             {
-                TSOFrame frame = ReadFrame();
+                TSOFrame frame = new TSOFrame();
+                frame.Read(reader);
                 frames[i] = frame;
+                frame.GenerateBone_LUT(nodes);
 
                 //Console.WriteLine("frame name {0} len {1}", frame.name, frame.meshes.Length);
             }
