@@ -60,7 +60,7 @@ public class TPOFile
 
             for (int i = 0; i < node_count; i++)
             {
-                nodes[i] = new TPONode(i, tmo.nodes[i].Name);
+                nodes[i] = new TPONode(i, tmo.nodes[i].Path);
             }
 
             GenerateNodemapAndTree();

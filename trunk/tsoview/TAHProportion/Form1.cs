@@ -117,7 +117,7 @@ namespace TAHTool
                     MemoryStream tmo_stream = new MemoryStream(data_output);
                     tmo.Load(tmo_stream);
 
-                    if (tmo.nodes[0].Name == "|W_Hips")
+                    if (tmo.nodes[0].Path == "|W_Hips")
                     {
                         tpo_list.Tmo = tmo;
 
@@ -334,7 +334,7 @@ namespace TAHTool
 
             foreach (TSOFigure fig in TSOFigureList)
                 if (fig.tmo != null)
-                    if (fig.tmo.nodes[0].Name == "|W_Hips")
+                    if (fig.tmo.nodes[0].Path == "|W_Hips")
                     {
                         tpo_list.Tmo = fig.tmo;
 

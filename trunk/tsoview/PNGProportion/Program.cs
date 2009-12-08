@@ -145,7 +145,7 @@ namespace PNGProportion
 
             foreach (TSOFigure fig in TSOFigureList)
                 if (fig.tmo != null)
-                if (fig.tmo.nodes[0].Name == "|W_Hips")
+                if (fig.tmo.nodes[0].Path == "|W_Hips")
                 {
                     tpo_list.Tmo = fig.tmo;
 

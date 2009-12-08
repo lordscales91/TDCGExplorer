@@ -64,7 +64,7 @@ namespace TDCG
         /// <param name="item">node</param>
         public static void Write(BinaryWriter bw, TMONode item)
         {
-            Write(bw, item.Name);
+            Write(bw, item.Path);
         }
 
         /// <summary>

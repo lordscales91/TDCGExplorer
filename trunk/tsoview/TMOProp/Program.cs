@@ -49,7 +49,7 @@ namespace TMOProp
             foreach (Proportion portion in tpo_config.Proportions)
                 portion_map[portion.ClassName] = portion;
             
-            if (tmo.nodes[0].Name == "|W_Hips")
+            if (tmo.nodes[0].Path == "|W_Hips")
             {
                 tpo_list.Tmo = tmo;
 
