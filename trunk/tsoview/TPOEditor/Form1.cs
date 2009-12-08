@@ -156,7 +156,7 @@ namespace TPOEditor
                 if (command_exist)
                 {
                     sw.WriteLine("");
-                    sw.Write(indent); sw.WriteLine("node = nodes[\"{0}\"];", tponode.ShortName);
+                    sw.Write(indent); sw.WriteLine("node = nodes[\"{0}\"];", tponode.Name);
                 }
                 foreach (TPOCommand command in tponode.commands)
                 {

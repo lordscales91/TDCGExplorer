@@ -34,7 +34,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.gvTPONodes = new System.Windows.Forms.DataGridView();
-            this.shortNameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tpoNodeBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.gvTPOCommands = new System.Windows.Forms.DataGridView();
             this.typeDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -71,7 +71,7 @@
             this.gvTPONodes.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.gvTPONodes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gvTPONodes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.shortNameDataGridViewTextBoxColumn});
+            this.nameDataGridViewTextBoxColumn});
             this.gvTPONodes.DataSource = this.tpoNodeBindingSource;
             this.gvTPONodes.Location = new System.Drawing.Point(12, 168);
             this.gvTPONodes.Name = "gvTPONodes";
@@ -80,12 +80,12 @@
             this.gvTPONodes.TabIndex = 0;
             this.gvTPONodes.SelectionChanged += new System.EventHandler(this.gvTPONodes_SelectionChanged);
             // 
-            // shortNameDataGridViewTextBoxColumn
+            // nameDataGridViewTextBoxColumn
             // 
-            this.shortNameDataGridViewTextBoxColumn.DataPropertyName = "ShortName";
-            this.shortNameDataGridViewTextBoxColumn.HeaderText = "ShortName";
-            this.shortNameDataGridViewTextBoxColumn.Name = "shortNameDataGridViewTextBoxColumn";
-            this.shortNameDataGridViewTextBoxColumn.ReadOnly = true;
+            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
+            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
+            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
+            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
             // 
             // tpoNodeBindingSource
             // 
@@ -274,7 +274,7 @@
         private System.Windows.Forms.DataGridView gvPortions;
         private System.Windows.Forms.BindingSource tpoFileBindingSource;
         private System.Windows.Forms.Timer timer1;
-        private System.Windows.Forms.DataGridViewTextBoxColumn shortNameDataGridViewTextBoxColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn nameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn proportionNameDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridView gvCommands;
         private System.Windows.Forms.CheckBox cbInverseScaleOnChildren;

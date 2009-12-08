@@ -119,7 +119,7 @@ public class TPOFile
 
         Dictionary<string, TPONode> nodemap = new Dictionary<string, TPONode>();
         foreach (TPONode node in nodes)
-            nodemap[node.ShortName] = node;
+            nodemap[node.Name] = node;
 
         proportion.Nodes = nodemap;
         //TPONodeに変形係数を設定する。
@@ -234,7 +234,7 @@ public class TPONode
 {
     private int id;
     private string path;
-    private string sname;
+    private string name;
     
     internal List<TPONode> children = new List<TPONode>();
     internal TPONode parent;
@@ -250,7 +250,7 @@ public class TPONode
     /// <summary>
     /// 名称（短い形式）
     /// </summary>
-    public string ShortName { get { return sname; } }
+    public string Name { get { return name; } }
 
     /// 変形操作リスト
     public List<TPOCommand> commands = new List<TPOCommand>();
@@ -290,7 +290,7 @@ public class TPONode
     {
         this.id = id;
         this.path = name;
-        this.sname = this.path.Substring(this.path.LastIndexOf('|') + 1);
+        this.name = this.path.Substring(this.path.LastIndexOf('|') + 1);
     }
 
     /// <summary>
