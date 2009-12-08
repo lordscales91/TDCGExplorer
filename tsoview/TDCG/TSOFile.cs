@@ -218,6 +218,37 @@ namespace TDCG
         /// ボーンインデックス
         /// </summary>
         public UInt32 skin_weight_indices;
+
+        /// <summary>
+        /// 頂点を読みとります。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            reader.ReadVector3(ref this.position);
+            reader.ReadVector3(ref this.normal);
+            this.u = reader.ReadSingle();
+            this.v = reader.ReadSingle();
+            int bone_weight_entry_count = reader.ReadInt32();
+            this.skin_weights = new SkinWeight[bone_weight_entry_count];
+            for (int i = 0; i < bone_weight_entry_count; i++)
+            {
+                uint index = reader.ReadUInt32();
+                float weight = reader.ReadSingle();
+                this.skin_weights[i] = new SkinWeight(weight, index);
+            }
+            Array.Sort(this.skin_weights);
+            Array.Resize(ref this.skin_weights, 4);
+            for (int i = bone_weight_entry_count; i < 4; i++)
+            {
+                this.skin_weights[i] = new SkinWeight(0.0f, 0);
+            }
+
+            byte[] idx = new byte[4];
+            for (int i = 0; i < 4; i++)
+                idx[i] = (byte)this.skin_weights[i].index;
+
+            this.skin_weight_indices = BitConverter.ToUInt32(idx, 0);
+        }
     }
 
     /// <summary>
@@ -643,7 +674,7 @@ namespace TDCG
                 mesh.vertices = new Vertex[vertex_count];
                 for (int i = 0; i < vertex_count; i++)
                 {
-                    ReadVertex(ref mesh.vertices[i]);
+                    mesh.vertices[i].Read(reader);
                 }
             }
 
@@ -660,38 +691,6 @@ namespace TDCG
             }
 
             return frame;
-        }
-
-        /// <summary>
-        /// 頂点を読みとります。
-        /// </summary>
-        /// <param name="v">頂点</param>
-        public void ReadVertex(ref Vertex v)
-        {
-            reader.ReadVector3(ref v.position);
-            reader.ReadVector3(ref v.normal);
-            v.u = reader.ReadSingle();
-            v.v = reader.ReadSingle();
-            int bone_weight_entry_count = reader.ReadInt32();
-            v.skin_weights = new SkinWeight[bone_weight_entry_count];
-            for (int i = 0; i < bone_weight_entry_count; i++)
-            {
-                uint index = reader.ReadUInt32();
-                float weight = reader.ReadSingle();
-                v.skin_weights[i] = new SkinWeight(weight, index);
-            }
-            Array.Sort(v.skin_weights);
-            Array.Resize(ref v.skin_weights, 4);
-            for (int i = bone_weight_entry_count; i < 4; i++)
-            {
-                v.skin_weights[i] = new SkinWeight(0.0f, 0);
-            }
-
-            byte[] idx = new byte[4];
-            for (int i = 0; i < 4; i++)
-                idx[i] = (byte)v.skin_weights[i].index;
-
-            v.skin_weight_indices = BitConverter.ToUInt32(idx, 0);
         }
 
         /// <summary>

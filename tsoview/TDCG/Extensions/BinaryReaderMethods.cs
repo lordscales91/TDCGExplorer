@@ -58,6 +58,7 @@ namespace TDCG.Extensions
         /// <summary>
         /// Vector3Çì«Ç›Ç∆ÇËÇ‹Ç∑ÅB
         /// </summary>
+        /// <param name="reader">BinaryReader</param>
         /// <param name="v">Vector3</param>
         public static void ReadVector3(this BinaryReader reader, ref Vector3 v)
         {
