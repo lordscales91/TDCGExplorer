@@ -360,7 +360,6 @@ namespace TDCG
         /// <summary>
         /// スクリプトを読み込みます。
         /// </summary>
-        /// <returns></returns>
         public void Read(BinaryReader reader)
         {
             this.name = reader.ReadCString();
@@ -395,6 +394,32 @@ namespace TDCG
         /// ファイル名
         /// </summary>
         public string File { get { return file; } set { file = value; } }
+
+        /// <summary>
+        /// サブスクリプトを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            this.name = reader.ReadCString();
+            this.file = reader.ReadCString();
+            UInt32 line_count = reader.ReadUInt32();
+            this.script_data = new string[line_count];
+            for (int i = 0; i < line_count; i++)
+            {
+                this.script_data[i] = reader.ReadCString();
+            }
+
+            //Console.WriteLine("name {0} file {1}", this.name, this.file);
+        }
+
+        /// <summary>
+        /// シェーダ設定を生成します。
+        /// </summary>
+        public void GenerateShader()
+        {
+            this.shader = new Shader();
+            this.shader.Load(this.script_data);
+        }
     }
 
     /// <summary>
@@ -804,7 +829,9 @@ namespace TDCG
             sub_scripts = new TSOSubScript[sub_script_count];
             for (int i = 0; i < sub_script_count; i++)
             {
-                sub_scripts[i] = ReadSubScript();
+                sub_scripts[i] = new TSOSubScript();
+                sub_scripts[i].Read(reader);
+                sub_scripts[i].GenerateShader();
             }
 
             UInt32 frame_count = reader.ReadUInt32();
@@ -838,30 +865,6 @@ namespace TDCG
                 nodes[i].parent = nodemap[pname];
                 nodes[i].parent.child_nodes.Add(nodes[i]);
             }
-        }
-
-        /// <summary>
-        /// サブスクリプトを読み込みます。
-        /// </summary>
-        /// <returns></returns>
-        public TSOSubScript ReadSubScript()
-        {
-            TSOSubScript sub_script = new TSOSubScript();
-            sub_script.name = reader.ReadCString();
-            sub_script.file = reader.ReadCString();
-            UInt32 sub_line_counts = reader.ReadUInt32();
-            sub_script.script_data = new string[sub_line_counts];
-            for (int j = 0; j < sub_line_counts; j++)
-            {
-                sub_script.script_data[j] = reader.ReadCString();
-            }
-
-            //Console.WriteLine("name {0} file {1}", sub_script.name, sub_script.file);
-
-            sub_script.shader = new Shader();
-            sub_script.shader.Load(sub_script.script_data);
-
-            return sub_script;
         }
 
         /// <summary>
