@@ -873,8 +873,8 @@ namespace TDCG
                 int index = nodes[i].Path.LastIndexOf('|');
                 if (index <= 0)
                     continue;
-                string pname = nodes[i].Path.Substring(0, index);
-                nodes[i].parent = nodemap[pname];
+                string path = nodes[i].Path.Substring(0, index);
+                nodes[i].parent = nodemap[path];
                 nodes[i].parent.child_nodes.Add(nodes[i]);
             }
         }
