@@ -14,12 +14,6 @@ namespace TDCG
     /// </summary>
     public class TSOMesh : IDisposable
     {
-        /*
-        /// <summary>
-        /// 名前
-        /// </summary>
-        public string name;
-        */
         /// <summary>
         /// シェーダ設定番号
         /// </summary>
