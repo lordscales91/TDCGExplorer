@@ -104,11 +104,10 @@ namespace TDCG
 
             int node_count = reader.ReadInt32();
             nodes = new TMONode[node_count];
-
             for (int i = 0; i < node_count; i++)
             {
-                string name = reader.ReadCString();
-                nodes[i] = new TMONode(i, name);
+                nodes[i] = new TMONode(i);
+                nodes[i].Read(reader);
             }
 
             GenerateNodemapAndTree();
@@ -424,8 +423,8 @@ namespace TDCG
 
             for (int i = 0; i < node_count; i++)
             {
-                string name = nodes[i].Name;
-                tmo.nodes[i] = new TMONode(i, name);
+                tmo.nodes[i] = new TMONode(i);
+                tmo.nodes[i].Name = nodes[i].Name;
             }
 
             tmo.GenerateNodemapAndTree();
@@ -932,11 +931,17 @@ namespace TDCG
         /// <summary>
         /// TMONodeを生成します。
         /// </summary>
-        public TMONode(int id, string name)
+        public TMONode(int id)
         {
             this.id = id;
-            this.name = name;
-            this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
+        }
+
+        /// <summary>
+        /// TMONodeを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            this.Name = reader.ReadCString();
         }
 
         /// <summary>
@@ -994,7 +999,15 @@ namespace TDCG
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get { return name; } }
+        public string Name
+        {
+            get { return name; }
+            set
+            {
+                name = value;
+                sname = name.Substring(name.LastIndexOf('|') + 1);
+            }
+        }
         /// <summary>
         /// 名称の短い形式。これはTMOFile中で重複する可能性があります。
         /// </summary>
