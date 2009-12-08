@@ -14,10 +14,12 @@ namespace TDCG
     /// </summary>
     public class TSOMesh : IDisposable
     {
+        /*
         /// <summary>
         /// 名前
         /// </summary>
         public string name;
+        */
         /// <summary>
         /// シェーダ設定番号
         /// </summary>
@@ -58,6 +60,30 @@ namespace TDCG
         public TSONode GetBone(int i)
         {
             return bone_LUT[i];
+        }
+
+        /// <summary>
+        /// メッシュを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            this.spec = reader.ReadInt32();
+            int bone_index_LUT_entry_count = reader.ReadInt32(); //numbones
+            this.maxPalettes = 16;
+            if (this.maxPalettes > bone_index_LUT_entry_count)
+                this.maxPalettes = bone_index_LUT_entry_count;
+            this.bone_index_LUT = new List<UInt32>();
+            this.bone_LUT = new List<TSONode>();
+            for (int i = 0; i < bone_index_LUT_entry_count; i++)
+            {
+                this.bone_index_LUT.Add(reader.ReadUInt32());
+            }
+            int vertex_count = reader.ReadInt32(); //numvertices
+            this.vertices = new Vertex[vertex_count];
+            for (int i = 0; i < vertex_count; i++)
+            {
+                this.vertices[i].Read(reader);
+            }
         }
 
         static VertexElement[] ve = new VertexElement[]
@@ -655,27 +681,8 @@ namespace TDCG
             for (int a = 0; a < sub_mesh_count; a++)
             {
                 TSOMesh mesh = new TSOMesh();
+                mesh.Read(reader);
                 frame.meshes[a] = mesh;
-
-                mesh.name = frame.name + "_sub_" + a.ToString();
-
-                mesh.spec = reader.ReadInt32();
-                int bone_index_LUT_entry_count = reader.ReadInt32(); //numbones
-                mesh.maxPalettes = 16;
-                if (mesh.maxPalettes > bone_index_LUT_entry_count)
-                    mesh.maxPalettes = bone_index_LUT_entry_count;
-                mesh.bone_index_LUT = new List<UInt32>();
-                mesh.bone_LUT = new List<TSONode>();
-                for (int i = 0; i < bone_index_LUT_entry_count; i++)
-                {
-                    mesh.bone_index_LUT.Add(reader.ReadUInt32());
-                }
-                int vertex_count = reader.ReadInt32(); //numvertices
-                mesh.vertices = new Vertex[vertex_count];
-                for (int i = 0; i < vertex_count; i++)
-                {
-                    mesh.vertices[i].Read(reader);
-                }
             }
 
             for (int a = 0; a < sub_mesh_count; a++)
