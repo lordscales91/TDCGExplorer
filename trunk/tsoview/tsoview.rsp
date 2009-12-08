@@ -2,6 +2,7 @@
 /r:Microsoft.DirectX.dll
 /r:Microsoft.DirectX.Direct3D.dll
 /r:Microsoft.DirectX.Direct3DX.dll
+TDCG\Extensions\BinaryReaderMethods.cs
 TDCG\TMOFile.cs
 TDCG\TMOWriter.cs
 TDCG\TSOFile.cs

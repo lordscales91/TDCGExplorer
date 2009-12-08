@@ -20,18 +20,18 @@ public static class TMOVise
 
         TMOFile tmo = new TMOFile();
         tmo.Load(source_file);
-        TMOConstraint constraint = TMOConstraint.Load(@"angle-GRABIA.xml");
+        TMOConstraint constraint = TMOConstraint.Load(@"angle-GRABIA-xyz.xml");
 
         foreach (TMONode node in tmo.nodes)
         {
             TMOMat mat = node.frame_matrices[0];
 
-            string sname = node.ShortName;
+            string name = node.Name;
             Vector3 scaling;
             Vector3 translation = TMOMat.DecomposeMatrix(ref mat.m, out scaling);
-            Vector3 angle = TMOMat.ToAngle(mat.m);
+            Vector3 angle = TMOMat.ToAngleXYZ(mat.m);
 
-            TMOConstraintItem item = constraint.GetItem(sname);
+            TMOConstraintItem item = constraint.GetItem(name);
 
             if (angle.X < item.Min.X)
                 angle.X = item.Min.X;
@@ -48,7 +48,7 @@ public static class TMOVise
             if (angle.Z > item.Max.Z)
                 angle.Z = item.Max.Z;
 
-            Quaternion q = TMOMat.ToQuaternion(angle);
+            Quaternion q = TMOMat.ToQuaternionXYZ(angle);
             mat.m = Matrix.Scaling(scaling) * Matrix.RotationQuaternion(q) * Matrix.Translation(translation);
         }
         tmo.Save(@"out.tmo");

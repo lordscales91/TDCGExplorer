@@ -18,7 +18,7 @@ public class TMOConstraintItem
     /// <summary>
     /// node名（短い形式）
     /// </summary>
-    public string ShortName { get; set; }
+    public string Name { get; set; }
     /// <summary>
     /// 角度の最小値
     /// </summary>
@@ -147,7 +147,7 @@ public class TMOConstraint
             {
                 TMOMat mat = node.frame_matrices[0];
 
-                string sname = node.ShortName;
+                string name = node.Name;
                 Vector3 angle1 = TMOMat.ToAngleXYZ(mat.m);
                 Vector3 angle2 = angle1;
 
@@ -155,58 +155,58 @@ public class TMOConstraint
                 if (angle2.Y < 0) angle2.Y += 360;
                 if (angle2.Z < 0) angle2.Z += 360;
 
-                if (! min1_dic.ContainsKey(sname))
-                    min1_dic[sname] = new Vector3(+180.0f, +180.0f, +180.0f);
-                if (! max1_dic.ContainsKey(sname))
-                    max1_dic[sname] = new Vector3(-180.0f, -180.0f, -180.0f);
+                if (! min1_dic.ContainsKey(name))
+                    min1_dic[name] = new Vector3(+180.0f, +180.0f, +180.0f);
+                if (! max1_dic.ContainsKey(name))
+                    max1_dic[name] = new Vector3(-180.0f, -180.0f, -180.0f);
 
-                Vector3 min1 = min1_dic[sname];
-                Vector3 max1 = max1_dic[sname]; 
+                Vector3 min1 = min1_dic[name];
+                Vector3 max1 = max1_dic[name]; 
 
-                if (angle1.X < min1_dic[sname].X) min1.X = angle1.X;
-                if (angle1.X > max1_dic[sname].X) max1.X = angle1.X;
+                if (angle1.X < min1_dic[name].X) min1.X = angle1.X;
+                if (angle1.X > max1_dic[name].X) max1.X = angle1.X;
 
-                if (angle1.Y < min1_dic[sname].Y) min1.Y = angle1.Y;
-                if (angle1.Y > max1_dic[sname].Y) max1.Y = angle1.Y;
+                if (angle1.Y < min1_dic[name].Y) min1.Y = angle1.Y;
+                if (angle1.Y > max1_dic[name].Y) max1.Y = angle1.Y;
 
-                if (angle1.Z < min1_dic[sname].Z) min1.Z = angle1.Z;
-                if (angle1.Z > max1_dic[sname].Z) max1.Z = angle1.Z;
+                if (angle1.Z < min1_dic[name].Z) min1.Z = angle1.Z;
+                if (angle1.Z > max1_dic[name].Z) max1.Z = angle1.Z;
 
-                min1_dic[sname] = min1;
-                max1_dic[sname] = max1;
+                min1_dic[name] = min1;
+                max1_dic[name] = max1;
 
-                if (! min2_dic.ContainsKey(sname))
-                    min2_dic[sname] = new Vector3(360.0f, 360.0f, 360.0f);
-                if (! max2_dic.ContainsKey(sname))
-                    max2_dic[sname] = new Vector3(0.0f, 0.0f, 0.0f);
+                if (! min2_dic.ContainsKey(name))
+                    min2_dic[name] = new Vector3(360.0f, 360.0f, 360.0f);
+                if (! max2_dic.ContainsKey(name))
+                    max2_dic[name] = new Vector3(0.0f, 0.0f, 0.0f);
 
-                Vector3 min2 = min2_dic[sname];
-                Vector3 max2 = max2_dic[sname]; 
+                Vector3 min2 = min2_dic[name];
+                Vector3 max2 = max2_dic[name]; 
 
-                if (angle2.X < min2_dic[sname].X) min2.X = angle2.X;
-                if (angle2.X > max2_dic[sname].X) max2.X = angle2.X;
+                if (angle2.X < min2_dic[name].X) min2.X = angle2.X;
+                if (angle2.X > max2_dic[name].X) max2.X = angle2.X;
 
-                if (angle2.Y < min2_dic[sname].Y) min2.Y = angle2.Y;
-                if (angle2.Y > max2_dic[sname].Y) max2.Y = angle2.Y;
+                if (angle2.Y < min2_dic[name].Y) min2.Y = angle2.Y;
+                if (angle2.Y > max2_dic[name].Y) max2.Y = angle2.Y;
 
-                if (angle2.Z < min2_dic[sname].Z) min2.Z = angle2.Z;
-                if (angle2.Z > max2_dic[sname].Z) max2.Z = angle2.Z;
+                if (angle2.Z < min2_dic[name].Z) min2.Z = angle2.Z;
+                if (angle2.Z > max2_dic[name].Z) max2.Z = angle2.Z;
 
-                min2_dic[sname] = min2;
-                max2_dic[sname] = max2;
+                min2_dic[name] = min2;
+                max2_dic[name] = max2;
             }
         }
 
-        foreach (string sname in min1_dic.Keys)
+        foreach (string name in min1_dic.Keys)
         {
             TMOConstraintItem item = new TMOConstraintItem();
-            item.ShortName = sname;
+            item.Name = name;
 
-            Vector3 min1 = min1_dic[sname];
-            Vector3 max1 = max1_dic[sname];
+            Vector3 min1 = min1_dic[name];
+            Vector3 max1 = max1_dic[name];
 
-            Vector3 min2 = min2_dic[sname];
-            Vector3 max2 = max2_dic[sname];
+            Vector3 min2 = min2_dic[name];
+            Vector3 max2 = max2_dic[name];
 
             Vector3 sub1 = max1 - min1;
             Vector3 sub2 = max2 - min2;
@@ -262,12 +262,12 @@ public class TMOConstraint
     /// <summary>
     /// node名（短い形式）に対応する要素を得ます。
     /// </summary>
-    /// <param name="sname">node名（短い形式）</param>
-    public TMOConstraintItem GetItem(string sname)
+    /// <param name="name">node名（短い形式）</param>
+    public TMOConstraintItem GetItem(string name)
     {
         foreach (TMOConstraintItem item in items)
         {
-            if (item.ShortName == sname)
+            if (item.Name == name)
                 return item;
         }
         return null;

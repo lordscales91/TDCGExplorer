@@ -465,7 +465,7 @@ public class CCDViewer : Viewer
     private void LimitRotation(TMONode node)
     {
         if (LimitRotationEnabled)
-            if (re_legnode.IsMatch(node.ShortName))
+            if (re_legnode.IsMatch(node.Name))
                 LimitRotationXYZ(node);
             else
                 LimitRotationZXY(node);
@@ -473,20 +473,20 @@ public class CCDViewer : Viewer
 
     private void LimitRotationXYZ(TMONode node)
     {
-        TMOConstraintItem item = constraint_xyz.GetItem(node.ShortName);
+        TMOConstraintItem item = constraint_xyz.GetItem(node.Name);
         Vector3 angle1 = TMOMat.ToAngleXYZ(node.Rotation);
         Vector3 angle0 = item.Limit(angle1);
         node.Rotation = TMOMat.ToQuaternionXYZ(angle0);
-        //Console.WriteLine("node {0} x {1:F2} y {2:F2} z {3:F2}", node.ShortName, angle0.X, angle0.Y, angle0.Z);
+        //Console.WriteLine("node {0} x {1:F2} y {2:F2} z {3:F2}", node.Name, angle0.X, angle0.Y, angle0.Z);
     }
 
     private void LimitRotationZXY(TMONode node)
     {
-        TMOConstraintItem item = constraint_zxy.GetItem(node.ShortName);
+        TMOConstraintItem item = constraint_zxy.GetItem(node.Name);
         Vector3 angle1 = TMOMat.ToAngleZXY(node.Rotation);
         Vector3 angle0 = item.Limit(angle1);
         node.Rotation = TMOMat.ToQuaternionZXY(angle0);
-        //Console.WriteLine("node {0} x {1:F2} y {2:F2} z {3:F2}", node.ShortName, angle0.X, angle0.Y, angle0.Z);
+        //Console.WriteLine("node {0} x {1:F2} y {2:F2} z {3:F2}", node.Name, angle0.X, angle0.Y, angle0.Z);
     }
 
     /// <summary>

@@ -515,7 +515,7 @@ namespace TDCG
     {
         private int id;
         private string path;
-        private string sname;
+        private string name;
 
         private Quaternion rotation;
         private Vector3 translation;
@@ -601,14 +601,14 @@ namespace TDCG
             set
             {
                 path = value;
-                sname = path.Substring(path.LastIndexOf('|') + 1);
+                name = path.Substring(path.LastIndexOf('|') + 1);
             }
         }
 
         /// <summary>
         /// 名称の短い形式。これはTSOFile中で重複する可能性があります。
         /// </summary>
-        public string ShortName { get { return sname; } }
+        public string Name { get { return name; } }
 
         /// <summary>
         /// 指定boneに対するオフセット行列を計算します。
