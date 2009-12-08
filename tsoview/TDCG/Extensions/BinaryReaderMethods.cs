@@ -54,5 +54,16 @@ namespace TDCG.Extensions
             m.M43 = reader.ReadSingle();
             m.M44 = reader.ReadSingle();
         }
+
+        /// <summary>
+        /// Vector3Çì«Ç›Ç∆ÇËÇ‹Ç∑ÅB
+        /// </summary>
+        /// <param name="v">Vector3</param>
+        public static void ReadVector3(this BinaryReader reader, ref Vector3 v)
+        {
+            v.X = reader.ReadSingle();
+            v.Y = reader.ReadSingle();
+            v.Z = reader.ReadSingle();
+        }
     }
 }
