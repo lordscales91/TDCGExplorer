@@ -299,8 +299,8 @@ public class Figure : IDisposable
 
         for (int i = 0; i < node_count; i++)
         {
-            string name = tso.nodes[i].Name;
-            tmo.nodes[i] = new TMONode(i, name);
+            tmo.nodes[i] = new TMONode(i);
+            tmo.nodes[i].Name = tso.nodes[i].Name;
         }
 
         tmo.GenerateNodemapAndTree();

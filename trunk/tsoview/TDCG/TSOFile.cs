@@ -526,11 +526,17 @@ namespace TDCG
         /// <summary>
         /// TSONodeを生成します。
         /// </summary>
-        public TSONode(int id, string name)
+        public TSONode(int id)
         {
             this.id = id;
-            this.name = name;
-            this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
+        }
+
+        /// <summary>
+        /// TSONodeを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            this.Name = reader.ReadCString();
         }
 
         /// <summary>
@@ -589,7 +595,15 @@ namespace TDCG
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get { return name; } }
+        public string Name
+        {
+            get { return name; }
+            set
+            {
+                name = value;
+                sname = name.Substring(name.LastIndexOf('|') + 1);
+            }
+        }
 
         /// <summary>
         /// 名称の短い形式。これはTSOFile中で重複する可能性があります。
@@ -789,11 +803,10 @@ namespace TDCG
 
             int node_count = reader.ReadInt32();
             nodes = new TSONode[node_count];
-
             for (int i = 0; i < node_count; i++)
             {
-                string name = reader.ReadCString();
-                nodes[i] = new TSONode(i, name);
+                nodes[i] = new TSONode(i);
+                nodes[i].Read(reader);
             }
 
             GenerateNodemapAndTree();
@@ -838,10 +851,9 @@ namespace TDCG
             frames = new TSOFrame[frame_count];
             for (int i = 0; i < frame_count; i++)
             {
-                TSOFrame frame = new TSOFrame();
-                frame.Read(reader);
-                frames[i] = frame;
-                frame.GenerateBone_LUT(nodes);
+                frames[i] = new TSOFrame();
+                frames[i].Read(reader);
+                frames[i].GenerateBone_LUT(nodes);
 
                 //Console.WriteLine("frame name {0} len {1}", frame.name, frame.meshes.Length);
             }
