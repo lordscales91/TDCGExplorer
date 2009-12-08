@@ -180,27 +180,27 @@ namespace TDCG
 
             foreach (TMONode node in motion.nodes)
                 try {
-                    motion_nodes.Add(node.ShortName, node);
+                    motion_nodes.Add(node.Name, node);
                 } catch (ArgumentException) {
-                    Console.WriteLine("node {0} already exists.", node.ShortName);
+                    Console.WriteLine("node {0} already exists.", node.Name);
                 }
             foreach (TMONode node in nodes)
             {
-                if (! motion_nodes.ContainsKey(node.ShortName))
+                if (! motion_nodes.ContainsKey(node.Name))
                 {
-                    throw new ArgumentException("error: node not found in motion: " + node.ShortName);
+                    throw new ArgumentException("error: node not found in motion: " + node.Name);
                 }
                 try {
-                    source_nodes.Add(node.ShortName, node);
+                    source_nodes.Add(node.Name, node);
                 } catch (ArgumentException) {
-                    Console.WriteLine("node {0} already exists.", node.ShortName);
+                    Console.WriteLine("node {0} already exists.", node.Name);
                 }
             }
 
             int[] id_pair = new int[nodes.Length];
 
             foreach (TMONode node in nodes)
-                id_pair[node.ID] = motion_nodes[node.ShortName].ID;
+                id_pair[node.ID] = motion_nodes[node.Name].ID;
 
             return id_pair;
         }
@@ -318,12 +318,12 @@ namespace TDCG
         /// <summary>
         /// 指定名称（短い形式）を持つnodeを検索します。
         /// </summary>
-        /// <param name="sname">node名称（短い形式）</param>
+        /// <param name="name">node名称（短い形式）</param>
         /// <returns></returns>
-        public TMONode FindNodeByShortName(string sname)
+        public TMONode FindNodeByName(string name)
         {
             foreach (TMONode node in nodes)
-                if (node.ShortName == sname)
+                if (node.Name == name)
                     return node;
             return null;
         }
@@ -355,30 +355,30 @@ namespace TDCG
         /// また、除外node以降のnodeは複写しません。
         /// </summary>
         /// <param name="motion">tmo</param>
-        /// <param name="sname">node名称（短い形式）</param>
-        /// <param name="except_snames">除外node名称（短い形式）リスト</param>
-        public void CopyChildrenNodeFrom(TMOFile motion, string sname, List<string> except_snames)
+        /// <param name="name">node名称（短い形式）</param>
+        /// <param name="except_names">除外node名称（短い形式）リスト</param>
+        public void CopyChildrenNodeFrom(TMOFile motion, string name, List<string> except_names)
         {
-            TMONode node = this.FindNodeByShortName(sname);
+            TMONode node = this.FindNodeByName(name);
             if (node == null)
                 return;
-            TMONode motion_node = motion.FindNodeByShortName(sname);
+            TMONode motion_node = motion.FindNodeByName(name);
             if (motion_node == null)
                 return;
-            node.CopyChildrenMatFrom(motion_node, except_snames);
+            node.CopyChildrenMatFrom(motion_node, except_names);
         }
 
         /// <summary>
         /// 指定tmoにある指定名称（短い形式）のnodeを同じ名称のnodeに複写します。
         /// </summary>
         /// <param name="motion">tmo</param>
-        /// <param name="sname">node名称（短い形式）</param>
-        public void CopyNodeFrom(TMOFile motion, string sname)
+        /// <param name="name">node名称（短い形式）</param>
+        public void CopyNodeFrom(TMOFile motion, string name)
         {
-            TMONode node = this.FindNodeByShortName(sname);
+            TMONode node = this.FindNodeByName(name);
             if (node == null)
                 return;
-            TMONode motion_node = motion.FindNodeByShortName(sname);
+            TMONode motion_node = motion.FindNodeByName(name);
             if (motion_node == null)
                 return;
             node.CopyMatFrom(motion_node);
@@ -400,8 +400,8 @@ namespace TDCG
             foreach (TMONode node in nodes)
             {
                 TMONode motion_node = motion.nodes[i];
-                //Console.WriteLine("node ShortName {0} {1}", node.ShortName, motion_node.ShortName);
-                if (motion_node.ShortName != node.ShortName)
+                //Console.WriteLine("node Name {0} {1}", node.Name, motion_node.Name);
+                if (motion_node.Name != node.Name)
                     return false;
                 i++;
             }
@@ -920,7 +920,7 @@ namespace TDCG
     {
         private int id;
         private string path;
-        private string sname;
+        private string name;
 
         private Quaternion rotation;
         private Vector3 translation;
@@ -1005,23 +1005,23 @@ namespace TDCG
             set
             {
                 path = value;
-                sname = path.Substring(path.LastIndexOf('|') + 1);
+                name = path.Substring(path.LastIndexOf('|') + 1);
             }
         }
         /// <summary>
         /// 名称の短い形式。これはTMOFile中で重複する可能性があります。
         /// </summary>
-        public string ShortName { get { return sname; } }
+        public string Name { get { return name; } }
 
         /// <summary>
         /// 指定名称（短い形式）を持つ子nodeを検索します。
         /// </summary>
-        /// <param name="sname">名称（短い形式）</param>
+        /// <param name="name">名称（短い形式）</param>
         /// <returns></returns>
-        public TMONode FindChildByShortName(string sname)
+        public TMONode FindChildByName(string name)
         {
             foreach (TMONode child_node in children)
-                if (child_node.sname == sname)
+                if (child_node.name == name)
                     return child_node;
             return null;
         }
@@ -1032,7 +1032,7 @@ namespace TDCG
         /// <param name="motion">node</param>
         public void CopyThisMatFrom(TMONode motion)
         {
-            //Console.WriteLine("copy mat {0} {1}", sname, motion.ShortName);
+            //Console.WriteLine("copy mat {0} {1}", name, motion.Name);
             int i = 0;
             foreach (TMOMat mat in frame_matrices)
             {
@@ -1041,30 +1041,30 @@ namespace TDCG
             }
         }
 
-        void CopyChildrenMatFrom_0(TMONode motion, List<string> except_snames)
+        void CopyChildrenMatFrom_0(TMONode motion, List<string> except_names)
         {
             List<TMONode> select_children = new List<TMONode>();
             foreach (TMONode child_node in children)
             {
                 bool found = false;
-                foreach (string except_sname in except_snames)
+                foreach (string except_name in except_names)
                 {
-                    if (child_node.sname == except_sname)
+                    if (child_node.name == except_name)
                     {
                         found = true;
                         break;
                     }
                 }
                 if (found)
-                    except_snames.Remove(child_node.sname);
+                    except_names.Remove(child_node.name);
                 else
                     select_children.Add(child_node);
             }
             foreach (TMONode child_node in select_children)
             {
-                TMONode motion_child = motion.FindChildByShortName(child_node.sname);
+                TMONode motion_child = motion.FindChildByName(child_node.name);
                 child_node.CopyThisMatFrom(motion_child);
-                child_node.CopyChildrenMatFrom_0(motion_child, except_snames);
+                child_node.CopyChildrenMatFrom_0(motion_child, except_names);
             }
         }
 
@@ -1074,15 +1074,15 @@ namespace TDCG
         /// また、除外node以降のnodeは複写しません。
         /// </summary>
         /// <param name="motion">node</param>
-        /// <param name="except_snames">除外node名称（短い形式）リスト</param>
-        public void CopyChildrenMatFrom(TMONode motion, List<string> except_snames)
+        /// <param name="except_names">除外node名称（短い形式）リスト</param>
+        public void CopyChildrenMatFrom(TMONode motion, List<string> except_names)
         {
-            List<string> dup_except_snames = new List<string>();
-            foreach (string except_sname in except_snames)
+            List<string> dup_except_names = new List<string>();
+            foreach (string except_name in except_names)
             {
-                dup_except_snames.Add(except_sname);
+                dup_except_names.Add(except_name);
             }
-            CopyChildrenMatFrom_0(motion, dup_except_snames);
+            CopyChildrenMatFrom_0(motion, dup_except_names);
         }
 
         /// <summary>
@@ -1094,7 +1094,7 @@ namespace TDCG
             CopyThisMatFrom(motion);
             foreach (TMONode child_node in children)
             {
-                child_node.CopyMatFrom(motion.FindChildByShortName(child_node.sname));
+                child_node.CopyMatFrom(motion.FindChildByName(child_node.name));
             }
         }
 
