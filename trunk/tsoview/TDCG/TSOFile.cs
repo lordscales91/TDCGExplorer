@@ -663,24 +663,13 @@ namespace TDCG
         }
 
         /// <summary>
-        /// Vector3を読みとります。
-        /// </summary>
-        /// <param name="v">Vector3</param>
-        public void ReadVector3(ref Vector3 v)
-        {
-            v.X = reader.ReadSingle();
-            v.Y = reader.ReadSingle();
-            v.Z = reader.ReadSingle();
-        }
-
-        /// <summary>
         /// 頂点を読みとります。
         /// </summary>
         /// <param name="v">頂点</param>
         public void ReadVertex(ref Vertex v)
         {
-            ReadVector3(ref v.position);
-            ReadVector3(ref v.normal);
+            reader.ReadVector3(ref v.position);
+            reader.ReadVector3(ref v.normal);
             v.u = reader.ReadSingle();
             v.v = reader.ReadSingle();
             int bone_weight_entry_count = reader.ReadInt32();
