@@ -458,6 +458,9 @@ namespace TDCG
         {
         }
 
+        /// <summary>
+        /// 行列を読み込みます。
+        /// </summary>
         public void Read(BinaryReader reader)
         {
             reader.ReadMatrix(ref this.m);
@@ -841,11 +844,17 @@ namespace TDCG
         internal int id;
         internal TMOMat[] matrices;
 
+        /// <summary>
+        /// フレームを生成します。
+        /// </summary>
         public TMOFrame(int id)
         {
             this.id = id;
         }
 
+        /// <summary>
+        /// フレームを読み込みます。
+        /// </summary>
         public void Read(BinaryReader reader)
         {
             int matrix_count = reader.ReadInt32();
@@ -981,6 +990,9 @@ namespace TDCG
             bw.WriteCString(this.Path);
         }
 
+        /// <summary>
+        /// 行列をリンクします。
+        /// </summary>
         public void LinkMatrices(TMOFrame[] frames)
         {
             foreach (TMOFrame frame in frames)
