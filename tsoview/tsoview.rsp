@@ -3,8 +3,7 @@
 /r:Microsoft.DirectX.Direct3D.dll
 /r:Microsoft.DirectX.Direct3DX.dll
 TDCG\Extensions\BinaryReaderMethods.cs
+TDCG\Extensions\BinaryWriterMethods.cs
 TDCG\TMOFile.cs
-TDCG\TMOWriter.cs
 TDCG\TSOFile.cs
-TDCG\TSOWriter.cs
 TDCG\Shader.cs
