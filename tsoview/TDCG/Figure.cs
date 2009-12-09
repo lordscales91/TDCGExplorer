@@ -297,9 +297,7 @@ public class Figure : IDisposable
 
         for (int i = 0; i < frame_count; i++)
         {
-            tmo.frames[i] = new TMOFrame();
-            tmo.frames[i].id = i;
-
+            tmo.frames[i] = new TMOFrame(i);
             int matrix_count = node_count;
             tmo.frames[i].matrices = new TMOMat[matrix_count];
 
