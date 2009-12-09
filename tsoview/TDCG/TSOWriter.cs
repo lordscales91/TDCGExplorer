@@ -112,21 +112,7 @@ namespace TDCG
             bw.Write(items.Length);
 
             foreach (TSOScript i in items)
-                Write(bw, i);
-        }
-
-        /// <summary>
-        /// 指定ライタにスクリプトを書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="item">スクリプト</param>
-        public static void Write(BinaryWriter bw, TSOScript item)
-        {
-            bw.WriteCString(item.name);
-            bw.Write(item.script_data.Length);
-
-            foreach (string i in item.script_data)
-                bw.WriteCString(i);
+                i.Write(bw);
         }
 
         /// <summary>
@@ -139,22 +125,7 @@ namespace TDCG
             bw.Write(items.Length);
 
             foreach (TSOSubScript i in items)
-                Write(bw, i);
-        }
-
-        /// <summary>
-        /// 指定ライタにサブスクリプトを書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="item">サブスクリプト</param>
-        public static void Write(BinaryWriter bw, TSOSubScript item)
-        {
-            bw.WriteCString(item.name);
-            bw.WriteCString(item.file);
-            bw.Write(item.script_data.Length);
-
-            foreach (string i in item.script_data)
-                bw.WriteCString(i);
+                i.Write(bw);
         }
 
         /// <summary>

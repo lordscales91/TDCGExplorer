@@ -433,6 +433,18 @@ namespace TDCG
                 script_data[i] = reader.ReadCString();
             }
         }
+
+        /// <summary>
+        /// 指定ライタにスクリプトを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.WriteCString(this.name);
+            bw.Write(this.script_data.Length);
+
+            foreach (string i in this.script_data)
+                bw.WriteCString(i);
+        }
     }
 
     /// <summary>
@@ -473,6 +485,19 @@ namespace TDCG
             }
 
             //Console.WriteLine("name {0} file {1}", this.name, this.file);
+        }
+
+        /// <summary>
+        /// 指定ライタにサブスクリプトを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.WriteCString(this.name);
+            bw.WriteCString(this.file);
+            bw.Write(this.script_data.Length);
+
+            foreach (string i in this.script_data)
+                bw.WriteCString(i);
         }
 
         /// <summary>
