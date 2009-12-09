@@ -216,8 +216,8 @@ public class Figure : IDisposable
         TMONode tmo_node;
         if (tmo.nodemap.TryGetValue("|W_Hips", out tmo_node))
         {
-            Debug.Assert(tmo_node.frame_matrices.Count > 0);
-            Matrix m = tmo_node.frame_matrices[0].m;
+            Debug.Assert(tmo_node.matrices.Count > 0);
+            Matrix m = tmo_node.matrices[0].m;
             center = new Vector3(m.M41, m.M42, m.M43);
         }
     }
@@ -304,7 +304,7 @@ public class Figure : IDisposable
             for (int j = 0; j < matrix_count; j++)
             {
                 TMOMat mat = tmo.frames[i].matrices[j] = new TMOMat(tso.nodes[j].TransformationMatrix);
-                tmo.nodes[j].frame_matrices.Add(mat);
+                tmo.nodes[j].matrices.Add(mat);
             }
         }
         tmo.footer = new byte[4] { 0, 0, 0, 0 };
