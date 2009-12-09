@@ -63,13 +63,28 @@ namespace TDCG
         {
             BinaryWriter bw = new BinaryWriter(dest_stream);
 
-            TMOWriter.WriteMagic(bw);
+            WriteMagic(bw);
             bw.Write(header);
             bw.Write(opt0);
             bw.Write(opt1);
-            TMOWriter.Write(bw, nodes);
-            TMOWriter.Write(bw, frames);
+
+            bw.Write(nodes.Length);
+            foreach (TMONode node in nodes)
+                node.Write(bw);
+
+            bw.Write(frames.Length);
+            foreach (TMOFrame frame in frames)
+                frame.Write(bw);
+
             bw.Write(footer);
+        }
+
+        /// <summary>
+        /// 'TMO1' ÇèëÇ´èoÇµÇ‹Ç∑ÅB
+        /// </summary>
+        public static void WriteMagic(BinaryWriter bw)
+        {
+            bw.Write(0x314F4D54);
         }
 
         /// <summary>
@@ -871,7 +886,9 @@ namespace TDCG
         /// </summary>
         public void Write(BinaryWriter bw)
         {
-            TMOWriter.Write(bw, this.matrices);
+            bw.Write(matrices.Length);
+            foreach (TMOMat mat in matrices)
+                mat.Write(bw);
         }
 
         /// <summary>
