@@ -300,13 +300,12 @@ public class Figure : IDisposable
             tmo.frames[i] = new TMOFrame(i);
             int matrix_count = node_count;
             tmo.frames[i].matrices = new TMOMat[matrix_count];
-
             for (int j = 0; j < matrix_count; j++)
-            {
-                TMOMat mat = tmo.frames[i].matrices[j] = new TMOMat(tso.nodes[j].TransformationMatrix);
-                tmo.nodes[j].matrices.Add(mat);
-            }
+                tmo.frames[i].matrices[j] = new TMOMat(tso.nodes[j].TransformationMatrix);
         }
+        foreach (TMONode node in tmo.nodes)
+            node.LinkMatrices(tmo.frames);
+
         tmo.footer = new byte[4] { 0, 0, 0, 0 };
 
         return tmo;
