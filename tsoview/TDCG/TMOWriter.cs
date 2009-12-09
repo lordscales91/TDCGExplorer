@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
+using TDCG.Extensions;
 
 namespace TDCG
 {
@@ -32,19 +33,6 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 指定ライタにnull終端文字列を書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="s">文字列</param>
-        public static void Write(BinaryWriter bw, string s)
-        {
-            foreach(byte i in Encoding.Default.GetBytes(s))
-                bw.Write(i);
-
-            bw.Write((byte)0);
-        }
-
-        /// <summary>
         /// 指定ライタにnode配列を書き出します。
         /// </summary>
         /// <param name="bw">ライタ</param>
@@ -64,7 +52,7 @@ namespace TDCG
         /// <param name="item">node</param>
         public static void Write(BinaryWriter bw, TMONode item)
         {
-            Write(bw, item.Path);
+            bw.WriteCString(item.Path);
         }
 
         /// <summary>
@@ -113,20 +101,7 @@ namespace TDCG
         public static void Write(BinaryWriter bw, TMOMat item)
         {
             Matrix m = item.m;
-            Write(bw, ref m);
-        }
-
-        /// <summary>
-        /// 指定ライタに行列を書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="m">行列</param>
-        public static void Write(BinaryWriter bw, ref Matrix m)
-        {
-            bw.Write(m.M11); bw.Write(m.M12); bw.Write(m.M13); bw.Write(m.M14);
-            bw.Write(m.M21); bw.Write(m.M22); bw.Write(m.M23); bw.Write(m.M24);
-            bw.Write(m.M31); bw.Write(m.M32); bw.Write(m.M33); bw.Write(m.M34);
-            bw.Write(m.M41); bw.Write(m.M42); bw.Write(m.M43); bw.Write(m.M44);
+            bw.Write(ref m);
         }
     }
 }
