@@ -197,70 +197,7 @@ namespace TDCG
             bw.Write(item.meshes.Length);
 
             foreach (TSOMesh i in item.meshes)
-                Write(bw, i);
-        }
-
-        /// <summary>
-        /// 指定ライタにメッシュ配列を書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="items">メッシュ配列</param>
-        public static void Write(BinaryWriter bw, TSOMesh[] items)
-        {
-            bw.Write(items.Length);
-
-            foreach (TSOMesh i in items)
-                Write(bw, i);
-        }
-
-        /// <summary>
-        /// 指定ライタにメッシュを書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="item">メッシュ</param>
-        public static void Write(BinaryWriter bw, TSOMesh item)
-        {
-            bw.Write(item.spec);
-            bw.Write(item.bone_index_LUT.Count);
-
-            foreach (uint i in item.bone_index_LUT)
-                bw.Write(i);
-            bw.Write(item.vertices.Length);
-
-            for (int i = 0; i < item.vertices.Length; i++)
-            {
-                Write(bw, ref item.vertices[i]);
-            }
-        }
-
-        /// <summary>
-        /// 指定ライタに頂点を書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="v">頂点</param>
-        public static void Write(BinaryWriter bw, ref Vertex v)
-        {
-            bw.Write(ref v.position);
-            bw.Write(ref v.normal);
-            bw.Write(v.u);
-            bw.Write(v.v);
-
-            int bone_weight_entry_count = 0;
-            SkinWeight[] skin_weights = new SkinWeight[4];
-            foreach (SkinWeight i in v.skin_weights)
-            {
-                if (i.weight == 0.0f)
-                    continue;
-
-                skin_weights[bone_weight_entry_count++] = i;
-            }
-            bw.Write(bone_weight_entry_count);
-
-            for (int i = 0; i < bone_weight_entry_count; i++)
-            {
-                bw.Write(skin_weights[i].index);
-                bw.Write(skin_weights[i].weight);
-            }
+                i.Write(bw);
         }
     }
 }
