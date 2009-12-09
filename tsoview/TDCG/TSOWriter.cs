@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
+using TDCG.Extensions;
 
 namespace TDCG
 {
@@ -62,7 +63,7 @@ namespace TDCG
             foreach (TSONode i in items)
             {
                 m = i.TransformationMatrix;
-                Write(bw, ref m);
+                bw.Write(ref m);
             }
         }
 
@@ -191,7 +192,7 @@ namespace TDCG
         {
             Write(bw, item.name);
             Matrix m = item.transform_matrix;
-            Write(bw, ref m);
+            bw.Write(ref m);
             bw.Write(item.unknown1);
             bw.Write(item.meshes.Length);
 
@@ -239,8 +240,8 @@ namespace TDCG
         /// <param name="v">頂点</param>
         public static void Write(BinaryWriter bw, ref Vertex v)
         {
-            Write(bw, ref v.position);
-            Write(bw, ref v.normal);
+            bw.Write(ref v.position);
+            bw.Write(ref v.normal);
             bw.Write(v.u);
             bw.Write(v.v);
 
@@ -260,31 +261,6 @@ namespace TDCG
                 bw.Write(skin_weights[i].index);
                 bw.Write(skin_weights[i].weight);
             }
-        }
-
-        /// <summary>
-        /// 指定ライタにベクトルを書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="v">ベクトル</param>
-        public static void Write(BinaryWriter bw, ref Vector3 v)
-        {
-            bw.Write(v.X);
-            bw.Write(v.Y);
-            bw.Write(v.Z);
-        }
-
-        /// <summary>
-        /// 指定ライタに行列を書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="m">行列</param>
-        public static void Write(BinaryWriter bw, ref Matrix m)
-        {
-            bw.Write(m.M11); bw.Write(m.M12); bw.Write(m.M13); bw.Write(m.M14);
-            bw.Write(m.M21); bw.Write(m.M22); bw.Write(m.M23); bw.Write(m.M24);
-            bw.Write(m.M31); bw.Write(m.M32); bw.Write(m.M33); bw.Write(m.M34);
-            bw.Write(m.M41); bw.Write(m.M42); bw.Write(m.M43); bw.Write(m.M44);
         }
     }
 }
