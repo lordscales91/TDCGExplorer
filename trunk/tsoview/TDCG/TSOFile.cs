@@ -587,6 +587,29 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 指定ライタにテクスチャを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.WriteCString(this.name);
+            bw.WriteCString(this.file);
+            bw.Write(this.width);
+            bw.Write(this.height);
+            bw.Write(this.depth);
+
+            byte[] buf = new byte[this.data.Length];
+            Array.Copy(this.data, 0, buf, 0, buf.Length);
+
+            for(int j = 0; j < buf.Length; j += 4)
+            {
+                byte tmp = buf[j+2];
+                buf[j+2] = buf[j+0];
+                buf[j+0] = tmp;
+            }
+            bw.Write(buf);
+        }
+
+        /// <summary>
         /// Direct3Dテクスチャを破棄します。
         /// </summary>
         public void Dispose()
