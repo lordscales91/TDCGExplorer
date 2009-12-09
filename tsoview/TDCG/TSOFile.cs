@@ -671,6 +671,14 @@ namespace TDCG
         }
 
         /// <summary>
+        /// TSONode‚ğ‘‚«o‚µ‚Ü‚·B
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.WriteCString(this.Path);
+        }
+
+        /// <summary>
         /// ‰ñ“]•ÏˆÊ
         /// </summary>
         public Quaternion Rotation
