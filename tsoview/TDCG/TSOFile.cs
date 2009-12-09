@@ -248,6 +248,21 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 指定ライタにフレームを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.WriteCString(this.name);
+            Matrix m = this.transform_matrix;
+            bw.Write(ref m);
+            bw.Write(this.unknown1);
+            bw.Write(this.meshes.Length);
+
+            foreach (TSOMesh i in this.meshes)
+                i.Write(bw);
+        }
+
+        /// <summary>
         /// ボーン参照リストを生成します。
         /// </summary>
         public void GenerateBone_LUT(TSONode[] nodes)

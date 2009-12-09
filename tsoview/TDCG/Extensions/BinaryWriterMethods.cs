@@ -13,6 +13,19 @@ namespace TDCG.Extensions
     public static class BinaryWriterMethods
     {
         /// <summary>
+        /// 指定ライタにnull終端文字列を書き出します。
+        /// </summary>
+        /// <param name="bw">BinaryWriter</param>
+        /// <param name="s">null終端文字列</param>
+        public static void WriteCString(this BinaryWriter bw, string s)
+        {
+            foreach(byte i in Encoding.Default.GetBytes(s))
+                bw.Write(i);
+
+            bw.Write((byte)0);
+        }
+
+        /// <summary>
         /// 指定ライタにベクトルを書き出します。
         /// </summary>
         /// <param name="bw">BinaryWriter</param>
