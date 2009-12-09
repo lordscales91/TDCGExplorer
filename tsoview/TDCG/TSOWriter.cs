@@ -23,16 +23,6 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 指定ライタにbyte配列を書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="bytes">byte配列</param>
-        public static void Write(BinaryWriter bw, byte[] bytes)
-        {
-            bw.Write(bytes);
-        }
-
-        /// <summary>
         /// 指定ライタにnode配列を書き出します。
         /// </summary>
         /// <param name="bw">ライタ</param>
@@ -74,32 +64,7 @@ namespace TDCG
             bw.Write(items.Length);
 
             foreach (TSOTex i in items)
-                Write(bw, i);
-        }
-
-        /// <summary>
-        /// 指定ライタにテクスチャを書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="item">テクスチャ</param>
-        public static void Write(BinaryWriter bw, TSOTex item)
-        {
-            bw.WriteCString(item.name);
-            bw.WriteCString(item.file);
-            bw.Write(item.width);
-            bw.Write(item.height);
-            bw.Write(item.depth);
-
-            byte[] buf = new byte[item.data.Length];
-            Array.Copy(item.data, 0, buf, 0, buf.Length);
-
-            for(int j = 0; j < buf.Length; j += 4)
-            {
-                byte tmp = buf[j+2];
-                buf[j+2] = buf[j+0];
-                buf[j+0] = tmp;
-            }
-            Write(bw, buf);
+                i.Write(bw);
         }
 
         /// <summary>
