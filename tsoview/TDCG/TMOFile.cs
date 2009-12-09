@@ -292,7 +292,7 @@ namespace TDCG
                 return;
 
             foreach (TMONode node in nodes)
-                node.frame_matrices[frame_index].m = node.TransformationMatrix;
+                node.matrices[frame_index].m = node.TransformationMatrix;
         }
 
         /// <summary>
@@ -305,7 +305,7 @@ namespace TDCG
                 return;
 
             foreach (TMONode node in nodes)
-                node.TransformationMatrix = node.frame_matrices[frame_index].m;
+                node.TransformationMatrix = node.matrices[frame_index].m;
         }
 
         /// <summary>
@@ -435,7 +435,7 @@ namespace TDCG
                 for (int j = 0; j < matrix_count; j++)
                 {
                     TMOMat mat = tmo.frames[i].matrices[j] = new TMOMat(frames[i].matrices[j].m);
-                    tmo.nodes[j].frame_matrices.Add(mat);
+                    tmo.nodes[j].matrices.Add(mat);
                 }
             }
             tmo.footer = new byte[4] { 0, 0, 0, 0 };
@@ -996,7 +996,7 @@ namespace TDCG
         public void LinkMatrices(TMOFrame[] frames)
         {
             foreach (TMOFrame frame in frames)
-                this.frame_matrices.Add(frame.matrices[id]);
+                this.matrices.Add(frame.matrices[id]);
         }
 
         /// <summary>
@@ -1040,7 +1040,7 @@ namespace TDCG
         /// <summary>
         /// 行列リスト
         /// </summary>
-        internal List<TMOMat> frame_matrices = new List<TMOMat>();
+        internal List<TMOMat> matrices = new List<TMOMat>();
 
         /// <summary>
         /// ワールド座標系での位置と向きを表します。これはviewerから更新されます。
@@ -1089,9 +1089,9 @@ namespace TDCG
         {
             //Console.WriteLine("copy mat {0} {1}", name, motion.Name);
             int i = 0;
-            foreach (TMOMat mat in frame_matrices)
+            foreach (TMOMat mat in matrices)
             {
-                mat.m = motion.frame_matrices[i % motion.frame_matrices.Count].m;
+                mat.m = motion.matrices[i % motion.matrices.Count].m;
                 i++;
             }
         }
@@ -1163,7 +1163,7 @@ namespace TDCG
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
 
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.Scale(scaling);
         }
 
@@ -1177,7 +1177,7 @@ namespace TDCG
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
 
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.Scale0(scaling);
         }
 
@@ -1191,7 +1191,7 @@ namespace TDCG
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
 
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.Scale1(scaling);
 
             foreach (TMONode child_node in children)
@@ -1204,7 +1204,7 @@ namespace TDCG
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateX(float angle)
         {
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.RotateX(angle);
         }
 
@@ -1214,7 +1214,7 @@ namespace TDCG
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateY(float angle)
         {
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.RotateY(angle);
         }
 
@@ -1224,7 +1224,7 @@ namespace TDCG
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateZ(float angle)
         {
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.RotateZ(angle);
         }
 
@@ -1234,7 +1234,7 @@ namespace TDCG
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateWorldY(float angle)
         {
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.RotateWorldY(angle);
         }
 
@@ -1248,7 +1248,7 @@ namespace TDCG
         {
             Vector3 translation = new Vector3(x, y, z);
 
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.Move(translation);
         }
 

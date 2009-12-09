@@ -145,7 +145,7 @@ public class TMOConstraint
             tmo.Load(file);
             foreach (TMONode node in tmo.nodes)
             {
-                TMOMat mat = node.frame_matrices[0];
+                TMOMat mat = node.matrices[0];
 
                 string name = node.Name;
                 Vector3 angle1 = TMOMat.ToAngleXYZ(mat.m);
