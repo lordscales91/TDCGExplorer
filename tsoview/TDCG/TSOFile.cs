@@ -222,7 +222,6 @@ namespace TDCG
         /// unknown1
         /// </summary>
         public UInt32 unknown1;
-        //public UInt32 sub_mesh_count;
         /// <summary>
         /// ƒƒbƒVƒ…”z—ñ
         /// </summary>
@@ -238,12 +237,11 @@ namespace TDCG
             this.unknown1 = reader.ReadUInt32();
             UInt32 mesh_count = reader.ReadUInt32();
             this.meshes = new TSOMesh[mesh_count];
-
-            for (int a = 0; a < mesh_count; a++)
+            for (int i = 0; i < mesh_count; i++)
             {
                 TSOMesh mesh = new TSOMesh();
                 mesh.Read(reader);
-                this.meshes[a] = mesh;
+                this.meshes[i] = mesh;
             }
         }
 
