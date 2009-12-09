@@ -248,7 +248,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 指定ライタにフレームを書き出します。
+        /// フレームを書き出します。
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -435,7 +435,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 指定ライタにスクリプトを書き出します。
+        /// スクリプトを書き出します。
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -488,7 +488,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 指定ライタにサブスクリプトを書き出します。
+        /// サブスクリプトを書き出します。
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -563,7 +563,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 指定ライタにテクスチャを書き出します。
+        /// テクスチャを書き出します。
         /// </summary>
         public void Write(BinaryWriter bw)
         {
