@@ -301,7 +301,10 @@ public class Figure : IDisposable
             int matrix_count = node_count;
             tmo.frames[i].matrices = new TMOMat[matrix_count];
             for (int j = 0; j < matrix_count; j++)
-                tmo.frames[i].matrices[j] = new TMOMat(ref tso.nodes[j].TransformationMatrix);
+            {
+                Matrix m = tso.nodes[j].TransformationMatrix;
+                tmo.frames[i].matrices[j] = new TMOMat(ref m);
+            }
         }
         foreach (TMONode node in tmo.nodes)
             node.LinkMatrices(tmo.frames);

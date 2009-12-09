@@ -676,7 +676,8 @@ namespace TDCG
             {
                 float t = dt*i;
                 float p = t*t*(p2-2*p1+p0) + t*(2*p1-2*p0) + p0;
-                ret[i] = new TMOMat(Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, p)) * Matrix.Translation(Vector3.CatmullRom(v0, v1, v2, v3, p)));
+                Matrix m = Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, p)) * Matrix.Translation(Vector3.CatmullRom(v0, v1, v2, v3, p));
+                ret[i] = new TMOMat(ref m);
             }
             return ret;
         }
@@ -758,9 +759,8 @@ namespace TDCG
             Vector3 t0 = DecomposeMatrix(ref m0);
             Vector3 t1 = DecomposeMatrix(ref m1);
             Vector3 t2 = DecomposeMatrix(ref m2);
-            Matrix m = m1 * Matrix.Invert(m2) * m0;
-            Vector3 t = t1 - t2 + t0;
-            return new TMOMat(m * Matrix.Translation(t));
+            Matrix m = m1 * Matrix.Invert(m2) * m0 * Matrix.Translation(t1 - t2 + t0);
+            return new TMOMat(ref m);
         }
 
         /// eulerŠp (zxy‰ñ“]) ‚ðquaternion‚É•ÏŠ·
