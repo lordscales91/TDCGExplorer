@@ -32,7 +32,7 @@ namespace TDCG
             bw.Write(items.Length);
 
             foreach (TSONode i in items)
-                Write(bw, i);
+                i.Write(bw);
 
             bw.Write(items.Length);
 
@@ -42,16 +42,6 @@ namespace TDCG
                 m = i.TransformationMatrix;
                 bw.Write(ref m);
             }
-        }
-
-        /// <summary>
-        /// 指定ライタにnodeを書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="item">node</param>
-        public static void Write(BinaryWriter bw, TSONode item)
-        {
-            bw.WriteCString(item.Path);
         }
 
         /// <summary>

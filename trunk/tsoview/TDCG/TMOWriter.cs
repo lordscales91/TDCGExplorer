@@ -23,16 +23,6 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 指定ライタにbyte配列を書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="bytes">byte配列</param>
-        public static void Write(BinaryWriter bw, byte[] bytes)
-        {
-            bw.Write(bytes);
-        }
-
-        /// <summary>
         /// 指定ライタにnode配列を書き出します。
         /// </summary>
         /// <param name="bw">ライタ</param>
@@ -42,17 +32,7 @@ namespace TDCG
             bw.Write(items.Length);
 
             foreach (TMONode i in items)
-                Write(bw, i);
-        }
-
-        /// <summary>
-        /// 指定ライタにnodeを書き出します。
-        /// </summary>
-        /// <param name="bw">ライタ</param>
-        /// <param name="item">node</param>
-        public static void Write(BinaryWriter bw, TMONode item)
-        {
-            bw.WriteCString(item.Path);
+                i.Write(bw);
         }
 
         /// <summary>

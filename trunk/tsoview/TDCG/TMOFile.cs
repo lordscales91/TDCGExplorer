@@ -64,12 +64,12 @@ namespace TDCG
             BinaryWriter bw = new BinaryWriter(dest_stream);
 
             TMOWriter.WriteMagic(bw);
-            TMOWriter.Write(bw, header);
+            bw.Write(header);
             bw.Write(opt0);
             bw.Write(opt1);
             TMOWriter.Write(bw, nodes);
             TMOWriter.Write(bw, frames);
-            TMOWriter.Write(bw, footer);
+            bw.Write(footer);
         }
 
         /// <summary>
@@ -942,6 +942,14 @@ namespace TDCG
         public void Read(BinaryReader reader)
         {
             this.Path = reader.ReadCString();
+        }
+
+        /// <summary>
+        /// TMONodeÇèëÇ´èoÇµÇ‹Ç∑ÅB
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.WriteCString(this.Path);
         }
 
         /// <summary>
