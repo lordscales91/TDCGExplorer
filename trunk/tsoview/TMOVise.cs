@@ -24,7 +24,7 @@ public static class TMOVise
 
         foreach (TMONode node in tmo.nodes)
         {
-            TMOMat mat = node.frame_matrices[0];
+            TMOMat mat = node.matrices[0];
 
             string name = node.Name;
             Vector3 scaling;
