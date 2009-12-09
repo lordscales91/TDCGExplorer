@@ -66,16 +66,36 @@ namespace TDCG
             this.maxPalettes = 16;
             if (this.maxPalettes > bone_index_LUT_entry_count)
                 this.maxPalettes = bone_index_LUT_entry_count;
+
             this.bone_index_LUT = new List<UInt32>();
             for (int i = 0; i < bone_index_LUT_entry_count; i++)
             {
                 this.bone_index_LUT.Add(reader.ReadUInt32());
             }
+
             int vertex_count = reader.ReadInt32(); //numvertices
             this.vertices = new Vertex[vertex_count];
             for (int i = 0; i < vertex_count; i++)
             {
                 this.vertices[i].Read(reader);
+            }
+        }
+
+        /// <summary>
+        /// メッシュを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.Write(this.spec);
+
+            bw.Write(this.bone_index_LUT.Count);
+            foreach (uint i in this.bone_index_LUT)
+                bw.Write(i);
+
+            bw.Write(this.vertices.Length);
+            for (int i = 0; i < this.vertices.Length; i++)
+            {
+                this.vertices[i].Write(bw);
             }
         }
 
@@ -306,6 +326,34 @@ namespace TDCG
                 idx[i] = (byte)this.skin_weights[i].index;
 
             this.skin_weight_indices = BitConverter.ToUInt32(idx, 0);
+        }
+
+        /// <summary>
+        /// 頂点を書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.Write(ref this.position);
+            bw.Write(ref this.normal);
+            bw.Write(this.u);
+            bw.Write(this.v);
+
+            int bone_weight_entry_count = 0;
+            SkinWeight[] skin_weights = new SkinWeight[4];
+            foreach (SkinWeight i in this.skin_weights)
+            {
+                if (i.weight == 0.0f)
+                    continue;
+
+                skin_weights[bone_weight_entry_count++] = i;
+            }
+            bw.Write(bone_weight_entry_count);
+
+            for (int i = 0; i < bone_weight_entry_count; i++)
+            {
+                bw.Write(skin_weights[i].index);
+                bw.Write(skin_weights[i].weight);
+            }
         }
     }
 
