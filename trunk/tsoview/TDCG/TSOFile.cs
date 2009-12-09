@@ -906,12 +906,43 @@ namespace TDCG
         {
             BinaryWriter bw = new BinaryWriter(dest_stream);
 
-            TSOWriter.WriteMagic(bw);
-            TSOWriter.Write(bw, nodes);
-            TSOWriter.Write(bw, textures);
-            TSOWriter.Write(bw, scripts);
-            TSOWriter.Write(bw, sub_scripts);
-            TSOWriter.Write(bw, frames);
+            WriteMagic(bw);
+
+            bw.Write(nodes.Length);
+            foreach (TSONode node in nodes)
+                node.Write(bw);
+
+            bw.Write(nodes.Length);
+            Matrix m = Matrix.Identity;
+            foreach (TSONode node in nodes)
+            {
+                m = node.TransformationMatrix;
+                bw.Write(ref m);
+            }
+
+            bw.Write(textures.Length);
+            foreach (TSOTex tex in textures)
+                tex.Write(bw);
+
+            bw.Write(scripts.Length);
+            foreach (TSOScript script in scripts)
+                script.Write(bw);
+
+            bw.Write(sub_scripts.Length);
+            foreach (TSOSubScript sub_script in sub_scripts)
+                sub_script.Write(bw);
+
+            bw.Write(frames.Length);
+            foreach (TSOFrame frame in frames)
+                frame.Write(bw);
+        }
+
+        /// <summary>
+        /// 'TSO1' ÇèëÇ´èoÇµÇ‹Ç∑ÅB
+        /// </summary>
+        public static void WriteMagic(BinaryWriter bw)
+        {
+            bw.Write(0x314F5354);
         }
 
         /// <summary>
