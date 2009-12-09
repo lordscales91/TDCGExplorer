@@ -543,6 +543,49 @@ namespace TDCG
         internal Texture tex;
 
         /// <summary>
+        /// テクスチャを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            this.name = reader.ReadCString();
+            this.file = reader.ReadCString();
+            this.width = reader.ReadInt32();
+            this.height = reader.ReadInt32();
+            this.depth = reader.ReadInt32();
+            this.data = reader.ReadBytes( this.width * this.height * this.depth );
+
+            for(int j = 0; j < this.data.Length; j += 4)
+            {
+                byte tmp = this.data[j+2];
+                this.data[j+2] = this.data[j+0];
+                this.data[j+0] = tmp;
+            }
+        }
+
+        /// <summary>
+        /// 指定ライタにテクスチャを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.WriteCString(this.name);
+            bw.WriteCString(this.file);
+            bw.Write(this.width);
+            bw.Write(this.height);
+            bw.Write(this.depth);
+
+            byte[] buf = new byte[this.data.Length];
+            Array.Copy(this.data, 0, buf, 0, buf.Length);
+
+            for(int j = 0; j < buf.Length; j += 4)
+            {
+                byte tmp = buf[j+2];
+                buf[j+2] = buf[j+0];
+                buf[j+0] = tmp;
+            }
+            bw.Write(buf);
+        }
+
+        /// <summary>
         /// 指定deviceで開きます。
         /// </summary>
         /// <param name="device">device</param>
@@ -584,29 +627,6 @@ namespace TDCG
                 ms.Seek(0, SeekOrigin.Begin);
                 tex = TextureLoader.FromStream(device, ms);
             }
-        }
-
-        /// <summary>
-        /// 指定ライタにテクスチャを書き出します。
-        /// </summary>
-        public void Write(BinaryWriter bw)
-        {
-            bw.WriteCString(this.name);
-            bw.WriteCString(this.file);
-            bw.Write(this.width);
-            bw.Write(this.height);
-            bw.Write(this.depth);
-
-            byte[] buf = new byte[this.data.Length];
-            Array.Copy(this.data, 0, buf, 0, buf.Length);
-
-            for(int j = 0; j < buf.Length; j += 4)
-            {
-                byte tmp = buf[j+2];
-                buf[j+2] = buf[j+0];
-                buf[j+0] = tmp;
-            }
-            bw.Write(buf);
         }
 
         /// <summary>
@@ -938,7 +958,8 @@ namespace TDCG
             textures = new TSOTex[texture_count];
             for (int i = 0; i < texture_count; i++)
             {
-                textures[i] = ReadTexture();
+                textures[i] = new TSOTex();
+                textures[i].Read(reader);
             }
 
             UInt32 script_count = reader.ReadUInt32();
@@ -988,31 +1009,6 @@ namespace TDCG
                 nodes[i].parent = nodemap[path];
                 nodes[i].parent.child_nodes.Add(nodes[i]);
             }
-        }
-
-        /// <summary>
-        /// テクスチャを読み込みます。
-        /// </summary>
-        /// <returns></returns>
-        public TSOTex ReadTexture()
-        {
-            TSOTex tex = new TSOTex();
-
-            tex.name = reader.ReadCString();
-            tex.file = reader.ReadCString();
-            tex.width = reader.ReadInt32();
-            tex.height = reader.ReadInt32();
-            tex.depth = reader.ReadInt32();
-            tex.data = reader.ReadBytes( tex.width * tex.height * tex.depth );
-
-            for(int j = 0; j < tex.data.Length; j += 4)
-            {
-                byte tmp = tex.data[j+2];
-                tex.data[j+2] = tex.data[j+0];
-                tex.data[j+0] = tmp;
-            }
-
-            return tex;
         }
 
         internal Device device;
