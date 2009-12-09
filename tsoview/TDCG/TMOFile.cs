@@ -447,7 +447,9 @@ namespace TDCG
                 int matrix_count = node_count;
                 tmo.frames[i].matrices = new TMOMat[matrix_count];
                 for (int j = 0; j < matrix_count; j++)
-                    tmo.frames[i].matrices[j] = new TMOMat(frames[i].matrices[j].m);
+                {
+                    tmo.frames[i].matrices[j] = new TMOMat(ref frames[i].matrices[j].m);
+                }
             }
             foreach (TMONode node in tmo.nodes)
                 node.LinkMatrices(tmo.frames);
@@ -492,7 +494,7 @@ namespace TDCG
         /// TMOMat‚ðì¬‚µ‚Ü‚·B
         /// </summary>
         /// <param name="m">matrix</param>
-        public TMOMat(Matrix m)
+        public TMOMat(ref Matrix m)
         {
             this.m = m;
         }
