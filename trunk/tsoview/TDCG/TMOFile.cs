@@ -467,6 +467,15 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 行列を書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            Matrix m = this.m;
+            bw.Write(ref m);
+        }
+
+        /// <summary>
         /// TMOMatを作成します。
         /// </summary>
         /// <param name="m">matrix</param>
@@ -835,6 +844,14 @@ namespace TDCG
     {
         internal int id;
         internal TMOMat[] matrices;
+
+        /// <summary>
+        /// フレームを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            TMOWriter.Write(bw, this.matrices);
+        }
 
         /// <summary>
         /// フレームを補間します。
