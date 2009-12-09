@@ -117,19 +117,12 @@ namespace TDCG
 
             for (int i = 0; i < frame_count; i++)
             {
-                frames[i] = new TMOFrame();
-                frames[i].id = i;
-
-                int matrix_count = reader.ReadInt32();
-                frames[i].matrices = new TMOMat[matrix_count];
-
-                for (int j = 0; j < matrix_count; j++)
-                {
-                    TMOMat mat = frames[i].matrices[j] = new TMOMat();
-                    reader.ReadMatrix(ref mat.m);
-                    nodes[j].frame_matrices.Add(mat);
-                }
+                frames[i] = new TMOFrame(i);
+                frames[i].Read(reader);
             }
+
+            foreach (TMONode node in nodes)
+                node.LinkMatrices(frames);
 
             this.footer = reader.ReadBytes(4);
         }
@@ -434,8 +427,7 @@ namespace TDCG
 
             for (int i = 0; i < frame_count; i++)
             {
-                tmo.frames[i] = new TMOFrame();
-                tmo.frames[i].id = i;
+                tmo.frames[i] = new TMOFrame(i);
 
                 int matrix_count = node_count;
                 tmo.frames[i].matrices = new TMOMat[matrix_count];
@@ -466,13 +458,17 @@ namespace TDCG
         {
         }
 
+        public void Read(BinaryReader reader)
+        {
+            reader.ReadMatrix(ref this.m);
+        }
+
         /// <summary>
         /// 行列を書き出します。
         /// </summary>
         public void Write(BinaryWriter bw)
         {
-            Matrix m = this.m;
-            bw.Write(ref m);
+            bw.Write(ref this.m);
         }
 
         /// <summary>
@@ -845,6 +841,22 @@ namespace TDCG
         internal int id;
         internal TMOMat[] matrices;
 
+        public TMOFrame(int id)
+        {
+            this.id = id;
+        }
+
+        public void Read(BinaryReader reader)
+        {
+            int matrix_count = reader.ReadInt32();
+            this.matrices = new TMOMat[matrix_count];
+            for (int i = 0; i < matrix_count; i++)
+            {
+                this.matrices[i] = new TMOMat();
+                this.matrices[i].Read(reader);
+            }
+        }
+
         /// <summary>
         /// フレームを書き出します。
         /// </summary>
@@ -870,7 +882,7 @@ namespace TDCG
 
             for (int frame_index = 0; frame_index < length; frame_index++)
             {
-                frames[frame_index] = new TMOFrame();
+                frames[frame_index] = new TMOFrame(frame_index);
                 frames[frame_index].matrices = new TMOMat[frame1.matrices.Length];
             }
 
@@ -900,7 +912,7 @@ namespace TDCG
         /// <returns>新たなframe</returns>
         public static TMOFrame Select(TMOFrame frame0, TMOFrame frame1, int[] id_pair)
         {
-            TMOFrame ret = new TMOFrame();
+            TMOFrame ret = new TMOFrame(0);
             ret.matrices = new TMOMat[frame0.matrices.Length];
             for (int i = 0; i < frame0.matrices.Length; i++)
             {
@@ -920,7 +932,7 @@ namespace TDCG
         /// <returns>新たなframe</returns>
         public static TMOFrame AddSub(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, int[] id_pair)
         {
-            TMOFrame ret = new TMOFrame();
+            TMOFrame ret = new TMOFrame(0);
             ret.matrices = new TMOMat[frame0.matrices.Length];
             for (int i = 0; i < frame0.matrices.Length; i++)
             {
@@ -967,6 +979,12 @@ namespace TDCG
         public void Write(BinaryWriter bw)
         {
             bw.WriteCString(this.Path);
+        }
+
+        public void LinkMatrices(TMOFrame[] frames)
+        {
+            foreach (TMOFrame frame in frames)
+                this.frame_matrices.Add(frame.matrices[id]);
         }
 
         /// <summary>

@@ -172,8 +172,7 @@ public class TPOFileList
         for (int i = 0; i < frame_count; i++)
         {
             int matrix_count = tmo.frames[i].matrices.Length;
-            frames[i] = new TMOFrame();
-            frames[i].id = i;
+            frames[i] = new TMOFrame(i);
             frames[i].matrices = new TMOMat[matrix_count];
             for (int j = 0; j < matrix_count; j++)
             {
