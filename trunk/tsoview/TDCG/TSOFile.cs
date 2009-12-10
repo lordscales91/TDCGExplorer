@@ -327,14 +327,21 @@ namespace TDCG
                 float weight = reader.ReadSingle();
                 this.skin_weights[i] = new SkinWeight(bone_index, weight);
             }
-            Array.Sort(this.skin_weights);
-            Array.Resize(ref this.skin_weights, 4);
-            for (int i = skin_weights_count; i < 4; i++)
-            {
-                this.skin_weights[i] = new SkinWeight(0, 0.0f);
-            }
 
+            FillSkinWeights();
             GenerateBoneIndices();
+        }
+
+        /// <summary>
+        /// スキンウェイト配列を充填します。
+        /// </summary>
+        public void FillSkinWeights()
+        {
+            Array.Sort(this.skin_weights);
+            int len = skin_weights.Length;
+            Array.Resize(ref this.skin_weights, 4);
+            for (int i = len; i < 4; i++)
+                this.skin_weights[i] = new SkinWeight(0, 0.0f);
         }
 
         /// <summary>
