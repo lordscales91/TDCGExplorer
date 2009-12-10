@@ -458,8 +458,8 @@ namespace TDCG
             bw.WriteCString(this.name);
             bw.Write(this.lines.Length);
 
-            foreach (string i in this.lines)
-                bw.WriteCString(i);
+            foreach (string line in this.lines)
+                bw.WriteCString(line);
         }
     }
 
@@ -512,8 +512,8 @@ namespace TDCG
             bw.WriteCString(this.file);
             bw.Write(this.lines.Length);
 
-            foreach (string i in this.lines)
-                bw.WriteCString(i);
+            foreach (string line in this.lines)
+                bw.WriteCString(line);
         }
 
         /// <summary>
