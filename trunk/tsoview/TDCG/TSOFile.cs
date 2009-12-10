@@ -153,7 +153,7 @@ namespace TDCG
                         gs.Write(v.position);
                         for (int j = 0; j < 4; j++)
                             gs.Write(v.skin_weights[j].weight);
-                        gs.Write(v.skin_weight_indices);
+                        gs.Write(v.bone_indices);
                         gs.Write(v.normal);
                         gs.Write(v.u);
                         gs.Write(v.v);
@@ -308,7 +308,7 @@ namespace TDCG
         /// <summary>
         /// ボーンインデックス
         /// </summary>
-        public UInt32 skin_weight_indices;
+        public UInt32 bone_indices;
 
         /// <summary>
         /// 頂点を読みとります。
@@ -323,30 +323,30 @@ namespace TDCG
             this.skin_weights = new SkinWeight[skin_weights_count];
             for (int i = 0; i < skin_weights_count; i++)
             {
-                uint index = reader.ReadUInt32();
+                int bone_index = reader.ReadInt32();
                 float weight = reader.ReadSingle();
-                this.skin_weights[i] = new SkinWeight(weight, index);
+                this.skin_weights[i] = new SkinWeight(bone_index, weight);
             }
             Array.Sort(this.skin_weights);
             Array.Resize(ref this.skin_weights, 4);
             for (int i = skin_weights_count; i < 4; i++)
             {
-                this.skin_weights[i] = new SkinWeight(0.0f, 0);
+                this.skin_weights[i] = new SkinWeight(0, 0.0f);
             }
 
-            GenerateSkinWeightIndices();
+            GenerateBoneIndices();
         }
 
         /// <summary>
         /// ボーンインデックスを生成します。
         /// </summary>
-        public void GenerateSkinWeightIndices()
+        public void GenerateBoneIndices()
         {
             byte[] idx = new byte[4];
             for (int i = 0; i < 4; i++)
-                idx[i] = (byte)this.skin_weights[i].index;
+                idx[i] = (byte)this.skin_weights[i].bone_index;
 
-            this.skin_weight_indices = BitConverter.ToUInt32(idx, 0);
+            this.bone_indices = BitConverter.ToUInt32(idx, 0);
         }
 
         /// <summary>
@@ -361,18 +361,18 @@ namespace TDCG
 
             int skin_weights_count = 0;
             SkinWeight[] skin_weights = new SkinWeight[4];
-            foreach (SkinWeight i in this.skin_weights)
+            foreach (SkinWeight skin_weight in this.skin_weights)
             {
-                if (i.weight == 0.0f)
+                if (skin_weight.weight == 0.0f)
                     continue;
 
-                skin_weights[skin_weights_count++] = i;
+                skin_weights[skin_weights_count++] = skin_weight;
             }
             bw.Write(skin_weights_count);
 
             for (int i = 0; i < skin_weights_count; i++)
             {
-                bw.Write(skin_weights[i].index);
+                bw.Write(skin_weights[i].bone_index);
                 bw.Write(skin_weights[i].weight);
             }
         }
@@ -384,23 +384,26 @@ namespace TDCG
     public class SkinWeight : IComparable
     {
         /// <summary>
-        /// ウェイト
-        /// </summary>
-        public Single weight;
-        /// <summary>
         /// ボーンインデックス
         /// </summary>
-        public UInt32 index;
+        public int bone_index;
+
+        /// <summary>
+        /// ウェイト
+        /// </summary>
+        public float weight;
+
         /// <summary>
         /// スキンウェイトを生成します。
         /// </summary>
-        /// <param name="weight"></param>
-        /// <param name="index"></param>
-        public SkinWeight(Single weight, UInt32 index)
+        /// <param name="bone_index">ボーンインデックス</param>
+        /// <param name="weight">ウェイト</param>
+        public SkinWeight(int bone_index, float weight)
         {
+            this.bone_index = bone_index;
             this.weight = weight;
-            this.index = index;
         }
+
         /// <summary>
         /// 比較関数
         /// </summary>
