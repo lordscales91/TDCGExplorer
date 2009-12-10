@@ -25,7 +25,7 @@ namespace TDCG
         /// <summary>
         /// ボーン参照リスト
         /// </summary>
-        public List<TSONode> nodes;
+        public List<TSONode> bones;
         /// <summary>
         /// 頂点配列
         /// </summary>
@@ -53,7 +53,7 @@ namespace TDCG
         /// <returns>ボーン</returns>
         public TSONode GetBone(int i)
         {
-            return nodes[i];
+            return bones[i];
         }
 
         /// <summary>
@@ -104,10 +104,10 @@ namespace TDCG
         /// </summary>
         public void GenerateBone_LUT(TSONode[] nodes)
         {
-            this.nodes = new List<TSONode>();
+            this.bones = new List<TSONode>();
 
             foreach (int bone_index in bone_indices)
-                this.nodes.Add(nodes[bone_index]);
+                this.bones.Add(nodes[bone_index]);
         }
 
         static VertexElement[] ve = new VertexElement[]
