@@ -21,7 +21,7 @@ namespace TDCG
         /// <summary>
         /// ボーン参照リスト
         /// </summary>
-        public List<UInt32> bone_index_LUT;
+        public int[] bone_indices;
         /// <summary>
         /// ボーン参照リスト
         /// </summary>
@@ -43,7 +43,7 @@ namespace TDCG
         /// </summary>
         public int NumberBones
         {
-            get { return bone_index_LUT.Count; }
+            get { return bone_indices.Length; }
         }
 
         /// <summary>
@@ -62,15 +62,15 @@ namespace TDCG
         public void Read(BinaryReader reader)
         {
             this.spec = reader.ReadInt32();
-            int bone_index_LUT_entry_count = reader.ReadInt32(); //numbones
+            int bone_indices_count = reader.ReadInt32(); //numbones
             this.maxPalettes = 16;
-            if (this.maxPalettes > bone_index_LUT_entry_count)
-                this.maxPalettes = bone_index_LUT_entry_count;
+            if (this.maxPalettes > bone_indices_count)
+                this.maxPalettes = bone_indices_count;
 
-            this.bone_index_LUT = new List<UInt32>();
-            for (int i = 0; i < bone_index_LUT_entry_count; i++)
+            this.bone_indices = new int[bone_indices_count];
+            for (int i = 0; i < bone_indices_count; i++)
             {
-                this.bone_index_LUT.Add(reader.ReadUInt32());
+                this.bone_indices[i] = reader.ReadInt32();
             }
 
             int vertex_count = reader.ReadInt32(); //numvertices
@@ -88,9 +88,9 @@ namespace TDCG
         {
             bw.Write(this.spec);
 
-            bw.Write(this.bone_index_LUT.Count);
-            foreach (uint i in this.bone_index_LUT)
-                bw.Write(i);
+            bw.Write(this.bone_indices.Length);
+            foreach (int bone_index in this.bone_indices)
+                bw.Write(bone_index);
 
             bw.Write(this.vertices.Length);
             for (int i = 0; i < this.vertices.Length; i++)
@@ -106,7 +106,7 @@ namespace TDCG
         {
             this.bone_LUT = new List<TSONode>();
 
-            foreach (UInt32 bone_index in bone_index_LUT)
+            foreach (int bone_index in bone_indices)
                 this.bone_LUT.Add(nodes[bone_index]);
         }
 
