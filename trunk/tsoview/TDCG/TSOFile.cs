@@ -443,7 +443,7 @@ namespace TDCG
         {
             this.name = reader.ReadCString();
             UInt32 line_count = reader.ReadUInt32();
-            string[] script_data = new string[line_count];
+            this.script_data = new string[line_count];
             for (int i = 0; i < line_count; i++)
             {
                 script_data[i] = reader.ReadCString();
