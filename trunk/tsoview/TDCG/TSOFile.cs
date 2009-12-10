@@ -434,7 +434,7 @@ namespace TDCG
         /// <summary>
         /// テキスト行配列
         /// </summary>
-        public string[] script_data;
+        public string[] lines;
 
         /// <summary>
         /// スクリプトを読み込みます。
@@ -443,10 +443,10 @@ namespace TDCG
         {
             this.name = reader.ReadCString();
             UInt32 line_count = reader.ReadUInt32();
-            this.script_data = new string[line_count];
+            this.lines = new string[line_count];
             for (int i = 0; i < line_count; i++)
             {
-                script_data[i] = reader.ReadCString();
+                lines[i] = reader.ReadCString();
             }
         }
 
@@ -456,9 +456,9 @@ namespace TDCG
         public void Write(BinaryWriter bw)
         {
             bw.WriteCString(this.name);
-            bw.Write(this.script_data.Length);
+            bw.Write(this.lines.Length);
 
-            foreach (string i in this.script_data)
+            foreach (string i in this.lines)
                 bw.WriteCString(i);
         }
     }
@@ -474,7 +474,7 @@ namespace TDCG
         /// <summary>
         /// テキスト行配列
         /// </summary>
-        public string[] script_data;
+        public string[] lines;
         internal Shader shader = null;
 
         /// <summary>
@@ -494,10 +494,10 @@ namespace TDCG
             this.name = reader.ReadCString();
             this.file = reader.ReadCString();
             UInt32 line_count = reader.ReadUInt32();
-            this.script_data = new string[line_count];
+            this.lines = new string[line_count];
             for (int i = 0; i < line_count; i++)
             {
-                this.script_data[i] = reader.ReadCString();
+                this.lines[i] = reader.ReadCString();
             }
 
             //Console.WriteLine("name {0} file {1}", this.name, this.file);
@@ -510,9 +510,9 @@ namespace TDCG
         {
             bw.WriteCString(this.name);
             bw.WriteCString(this.file);
-            bw.Write(this.script_data.Length);
+            bw.Write(this.lines.Length);
 
-            foreach (string i in this.script_data)
+            foreach (string i in this.lines)
                 bw.WriteCString(i);
         }
 
@@ -522,7 +522,7 @@ namespace TDCG
         public void GenerateShader()
         {
             this.shader = new Shader();
-            this.shader.Load(this.script_data);
+            this.shader.Load(this.lines);
         }
     }
 
