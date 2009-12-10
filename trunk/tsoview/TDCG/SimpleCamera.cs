@@ -17,8 +17,8 @@ namespace TDCG
         private Vector3 translation = new Vector3(0.0f, 0.0f, +10.0f);
         private Vector3 dirD = Vector3.Empty; //カメラ移動方向ベクトル
         private float zD = 0.0f;      //カメラ奥行オフセット値
-        private bool needUpdate = true;    //更新する必要があるか
-        private Matrix view = Matrix.Identity;  //ビュー行列
+        private bool needUpdate = true;
+        private Matrix view = Matrix.Identity;
         private Vector3 angle = Vector3.Empty;
         private float rotZD = 0.0f;   //カメラ Z軸回転差分
         private float angleU = 0.01f;        //移動時回転単位（ラジアン）
@@ -32,6 +32,16 @@ namespace TDCG
         /// view座標上のカメラの位置
         /// </summary>
         public Vector3 Translation { get { return translation; } set { translation = value; } }
+    
+        /// <summary>
+        ///更新する必要があるか
+        /// </summary>
+        public bool NeedUpdate { get { return needUpdate; }}
+
+        /// <summary>
+        /// ビュー行列
+        /// </summary>
+        public Matrix ViewMatrix { get { return view; } }
 
         /// <summary>
         /// カメラの位置と姿勢をリセットします。

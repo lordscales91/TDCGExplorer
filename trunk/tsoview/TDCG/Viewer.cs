@@ -758,13 +758,15 @@ public class Viewer : IDisposable
     /// <param name="frame_index">ÉtÉåÅ[ÉÄî‘çÜ</param>
     public void FrameMove(int frame_index)
     {
-        camera.Update();
+        if (camera.NeedUpdate)
+        {
+            camera.Update();
+            Transform_View = camera.ViewMatrix;
 
-        Transform_View = camera.GetViewMatrix();
-
-        // xxx: for w-buffering
-        device.Transform.View = Transform_View;
-        effect.SetValue("view", Transform_View);
+            // xxx: for w-buffering
+            device.Transform.View = Transform_View;
+            effect.SetValue("view", Transform_View);
+        }
 
         if (shadowMapEnabled)
         {
