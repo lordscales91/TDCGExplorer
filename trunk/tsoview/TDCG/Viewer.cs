@@ -70,6 +70,9 @@ public class Viewer : IDisposable
                 (float)control.Width / (float)control.Height,
                 1.0f,
                 1000.0f );
+        // xxx: for w-buffering
+        device.Transform.Projection = Transform_Projection;
+        effect.SetValue("proj", Transform_Projection);
     }
 
     /// マウスボタンを押したときに実行するハンドラ
@@ -595,11 +598,16 @@ public class Viewer : IDisposable
             w_scale = (float)devw / ztexw;
             h_scale = (float)devh / ztexh;
         }
+
         Transform_Projection = Matrix.PerspectiveFovRH(
                 Geometry.DegreeToRadian(30.0f),
                 (float)device.Viewport.Width / (float)device.Viewport.Height,
                 1.0f,
                 1000.0f );
+        // xxx: for w-buffering
+        device.Transform.Projection = Transform_Projection;
+        effect.SetValue("proj", Transform_Projection);
+
         if (shadowMapEnabled)
         {
             Light_Projection = Matrix.PerspectiveFovLH(
@@ -607,15 +615,7 @@ public class Viewer : IDisposable
                 1.0f,
                 20.0f,
                 250.0f );
-        }
-
-        // xxx: for w-buffering
-        device.Transform.Projection = Transform_Projection;
-
-        {
-            effect.SetValue("proj", Transform_Projection);
-            if (shadowMapEnabled)
-                effect.SetValue("lightproj", Light_Projection);
+            effect.SetValue("lightproj", Light_Projection);
         }
 
         device.RenderState.Lighting = false;
@@ -762,7 +762,6 @@ public class Viewer : IDisposable
         {
             camera.Update();
             Transform_View = camera.ViewMatrix;
-
             // xxx: for w-buffering
             device.Transform.View = Transform_View;
             effect.SetValue("view", Transform_View);
@@ -776,6 +775,7 @@ public class Viewer : IDisposable
                     lightDir * -scale,
                     new Vector3( 0.0f, 5.0f, 0.0f ), 
                     new Vector3( 0.0f, 1.0f, 0.0f ) );
+            effect.SetValue("lightview", Light_View);
         }
 
         foreach (Figure fig in FigureList)
@@ -894,7 +894,6 @@ public class Viewer : IDisposable
         device.DepthStencilSurface = renderZ;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
 
-        effect.SetValue("lightview", Light_View);
         effect.Technique = handle_ShadowMap;
 
         foreach (Figure fig in FigureList)
