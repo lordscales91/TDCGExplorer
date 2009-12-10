@@ -102,7 +102,7 @@ namespace TDCG
         /// <summary>
         /// ボーン参照リストを生成します。
         /// </summary>
-        public void GenerateBone_LUT(TSONode[] nodes)
+        public void LinkBones(TSONode[] nodes)
         {
             this.bones = new List<TSONode>();
 
@@ -263,10 +263,10 @@ namespace TDCG
         /// <summary>
         /// ボーン参照リストを生成します。
         /// </summary>
-        public void GenerateBone_LUT(TSONode[] nodes)
+        public void LinkBones(TSONode[] nodes)
         {
             foreach (TSOMesh mesh in meshes)
-                mesh.GenerateBone_LUT(nodes);
+                mesh.LinkBones(nodes);
         }
 
         /// <summary>
@@ -319,9 +319,9 @@ namespace TDCG
             reader.ReadVector3(ref this.normal);
             this.u = reader.ReadSingle();
             this.v = reader.ReadSingle();
-            int bone_weight_entry_count = reader.ReadInt32();
-            this.skin_weights = new SkinWeight[bone_weight_entry_count];
-            for (int i = 0; i < bone_weight_entry_count; i++)
+            int skin_weights_count = reader.ReadInt32();
+            this.skin_weights = new SkinWeight[skin_weights_count];
+            for (int i = 0; i < skin_weights_count; i++)
             {
                 uint index = reader.ReadUInt32();
                 float weight = reader.ReadSingle();
@@ -329,11 +329,19 @@ namespace TDCG
             }
             Array.Sort(this.skin_weights);
             Array.Resize(ref this.skin_weights, 4);
-            for (int i = bone_weight_entry_count; i < 4; i++)
+            for (int i = skin_weights_count; i < 4; i++)
             {
                 this.skin_weights[i] = new SkinWeight(0.0f, 0);
             }
 
+            GenerateSkinWeightIndices();
+        }
+
+        /// <summary>
+        /// ボーンインデックスを生成します。
+        /// </summary>
+        public void GenerateSkinWeightIndices()
+        {
             byte[] idx = new byte[4];
             for (int i = 0; i < 4; i++)
                 idx[i] = (byte)this.skin_weights[i].index;
@@ -351,18 +359,18 @@ namespace TDCG
             bw.Write(this.u);
             bw.Write(this.v);
 
-            int bone_weight_entry_count = 0;
+            int skin_weights_count = 0;
             SkinWeight[] skin_weights = new SkinWeight[4];
             foreach (SkinWeight i in this.skin_weights)
             {
                 if (i.weight == 0.0f)
                     continue;
 
-                skin_weights[bone_weight_entry_count++] = i;
+                skin_weights[skin_weights_count++] = i;
             }
-            bw.Write(bone_weight_entry_count);
+            bw.Write(skin_weights_count);
 
-            for (int i = 0; i < bone_weight_entry_count; i++)
+            for (int i = 0; i < skin_weights_count; i++)
             {
                 bw.Write(skin_weights[i].index);
                 bw.Write(skin_weights[i].weight);
@@ -1022,7 +1030,7 @@ namespace TDCG
             {
                 frames[i] = new TSOFrame();
                 frames[i].Read(reader);
-                frames[i].GenerateBone_LUT(nodes);
+                frames[i].LinkBones(nodes);
 
                 //Console.WriteLine("frame name {0} len {1}", frame.name, frame.meshes.Length);
             }
