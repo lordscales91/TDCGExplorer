@@ -97,4 +97,9 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="FigureForm.resx">
+      <DependentUpon>FigureForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
 </Project>
