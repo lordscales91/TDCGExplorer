@@ -14,87 +14,22 @@ namespace TDCG
     /// </summary>
 public class FigureForm : Form
 {
-    Button btn1;
-    Button btnUp;
-    Button btnDown;
-    ListView lv_fig;
-    ListView lv;
-    DataGridView dg;
+    private Button btnDump;
+    private Button btnUp;
+    private Button btnDown;
+    private ListView lvTSOFiles;
+    private ListView lvSubScripts;
+    private ColumnHeader columnHeader1;
+    private ColumnHeader columnHeader2;
+    private ColumnHeader columnHeader3;
+    private DataGridView gvShaderParams;
 
     /// <summary>
     /// フィギュア情報フォームを生成します。
     /// </summary>
     public FigureForm()
     {
-        this.ClientSize = new Size(800, 600);
-        this.Text = "TSOGrid";
-        //this.AllowDrop = true;
-        this.FormClosing += new FormClosingEventHandler(form_FormClosing);
-
-        btn1 = new Button();
-        btn1.Location = new Point(10, 10);
-        btn1.Text = "Dump";
-        btn1.Click += new EventHandler(btn1_Click);
-        this.Controls.Add(btn1);
-
-        btnUp = new Button();
-        btnUp.Location = new Point(95, 10);
-        btnUp.Text = "&Up";
-        btnUp.Click += new EventHandler(btnUp_Click);
-        this.Controls.Add(btnUp);
-
-        btnDown = new Button();
-        btnDown.Location = new Point(180, 10);
-        btnDown.Text = "&Down";
-        btnDown.Click += new EventHandler(btnDown_Click);
-        this.Controls.Add(btnDown);
-
-        lv_fig = new ListView();
-        lv_fig.Bounds = new Rectangle(new Point(10, 40), new Size(100, 200));
-        lv_fig.View = View.Details;
-        lv_fig.FullRowSelect = true;
-        lv_fig.HideSelection = false;
-        lv_fig.MultiSelect = false;
-        lv_fig.GridLines = true;
-
-        lv_fig.Columns.Add("Name", -2, HorizontalAlignment.Left);
-        lv_fig.SelectedIndexChanged += lv_fig_SelectedIndexChanged;
-
-        this.Controls.Add(lv_fig);
-
-        lv = new ListView();
-        lv.Bounds = new Rectangle(new Point(120, 40), new Size(300, 200));
-        lv.View = View.Details;
-        lv.FullRowSelect = true;
-        lv.HideSelection = false;
-        lv.MultiSelect = false;
-        lv.GridLines = true;
-
-        lv.Columns.Add("Name", -2, HorizontalAlignment.Left);
-        lv.Columns.Add("File", -2, HorizontalAlignment.Left);
-        lv.SelectedIndexChanged += lv_SelectedIndexChanged;
-
-        this.Controls.Add(lv);
-
-        dg = new DataGridView();
-        dg.Bounds = new Rectangle(new Point(10, 250), new Size(410, 250));
-        dg.EditMode = DataGridViewEditMode.EditOnEnter;
-        dg.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-        this.Controls.Add(dg);
-    }
-
-    /// <summary>
-    /// フォームを閉じるとき破棄せずに隠します。
-    /// </summary>
-    /// <param name="sender">sender</param>
-    /// <param name="e">イベント引数</param>
-    protected void form_FormClosing(object sender, FormClosingEventArgs e)
-    {
-        if (e.CloseReason != CloseReason.FormOwnerClosing)
-        {
-            this.Hide();
-            e.Cancel = true;
-        }
+        InitializeComponent();
     }
 
     /// <summary>
@@ -116,11 +51,11 @@ public class FigureForm : Form
     /// </summary>
     public void Clear()
     {
-        dg.DataSource = null;
+        gvShaderParams.DataSource = null;
         this.shader = null;
-        lv.Items.Clear();
+        lvSubScripts.Items.Clear();
         this.tso = null;
-        lv_fig.Items.Clear();
+        lvTSOFiles.Items.Clear();
         this.fig = null;
     }
 
@@ -131,15 +66,15 @@ public class FigureForm : Form
     public void SetFigure(Figure fig)
     {
         this.fig = fig;
-        lv_fig.Items.Clear();
+        lvTSOFiles.Items.Clear();
         for (int i = 0; i < fig.TSOList.Count; i++)
         {
             TSOFile tso = fig.TSOList[i];
             ListViewItem li = new ListViewItem("TSO #" + i.ToString());
             li.Tag = tso;
-            lv_fig.Items.Add(li);
+            lvTSOFiles.Items.Add(li);
         }
-        lv_fig.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        lvTSOFiles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
     }
 
     /// <summary>
@@ -149,15 +84,15 @@ public class FigureForm : Form
     public void SetTSOFile(TSOFile tso)
     {
         this.tso = tso;
-        lv.Items.Clear();
+        lvSubScripts.Items.Clear();
         foreach (TSOSubScript sub_script in tso.sub_scripts)
         {
             ListViewItem li = new ListViewItem(sub_script.Name);
             li.SubItems.Add(sub_script.File);
             li.Tag = sub_script;
-            lv.Items.Add(li);
+            lvSubScripts.Items.Add(li);
         }
-        lv.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        lvSubScripts.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
     }
 
     /// <summary>
@@ -167,15 +102,127 @@ public class FigureForm : Form
     public void SetShader(Shader shader)
     {
         this.shader = shader;
-        dg.DataSource = shader.shader_parameters;
+        gvShaderParams.DataSource = shader.shader_parameters;
     }
 
-    /// <summary>
-    /// btn1をクリックしたときに呼び出されます。
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    protected void btn1_Click(object sender, EventArgs e)
+    private void InitializeComponent()
+    {
+        this.btnDump = new System.Windows.Forms.Button();
+        this.btnUp = new System.Windows.Forms.Button();
+        this.btnDown = new System.Windows.Forms.Button();
+        this.lvTSOFiles = new System.Windows.Forms.ListView();
+        this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+        this.lvSubScripts = new System.Windows.Forms.ListView();
+        this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
+        this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+        this.gvShaderParams = new System.Windows.Forms.DataGridView();
+        ((System.ComponentModel.ISupportInitialize)(this.gvShaderParams)).BeginInit();
+        this.SuspendLayout();
+        // 
+        // btnDump
+        // 
+        this.btnDump.Location = new System.Drawing.Point(523, 528);
+        this.btnDump.Name = "btnDump";
+        this.btnDump.Size = new System.Drawing.Size(75, 23);
+        this.btnDump.TabIndex = 0;
+        this.btnDump.Text = "&Dump";
+        this.btnDump.UseVisualStyleBackColor = true;
+        this.btnDump.Click += new System.EventHandler(this.btnDump_Click);
+        // 
+        // btnUp
+        // 
+        this.btnUp.Location = new System.Drawing.Point(198, 12);
+        this.btnUp.Name = "btnUp";
+        this.btnUp.Size = new System.Drawing.Size(50, 23);
+        this.btnUp.TabIndex = 1;
+        this.btnUp.Text = "&Up";
+        this.btnUp.UseVisualStyleBackColor = true;
+        this.btnUp.Click += new System.EventHandler(this.btnUp_Click);
+        // 
+        // btnDown
+        // 
+        this.btnDown.Location = new System.Drawing.Point(198, 41);
+        this.btnDown.Name = "btnDown";
+        this.btnDown.Size = new System.Drawing.Size(50, 23);
+        this.btnDown.TabIndex = 2;
+        this.btnDown.Text = "&Down";
+        this.btnDown.UseVisualStyleBackColor = true;
+        this.btnDown.Click += new System.EventHandler(this.btnDown_Click);
+        // 
+        // lvTSOFiles
+        // 
+        this.lvTSOFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1});
+        this.lvTSOFiles.FullRowSelect = true;
+        this.lvTSOFiles.GridLines = true;
+        this.lvTSOFiles.HideSelection = false;
+        this.lvTSOFiles.Location = new System.Drawing.Point(12, 12);
+        this.lvTSOFiles.MultiSelect = false;
+        this.lvTSOFiles.Name = "lvTSOFiles";
+        this.lvTSOFiles.Size = new System.Drawing.Size(180, 200);
+        this.lvTSOFiles.TabIndex = 3;
+        this.lvTSOFiles.UseCompatibleStateImageBehavior = false;
+        this.lvTSOFiles.View = System.Windows.Forms.View.Details;
+        this.lvTSOFiles.SelectedIndexChanged += new System.EventHandler(this.lvTSOFiles_SelectedIndexChanged);
+        // 
+        // columnHeader1
+        // 
+        this.columnHeader1.Text = "Name";
+        // 
+        // lvSubScripts
+        // 
+        this.lvSubScripts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader2,
+            this.columnHeader3});
+        this.lvSubScripts.FullRowSelect = true;
+        this.lvSubScripts.GridLines = true;
+        this.lvSubScripts.HideSelection = false;
+        this.lvSubScripts.Location = new System.Drawing.Point(12, 218);
+        this.lvSubScripts.MultiSelect = false;
+        this.lvSubScripts.Name = "lvSubScripts";
+        this.lvSubScripts.Size = new System.Drawing.Size(180, 304);
+        this.lvSubScripts.TabIndex = 4;
+        this.lvSubScripts.UseCompatibleStateImageBehavior = false;
+        this.lvSubScripts.View = System.Windows.Forms.View.Details;
+        this.lvSubScripts.SelectedIndexChanged += new System.EventHandler(this.lvSubScripts_SelectedIndexChanged);
+        // 
+        // columnHeader2
+        // 
+        this.columnHeader2.Text = "Name";
+        // 
+        // columnHeader3
+        // 
+        this.columnHeader3.Text = "File";
+        // 
+        // gvShaderParams
+        // 
+        this.gvShaderParams.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+        this.gvShaderParams.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        this.gvShaderParams.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+        this.gvShaderParams.Location = new System.Drawing.Point(198, 218);
+        this.gvShaderParams.Name = "gvShaderParams";
+        this.gvShaderParams.RowTemplate.Height = 21;
+        this.gvShaderParams.Size = new System.Drawing.Size(400, 304);
+        this.gvShaderParams.TabIndex = 5;
+        // 
+        // FigureForm
+        // 
+        this.ClientSize = new System.Drawing.Size(784, 563);
+        this.Controls.Add(this.gvShaderParams);
+        this.Controls.Add(this.lvSubScripts);
+        this.Controls.Add(this.lvTSOFiles);
+        this.Controls.Add(this.btnDown);
+        this.Controls.Add(this.btnUp);
+        this.Controls.Add(this.btnDump);
+        this.Name = "FigureForm";
+        this.Text = "TSOGrid";
+        this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FigureForm_FormClosing);
+        ((System.ComponentModel.ISupportInitialize)(this.gvShaderParams)).EndInit();
+        this.ResumeLayout(false);
+
+    }
+
+    private void btnDump_Click(object sender, EventArgs e)
     {
         if (shader == null)
             return;
@@ -184,70 +231,59 @@ public class FigureForm : Form
             Console.WriteLine("Name {0} F1 {1} F2 {2} F3 {3} F4 {4}", param.Name, param.F1, param.F2, param.F3, param.F4);
     }
 
-    /// <summary>
-    /// btnUpをクリックしたときに呼び出されます。
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    protected void btnUp_Click(object sender, EventArgs e)
+    private void btnUp_Click(object sender, EventArgs e)
     {
-        if (lv_fig.SelectedItems.Count == 0)
+        if (lvTSOFiles.SelectedItems.Count == 0)
             return;
-        int li_idx = lv_fig.SelectedIndices[0];
-        int li_idx_prev = li_idx-1;
+        int li_idx = lvTSOFiles.SelectedIndices[0];
+        int li_idx_prev = li_idx - 1;
         if (li_idx_prev < 0)
             return;
         fig.SwapAt(li_idx_prev, li_idx);
         SetFigure(fig);
-        ListViewItem li = lv_fig.Items[li_idx_prev];
+        ListViewItem li = lvTSOFiles.Items[li_idx_prev];
         li.Selected = true;
     }
 
-    /// <summary>
-    /// btnDownをクリックしたときに呼び出されます。
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    protected void btnDown_Click(object sender, EventArgs e)
+    private void btnDown_Click(object sender, EventArgs e)
     {
-        if (lv_fig.SelectedItems.Count == 0)
+        if (lvTSOFiles.SelectedItems.Count == 0)
             return;
-        int li_idx = lv_fig.SelectedIndices[0];
-        int li_idx_next = li_idx+1;
-        if (li_idx_next > lv_fig.Items.Count-1)
+        int li_idx = lvTSOFiles.SelectedIndices[0];
+        int li_idx_next = li_idx + 1;
+        if (li_idx_next > lvTSOFiles.Items.Count - 1)
             return;
         fig.SwapAt(li_idx, li_idx_next);
         SetFigure(fig);
-        ListViewItem li = lv_fig.Items[li_idx_next];
+        ListViewItem li = lvTSOFiles.Items[li_idx_next];
         li.Selected = true;
     }
 
-    /// <summary>
-    /// lv_figの選択インデックスが変更されたときに呼び出されます。
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    protected void lv_fig_SelectedIndexChanged(object sender, EventArgs e)
+    private void lvTSOFiles_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (lv_fig.SelectedItems.Count == 0)
+        if (lvTSOFiles.SelectedItems.Count == 0)
             return;
-        ListViewItem li = lv_fig.SelectedItems[0];
+        ListViewItem li = lvTSOFiles.SelectedItems[0];
         TSOFile tso = li.Tag as TSOFile;
         SetTSOFile(tso);
     }
 
-    /// <summary>
-    /// lvの選択インデックスが変更されたときに呼び出されます。
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    protected void lv_SelectedIndexChanged(object sender, EventArgs e)
+    private void lvSubScripts_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (lv.SelectedItems.Count == 0)
+        if (lvSubScripts.SelectedItems.Count == 0)
             return;
-        ListViewItem li = lv.SelectedItems[0];
+        ListViewItem li = lvSubScripts.SelectedItems[0];
         TSOSubScript sub_script = li.Tag as TSOSubScript;
         SetShader(sub_script.shader);
+    }
+
+    private void FigureForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+        if (e.CloseReason != CloseReason.FormOwnerClosing)
+        {
+            this.Hide();
+            e.Cancel = true;
+        }
     }
 }
 }
