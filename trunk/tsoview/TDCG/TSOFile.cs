@@ -1066,6 +1066,49 @@ namespace TDCG
             }
         }
 
+        /// <summary>
+        /// tmoÇê∂ê¨ÇµÇ‹Ç∑ÅB
+        /// </summary>
+        public TMOFile GenerateTMO()
+        {
+            TMOFile tmo = new TMOFile();
+            tmo.header = new byte[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            tmo.opt0 = 1;
+            tmo.opt1 = 0;
+
+            int node_count = nodes.Length;
+            tmo.nodes = new TMONode[node_count];
+
+            for (int i = 0; i < node_count; i++)
+            {
+                tmo.nodes[i] = new TMONode(i);
+                tmo.nodes[i].Path = nodes[i].Path;
+            }
+
+            tmo.GenerateNodemapAndTree();
+
+            int frame_count = 1;
+            tmo.frames = new TMOFrame[frame_count];
+
+            for (int i = 0; i < frame_count; i++)
+            {
+                tmo.frames[i] = new TMOFrame(i);
+                int matrix_count = node_count;
+                tmo.frames[i].matrices = new TMOMat[matrix_count];
+                for (int j = 0; j < matrix_count; j++)
+                {
+                    Matrix m = nodes[j].TransformationMatrix;
+                    tmo.frames[i].matrices[j] = new TMOMat(ref m);
+                }
+            }
+            foreach (TMONode node in tmo.nodes)
+                node.LinkMatrices(tmo.frames);
+
+            tmo.footer = new byte[4] { 0, 0, 0, 0 };
+
+            return tmo;
+        }
+
         internal Device device;
         internal Effect effect;
 
