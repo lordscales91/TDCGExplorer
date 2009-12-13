@@ -52,6 +52,7 @@ namespace System.Windows.Forms
             dataGridView.MultiSelect = false;
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView.AllowUserToAddRows = false;
+            dataGridView.AllowUserToDeleteRows = false;
 
             Text = "検索 : "+keyword;
 
@@ -282,20 +283,19 @@ namespace System.Windows.Forms
                     entry.file = Path.GetFileName(tah.path);
                     control.asyncDisplayFromArcs(entry);
                 }
-                if (flagtahlevelsearch)
+            }
+
+            if (flagtahlevelsearch)
+            {
+                List<ArcsTahFilesEntry> files = arcDB.GetTahFilesPathHasString(keyword);
+                foreach (ArcsTahFilesEntry file in files)
                 {
-                    List<ArcsTahFilesEntry> files = arcDB.GetTahFilesPath(tah.id);
-                    foreach (ArcsTahFilesEntry file in files)
-                    {
-                        if (HasString(file.GetDisplayPath(), keyword))
-                        {
-                            FindEntryInformation entry = new FindEntryInformation();
-                            entry.category = 0; // arcs
-                            entry.path = String.Copy(tah.path);
-                            entry.file = String.Copy(file.GetDisplayPath());
-                            control.asyncDisplayFromArcs(entry);
-                        }
-                    }
+                    ArcsTahEntry tah = arcDB.GetTah(file.tahid);
+                    FindEntryInformation entry = new FindEntryInformation();
+                    entry.category = 0; // arcs
+                    entry.path = String.Copy(tah.path);
+                    entry.file = String.Copy(file.GetDisplayPath());
+                    control.asyncDisplayFromArcs(entry);
                 }
             }
 
@@ -313,37 +313,35 @@ namespace System.Windows.Forms
                         entry.file = zip.GetDisplayPath();
                         control.asyncDisplayFromArcs(entry);
                     }
-                    List<ArcsZipTahEntry> ziptahs = arcDB.GetZipTahs(zip.id);
-                    foreach (ArcsZipTahEntry tah in ziptahs)
-                    {
-                        TDCGExplorer.TDCGExplorer.SetToolTips("検索中:" + tah.shortname);
-                        if (HasString(tah.shortname, keyword))
-                        {
-                            FindEntryInformation entry = new FindEntryInformation();
-                            entry.category = 1; //zips
-                            entry.path = String.Copy(Path.GetDirectoryName(zip.path) + "\\" + zip.GetDisplayPath());
-                            entry.file = tah.shortname;
-                            control.asyncDisplayFromArcs(entry);
-                        }
-                        if (flagtahlevelsearch)
-                        {
-                            List<ArcsTahFilesEntry> files = arcDB.GetZipTahFilesEntries(tah.id);
-                            foreach (ArcsTahFilesEntry file in files)
-                            {
-                                if (HasString(file.GetDisplayPath(), keyword))
-                                {
-                                    FindEntryInformation entry = new FindEntryInformation();
-                                    entry.category = 1; //zips
-                                    entry.path = String.Copy(zip.path + "\\" + zip.GetDisplayPath());
-                                    entry.file = String.Copy(file.GetDisplayPath());
-                                    control.asyncDisplayFromArcs(entry);
-                                }
-                            }
-                        }
-                    }
+                }
+                //  LIKE文で総当たりする.
+                List<ArcsZipTahEntry> ziptahs = arcDB.GetZipTahsHasString(keyword);
+                foreach (ArcsZipTahEntry tah in ziptahs)
+                {
+                    ArcsZipArcEntry subzip = arcDB.GetZip(tah.zipid);
+                    FindEntryInformation entry = new FindEntryInformation();
+                    entry.category = 1; //zips
+                    entry.path = String.Copy(Path.GetDirectoryName(subzip.path) + "\\" + subzip.GetDisplayPath());
+                    entry.file = tah.shortname;
+                    control.asyncDisplayFromArcs(entry);
                 }
             }
-            
+
+            if (flagzipsearch && flagtahlevelsearch)
+            {
+                List<ArcsTahFilesEntry> files = arcDB.GetTahFilesPathHasString(keyword);
+                foreach (ArcsTahFilesEntry file in files)
+                {
+                    ArcsZipTahEntry tah = arcDB.GetZipTah(file.tahid);
+                    ArcsZipArcEntry zip = arcDB.GetZip(tah.zipid);
+                    FindEntryInformation entry = new FindEntryInformation();
+                    entry.category = 1; //zips
+                    entry.path = String.Copy(zip.path + "\\" + zip.GetDisplayPath());
+                    entry.file = String.Copy(file.GetDisplayPath());
+                    control.asyncDisplayFromArcs(entry);
+                }
+            }
+
             // TBN辞書をセットして終了
             TDCGExplorer.TDCGExplorer.SetToolTips("検索完了。行をダブルクリックすると、そのファイルにジャンプします。");
             TDCGExplorer.TDCGExplorer.DecBusy();

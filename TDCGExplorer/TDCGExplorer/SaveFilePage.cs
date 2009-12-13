@@ -42,6 +42,8 @@ namespace System.Windows.Forms
                 dataGridView.MultiSelect = false;
                 dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
                 dataGridView.AllowUserToAddRows = false;
+                dataGridView.AllowUserToDeleteRows = false;
+
                 TDCGExplorer.TDCGExplorer.SetToolTips(Text+" : 行をダブルクリックするとファイルにジャンプします。");
             }
             catch (System.InvalidCastException ex)
@@ -104,6 +106,7 @@ namespace System.Windows.Forms
                 savefile.Dispose();
                 savefile = null;
             }
+            base.Dispose(disposing);
         }
 
         private void InitializeComponent()
@@ -202,10 +205,13 @@ namespace System.Windows.Forms
             savedata = new MemoryStream();
             ZipFileUtil.CopyStream(ms, savedata);
 
+#if false
             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Image = savefilebitmap;
             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Width = savefilebitmap.Width;
             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Height = savefilebitmap.Height;
-
+#else
+            TDCGExplorer.TDCGExplorer.MainFormWindow.SetBitmap(savefilebitmap);
+#endif
             DataTable data = new DataTable();
             data.Columns.Add("パーツ", Type.GetType("System.String"));
             data.Columns.Add("属性", Type.GetType("System.String"));
@@ -370,6 +376,7 @@ namespace System.Windows.Forms
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
+#if false
                     // 新規TAHを作成する.
                     string dbfilename = LBFileTahUtl.GetTahDbPath(dialog.textfield);
                     string tahfilename = Path.GetFileNameWithoutExtension(dialog.textfield);
@@ -378,14 +385,14 @@ namespace System.Windows.Forms
                         MessageBox.Show("既にデータベースファイルがあります。\n" + dbfilename + "\n削除してから操作してください。", "エラー", MessageBoxButtons.OK);
                         return;
                     }
-
+#endif
                     // TSOデータを読み込んで組み立てる.
                     if (fDisplayed == false) DisplayTso();
 
                     // 常に新規タブで.
-                    editor = new TAHEditor(dbfilename, null);
-                    editor.SetInformation(tahfilename + ".tah", 1);
-                    editor.makeTAHFile(tahfilename, tsoDataList);
+                    editor = new TAHEditor(null);
+                    editor.SetInformation(Path.GetFileNameWithoutExtension(dialog.textfield) + ".tah", 1);
+                    editor.makeTAHFile(Path.GetFileNameWithoutExtension(dialog.textfield), tsoDataList);
                     TDCGExplorer.TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
                     editor.SelectAll();
                 }
@@ -436,7 +443,8 @@ namespace System.Windows.Forms
                     string destpath = dialog.FileName;
 
                     // 保存先をオープン.
-                    File.Delete(destpath);
+                    //File.Delete(destpath);
+                    TDCGExplorer.TDCGExplorer.FileDelete(destpath);
                     using (Stream output = File.Create(destpath))
                     {
                         // PNGを出力する.
@@ -497,7 +505,7 @@ namespace System.Windows.Forms
                     LoadTso(new GenericArcsTahInfo(tah), file, id);
                 }
             }
-            TDCGExplorer.TDCGExplorer.FigureLoad = true;
+            //TDCGExplorer.TDCGExplorer.FigureLoad = true;
             return retval;
         }
 

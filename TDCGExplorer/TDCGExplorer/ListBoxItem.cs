@@ -21,16 +21,18 @@ namespace TDCGExplorer
         public virtual void DoDecrypt()
         {
         }
-
+#if false
         public virtual void DoDeleteTahEdit()
         {
         }
+#endif
     }
 
     public static class LBFileTahUtl
     {
         public static void OpenTahEditor(GenericTahInfo entry)
         {
+#if false
             string tahdbpath = GetTahDbPath(entry);
             // 同じDBエントリを開いているエディタタブが存在しないかチェックする。
             foreach (TabPage tabpage in TDCGExplorer.MainFormWindow.TabControlMainView.Controls)
@@ -58,7 +60,8 @@ namespace TDCGExplorer
                     if(MessageBox.Show("別のTAHファイルを格納しているDBがあります。\n削除して新規作成しますか？", "DBの更新", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
                         // ファイルを削除する.
-                        File.Delete(tahdbpath);
+                        //File.Delete(tahdbpath);
+                        TDCGExplorer.FileDelete(tahdbpath);
                         // 新規作成する.
                         TAHEditor editor = null;
                         try
@@ -102,10 +105,26 @@ namespace TDCGExplorer
                     if (editor != null) editor.Dispose();
                 }
             }
+#else
+            // 新規に作成する.
+            TAHEditor editor = null;
+            try
+            {
+                editor = new TAHEditor(new GenericZipsTahInfo(entry));
+                TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
+                editor.SelectAll();
+            }
+            catch (Exception)
+            {
+                if (editor != null) editor.Dispose();
+            }
+#endif
         }
+#if false
         public static void DeleteTahEditorFile(GenericTahInfo entry)
         {
-            File.Delete(GetTahDbPath(entry));
+            //File.Delete(GetTahDbPath(entry));
+            TDCGExplorer.FileDelete(GetTahDbPath(entry));
         }
         public static string GetTahDbPath(GenericTahInfo entry)
         {
@@ -115,6 +134,7 @@ namespace TDCGExplorer
         {
             return (Path.Combine(TDCGExplorer.SystemDB.tahpath, localpath) + ".db").ToLower();
         }
+#endif
     }
 
     public class LbFileItem : LbGenItem
@@ -164,6 +184,7 @@ namespace TDCGExplorer
                     return;
             }
         }
+#if false
         public override void DoDeleteTahEdit()
         {
             // TAH編集ファイルを削除する.
@@ -177,6 +198,7 @@ namespace TDCGExplorer
                     return;
             }
         }
+#endif
     }
 
     public class LbCollisionItem : LbGenItem
@@ -275,6 +297,7 @@ namespace TDCGExplorer
                     break;
             }
         }
+#if false
         public override void DoDeleteTahEdit()
         {
             // TAH編集ファイルを削除する.
@@ -288,7 +311,7 @@ namespace TDCGExplorer
                     return;
             }
         }
-
+#endif
     }
     // セーブファイル専用リストボックスアイテム.
     public class LbSaveFileItem : LbGenItem

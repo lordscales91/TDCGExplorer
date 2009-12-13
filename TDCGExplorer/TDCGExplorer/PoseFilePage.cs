@@ -22,6 +22,7 @@ namespace System.Windows.Forms
         private TreeView PoseTreeView;
         private ToolStripMenuItem toolStripMenuItemSaveTmo;
         private ToolStripMenuItem toolStripMenuItemMakeTahFile;
+        private PNGPOSEStream posestream;
         private PNGPoseData posedata;
         private ToolStripMenuItem toolStripMenuItemShowPose;
 
@@ -79,6 +80,12 @@ namespace System.Windows.Forms
         {
             if (streamdata != null) streamdata.Dispose();
             streamdata = null;
+            if (posedata != null) posedata.Dispose();
+            posedata = null;
+            if (posestream != null) posestream.Dispose();
+            posestream = null;
+
+            base.Dispose(disposing);
         }
 
         private void InitializeComponent()
@@ -109,7 +116,7 @@ namespace System.Windows.Forms
             // 
             this.toolStripMenuItemThumbs.Name = "toolStripMenuItemThumbs";
             this.toolStripMenuItemThumbs.Size = new System.Drawing.Size(264, 22);
-            this.toolStripMenuItemThumbs.Text = "サムネイルを作成する";
+            this.toolStripMenuItemThumbs.Text = "サムネイルを生成する";
             this.toolStripMenuItemThumbs.Click += new System.EventHandler(this.toolStripMenuItemThumbs_Click);
             // 
             // toolStripMenuItemSaveTmo
@@ -123,7 +130,7 @@ namespace System.Windows.Forms
             // 
             this.toolStripMenuItemMakeTahFile.Name = "toolStripMenuItemMakeTahFile";
             this.toolStripMenuItemMakeTahFile.Size = new System.Drawing.Size(264, 22);
-            this.toolStripMenuItemMakeTahFile.Text = "選択されたtahファイルを作成する";
+            this.toolStripMenuItemMakeTahFile.Text = "選択されたtahファイルを生成する";
             this.toolStripMenuItemMakeTahFile.Click += new System.EventHandler(this.toolStripMenuItemMakeTahFile_Click);
             // 
             // toolStripMenuItemShowPose
@@ -175,15 +182,17 @@ namespace System.Windows.Forms
             ms.Seek(0, SeekOrigin.Begin);
             Bitmap savefilebitmap = new Bitmap(ms);
 
-            if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
-
-            PNGPOSEStream posestream = new PNGPOSEStream();
+            posestream = new PNGPOSEStream();
             ms.Seek(0, SeekOrigin.Begin);
             posedata = posestream.LoadStream(ms);
 
+#if false
             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Image = savefilebitmap;
             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Width = savefilebitmap.Width;
             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Height = savefilebitmap.Height;
+#else
+            TDCGExplorer.TDCGExplorer.MainFormWindow.SetBitmap(savefilebitmap);
+#endif
 #if false
             TDCG.Viewer viewer = TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer;
             if (posedata.scene == false)
@@ -223,18 +232,30 @@ namespace System.Windows.Forms
 
         public void DisplayPose()
         {
-            if (fDisplayed) return;
+            if (TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer == null) TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
+
             fDisplayed = true;
 
             TDCG.Viewer viewer = TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer;
             if (posedata.scene == false)
             {
-                // キャラが無い時はデフォ子
-                if (TDCGExplorer.TDCGExplorer.FigureLoad == false)
+                if (TDCGExplorer.TDCGExplorer.SystemDB.forcereloadsavedata == true)
                 {
+                    viewer.FigureList.Clear();
                     viewer.AddFigureFromPNGFile("default.tdcgsav.png", false);
-                    TDCGExplorer.TDCGExplorer.FigureLoad = true;
                 }
+                else
+                {
+                    if (viewer.FigureList.Count == 1 && viewer.FigureList[0].TSOList.Count > 1)
+                    {
+                        // なにもしない.
+                    }else{
+                        viewer.FigureList.Clear();
+                        viewer.AddFigureFromPNGFile("default.tdcgsav.png", false);
+                    }
+                }
+
+                //TDCGExplorer.TDCGExplorer.FigureLoad = true;
                 using (MemoryStream tmo = new MemoryStream(posedata.figures[0].tmo.data))
                 {
                     // あらかじめFigureは全部消去する.
@@ -247,7 +268,7 @@ namespace System.Windows.Forms
                 // 全部ロードする.
                 streamdata.Seek(0, SeekOrigin.Begin);
                 viewer.AddFigureFromPNGStream(streamdata, false);
-                TDCGExplorer.TDCGExplorer.FigureLoad = false;
+                //TDCGExplorer.TDCGExplorer.FigureLoad = false;
                 viewer.BackColor = Color.Yellow;
             }
             List<float> camera = posedata.GetCamera();
@@ -273,10 +294,14 @@ namespace System.Windows.Forms
             //TDCGExplorer.TDCGExplorer.MainFormWindow.UpdateSaveFileTree();
         }
 
-        private void ChangeThumb()
+        public void ChangeThumb()
         {
-            if (TDCGExplorer.TDCGExplorer.BusyTest() == true) return;
-
+            if (fDisplayed == false)
+            {
+                DisplayPose();
+                TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
+                TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
+            }
             // サーフェースからbitmapを作る.
             Bitmap orgbitmap = TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.GetBitmap();
             // アイコン用bitmapを作る.
@@ -310,50 +335,66 @@ namespace System.Windows.Forms
                 // ヘビーセーブ形式で保存する.
                 if (savefilebitmap == null) return;
                 // まずPNG形式のデータを作る.
-                MemoryStream basepng = new MemoryStream();
-                savefilebitmap.Save(basepng, System.Drawing.Imaging.ImageFormat.Png);
-                // PNGFileクラスにデータを取り込む.
-                PNGPOSEStream pngstream = new PNGPOSEStream();
-                basepng.Seek(0, SeekOrigin.Begin);
-                PNGFile png = pngstream.GetPNG(basepng);
-                //POSEデータを設定する.
-                pngstream.PoseData = posedata;
-                // 保存先を決める.
-                string savefile_dir = TDCGExplorer.TDCGExplorer.SystemDB.posefile_savedirectory;
-                string savefile_name = Path.GetFileNameWithoutExtension(filename) + ".png";
-
-                SaveFileDialog dialog = new SaveFileDialog();
-                dialog.FileName = filename;
-                dialog.InitialDirectory = TDCGExplorer.TDCGExplorer.SystemDB.posefile_savedirectory;
-                dialog.Filter = "PNGファイル(*.tdcgpose.png)|*.tdcgpose.png";
-                dialog.FilterIndex = 0;
-                dialog.Title = "保存先のファイルを選択してください";
-                dialog.RestoreDirectory = true;
-                dialog.OverwritePrompt = true;
-                dialog.CheckPathExists = true;
-
-                if (dialog.ShowDialog() == DialogResult.OK)
+                using (MemoryStream basepng = new MemoryStream())
                 {
-                    string destpath = Path.Combine(savefile_dir, dialog.FileName);
-                    // 保存先をオープン.
-                    File.Delete(destpath);
-                    using (Stream output = File.Create(destpath))
+                    savefilebitmap.Save(basepng, System.Drawing.Imaging.ImageFormat.Png);
+                    // PNGFileクラスにデータを取り込む.
+                    using (PNGPOSEStream pngstream = new PNGPOSEStream())
                     {
-                        // PNGを出力する.
-                        pngstream.SavePNGFile(png, output);
-                    }
+                        basepng.Seek(0, SeekOrigin.Begin);
+                        PNGFile png = pngstream.GetPNG(basepng);
+                        //POSEデータを設定する.
+                        pngstream.PoseData = posedata;
+                        // 保存先を決める.
+                        string savefile_dir = TDCGExplorer.TDCGExplorer.SystemDB.posefile_savedirectory;
+                        string savefile_name = Path.GetFileNameWithoutExtension(filename) + ".png";
 
-                    TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Image = savefilebitmap;
-                    TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Width = savefilebitmap.Width;
-                    TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Height = savefilebitmap.Height;
-                    // ファイルを追加する.
-                    TDCGExplorer.TDCGExplorer.AddFileTree(destpath);
+                        SaveFileDialog dialog = new SaveFileDialog();
+                        dialog.FileName = filename;
+                        dialog.InitialDirectory = TDCGExplorer.TDCGExplorer.SystemDB.posefile_savedirectory;
+                        dialog.Filter = "PNGファイル(*.tdcgpose.png)|*.tdcgpose.png";
+                        dialog.FilterIndex = 0;
+                        dialog.Title = "保存先のファイルを選択してください";
+                        dialog.RestoreDirectory = true;
+                        dialog.OverwritePrompt = true;
+                        dialog.CheckPathExists = true;
+
+                        if (dialog.ShowDialog() == DialogResult.OK)
+                        {
+                            string destpath = Path.Combine(savefile_dir, dialog.FileName);
+                            // 保存先をオープン.
+                            //File.Delete(destpath);
+                            TDCGExplorer.TDCGExplorer.FileDelete(destpath);
+                            using (Stream output = File.Create(destpath))
+                            {
+                                // PNGを出力する.
+                                pngstream.SavePNGFile(png, output);
+                            }
+
+                            // 以前表示していたbitmapを捨てる.
+#if false
+                        TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Image = savefilebitmap;
+                        TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Width = savefilebitmap.Width;
+                        TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Height = savefilebitmap.Height;
+#else
+                            TDCGExplorer.TDCGExplorer.MainFormWindow.SetBitmap(savefilebitmap);
+#endif
+                            // ファイルを追加する.
+                            TDCGExplorer.TDCGExplorer.AddFileTree(destpath);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
                 TDCGExplorer.TDCGExplorer.SetToolTips("ファイルセーブエラー:" + ex.Message);
             }
+            srcG.Dispose();
+            dstG.Dispose();
+            orgbitmap.Dispose();
+
+            //savefilebitmapは表示に使うので捨ててはいけない.
+            //savefilebitmap.Dispose();
         }
 
         private void PoseFilePage_Enter(object sender, EventArgs e)
@@ -421,7 +462,8 @@ namespace System.Windows.Forms
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     string tmofilename = dialog.FileName;
-                    File.Delete(tmofilename);
+                    //File.Delete(tmofilename);
+                    TDCGExplorer.TDCGExplorer.FileDelete(tmofilename);
 
                     using(MemoryStream ms = new MemoryStream(node.tmo.data))
                     using (Stream fileStream = File.Create(tmofilename))
@@ -474,6 +516,7 @@ namespace System.Windows.Forms
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
+#if false
                     // 新規TAHを作成する.
                     string dbfilename = LBFileTahUtl.GetTahDbPath(dialog.textfield);
                     string tahfilename = Path.GetFileNameWithoutExtension(dialog.textfield);
@@ -482,14 +525,14 @@ namespace System.Windows.Forms
                         MessageBox.Show("既にデータベースファイルがあります。\n" + dbfilename + "\n削除してから操作してください。", "エラー", MessageBoxButtons.OK);
                         return;
                     }
-
+#endif
                     // 常に新規タブで.
                     TAHEditor editor = null;
                     try
                     {
-                        editor = new TAHEditor(dbfilename, null);
-                        editor.SetInformation(tahfilename + ".tah", 1);
-                        editor.makeTAHFile(tahfilename, node.tso);
+                        editor = new TAHEditor( null);
+                        editor.SetInformation(Path.GetFileNameWithoutExtension(dialog.textfield) + ".tah", 1);
+                        editor.makeTAHFile(dialog.textfield, node.tso);
                         TDCGExplorer.TDCGExplorer.MainFormWindow.AssignTagPageControl(editor);
                         editor.SelectAll();
                     }

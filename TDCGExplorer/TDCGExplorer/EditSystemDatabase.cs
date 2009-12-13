@@ -149,11 +149,6 @@ namespace TDCGExplorer
             get { return checkBoxFindZipLevel.Checked; }
             set { checkBoxFindZipLevel.Checked = value; }
         }
-        public bool delete_tahcache
-        {
-            get { return checkBoxDeleteTahCache.Checked; }
-            set { checkBoxDeleteTahCache.Checked = value; }
-        }
         public bool taheditorprevire
         {
             get { return checkBoxTahPreview.Checked; }
@@ -184,6 +179,10 @@ namespace TDCGExplorer
             get { return checkBoxArcsVacume.Checked; }
             set { checkBoxArcsVacume.Checked = value; }
         }
-
+        public bool forcereloadsavedata
+        {
+            get { return checkBoxForceReloadHeaveSave.Checked; }
+            set { checkBoxForceReloadHeaveSave.Checked = value; }
+        }
     }
 }

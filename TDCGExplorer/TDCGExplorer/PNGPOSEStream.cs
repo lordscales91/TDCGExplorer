@@ -19,25 +19,41 @@ namespace TDCGExplorer
         public byte[] data = null;
     }
 #endif
-    public class PNGPoseTmoData
+    public class PNGPoseTmoData : IDisposable
     {
         public byte[] data = null;
+        public void Dispose()
+        {
+            data = null;
+        }
     }
 
-    public class PNGPoseLight
+    public class PNGPoseLight : IDisposable
     {
         public Byte[] data = null;
+        public void Dispose()
+        {
+            data = null;
+        }
     }
 
-    public class PNGPoseFigureData
+    public class PNGPoseFigureData : IDisposable
     {
         public Byte[] data = null;
         public PNGPoseTmoData tmo = null;
         public PNGPoseLight light = null;
         public List<PNGTsoData> tsos = new List<PNGTsoData>();
+        public void Dispose()
+        {
+            data = null;
+            tmo.Dispose();
+            light.Dispose();
+            foreach (PNGTsoData tso in tsos)
+                tso.Dispose();
+        }
     }
 
-    public class PNGPoseData
+    public class PNGPoseData : IDisposable
     {
         public bool scene;
         public int nfig = 0;
@@ -54,15 +70,27 @@ namespace TDCGExplorer
             }
             return retval;
         }
+        public void Dispose()
+        {
+            foreach (PNGPoseFigureData figure in figures)
+                figure.Dispose();
+            TDCGExplorer.GcCopact();
+        }
     }
 
-    public class PNGPOSEStream
+    public class PNGPOSEStream : IDisposable
     {
         protected PNGPoseData posedata;
         protected Crc32 crc = new Crc32();
 
         public PNGPOSEStream()
         {
+        }
+
+        public void Dispose()
+        {
+            posedata = null;
+            TDCGExplorer.GcCopact();
         }
 
         public PNGPoseData PoseData

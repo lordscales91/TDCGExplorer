@@ -239,7 +239,7 @@ namespace TDCGExplorer
                 viewer.Dispose();
                 viewer = null;
                 TDCGExplorer.ResetDefaultPose(); // ポーズをデフォルトに戻す.
-                TDCGExplorer.FigureLoad = false;
+//                TDCGExplorer.FigureLoad = false;
             }
         }
 
@@ -500,6 +500,11 @@ namespace TDCGExplorer
         // ツリー表示をクリアする.
         public void ClearTreeBox()
         {
+            Bitmap noimage = new Bitmap(1, 1);
+            PictureBox.Image = noimage;
+            PictureBox.Width = 0;
+            PictureBox.Height = 0; ;
+
             // ページを消去する.
 #if false
             tabMainView.TabPages.Clear();
@@ -951,7 +956,7 @@ namespace TDCGExplorer
                 Debug.WriteLine(exception.Message);
             }
         }
-
+#if false
         private void deleteTahEditorFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (TDCGExplorer.BusyTest()) return;
@@ -976,7 +981,7 @@ namespace TDCGExplorer
             }
 
         }
-
+#endif
         // 最新の情報を表示する.
         private void displayUpdateToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1077,7 +1082,8 @@ namespace TDCGExplorer
             //System.Diagnostics.Process.Start(@"iexplore.exe", Path.Combine(Directory.GetCurrentDirectory(), @"manual.mht"));
             try
             {
-                System.Diagnostics.Process.Start(Path.Combine(Directory.GetCurrentDirectory(), @"manual\\manual.html"));
+                //System.Diagnostics.Process.Start(Path.Combine(Directory.GetCurrentDirectory(), @"manual\\manual.html"));
+                System.Diagnostics.Process.Start(@"http://3dcustom.ath.cx/TDCGExplorer/manual.html");
             }
             catch (Exception)
             {
@@ -1224,6 +1230,7 @@ namespace TDCGExplorer
             dialog.labeltext = "検索文字列";
             dialog.checkboxenable = true;
             dialog.checkboxtext = "アーカイブも検索する";
+            dialog.checkboxchecked = true;
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 string text = dialog.textfield;
@@ -1239,10 +1246,59 @@ namespace TDCGExplorer
             dialog.labeltext = "検索文字列";
             dialog.checkboxenable = true;
             dialog.checkboxtext = "アーカイブも検索する";
+            dialog.checkboxchecked = true;
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 string text = dialog.textfield;
                 AssignTagPageControl(new FindItemPage(text, dialog.checkboxchecked, true));
+            }
+        }
+
+        public void SetBitmap(Bitmap bitmap)
+        {
+            if (PictureBox.Image != null)
+            {
+                PictureBox.Image.Dispose();
+                PictureBox.Image = null;
+            }
+#if false
+            PictureBox.Image = new Bitmap(bitmap);
+            PictureBox.Width = bitmap.Width;
+            PictureBox.Height = bitmap.Height;
+#endif
+            try
+            {
+                // 全部読み出す.
+                using (MemoryStream basebmp = new MemoryStream())
+                {
+                    bitmap.Save(basebmp, System.Drawing.Imaging.ImageFormat.Bmp);
+                    Bitmap newbmp = new Bitmap(basebmp);
+                    PictureBox.Image = (Image)newbmp;
+                    PictureBox.Width = newbmp.Width;
+                    PictureBox.Height = newbmp.Height;
+                }
+            }
+            catch (Exception e)
+            {
+                Bitmap noimage = new Bitmap(1, 1);
+                PictureBox.Image = noimage;
+                PictureBox.Width = 0;
+                PictureBox.Height = 0; ;
+
+                TDCGExplorer.SetToolTips("error: " + e.Message);
+            }
+
+        }
+
+        private void makeThumbToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                PoseFilePage posefile = tabMainView.SelectedTab.Controls[0] as PoseFilePage;
+                if (posefile != null) posefile.ChangeThumb();
+            }
+            catch (Exception)
+            {
             }
         }
     }

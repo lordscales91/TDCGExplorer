@@ -91,7 +91,6 @@
             this.ListBoxContextMenuStripTahFile = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.NewTabToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExpandTahFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.deleteTahEditorFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ExtractTahFileDirectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pictureBoxImage = new System.Windows.Forms.PictureBox();
             this.contextMenuStripSaveFile = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -99,6 +98,7 @@
             this.ToolStripMenuItemRename = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemTouch = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemTouchAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.makeThumbToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MainMenu.SuspendLayout();
             this.cmContextMenu.SuspendLayout();
             this.StatusStrip.SuspendLayout();
@@ -721,7 +721,6 @@
             this.ListBoxContextMenuStripTahFile.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.NewTabToolStripMenuItem,
             this.ExpandTahFileToolStripMenuItem,
-            this.deleteTahEditorFileToolStripMenuItem,
             this.ExtractTahFileDirectToolStripMenuItem});
             this.ListBoxContextMenuStripTahFile.Name = "contextMenuStrip1";
             this.ListBoxContextMenuStripTahFile.Size = new System.Drawing.Size(231, 92);
@@ -739,13 +738,6 @@
             this.ExpandTahFileToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
             this.ExpandTahFileToolStripMenuItem.Text = "TAHファイルを編集する";
             this.ExpandTahFileToolStripMenuItem.Click += new System.EventHandler(this.TahDecryptToolStripMenuItem_Click);
-            // 
-            // deleteTahEditorFileToolStripMenuItem
-            // 
-            this.deleteTahEditorFileToolStripMenuItem.Name = "deleteTahEditorFileToolStripMenuItem";
-            this.deleteTahEditorFileToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.deleteTahEditorFileToolStripMenuItem.Text = "TAH編集ファイルを削除する";
-            this.deleteTahEditorFileToolStripMenuItem.Click += new System.EventHandler(this.deleteTahEditorFileToolStripMenuItem_Click);
             // 
             // ExtractTahFileDirectToolStripMenuItem
             // 
@@ -768,9 +760,10 @@
             this.toolStripMenuItem1,
             this.ToolStripMenuItemRename,
             this.toolStripMenuItemTouch,
-            this.toolStripMenuItemTouchAll});
+            this.toolStripMenuItemTouchAll,
+            this.makeThumbToolStripMenuItem});
             this.contextMenuStripSaveFile.Name = "contextMenuStrip1";
-            this.contextMenuStripSaveFile.Size = new System.Drawing.Size(279, 92);
+            this.contextMenuStripSaveFile.Size = new System.Drawing.Size(279, 136);
             // 
             // toolStripMenuItem1
             // 
@@ -799,6 +792,13 @@
             this.toolStripMenuItemTouchAll.Size = new System.Drawing.Size(278, 22);
             this.toolStripMenuItemTouchAll.Text = "全てのファイルの日時を変更する";
             this.toolStripMenuItemTouchAll.Click += new System.EventHandler(this.toolStripMenuItemTouchAll_Click);
+            // 
+            // makeThumbToolStripMenuItem
+            // 
+            this.makeThumbToolStripMenuItem.Name = "makeThumbToolStripMenuItem";
+            this.makeThumbToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
+            this.makeThumbToolStripMenuItem.Text = "サムネイルを作成する";
+            this.makeThumbToolStripMenuItem.Click += new System.EventHandler(this.makeThumbToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -901,7 +901,6 @@
         private System.Windows.Forms.ToolStripMenuItem ExpandTahFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem LookUpModrefToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem ExtractTahFileDirectToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteTahEditorFileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem displayUpdateToolStripMenuItem;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripSaveFile;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
@@ -919,6 +918,7 @@
         private System.Windows.Forms.ToolStripMenuItem OpenAllTAHToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem labelSearchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tahfilesearchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem makeThumbToolStripMenuItem;
 
     }
 }

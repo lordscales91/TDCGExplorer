@@ -55,6 +55,7 @@ namespace System.Windows.Forms
             dataGridView.MultiSelect = false;
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView.AllowUserToAddRows = false;
+            dataGridView.AllowUserToDeleteRows = false;
 
             LoadPsdFile(0);
 
@@ -180,7 +181,7 @@ namespace System.Windows.Forms
                                 TDCGExplorer.TDCGExplorer.defaultpose = tahstream.stream;
                             }
                             Cursor.Current = Cursors.Default;
-                            TDCGExplorer.TDCGExplorer.FigureLoad = false;
+                            //TDCGExplorer.TDCGExplorer.FigureLoad = false;
                         }
                     }
                     LoadPsdFile(index);
@@ -215,9 +216,13 @@ namespace System.Windows.Forms
                         {
                             PSDFile psd = new PSDFile();
                             psd.Load(tahstream.stream);
+#if false
                             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Image = psd.Bitmap;
                             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Width = psd.Bitmap.Width;
                             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Height = psd.Bitmap.Height;
+#else
+                            TDCGExplorer.TDCGExplorer.MainFormWindow.SetBitmap(psd.Bitmap);
+#endif
                         }
                         return;
                     }
@@ -232,9 +237,13 @@ namespace System.Windows.Forms
         private void NoImageIcon()
         {
             Bitmap noimage = new Bitmap("noimage.jpg");
+#if false
             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Image = noimage;
             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Width = noimage.Width;
             TDCGExplorer.TDCGExplorer.MainFormWindow.PictureBox.Height = noimage.Height;
+#else
+            TDCGExplorer.TDCGExplorer.MainFormWindow.SetBitmap(noimage);
+#endif
         }
 
         private void dataGridView_MouseEnter(object sender, EventArgs e)
