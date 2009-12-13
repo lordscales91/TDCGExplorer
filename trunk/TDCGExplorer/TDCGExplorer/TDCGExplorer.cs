@@ -17,7 +17,7 @@ namespace TDCGExplorer
     public class TDCGExplorer
     {
         public const string CONST_DBVERSION = "1.00";
-        public const string CONST_APPVERSION = "1.08";
+        public const string CONST_APPVERSION = "1.09";
         public const string CONST_COPYRIGHT = "Copyright © 2009 3DCG Craftsmen's Guild.";
 
         private static SystemDatabase systemDatabase;
@@ -27,7 +27,7 @@ namespace TDCGExplorer
         private static TagNamesDictionary tagNames;
         private static MainForm form;
         private static Byte[] defaultTMO;
-        private static bool figureloaded = false;
+        //private static bool figureloaded = false;
         private static string lastAccessFile = "(none)";
 
         private static volatile string toolTipsMessage = "";
@@ -87,6 +87,12 @@ namespace TDCGExplorer
             systemDatabase.Dispose();
         }
 
+        public static void GcCopact()
+        {
+            GC.Collect();
+            Console.WriteLine(GC.GetTotalMemory(false));
+        }
+
         public static string LastAccessFile
         {
             set { lastAccessFile = value; }
@@ -103,13 +109,13 @@ namespace TDCGExplorer
         {
             defaultTMO = LoadTMO();
         }
-
+#if false
         public static bool FigureLoad
         {
             get { return figureloaded; }
             set { figureloaded = value; }
         }
-
+#endif
         public static Stream defaultpose
         {
             get { return new MemoryStream(defaultTMO); }
@@ -231,13 +237,14 @@ namespace TDCGExplorer
             edit.tahEditorPath = SystemDB.tahpath;
             edit.collisionDetectLevel = SystemDB.collisionchecklevel;
             edit.findziplevel = SystemDB.findziplevel;
-            edit.delete_tahcache = SystemDB.delete_tahcache;
+            //edit.delete_tahcache = SystemDB.delete_tahcache;
             edit.taheditorprevire = SystemDB.taheditorpreview;
             edit.alwaysnewtab = SystemDB.alwaysnewtab;
             edit.tahversioncollision = SystemDB.tahversioncollision;
             edit.explorerzipfolder = SystemDB.explorerzipfolder;
             edit.posedir = SystemDB.posefile_savedirectory;
             edit.arcsvacume = systemDatabase.arcsvacume;
+            edit.forcereloadsavedata = SystemDB.forcereloadsavedata;
             edit.Owner = MainFormWindow;
             if (edit.ShowDialog() == DialogResult.OK)
             {
@@ -260,15 +267,42 @@ namespace TDCGExplorer
                 SystemDB.tahpath = edit.tahEditorPath;
                 SystemDB.collisionchecklevel = edit.collisionDetectLevel;
                 SystemDB.findziplevel = edit.findziplevel;
-                SystemDB.delete_tahcache = edit.delete_tahcache;
+                //SystemDB.delete_tahcache = edit.delete_tahcache;
                 SystemDB.taheditorpreview = edit.taheditorprevire;
                 SystemDB.alwaysnewtab = edit.alwaysnewtab;
                 SystemDB.tahversioncollision = edit.tahversioncollision;
                 SystemDB.explorerzipfolder = edit.explorerzipfolder;
                 SystemDB.posefile_savedirectory = edit.posedir;
                 SystemDB.arcsvacume = edit.arcsvacume;
+                SystemDB.forcereloadsavedata = edit.forcereloadsavedata;
                 SystemDB.appversion = CONST_APPVERSION;
                 MainFormWindow.DisplayDB();
+            }
+        }
+
+        public static void FileDelete(string path)
+        {
+            int timeout = 0;
+            bool success = false;
+            while (success == false)
+            {
+                try
+                {
+                    File.Delete(path);
+                    success = true;
+                }
+                catch (Exception)
+                {
+                }
+                if (success == false)
+                {
+                    if (timeout++ > 300)
+                    {
+                        MessageBox.Show("ファイルが使用中です。", "ファイル削除エラー", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        throw (new Exception("ファイル削除エラー"));
+                    }
+                    Thread.Sleep(100);
+                }
             }
         }
 
@@ -680,8 +714,6 @@ namespace TDCGExplorer
             if (node != null)
             {
                 node.Add(path);
-                sftree.SelectedNode = node;
-                node.DoTvTreeSelect();
             }
         }
 
@@ -693,8 +725,6 @@ namespace TDCGExplorer
             if (node != null)
             {
                 node.Del(path);
-                sftree.SelectedNode = node;
-                node.DoTvTreeSelect();
             }
         }
 
@@ -1087,13 +1117,13 @@ namespace TDCGExplorer
                     control.DisplayPose();
                     continue;
                 }
-
+#if false
                 if (File.Exists(LBFileTahUtl.GetTahDbPath(basename)))
                 {
                     MessageBox.Show("既にデータベースファイルがあります。\n" + LBFileTahUtl.GetTahDbPath(basename) + "\n削除してから操作してください。", "エラー", MessageBoxButtons.OK);
                     continue;
                 }
-
+#endif
                 // TAHファイルをドロップされた
                 if (Path.GetExtension(filename).ToLower() == ".tah")
                 {
@@ -1103,7 +1133,7 @@ namespace TDCGExplorer
                         TAHEditor editor = null;
                         try
                         {
-                            editor = new TAHEditor(LBFileTahUtl.GetTahDbPath(basename), null);
+                            editor = new TAHEditor(null);
                             Object transaction = editor.BeginTransaction();
                             using (Stream stream = File.OpenRead(fullpath))
                             {
@@ -1160,7 +1190,7 @@ namespace TDCGExplorer
                         TAHEditor editor = null;
                         try
                         {
-                            editor = new TAHEditor(LBFileTahUtl.GetTahDbPath(basename), null);
+                            editor = new TAHEditor(null);
                             Object transaction = editor.BeginTransaction();
                             foreach (string infile in dir)
                             {
@@ -1218,6 +1248,7 @@ namespace TDCGExplorer
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
+#if false
                     // 新規TAHを作成する.
                     string dbfilename = LBFileTahUtl.GetTahDbPath(dialog.tahSource);
 
@@ -1226,9 +1257,9 @@ namespace TDCGExplorer
                         MessageBox.Show("既にデータベースファイルがあります。\n" + dbfilename + "\n削除してから操作してください。", "エラー", MessageBoxButtons.OK);
                         return;
                     }
-
+#endif
                     // 常に新規タブで.
-                    editor = new TAHEditor(dbfilename, null);
+                    editor = new TAHEditor(null);
                     editor.SetInformation(dialog.tahSource, dialog.tahVersion);
 
                     Object transaction = editor.BeginTransaction();
@@ -1436,7 +1467,6 @@ namespace TDCGExplorer
             }
             return directXVersion;
         }
-
     }
 
     public class CreateArcsDatabaseThread

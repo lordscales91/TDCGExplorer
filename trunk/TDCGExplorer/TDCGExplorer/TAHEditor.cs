@@ -30,9 +30,9 @@ namespace System.Windows.Forms
         private ToolStripMenuItem toolStripMenuItemSelectAll;
         private string tahdbpath;
 
-        public TAHEditor(string dbpath, GenericTahInfo info)
+        public TAHEditor(GenericTahInfo info)
         {
-            tahdbpath = dbpath.ToLower();
+            tahdbpath = Path.Combine(TDCGExplorer.TDCGExplorer.SystemDB.tahpath,Path.GetRandomFileName()+".db");
 
             InitializeComponent();
 
@@ -41,7 +41,7 @@ namespace System.Windows.Forms
             TDCGExplorer.TDCGExplorer.MainFormWindow.AddTimer(formTimer);
 
             database = new TAHLocalDB();
-            database.Open(dbpath);
+            database.Open(tahdbpath);
 
             if (info == null)
             {
@@ -64,6 +64,8 @@ namespace System.Windows.Forms
             dataGridView.MultiSelect = true;
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView.AllowUserToAddRows = false;
+            dataGridView.AllowUserToDeleteRows = false;
+
             setText();
         }
 
@@ -90,12 +92,23 @@ namespace System.Windows.Forms
             {
                 database.Dispose();
                 database = null;
-
+#if false
                 // 必ず削除を指定していた時は常に消す
                 if (TDCGExplorer.TDCGExplorer.SystemDB.delete_tahcache == true)
                 {
-                    File.Delete(tahdbpath);
+#endif
+                    try
+                    {
+                        //File.Delete(tahdbpath);
+                        TDCGExplorer.TDCGExplorer.FileDelete(tahdbpath);
+                    }
+                    catch (Exception)
+                    {
+                        TDCGExplorer.TDCGExplorer.SetToolTips("dbファイルの削除ができませんでした。手動で削除して下さい。");
+                    }
+#if false
                 }
+#endif
             }
             base.Dispose(disposing);
         }
@@ -131,7 +144,7 @@ namespace System.Windows.Forms
                 {
                     bool hashonly = false;
                     database["version"] = info.version.ToString();
-                    database["source"] = info.path;
+                    database["source"] = Path.GetFileName(info.path);
                     int id = 0;
                     foreach (TAHEntry ent in tah.EntrySet.Entries)
                     {
@@ -911,7 +924,7 @@ namespace System.Windows.Forms
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 database["version"] = dialog.tahVersion.ToString();
-                database["source"] = dialog.tahSource;
+                database["source"] = Path.GetFileName(dialog.tahSource);
                 // 情報を表示する.
                 setText();
                 Parent.Text = Text;
@@ -953,7 +966,7 @@ namespace System.Windows.Forms
         public void SetInformation(string filename, int version)
         {
             database["version"] = version.ToString();
-            database["source"] = filename;
+            database["source"] = Path.GetFileName(filename);
             setText();
         }
 
@@ -1138,7 +1151,7 @@ namespace System.Windows.Forms
                     // 次回カメラが必ずリセットされる様にする.
                     TDCGExplorer.TDCGExplorer.MainFormWindow.setNeedCameraReset();
                 }
-                TDCGExplorer.TDCGExplorer.FigureLoad = false;
+                //TDCGExplorer.TDCGExplorer.FigureLoad = false;
             }
         }
 

@@ -707,6 +707,32 @@ namespace TDCGExplorer
             return value;
         }
 
+        // 指定したtahに含まれるファイルを取得する.
+        public List<ArcsTahFilesEntry> GetTahFilesPathHasString(string key)
+        {
+            List<ArcsTahFilesEntry> value = new List<ArcsTahFilesEntry>();
+            using (SQLiteCommand cmd = cnn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT ID,TAHID,TAHENTRY,PATH,HASH,LENGTH FROM FilesEntry WHERE PATH LIKE '%" + key + "%'";
+                using (SQLiteDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ArcsTahFilesEntry entry = new ArcsTahFilesEntry();
+                        entry.id = int.Parse(reader[0].ToString());
+                        entry.tahid = int.Parse(reader[1].ToString());
+                        entry.tahentry = int.Parse(reader[2].ToString());
+                        entry.path = reader[3].ToString();
+                        entry.hash = int.Parse(reader[4].ToString());
+                        entry.length = int.Parse(reader[5].ToString());
+                        value.Add(entry);
+                    }
+                }
+            }
+            return value;
+        }
+
+
         // TAH内部ファイルを格納する.
         public int SetTahFilesPath(ArcsTahFilesEntry entry)
         {
@@ -1081,6 +1107,37 @@ namespace TDCGExplorer
             return list;
         }
 
+        // 指定した文字列を含むエントリをすべて返す
+        public List<ArcsZipTahEntry> GetZipTahsHasString(string key)
+        {
+            List<ArcsZipTahEntry> list = new List<ArcsZipTahEntry>();
+            try
+            {
+                using (SQLiteCommand cmd = cnn.CreateCommand())
+                {
+                    cmd.CommandText = "SELECT ID,PATH,SHORTNAME,TAHVERSION,ZIPID FROM ZipTahEntry WHERE SHORTNAME LIKE '%" + key + "%'";
+                    using (SQLiteDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            ArcsZipTahEntry entry = new ArcsZipTahEntry();
+                            entry.id = int.Parse(reader[0].ToString());
+                            entry.path = reader[1].ToString();
+                            entry.shortname = reader[2].ToString();
+                            entry.version = int.Parse(reader[3].ToString());
+                            entry.zipid = int.Parse(reader[4].ToString());
+                            list.Add(entry);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+            return list;
+        }
+
 
         // ZIP中の指定したTAHを取得する.
         public ArcsZipTahEntry GetZipTah(int tahid)
@@ -1131,6 +1188,32 @@ namespace TDCGExplorer
             }
             return value;
         }
+
+        // 指定したtahに含まれるファイルを取得する.
+        public List<ArcsTahFilesEntry> GetZipTahFilesEntriesHasString(string key)
+        {
+            List<ArcsTahFilesEntry> value = new List<ArcsTahFilesEntry>();
+            using (SQLiteCommand cmd = cnn.CreateCommand())
+            {
+                cmd.CommandText = "SELECT ID,TAHID,TAHENTRY,PATH,HASH,LENGTH FROM ZipTahFilesEntry WHERE TAHID='%" + key + "%'";
+                using (SQLiteDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        ArcsTahFilesEntry entry = new ArcsTahFilesEntry();
+                        entry.id = int.Parse(reader[0].ToString());
+                        entry.tahid = int.Parse(reader[1].ToString());
+                        entry.tahentry = int.Parse(reader[2].ToString());
+                        entry.path = reader[3].ToString();
+                        entry.hash = int.Parse(reader[4].ToString());
+                        entry.length = int.Parse(reader[5].ToString());
+                        value.Add(entry);
+                    }
+                }
+            }
+            return value;
+        }
+
 
         // 指定したファイルを取得する.
         public List<ArcsTahFilesEntry> GetZipTahFilesEntries(uint hash)

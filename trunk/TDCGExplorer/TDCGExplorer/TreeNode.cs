@@ -233,6 +233,7 @@ namespace TDCGExplorer
                 if (file.ToLower() == path.ToLower()) return; // 既にある.
             }
             Files.Add(path);
+            DoTvTreeSelect();
         }
 
         public void Del(string path)
@@ -243,6 +244,7 @@ namespace TDCGExplorer
                 if (file.ToLower() == path.ToLower())
                 {
                     Files.RemoveAt(index);
+                    DoTvTreeSelect();
                     break;
                 }
                 index++;

@@ -61,6 +61,11 @@ namespace TDCGExplorer
                         tahentry.Hash = TAHUtil.CalcHash(regularfile);
                     }
                 }
+                else
+                {
+                    // 判んない時は適当につける.
+                    tahentry.Hash = TAHUtil.CalcHash(regularfile);
+                }
             }
             else
             {

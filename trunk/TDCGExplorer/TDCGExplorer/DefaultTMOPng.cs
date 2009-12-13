@@ -18,13 +18,15 @@ namespace TDCGExplorer
 
             using (FileStream fs = File.OpenRead("SnapShotPose.tdcgpose.png"))
             {
-                PNGPOSEStream posestream = new PNGPOSEStream();
-                posedata = posestream.LoadStream(fs);
-            }
-            // figureが何個だろうが必ず１個目.
-            using (MemoryStream filetmo = new MemoryStream(posedata.figures[0].tmo.data))
-            {
-                ZipFileUtil.CopyStream(filetmo, tmoms);
+                using (PNGPOSEStream posestream = new PNGPOSEStream())
+                {
+                    posedata = posestream.LoadStream(fs);
+                    // figureが何個だろうが必ず１個目.
+                    using (MemoryStream filetmo = new MemoryStream(posedata.figures[0].tmo.data))
+                    {
+                        ZipFileUtil.CopyStream(filetmo, tmoms);
+                    }
+                }
             }
         }
 

@@ -12,10 +12,14 @@ using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 
 namespace TDCGExplorer
 {
-    public class PNGTsoData
+    public class PNGTsoData : IDisposable
     {
         public uint tsoID;
         public byte[] tsodata;
+        public void Dispose()
+        {
+            tsodata = null;
+        }
     }
 
     public class PNGHSAVStream

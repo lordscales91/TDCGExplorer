@@ -38,6 +38,7 @@ namespace System.Windows.Forms
             dataGridView.MultiSelect = false;
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dataGridView.AllowUserToAddRows = false;
+            dataGridView.AllowUserToDeleteRows = false;
 
             Text = "前提TAH検索";
 
@@ -211,6 +212,7 @@ namespace System.Windows.Forms
 
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
+#if false
                     // 新規TAHを作成する.
                     string dbfilename = LBFileTahUtl.GetTahDbPath(dialog.textfield);
                     string tahfilename = Path.GetFileNameWithoutExtension(dialog.textfield);
@@ -220,10 +222,10 @@ namespace System.Windows.Forms
                         MessageBox.Show("既にデータベースファイルがあります。\n" + dbfilename + "\n削除してから操作してください。", "エラー", MessageBoxButtons.OK);
                         return;
                     }
-
+#endif
                     // 常に新規タブで.
-                    editor = new TAHEditor(dbfilename, null);
-                    editor.SetInformation(tahfilename + ".tah", 1);
+                    editor = new TAHEditor(null);
+                    editor.SetInformation(Path.GetFileNameWithoutExtension(dialog.textfield) + ".tah", 1);
 
                     // baseがないtahを全て反復する.
                     foreach (MissingEntryInformation missing in missings)
@@ -350,7 +352,7 @@ namespace System.Windows.Forms
                     try
                     {
                         TDCGExplorer.TDCGExplorer.SetToolTips("検索中:" + tah.shortname);
-                        if (file.path.ToLower().StartsWith("script/items/") || file.path.ToLower().StartsWith("script/backgrounds/"))
+                        if (file.path.ToLower().StartsWith("script/items/") /*|| file.path.ToLower().StartsWith("script/backgrounds/" )*/)
                         {
                             // TBNファイルか?
                             if (file.path.ToLower().EndsWith(".tbn") == true)

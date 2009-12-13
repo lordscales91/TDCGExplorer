@@ -142,6 +142,7 @@ namespace TDCGExplorer
             tahversioncollision = tahversioncollision;
             posefile_savedirectory = posefile_savedirectory;
             arcsvacume = arcsvacume;
+            forcereloadsavedata = forcereloadsavedata;
         }
 
         // arcpathの取得・設定.
@@ -370,6 +371,18 @@ namespace TDCGExplorer
                 else SetSqlValue("arcsvacume", "false");
             }
         }
+
+        // ポーズファイル読み込み時に、強制的にヘビーセーブを読み込むか?
+        public bool forcereloadsavedata
+        {
+            get { return GetSqlValue("forcereloadsavedata", "true") == "true"; }
+            set
+            {
+                if (value == true) SetSqlValue("forcereloadsavedata", "true");
+                else SetSqlValue("forcereloadsavedata", "false");
+            }
+        }
+
 
     }
 }
