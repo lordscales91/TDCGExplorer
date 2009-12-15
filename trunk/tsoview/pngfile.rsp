@@ -3,7 +3,8 @@
 /r:Microsoft.DirectX.Direct3D.dll
 /r:Microsoft.DirectX.Direct3DX.dll
 /r:ICSharpCode.SharpZipLib.dll
+TDCG\Extensions\BinaryReaderMethods.cs
+TDCG\Extensions\BinaryWriterMethods.cs
 TDCG\TMOFile.cs
-TDCG\TMOWriter.cs
 TDCG\PNGFile.cs
 TDCG\PNGWriter.cs

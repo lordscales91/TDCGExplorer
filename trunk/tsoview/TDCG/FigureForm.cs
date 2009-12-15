@@ -22,6 +22,7 @@ public class FigureForm : Form
     private ColumnHeader columnHeader1;
     private ColumnHeader columnHeader2;
     private ColumnHeader columnHeader3;
+    private TrackBar tbSlide;
     private DataGridView gvShaderParams;
 
     /// <summary>
@@ -66,6 +67,10 @@ public class FigureForm : Form
     public void SetFigure(Figure fig)
     {
         this.fig = fig;
+        
+        Debug.Assert(fig.RatioList.Count == 7);
+        this.tbSlide.Value = (int)(fig.RatioList[0] * 10);
+
         lvTSOFiles.Items.Clear();
         for (int i = 0; i < fig.TSOList.Count; i++)
         {
@@ -116,7 +121,9 @@ public class FigureForm : Form
         this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
         this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
         this.gvShaderParams = new System.Windows.Forms.DataGridView();
+        this.tbSlide = new System.Windows.Forms.TrackBar();
         ((System.ComponentModel.ISupportInitialize)(this.gvShaderParams)).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)(this.tbSlide)).BeginInit();
         this.SuspendLayout();
         // 
         // btnDump
@@ -205,9 +212,18 @@ public class FigureForm : Form
         this.gvShaderParams.Size = new System.Drawing.Size(400, 304);
         this.gvShaderParams.TabIndex = 5;
         // 
+        // tbSlide
+        // 
+        this.tbSlide.Location = new System.Drawing.Point(604, 218);
+        this.tbSlide.Name = "tbSlide";
+        this.tbSlide.Size = new System.Drawing.Size(104, 45);
+        this.tbSlide.TabIndex = 6;
+        this.tbSlide.VisibleChanged += new System.EventHandler(this.slider_VisibleChanged);
+        // 
         // FigureForm
         // 
         this.ClientSize = new System.Drawing.Size(784, 563);
+        this.Controls.Add(this.tbSlide);
         this.Controls.Add(this.gvShaderParams);
         this.Controls.Add(this.lvSubScripts);
         this.Controls.Add(this.lvTSOFiles);
@@ -218,7 +234,9 @@ public class FigureForm : Form
         this.Text = "TSOGrid";
         this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FigureForm_FormClosing);
         ((System.ComponentModel.ISupportInitialize)(this.gvShaderParams)).EndInit();
+        ((System.ComponentModel.ISupportInitialize)(this.tbSlide)).EndInit();
         this.ResumeLayout(false);
+        this.PerformLayout();
 
     }
 
@@ -284,6 +302,15 @@ public class FigureForm : Form
             this.Hide();
             e.Cancel = true;
         }
+    }
+
+    private void slider_VisibleChanged(object sender, EventArgs e)
+    {
+        if (fig == null)
+            return;
+
+        Debug.Assert(fig.RatioList.Count == 7);
+        fig.RatioList[0] = tbSlide.Value * 0.1f;
     }
 }
 }

@@ -21,6 +21,11 @@ public class Figure : IDisposable
     /// </summary>
     public List<TSOFile> TSOList = new List<TSOFile>();
 
+    /// <summary>
+    /// スライダの位置リスト
+    /// </summary>
+    public List<float> RatioList = new List<float>();
+
     Vector3 center = Vector3.Empty;
     /// <summary>
     /// 中心座標
