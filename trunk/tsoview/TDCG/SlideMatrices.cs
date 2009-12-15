@@ -13,55 +13,46 @@ namespace TDCG
 {
 public class SlideMatrices
 {
-    public static Vector3 MinHipsDummy;
     public static Vector3 GetMinHipsDummy()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
     }
 
-    public static Vector3 MaxHipsDummy;
     public static Vector3 GetMaxHipsDummy()
     {
         return new Vector3(1.200100f, 1.0f, 1.0f);
     }
 
-    public static Vector3 MinUpLeg;
     public static Vector3 GetMinUpLeg()
     {
         return new Vector3(0.809100f, 1.0f, 1.0f);
     }
 
-    public static Vector3 MaxUpLeg;
     public static Vector3 GetMaxUpLeg()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
     }
 
-    public static Vector3 MinUpLegRoll;
     public static Vector3 GetMinUpLegRoll()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
     }
 
-    public static Vector3 MaxUpLegRoll;
     public static Vector3 GetMaxUpLegRoll()
     {
         return new Vector3(1.000917f, 1.0f, 1.0f);
     }
 
-    public static Vector3 MinLegRoll;
     public static Vector3 GetMinLegRoll()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
     }
 
-    public static Vector3 MaxLegRoll;
     public static Vector3 GetMaxLegRoll()
     {
         return new Vector3(0.822344f, 1.0f, 1.0f);
     }
 
-    public static Matrix MinEyeR;
     public static Matrix GetMinEyeR()
     {
 Matrix m = Matrix.Identity;
@@ -72,7 +63,6 @@ m.M41 = 0.004252F; m.M42 = 0.124786F; m.M43 = 0.025256F; m.M44 = 1;
 return m;
     }
 
-    public static Matrix MaxEyeR;
     public static Matrix GetMaxEyeR()
     {
 Matrix m = Matrix.Identity;
@@ -83,7 +73,6 @@ m.M41 = 0.180933F; m.M42 = -0.058389F; m.M43 = 0.094482F; m.M44 = 1;
 return m;
     }
 
-    public static Matrix MinEyeL;
     public static Matrix GetMinEyeL()
     {
 Matrix m = Matrix.Identity;
@@ -94,7 +83,6 @@ m.M41 = -0.004275F; m.M42 = 0.124808F; m.M43 = 0.025122F; m.M44 = 1;
 return m;
     }
 
-    public static Matrix MaxEyeL;
     public static Matrix GetMaxEyeL()
     {
 Matrix m = Matrix.Identity;
@@ -105,7 +93,7 @@ m.M41 = -0.181016F; m.M42 = -0.058312F; m.M43 = 0.094464F; m.M44 = 1;
 return m;
     }
 
-    public static Matrix GetMatrixRatio(ref Vector3 min, ref Vector3 max, float ratio)
+    public static Matrix GetMatrixRatio(Vector3 min, Vector3 max, float ratio)
     {
         Vector3 v = Vector3.Empty;
 
@@ -116,7 +104,7 @@ return m;
         return Matrix.Scaling(v);
     }
 
-    public static Matrix GetMatrixRatio(ref Matrix min, ref Matrix max, float ratio)
+    public static Matrix GetMatrixRatio(Matrix min, Matrix max, float ratio)
     {
         Matrix m = Matrix.Identity;
 
@@ -148,20 +136,6 @@ return m;
     static SlideMatrices()
     {
         FaceOya = Matrix.Scaling(1.1045F, 1.064401F, 1.1045F);
-
-        MinHipsDummy = GetMinHipsDummy();
-        MaxHipsDummy = GetMaxHipsDummy();
-        MinUpLeg = GetMinUpLeg();
-        MaxUpLeg = GetMaxUpLeg();
-        MinUpLegRoll = GetMinUpLegRoll();
-        MaxUpLegRoll = GetMaxUpLegRoll();
-        MinLegRoll = GetMinLegRoll();
-        MaxLegRoll = GetMaxLegRoll();
-
-        MinEyeR = GetMinEyeR();
-        MaxEyeR = GetMaxEyeR();
-        MinEyeL = GetMinEyeL();
-        MaxEyeL = GetMaxEyeL();
     }
 
     public Matrix HipsDummy;
@@ -202,10 +176,10 @@ return m;
         set
         {
             leg_ratio = value;
-            HipsDummy = GetMatrixRatio(ref MinHipsDummy, ref MaxHipsDummy, leg_ratio);
-            UpLeg = GetMatrixRatio(ref MinUpLeg, ref MaxUpLeg, leg_ratio);
-            UpLegRoll = GetMatrixRatio(ref MinUpLegRoll, ref MaxUpLegRoll, leg_ratio);
-            LegRoll = GetMatrixRatio(ref MinLegRoll, ref MaxLegRoll, leg_ratio);
+            HipsDummy = GetMatrixRatio(GetMinHipsDummy(), GetMaxHipsDummy(), leg_ratio);
+            UpLeg = GetMatrixRatio(GetMinUpLeg(), GetMaxUpLeg(), leg_ratio);
+            UpLegRoll = GetMatrixRatio(GetMinUpLegRoll(), GetMaxUpLegRoll(), leg_ratio);
+            LegRoll = GetMatrixRatio(GetMinLegRoll(), GetMaxLegRoll(), leg_ratio);
         }
     }
 
@@ -235,8 +209,8 @@ return m;
         get { return eye_ratio; }
         set {
             eye_ratio = value;
-            EyeR = GetMatrixRatio(ref MinEyeR, ref MaxEyeR, eye_ratio) * Matrix.Invert(FaceOya);
-            EyeL = GetMatrixRatio(ref MinEyeL, ref MaxEyeL, eye_ratio) * Matrix.Invert(FaceOya);
+            EyeR = GetMatrixRatio(GetMinEyeR(), GetMaxEyeR(), eye_ratio) * Matrix.Invert(FaceOya);
+            EyeL = GetMatrixRatio(GetMinEyeL(), GetMaxEyeL(), eye_ratio) * Matrix.Invert(FaceOya);
         }
     }
 }
