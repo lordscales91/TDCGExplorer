@@ -343,6 +343,10 @@ public class Figure : IDisposable
             case "W_RightUpLegRoll":
                 m *= slide_matrices.UpLegRoll;
                 break;
+            case "W_LeftLegRoll":
+            case "W_RightLegRoll":
+                m *= slide_matrices.LegRoll;
+                break;
             case "face_oya":
                 m *= SlideMatrices.FaceOya;
                 break;
