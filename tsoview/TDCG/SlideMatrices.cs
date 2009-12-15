@@ -25,7 +25,7 @@ public class SlideMatrices
 
     public static Vector3 GetMinUpLeg()
     {
-        return new Vector3(0.809100f, 1.0f, 1.0f);
+        return new Vector3(0.809100f, 1.0f, 0.819000f);
     }
 
     public static Vector3 GetMaxUpLeg()
@@ -51,6 +51,36 @@ public class SlideMatrices
     public static Vector3 GetMaxLegRoll()
     {
         return new Vector3(0.822344f, 1.0f, 1.0f);
+    }
+
+    public static Vector3 GetMinArmDummy()
+    {
+        return new Vector3(1.0f, 1.0f, 1.0f);
+    }
+
+    public static Vector3 GetMaxArmDummy()
+    {
+        return new Vector3(1.0f, 1.176000f, 1.0f);
+    }
+
+    public static Vector3 GetMinArm()
+    {
+        return new Vector3(1.0f, 0.735000f, 1.0f);
+    }
+
+    public static Vector3 GetMaxArm()
+    {
+        return new Vector3(1.0f, 1.0f, 1.0f);
+    }
+
+    public static Vector3 GetMinHand()
+    {
+        return new Vector3(1.0f, 1.360544f, 1.0f);
+    }
+
+    public static Vector3 GetMaxHand()
+    {
+        return new Vector3(1.0f, 0.850340f, 1.0f);
     }
 
     public static Matrix GetMinEyeR()
@@ -143,11 +173,17 @@ return m;
     public Matrix UpLegRoll;
     public Matrix LegRoll;
 
+    public Matrix ArmDummy;
+    public Matrix Arm;
+    public Matrix Hand;
+
     public Matrix EyeR;
     public Matrix EyeL;
 
     public SlideMatrices()
     {
+        LegRatio = 0.5f;
+        ArmRatio = 0.5f;
         EyeRatio = 0.5f;
     }
 
@@ -166,6 +202,9 @@ return m;
         get { return arm_ratio; }
         set {
             arm_ratio = value;
+            ArmDummy = GetMatrixRatio(GetMinArmDummy(), GetMaxArmDummy(), arm_ratio);
+            Arm = GetMatrixRatio(GetMinArm(), GetMaxArm(), arm_ratio);
+            Hand = GetMatrixRatio(GetMinHand(), GetMaxHand(), arm_ratio);
         }
     }
 
