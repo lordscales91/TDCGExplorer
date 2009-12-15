@@ -1156,14 +1156,17 @@ public class Viewer : IDisposable
                 byte[] buf = new byte[extract_length];
                 dest.Read(buf, 0, extract_length);
 
-                fig.RatioList.Clear();
                 List<float> ratios = new List<float>();
                 for (int offset = 0; offset < extract_length; offset += sizeof(float))
                 {
                     float flo = BitConverter.ToSingle(buf, offset);
-                    fig.RatioList.Add(flo);
                     ratios.Add(flo);
                 }
+                fig.slide_matrices.AgeRatio = ratios[0];
+                fig.slide_matrices.ArmRatio = ratios[1];
+                fig.slide_matrices.LegRatio = ratios[2];
+                fig.slide_matrices.WaistRatio = ratios[3];
+                fig.slide_matrices.BustRatio = ratios[4];
                 fig.slide_matrices.EyeRatio = ratios[5];
 
                 fig.TransformTpo();
@@ -1183,14 +1186,12 @@ public class Viewer : IDisposable
                 ms.Seek(0, SeekOrigin.Begin);
                 BMPSaveData data = new BMPSaveData();
                 data.Read(ms);
-                fig.RatioList.Add(data.proportions[1]);//Žo–…
-                fig.RatioList.Add(data.proportions[2]);//‚¤‚Å
-                fig.RatioList.Add(data.proportions[3]);//‚ ‚µ
-                fig.RatioList.Add(data.proportions[4]);//“·‚Ü‚í‚è
-                fig.RatioList.Add(data.proportions[0]);//‚¨‚Á‚Ï‚¢
-                fig.RatioList.Add(data.proportions[5]);//‚Â‚è–Ú‚½‚ê–Ú
-                fig.RatioList.Add(data.proportions[6]);//‚â‚í‚ç‚©
 
+                fig.slide_matrices.AgeRatio = data.proportions[1];
+                fig.slide_matrices.ArmRatio = data.proportions[2];
+                fig.slide_matrices.LegRatio = data.proportions[3];
+                fig.slide_matrices.WaistRatio = data.proportions[4];
+                fig.slide_matrices.BustRatio = data.proportions[0];
                 fig.slide_matrices.EyeRatio = data.proportions[5];
             }
         }
