@@ -1121,11 +1121,13 @@ public class Viewer : IDisposable
             PNGFile png = new PNGFile();
             Figure fig = null;
             TMOFile tmo = null;
+            string png_type = null;
 
             png.Hsav += delegate(string type)
             {
                 fig = new Figure();
                 fig_list.Add(fig);
+                png_type = type;
             };
             png.Lgta += delegate(Stream dest, int extract_length)
             {
@@ -1138,8 +1140,29 @@ public class Viewer : IDisposable
                 tmo.Load(dest);
                 fig.Tmo = tmo;
             };
+            /*
+◆FIGU
+スライダの位置。値は float型で 0.0 .. 1.0
+    0: 姉妹
+    1: うで
+    2: あし
+    3: 胴まわり
+    4: おっぱい
+    5: つり目たれ目
+    6: やわらか
+             */
             png.Figu += delegate(Stream dest, int extract_length)
             {
+                byte[] buf = new byte[extract_length];
+                dest.Read(buf, 0, extract_length);
+
+                fig.RatioList.Clear();
+                for (int offset = 0; offset < extract_length; offset += sizeof(float))
+                {
+                    float flo = BitConverter.ToSingle(buf, offset);
+                    fig.RatioList.Add(flo);
+                }
+
                 fig.TransformTpo();
             };
             png.Ftso += delegate(Stream dest, int extract_length, byte[] opt1)
@@ -1149,6 +1172,22 @@ public class Viewer : IDisposable
                 fig.TSOList.Add(tso);
             };
             png.Load(source_file);
+
+            if (png_type == "HSAV")
+            {
+                MemoryStream ms = new MemoryStream();
+                png.Save(ms);
+                ms.Seek(0, SeekOrigin.Begin);
+                BMPSaveData data = new BMPSaveData();
+                data.Read(ms);
+                fig.RatioList.Add(data.proportions[1]);//姉妹
+                fig.RatioList.Add(data.proportions[2]);//うで
+                fig.RatioList.Add(data.proportions[3]);//あし
+                fig.RatioList.Add(data.proportions[4]);//胴まわり
+                fig.RatioList.Add(data.proportions[0]);//おっぱい
+                fig.RatioList.Add(data.proportions[5]);//つり目たれ目
+                fig.RatioList.Add(data.proportions[6]);//やわらか
+            }
         }
         catch (Exception ex)
         {

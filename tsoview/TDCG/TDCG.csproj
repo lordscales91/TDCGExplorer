@@ -55,6 +55,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="BMPSaveData.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="CCDSolver.cs" />
     <Compile Include="CCDViewer.cs" />
