@@ -347,6 +347,18 @@ public class Figure : IDisposable
             case "W_RightLegRoll":
                 m *= slide_matrices.LegRoll;
                 break;
+            case "W_LeftArm_Dummy":
+            case "W_RightArm_Dummy":
+                m *= slide_matrices.ArmDummy;
+                break;
+            case "W_LeftArm":
+            case "W_RightArm":
+                m *= slide_matrices.Arm;
+                break;
+            case "W_LeftHand":
+            case "W_RightHand":
+                m *= slide_matrices.Hand;
+                break;
             case "face_oya":
                 m *= SlideMatrices.FaceOya;
                 break;
