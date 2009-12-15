@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.ComponentModel;
 using System.Text;
@@ -792,9 +793,9 @@ namespace TDCG
         /// オフセット行列を得ます。
         /// </summary>
         /// <returns></returns>
-        public Matrix GetOffsetMatrix()
+        public Matrix OffsetMatrix
         {
-            return offset_matrix;
+            get { return offset_matrix; }
         }
 
         /// <summary>
@@ -1256,6 +1257,7 @@ namespace TDCG
         /// <param name="mesh">切り替え対象となるメッシュ</param>
         public void SwitchShader(TSOMesh mesh)
         {
+            Debug.Assert(mesh.spec >= 0 && mesh.spec < sub_scripts.Length, string.Format("mesh.spec out of range: {0}", mesh.spec));
             SwitchShader(sub_scripts[mesh.spec].shader);
         }
 
