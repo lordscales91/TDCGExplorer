@@ -103,6 +103,54 @@ return m;
         EyeRatio = 0.5f;
     }
 
+    float age_ratio;
+    public float AgeRatio
+    {
+        get { return age_ratio; }
+        set {
+            age_ratio = value;
+        }
+    }
+
+    float arm_ratio;
+    public float ArmRatio
+    {
+        get { return arm_ratio; }
+        set {
+            arm_ratio = value;
+        }
+    }
+
+    float leg_ratio;
+    public float LegRatio
+    {
+        get { return leg_ratio; }
+        set
+        {
+            leg_ratio = value;
+        }
+    }
+
+    float waist_ratio;
+    public float WaistRatio
+    {
+        get { return waist_ratio; }
+        set
+        {
+            waist_ratio = value;
+        }
+    }
+
+    float bust_ratio;
+    public float BustRatio
+    {
+        get { return bust_ratio; }
+        set
+        {
+            bust_ratio = value;
+        }
+    }
+
     float eye_ratio;
     public float EyeRatio
     {

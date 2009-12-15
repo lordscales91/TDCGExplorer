@@ -22,10 +22,8 @@ public class Figure : IDisposable
     public List<TSOFile> TSOList = new List<TSOFile>();
 
     /// <summary>
-    /// スライダの位置リスト
+    /// スライダ変形行列
     /// </summary>
-    public List<float> RatioList = new List<float>();
-
     public SlideMatrices slide_matrices = new SlideMatrices();
 
     Vector3 center = Vector3.Empty;
