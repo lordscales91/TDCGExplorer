@@ -1157,11 +1157,14 @@ public class Viewer : IDisposable
                 dest.Read(buf, 0, extract_length);
 
                 fig.RatioList.Clear();
+                List<float> ratios = new List<float>();
                 for (int offset = 0; offset < extract_length; offset += sizeof(float))
                 {
                     float flo = BitConverter.ToSingle(buf, offset);
                     fig.RatioList.Add(flo);
+                    ratios.Add(flo);
                 }
+                fig.slide_matrices.EyeRatio = ratios[5];
 
                 fig.TransformTpo();
             };
@@ -1187,6 +1190,8 @@ public class Viewer : IDisposable
                 fig.RatioList.Add(data.proportions[0]);//‚¨‚Á‚Ï‚¢
                 fig.RatioList.Add(data.proportions[5]);//‚Â‚è–Ú‚½‚ê–Ú
                 fig.RatioList.Add(data.proportions[6]);//‚â‚í‚ç‚©
+
+                fig.slide_matrices.EyeRatio = data.proportions[5];
             }
         }
         catch (Exception ex)
