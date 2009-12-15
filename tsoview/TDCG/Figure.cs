@@ -26,6 +26,8 @@ public class Figure : IDisposable
     /// </summary>
     public List<float> RatioList = new List<float>();
 
+    public SlideMatrices slide_matrices = new SlideMatrices();
+
     Vector3 center = Vector3.Empty;
     /// <summary>
     /// íÜêSç¿ïW
@@ -328,7 +330,19 @@ public class Figure : IDisposable
             // TMO animation
             tmo_node.TransformationMatrix = tmo_frame.matrices[tmo_node.ID].m;
         }
-        matrixStack.MultiplyMatrixLocal(tmo_node.TransformationMatrix);
+        Matrix m = tmo_node.TransformationMatrix;
+        switch (tmo_node.Name)
+        {
+            case "face_oya":
+                m *= SlideMatrices.FaceOya;
+                break;
+            case "eyeline_sita_R":
+            case "R_eyeline_oya_R":
+            case "Me_Left_Futi":
+                m *= slide_matrices.EyeL;
+                break;
+        }
+        matrixStack.MultiplyMatrixLocal(m);
         tmo_node.combined_matrix = matrixStack.Top;
 
         foreach (TMONode child_node in tmo_node.children)

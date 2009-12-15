@@ -68,8 +68,7 @@ public class FigureForm : Form
     {
         this.fig = fig;
         
-        Debug.Assert(fig.RatioList.Count == 7);
-        this.tbSlide.Value = (int)(fig.RatioList[0] * 10);
+        this.tbSlide.Value = (int)(fig.slide_matrices.EyeRatio * 10);
 
         lvTSOFiles.Items.Clear();
         for (int i = 0; i < fig.TSOList.Count; i++)
@@ -218,7 +217,7 @@ public class FigureForm : Form
         this.tbSlide.Name = "tbSlide";
         this.tbSlide.Size = new System.Drawing.Size(104, 45);
         this.tbSlide.TabIndex = 6;
-        this.tbSlide.VisibleChanged += new System.EventHandler(this.slider_VisibleChanged);
+        this.tbSlide.ValueChanged += new System.EventHandler(this.tbSlide_ValueChanged);
         // 
         // FigureForm
         // 
@@ -304,13 +303,13 @@ public class FigureForm : Form
         }
     }
 
-    private void slider_VisibleChanged(object sender, EventArgs e)
+    private void tbSlide_ValueChanged(object sender, EventArgs e)
     {
         if (fig == null)
             return;
 
-        Debug.Assert(fig.RatioList.Count == 7);
-        fig.RatioList[0] = tbSlide.Value * 0.1f;
+        fig.slide_matrices.EyeRatio = tbSlide.Value * 0.1f;
+        fig.UpdateBoneMatrices(true);
     }
 }
 }
