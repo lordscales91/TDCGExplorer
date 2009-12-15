@@ -331,6 +331,18 @@ public class Figure : IDisposable
         Matrix m = tmo_node.TransformationMatrix;
         switch (tmo_node.Name)
         {
+            case "W_LeftHips_Dummy":
+            case "W_RightHips_Dummy":
+                m *= slide_matrices.HipsDummy;
+                break;
+            case "W_LeftUpLeg":
+            case "W_RightUpLeg":
+                m *= slide_matrices.UpLeg;
+                break;
+            case "W_LeftUpLegRoll":
+            case "W_RightUpLegRoll":
+                m *= slide_matrices.UpLegRoll;
+                break;
             case "face_oya":
                 m *= SlideMatrices.FaceOya;
                 break;
