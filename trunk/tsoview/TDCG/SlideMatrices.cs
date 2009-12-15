@@ -49,6 +49,18 @@ public class SlideMatrices
         return new Vector3(1.000917f, 1.0f, 1.0f);
     }
 
+    public static Vector3 MinLegRoll;
+    public static Vector3 GetMinLegRoll()
+    {
+        return new Vector3(1.0f, 1.0f, 1.0f);
+    }
+
+    public static Vector3 MaxLegRoll;
+    public static Vector3 GetMaxLegRoll()
+    {
+        return new Vector3(0.822344f, 1.0f, 1.0f);
+    }
+
     public static Matrix MinEyeR;
     public static Matrix GetMinEyeR()
     {
@@ -143,6 +155,8 @@ return m;
         MaxUpLeg = GetMaxUpLeg();
         MinUpLegRoll = GetMinUpLegRoll();
         MaxUpLegRoll = GetMaxUpLegRoll();
+        MinLegRoll = GetMinLegRoll();
+        MaxLegRoll = GetMaxLegRoll();
 
         MinEyeR = GetMinEyeR();
         MaxEyeR = GetMaxEyeR();
@@ -153,6 +167,8 @@ return m;
     public Matrix HipsDummy;
     public Matrix UpLeg;
     public Matrix UpLegRoll;
+    public Matrix LegRoll;
+
     public Matrix EyeR;
     public Matrix EyeL;
 
@@ -189,6 +205,7 @@ return m;
             HipsDummy = GetMatrixRatio(ref MinHipsDummy, ref MaxHipsDummy, leg_ratio);
             UpLeg = GetMatrixRatio(ref MinUpLeg, ref MaxUpLeg, leg_ratio);
             UpLegRoll = GetMatrixRatio(ref MinUpLegRoll, ref MaxUpLegRoll, leg_ratio);
+            LegRoll = GetMatrixRatio(ref MinLegRoll, ref MaxLegRoll, leg_ratio);
         }
     }
 
