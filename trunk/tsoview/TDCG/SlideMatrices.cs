@@ -13,6 +13,42 @@ namespace TDCG
 {
 public class SlideMatrices
 {
+    public static Vector3 MinHipsDummy;
+    public static Vector3 GetMinHipsDummy()
+    {
+        return new Vector3(1.0f, 1.0f, 1.0f);
+    }
+
+    public static Vector3 MaxHipsDummy;
+    public static Vector3 GetMaxHipsDummy()
+    {
+        return new Vector3(1.200100f, 1.0f, 1.0f);
+    }
+
+    public static Vector3 MinUpLeg;
+    public static Vector3 GetMinUpLeg()
+    {
+        return new Vector3(0.809100f, 1.0f, 1.0f);
+    }
+
+    public static Vector3 MaxUpLeg;
+    public static Vector3 GetMaxUpLeg()
+    {
+        return new Vector3(1.0f, 1.0f, 1.0f);
+    }
+
+    public static Vector3 MinUpLegRoll;
+    public static Vector3 GetMinUpLegRoll()
+    {
+        return new Vector3(1.0f, 1.0f, 1.0f);
+    }
+
+    public static Vector3 MaxUpLegRoll;
+    public static Vector3 GetMaxUpLegRoll()
+    {
+        return new Vector3(1.000917f, 1.0f, 1.0f);
+    }
+
     public static Matrix MinEyeR;
     public static Matrix GetMinEyeR()
     {
@@ -57,6 +93,17 @@ m.M41 = -0.181016F; m.M42 = -0.058312F; m.M43 = 0.094464F; m.M44 = 1;
 return m;
     }
 
+    public static Matrix GetMatrixRatio(ref Vector3 min, ref Vector3 max, float ratio)
+    {
+        Vector3 v = Vector3.Empty;
+
+        v.X = max.X * ratio + min.X * (1 - ratio);
+        v.Y = max.Y * ratio + min.Y * (1 - ratio);
+        v.Z = max.Z * ratio + min.Z * (1 - ratio);
+
+        return Matrix.Scaling(v);
+    }
+
     public static Matrix GetMatrixRatio(ref Matrix min, ref Matrix max, float ratio)
     {
         Matrix m = Matrix.Identity;
@@ -89,12 +136,23 @@ return m;
     static SlideMatrices()
     {
         FaceOya = Matrix.Scaling(1.1045F, 1.064401F, 1.1045F);
+
+        MinHipsDummy = GetMinHipsDummy();
+        MaxHipsDummy = GetMaxHipsDummy();
+        MinUpLeg = GetMinUpLeg();
+        MaxUpLeg = GetMaxUpLeg();
+        MinUpLegRoll = GetMinUpLegRoll();
+        MaxUpLegRoll = GetMaxUpLegRoll();
+
         MinEyeR = GetMinEyeR();
         MaxEyeR = GetMaxEyeR();
         MinEyeL = GetMinEyeL();
         MaxEyeL = GetMaxEyeL();
     }
 
+    public Matrix HipsDummy;
+    public Matrix UpLeg;
+    public Matrix UpLegRoll;
     public Matrix EyeR;
     public Matrix EyeL;
 
@@ -128,6 +186,9 @@ return m;
         set
         {
             leg_ratio = value;
+            HipsDummy = GetMatrixRatio(ref MinHipsDummy, ref MaxHipsDummy, leg_ratio);
+            UpLeg = GetMatrixRatio(ref MinUpLeg, ref MaxUpLeg, leg_ratio);
+            UpLegRoll = GetMatrixRatio(ref MinUpLegRoll, ref MaxUpLegRoll, leg_ratio);
         }
     }
 
