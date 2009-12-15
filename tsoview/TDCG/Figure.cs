@@ -336,6 +336,11 @@ public class Figure : IDisposable
             case "face_oya":
                 m *= SlideMatrices.FaceOya;
                 break;
+            case "eyeline_sita_L":
+            case "R_eyeline_oya_L":
+            case "Me_Right_Futi":
+                m *= slide_matrices.EyeR;
+                break;
             case "eyeline_sita_R":
             case "R_eyeline_oya_R":
             case "Me_Left_Futi":

@@ -13,6 +13,28 @@ namespace TDCG
 {
 public class SlideMatrices
 {
+    public static Matrix MinEyeR;
+    public static Matrix GetMinEyeR()
+    {
+Matrix m = Matrix.Identity;
+m.M11 = 1.04776F; m.M12 = -0.165705F; m.M13 = -0.042457F; m.M14 = 0;
+m.M21 = 0.169162F; m.M22 = 1.012264F; m.M23 = -0.011601F; m.M24 = 0;
+m.M31 = 0.036979F; m.M32 = 0.024401F; m.M33 = 1.100661F; m.M34 = 0;
+m.M41 = 0.004252F; m.M42 = 0.124786F; m.M43 = 0.025256F; m.M44 = 1;
+return m;
+    }
+
+    public static Matrix MaxEyeR;
+    public static Matrix GetMaxEyeR()
+    {
+Matrix m = Matrix.Identity;
+m.M11 = 1.039604F; m.M12 = 0.255108F; m.M13 = -0.15971F; m.M14 = 0;
+m.M21 = -0.27475F; m.M22 = 1.011007F; m.M23 = -0.040911F; m.M24 = 0;
+m.M31 = 0.139395F; m.M32 = 0.085025F; m.M33 = 1.090691F; m.M34 = 0;
+m.M41 = 0.180933F; m.M42 = -0.058389F; m.M43 = 0.094482F; m.M44 = 1;
+return m;
+    }
+
     public static Matrix MinEyeL;
     public static Matrix GetMinEyeL()
     {
@@ -67,10 +89,13 @@ return m;
     static SlideMatrices()
     {
         FaceOya = Matrix.Scaling(1.1045F, 1.064401F, 1.1045F);
+        MinEyeR = GetMinEyeR();
+        MaxEyeR = GetMaxEyeR();
         MinEyeL = GetMinEyeL();
         MaxEyeL = GetMaxEyeL();
     }
 
+    public Matrix EyeR;
     public Matrix EyeL;
 
     public SlideMatrices()
@@ -84,6 +109,7 @@ return m;
         get { return eye_ratio; }
         set {
             eye_ratio = value;
+            EyeR = GetMatrixRatio(ref MinEyeR, ref MaxEyeR, eye_ratio) * Matrix.Invert(FaceOya);
             EyeL = GetMatrixRatio(ref MinEyeL, ref MaxEyeL, eye_ratio) * Matrix.Invert(FaceOya);
         }
     }
