@@ -316,6 +316,19 @@ public class Figure : IDisposable
         UpdateBoneMatrices(tmo.nodes[0], tmo_frame);
     }
 
+    void Scale1(ref Matrix m, ref Matrix scaling)
+    {
+        m.M11 *= scaling.M11;
+        m.M12 *= scaling.M11;
+        m.M13 *= scaling.M11;
+        m.M21 *= scaling.M22;
+        m.M22 *= scaling.M22;
+        m.M23 *= scaling.M22;
+        m.M31 *= scaling.M33;
+        m.M32 *= scaling.M33;
+        m.M33 *= scaling.M33;
+    }
+
     /// <summary>
     /// bone行列を更新します。
     /// </summary>
@@ -331,43 +344,6 @@ public class Figure : IDisposable
         Matrix m = tmo_node.TransformationMatrix;
         switch (tmo_node.Name)
         {
-            case "W_Spine_Dummy":
-                m *= slide_matrices.SpineDummy;
-                break;
-            case "W_Spine1":
-                m *= slide_matrices.Spine1;
-                break;
-            case "W_Spine3":
-                m *= slide_matrices.Spine3;
-                break;
-            case "W_LeftHips_Dummy":
-            case "W_RightHips_Dummy":
-                m *= slide_matrices.HipsDummy;
-                break;
-            case "W_LeftUpLeg":
-            case "W_RightUpLeg":
-                m *= slide_matrices.UpLeg;
-                break;
-            case "W_LeftUpLegRoll":
-            case "W_RightUpLegRoll":
-                m *= slide_matrices.UpLegRoll;
-                break;
-            case "W_LeftLegRoll":
-            case "W_RightLegRoll":
-                m *= slide_matrices.LegRoll;
-                break;
-            case "W_LeftArm_Dummy":
-            case "W_RightArm_Dummy":
-                m *= slide_matrices.ArmDummy;
-                break;
-            case "W_LeftArm":
-            case "W_RightArm":
-                m *= slide_matrices.Arm;
-                break;
-            case "W_LeftHand":
-            case "W_RightHand":
-                m *= slide_matrices.Hand;
-                break;
             case "face_oya":
                 m *= SlideMatrices.FaceOya;
                 break;
@@ -383,7 +359,56 @@ public class Figure : IDisposable
                 break;
         }
         matrixStack.MultiplyMatrixLocal(m);
-        tmo_node.combined_matrix = matrixStack.Top;
+        m = matrixStack.Top;
+        switch (tmo_node.Name)
+        {
+            case "W_Spine_Dummy":
+                Scale1(ref m, ref slide_matrices.SpineDummy);
+                break;
+            case "W_Spine1":
+            case "W_Spine2":
+                Scale1(ref m, ref slide_matrices.Spine1);
+                break;
+
+            case "W_LeftHips_Dummy":
+            case "W_RightHips_Dummy":
+                Scale1(ref m, ref slide_matrices.HipsDummy);
+                break;
+            case "W_LeftUpLeg":
+            case "W_RightUpLeg":
+                Scale1(ref m, ref slide_matrices.UpLeg);
+                break;
+            case "W_LeftUpLegRoll":
+            case "W_RightUpLegRoll":
+            case "W_LeftLeg":
+            case "W_RightLeg":
+                Scale1(ref m, ref slide_matrices.UpLegRoll);
+                break;
+            case "W_LeftLegRoll":
+            case "W_RightLegRoll":
+            case "W_LeftFoot":
+            case "W_RightFoot":
+            case "W_LeftToeBase":
+            case "W_RightToeBase":
+                Scale1(ref m, ref slide_matrices.LegRoll);
+                break;
+
+            case "W_LeftArm_Dummy":
+            case "W_RightArm_Dummy":
+                Scale1(ref m, ref slide_matrices.ArmDummy);
+                break;
+            case "W_LeftArm":
+            case "W_RightArm":
+            case "W_LeftArmRoll":
+            case "W_RightArmRoll":
+            case "W_LeftForeArm":
+            case "W_RightForeArm":
+            case "W_LeftForeArmRoll":
+            case "W_RightForeArmRoll":
+                Scale1(ref m, ref slide_matrices.Arm);
+                break;
+        }
+        tmo_node.combined_matrix = m;
 
         foreach (TMONode child_node in tmo_node.children)
             UpdateBoneMatrices(child_node, tmo_frame);

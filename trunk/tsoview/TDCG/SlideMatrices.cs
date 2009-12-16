@@ -20,7 +20,7 @@ public class SlideMatrices
 
     public static Vector3 GetMaxSpineDummy()
     {
-        return new Vector3(1.089000f, 1.0f, 0.923500f);
+        return new Vector3(1.0890f, 1.0f, 0.9235f);
     }
 
     public static Vector3 GetMinSpine1()
@@ -30,17 +30,7 @@ public class SlideMatrices
 
     public static Vector3 GetMaxSpine1()
     {
-        return new Vector3(1.083563f, 1.0f, 1.082837f);
-    }
-
-    public static Vector3 GetMinSpine3()
-    {
-        return new Vector3(1.0f, 1.0f, 1.0f);
-    }
-
-    public static Vector3 GetMaxSpine3()
-    {
-        return new Vector3(0.847458f, 1.0f, 1.0f);
+        return new Vector3(1.1800f, 1.0f, 1.0f);
     }
 
     public static Vector3 GetMinHipsDummy()
@@ -50,37 +40,37 @@ public class SlideMatrices
 
     public static Vector3 GetMaxHipsDummy()
     {
-        return new Vector3(1.200100f, 1.0f, 1.0f);
+        return new Vector3(1.2001f, 1.0f, 1.0f);
     }
 
     public static Vector3 GetMinUpLeg()
     {
-        return new Vector3(0.809100f, 1.0f, 0.819000f);
+        return new Vector3(0.8091f, 1.0f, 0.8190f);
     }
 
     public static Vector3 GetMaxUpLeg()
     {
-        return new Vector3(1.0f, 1.0f, 1.0f);
+        return new Vector3(1.2001f, 1.0f, 1.0f);
     }
 
     public static Vector3 GetMinUpLegRoll()
     {
-        return new Vector3(1.0f, 1.0f, 1.0f);
+        return new Vector3(0.8091f, 1.0f, 0.8190f);
     }
 
     public static Vector3 GetMaxUpLegRoll()
     {
-        return new Vector3(1.000917f, 1.0f, 1.0f);
+        return new Vector3(1.2012f, 1.0f, 1.0f);
     }
 
     public static Vector3 GetMinLegRoll()
     {
-        return new Vector3(1.0f, 1.0f, 1.0f);
+        return new Vector3(0.8091f, 1.0f, 0.8190f);
     }
 
     public static Vector3 GetMaxLegRoll()
     {
-        return new Vector3(0.822344f, 1.0f, 1.0f);
+        return new Vector3(0.9878f, 1.0f, 1.0f);
     }
 
     public static Vector3 GetMinArmDummy()
@@ -90,27 +80,17 @@ public class SlideMatrices
 
     public static Vector3 GetMaxArmDummy()
     {
-        return new Vector3(1.0f, 1.176000f, 1.0f);
+        return new Vector3(1.0f, 1.1760f, 1.0f);
     }
 
     public static Vector3 GetMinArm()
     {
-        return new Vector3(1.0f, 0.735000f, 1.0f);
+        return new Vector3(1.0f, 0.7350f, 1.0f);
     }
 
     public static Vector3 GetMaxArm()
     {
-        return new Vector3(1.0f, 1.0f, 1.0f);
-    }
-
-    public static Vector3 GetMinHand()
-    {
-        return new Vector3(1.0f, 1.360544f, 1.0f);
-    }
-
-    public static Vector3 GetMaxHand()
-    {
-        return new Vector3(1.0f, 0.850340f, 1.0f);
+        return new Vector3(1.0f, 1.1760f, 1.0f);
     }
 
     public static Matrix GetMinEyeR()
@@ -200,7 +180,6 @@ return m;
 
     public Matrix SpineDummy;
     public Matrix Spine1;
-    public Matrix Spine3;
 
     public Matrix HipsDummy;
     public Matrix UpLeg;
@@ -209,13 +188,13 @@ return m;
 
     public Matrix ArmDummy;
     public Matrix Arm;
-    public Matrix Hand;
 
     public Matrix EyeR;
     public Matrix EyeL;
 
     public SlideMatrices()
     {
+        WaistRatio = 0.5f;
         LegRatio = 0.5f;
         ArmRatio = 0.5f;
         EyeRatio = 0.5f;
@@ -238,7 +217,6 @@ return m;
             arm_ratio = value;
             ArmDummy = GetMatrixRatio(GetMinArmDummy(), GetMaxArmDummy(), arm_ratio);
             Arm = GetMatrixRatio(GetMinArm(), GetMaxArm(), arm_ratio);
-            Hand = GetMatrixRatio(GetMinHand(), GetMaxHand(), arm_ratio);
         }
     }
 
@@ -265,7 +243,6 @@ return m;
             waist_ratio = value;
             SpineDummy = GetMatrixRatio(GetMinSpineDummy(), GetMaxSpineDummy(), waist_ratio);
             Spine1 = GetMatrixRatio(GetMinSpine1(), GetMaxSpine1(), waist_ratio);
-            Spine3 = GetMatrixRatio(GetMinSpine3(), GetMaxSpine3(), waist_ratio);
         }
     }
 
