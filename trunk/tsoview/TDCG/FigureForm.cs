@@ -25,6 +25,7 @@ public class FigureForm : Form
     private TrackBar tbSlide;
     private TrackBar tbSlideLeg;
     private TrackBar tbSlideArm;
+    private TrackBar tbSlideWaist;
     private DataGridView gvShaderParams;
 
     /// <summary>
@@ -73,6 +74,7 @@ public class FigureForm : Form
         this.tbSlide.Value = (int)(fig.slide_matrices.EyeRatio * 10);
         this.tbSlideLeg.Value = (int)(fig.slide_matrices.LegRatio * 10);
         this.tbSlideArm.Value = (int)(fig.slide_matrices.ArmRatio * 10);
+        this.tbSlideWaist.Value = (int)(fig.slide_matrices.WaistRatio * 10);
 
         lvTSOFiles.Items.Clear();
         for (int i = 0; i < fig.TSOList.Count; i++)
@@ -127,10 +129,12 @@ public class FigureForm : Form
         this.tbSlide = new System.Windows.Forms.TrackBar();
         this.tbSlideLeg = new System.Windows.Forms.TrackBar();
         this.tbSlideArm = new System.Windows.Forms.TrackBar();
+        this.tbSlideWaist = new System.Windows.Forms.TrackBar();
         ((System.ComponentModel.ISupportInitialize)(this.gvShaderParams)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlide)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideLeg)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideArm)).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)(this.tbSlideWaist)).BeginInit();
         this.SuspendLayout();
         // 
         // btnDump
@@ -243,9 +247,18 @@ public class FigureForm : Form
         this.tbSlideArm.TabIndex = 8;
         this.tbSlideArm.ValueChanged += new System.EventHandler(this.tbSlideArm_ValueChanged);
         // 
+        // tbSlideWaist
+        // 
+        this.tbSlideWaist.Location = new System.Drawing.Point(604, 371);
+        this.tbSlideWaist.Name = "tbSlideWaist";
+        this.tbSlideWaist.Size = new System.Drawing.Size(104, 45);
+        this.tbSlideWaist.TabIndex = 9;
+        this.tbSlideWaist.ValueChanged += new System.EventHandler(this.tbSlideWaist_ValueChanged);
+        // 
         // FigureForm
         // 
         this.ClientSize = new System.Drawing.Size(784, 563);
+        this.Controls.Add(this.tbSlideWaist);
         this.Controls.Add(this.tbSlideArm);
         this.Controls.Add(this.tbSlideLeg);
         this.Controls.Add(this.tbSlide);
@@ -262,6 +275,7 @@ public class FigureForm : Form
         ((System.ComponentModel.ISupportInitialize)(this.tbSlide)).EndInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideLeg)).EndInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideArm)).EndInit();
+        ((System.ComponentModel.ISupportInitialize)(this.tbSlideWaist)).EndInit();
         this.ResumeLayout(false);
         this.PerformLayout();
 
@@ -355,6 +369,15 @@ public class FigureForm : Form
             return;
 
         fig.slide_matrices.ArmRatio = tbSlideArm.Value * 0.1f;
+        fig.UpdateBoneMatrices(true);
+    }
+
+    private void tbSlideWaist_ValueChanged(object sender, EventArgs e)
+    {
+        if (fig == null)
+            return;
+
+        fig.slide_matrices.WaistRatio = tbSlideWaist.Value * 0.1f;
         fig.UpdateBoneMatrices(true);
     }
 }

@@ -13,6 +13,36 @@ namespace TDCG
 {
 public class SlideMatrices
 {
+    public static Vector3 GetMinSpineDummy()
+    {
+        return new Vector3(1.0f, 1.0f, 1.0f);
+    }
+
+    public static Vector3 GetMaxSpineDummy()
+    {
+        return new Vector3(1.089000f, 1.0f, 0.923500f);
+    }
+
+    public static Vector3 GetMinSpine1()
+    {
+        return new Vector3(1.0f, 1.0f, 1.0f);
+    }
+
+    public static Vector3 GetMaxSpine1()
+    {
+        return new Vector3(1.083563f, 1.0f, 1.082837f);
+    }
+
+    public static Vector3 GetMinSpine3()
+    {
+        return new Vector3(1.0f, 1.0f, 1.0f);
+    }
+
+    public static Vector3 GetMaxSpine3()
+    {
+        return new Vector3(0.847458f, 1.0f, 1.0f);
+    }
+
     public static Vector3 GetMinHipsDummy()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
@@ -168,6 +198,10 @@ return m;
         FaceOya = Matrix.Scaling(1.1045F, 1.064401F, 1.1045F);
     }
 
+    public Matrix SpineDummy;
+    public Matrix Spine1;
+    public Matrix Spine3;
+
     public Matrix HipsDummy;
     public Matrix UpLeg;
     public Matrix UpLegRoll;
@@ -229,6 +263,9 @@ return m;
         set
         {
             waist_ratio = value;
+            SpineDummy = GetMatrixRatio(GetMinSpineDummy(), GetMaxSpineDummy(), waist_ratio);
+            Spine1 = GetMatrixRatio(GetMinSpine1(), GetMaxSpine1(), waist_ratio);
+            Spine3 = GetMatrixRatio(GetMinSpine3(), GetMaxSpine3(), waist_ratio);
         }
     }
 
