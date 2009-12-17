@@ -13,6 +13,18 @@ namespace TDCG
 {
 public class SlideMatrices
 {
+    /// おっぱいスライダ0.225でのscaling factor
+    public static Vector3 GetMinChichi1()
+    {
+        return new Vector3(0.8350f, 0.8240f, 0.7800f);
+    }
+
+    /// おっぱいスライダ1.0でのscaling factor
+    public static Vector3 GetMaxChichi1()
+    {
+        return new Vector3(1.2500f, 1.3000f, 1.1800f);
+    }
+
     public static Vector3 GetMinSpineDummy()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
@@ -178,6 +190,8 @@ return m;
         FaceOya = Matrix.Scaling(1.1045F, 1.064401F, 1.1045F);
     }
 
+    public Matrix Chichi1;
+
     public Matrix SpineDummy;
     public Matrix Spine1;
 
@@ -194,6 +208,7 @@ return m;
 
     public SlideMatrices()
     {
+        BustRatio = 0.5f;
         WaistRatio = 0.5f;
         LegRatio = 0.5f;
         ArmRatio = 0.5f;
@@ -253,6 +268,7 @@ return m;
         set
         {
             bust_ratio = value;
+            Chichi1 = GetMatrixRatio(GetMinChichi1(), GetMaxChichi1(), bust_ratio);
         }
     }
 
