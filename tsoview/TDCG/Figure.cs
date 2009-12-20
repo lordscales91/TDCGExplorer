@@ -312,8 +312,25 @@ public class Figure : IDisposable
     /// </summary>
     protected void UpdateBoneMatrices(TMOFile tmo, TMOFrame tmo_frame)
     {
-        matrixStack.LoadMatrix(slide_matrices.Local * Matrix.Translation(translation));
+        Matrix local = Matrix.Scaling(slide_matrices.Local);
+        local.M41 = translation.X;
+        local.M42 = translation.Y;
+        local.M43 = translation.Z;
+        matrixStack.LoadMatrix(local);
         UpdateBoneMatrices(tmo.nodes[0], tmo_frame);
+    }
+
+    void Scale1(ref Matrix m, ref Vector3 scaling)
+    {
+        m.M11 *= scaling.X;
+        m.M12 *= scaling.X;
+        m.M13 *= scaling.X;
+        m.M21 *= scaling.Y;
+        m.M22 *= scaling.Y;
+        m.M23 *= scaling.Y;
+        m.M31 *= scaling.Z;
+        m.M32 *= scaling.Z;
+        m.M33 *= scaling.Z;
     }
 
     void Scale1(ref Matrix m, ref Matrix scaling)

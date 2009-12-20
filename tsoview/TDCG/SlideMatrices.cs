@@ -167,6 +167,17 @@ m.M41 = -0.181016F; m.M42 = -0.058312F; m.M43 = 0.094464F; m.M44 = 1;
 return m;
     }
 
+    public static Vector3 GetVector3Ratio(Vector3 min, Vector3 max, float ratio)
+    {
+        Vector3 v = Vector3.Empty;
+
+        v.X = max.X * ratio + min.X * (1 - ratio);
+        v.Y = max.Y * ratio + min.Y * (1 - ratio);
+        v.Z = max.Z * ratio + min.Z * (1 - ratio);
+
+        return v;
+    }
+
     public static Matrix GetMatrixRatio(Vector3 min, Vector3 max, float ratio)
     {
         Vector3 v = Vector3.Empty;
@@ -212,8 +223,8 @@ return m;
         FaceOyaDefault = Matrix.Scaling(1.1045F, 1.064401F, 1.1045F);
     }
 
-    public Matrix Local;
-    public Matrix FaceOya;
+    public Vector3 Local;
+    public Vector3 FaceOya;
 
     public Matrix SpineDummy;
     public Matrix Spine1;
@@ -299,8 +310,8 @@ return m;
         set
         {
             age_ratio = value;
-            Local = GetMatrixRatio(GetMinLocal(), GetMaxLocal(), age_ratio);
-            FaceOya = GetMatrixRatio(GetMinFaceOya(), GetMaxFaceOya(), age_ratio);
+            Local = GetVector3Ratio(GetMinLocal(), GetMaxLocal(), age_ratio);
+            FaceOya = GetVector3Ratio(GetMinFaceOya(), GetMaxFaceOya(), age_ratio);
         }
     }
 
