@@ -368,7 +368,7 @@ public class Figure : IDisposable
                 Scale1(ref m, ref SlideMatrices.FaceOya);
                 break;
             case "eyeline_sita_L":
-            case "R_eyeline_oya_L":
+            case "L_eyeline_oya_L":
             case "Me_Right_Futi":
                 m *= slide_matrices.EyeR;
                 break;
