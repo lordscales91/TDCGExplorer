@@ -13,18 +13,6 @@ namespace TDCG
 {
 public class SlideMatrices
 {
-    /// おっぱいスライダ0.225でのscaling factor
-    public static Vector3 GetMinChichi1()
-    {
-        return new Vector3(0.8350f, 0.8240f, 0.7800f);
-    }
-
-    /// おっぱいスライダ1.0でのscaling factor
-    public static Vector3 GetMaxChichi1()
-    {
-        return new Vector3(1.2500f, 1.3000f, 1.1800f);
-    }
-
     public static Vector3 GetMinSpineDummy()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
@@ -103,6 +91,18 @@ public class SlideMatrices
     public static Vector3 GetMaxArm()
     {
         return new Vector3(1.0f, 1.1760f, 1.0f);
+    }
+
+    /// おっぱいスライダ0.225でのscaling factor
+    public static Vector3 GetMinChichi()
+    {
+        return new Vector3(0.8350f, 0.8240f, 0.7800f);
+    }
+
+    /// おっぱいスライダ1.0でのscaling factor
+    public static Vector3 GetMaxChichi()
+    {
+        return new Vector3(1.2500f, 1.3000f, 1.1800f);
     }
 
     public static Matrix GetMinEyeR()
@@ -190,8 +190,6 @@ return m;
         FaceOya = Matrix.Scaling(1.1045F, 1.064401F, 1.1045F);
     }
 
-    public Matrix Chichi1;
-
     public Matrix SpineDummy;
     public Matrix Spine1;
 
@@ -203,15 +201,17 @@ return m;
     public Matrix ArmDummy;
     public Matrix Arm;
 
+    public Matrix Chichi;
+
     public Matrix EyeR;
     public Matrix EyeL;
 
     public SlideMatrices()
     {
-        BustRatio = 0.5f;
-        WaistRatio = 0.5f;
-        LegRatio = 0.5f;
         ArmRatio = 0.5f;
+        LegRatio = 0.5f;
+        WaistRatio = 0.5f;
+        BustRatio = 0.5f;
         EyeRatio = 0.5f;
     }
 
@@ -269,9 +269,9 @@ return m;
         {
             bust_ratio = value;
             if (bust_ratio < 0.2250f)
-                Chichi1 = Matrix.Scaling(GetMinChichi1());
+                Chichi = Matrix.Scaling(GetMinChichi());
             else
-                Chichi1 = GetMatrixRatio(GetMinChichi1(), GetMaxChichi1(), (bust_ratio - 0.2250f) / (1.0f - 0.2250f));
+                Chichi = GetMatrixRatio(GetMinChichi(), GetMaxChichi(), (bust_ratio - 0.2250f) / (1.0f - 0.2250f));
         }
     }
 

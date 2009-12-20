@@ -316,26 +316,6 @@ public class Figure : IDisposable
         UpdateBoneMatrices(tmo.nodes[0], tmo_frame);
     }
 
-    void Scale(ref Matrix m, ref Matrix scaling)
-    {
-        m.Multiply(scaling);
-        m.M41 /= scaling.M11;
-        m.M42 /= scaling.M22;
-        m.M43 /= scaling.M33;
-
-        /*
-        m.M11 *= scaling.M11;
-        m.M12 *= scaling.M11;
-        m.M13 *= scaling.M11;
-        m.M21 *= scaling.M22;
-        m.M22 *= scaling.M22;
-        m.M23 *= scaling.M22;
-        m.M31 *= scaling.M33;
-        m.M32 *= scaling.M33;
-        m.M33 *= scaling.M33;
-        */
-    }
-
     void Scale1(ref Matrix m, ref Matrix scaling)
     {
         m.M11 *= scaling.M11;
@@ -438,7 +418,7 @@ public class Figure : IDisposable
             case "Chichi_Right4":
             case "Chichi_Left5":
             case "Chichi_Right5":
-                Scale1(ref m, ref slide_matrices.Chichi1);
+                Scale1(ref m, ref slide_matrices.Chichi);
                 break;
         }
         tmo_node.combined_matrix = m;
