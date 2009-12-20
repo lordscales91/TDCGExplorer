@@ -312,7 +312,7 @@ public class Figure : IDisposable
     /// </summary>
     protected void UpdateBoneMatrices(TMOFile tmo, TMOFrame tmo_frame)
     {
-        matrixStack.LoadMatrix(Matrix.Translation(translation));
+        matrixStack.LoadMatrix(slide_matrices.Local * Matrix.Translation(translation));
         UpdateBoneMatrices(tmo.nodes[0], tmo_frame);
     }
 
@@ -345,7 +345,7 @@ public class Figure : IDisposable
         switch (tmo_node.Name)
         {
             case "face_oya":
-                Scale1(ref m, ref SlideMatrices.FaceOya);
+                Scale1(ref m, ref slide_matrices.FaceOya);
                 break;
             case "eyeline_sita_L":
             case "L_eyeline_oya_L":

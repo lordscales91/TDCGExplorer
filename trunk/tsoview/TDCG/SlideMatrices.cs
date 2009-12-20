@@ -13,6 +13,28 @@ namespace TDCG
 {
 public class SlideMatrices
 {
+    public static Vector3 GetMinLocal()
+    {
+        float scale = 0.9520f;
+        return new Vector3(scale, scale, scale);
+    }
+
+    public static Vector3 GetMaxLocal()
+    {
+        float scale = 1.1048f;
+        return new Vector3(scale, scale, scale);
+    }
+
+    public static Vector3 GetMinFaceOya()
+    {
+        return new Vector3(1.224272f, 1.066630f, 1.224272f);
+    }
+
+    public static Vector3 GetMaxFaceOya()
+    {
+        return new Vector3(0.967304f, 1.025342f, 0.967304f);
+    }
+
     public static Vector3 GetMinSpineDummy()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
@@ -183,12 +205,15 @@ return m;
         return m;
     }
 
-    public static Matrix FaceOya;
+    public static Matrix FaceOyaDefault;
 
     static SlideMatrices()
     {
-        FaceOya = Matrix.Scaling(1.1045F, 1.064401F, 1.1045F);
+        FaceOyaDefault = Matrix.Scaling(1.1045F, 1.064401F, 1.1045F);
     }
+
+    public Matrix Local;
+    public Matrix FaceOya;
 
     public Matrix SpineDummy;
     public Matrix Spine1;
@@ -212,16 +237,8 @@ return m;
         LegRatio = 0.5f;
         WaistRatio = 0.5f;
         BustRatio = 0.5f;
+        AgeRatio = 0.5f;
         EyeRatio = 0.5f;
-    }
-
-    float age_ratio;
-    public float AgeRatio
-    {
-        get { return age_ratio; }
-        set {
-            age_ratio = value;
-        }
     }
 
     float arm_ratio;
@@ -275,14 +292,26 @@ return m;
         }
     }
 
+    float age_ratio;
+    public float AgeRatio
+    {
+        get { return age_ratio; }
+        set
+        {
+            age_ratio = value;
+            Local = GetMatrixRatio(GetMinLocal(), GetMaxLocal(), age_ratio);
+            FaceOya = GetMatrixRatio(GetMinFaceOya(), GetMaxFaceOya(), age_ratio);
+        }
+    }
+
     float eye_ratio;
     public float EyeRatio
     {
         get { return eye_ratio; }
         set {
             eye_ratio = value;
-            EyeR = GetMatrixRatio(GetMinEyeR(), GetMaxEyeR(), eye_ratio) * Matrix.Invert(FaceOya);
-            EyeL = GetMatrixRatio(GetMinEyeL(), GetMaxEyeL(), eye_ratio) * Matrix.Invert(FaceOya);
+            EyeR = GetMatrixRatio(GetMinEyeR(), GetMaxEyeR(), eye_ratio) * Matrix.Invert(FaceOyaDefault);
+            EyeL = GetMatrixRatio(GetMinEyeL(), GetMaxEyeL(), eye_ratio) * Matrix.Invert(FaceOyaDefault);
         }
     }
 }
