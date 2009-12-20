@@ -268,7 +268,10 @@ return m;
         set
         {
             bust_ratio = value;
-            Chichi1 = GetMatrixRatio(GetMinChichi1(), GetMaxChichi1(), bust_ratio);
+            if (bust_ratio < 0.2250f)
+                Chichi1 = Matrix.Scaling(GetMinChichi1());
+            else
+                Chichi1 = GetMatrixRatio(GetMinChichi1(), GetMaxChichi1(), (bust_ratio - 0.2250f) / (1.0f - 0.2250f));
         }
     }
 
