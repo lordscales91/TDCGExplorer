@@ -180,13 +180,7 @@ return m;
 
     public static Matrix GetMatrixRatio(Vector3 min, Vector3 max, float ratio)
     {
-        Vector3 v = Vector3.Empty;
-
-        v.X = max.X * ratio + min.X * (1 - ratio);
-        v.Y = max.Y * ratio + min.Y * (1 - ratio);
-        v.Z = max.Z * ratio + min.Z * (1 - ratio);
-
-        return Matrix.Scaling(v);
+        return Matrix.Scaling(GetVector3Ratio(min, max, ratio));
     }
 
     public static Matrix GetMatrixRatio(Matrix min, Matrix max, float ratio)
@@ -226,18 +220,18 @@ return m;
     public Vector3 Local;
     public Vector3 FaceOya;
 
-    public Matrix SpineDummy;
-    public Matrix Spine1;
+    public Vector3 SpineDummy;
+    public Vector3 Spine1;
 
-    public Matrix HipsDummy;
-    public Matrix UpLeg;
-    public Matrix UpLegRoll;
-    public Matrix LegRoll;
+    public Vector3 HipsDummy;
+    public Vector3 UpLeg;
+    public Vector3 UpLegRoll;
+    public Vector3 LegRoll;
 
-    public Matrix ArmDummy;
-    public Matrix Arm;
+    public Vector3 ArmDummy;
+    public Vector3 Arm;
 
-    public Matrix Chichi;
+    public Vector3 Chichi;
 
     public Matrix EyeR;
     public Matrix EyeL;
@@ -258,8 +252,8 @@ return m;
         get { return arm_ratio; }
         set {
             arm_ratio = value;
-            ArmDummy = GetMatrixRatio(GetMinArmDummy(), GetMaxArmDummy(), arm_ratio);
-            Arm = GetMatrixRatio(GetMinArm(), GetMaxArm(), arm_ratio);
+            ArmDummy = GetVector3Ratio(GetMinArmDummy(), GetMaxArmDummy(), arm_ratio);
+            Arm = GetVector3Ratio(GetMinArm(), GetMaxArm(), arm_ratio);
         }
     }
 
@@ -270,10 +264,10 @@ return m;
         set
         {
             leg_ratio = value;
-            HipsDummy = GetMatrixRatio(GetMinHipsDummy(), GetMaxHipsDummy(), leg_ratio);
-            UpLeg = GetMatrixRatio(GetMinUpLeg(), GetMaxUpLeg(), leg_ratio);
-            UpLegRoll = GetMatrixRatio(GetMinUpLegRoll(), GetMaxUpLegRoll(), leg_ratio);
-            LegRoll = GetMatrixRatio(GetMinLegRoll(), GetMaxLegRoll(), leg_ratio);
+            HipsDummy = GetVector3Ratio(GetMinHipsDummy(), GetMaxHipsDummy(), leg_ratio);
+            UpLeg = GetVector3Ratio(GetMinUpLeg(), GetMaxUpLeg(), leg_ratio);
+            UpLegRoll = GetVector3Ratio(GetMinUpLegRoll(), GetMaxUpLegRoll(), leg_ratio);
+            LegRoll = GetVector3Ratio(GetMinLegRoll(), GetMaxLegRoll(), leg_ratio);
         }
     }
 
@@ -284,8 +278,8 @@ return m;
         set
         {
             waist_ratio = value;
-            SpineDummy = GetMatrixRatio(GetMinSpineDummy(), GetMaxSpineDummy(), waist_ratio);
-            Spine1 = GetMatrixRatio(GetMinSpine1(), GetMaxSpine1(), waist_ratio);
+            SpineDummy = GetVector3Ratio(GetMinSpineDummy(), GetMaxSpineDummy(), waist_ratio);
+            Spine1 = GetVector3Ratio(GetMinSpine1(), GetMaxSpine1(), waist_ratio);
         }
     }
 
@@ -297,9 +291,9 @@ return m;
         {
             bust_ratio = value;
             if (bust_ratio < 0.2250f)
-                Chichi = Matrix.Scaling(GetMinChichi());
+                Chichi = GetMinChichi();
             else
-                Chichi = GetMatrixRatio(GetMinChichi(), GetMaxChichi(), (bust_ratio - 0.2250f) / (1.0f - 0.2250f));
+                Chichi = GetVector3Ratio(GetMinChichi(), GetMaxChichi(), (bust_ratio - 0.2250f) / (1.0f - 0.2250f));
         }
     }
 
