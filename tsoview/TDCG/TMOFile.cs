@@ -1048,17 +1048,17 @@ namespace TDCG
         /// <summary>
         /// 子nodeリスト
         /// </summary>
-        internal List<TMONode> children = new List<TMONode>();
+        public List<TMONode> children = new List<TMONode>();
 
         /// <summary>
         /// 親node
         /// </summary>
-        internal TMONode parent;
+        public TMONode parent;
 
         /// <summary>
         /// 行列リスト
         /// </summary>
-        internal List<TMOMat> matrices = new List<TMOMat>();
+        public List<TMOMat> matrices = new List<TMOMat>();
 
         /// <summary>
         /// ワールド座標系での位置と向きを表します。これはviewerから更新されます。
@@ -1276,12 +1276,12 @@ namespace TDCG
         /// <returns></returns>
         public Vector3 GetWorldPosition()
         {
-            TMONode bone = this;
+            TMONode node = this;
             Vector3 v = Vector3.Empty;
-            while (bone != null)
+            while (node != null)
             {
-                v = Vector3.TransformCoordinate(v, bone.TransformationMatrix);
-                bone = bone.parent;
+                v = Vector3.TransformCoordinate(v, node.TransformationMatrix);
+                node = node.parent;
             }
             return v;
         }
@@ -1292,12 +1292,12 @@ namespace TDCG
         /// <returns></returns>
         public Matrix GetWorldCoordinate()
         {
-            TMONode bone = this;
+            TMONode node = this;
             Matrix m = Matrix.Identity;
-            while (bone != null)
+            while (node != null)
             {
-                m.Multiply(bone.TransformationMatrix);
-                bone = bone.parent;
+                m.Multiply(node.TransformationMatrix);
+                node = node.parent;
             }
             return m;
         }

@@ -726,7 +726,7 @@ namespace TDCG
         /// <summary>
         /// 子nodeリスト
         /// </summary>
-        public List<TSONode> child_nodes = new List<TSONode>();
+        public List<TSONode> children = new List<TSONode>();
 
         /// <summary>
         /// 親node
@@ -1063,7 +1063,7 @@ namespace TDCG
                     continue;
                 string path = nodes[i].Path.Substring(0, index);
                 nodes[i].parent = nodemap[path];
-                nodes[i].parent.child_nodes.Add(nodes[i]);
+                nodes[i].parent.children.Add(nodes[i]);
             }
         }
 
