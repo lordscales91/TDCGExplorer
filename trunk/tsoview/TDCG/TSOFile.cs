@@ -767,16 +767,16 @@ namespace TDCG
         public string Name { get { return name; } }
 
         /// <summary>
-        /// 指定boneに対するオフセット行列を計算します。
+        /// 指定nodeに対するオフセット行列を計算します。
         /// </summary>
-        /// <param name="bone">bone</param>
-        public static Matrix GetBoneOffsetMatrix(TSONode bone)
+        /// <param name="node">node</param>
+        public static Matrix GetOffsetMatrix(TSONode node)
         {
             Matrix m = Matrix.Identity;
-            while (bone != null)
+            while (node != null)
             {
-                m.Multiply(bone.TransformationMatrix);
-                bone = bone.parent;
+                m.Multiply(node.TransformationMatrix);
+                node = node.parent;
             }
             return Matrix.Invert(m);
         }
@@ -786,7 +786,7 @@ namespace TDCG
         /// </summary>
         public void ComputeOffsetMatrix()
         {
-            offset_matrix = TSONode.GetBoneOffsetMatrix(this);
+            offset_matrix = TSONode.GetOffsetMatrix(this);
         }
 
         /// <summary>
@@ -804,12 +804,12 @@ namespace TDCG
         /// <returns></returns>
         public Vector3 GetWorldPosition()
         {
-            TSONode bone = this;
+            TSONode node = this;
             Vector3 v = Vector3.Empty;
-            while (bone != null)
+            while (node != null)
             {
-                v = Vector3.TransformCoordinate(v, bone.TransformationMatrix);
-                bone = bone.parent;
+                v = Vector3.TransformCoordinate(v, node.TransformationMatrix);
+                node = node.parent;
             }
             return v;
         }
@@ -820,12 +820,12 @@ namespace TDCG
         /// <returns></returns>
         public Matrix GetWorldCoordinate()
         {
-            TSONode bone = this;
+            TSONode node = this;
             Matrix m = Matrix.Identity;
-            while (bone != null)
+            while (node != null)
             {
-                m.Multiply(bone.TransformationMatrix);
-                bone = bone.parent;
+                m.Multiply(node.TransformationMatrix);
+                node = node.parent;
             }
             return m;
         }
