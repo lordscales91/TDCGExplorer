@@ -312,12 +312,22 @@ public class Figure : IDisposable
     /// </summary>
     protected void UpdateBoneMatrices(TMOFile tmo, TMOFrame tmo_frame)
     {
+        if (tmo.nodes == null)
+            return;
+
+        //先頭nodeをrootとみなす
+        TMONode tmo_node = tmo.nodes[0];
+
+        //姉妹スライダによる変形
         Matrix local = Matrix.Scaling(slide_matrices.Local);
+
+        //移動変位を設定
         local.M41 = translation.X;
         local.M42 = translation.Y;
         local.M43 = translation.Z;
+
         matrixStack.LoadMatrix(local);
-        UpdateBoneMatrices(tmo.nodes[0], tmo_frame);
+        UpdateBoneMatrices(tmo_node, tmo_frame);
     }
 
     void Scale1(ref Matrix m, ref Vector3 scaling)
