@@ -465,7 +465,7 @@ namespace TDCG
     /// </summary>
     public class TMOMat
     {
-        internal Matrix m;
+        public Matrix m;
 
         /// <summary>
         /// TMOMat‚ğì¬‚µ‚Ü‚·B
