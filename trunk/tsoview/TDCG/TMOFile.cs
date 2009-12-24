@@ -465,6 +465,7 @@ namespace TDCG
     /// </summary>
     public class TMOMat
     {
+        /// Direct3D Matrix
         public Matrix m;
 
         /// <summary>

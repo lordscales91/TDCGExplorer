@@ -11,108 +11,447 @@ using Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
+    /// スライダ変形行列
 public class SlideMatrices
 {
+    /// 姉妹スライダ0.0でのlocal scaling factor
     public static Vector3 GetMinLocal()
     {
         float scale = 0.9520f;
         return new Vector3(scale, scale, scale);
     }
 
+    /// 姉妹スライダ1.0でのlocal scaling factor
     public static Vector3 GetMaxLocal()
     {
         float scale = 1.1048f;
         return new Vector3(scale, scale, scale);
     }
 
+    /// 姉妹スライダ0.0でのface_oya scaling factor
     public static Vector3 GetMinFaceOya()
     {
         return new Vector3(1.224272f, 1.066630f, 1.224272f);
     }
 
+    /// 姉妹スライダ1.0でのface_oya scaling factor
     public static Vector3 GetMaxFaceOya()
     {
         return new Vector3(0.967304f, 1.025342f, 0.967304f);
     }
 
+    /// 胴まわりスライダ0.0でのW_Spine_Dummy scaling factor
     public static Vector3 GetMinSpineDummy()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
     }
 
+    /// 胴まわりスライダ1.0でのW_Spine_Dummy scaling factor
     public static Vector3 GetMaxSpineDummy()
     {
         return new Vector3(1.0890f, 1.0f, 0.9235f);
     }
 
+    /// 胴まわりスライダ0.0でのW_Spine1 scaling factor
     public static Vector3 GetMinSpine1()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
     }
 
+    /// 胴まわりスライダ1.0でのW_Spine1 scaling factor
     public static Vector3 GetMaxSpine1()
     {
         return new Vector3(1.1800f, 1.0f, 1.0f);
     }
 
+    /// あしスライダ0.0でのW_(LR)Hips_Dummy scaling factor
     public static Vector3 GetMinHipsDummy()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
     }
 
+    /// あしスライダ1.0でのW_(LR)Hips_Dummy scaling factor
     public static Vector3 GetMaxHipsDummy()
     {
         return new Vector3(1.2001f, 1.0f, 1.0f);
     }
 
+    /// あしスライダ0.0でのW_(LR)UpLeg scaling factor
     public static Vector3 GetMinUpLeg()
     {
         return new Vector3(0.8091f, 1.0f, 0.8190f);
     }
 
+    /// あしスライダ1.0でのW_(LR)UpLeg scaling factor
     public static Vector3 GetMaxUpLeg()
     {
         return new Vector3(1.2001f, 1.0f, 1.0f);
     }
 
+    /// あしスライダ0.0でのW_(LR)UpLegRoll scaling factor
     public static Vector3 GetMinUpLegRoll()
     {
         return new Vector3(0.8091f, 1.0f, 0.8190f);
     }
 
+    /// あしスライダ1.0でのW_(LR)UpLegRoll scaling factor
     public static Vector3 GetMaxUpLegRoll()
     {
         return new Vector3(1.2012f, 1.0f, 1.0f);
     }
 
+    /// あしスライダ0.0でのW_(LR)LegRoll scaling factor
     public static Vector3 GetMinLegRoll()
     {
         return new Vector3(0.8091f, 1.0f, 0.8190f);
     }
 
+    /// あしスライダ1.0でのW_(LR)LegRoll scaling factor
     public static Vector3 GetMaxLegRoll()
     {
         return new Vector3(0.9878f, 1.0f, 1.0f);
     }
 
+    /// うでスライダ0.0でのW_(LR)Arm_Dummy scaling factor
     public static Vector3 GetMinArmDummy()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
     }
 
+    /// うでスライダ1.0でのW_(LR)Arm_Dummy scaling factor
     public static Vector3 GetMaxArmDummy()
     {
         return new Vector3(1.0f, 1.1760f, 1.0f);
     }
 
+    /// うでスライダ0.0でのW_(LR)Arm scaling factor
     public static Vector3 GetMinArm()
     {
         return new Vector3(1.0f, 0.7350f, 1.0f);
     }
 
+    /// うでスライダ1.0でのW_(LR)Arm scaling factor
     public static Vector3 GetMaxArm()
     {
         return new Vector3(1.0f, 1.1760f, 1.0f);
+    }
+
+    /// 変形行列 ChichiR1 0.0
+    public static Matrix GetMinChichiR1()
+    {
+        Matrix m = Matrix.Identity;
+        m.M11 = 0.838979F;
+        m.M12 = 0.000000F;
+        m.M13 = 0.092851F;
+        m.M14 = 0.000000F;
+        m.M21 = 0.014229F;
+        m.M22 = 0.991598F;
+        m.M23 = -0.128573F;
+        m.M24 = 0.000000F;
+        m.M31 = -0.050885F;
+        m.M32 = 0.060347F;
+        m.M33 = 0.459783F;
+        m.M34 = 0.000000F;
+        m.M41 = -0.040000F;
+        m.M42 = 2.235000F;
+        m.M43 = -0.434000F;
+        m.M44 = 1.000000F;
+        return m;
+    }
+
+    /// 移動変位 ChichiR1
+    public static Vector3 GetTranslationChichiR1()
+    {
+        return new Vector3(-0.005000F, +2.302570F, -0.856764F);
+    }
+
+    /// 変形行列 ChichiR2 0.0
+    public static Matrix GetMinChichiR2()
+    {
+        Matrix m = Matrix.Identity;
+        m.M11 = 0.789796F;
+        m.M12 = -0.009908F;
+        m.M13 = 0.011000F;
+        m.M14 = 0.000000F;
+        m.M21 = 0.011146F;
+        m.M22 = 0.934271F;
+        m.M23 = 0.041193F;
+        m.M24 = 0.000000F;
+        m.M31 = -0.007671F;
+        m.M32 = -0.023269F;
+        m.M33 = 0.529827F;
+        m.M34 = 0.000000F;
+        m.M41 = -0.462000F;
+        m.M42 = 1.137000F;
+        m.M43 = 0.320000F;
+        m.M44 = 1.000000F;
+        return m;
+    }
+
+    /// 移動変位 ChichiR2
+    public static Vector3 GetTranslationChichiR2()
+    {
+        return new Vector3(-0.542005F, -1.336000F, +1.365000F);
+    }
+
+    /// 変形行列 ChichiR3 0.0
+    public static Matrix GetMinChichiR3()
+    {
+        Matrix m = Matrix.Identity;
+        m.M11 = 0.688621F;
+        m.M12 = -0.008638F;
+        m.M13 = 0.009590F;
+        m.M14 = 0.000000F;
+        m.M21 = 0.008208F;
+        m.M22 = 0.688025F;
+        m.M23 = 0.030335F;
+        m.M24 = 0.000000F;
+        m.M31 = -0.009961F;
+        m.M32 = -0.030215F;
+        m.M33 = 0.688006F;
+        m.M34 = 0.000000F;
+        m.M41 = -0.641000F;
+        m.M42 = 0.651000F;
+        m.M43 = 0.558000F;
+        m.M44 = 1.000000F;
+        return m;
+    }
+
+    /// 変形行列 ChichiR4 0.0
+    public static Matrix GetMinChichiR4()
+    {
+        Matrix m = Matrix.Identity;
+        m.M11 = 0.999822F;
+        m.M12 = -0.012542F;
+        m.M13 = 0.013924F;
+        m.M14 = 0.000000F;
+        m.M21 = 0.011917F;
+        m.M22 = 0.998956F;
+        m.M23 = 0.044044F;
+        m.M24 = 0.000000F;
+        m.M31 = -0.014463F;
+        m.M32 = -0.043870F;
+        m.M33 = 0.998930F;
+        m.M34 = 0.000000F;
+        m.M41 = -0.710000F;
+        m.M42 = 0.629000F;
+        m.M43 = 0.822000F;
+        m.M44 = 1.000000F;
+        return m;
+    }
+
+    /// 変形行列 ChichiR5 0.0
+    public static Matrix GetMinChichiR5()
+    {
+        Matrix m = Matrix.Identity;
+        m.M11 = 0.999822F;
+        m.M12 = -0.012542F;
+        m.M13 = 0.013925F;
+        m.M14 = 0.000000F;
+        m.M21 = 0.011917F;
+        m.M22 = 0.998957F;
+        m.M23 = 0.044045F;
+        m.M24 = 0.000000F;
+        m.M31 = -0.014463F;
+        m.M32 = -0.043870F;
+        m.M33 = 0.998931F;
+        m.M34 = 0.000000F;
+        m.M41 = -0.777000F;
+        m.M42 = 0.664000F;
+        m.M43 = 1.061000F;
+        m.M44 = 1.000000F;
+        return m;
+    }
+
+    /// 変形行列 ChichiR5_end 0.0
+    public static Matrix GetMinChichiR5E()
+    {
+        Matrix m = Matrix.Identity;
+        m.M11 = 0.999822F;
+        m.M12 = -0.012542F;
+        m.M13 = 0.013924F;
+        m.M14 = 0.000000F;
+        m.M21 = 0.011918F;
+        m.M22 = 0.998957F;
+        m.M23 = 0.044044F;
+        m.M24 = 0.000000F;
+        m.M31 = -0.014462F;
+        m.M32 = -0.043870F;
+        m.M33 = 0.998930F;
+        m.M34 = 0.000000F;
+        m.M41 = -0.778000F;
+        m.M42 = 0.709000F;
+        m.M43 = 1.174000F;
+        m.M44 = 1.000000F;
+        return m;
+    }
+
+    /// 変形行列 ChichiL1 0.0
+    public static Matrix GetMinChichiL1()
+    {
+        Matrix m = Matrix.Identity;
+        m.M11 = 0.838980F;
+        m.M12 = 0.000000F;
+        m.M13 = -0.092847F;
+        m.M14 = 0.000000F;
+        m.M21 = -0.014229F;
+        m.M22 = 0.991598F;
+        m.M23 = -0.128574F;
+        m.M24 = 0.000000F;
+        m.M31 = 0.050883F;
+        m.M32 = 0.060347F;
+        m.M33 = 0.459783F;
+        m.M34 = 0.000000F;
+        m.M41 = 0.040492F;
+        m.M42 = 2.234810F;
+        m.M43 = -0.433894F;
+        m.M44 = 1.000000F;
+        return m;
+    }
+
+    /// 移動変位 ChichiL1
+    public static Vector3 GetTranslationChichiL1()
+    {
+        return new Vector3(+0.005000F, +2.302570F, -0.856764F);
+    }
+
+    /// 変形行列 ChichiL2 0.0
+    public static Matrix GetMinChichiL2()
+    {
+        Matrix m = Matrix.Identity;
+        m.M11 = 0.789625F;
+        m.M12 = 0.009906F;
+        m.M13 = -0.010991F;
+        m.M14 = 0.000000F;
+        m.M21 = -0.011146F;
+        m.M22 = 0.934272F;
+        m.M23 = 0.041192F;
+        m.M24 = 0.000000F;
+        m.M31 = 0.007667F;
+        m.M32 = -0.023268F;
+        m.M33 = 0.529827F;
+        m.M34 = 0.000000F;
+        m.M41 = 0.462000F;
+        m.M42 = 1.136000F;
+        m.M43 = 0.320000F;
+        m.M44 = 1.000000F;
+        return m;
+    }
+
+    /// 移動変位 ChichiL2
+    public static Vector3 GetTranslationChichiL2()
+    {
+        return new Vector3(+0.541797F, -1.336350F, +1.364660F);
+    }
+
+    /// 変形行列 ChichiL3 0.0
+    public static Matrix GetMinChichiL3()
+    {
+        Matrix m = Matrix.Identity;
+        m.M11 = 0.688620F;
+        m.M12 = 0.008639F;
+        m.M13 = -0.009586F;
+        m.M14 = 0.000000F;
+        m.M21 = -0.008208F;
+        m.M22 = 0.688025F;
+        m.M23 = 0.030334F;
+        m.M24 = 0.000000F;
+        m.M31 = 0.009956F;
+        m.M32 = -0.030215F;
+        m.M33 = 0.688006F;
+        m.M34 = 0.000000F;
+        m.M41 = 0.641000F;
+        m.M42 = 0.650000F;
+        m.M43 = 0.558000F;
+        m.M44 = 1.000000F;
+        return m;
+    }
+
+    /// 移動変位 ChichiL3
+    public static Vector3 GetTranslationChichiL3()
+    {
+        return new Vector3(+0.214305F, -0.510129F, +0.492141F);
+    }
+
+    /// 変形行列 ChichiL4 0.0
+    public static Matrix GetMinChichiL4()
+    {
+        Matrix m = Matrix.Identity;
+        m.M11 = 0.999821F;
+        m.M12 = 0.012542F;
+        m.M13 = -0.013917F;
+        m.M14 = 0.000000F;
+        m.M21 = -0.011919F;
+        m.M22 = 0.998957F;
+        m.M23 = 0.044043F;
+        m.M24 = 0.000000F;
+        m.M31 = 0.014454F;
+        m.M32 = -0.043870F;
+        m.M33 = 0.998930F;
+        m.M34 = 0.000000F;
+        m.M41 = 0.711000F;
+        m.M42 = 0.628000F;
+        m.M43 = 0.822000F;
+        m.M44 = 1.000000F;
+        return m;
+    }
+
+    /// 移動変位 ChichiL4
+    public static Vector3 GetTranslationChichiL4()
+    {
+        return new Vector3(+0.095186F, -0.016642F, +0.385775F);
+    }
+
+    /// 変形行列 ChichiL5 0.0
+    public static Matrix GetMinChichiL5()
+    {
+        Matrix m = Matrix.Identity;
+        m.M11 = 0.999822F;
+        m.M12 = 0.012542F;
+        m.M13 = -0.013917F;
+        m.M14 = 0.000000F;
+        m.M21 = -0.011918F;
+        m.M22 = 0.998957F;
+        m.M23 = 0.044044F;
+        m.M24 = 0.000000F;
+        m.M31 = 0.014455F;
+        m.M32 = -0.043870F;
+        m.M33 = 0.998931F;
+        m.M34 = 0.000000F;
+        m.M41 = 0.778000F;
+        m.M42 = 0.664000F;
+        m.M43 = 1.061000F;
+        m.M44 = 1.000000F;
+        return m;
+    }
+
+    /// 移動変位 ChichiL5
+    public static Vector3 GetTranslationChichiL5()
+    {
+        return new Vector3(+0.064401F, +0.045397F, +0.238688F);
+    }
+
+    /// 変形行列 ChichiL5_End 0.0
+    public static Matrix GetMinChichiL5E()
+    {
+        Matrix m = Matrix.Identity;
+        m.M11 = 0.999821F;
+        m.M12 = 0.012542F;
+        m.M13 = -0.013916F;
+        m.M14 = 0.000000F;
+        m.M21 = -0.011919F;
+        m.M22 = 0.998956F;
+        m.M23 = 0.044044F;
+        m.M24 = 0.000000F;
+        m.M31 = 0.014454F;
+        m.M32 = -0.043870F;
+        m.M33 = 0.998931F;
+        m.M34 = 0.000000F;
+        m.M41 = 0.779000F;
+        m.M42 = 0.709000F;
+        m.M43 = 1.173000F;
+        m.M44 = 1.000000F;
+        return m;
     }
 
     /// おっぱいスライダ0.225でのscaling factor
@@ -127,46 +466,51 @@ public class SlideMatrices
         return new Vector3(1.2500f, 1.3000f, 1.1800f);
     }
 
+    /// たれ目つり目スライダ0.0での変形
     public static Matrix GetMinEyeR()
     {
-Matrix m = Matrix.Identity;
-m.M11 = 1.04776F; m.M12 = -0.165705F; m.M13 = -0.042457F; m.M14 = 0;
-m.M21 = 0.169162F; m.M22 = 1.012264F; m.M23 = -0.011601F; m.M24 = 0;
-m.M31 = 0.036979F; m.M32 = 0.024401F; m.M33 = 1.100661F; m.M34 = 0;
-m.M41 = 0.004252F; m.M42 = 0.124786F; m.M43 = 0.025256F; m.M44 = 1;
-return m;
+        Matrix m = Matrix.Identity;
+        m.M11 = 1.04776F; m.M12 = -0.165705F; m.M13 = -0.042457F; m.M14 = 0;
+        m.M21 = 0.169162F; m.M22 = 1.012264F; m.M23 = -0.011601F; m.M24 = 0;
+        m.M31 = 0.036979F; m.M32 = 0.024401F; m.M33 = 1.100661F; m.M34 = 0;
+        m.M41 = 0.004252F; m.M42 = 0.124786F; m.M43 = 0.025256F; m.M44 = 1;
+        return m;
     }
 
+    /// たれ目つり目スライダ1.0での変形
     public static Matrix GetMaxEyeR()
     {
-Matrix m = Matrix.Identity;
-m.M11 = 1.039604F; m.M12 = 0.255108F; m.M13 = -0.15971F; m.M14 = 0;
-m.M21 = -0.27475F; m.M22 = 1.011007F; m.M23 = -0.040911F; m.M24 = 0;
-m.M31 = 0.139395F; m.M32 = 0.085025F; m.M33 = 1.090691F; m.M34 = 0;
-m.M41 = 0.180933F; m.M42 = -0.058389F; m.M43 = 0.094482F; m.M44 = 1;
-return m;
+        Matrix m = Matrix.Identity;
+        m.M11 = 1.039604F; m.M12 = 0.255108F; m.M13 = -0.15971F; m.M14 = 0;
+        m.M21 = -0.27475F; m.M22 = 1.011007F; m.M23 = -0.040911F; m.M24 = 0;
+        m.M31 = 0.139395F; m.M32 = 0.085025F; m.M33 = 1.090691F; m.M34 = 0;
+        m.M41 = 0.180933F; m.M42 = -0.058389F; m.M43 = 0.094482F; m.M44 = 1;
+        return m;
     }
 
+    /// たれ目つり目スライダ0.0での変形
     public static Matrix GetMinEyeL()
     {
-Matrix m = Matrix.Identity;
-m.M11 = 1.04776F; m.M12 = 0.165707F; m.M13 = 0.042456F; m.M14 = 0;
-m.M21 = -0.169164F; m.M22 = 1.012264F; m.M23 = -0.01111F; m.M24 = 0;
-m.M31 = -0.036979F; m.M32 = 0.0244F; m.M33 = 1.100662F; m.M34 = 0;
-m.M41 = -0.004275F; m.M42 = 0.124808F; m.M43 = 0.025122F; m.M44 = 1;
-return m;
+        Matrix m = Matrix.Identity;
+        m.M11 = 1.04776F; m.M12 = 0.165707F; m.M13 = 0.042456F; m.M14 = 0;
+        m.M21 = -0.169164F; m.M22 = 1.012264F; m.M23 = -0.01111F; m.M24 = 0;
+        m.M31 = -0.036979F; m.M32 = 0.0244F; m.M33 = 1.100662F; m.M34 = 0;
+        m.M41 = -0.004275F; m.M42 = 0.124808F; m.M43 = 0.025122F; m.M44 = 1;
+        return m;
     }
 
+    /// たれ目つり目スライダ1.0での変形
     public static Matrix GetMaxEyeL()
     {
-Matrix m = Matrix.Identity;
-m.M11 = 1.039607F; m.M12 = -0.255101F; m.M13 = 0.159708F; m.M14 = 0;
-m.M21 = 0.274743F; m.M22 = 1.01101F; m.M23 = -0.040846F; m.M24 = 0;
-m.M31 = -0.139394F; m.M32 = 0.085025F; m.M33 = 1.090691F; m.M34 = 0;
-m.M41 = -0.181016F; m.M42 = -0.058312F; m.M43 = 0.094464F; m.M44 = 1;
-return m;
+        Matrix m = Matrix.Identity;
+        m.M11 = 1.039607F; m.M12 = -0.255101F; m.M13 = 0.159708F; m.M14 = 0;
+        m.M21 = 0.274743F; m.M22 = 1.01101F; m.M23 = -0.040846F; m.M24 = 0;
+        m.M31 = -0.139394F; m.M32 = 0.085025F; m.M33 = 1.090691F; m.M34 = 0;
+        m.M41 = -0.181016F; m.M42 = -0.058312F; m.M43 = 0.094464F; m.M44 = 1;
+        return m;
     }
 
+    /// 指定比率に比例するscaling factorを得ます。
     public static Vector3 GetVector3Ratio(Vector3 min, Vector3 max, float ratio)
     {
         Vector3 v = Vector3.Empty;
@@ -178,11 +522,13 @@ return m;
         return v;
     }
 
+    /// 指定比率に比例する変形行列を得ます。
     public static Matrix GetMatrixRatio(Vector3 min, Vector3 max, float ratio)
     {
         return Matrix.Scaling(GetVector3Ratio(min, max, ratio));
     }
 
+    /// 指定比率に比例する変形行列を得ます。
     public static Matrix GetMatrixRatio(Matrix min, Matrix max, float ratio)
     {
         Matrix m = Matrix.Identity;
@@ -210,6 +556,7 @@ return m;
         return m;
     }
 
+    /// face_oyaの変形行列
     public static Matrix FaceOyaDefault;
 
     static SlideMatrices()
@@ -217,36 +564,77 @@ return m;
         FaceOyaDefault = Matrix.Scaling(1.1045F, 1.064401F, 1.1045F);
     }
 
+    /// 拡大変位
     public Vector3 Local;
+    /// 拡大変位
     public Vector3 FaceOya;
 
+    /// 拡大変位
     public Vector3 SpineDummy;
+    /// 拡大変位
     public Vector3 Spine1;
 
+    /// 拡大変位
     public Vector3 HipsDummy;
+    /// 拡大変位
     public Vector3 UpLeg;
+    /// 拡大変位
     public Vector3 UpLegRoll;
+    /// 拡大変位
     public Vector3 LegRoll;
 
+    /// 拡大変位
     public Vector3 ArmDummy;
+    /// 拡大変位
     public Vector3 Arm;
 
+    /// 変形行列
+    public Matrix ChichiR1;
+    /// 変形行列
+    public Matrix ChichiR2;
+    /// 変形行列
+    public Matrix ChichiR3;
+    /// 変形行列
+    public Matrix ChichiR4;
+    /// 変形行列
+    public Matrix ChichiR5;
+    /// 変形行列
+    public Matrix ChichiR5E;
+
+    /// 変形行列
+    public Matrix ChichiL1;
+    /// 変形行列
+    public Matrix ChichiL2;
+    /// 変形行列
+    public Matrix ChichiL3;
+    /// 変形行列
+    public Matrix ChichiL4;
+    /// 変形行列
+    public Matrix ChichiL5;
+    /// 変形行列
+    public Matrix ChichiL5E;
+
+    /// 拡大変位
     public Vector3 Chichi;
 
+    /// 変形行列
     public Matrix EyeR;
+    /// 変形行列
     public Matrix EyeL;
 
+    /// スライダ変形行列を生成します。
     public SlideMatrices()
     {
         ArmRatio = 0.5f;
         LegRatio = 0.5f;
-        WaistRatio = 0.5f;
+        WaistRatio = 0.0f;
         BustRatio = 0.5f;
         AgeRatio = 0.5f;
         EyeRatio = 0.5f;
     }
 
     float arm_ratio;
+    /// うでスライダ比率
     public float ArmRatio
     {
         get { return arm_ratio; }
@@ -258,6 +646,7 @@ return m;
     }
 
     float leg_ratio;
+    /// あしスライダ比率
     public float LegRatio
     {
         get { return leg_ratio; }
@@ -272,6 +661,7 @@ return m;
     }
 
     float waist_ratio;
+    /// 胴まわりスライダ比率
     public float WaistRatio
     {
         get { return waist_ratio; }
@@ -284,12 +674,30 @@ return m;
     }
 
     float bust_ratio;
+    /// おっぱいスライダ比率
     public float BustRatio
     {
         get { return bust_ratio; }
         set
         {
             bust_ratio = value;
+            
+            /*
+            ChichiR1 = GetMinChichiR1();
+            ChichiR2 = GetMinChichiR2();
+            ChichiR3 = GetMinChichiR3();
+            ChichiR4 = GetMinChichiR4();
+            ChichiR5 = GetMinChichiR5();
+            ChichiR5E = GetMinChichiR5E();
+
+            ChichiL1 = GetMinChichiL1();
+            ChichiL2 = GetMinChichiL2();
+            ChichiL3 = GetMinChichiL3();
+            ChichiL4 = GetMinChichiL4();
+            ChichiL5 = GetMinChichiL5();
+            ChichiL5E = GetMinChichiL5E();
+            */
+
             if (bust_ratio < 0.2250f)
                 Chichi = GetMinChichi();
             else
@@ -298,6 +706,7 @@ return m;
     }
 
     float age_ratio;
+    /// 姉妹スライダ比率
     public float AgeRatio
     {
         get { return age_ratio; }
@@ -310,6 +719,7 @@ return m;
     }
 
     float eye_ratio;
+    /// たれ目つり目スライダ比率
     public float EyeRatio
     {
         get { return eye_ratio; }
