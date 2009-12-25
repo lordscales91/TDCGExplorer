@@ -428,6 +428,12 @@ public class Figure : IDisposable
                 m.M42 /= scaling.Y;
                 m.M43 /= scaling.Z;
                 break;
+            case "Chichi_Left5_End":
+                m *= slide_matrices.ChichiL5E;
+                m.M41 /= scaling.X;
+                m.M42 /= scaling.Y;
+                m.M43 /= scaling.Z;
+                break;
             }
         }
 

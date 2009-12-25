@@ -315,6 +315,30 @@ public class SlideMatrices
         return new Vector3(+0.005000F, +2.302570F, -0.856764F);
     }
 
+    /// 変形行列 ChichiL1 0.0
+    public static Matrix GetMinChichiL1Local()
+    {
+        Matrix m = Matrix.Identity;
+
+m.M11 = 0.838981F;
+m.M12 = 0.000000F;
+m.M13 = -0.092846F;
+m.M14 = 0.000000F;
+m.M21 = -0.014228F;
+m.M22 = 0.991598F;
+m.M23 = -0.128574F;
+m.M24 = 0.000000F;
+m.M31 = 0.050883F;
+m.M32 = 0.060347F;
+m.M33 = 0.459783F;
+m.M34 = 0.000000F;
+m.M41 = 0.112161F;
+m.M42 = 0.003479F;
+m.M43 = 0.256440F;
+m.M44 = 1.000000F;
+        return m;
+    }
+
     /// 変形行列 ChichiL2 0.0
     public static Matrix GetMinChichiL2()
     {
@@ -342,6 +366,29 @@ public class SlideMatrices
     public static Vector3 GetTranslationChichiL2()
     {
         return new Vector3(+0.541797F, -1.336350F, +1.364660F);
+    }
+
+    /// 変形行列 ChichiL2 0.0
+    public static Matrix GetMinChichiL2Local()
+    {
+        Matrix m = Matrix.Identity;
+m.M11 = 0.931217F;
+m.M12 = 0.000001F;
+m.M13 = 0.164140F;
+m.M14 = 0.000000F;
+m.M21 = -0.018493F;
+m.M22 = 0.921284F;
+m.M23 = 0.343484F;
+m.M24 = 0.000000F;
+m.M31 = -0.060014F;
+m.M32 = -0.091303F;
+m.M33 = 1.114690F;
+m.M34 = 0.000000F;
+m.M41 = -0.048692F;
+m.M42 = 0.163041F;
+m.M43 = 0.235785F;
+m.M44 = 1.000000F;
+        return m;
     }
 
     /// 変形行列 ChichiL3 0.0
@@ -373,6 +420,29 @@ public class SlideMatrices
         return new Vector3(+0.214305F, -0.510129F, +0.492141F);
     }
 
+    /// 変形行列 ChichiL3 0.0
+    public static Matrix GetMinChichiL3Local()
+    {
+        Matrix m = Matrix.Identity;
+m.M11 = 0.872085F;
+m.M12 = 0.000000F;
+m.M13 = -0.000002F;
+m.M14 = 0.000000F;
+m.M21 = 0.000000F;
+m.M22 = 0.736429F;
+m.M23 = -0.000002F;
+m.M24 = 0.000000F;
+m.M31 = 0.000000F;
+m.M32 = 0.000000F;
+m.M33 = 1.298548F;
+m.M34 = 0.000000F;
+m.M41 = 0.027806F;
+m.M42 = -0.134507F;
+m.M43 = -0.145748F;
+m.M44 = 1.000000F;
+        return m;
+    }
+
     /// 変形行列 ChichiL4 0.0
     public static Matrix GetMinChichiL4()
     {
@@ -400,6 +470,29 @@ public class SlideMatrices
     public static Vector3 GetTranslationChichiL4()
     {
         return new Vector3(+0.095186F, -0.016642F, +0.385775F);
+    }
+
+    /// 変形行列 ChichiL4 0.0
+    public static Matrix GetMinChichiL4Local()
+    {
+        Matrix m = Matrix.Identity;
+m.M11 = 1.451920F;
+m.M12 = -0.000002F;
+m.M13 = 0.000002F;
+m.M14 = 0.000000F;
+m.M21 = -0.000002F;
+m.M22 = 1.451919F;
+m.M23 = 0.000001F;
+m.M24 = 0.000000F;
+m.M31 = -0.000002F;
+m.M32 = 0.000000F;
+m.M33 = 1.451920F;
+m.M34 = 0.000000F;
+m.M41 = -0.042320F;
+m.M42 = 0.007925F;
+m.M43 = -0.174345F;
+m.M44 = 1.000000F;
+        return m;
     }
 
     /// 変形行列 ChichiL5 0.0
@@ -431,6 +524,29 @@ public class SlideMatrices
         return new Vector3(+0.064401F, +0.045397F, +0.238688F);
     }
 
+    /// 変形行列 ChichiL5 0.0
+    public static Matrix GetMinChichiL5Local()
+    {
+        Matrix m = Matrix.Identity;
+m.M11 = 1.000001F;
+m.M12 = 0.000000F;
+m.M13 = 0.000000F;
+m.M14 = 0.000000F;
+m.M21 = 0.000001F;
+m.M22 = 1.000000F;
+m.M23 = 0.000001F;
+m.M24 = 0.000000F;
+m.M31 = 0.000001F;
+m.M32 = 0.000000F;
+m.M33 = 1.000001F;
+m.M34 = 0.000000F;
+m.M41 = -0.000287F;
+m.M42 = 0.000293F;
+m.M43 = -0.000554F;
+m.M44 = 1.000000F;
+        return m;
+    }
+
     /// 変形行列 ChichiL5_End 0.0
     public static Matrix GetMinChichiL5E()
     {
@@ -451,6 +567,29 @@ public class SlideMatrices
         m.M42 = 0.709000F;
         m.M43 = 1.173000F;
         m.M44 = 1.000000F;
+        return m;
+    }
+
+    /// 変形行列 ChichiL5_End 0.0
+    public static Matrix GetMinChichiL5ELocal()
+    {
+        Matrix m = Matrix.Identity;
+m.M11 = 0.999999F;
+m.M12 = 0.000000F;
+m.M13 = 0.000001F;
+m.M14 = 0.000000F;
+m.M21 = -0.000001F;
+m.M22 = 0.999999F;
+m.M23 = 0.000000F;
+m.M24 = 0.000000F;
+m.M31 = -0.000001F;
+m.M32 = 0.000000F;
+m.M33 = 1.000000F;
+m.M34 = 0.000000F;
+m.M41 = 0.000289F;
+m.M42 = 0.000146F;
+m.M43 = -0.000345F;
+m.M44 = 1.000000F;
         return m;
     }
 
@@ -697,11 +836,12 @@ public class SlideMatrices
             Matrix L4_T = Matrix.Translation(GetTranslationChichiL4());
             Matrix L5_T = Matrix.Translation(GetTranslationChichiL5());
 
-            Matrix L1 = Matrix.Invert(L1_T) * GetMinChichiL1();
-            Matrix L2 = Matrix.Invert(L2_T) * GetMinChichiL2() * Matrix.Invert(GetMinChichiL1());
-            Matrix L3 = Matrix.Invert(L3_T) * GetMinChichiL3() * Matrix.Invert(GetMinChichiL2());
-            Matrix L4 = Matrix.Invert(L4_T) * GetMinChichiL4() * Matrix.Invert(GetMinChichiL3());
-            Matrix L5 = Matrix.Invert(L5_T) * GetMinChichiL5() * Matrix.Invert(GetMinChichiL4());
+            Matrix L1 = GetMinChichiL1Local();
+            Matrix L2 = GetMinChichiL2Local();
+            Matrix L3 = GetMinChichiL3Local();
+            Matrix L4 = GetMinChichiL4Local();
+            Matrix L5 = GetMinChichiL5Local();
+            Matrix L5E = GetMinChichiL5ELocal();
 
             if (Flat())
             {
@@ -711,7 +851,7 @@ public class SlideMatrices
                 ChichiL3 = GetMatrixRatio(L3, Matrix.Identity, ratio);
                 ChichiL4 = GetMatrixRatio(L4, Matrix.Identity, ratio);
                 ChichiL5 = GetMatrixRatio(L5, Matrix.Identity, ratio);
-                ChichiL5E = GetMinChichiL5E();
+                ChichiL5E = GetMatrixRatio(L5E, Matrix.Identity, ratio);
 
                 Chichi = GetVector3Ratio(new Vector3(1,1,1), GetMinChichi(), ratio);
             }
