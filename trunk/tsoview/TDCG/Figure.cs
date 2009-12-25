@@ -397,6 +397,43 @@ public class Figure : IDisposable
             Vector3 scaling = slide_matrices.Chichi;
             switch (tmo_node.Name)
             {
+            case "Chichi_Right1":
+                m *= slide_matrices.ChichiR1;
+                m.M41 /= scaling.X;
+                m.M42 /= scaling.Y;
+                m.M43 /= scaling.Z;
+                m *= Matrix.Scaling(scaling);
+                break;
+            case "Chichi_Right2":
+                m *= slide_matrices.ChichiR2;
+                m.M41 /= scaling.X;
+                m.M42 /= scaling.Y;
+                m.M43 /= scaling.Z;
+                break;
+            case "Chichi_Right3":
+                m *= slide_matrices.ChichiR3;
+                m.M41 /= scaling.X;
+                m.M42 /= scaling.Y;
+                m.M43 /= scaling.Z;
+                break;
+            case "Chichi_Right4":
+                m *= slide_matrices.ChichiR4;
+                m.M41 /= scaling.X;
+                m.M42 /= scaling.Y;
+                m.M43 /= scaling.Z;
+                break;
+            case "Chichi_Right5":
+                m *= slide_matrices.ChichiR5;
+                m.M41 /= scaling.X;
+                m.M42 /= scaling.Y;
+                m.M43 /= scaling.Z;
+                break;
+            case "Chichi_Right5_end":
+                m *= slide_matrices.ChichiR5E;
+                m.M41 /= scaling.X;
+                m.M42 /= scaling.Y;
+                m.M43 /= scaling.Z;
+                break;
             case "Chichi_Left1":
                 m *= slide_matrices.ChichiL1;
                 m.M41 /= scaling.X;
@@ -515,13 +552,11 @@ public class Figure : IDisposable
         {
             switch (tmo_node.Name)
             {
-                /*
                 case "Chichi_Right1":
                 case "Chichi_Right2":
                 case "Chichi_Right3":
                 case "Chichi_Right4":
                 case "Chichi_Right5":
-                */
                 case "Chichi_Left1":
                 case "Chichi_Left2":
                 case "Chichi_Left3":
