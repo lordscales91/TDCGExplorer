@@ -6,6 +6,7 @@ using System.Threading;
 //using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
+using System.Text.RegularExpressions;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
@@ -375,6 +376,8 @@ public class Figure : IDisposable
         m.M43 = t.Z + m.M43;
     }
 
+    static Regex re_chichi = new Regex(@"\AChichi");
+
     /// <summary>
     /// bone行列を更新します。
     /// </summary>
@@ -389,87 +392,64 @@ public class Figure : IDisposable
         }
         Matrix m = tmo_node.TransformationMatrix;
 
-        if (slide_matrices.Flat())
+        bool is_chichi = re_chichi.IsMatch(tmo_node.Name);
+
+        if (is_chichi && slide_matrices.Flat())
         {
-            // スライダ行列とは別にChichiが保持するfactorでscalingを行う。
-            // ただしここでのscalingはtranslationを変更してはならないため
-            // scalingを打ち消す演算をtranslationに適用する。
-            Vector3 scaling = slide_matrices.Chichi;
             switch (tmo_node.Name)
             {
             case "Chichi_Right1":
                 m *= slide_matrices.ChichiR1;
-                m.M41 /= scaling.X;
-                m.M42 /= scaling.Y;
-                m.M43 /= scaling.Z;
-                m *= Matrix.Scaling(scaling);
                 break;
             case "Chichi_Right2":
                 m *= slide_matrices.ChichiR2;
-                m.M41 /= scaling.X;
-                m.M42 /= scaling.Y;
-                m.M43 /= scaling.Z;
                 break;
             case "Chichi_Right3":
                 m *= slide_matrices.ChichiR3;
-                m.M41 /= scaling.X;
-                m.M42 /= scaling.Y;
-                m.M43 /= scaling.Z;
                 break;
             case "Chichi_Right4":
                 m *= slide_matrices.ChichiR4;
-                m.M41 /= scaling.X;
-                m.M42 /= scaling.Y;
-                m.M43 /= scaling.Z;
                 break;
             case "Chichi_Right5":
                 m *= slide_matrices.ChichiR5;
-                m.M41 /= scaling.X;
-                m.M42 /= scaling.Y;
-                m.M43 /= scaling.Z;
                 break;
             case "Chichi_Right5_end":
                 m *= slide_matrices.ChichiR5E;
-                m.M41 /= scaling.X;
-                m.M42 /= scaling.Y;
-                m.M43 /= scaling.Z;
                 break;
             case "Chichi_Left1":
                 m *= slide_matrices.ChichiL1;
-                m.M41 /= scaling.X;
-                m.M42 /= scaling.Y;
-                m.M43 /= scaling.Z;
-                m *= Matrix.Scaling(scaling);
                 break;
             case "Chichi_Left2":
                 m *= slide_matrices.ChichiL2;
-                m.M41 /= scaling.X;
-                m.M42 /= scaling.Y;
-                m.M43 /= scaling.Z;
                 break;
             case "Chichi_Left3":
                 m *= slide_matrices.ChichiL3;
-                m.M41 /= scaling.X;
-                m.M42 /= scaling.Y;
-                m.M43 /= scaling.Z;
                 break;
             case "Chichi_Left4":
                 m *= slide_matrices.ChichiL4;
-                m.M41 /= scaling.X;
-                m.M42 /= scaling.Y;
-                m.M43 /= scaling.Z;
                 break;
             case "Chichi_Left5":
                 m *= slide_matrices.ChichiL5;
-                m.M41 /= scaling.X;
-                m.M42 /= scaling.Y;
-                m.M43 /= scaling.Z;
                 break;
             case "Chichi_Left5_End":
                 m *= slide_matrices.ChichiL5E;
-                m.M41 /= scaling.X;
-                m.M42 /= scaling.Y;
-                m.M43 /= scaling.Z;
+                break;
+            }
+
+            // スライダ行列とは別にChichiが保持するfactorでscalingを行う。
+            // ただしここでのscalingはtranslationを変更してはならないため
+            // scalingを打ち消す演算をtranslationに適用する。
+            Vector3 scaling = slide_matrices.Chichi;
+
+            m.M41 /= scaling.X;
+            m.M42 /= scaling.Y;
+            m.M43 /= scaling.Z;
+
+            switch (tmo_node.Name)
+            {
+            case "Chichi_Right1":
+            case "Chichi_Left1":
+                m *= Matrix.Scaling(scaling);
                 break;
             }
         }
@@ -491,9 +471,9 @@ public class Figure : IDisposable
                 break;
 
         }
+
         matrixStack.MultiplyMatrixLocal(m);
         m = matrixStack.Top;
-
 
         // スライダによる体型変更
         // このscalingはtranslationを変更してはならないため
@@ -548,23 +528,9 @@ public class Figure : IDisposable
 
         }
 
-        if (!slide_matrices.Flat())
+        if (is_chichi && !slide_matrices.Flat())
         {
-            switch (tmo_node.Name)
-            {
-                case "Chichi_Right1":
-                case "Chichi_Right2":
-                case "Chichi_Right3":
-                case "Chichi_Right4":
-                case "Chichi_Right5":
-                case "Chichi_Left1":
-                case "Chichi_Left2":
-                case "Chichi_Left3":
-                case "Chichi_Left4":
-                case "Chichi_Left5":
-                    Scale1(ref m, slide_matrices.Chichi);
-                    break;
-            }
+            Scale1(ref m, slide_matrices.Chichi);
         }
 
         tmo_node.combined_matrix = m;
