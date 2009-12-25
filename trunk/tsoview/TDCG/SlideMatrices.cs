@@ -275,7 +275,7 @@ m.M44 = 1.000000F;
     }
 
     /// 変形行列 ChichiL1 0.0
-    public static Matrix GetMinChichiL1Local()
+    public static Matrix GetMinChichiL1()
     {
         Matrix m = Matrix.Identity;
 
@@ -299,7 +299,7 @@ m.M44 = 1.000000F;
     }
 
     /// 変形行列 ChichiL2 0.0
-    public static Matrix GetMinChichiL2Local()
+    public static Matrix GetMinChichiL2()
     {
         Matrix m = Matrix.Identity;
 m.M11 = 0.931217F;
@@ -322,7 +322,7 @@ m.M44 = 1.000000F;
     }
 
     /// 変形行列 ChichiL3 0.0
-    public static Matrix GetMinChichiL3Local()
+    public static Matrix GetMinChichiL3()
     {
         Matrix m = Matrix.Identity;
 m.M11 = 0.872085F;
@@ -345,7 +345,7 @@ m.M44 = 1.000000F;
     }
 
     /// 変形行列 ChichiL4 0.0
-    public static Matrix GetMinChichiL4Local()
+    public static Matrix GetMinChichiL4()
     {
         Matrix m = Matrix.Identity;
 m.M11 = 1.451920F;
@@ -368,7 +368,7 @@ m.M44 = 1.000000F;
     }
 
     /// 変形行列 ChichiL5 0.0
-    public static Matrix GetMinChichiL5Local()
+    public static Matrix GetMinChichiL5()
     {
         Matrix m = Matrix.Identity;
 m.M11 = 1.000001F;
@@ -391,7 +391,7 @@ m.M44 = 1.000000F;
     }
 
     /// 変形行列 ChichiL5_End 0.0
-    public static Matrix GetMinChichiL5ELocal()
+    public static Matrix GetMinChichiL5E()
     {
         Matrix m = Matrix.Identity;
 m.M11 = 0.999999F;
@@ -641,15 +641,6 @@ m.M44 = 1.000000F;
         {
             bust_ratio = value;
             
-            /*
-            ChichiR1 = GetMinChichiR1();
-            ChichiR2 = GetMinChichiR2();
-            ChichiR3 = GetMinChichiR3();
-            ChichiR4 = GetMinChichiR4();
-            ChichiR5 = GetMinChichiR5();
-            ChichiR5E = GetMinChichiR5E();
-            */
-
             if (Flat())
             {
                 float ratio = bust_ratio / FlatRatio;
@@ -661,12 +652,12 @@ m.M44 = 1.000000F;
                 ChichiR5 = GetMatrixRatio(GetMinChichiR5(), Matrix.Identity, ratio);
                 ChichiR5E = GetMatrixRatio(GetMinChichiR5E(), Matrix.Identity, ratio);
 
-                ChichiL1 = GetMatrixRatio(GetMinChichiL1Local(), Matrix.Identity, ratio);
-                ChichiL2 = GetMatrixRatio(GetMinChichiL2Local(), Matrix.Identity, ratio);
-                ChichiL3 = GetMatrixRatio(GetMinChichiL3Local(), Matrix.Identity, ratio);
-                ChichiL4 = GetMatrixRatio(GetMinChichiL4Local(), Matrix.Identity, ratio);
-                ChichiL5 = GetMatrixRatio(GetMinChichiL5Local(), Matrix.Identity, ratio);
-                ChichiL5E = GetMatrixRatio(GetMinChichiL5ELocal(), Matrix.Identity, ratio);
+                ChichiL1 = GetMatrixRatio(GetMinChichiL1(), Matrix.Identity, ratio);
+                ChichiL2 = GetMatrixRatio(GetMinChichiL2(), Matrix.Identity, ratio);
+                ChichiL3 = GetMatrixRatio(GetMinChichiL3(), Matrix.Identity, ratio);
+                ChichiL4 = GetMatrixRatio(GetMinChichiL4(), Matrix.Identity, ratio);
+                ChichiL5 = GetMatrixRatio(GetMinChichiL5(), Matrix.Identity, ratio);
+                ChichiL5E = GetMatrixRatio(GetMinChichiL5E(), Matrix.Identity, ratio);
 
                 Chichi = GetVector3Ratio(new Vector3(1,1,1), GetMinChichi(), ratio);
             }
