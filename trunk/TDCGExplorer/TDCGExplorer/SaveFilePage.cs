@@ -580,14 +580,30 @@ namespace System.Windows.Forms
                 TDCGExplorer.TDCGExplorer.MainFormWindow.makeTSOViwer();
                 TDCGExplorer.TDCGExplorer.MainFormWindow.clearTSOViewer();
 
+                TDCG.Viewer viewer = TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer;
+
+                bool firstTmoSet = true;
                 foreach (PNGTsoData tso in tsoDataList)
                 {
                     using (MemoryStream stream = new MemoryStream(tso.tsodata))
                     {
-                        TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.LoadTSOFile(stream);
+                        viewer.LoadTSOFile(stream);
                         TDCGExplorer.TDCGExplorer.MainFormWindow.doInitialTmoLoad();
-                        TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.FrameMove();
-                        TDCGExplorer.TDCGExplorer.MainFormWindow.Viewer.Render();
+                        if (firstTmoSet)
+                        {
+                            // スライダーパラメータを設定する.
+                            TDCG.Figure figure = viewer.FigureList[0];
+                            figure.slide_matrices.BustRatio = savefile.GetSlider(0);
+                            figure.slide_matrices.TallRatio = savefile.GetSlider(1);
+                            figure.slide_matrices.ArmRatio = savefile.GetSlider(2);
+                            figure.slide_matrices.LegRatio = savefile.GetSlider(3);
+                            figure.slide_matrices.WaistRatio = savefile.GetSlider(4);
+                            figure.slide_matrices.EyeRatio = savefile.GetSlider(5);
+                            figure.UpdateBoneMatrices(true);
+                            firstTmoSet = false;
+                        }
+                        viewer.FrameMove();
+                        viewer.Render();
 
                         TDCGExplorer.TDCGExplorer.IncBusy();
                         Application.DoEvents();

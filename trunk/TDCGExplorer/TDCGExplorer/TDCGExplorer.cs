@@ -17,7 +17,7 @@ namespace TDCGExplorer
     public class TDCGExplorer
     {
         public const string CONST_DBVERSION = "1.00";
-        public const string CONST_APPVERSION = "1.09";
+        public const string CONST_APPVERSION = "1.10";
         public const string CONST_COPYRIGHT = "Copyright © 2009 3DCG Craftsmen's Guild.";
 
         private static SystemDatabase systemDatabase;

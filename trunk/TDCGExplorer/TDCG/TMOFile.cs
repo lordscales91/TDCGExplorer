@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
+using TDCG.Extensions;
 
 namespace TDCG
 {
@@ -62,13 +63,28 @@ namespace TDCG
         {
             BinaryWriter bw = new BinaryWriter(dest_stream);
 
-            TMOWriter.WriteMagic(bw);
-            TMOWriter.Write(bw, header);
+            WriteMagic(bw);
+            bw.Write(header);
             bw.Write(opt0);
             bw.Write(opt1);
-            TMOWriter.Write(bw, nodes);
-            TMOWriter.Write(bw, frames);
-            TMOWriter.Write(bw, footer);
+
+            bw.Write(nodes.Length);
+            foreach (TMONode node in nodes)
+                node.Write(bw);
+
+            bw.Write(frames.Length);
+            foreach (TMOFrame frame in frames)
+                frame.Write(bw);
+
+            bw.Write(footer);
+        }
+
+        /// <summary>
+        /// 'TMO1' を書き出します。
+        /// </summary>
+        public static void WriteMagic(BinaryWriter bw)
+        {
+            bw.Write(0x314F4D54);
         }
 
         /// <summary>
@@ -103,11 +119,10 @@ namespace TDCG
 
             int node_count = reader.ReadInt32();
             nodes = new TMONode[node_count];
-
             for (int i = 0; i < node_count; i++)
             {
-                string name = ReadString();
-                nodes[i] = new TMONode(i, name);
+                nodes[i] = new TMONode(i);
+                nodes[i].Read(reader);
             }
 
             GenerateNodemapAndTree();
@@ -117,19 +132,12 @@ namespace TDCG
 
             for (int i = 0; i < frame_count; i++)
             {
-                frames[i] = new TMOFrame();
-                frames[i].id = i;
-
-                int matrix_count = reader.ReadInt32();
-                frames[i].matrices = new TMOMat[matrix_count];
-
-                for (int j = 0; j < matrix_count; j++)
-                {
-                    TMOMat mat = frames[i].matrices[j] = new TMOMat();
-                    ReadMatrix(ref mat.m);
-                    nodes[j].frame_matrices.Add(mat);
-                }
+                frames[i] = new TMOFrame(i);
+                frames[i].Read(reader);
             }
+
+            foreach (TMONode node in nodes)
+                node.LinkMatrices(frames);
 
             this.footer = reader.ReadBytes(4);
         }
@@ -140,26 +148,18 @@ namespace TDCG
 
             for (int i = 0; i < nodes.Length; i++)
             {
-                nodemap.Add(nodes[i].Name, nodes[i]);
+                nodemap.Add(nodes[i].Path, nodes[i]);
             }
 
             for (int i = 0; i < nodes.Length; i++)
             {
-                int index = nodes[i].Name.LastIndexOf('|');
+                int index = nodes[i].Path.LastIndexOf('|');
                 if (index <= 0)
                     continue;
-                string pname = nodes[i].Name.Substring(0, index);
-                nodes[i].parent = nodemap[pname];
-                nodes[i].parent.child_nodes.Add(nodes[i]);
+                string path = nodes[i].Path.Substring(0, index);
+                nodes[i].parent = nodemap[path];
+                nodes[i].parent.children.Add(nodes[i]);
             }
-        }
-
-        public void UpdateRootNodeName(string name)
-        {
-            TMONode root_node = nodes[0];
-            root_node.SetName(name);
-            foreach (TMONode node in nodes)
-                node.UpdateName();
         }
 
         /// <summary>
@@ -188,27 +188,27 @@ namespace TDCG
 
             foreach (TMONode node in motion.nodes)
                 try {
-                    motion_nodes.Add(node.ShortName, node);
+                    motion_nodes.Add(node.Name, node);
                 } catch (ArgumentException) {
-                    Console.WriteLine("node {0} already exists.", node.ShortName);
+                    Console.WriteLine("node {0} already exists.", node.Name);
                 }
             foreach (TMONode node in nodes)
             {
-                if (! motion_nodes.ContainsKey(node.ShortName))
+                if (! motion_nodes.ContainsKey(node.Name))
                 {
-                    throw new ArgumentException("error: node not found in motion: " + node.ShortName);
+                    throw new ArgumentException("error: node not found in motion: " + node.Name);
                 }
                 try {
-                    source_nodes.Add(node.ShortName, node);
+                    source_nodes.Add(node.Name, node);
                 } catch (ArgumentException) {
-                    Console.WriteLine("node {0} already exists.", node.ShortName);
+                    Console.WriteLine("node {0} already exists.", node.Name);
                 }
             }
 
             int[] id_pair = new int[nodes.Length];
 
             foreach (TMONode node in nodes)
-                id_pair[node.ID] = motion_nodes[node.ShortName].ID;
+                id_pair[node.ID] = motion_nodes[node.Name].ID;
 
             return id_pair;
         }
@@ -285,6 +285,8 @@ namespace TDCG
         /// <param name="frame_index">index</param>
         public void TruncateFrame(int frame_index)
         {
+            if (frames == null)
+                return;
             if (frame_index < 0)
                 return;
             if (frame_index > frames.Length-1)
@@ -296,14 +298,40 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 現在の行列を指定フレームに保存します。
+        /// </summary>
+        /// <param name="frame_index">index</param>
+        public void SaveTransformationMatrixToFrame(int frame_index)
+        {
+            if (frames == null)
+                return;
+
+            foreach (TMONode node in nodes)
+                node.matrices[frame_index].m = node.TransformationMatrix;
+        }
+
+        /// <summary>
+        /// 指定フレームの行列を保持します。
+        /// </summary>
+        /// <param name="frame_index">index</param>
+        public void LoadTransformationMatrixFromFrame(int frame_index)
+        {
+            if (frames == null)
+                return;
+
+            foreach (TMONode node in nodes)
+                node.TransformationMatrix = node.matrices[frame_index].m;
+        }
+
+        /// <summary>
         /// 指定名称（短い形式）を持つnodeを検索します。
         /// </summary>
-        /// <param name="sname">node名称（短い形式）</param>
+        /// <param name="name">node名称（短い形式）</param>
         /// <returns></returns>
-        public TMONode FindNodeByShortName(string sname)
+        public TMONode FindNodeByName(string name)
         {
-            foreach(TMONode node in nodes)
-                if (node.ShortName == sname)
+            foreach (TMONode node in nodes)
+                if (node.Name == name)
                     return node;
             return null;
         }
@@ -335,30 +363,30 @@ namespace TDCG
         /// また、除外node以降のnodeは複写しません。
         /// </summary>
         /// <param name="motion">tmo</param>
-        /// <param name="sname">node名称（短い形式）</param>
-        /// <param name="except_snames">除外node名称（短い形式）リスト</param>
-        public void CopyChildrenNodeFrom(TMOFile motion, string sname, List<string> except_snames)
+        /// <param name="name">node名称（短い形式）</param>
+        /// <param name="except_names">除外node名称（短い形式）リスト</param>
+        public void CopyChildrenNodeFrom(TMOFile motion, string name, List<string> except_names)
         {
-            TMONode node = this.FindNodeByShortName(sname);
+            TMONode node = this.FindNodeByName(name);
             if (node == null)
                 return;
-            TMONode motion_node = motion.FindNodeByShortName(sname);
+            TMONode motion_node = motion.FindNodeByName(name);
             if (motion_node == null)
                 return;
-            node.CopyChildrenMatFrom(motion_node, except_snames);
+            node.CopyChildrenMatFrom(motion_node, except_names);
         }
 
         /// <summary>
         /// 指定tmoにある指定名称（短い形式）のnodeを同じ名称のnodeに複写します。
         /// </summary>
         /// <param name="motion">tmo</param>
-        /// <param name="sname">node名称（短い形式）</param>
-        public void CopyNodeFrom(TMOFile motion, string sname)
+        /// <param name="name">node名称（短い形式）</param>
+        public void CopyNodeFrom(TMOFile motion, string name)
         {
-            TMONode node = this.FindNodeByShortName(sname);
+            TMONode node = this.FindNodeByName(name);
             if (node == null)
                 return;
-            TMONode motion_node = motion.FindNodeByShortName(sname);
+            TMONode motion_node = motion.FindNodeByName(name);
             if (motion_node == null)
                 return;
             node.CopyMatFrom(motion_node);
@@ -369,16 +397,19 @@ namespace TDCG
         /// </summary>
         /// <param name="motion">tmo</param>
         /// <returns></returns>
-        public bool IsSameNodeTree(TMOFile motion) {
-            if (nodes.Length != motion.nodes.Length) {
+        public bool IsSameNodeTree(TMOFile motion)
+        {
+            if (nodes.Length != motion.nodes.Length)
+            {
                 //Console.WriteLine("nodes length mismatch {0} {1}", nodes.Length, motion.nodes.Length);
                 return false;
             }
             int i = 0;
-            foreach(TMONode node in nodes) {
+            foreach (TMONode node in nodes)
+            {
                 TMONode motion_node = motion.nodes[i];
-                //Console.WriteLine("node ShortName {0} {1}", node.ShortName, motion_node.ShortName);
-                if (motion_node.ShortName != node.ShortName)
+                //Console.WriteLine("node Name {0} {1}", node.Name, motion_node.Name);
+                if (motion_node.Name != node.Name)
                     return false;
                 i++;
             }
@@ -386,42 +417,46 @@ namespace TDCG
         }
 
         /// <summary>
-        /// null終端文字列を読みとります。
+        /// tmoからtmoを生成します。
         /// </summary>
-        /// <returns>文字列</returns>
-        public string ReadString()
+        public TMOFile Dup()
         {
-            StringBuilder string_builder = new StringBuilder();
-            while ( true ) {
-                char c = reader.ReadChar();
-                if (c == 0) break;
-                string_builder.Append(c);
-            }
-            return string_builder.ToString();
-        }
+            TMOFile tmo = new TMOFile();
+            tmo.header = new byte[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            tmo.opt0 = 1;
+            tmo.opt1 = 0;
 
-        /// <summary>
-        /// Matrixを読みとります。
-        /// </summary>
-        /// <param name="m">Matrix</param>
-        public void ReadMatrix(ref Matrix m)
-        {
-            m.M11 = reader.ReadSingle();
-            m.M12 = reader.ReadSingle();
-            m.M13 = reader.ReadSingle();
-            m.M14 = reader.ReadSingle();
-            m.M21 = reader.ReadSingle();
-            m.M22 = reader.ReadSingle();
-            m.M23 = reader.ReadSingle();
-            m.M24 = reader.ReadSingle();
-            m.M31 = reader.ReadSingle();
-            m.M32 = reader.ReadSingle();
-            m.M33 = reader.ReadSingle();
-            m.M34 = reader.ReadSingle();
-            m.M41 = reader.ReadSingle();
-            m.M42 = reader.ReadSingle();
-            m.M43 = reader.ReadSingle();
-            m.M44 = reader.ReadSingle();
+            int node_count = nodes.Length;
+            tmo.nodes = new TMONode[node_count];
+
+            for (int i = 0; i < node_count; i++)
+            {
+                tmo.nodes[i] = new TMONode(i);
+                tmo.nodes[i].Path = nodes[i].Path;
+            }
+
+            tmo.GenerateNodemapAndTree();
+
+            int frame_count = 1;
+            tmo.frames = new TMOFrame[frame_count];
+
+            for (int i = 0; i < frame_count; i++)
+            {
+                tmo.frames[i] = new TMOFrame(i);
+
+                int matrix_count = node_count;
+                tmo.frames[i].matrices = new TMOMat[matrix_count];
+                for (int j = 0; j < matrix_count; j++)
+                {
+                    tmo.frames[i].matrices[j] = new TMOMat(ref frames[i].matrices[j].m);
+                }
+            }
+            foreach (TMONode node in tmo.nodes)
+                node.LinkMatrices(tmo.frames);
+
+            tmo.footer = new byte[4] { 0, 0, 0, 0 };
+
+            return tmo;
         }
     }
 
@@ -430,7 +465,8 @@ namespace TDCG
     /// </summary>
     public class TMOMat
     {
-        internal Matrix m;
+        /// Direct3D Matrix
+        public Matrix m;
 
         /// <summary>
         /// TMOMatを作成します。
@@ -440,10 +476,26 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 行列を読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            reader.ReadMatrix(ref this.m);
+        }
+
+        /// <summary>
+        /// 行列を書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.Write(ref this.m);
+        }
+
+        /// <summary>
         /// TMOMatを作成します。
         /// </summary>
         /// <param name="m">matrix</param>
-        public TMOMat(Matrix m)
+        public TMOMat(ref Matrix m)
         {
             this.m = m;
         }
@@ -524,6 +576,9 @@ namespace TDCG
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateX(float angle)
         {
+            if (angle == 0.0f)
+                return;
+
             Vector3 v = new Vector3(m.M11, m.M12, m.M13);
             Quaternion qt = Quaternion.RotationAxis(v, angle);
             m *= Matrix.RotationQuaternion(qt);
@@ -535,6 +590,9 @@ namespace TDCG
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateY(float angle)
         {
+            if (angle == 0.0f)
+                return;
+
             Vector3 v = new Vector3(m.M21, m.M22, m.M23);
             Quaternion qt = Quaternion.RotationAxis(v, angle);
             m *= Matrix.RotationQuaternion(qt);
@@ -546,6 +604,9 @@ namespace TDCG
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateZ(float angle)
         {
+            if (angle == 0.0f)
+                return;
+
             Vector3 v = new Vector3(m.M31, m.M32, m.M33);
             Quaternion qt = Quaternion.RotationAxis(v, angle);
             m *= Matrix.RotationQuaternion(qt);
@@ -616,7 +677,8 @@ namespace TDCG
             {
                 float t = dt*i;
                 float p = t*t*(p2-2*p1+p0) + t*(2*p1-2*p0) + p0;
-                ret[i] = new TMOMat(Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, p)) * Matrix.Translation(Vector3.CatmullRom(v0, v1, v2, v3, p)));
+                Matrix m = Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, p)) * Matrix.Translation(Vector3.CatmullRom(v0, v1, v2, v3, p));
+                ret[i] = new TMOMat(ref m);
             }
             return ret;
         }
@@ -698,9 +760,96 @@ namespace TDCG
             Vector3 t0 = DecomposeMatrix(ref m0);
             Vector3 t1 = DecomposeMatrix(ref m1);
             Vector3 t2 = DecomposeMatrix(ref m2);
-            Matrix m = m1 * Matrix.Invert(m2) * m0;
-            Vector3 t = t1 - t2 + t0;
-            return new TMOMat(m * Matrix.Translation(t));
+            Matrix m = m1 * Matrix.Invert(m2) * m0 * Matrix.Translation(t1 - t2 + t0);
+            return new TMOMat(ref m);
+        }
+
+        /// euler角 (zxy回転) をquaternionに変換
+        public static Quaternion ToQuaternionZXY(Vector3 angle)
+        {
+            Quaternion qx, qy, qz;
+            qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), Geometry.DegreeToRadian(angle.X));
+            qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), Geometry.DegreeToRadian(angle.Y));
+            qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), Geometry.DegreeToRadian(angle.Z));
+            return qy * qx * qz;
+        }
+
+        /// 回転行列をeuler角 (zxy回転) に変換
+        public static Vector3 ToAngleZXY(Matrix m)
+        {
+            Vector3 angle;
+            if (m.M23 < +1.0f - float.Epsilon)
+            {
+                if (m.M23 > -1.0f + float.Epsilon)
+                {
+                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(-m.M21, m.M22));
+                    angle.X = Geometry.RadianToDegree((float)Math.Asin(m.M23));
+                    angle.Y = Geometry.RadianToDegree((float)Math.Atan2(-m.M13, m.M33));
+                }
+                else
+                {
+                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
+                    angle.X = -90.0f;
+                    angle.Y = 0.0f;
+                }
+            }
+            else
+            {
+                angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
+                angle.X = +90.0f;
+                angle.Y = 0.0f;
+            }
+            return angle;
+        }
+
+        /// quaternionをeuler角 (zxy回転) に変換
+        public static Vector3 ToAngleZXY(Quaternion q)
+        {
+            return ToAngleZXY(Matrix.RotationQuaternion(q));
+        }
+
+        /// euler角 (xyz回転) をquaternionに変換
+        public static Quaternion ToQuaternionXYZ(Vector3 angle)
+        {
+            Quaternion qx, qy, qz;
+            qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), Geometry.DegreeToRadian(angle.X));
+            qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), Geometry.DegreeToRadian(angle.Y));
+            qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), Geometry.DegreeToRadian(angle.Z));
+            return qz * qy * qx;
+        }
+
+        /// 回転行列をeuler角 (xyz回転) に変換
+        public static Vector3 ToAngleXYZ(Matrix m)
+        {
+            Vector3 angle;
+            if (m.M31 < +1.0f - float.Epsilon)
+            {
+                if (m.M31 > -1.0f + float.Epsilon)
+                {
+                    angle.X = Geometry.RadianToDegree((float)Math.Atan2(-m.M32, m.M33));
+                    angle.Y = Geometry.RadianToDegree((float)Math.Asin(m.M31));
+                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(-m.M21, m.M11));
+                }
+                else
+                {
+                    angle.X = Geometry.RadianToDegree((float)Math.Atan2(m.M21, m.M22));
+                    angle.Y = -90.0f;
+                    angle.Z = 0.0f;
+                }
+            }
+            else
+            {
+                angle.X = Geometry.RadianToDegree((float)Math.Atan2(m.M21, m.M22));
+                angle.Y = +90.0f;
+                angle.Z = 0.0f;
+            }
+            return angle;
+        }
+
+        /// quaternionをeuler角 (xyz回転) に変換
+        public static Vector3 ToAngleXYZ(Quaternion q)
+        {
+            return ToAngleXYZ(Matrix.RotationQuaternion(q));
         }
     }
 
@@ -711,6 +860,38 @@ namespace TDCG
     {
         internal int id;
         internal TMOMat[] matrices;
+
+        /// <summary>
+        /// フレームを生成します。
+        /// </summary>
+        public TMOFrame(int id)
+        {
+            this.id = id;
+        }
+
+        /// <summary>
+        /// フレームを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            int matrix_count = reader.ReadInt32();
+            this.matrices = new TMOMat[matrix_count];
+            for (int i = 0; i < matrix_count; i++)
+            {
+                this.matrices[i] = new TMOMat();
+                this.matrices[i].Read(reader);
+            }
+        }
+
+        /// <summary>
+        /// フレームを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.Write(matrices.Length);
+            foreach (TMOMat mat in matrices)
+                mat.Write(bw);
+        }
 
         /// <summary>
         /// フレームを補間します。
@@ -729,7 +910,7 @@ namespace TDCG
 
             for (int frame_index = 0; frame_index < length; frame_index++)
             {
-                frames[frame_index] = new TMOFrame();
+                frames[frame_index] = new TMOFrame(frame_index);
                 frames[frame_index].matrices = new TMOMat[frame1.matrices.Length];
             }
 
@@ -759,7 +940,7 @@ namespace TDCG
         /// <returns>新たなframe</returns>
         public static TMOFrame Select(TMOFrame frame0, TMOFrame frame1, int[] id_pair)
         {
-            TMOFrame ret = new TMOFrame();
+            TMOFrame ret = new TMOFrame(0);
             ret.matrices = new TMOMat[frame0.matrices.Length];
             for (int i = 0; i < frame0.matrices.Length; i++)
             {
@@ -779,7 +960,7 @@ namespace TDCG
         /// <returns>新たなframe</returns>
         public static TMOFrame AddSub(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, int[] id_pair)
         {
-            TMOFrame ret = new TMOFrame();
+            TMOFrame ret = new TMOFrame(0);
             ret.matrices = new TMOMat[frame0.matrices.Length];
             for (int i = 0; i < frame0.matrices.Length; i++)
             {
@@ -795,8 +976,8 @@ namespace TDCG
     public class TMONode
     {
         private int id;
+        private string path;
         private string name;
-        private string sname;
 
         private Quaternion rotation;
         private Vector3 translation;
@@ -807,29 +988,34 @@ namespace TDCG
         /// <summary>
         /// TMONodeを生成します。
         /// </summary>
-        public TMONode(int id, string name)
+        public TMONode(int id)
         {
             this.id = id;
-            this.name = name;
-            this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
         }
 
-        public void SetName(string name)
+        /// <summary>
+        /// TMONodeを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
         {
-            this.name = name;
-            this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
+            this.Path = reader.ReadCString();
         }
 
-        public void UpdateName()
+        /// <summary>
+        /// TMONodeを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
         {
-            string name = "";
-            TMONode bone = this;
-            while (bone != null)
-            {
-                name = "|" + bone.ShortName + name;
-                bone = bone.parent;
-            }
-            this.name = name;
+            bw.WriteCString(this.Path);
+        }
+
+        /// <summary>
+        /// 行列をリンクします。
+        /// </summary>
+        public void LinkMatrices(TMOFrame[] frames)
+        {
+            foreach (TMOFrame frame in frames)
+                this.matrices.Add(frame.matrices[id]);
         }
 
         /// <summary>
@@ -863,17 +1049,17 @@ namespace TDCG
         /// <summary>
         /// 子nodeリスト
         /// </summary>
-        internal List<TMONode> child_nodes = new List<TMONode>();
+        public List<TMONode> children = new List<TMONode>();
 
         /// <summary>
         /// 親node
         /// </summary>
-        internal TMONode parent;
+        public TMONode parent;
 
         /// <summary>
         /// 行列リスト
         /// </summary>
-        internal List<TMOMat> frame_matrices = new List<TMOMat>();
+        public List<TMOMat> matrices = new List<TMOMat>();
 
         /// <summary>
         /// ワールド座標系での位置と向きを表します。これはviewerから更新されます。
@@ -887,22 +1073,30 @@ namespace TDCG
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get { return name; } }
+        public string Path
+        {
+            get { return path; }
+            set
+            {
+                path = value;
+                name = path.Substring(path.LastIndexOf('|') + 1);
+            }
+        }
         /// <summary>
         /// 名称の短い形式。これはTMOFile中で重複する可能性があります。
         /// </summary>
-        public string ShortName { get { return sname; } }
+        public string Name { get { return name; } }
 
         /// <summary>
         /// 指定名称（短い形式）を持つ子nodeを検索します。
         /// </summary>
-        /// <param name="sname">名称（短い形式）</param>
+        /// <param name="name">名称（短い形式）</param>
         /// <returns></returns>
-        public TMONode FindChildByShortName(string sname)
+        public TMONode FindChildByName(string name)
         {
-            foreach (TMONode child in child_nodes)
-                if (child.sname == sname)
-                    return child;
+            foreach (TMONode child_node in children)
+                if (child_node.name == name)
+                    return child_node;
             return null;
         }
 
@@ -912,39 +1106,39 @@ namespace TDCG
         /// <param name="motion">node</param>
         public void CopyThisMatFrom(TMONode motion)
         {
-            //Console.WriteLine("copy mat {0} {1}", sname, motion.ShortName);
+            //Console.WriteLine("copy mat {0} {1}", name, motion.Name);
             int i = 0;
-            foreach (TMOMat mat in frame_matrices)
+            foreach (TMOMat mat in matrices)
             {
-                mat.m = motion.frame_matrices[i % motion.frame_matrices.Count].m;
+                mat.m = motion.matrices[i % motion.matrices.Count].m;
                 i++;
             }
         }
 
-        void CopyChildrenMatFrom_0(TMONode motion, List<string> except_snames)
+        void CopyChildrenMatFrom_0(TMONode motion, List<string> except_names)
         {
             List<TMONode> select_children = new List<TMONode>();
-            foreach (TMONode child in child_nodes)
+            foreach (TMONode child_node in children)
             {
                 bool found = false;
-                foreach (string except_sname in except_snames)
+                foreach (string except_name in except_names)
                 {
-                    if (child.sname == except_sname)
+                    if (child_node.name == except_name)
                     {
                         found = true;
                         break;
                     }
                 }
                 if (found)
-                    except_snames.Remove(child.sname);
+                    except_names.Remove(child_node.name);
                 else
-                    select_children.Add(child);
+                    select_children.Add(child_node);
             }
-            foreach (TMONode child in select_children)
+            foreach (TMONode child_node in select_children)
             {
-                TMONode motion_child = motion.FindChildByShortName(child.sname);
-                child.CopyThisMatFrom(motion_child);
-                child.CopyChildrenMatFrom_0(motion_child, except_snames);
+                TMONode motion_child = motion.FindChildByName(child_node.name);
+                child_node.CopyThisMatFrom(motion_child);
+                child_node.CopyChildrenMatFrom_0(motion_child, except_names);
             }
         }
 
@@ -954,15 +1148,15 @@ namespace TDCG
         /// また、除外node以降のnodeは複写しません。
         /// </summary>
         /// <param name="motion">node</param>
-        /// <param name="except_snames">除外node名称（短い形式）リスト</param>
-        public void CopyChildrenMatFrom(TMONode motion, List<string> except_snames)
+        /// <param name="except_names">除外node名称（短い形式）リスト</param>
+        public void CopyChildrenMatFrom(TMONode motion, List<string> except_names)
         {
-            List<string> dup_except_snames = new List<string>();
-            foreach (string except_sname in except_snames)
+            List<string> dup_except_names = new List<string>();
+            foreach (string except_name in except_names)
             {
-                dup_except_snames.Add(except_sname);
+                dup_except_names.Add(except_name);
             }
-            CopyChildrenMatFrom_0(motion, dup_except_snames);
+            CopyChildrenMatFrom_0(motion, dup_except_names);
         }
 
         /// <summary>
@@ -972,9 +1166,9 @@ namespace TDCG
         public void CopyMatFrom(TMONode motion)
         {
             CopyThisMatFrom(motion);
-            foreach (TMONode child in child_nodes)
+            foreach (TMONode child_node in children)
             {
-                child.CopyMatFrom(motion.FindChildByShortName(child.sname));
+                child_node.CopyMatFrom(motion.FindChildByName(child_node.name));
             }
         }
 
@@ -988,7 +1182,7 @@ namespace TDCG
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
 
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.Scale(scaling);
         }
 
@@ -1002,7 +1196,7 @@ namespace TDCG
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
 
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.Scale0(scaling);
         }
 
@@ -1016,11 +1210,11 @@ namespace TDCG
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
 
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.Scale1(scaling);
 
-            foreach (TMONode child in child_nodes)
-                child.Scale0(x, y, z);
+            foreach (TMONode child_node in children)
+                child_node.Scale0(x, y, z);
         }
 
         /// <summary>
@@ -1029,7 +1223,7 @@ namespace TDCG
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateX(float angle)
         {
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.RotateX(angle);
         }
 
@@ -1039,7 +1233,7 @@ namespace TDCG
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateY(float angle)
         {
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.RotateY(angle);
         }
 
@@ -1049,7 +1243,7 @@ namespace TDCG
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateZ(float angle)
         {
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.RotateZ(angle);
         }
 
@@ -1059,7 +1253,7 @@ namespace TDCG
         /// <param name="angle">角度（ラジアン）</param>
         public void RotateWorldY(float angle)
         {
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.RotateWorldY(angle);
         }
 
@@ -1073,7 +1267,7 @@ namespace TDCG
         {
             Vector3 translation = new Vector3(x, y, z);
 
-            foreach (TMOMat i in frame_matrices)
+            foreach (TMOMat i in matrices)
                 i.Move(translation);
         }
 
@@ -1083,12 +1277,12 @@ namespace TDCG
         /// <returns></returns>
         public Vector3 GetWorldPosition()
         {
-            TMONode bone = this;
+            TMONode node = this;
             Vector3 v = Vector3.Empty;
-            while (bone != null)
+            while (node != null)
             {
-                v = Vector3.TransformCoordinate(v, bone.TransformationMatrix);
-                bone = bone.parent;
+                v = Vector3.TransformCoordinate(v, node.TransformationMatrix);
+                node = node.parent;
             }
             return v;
         }
@@ -1099,12 +1293,12 @@ namespace TDCG
         /// <returns></returns>
         public Matrix GetWorldCoordinate()
         {
-            TMONode bone = this;
+            TMONode node = this;
             Matrix m = Matrix.Identity;
-            while (bone != null)
+            while (node != null)
             {
-                m.Multiply(bone.TransformationMatrix);
-                bone = bone.parent;
+                m.Multiply(node.TransformationMatrix);
+                node = node.parent;
             }
             return m;
         }

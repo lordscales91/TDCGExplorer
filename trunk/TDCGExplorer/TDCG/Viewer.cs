@@ -41,13 +41,6 @@ public class Viewer : IDisposable
     internal Surface dev_surface = null;
     internal Surface dev_zbuf = null;
 
-    Color backcolor = Color.LightGray;
-    public Color BackColor
-    {
-        get { return backcolor; }
-        set { backcolor = value; }
-    }
-
     /// <summary>
     /// viewerが保持しているフィギュアリスト
     /// </summary>
@@ -57,7 +50,25 @@ public class Viewer : IDisposable
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, -1.0f);
 
     // マウスポイントしているスクリーン座標
-    private Point lastScreenPoint = Point.Empty;
+    internal Point lastScreenPoint = Point.Empty;
+
+    ProportionList pro_list = new ProportionList();
+
+    Color backcolor = Color.LightGray;
+    public Color BackColor
+    {
+        get { return backcolor; }
+        set { backcolor = value; }
+    }
+
+    /// <summary>
+    /// viewerを生成します。
+    /// </summary>
+    public Viewer()
+    {
+        pro_list.Load();
+        Figure.ProportionList = pro_list;
+    }
 
     private void control_OnSizeChanged(object sender, EventArgs e)
     {
@@ -66,9 +77,13 @@ public class Viewer : IDisposable
                 (float)control.Width / (float)control.Height,
                 1.0f,
                 1000.0f );
+        // xxx: for w-buffering
+        device.Transform.Projection = Transform_Projection;
+        effect.SetValue("proj", Transform_Projection);
     }
 
-    private void form_OnMouseDown(object sender, MouseEventArgs e)
+    /// マウスボタンを押したときに実行するハンドラ
+    protected virtual void form_OnMouseDown(object sender, MouseEventArgs e)
     {
         switch (e.Button)
         {
@@ -82,7 +97,8 @@ public class Viewer : IDisposable
         lastScreenPoint.Y = e.Y;
     }
 
-    private void form_OnMouseMove(object sender, MouseEventArgs e)
+    /// マウスを移動したときに実行するハンドラ
+    protected virtual void form_OnMouseMove(object sender, MouseEventArgs e)
     {
         int dx = e.X - lastScreenPoint.X;
         int dy = e.Y - lastScreenPoint.Y;
@@ -93,13 +109,13 @@ public class Viewer : IDisposable
             if (Control.ModifierKeys == Keys.Control)
                 lightDir = ScreenToOrientation(e.X, e.Y);
             else
-                camera.Move(dx, -dy, 0.0f);
+                Camera.Move(dx, -dy, 0.0f);
             break;
         case MouseButtons.Middle:
-            camera.MoveView(-dx*0.125f, dy*0.125f);
+            Camera.MoveView(-dx*0.125f, dy*0.125f);
             break;
         case MouseButtons.Right:
-            camera.Move(0.0f, 0.0f, -dy*0.125f);
+            Camera.Move(0.0f, 0.0f, -dy*0.125f);
             break;
         }
 
@@ -360,7 +376,7 @@ public class Viewer : IDisposable
                 FigureEvent(this, EventArgs.Empty);
         }
     }
-#if false
+
     /// <summary>
     /// 指定パスからPNGFileを読み込みフィギュアを作成して追加します。
     /// </summary>
@@ -368,7 +384,19 @@ public class Viewer : IDisposable
     /// <param name="append">FigureListを消去せずに追加するか</param>
     public void AddFigureFromPNGFile(string source_file, bool append)
     {
-        List<Figure> fig_list = LoadPNGFile(source_file);
+        Stream stream = File.OpenRead(source_file);
+        AddFigureFromPNGFile(stream, append);
+    }
+
+
+    /// <summary>
+    /// 指定パスからPNGFileを読み込みフィギュアを作成して追加します。
+    /// </summary>
+    /// <param name="source_file">PNGFile のパス</param>
+    /// <param name="append">FigureListを消去せずに追加するか</param>
+    public void AddFigureFromPNGFile(Stream stream, bool append)
+    {
+        List<Figure> fig_list = LoadPNGFile(stream);
         if (fig_list.Count != 0) //taOb png
         if (fig_list[0].TSOList.Count == 0) //POSE png
         {
@@ -378,6 +406,7 @@ public class Viewer : IDisposable
             if (TryGetFigure(out fig))
             {
                 fig.Tmo = tmo;
+                fig.TransformTpo();
                 fig.UpdateNodeMapAndBoneMatrices();
                 if (FigureEvent != null)
                     FigureEvent(this, EventArgs.Empty);
@@ -398,7 +427,6 @@ public class Viewer : IDisposable
             SetFigureIndex(idx);
         }
     }
-#endif
 
     private SimpleCamera camera = new SimpleCamera();
 
@@ -415,11 +443,11 @@ public class Viewer : IDisposable
         }
     }
 
-    private Matrix world_matrix = Matrix.Identity;
-    private Matrix Transform_View = Matrix.Identity;
-    private Matrix Transform_Projection = Matrix.Identity;
-    private Matrix Light_View = Matrix.Identity;
-    private Matrix Light_Projection = Matrix.Identity;
+    internal Matrix world_matrix = Matrix.Identity;
+    internal Matrix Transform_View = Matrix.Identity;
+    internal Matrix Transform_Projection = Matrix.Identity;
+    internal Matrix Light_View = Matrix.Identity;
+    internal Matrix Light_Projection = Matrix.Identity;
 
     private VertexBuffer vbGauss;
 
@@ -589,27 +617,24 @@ public class Viewer : IDisposable
             w_scale = (float)devw / ztexw;
             h_scale = (float)devh / ztexh;
         }
+
         Transform_Projection = Matrix.PerspectiveFovRH(
                 Geometry.DegreeToRadian(30.0f),
                 (float)device.Viewport.Width / (float)device.Viewport.Height,
                 1.0f,
                 1000.0f );
+        // xxx: for w-buffering
+        device.Transform.Projection = Transform_Projection;
+        effect.SetValue("proj", Transform_Projection);
+
         if (shadowMapEnabled)
         {
-            Light_Projection = Matrix.PerspectiveFovRH(
+            Light_Projection = Matrix.PerspectiveFovLH(
                 Geometry.DegreeToRadian(45.0f),
                 1.0f,
                 20.0f,
                 250.0f );
-        }
-
-        // xxx: for w-buffering
-        device.Transform.Projection = Transform_Projection;
-
-        {
-            effect.SetValue("proj", Transform_Projection);
-            if (shadowMapEnabled)
-                effect.SetValue("lightproj", Light_Projection);
+            effect.SetValue("lightproj", Light_Projection);
         }
 
         device.RenderState.Lighting = false;
@@ -658,7 +683,8 @@ public class Viewer : IDisposable
             fig.Dispose();
         FigureList.Clear();
         SetFigureIndex(0);
-        GC.Collect(); // free meshes and textures.
+        // free meshes and textures.
+        Console.WriteLine("Total Memory: {0}", GC.GetTotalMemory(true));
     }
 
     /// <summary>
@@ -672,13 +698,23 @@ public class Viewer : IDisposable
             fig.Dispose();
             FigureList.Remove(fig);
             SetFigureIndex(fig_index-1);
-            GC.Collect(); // free meshes and textures.
         }
+        fig = null;
+        // free meshes and textures.
+        Console.WriteLine("Total Memory: {0}", GC.GetTotalMemory(true));
     }
 
     internal bool motionEnabled = false;
     internal bool shadowShown = false;
     internal bool SpriteShown = false;
+
+    /// <summary>
+    /// モーションが有効であるか。
+    /// </summary>
+    public bool IsMotionEnabled()
+    {
+        return motionEnabled;
+    }
 
     /// <summary>
     /// モーションの有無を切り替えます。
@@ -741,13 +777,14 @@ public class Viewer : IDisposable
     /// <param name="frame_index">フレーム番号</param>
     public void FrameMove(int frame_index)
     {
-        camera.Update();
-
-        Transform_View = camera.GetViewMatrix();
-
-        // xxx: for w-buffering
-        device.Transform.View = Transform_View;
-        effect.SetValue("view", Transform_View);
+        if (camera.NeedUpdate)
+        {
+            camera.Update();
+            Transform_View = camera.ViewMatrix;
+            // xxx: for w-buffering
+            device.Transform.View = Transform_View;
+            effect.SetValue("view", Transform_View);
+        }
 
         if (shadowMapEnabled)
         {
@@ -757,6 +794,7 @@ public class Viewer : IDisposable
                     lightDir * -scale,
                     new Vector3( 0.0f, 5.0f, 0.0f ), 
                     new Vector3( 0.0f, 1.0f, 0.0f ) );
+            effect.SetValue("lightview", Light_View);
         }
 
         foreach (Figure fig in FigureList)
@@ -796,6 +834,16 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
+    /// レンダリングするのに用いるデリゲート型
+    /// </summary>
+    public delegate void RenderingHandler();
+
+    /// <summary>
+    /// レンダリングするハンドラ
+    /// </summary>
+    public RenderingHandler Rendering;
+
+    /// <summary>
     /// シーンをレンダリングします。
     /// </summary>
     public void Render()
@@ -829,7 +877,10 @@ public class Viewer : IDisposable
         {
             DrawSprite();
         }
- 
+
+        if (Rendering != null)
+            Rendering();
+
         device.EndScene();
         {
             int ret;
@@ -851,7 +902,7 @@ public class Viewer : IDisposable
         }
 
         device.Present();
-        //Thread.Sleep(30);
+        Thread.Sleep(30);
     }
 
     void DrawShadowMap()
@@ -862,7 +913,6 @@ public class Viewer : IDisposable
         device.DepthStencilSurface = renderZ;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
 
-        effect.SetValue("lightview", Light_View);
         effect.Technique = handle_ShadowMap;
 
         foreach (Figure fig in FigureList)
@@ -870,21 +920,21 @@ public class Viewer : IDisposable
         {
             //tso.BeginRender();
 
-            foreach (TSOMesh tm in tso.meshes)
-            foreach (TSOSubMesh tm_sub in tm.sub_meshes)
+            foreach (TSOFrame frame in tso.frames)
+            foreach (TSOMesh mesh in frame.meshes)
             {
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
-                //tso.SwitchShader(tm_sub);
-                Matrix[] clipped_boneMatrices = new Matrix[tm_sub.maxPalettes];
+                //tso.SwitchShader(mesh);
+                Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
 
-                for (int numPalettes = 0; numPalettes < tm_sub.maxPalettes; numPalettes++)
+                for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
                 {
                     //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
-                    TSONode tso_node = tm_sub.GetBone(numPalettes);
+                    TSONode tso_node = mesh.GetBone(numPalettes);
                     TMONode tmo_node;
                     if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
-                        clipped_boneMatrices[numPalettes] = tso_node.GetOffsetMatrix() * tmo_node.combined_matrix;
+                        clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
                 }
                 effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
 
@@ -892,7 +942,7 @@ public class Viewer : IDisposable
                 for (int ipass = 0; ipass < npass; ipass++)
                 {
                     effect.BeginPass(ipass);
-                    tm_sub.dm.DrawSubset(0);
+                    mesh.dm.DrawSubset(0);
                     effect.EndPass();
                 }
                 effect.End();
@@ -963,7 +1013,7 @@ public class Viewer : IDisposable
 
         device.SetRenderTarget(0, dev_surface);
         device.DepthStencilSurface = dev_zbuf;
-        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, backcolor /*Color.LightGray*/, 1.0f, 0);
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, backcolor, 1.0f, 0);
 
         if (shadowMapEnabled)
         {
@@ -975,21 +1025,21 @@ public class Viewer : IDisposable
         {
             tso.BeginRender();
 
-            foreach (TSOMesh tm in tso.meshes)
-            foreach (TSOSubMesh tm_sub in tm.sub_meshes)
+            foreach (TSOFrame frame in tso.frames)
+            foreach (TSOMesh mesh in frame.meshes)
             {
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
-                tso.SwitchShader(tm_sub);
-                Matrix[] clipped_boneMatrices = new Matrix[tm_sub.maxPalettes];
+                tso.SwitchShader(mesh);
+                Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
 
-                for (int numPalettes = 0; numPalettes < tm_sub.maxPalettes; numPalettes++)
+                for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
                 {
                     //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
-                    TSONode tso_node = tm_sub.GetBone(numPalettes);
+                    TSONode tso_node = mesh.GetBone(numPalettes);
                     TMONode tmo_node;
                     if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
-                        clipped_boneMatrices[numPalettes] = tso_node.GetOffsetMatrix() * tmo_node.combined_matrix;
+                        clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
                 }
                 effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
 
@@ -997,7 +1047,7 @@ public class Viewer : IDisposable
                 for (int ipass = 0; ipass < npass; ipass++)
                 {
                     effect.BeginPass(ipass);
-                    tm_sub.dm.DrawSubset(0);
+                    mesh.dm.DrawSubset(0);
                     effect.EndPass();
                 }
                 effect.End();
@@ -1024,7 +1074,7 @@ public class Viewer : IDisposable
     /// <param name="mesh">メッシュ</param>
     /// <param name="wld">ワールド変換行列</param>
     /// <param name="color">描画色</param>
-    public void DrawMeshSub(Mesh mesh, Matrix wld, Vector4 color)
+    public void DrawMesh(Mesh mesh, Matrix wld, Vector4 color)
     {
         effect.Technique = "BONE";
 
@@ -1075,26 +1125,38 @@ public class Viewer : IDisposable
         if (device != null)
             device.Dispose();
     }
-#if false
-    /// <summary>
+
+        /// <summary>
     /// 指定パスからPNGFileを読み込みフィギュアを作成します。
     /// </summary>
     /// <param name="source_file">PNGFileのパス</param>
     public List<Figure> LoadPNGFile(string source_file)
     {
+        Stream stream = File.OpenRead(source_file);
+        return LoadPNGFile(stream);
+    }
+
+    /// <summary>
+    /// 指定パスからPNGFileを読み込みフィギュアを作成します。
+    /// </summary>
+    /// <param name="source_file">PNGFileのパス</param>
+    public List<Figure> LoadPNGFile(Stream stream)
+    {
         List<Figure> fig_list = new List<Figure>();
 
-        if (File.Exists(source_file))
+//        if (File.Exists(source_file))
         try
         {
             PNGFile png = new PNGFile();
             Figure fig = null;
             TMOFile tmo = null;
+            string png_type = null;
 
             png.Hsav += delegate(string type)
             {
                 fig = new Figure();
                 fig_list.Add(fig);
+                png_type = type;
             };
             png.Lgta += delegate(Stream dest, int extract_length)
             {
@@ -1107,8 +1169,36 @@ public class Viewer : IDisposable
                 tmo.Load(dest);
                 fig.Tmo = tmo;
             };
+            /*
+◆FIGU
+スライダの位置。値は float型で 0.0 .. 1.0
+    0: 姉妹
+    1: うで
+    2: あし
+    3: 胴まわり
+    4: おっぱい
+    5: つり目たれ目
+    6: やわらか
+             */
             png.Figu += delegate(Stream dest, int extract_length)
             {
+                byte[] buf = new byte[extract_length];
+                dest.Read(buf, 0, extract_length);
+
+                List<float> ratios = new List<float>();
+                for (int offset = 0; offset < extract_length; offset += sizeof(float))
+                {
+                    float flo = BitConverter.ToSingle(buf, offset);
+                    ratios.Add(flo);
+                }
+                fig.slide_matrices.TallRatio = ratios[0];
+                fig.slide_matrices.ArmRatio = ratios[1];
+                fig.slide_matrices.LegRatio = ratios[2];
+                fig.slide_matrices.WaistRatio = ratios[3];
+                fig.slide_matrices.BustRatio = ratios[4];
+                fig.slide_matrices.EyeRatio = ratios[5];
+
+                fig.TransformTpo();
             };
             png.Ftso += delegate(Stream dest, int extract_length, byte[] opt1)
             {
@@ -1116,7 +1206,23 @@ public class Viewer : IDisposable
                 tso.Load(dest);
                 fig.TSOList.Add(tso);
             };
-            png.Load(source_file);
+            png.Load(stream);
+
+            if (png_type == "HSAV")
+            {
+                MemoryStream ms = new MemoryStream();
+                png.Save(ms);
+                ms.Seek(0, SeekOrigin.Begin);
+                BMPSaveData data = new BMPSaveData();
+                data.Read(ms);
+
+                fig.slide_matrices.TallRatio = data.proportions[1];
+                fig.slide_matrices.ArmRatio = data.proportions[2];
+                fig.slide_matrices.LegRatio = data.proportions[3];
+                fig.slide_matrices.WaistRatio = data.proportions[4];
+                fig.slide_matrices.BustRatio = data.proportions[0];
+                fig.slide_matrices.EyeRatio = data.proportions[5];
+            }
         }
         catch (Exception ex)
         {
@@ -1124,7 +1230,7 @@ public class Viewer : IDisposable
         }
         return fig_list;
     }
-#endif
+
     /// <summary>
     /// バックバッファをBMP形式でファイルに保存します。
     /// </summary>
@@ -1148,117 +1254,6 @@ public class Viewer : IDisposable
     }
 
     // konoa modified.
-
-    public List<Figure> LoadPNGFile(string source_file)
-    {
-        Stream stream = File.OpenRead(source_file);
-        return LoadPNGFile(stream);
-    }
-
-    /// <summary>
-    /// 指定パスからPNGFileを読み込みフィギュアを作成します。
-    /// </summary>
-    /// <param name="source_file">PNGFileのパス</param>
-    public List<Figure> LoadPNGFile(Stream stream)
-    {
-        List<Figure> fig_list = new List<Figure>();
-
-        try
-        {
-            PNGFile png = new PNGFile();
-            Figure fig = null;
-            TMOFile tmo = null;
-
-            png.Hsav += delegate(string type)
-            {
-                fig = new Figure();
-                fig_list.Add(fig);
-            };
-            png.Lgta += delegate(Stream dest, int extract_length)
-            {
-                fig = new Figure();
-                fig_list.Add(fig);
-            };
-            png.Ftmo += delegate(Stream dest, int extract_length)
-            {
-                tmo = new TMOFile();
-                tmo.Load(dest);
-                fig.Tmo = tmo;
-            };
-            png.Figu += delegate(Stream dest, int extract_length)
-            {
-            };
-            png.Ftso += delegate(Stream dest, int extract_length, byte[] opt1)
-            {
-                TSOFile tso = new TSOFile();
-                tso.Load(dest);
-                fig.TSOList.Add(tso);
-            };
-            png.Load(stream);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("Error: " + ex);
-        }
-        return fig_list;
-    }
-
-    /// <summary>
-    /// 指定パスからPNGFileを読み込みフィギュアを作成して追加します。
-    /// </summary>
-    /// <param name="source_file">PNGFile のパス</param>
-    /// <param name="append">FigureListを消去せずに追加するか</param>
-    public void AddFigureFromPNGFile(string source_file, bool append)
-    {
-        Stream stream = File.OpenRead(source_file);
-        AddFigureFromPNGStream(stream, append);
-    }
-
-
-    /// <summary>
-    /// 指定パスからPNGFileを読み込みフィギュアを作成して追加します。
-    /// </summary>
-    /// <param name="source_file">PNGFile のパス</param>
-    /// <param name="append">FigureListを消去せずに追加するか</param>
-    public void AddFigureFromPNGStream(Stream stream, bool append)
-    {
-        List<Figure> fig_list = LoadPNGFile(stream);
-        if (fig_list.Count != 0) //taOb png
-            if (fig_list[0].TSOList.Count == 0) //POSE png
-            {
-                TMOFile tmo = fig_list[0].Tmo;
-                Debug.Assert(tmo != null);
-                Figure fig;
-                if (TryGetFigure(out fig))
-                {
-                    fig.Tmo = tmo;
-                    fig.UpdateNodeMapAndBoneMatrices();
-                    if (FigureEvent != null)
-                        FigureEvent(this, EventArgs.Empty);
-                }
-            }
-            else
-            {
-                if (!append)
-                    ClearFigureList();
-
-                int idx = FigureList.Count;
-                foreach (Figure fig in fig_list)
-                {
-                    fig.OpenTSOFile(device, effect);
-                    fig.UpdateNodeMapAndBoneMatrices();
-                    FigureList.Add(fig);
-                }
-                SetFigureIndex(idx);
-            }
-        {
-            Figure fig;
-            if (TryGetFigure(out fig))
-                camera.SetCenter(fig.Center);
-        }
-    }
-
-    // konoa modified.
     public Bitmap GetBitmap()
     {
         Bitmap retval;
@@ -1269,7 +1264,6 @@ public class Viewer : IDisposable
         }
         return retval;
     } 
-
 
 }
 }

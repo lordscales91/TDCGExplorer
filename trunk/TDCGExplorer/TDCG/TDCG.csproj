@@ -55,26 +55,30 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="BinaryReaderMethods.cs" />
+    <Compile Include="BinaryWriterMethods.cs" />
+    <Compile Include="BMPSaveData.cs" />
     <Compile Include="Camera.cs" />
-    <Compile Include="CameraMotion.cs" />
+    <Compile Include="CCDSolver.cs" />
+    <Compile Include="CCDViewer.cs" />
     <Compile Include="Figure.cs" />
-    <Compile Include="FigureForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FigureMotion.cs" />
     <Compile Include="IProportion.cs" />
     <Compile Include="PNGFile.cs" />
     <Compile Include="PNGWriter.cs" />
+    <Compile Include="ProportionList.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="SimpleCamera.cs" />
+    <Compile Include="SlideMatrices.cs" />
+    <Compile Include="TMOConstraint.cs" />
     <Compile Include="TMOFile.cs" />
-    <Compile Include="TMOWriter.cs" />
+    <Compile Include="TPOConfig.cs" />
     <Compile Include="TPOFile.cs" />
+    <Compile Include="TPOFileList.cs" />
     <Compile Include="TSOFile.cs" />
-    <Compile Include="TSOWriter.cs" />
     <Compile Include="Viewer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="CSScriptLibrary, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\TDCGExplorer\Archivers\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -83,9 +87,15 @@
     <Reference Include="Microsoft.DirectX.Direct3D, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="Microsoft.DirectX.Direct3DX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="CSScriptLibrary.dll" />
   </ItemGroup>
 </Project>
