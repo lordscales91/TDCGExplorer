@@ -436,9 +436,8 @@ public class Figure : IDisposable
                 break;
             }
 
-            // スライダ行列とは別にChichiが保持するfactorでscalingを行う。
-            // ただしここでのscalingはtranslationを変更してはならないため
-            // scalingを打ち消す演算をtranslationに適用する。
+            // translationを維持する必要があるため
+            // translationに対してscalingを打ち消す演算を行う。
             Vector3 scaling = slide_matrices.Chichi;
 
             m.M41 /= scaling.X;
@@ -476,8 +475,8 @@ public class Figure : IDisposable
         m = matrixStack.Top;
 
         // スライダによる体型変更
-        // このscalingはtranslationを変更してはならないため
-        // matrixStackに適用しない。
+        // translationを維持する必要があるため
+        // このscalingはmatrixStackに適用しない。
         switch (tmo_node.Name)
         {
             case "W_Spine_Dummy":
