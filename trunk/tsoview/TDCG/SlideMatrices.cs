@@ -627,7 +627,7 @@ public class SlideMatrices
     {
         ArmRatio = 0.5f;
         LegRatio = 0.5f;
-        WaistRatio = 0.0f;
+        WaistRatio = 0.0f; //scaling factorÇ©ÇÁå©Çƒì∑Ç‹ÇÌÇËÇÃäÓèÄÇÕ0.0Ç≈Ç†ÇÈ
         BustRatio = 0.5f;
         AgeRatio = 0.5f;
         EyeRatio = 0.5f;
@@ -689,21 +689,45 @@ public class SlideMatrices
             ChichiR4 = GetMinChichiR4();
             ChichiR5 = GetMinChichiR5();
             ChichiR5E = GetMinChichiR5E();
-
-            ChichiL1 = GetMinChichiL1();
-            ChichiL2 = GetMinChichiL2();
-            ChichiL3 = GetMinChichiL3();
-            ChichiL4 = GetMinChichiL4();
-            ChichiL5 = GetMinChichiL5();
-            ChichiL5E = GetMinChichiL5E();
             */
 
-            if (bust_ratio < 0.2250f)
-                Chichi = GetMinChichi();
+            Matrix L1_T = Matrix.Translation(GetTranslationChichiL1());
+            Matrix L2_T = Matrix.Translation(GetTranslationChichiL2());
+            Matrix L3_T = Matrix.Translation(GetTranslationChichiL3());
+            Matrix L4_T = Matrix.Translation(GetTranslationChichiL4());
+            Matrix L5_T = Matrix.Translation(GetTranslationChichiL5());
+
+            Matrix L1 = Matrix.Invert(L1_T) * GetMinChichiL1();
+            Matrix L2 = Matrix.Invert(L2_T) * GetMinChichiL2() * Matrix.Invert(GetMinChichiL1());
+            Matrix L3 = Matrix.Invert(L3_T) * GetMinChichiL3() * Matrix.Invert(GetMinChichiL2());
+            Matrix L4 = Matrix.Invert(L4_T) * GetMinChichiL4() * Matrix.Invert(GetMinChichiL3());
+            Matrix L5 = Matrix.Invert(L5_T) * GetMinChichiL5() * Matrix.Invert(GetMinChichiL4());
+
+            if (Flat())
+            {
+                float ratio = bust_ratio / FlatRatio;
+                ChichiL1 = GetMatrixRatio(L1, Matrix.Identity, ratio);
+                ChichiL2 = GetMatrixRatio(L2, Matrix.Identity, ratio);
+                ChichiL3 = GetMatrixRatio(L3, Matrix.Identity, ratio);
+                ChichiL4 = GetMatrixRatio(L4, Matrix.Identity, ratio);
+                ChichiL5 = GetMatrixRatio(L5, Matrix.Identity, ratio);
+                ChichiL5E = GetMinChichiL5E();
+
+                Chichi = GetVector3Ratio(new Vector3(1,1,1), GetMinChichi(), ratio);
+            }
             else
-                Chichi = GetVector3Ratio(GetMinChichi(), GetMaxChichi(), (bust_ratio - 0.2250f) / (1.0f - 0.2250f));
+                Chichi = GetVector3Ratio(GetMinChichi(), GetMaxChichi(), (bust_ratio - FlatRatio) / (1.0f - FlatRatio));
         }
     }
+
+    /// ïnì˚Ç≈Ç†ÇÈÇ©
+    public bool Flat()
+    {
+        return bust_ratio < FlatRatio;
+    }
+
+    /// ïnì˚ã´äEî‰ó¶
+    public static float FlatRatio = 0.2250F;
 
     float age_ratio;
     /// éoñÖÉXÉâÉCÉ_î‰ó¶
