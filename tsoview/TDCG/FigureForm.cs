@@ -79,12 +79,12 @@ public class FigureForm : Form
     {
         this.fig = fig;
 
-        this.tbSlideArm.Value = (int)(fig.slide_matrices.ArmRatio * 10);
-        this.tbSlideLeg.Value = (int)(fig.slide_matrices.LegRatio * 10);
-        this.tbSlideWaist.Value = (int)(fig.slide_matrices.WaistRatio * 10);
-        this.tbSlideBust.Value = (int)(fig.slide_matrices.BustRatio * 10);
-        this.tbSlideTall.Value = (int)(fig.slide_matrices.TallRatio * 10);
-        this.tbSlideEye.Value = (int)(fig.slide_matrices.EyeRatio * 10);
+        this.tbSlideArm.Value = (int)(fig.slide_matrices.ArmRatio * (float)tbSlideArm.Maximum);
+        this.tbSlideLeg.Value = (int)(fig.slide_matrices.LegRatio * (float)tbSlideLeg.Maximum);
+        this.tbSlideWaist.Value = (int)(fig.slide_matrices.WaistRatio * (float)tbSlideWaist.Maximum);
+        this.tbSlideBust.Value = (int)(fig.slide_matrices.BustRatio * (float)tbSlideBust.Maximum);
+        this.tbSlideTall.Value = (int)(fig.slide_matrices.TallRatio * (float)tbSlideTall.Maximum);
+        this.tbSlideEye.Value = (int)(fig.slide_matrices.EyeRatio * (float)tbSlideEye.Maximum);
 
         lvTSOFiles.Items.Clear();
         for (int i = 0; i < fig.TSOList.Count; i++)
@@ -246,40 +246,45 @@ public class FigureForm : Form
         // tbSlideEye
         // 
         this.tbSlideEye.Location = new System.Drawing.Point(604, 473);
+        this.tbSlideEye.Maximum = 20;
         this.tbSlideEye.Name = "tbSlideEye";
-        this.tbSlideEye.Size = new System.Drawing.Size(104, 45);
+        this.tbSlideEye.Size = new System.Drawing.Size(168, 45);
         this.tbSlideEye.TabIndex = 6;
         this.tbSlideEye.ValueChanged += new System.EventHandler(this.tbSlideEye_ValueChanged);
         // 
         // tbSlideLeg
         // 
         this.tbSlideLeg.Location = new System.Drawing.Point(604, 269);
+        this.tbSlideLeg.Maximum = 20;
         this.tbSlideLeg.Name = "tbSlideLeg";
-        this.tbSlideLeg.Size = new System.Drawing.Size(104, 45);
+        this.tbSlideLeg.Size = new System.Drawing.Size(168, 45);
         this.tbSlideLeg.TabIndex = 7;
         this.tbSlideLeg.ValueChanged += new System.EventHandler(this.tbSlideLeg_ValueChanged);
         // 
         // tbSlideArm
         // 
         this.tbSlideArm.Location = new System.Drawing.Point(604, 218);
+        this.tbSlideArm.Maximum = 20;
         this.tbSlideArm.Name = "tbSlideArm";
-        this.tbSlideArm.Size = new System.Drawing.Size(104, 45);
+        this.tbSlideArm.Size = new System.Drawing.Size(168, 45);
         this.tbSlideArm.TabIndex = 8;
         this.tbSlideArm.ValueChanged += new System.EventHandler(this.tbSlideArm_ValueChanged);
         // 
         // tbSlideWaist
         // 
         this.tbSlideWaist.Location = new System.Drawing.Point(604, 320);
+        this.tbSlideWaist.Maximum = 20;
         this.tbSlideWaist.Name = "tbSlideWaist";
-        this.tbSlideWaist.Size = new System.Drawing.Size(104, 45);
+        this.tbSlideWaist.Size = new System.Drawing.Size(168, 45);
         this.tbSlideWaist.TabIndex = 9;
         this.tbSlideWaist.ValueChanged += new System.EventHandler(this.tbSlideWaist_ValueChanged);
         // 
         // tbSlideBust
         // 
         this.tbSlideBust.Location = new System.Drawing.Point(604, 371);
+        this.tbSlideBust.Maximum = 20;
         this.tbSlideBust.Name = "tbSlideBust";
-        this.tbSlideBust.Size = new System.Drawing.Size(104, 45);
+        this.tbSlideBust.Size = new System.Drawing.Size(168, 45);
         this.tbSlideBust.TabIndex = 10;
         this.tbSlideBust.ValueChanged += new System.EventHandler(this.tbSlideBust_ValueChanged);
         // 
@@ -340,8 +345,9 @@ public class FigureForm : Form
         // tbSlideTall
         // 
         this.tbSlideTall.Location = new System.Drawing.Point(604, 422);
+        this.tbSlideTall.Maximum = 20;
         this.tbSlideTall.Name = "tbSlideTall";
-        this.tbSlideTall.Size = new System.Drawing.Size(104, 45);
+        this.tbSlideTall.Size = new System.Drawing.Size(168, 45);
         this.tbSlideTall.TabIndex = 16;
         this.tbSlideTall.ValueChanged += new System.EventHandler(this.tbSlideTall_ValueChanged);
         // 
@@ -450,7 +456,7 @@ public class FigureForm : Form
         if (fig == null)
             return;
 
-        fig.slide_matrices.ArmRatio = tbSlideArm.Value * 0.1f;
+        fig.slide_matrices.ArmRatio = tbSlideArm.Value / (float)tbSlideArm.Maximum;
         fig.UpdateBoneMatrices(true);
     }
 
@@ -459,7 +465,7 @@ public class FigureForm : Form
         if (fig == null)
             return;
 
-        fig.slide_matrices.LegRatio = tbSlideLeg.Value * 0.1f;
+        fig.slide_matrices.LegRatio = tbSlideLeg.Value / (float)tbSlideLeg.Maximum;
         fig.UpdateBoneMatrices(true);
     }
 
@@ -468,7 +474,7 @@ public class FigureForm : Form
         if (fig == null)
             return;
 
-        fig.slide_matrices.WaistRatio = tbSlideWaist.Value * 0.1f;
+        fig.slide_matrices.WaistRatio = tbSlideWaist.Value / (float)tbSlideWaist.Maximum;
         fig.UpdateBoneMatrices(true);
     }
 
@@ -477,7 +483,7 @@ public class FigureForm : Form
         if (fig == null)
             return;
 
-        fig.slide_matrices.BustRatio = tbSlideBust.Value * 0.1f;
+        fig.slide_matrices.BustRatio = tbSlideBust.Value / (float)tbSlideBust.Maximum;
         fig.UpdateBoneMatrices(true);
     }
 
@@ -486,7 +492,7 @@ public class FigureForm : Form
         if (fig == null)
             return;
 
-        fig.slide_matrices.EyeRatio = tbSlideEye.Value * 0.1f;
+        fig.slide_matrices.EyeRatio = tbSlideEye.Value / (float)tbSlideEye.Maximum;
         fig.UpdateBoneMatrices(true);
     }
 
@@ -495,7 +501,7 @@ public class FigureForm : Form
         if (fig == null)
             return;
 
-        fig.slide_matrices.TallRatio = tbSlideTall.Value * 0.1f;
+        fig.slide_matrices.TallRatio = tbSlideTall.Value / (float)tbSlideTall.Maximum;
         fig.UpdateBoneMatrices(true);
     }
 }
