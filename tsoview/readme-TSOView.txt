@@ -68,9 +68,10 @@ TSOView.exe [file ... ]
 
 
 ver 0.2.5 からの変更点：
-・体型スライダによる変形を再現
+・sources: TSOView, TMOComposer, TMOProportion を統合
 ・TMOProportion で作成した体型を自動適用
-・sources: TMOComposer, TMOProportion を統合
+・体型スライダによる変形を再現
+・フィギュア設定画面にスライダを追加
 
 ver 0.1.9 からの変更点：
 ・VSMソフトシャドウ
@@ -113,16 +114,3 @@ ver 0.0.9 からの変更点：
 ver 0.0.8 からの変更点：
 ・フィギュア削除時にメモリ解放
 ・モーション速度を60 FPSに補正（たぶん）
-
-
-ライセンス
-・CSScriptLibrary.dll
-  http://www.csscript.net/Licence.html
-
-開発者の方へ
-ソース (sources) を同梱しています。
-致命的な間違いは、改造スレまで報告いただけると幸いです。
-
-開発フォーラムについて
-http://3dcustom.ath.cx/ というブログでTSOView開発プロジェクトを
-立ち上げています。興味がありましたら参加して頂けると幸いです。
