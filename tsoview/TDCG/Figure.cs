@@ -330,7 +330,7 @@ public class Figure : IDisposable
         UpdateBoneMatrices(tmo_node, tmo_frame);
     }
 
-    void Scale1(ref Matrix m, ref Vector3 scaling)
+    void Scale1(ref Matrix m, Vector3 scaling)
     {
         m.M11 *= scaling.X;
         m.M12 *= scaling.X;
@@ -343,7 +343,7 @@ public class Figure : IDisposable
         m.M33 *= scaling.Z;
     }
 
-    void Scale1(ref Matrix m, ref Matrix scaling)
+    void Scale1(ref Matrix m, Matrix scaling)
     {
         m.M11 *= scaling.M11;
         m.M12 *= scaling.M11;
@@ -388,10 +388,53 @@ public class Figure : IDisposable
             tmo_node.TransformationMatrix = tmo_frame.matrices[tmo_node.ID].m;
         }
         Matrix m = tmo_node.TransformationMatrix;
+
+        if (slide_matrices.Flat())
+        {
+            // スライダ行列とは別にChichiが保持するfactorでscalingを行う。
+            // ただしここでのscalingはtranslationを変更してはならないため
+            // scalingを打ち消す演算をtranslationに適用する。
+            Vector3 scaling = slide_matrices.Chichi;
+            switch (tmo_node.Name)
+            {
+            case "Chichi_Left1":
+                m *= slide_matrices.ChichiL1;
+                m.M41 /= scaling.X;
+                m.M42 /= scaling.Y;
+                m.M43 /= scaling.Z;
+                m *= Matrix.Scaling(scaling);
+                break;
+            case "Chichi_Left2":
+                m *= slide_matrices.ChichiL2;
+                m.M41 /= scaling.X;
+                m.M42 /= scaling.Y;
+                m.M43 /= scaling.Z;
+                break;
+            case "Chichi_Left3":
+                m *= slide_matrices.ChichiL3;
+                m.M41 /= scaling.X;
+                m.M42 /= scaling.Y;
+                m.M43 /= scaling.Z;
+                break;
+            case "Chichi_Left4":
+                m *= slide_matrices.ChichiL4;
+                m.M41 /= scaling.X;
+                m.M42 /= scaling.Y;
+                m.M43 /= scaling.Z;
+                break;
+            case "Chichi_Left5":
+                m *= slide_matrices.ChichiL5;
+                m.M41 /= scaling.X;
+                m.M42 /= scaling.Y;
+                m.M43 /= scaling.Z;
+                break;
+            }
+        }
+
         switch (tmo_node.Name)
         {
             case "face_oya":
-                Scale1(ref m, ref slide_matrices.FaceOya);
+                Scale1(ref m, slide_matrices.FaceOya);
                 break;
             case "eyeline_sita_L":
             case "L_eyeline_oya_L":
@@ -404,49 +447,37 @@ public class Figure : IDisposable
                 m *= slide_matrices.EyeL;
                 break;
 
-                /*
-            case "Chichi_Left1":
-            case "Chichi_Left2":
-            case "Chichi_Left3":
-            case "Chichi_Left4":
-            case "Chichi_Left5":
-            case "Chichi_Left5_End":
-            case "Chichi_Right1":
-            case "Chichi_Right2":
-            case "Chichi_Right3":
-            case "Chichi_Right4":
-            case "Chichi_Right5":
-            case "Chichi_Right5_end":
-                m = Matrix.Identity;
-                break;
-                */
-
         }
         matrixStack.MultiplyMatrixLocal(m);
         m = matrixStack.Top;
+
+
+        // スライダによる体型変更
+        // このscalingはtranslationを変更してはならないため
+        // matrixStackに適用しない。
         switch (tmo_node.Name)
         {
             case "W_Spine_Dummy":
-                Scale1(ref m, ref slide_matrices.SpineDummy);
+                Scale1(ref m, slide_matrices.SpineDummy);
                 break;
             case "W_Spine1":
             case "W_Spine2":
-                Scale1(ref m, ref slide_matrices.Spine1);
+                Scale1(ref m, slide_matrices.Spine1);
                 break;
 
             case "W_LeftHips_Dummy":
             case "W_RightHips_Dummy":
-                Scale1(ref m, ref slide_matrices.HipsDummy);
+                Scale1(ref m, slide_matrices.HipsDummy);
                 break;
             case "W_LeftUpLeg":
             case "W_RightUpLeg":
-                Scale1(ref m, ref slide_matrices.UpLeg);
+                Scale1(ref m, slide_matrices.UpLeg);
                 break;
             case "W_LeftUpLegRoll":
             case "W_RightUpLegRoll":
             case "W_LeftLeg":
             case "W_RightLeg":
-                Scale1(ref m, ref slide_matrices.UpLegRoll);
+                Scale1(ref m, slide_matrices.UpLegRoll);
                 break;
             case "W_LeftLegRoll":
             case "W_RightLegRoll":
@@ -454,12 +485,12 @@ public class Figure : IDisposable
             case "W_RightFoot":
             case "W_LeftToeBase":
             case "W_RightToeBase":
-                Scale1(ref m, ref slide_matrices.LegRoll);
+                Scale1(ref m, slide_matrices.LegRoll);
                 break;
 
             case "W_LeftArm_Dummy":
             case "W_RightArm_Dummy":
-                Scale1(ref m, ref slide_matrices.ArmDummy);
+                Scale1(ref m, slide_matrices.ArmDummy);
                 break;
             case "W_LeftArm":
             case "W_RightArm":
@@ -469,62 +500,32 @@ public class Figure : IDisposable
             case "W_RightForeArm":
             case "W_LeftForeArmRoll":
             case "W_RightForeArmRoll":
-                Scale1(ref m, ref slide_matrices.Arm);
+                Scale1(ref m, slide_matrices.Arm);
                 break;
 
-            case "Chichi_Right1":
-            case "Chichi_Right2":
-            case "Chichi_Right3":
-            case "Chichi_Right4":
-            case "Chichi_Right5":
-            case "Chichi_Left1":
-            case "Chichi_Left2":
-            case "Chichi_Left3":
-            case "Chichi_Left4":
-            case "Chichi_Left5":
-                Scale1(ref m, ref slide_matrices.Chichi);
-                break;
-
-                /*
-            case "Chichi_Right1":
-                m = slide_matrices.ChichiR1 * m;
-                break;
-            case "Chichi_Right2":
-                m = slide_matrices.ChichiR2 * m;
-                break;
-            case "Chichi_Right3":
-                m = slide_matrices.ChichiR3 * m;
-                break;
-            case "Chichi_Right4":
-                m = slide_matrices.ChichiR4 * m;
-                break;
-            case "Chichi_Right5":
-                m = slide_matrices.ChichiR5 * m;
-                break;
-            case "Chichi_Right5_end":
-                m = slide_matrices.ChichiR5E * m;
-                break;
-
-            case "Chichi_Left1":
-                m = slide_matrices.ChichiL1 * m;
-                break;
-            case "Chichi_Left2":
-                m = slide_matrices.ChichiL2 * m;
-                break;
-            case "Chichi_Left3":
-                m = slide_matrices.ChichiL3 * m;
-                break;
-            case "Chichi_Left4":
-                m = slide_matrices.ChichiL4 * m;
-                break;
-            case "Chichi_Left5":
-                m = slide_matrices.ChichiL5 * m;
-                break;
-            case "Chichi_Left5_End":
-                m = slide_matrices.ChichiL5E * m;
-                break;
-                */
         }
+
+        if (!slide_matrices.Flat())
+        {
+            switch (tmo_node.Name)
+            {
+                /*
+                case "Chichi_Right1":
+                case "Chichi_Right2":
+                case "Chichi_Right3":
+                case "Chichi_Right4":
+                case "Chichi_Right5":
+                */
+                case "Chichi_Left1":
+                case "Chichi_Left2":
+                case "Chichi_Left3":
+                case "Chichi_Left4":
+                case "Chichi_Left5":
+                    Scale1(ref m, slide_matrices.Chichi);
+                    break;
+            }
+        }
+
         tmo_node.combined_matrix = m;
 
         foreach (TMONode child_node in tmo_node.children)
