@@ -1,6 +1,6 @@
 ダウンロードありがとうございます
 
-●TSOView ver 0.2.5
+●TSOView ver 0.2.8
 
 これはなに
 Direct3D上でTSOをレンダリングします。
@@ -53,7 +53,7 @@ TSOView.exe [file ... ]
 
 　0キー：カメラ位置を初期位置に戻す
 
-　Gキー：shader設定画面を起動
+　Gキー：フィギュア設定画面を起動
 
 マウス
 　左ボタンを押しながらドラッグ：X/Y軸方向に回転
@@ -66,6 +66,11 @@ TSOView.exe [file ... ]
 　Crtlキーを押しながらtsoまたはpngをd&dすると選択フィギュアに追加します。
 　tmoをd&dすると選択フィギュアのモーションを置き換えます。
 
+
+ver 0.2.5 からの変更点：
+・体型スライダによる変形を再現
+・TMOProportion で作成した体型を自動適用
+・sources: TMOComposer, TMOProportion を統合
 
 ver 0.1.9 からの変更点：
 ・VSMソフトシャドウ
