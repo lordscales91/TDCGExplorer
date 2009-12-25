@@ -287,35 +287,6 @@ public class SlideMatrices
     }
 
     /// 変形行列 ChichiL1 0.0
-    public static Matrix GetMinChichiL1()
-    {
-        Matrix m = Matrix.Identity;
-        m.M11 = 0.838980F;
-        m.M12 = 0.000000F;
-        m.M13 = -0.092847F;
-        m.M14 = 0.000000F;
-        m.M21 = -0.014229F;
-        m.M22 = 0.991598F;
-        m.M23 = -0.128574F;
-        m.M24 = 0.000000F;
-        m.M31 = 0.050883F;
-        m.M32 = 0.060347F;
-        m.M33 = 0.459783F;
-        m.M34 = 0.000000F;
-        m.M41 = 0.040492F;
-        m.M42 = 2.234810F;
-        m.M43 = -0.433894F;
-        m.M44 = 1.000000F;
-        return m;
-    }
-
-    /// 移動変位 ChichiL1
-    public static Vector3 GetTranslationChichiL1()
-    {
-        return new Vector3(+0.005000F, +2.302570F, -0.856764F);
-    }
-
-    /// 変形行列 ChichiL1 0.0
     public static Matrix GetMinChichiL1Local()
     {
         Matrix m = Matrix.Identity;
@@ -337,35 +308,6 @@ m.M42 = 0.003479F;
 m.M43 = 0.256440F;
 m.M44 = 1.000000F;
         return m;
-    }
-
-    /// 変形行列 ChichiL2 0.0
-    public static Matrix GetMinChichiL2()
-    {
-        Matrix m = Matrix.Identity;
-        m.M11 = 0.789625F;
-        m.M12 = 0.009906F;
-        m.M13 = -0.010991F;
-        m.M14 = 0.000000F;
-        m.M21 = -0.011146F;
-        m.M22 = 0.934272F;
-        m.M23 = 0.041192F;
-        m.M24 = 0.000000F;
-        m.M31 = 0.007667F;
-        m.M32 = -0.023268F;
-        m.M33 = 0.529827F;
-        m.M34 = 0.000000F;
-        m.M41 = 0.462000F;
-        m.M42 = 1.136000F;
-        m.M43 = 0.320000F;
-        m.M44 = 1.000000F;
-        return m;
-    }
-
-    /// 移動変位 ChichiL2
-    public static Vector3 GetTranslationChichiL2()
-    {
-        return new Vector3(+0.541797F, -1.336350F, +1.364660F);
     }
 
     /// 変形行列 ChichiL2 0.0
@@ -392,35 +334,6 @@ m.M44 = 1.000000F;
     }
 
     /// 変形行列 ChichiL3 0.0
-    public static Matrix GetMinChichiL3()
-    {
-        Matrix m = Matrix.Identity;
-        m.M11 = 0.688620F;
-        m.M12 = 0.008639F;
-        m.M13 = -0.009586F;
-        m.M14 = 0.000000F;
-        m.M21 = -0.008208F;
-        m.M22 = 0.688025F;
-        m.M23 = 0.030334F;
-        m.M24 = 0.000000F;
-        m.M31 = 0.009956F;
-        m.M32 = -0.030215F;
-        m.M33 = 0.688006F;
-        m.M34 = 0.000000F;
-        m.M41 = 0.641000F;
-        m.M42 = 0.650000F;
-        m.M43 = 0.558000F;
-        m.M44 = 1.000000F;
-        return m;
-    }
-
-    /// 移動変位 ChichiL3
-    public static Vector3 GetTranslationChichiL3()
-    {
-        return new Vector3(+0.214305F, -0.510129F, +0.492141F);
-    }
-
-    /// 変形行列 ChichiL3 0.0
     public static Matrix GetMinChichiL3Local()
     {
         Matrix m = Matrix.Identity;
@@ -441,35 +354,6 @@ m.M42 = -0.134507F;
 m.M43 = -0.145748F;
 m.M44 = 1.000000F;
         return m;
-    }
-
-    /// 変形行列 ChichiL4 0.0
-    public static Matrix GetMinChichiL4()
-    {
-        Matrix m = Matrix.Identity;
-        m.M11 = 0.999821F;
-        m.M12 = 0.012542F;
-        m.M13 = -0.013917F;
-        m.M14 = 0.000000F;
-        m.M21 = -0.011919F;
-        m.M22 = 0.998957F;
-        m.M23 = 0.044043F;
-        m.M24 = 0.000000F;
-        m.M31 = 0.014454F;
-        m.M32 = -0.043870F;
-        m.M33 = 0.998930F;
-        m.M34 = 0.000000F;
-        m.M41 = 0.711000F;
-        m.M42 = 0.628000F;
-        m.M43 = 0.822000F;
-        m.M44 = 1.000000F;
-        return m;
-    }
-
-    /// 移動変位 ChichiL4
-    public static Vector3 GetTranslationChichiL4()
-    {
-        return new Vector3(+0.095186F, -0.016642F, +0.385775F);
     }
 
     /// 変形行列 ChichiL4 0.0
@@ -496,35 +380,6 @@ m.M44 = 1.000000F;
     }
 
     /// 変形行列 ChichiL5 0.0
-    public static Matrix GetMinChichiL5()
-    {
-        Matrix m = Matrix.Identity;
-        m.M11 = 0.999822F;
-        m.M12 = 0.012542F;
-        m.M13 = -0.013917F;
-        m.M14 = 0.000000F;
-        m.M21 = -0.011918F;
-        m.M22 = 0.998957F;
-        m.M23 = 0.044044F;
-        m.M24 = 0.000000F;
-        m.M31 = 0.014455F;
-        m.M32 = -0.043870F;
-        m.M33 = 0.998931F;
-        m.M34 = 0.000000F;
-        m.M41 = 0.778000F;
-        m.M42 = 0.664000F;
-        m.M43 = 1.061000F;
-        m.M44 = 1.000000F;
-        return m;
-    }
-
-    /// 移動変位 ChichiL5
-    public static Vector3 GetTranslationChichiL5()
-    {
-        return new Vector3(+0.064401F, +0.045397F, +0.238688F);
-    }
-
-    /// 変形行列 ChichiL5 0.0
     public static Matrix GetMinChichiL5Local()
     {
         Matrix m = Matrix.Identity;
@@ -544,29 +399,6 @@ m.M41 = -0.000287F;
 m.M42 = 0.000293F;
 m.M43 = -0.000554F;
 m.M44 = 1.000000F;
-        return m;
-    }
-
-    /// 変形行列 ChichiL5_End 0.0
-    public static Matrix GetMinChichiL5E()
-    {
-        Matrix m = Matrix.Identity;
-        m.M11 = 0.999821F;
-        m.M12 = 0.012542F;
-        m.M13 = -0.013916F;
-        m.M14 = 0.000000F;
-        m.M21 = -0.011919F;
-        m.M22 = 0.998956F;
-        m.M23 = 0.044044F;
-        m.M24 = 0.000000F;
-        m.M31 = 0.014454F;
-        m.M32 = -0.043870F;
-        m.M33 = 0.998931F;
-        m.M34 = 0.000000F;
-        m.M41 = 0.779000F;
-        m.M42 = 0.709000F;
-        m.M43 = 1.173000F;
-        m.M44 = 1.000000F;
         return m;
     }
 
@@ -830,28 +662,15 @@ m.M44 = 1.000000F;
             ChichiR5E = GetMinChichiR5E();
             */
 
-            Matrix L1_T = Matrix.Translation(GetTranslationChichiL1());
-            Matrix L2_T = Matrix.Translation(GetTranslationChichiL2());
-            Matrix L3_T = Matrix.Translation(GetTranslationChichiL3());
-            Matrix L4_T = Matrix.Translation(GetTranslationChichiL4());
-            Matrix L5_T = Matrix.Translation(GetTranslationChichiL5());
-
-            Matrix L1 = GetMinChichiL1Local();
-            Matrix L2 = GetMinChichiL2Local();
-            Matrix L3 = GetMinChichiL3Local();
-            Matrix L4 = GetMinChichiL4Local();
-            Matrix L5 = GetMinChichiL5Local();
-            Matrix L5E = GetMinChichiL5ELocal();
-
             if (Flat())
             {
                 float ratio = bust_ratio / FlatRatio;
-                ChichiL1 = GetMatrixRatio(L1, Matrix.Identity, ratio);
-                ChichiL2 = GetMatrixRatio(L2, Matrix.Identity, ratio);
-                ChichiL3 = GetMatrixRatio(L3, Matrix.Identity, ratio);
-                ChichiL4 = GetMatrixRatio(L4, Matrix.Identity, ratio);
-                ChichiL5 = GetMatrixRatio(L5, Matrix.Identity, ratio);
-                ChichiL5E = GetMatrixRatio(L5E, Matrix.Identity, ratio);
+                ChichiL1 = GetMatrixRatio(GetMinChichiL1Local(), Matrix.Identity, ratio);
+                ChichiL2 = GetMatrixRatio(GetMinChichiL2Local(), Matrix.Identity, ratio);
+                ChichiL3 = GetMatrixRatio(GetMinChichiL3Local(), Matrix.Identity, ratio);
+                ChichiL4 = GetMatrixRatio(GetMinChichiL4Local(), Matrix.Identity, ratio);
+                ChichiL5 = GetMatrixRatio(GetMinChichiL5Local(), Matrix.Identity, ratio);
+                ChichiL5E = GetMatrixRatio(GetMinChichiL5ELocal(), Matrix.Identity, ratio);
 
                 Chichi = GetVector3Ratio(new Vector3(1,1,1), GetMinChichi(), ratio);
             }
