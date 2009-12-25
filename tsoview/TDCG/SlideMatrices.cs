@@ -588,7 +588,7 @@ m.M44 = 1.000000F;
         LegRatio = 0.5f;
         WaistRatio = 0.0f; //scaling factor‚©‚çŒ©‚Ä“·‚Ü‚í‚è‚ÌŠî€‚Í0.0‚Å‚ ‚é
         BustRatio = 0.5f;
-        AgeRatio = 0.5f;
+        TallRatio = 0.5f;
         EyeRatio = 0.5f;
     }
 
@@ -677,7 +677,7 @@ m.M44 = 1.000000F;
 
     float age_ratio;
     /// o–…ƒXƒ‰ƒCƒ_”ä—¦
-    public float AgeRatio
+    public float TallRatio
     {
         get { return age_ratio; }
         set
