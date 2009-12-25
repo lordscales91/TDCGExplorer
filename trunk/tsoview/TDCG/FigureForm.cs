@@ -32,8 +32,8 @@ public class FigureForm : Form
     private Label lbSlideArm;
     private Label lbSlideWaist;
     private Label lbSlideBust;
-    private Label lbSlideAge;
-    private TrackBar tbSlideAge;
+    private Label lbSlideTall;
+    private TrackBar tbSlideTall;
     private DataGridView gvShaderParams;
 
     /// <summary>
@@ -83,7 +83,7 @@ public class FigureForm : Form
         this.tbSlideLeg.Value = (int)(fig.slide_matrices.LegRatio * 10);
         this.tbSlideWaist.Value = (int)(fig.slide_matrices.WaistRatio * 10);
         this.tbSlideBust.Value = (int)(fig.slide_matrices.BustRatio * 10);
-        this.tbSlideAge.Value = (int)(fig.slide_matrices.AgeRatio * 10);
+        this.tbSlideTall.Value = (int)(fig.slide_matrices.TallRatio * 10);
         this.tbSlideEye.Value = (int)(fig.slide_matrices.EyeRatio * 10);
 
         lvTSOFiles.Items.Clear();
@@ -146,15 +146,15 @@ public class FigureForm : Form
         this.lbSlideArm = new System.Windows.Forms.Label();
         this.lbSlideWaist = new System.Windows.Forms.Label();
         this.lbSlideBust = new System.Windows.Forms.Label();
-        this.lbSlideAge = new System.Windows.Forms.Label();
-        this.tbSlideAge = new System.Windows.Forms.TrackBar();
+        this.lbSlideTall = new System.Windows.Forms.Label();
+        this.tbSlideTall = new System.Windows.Forms.TrackBar();
         ((System.ComponentModel.ISupportInitialize)(this.gvShaderParams)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideEye)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideLeg)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideArm)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideWaist)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideBust)).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)(this.tbSlideAge)).BeginInit();
+        ((System.ComponentModel.ISupportInitialize)(this.tbSlideTall)).BeginInit();
         this.SuspendLayout();
         // 
         // btnDump
@@ -328,30 +328,30 @@ public class FigureForm : Form
         this.lbSlideBust.TabIndex = 15;
         this.lbSlideBust.Text = "Bust";
         // 
-        // lbSlideAge
+        // lbSlideTall
         // 
-        this.lbSlideAge.AutoSize = true;
-        this.lbSlideAge.Location = new System.Drawing.Point(604, 407);
-        this.lbSlideAge.Name = "lbSlideAge";
-        this.lbSlideAge.Size = new System.Drawing.Size(25, 12);
-        this.lbSlideAge.TabIndex = 17;
-        this.lbSlideAge.Text = "Age";
+        this.lbSlideTall.AutoSize = true;
+        this.lbSlideTall.Location = new System.Drawing.Point(604, 407);
+        this.lbSlideTall.Name = "lbSlideTall";
+        this.lbSlideTall.Size = new System.Drawing.Size(24, 12);
+        this.lbSlideTall.TabIndex = 17;
+        this.lbSlideTall.Text = "Tall";
         // 
-        // tbSlideAge
+        // tbSlideTall
         // 
-        this.tbSlideAge.Location = new System.Drawing.Point(604, 422);
-        this.tbSlideAge.Name = "tbSlideAge";
-        this.tbSlideAge.Size = new System.Drawing.Size(104, 45);
-        this.tbSlideAge.TabIndex = 16;
-        this.tbSlideAge.ValueChanged += new System.EventHandler(this.tbSlideAge_ValueChanged);
+        this.tbSlideTall.Location = new System.Drawing.Point(604, 422);
+        this.tbSlideTall.Name = "tbSlideTall";
+        this.tbSlideTall.Size = new System.Drawing.Size(104, 45);
+        this.tbSlideTall.TabIndex = 16;
+        this.tbSlideTall.ValueChanged += new System.EventHandler(this.tbSlideTall_ValueChanged);
         // 
         // FigureForm
         // 
         this.ClientSize = new System.Drawing.Size(784, 563);
         this.Controls.Add(this.lbSlideEye);
         this.Controls.Add(this.tbSlideEye);
-        this.Controls.Add(this.lbSlideAge);
-        this.Controls.Add(this.tbSlideAge);
+        this.Controls.Add(this.lbSlideTall);
+        this.Controls.Add(this.tbSlideTall);
         this.Controls.Add(this.lbSlideBust);
         this.Controls.Add(this.lbSlideWaist);
         this.Controls.Add(this.lbSlideArm);
@@ -375,7 +375,7 @@ public class FigureForm : Form
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideArm)).EndInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideWaist)).EndInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideBust)).EndInit();
-        ((System.ComponentModel.ISupportInitialize)(this.tbSlideAge)).EndInit();
+        ((System.ComponentModel.ISupportInitialize)(this.tbSlideTall)).EndInit();
         this.ResumeLayout(false);
         this.PerformLayout();
 
@@ -490,12 +490,12 @@ public class FigureForm : Form
         fig.UpdateBoneMatrices(true);
     }
 
-    private void tbSlideAge_ValueChanged(object sender, EventArgs e)
+    private void tbSlideTall_ValueChanged(object sender, EventArgs e)
     {
         if (fig == null)
             return;
 
-        fig.slide_matrices.AgeRatio = tbSlideAge.Value * 0.1f;
+        fig.slide_matrices.TallRatio = tbSlideTall.Value * 0.1f;
         fig.UpdateBoneMatrices(true);
     }
 }

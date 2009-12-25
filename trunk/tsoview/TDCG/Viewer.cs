@@ -1162,7 +1162,7 @@ public class Viewer : IDisposable
                     float flo = BitConverter.ToSingle(buf, offset);
                     ratios.Add(flo);
                 }
-                fig.slide_matrices.AgeRatio = ratios[0];
+                fig.slide_matrices.TallRatio = ratios[0];
                 fig.slide_matrices.ArmRatio = ratios[1];
                 fig.slide_matrices.LegRatio = ratios[2];
                 fig.slide_matrices.WaistRatio = ratios[3];
@@ -1187,7 +1187,7 @@ public class Viewer : IDisposable
                 BMPSaveData data = new BMPSaveData();
                 data.Read(ms);
 
-                fig.slide_matrices.AgeRatio = data.proportions[1];
+                fig.slide_matrices.TallRatio = data.proportions[1];
                 fig.slide_matrices.ArmRatio = data.proportions[2];
                 fig.slide_matrices.LegRatio = data.proportions[3];
                 fig.slide_matrices.WaistRatio = data.proportions[4];
