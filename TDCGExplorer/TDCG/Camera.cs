@@ -18,7 +18,7 @@ public class Camera
     private Vector3 localP = new Vector3(0.0f, 0.0f, +10.0f);
     private Vector3 dirD = Vector3.Empty; //カメラ移動方向ベクトル
     private float zD = 0.0f;      //カメラ奥行オフセット値
-    private bool needUpdate = true;    //更新する必要があるか
+    private bool needUpdate = true;
     private Matrix view = Matrix.Identity;  //ビュー行列
     private Matrix pose = Matrix.Identity;
     private float rotZD = 0.0f;   //カメラ Z軸回転差分
@@ -40,9 +40,19 @@ public class Camera
     public Vector3 LocalPosition { get { return localP; } set { localP = value; } }
     
     /// <summary>
+    ///更新する必要があるか
+    /// </summary>
+    public bool NeedUpdate { get { return needUpdate; }}
+
+    /// <summary>
+    /// ビュー行列
+    /// </summary>
+    public Matrix ViewMatrix { get { return view; } }
+
+    /// <summary>
     /// カメラの姿勢行列
     /// </summary>
-    public Matrix Pose { get { return pose; } set { pose = value; } }
+    public Matrix PoseMatrix { get { return pose; } set { pose = value; } }
 
     /// <summary>
     /// カメラを生成します。
@@ -92,56 +102,6 @@ public class Camera
         Camera camera = serializer.Deserialize(reader) as Camera;
         reader.Close();
         return camera;
-    }
-
-    /// <summary>
-    /// カメラの位置と姿勢を補完します。
-    /// </summary>
-    /// <param name="cam1">補間開始時の位置を姿勢を保持するカメラ</param>
-    /// <param name="cam2">補間終了時の位置を姿勢を保持するカメラ</param>
-    /// <param name="ratio">補間比率</param>
-    /// <returns>カメラ</returns>
-    public static Camera Interpolation(Camera cam1, Camera cam2, float ratio)
-    {
-        Camera camera = new Camera();
-        camera.Center = Vector3.Lerp(cam1.Center, cam2.Center, ratio);
-        camera.Translation = Vector3.Lerp(cam1.Translation, cam2.Translation, ratio);
-        camera.LocalPosition = Vector3.Lerp(cam1.LocalPosition, cam2.LocalPosition, ratio);
-        Quaternion q1 = Quaternion.RotationMatrix(cam1.Pose);
-        Quaternion q2 = Quaternion.RotationMatrix(cam2.Pose);
-        camera.Pose = Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, ratio));
-        return camera;
-    }
-
-    /// <summary>
-    /// カメラの位置と姿勢を補完します。
-    /// </summary>
-    /// <param name="cam1">補間開始時の位置を姿勢を保持するカメラ</param>
-    /// <param name="cam2">補間終了時の位置を姿勢を保持するカメラ</param>
-    /// <param name="ratio">補間比率</param>
-    public void Interp(Camera cam1, Camera cam2, float ratio)
-    {
-        center = Vector3.Lerp(cam1.Center, cam2.Center, ratio);
-        translation = Vector3.Lerp(cam1.Translation, cam2.Translation, ratio);
-        localP = Vector3.Lerp(cam1.LocalPosition, cam2.LocalPosition, ratio);
-        Quaternion q1 = Quaternion.RotationMatrix(cam1.Pose);
-        Quaternion q2 = Quaternion.RotationMatrix(cam2.Pose);
-        pose = Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, ratio));
-
-        //view行列更新
-        Vector3 posW = localP + center;
-        {
-            Matrix m = pose;
-            m.M41 = posW.X;
-            m.M42 = posW.Y;
-            m.M43 = posW.Z;
-            m.M44 = 1.0f;
-            view = Matrix.Invert(m) * Matrix.Translation(-translation);
-        }
-
-        //差分をリセット
-        ResetDefValue();
-        needUpdate = false;
     }
 
     /// <summary>
@@ -329,14 +289,6 @@ public class Camera
         //差分をリセット
         ResetDefValue();
         needUpdate = false;
-    }
-
-    /// <summary>
-    /// view行列を取得します。
-    /// </summary>
-    public Matrix GetViewMatrix()
-    {
-        return view;
     }
 
     /// <summary>

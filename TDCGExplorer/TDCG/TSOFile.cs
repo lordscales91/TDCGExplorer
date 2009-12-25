@@ -1,22 +1,20 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.ComponentModel;
 using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
+using TDCG.Extensions;
 
 namespace TDCG
 {
     /// <summary>
-    /// サブメッシュ
+    /// メッシュ
     /// </summary>
-    public class TSOSubMesh : IDisposable
+    public class TSOMesh : IDisposable
     {
-        /// <summary>
-        /// 名前
-        /// </summary>
-        public string name;
         /// <summary>
         /// シェーダ設定番号
         /// </summary>
@@ -24,15 +22,15 @@ namespace TDCG
         /// <summary>
         /// ボーン参照リスト
         /// </summary>
-        public List<UInt32> bone_index_LUT;
+        public int[] bone_indices;
         /// <summary>
         /// ボーン参照リスト
         /// </summary>
-        public List<TSONode> bone_LUT;
+        public List<TSONode> bones;
         /// <summary>
         /// 頂点配列
         /// </summary>
-        public vertex_field[] vertices;
+        public Vertex[] vertices;
 
         internal Mesh dm = null;
 
@@ -46,7 +44,7 @@ namespace TDCG
         /// </summary>
         public int NumberBones
         {
-            get { return bone_index_LUT.Count; }
+            get { return bone_indices.Length; }
         }
 
         /// <summary>
@@ -56,7 +54,61 @@ namespace TDCG
         /// <returns>ボーン</returns>
         public TSONode GetBone(int i)
         {
-            return bone_LUT[i];
+            return bones[i];
+        }
+
+        /// <summary>
+        /// メッシュを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            this.spec = reader.ReadInt32();
+            int bone_indices_count = reader.ReadInt32(); //numbones
+            this.maxPalettes = 16;
+            if (this.maxPalettes > bone_indices_count)
+                this.maxPalettes = bone_indices_count;
+
+            this.bone_indices = new int[bone_indices_count];
+            for (int i = 0; i < bone_indices_count; i++)
+            {
+                this.bone_indices[i] = reader.ReadInt32();
+            }
+
+            int vertex_count = reader.ReadInt32(); //numvertices
+            this.vertices = new Vertex[vertex_count];
+            for (int i = 0; i < vertex_count; i++)
+            {
+                this.vertices[i].Read(reader);
+            }
+        }
+
+        /// <summary>
+        /// メッシュを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.Write(this.spec);
+
+            bw.Write(this.bone_indices.Length);
+            foreach (int bone_index in this.bone_indices)
+                bw.Write(bone_index);
+
+            bw.Write(this.vertices.Length);
+            for (int i = 0; i < this.vertices.Length; i++)
+            {
+                this.vertices[i].Write(bw);
+            }
+        }
+
+        /// <summary>
+        /// ボーン参照リストを生成します。
+        /// </summary>
+        public void LinkBones(TSONode[] nodes)
+        {
+            this.bones = new List<TSONode>();
+
+            foreach (int bone_index in bone_indices)
+                this.bones.Add(nodes[bone_index]);
         }
 
         static VertexElement[] ve = new VertexElement[]
@@ -97,15 +149,15 @@ namespace TDCG
                 {
                     for (int i = 0; i < vertices.Length; i++)
                     {
-                        vertex_field tv = vertices[i];
+                        Vertex v = vertices[i];
 
-                        gs.Write(tv.position);
+                        gs.Write(v.position);
                         for (int j = 0; j < 4; j++)
-                            gs.Write(tv.skin_weights[j].weight);
-                        gs.Write(tv.skin_weight_indices);
-                        gs.Write(tv.normal);
-                        gs.Write(tv.u);
-                        gs.Write(tv.v);
+                            gs.Write(v.skin_weights[j].weight);
+                        gs.Write(v.bone_indices);
+                        gs.Write(v.normal);
+                        gs.Write(v.u);
+                        gs.Write(v.v);
                     }
                 }
                 dm.UnlockVertexBuffer();
@@ -155,9 +207,9 @@ namespace TDCG
     }
 
     /// <summary>
-    /// メッシュ
+    /// フレーム
     /// </summary>
-    public class TSOMesh : IDisposable
+    public class TSOFrame : IDisposable
     {
         /// <summary>
         /// 名称
@@ -171,27 +223,68 @@ namespace TDCG
         /// unknown1
         /// </summary>
         public UInt32 unknown1;
-        //public UInt32 sub_mesh_count;
         /// <summary>
-        /// サブメッシュ配列
+        /// メッシュ配列
         /// </summary>
-        public TSOSubMesh[] sub_meshes;
+        public TSOMesh[] meshes;
+
+        /// <summary>
+        /// フレームを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            this.name = reader.ReadCString().Replace(":", "_colon_").Replace("#", "_sharp_"); //should be compatible with directx naming conventions 
+            reader.ReadMatrix(ref this.transform_matrix);
+            this.unknown1 = reader.ReadUInt32();
+            UInt32 mesh_count = reader.ReadUInt32();
+            this.meshes = new TSOMesh[mesh_count];
+            for (int i = 0; i < mesh_count; i++)
+            {
+                TSOMesh mesh = new TSOMesh();
+                mesh.Read(reader);
+                this.meshes[i] = mesh;
+            }
+        }
+
+        /// <summary>
+        /// フレームを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.WriteCString(this.name);
+            Matrix m = this.transform_matrix;
+            bw.Write(ref m);
+            bw.Write(this.unknown1);
+            bw.Write(this.meshes.Length);
+
+            foreach (TSOMesh i in this.meshes)
+                i.Write(bw);
+        }
+
+        /// <summary>
+        /// ボーン参照リストを生成します。
+        /// </summary>
+        public void LinkBones(TSONode[] nodes)
+        {
+            foreach (TSOMesh mesh in meshes)
+                mesh.LinkBones(nodes);
+        }
 
         /// <summary>
         /// 内部objectを破棄します。
         /// </summary>
         public void Dispose()
         {
-            if (sub_meshes != null)
-            foreach (TSOSubMesh tm_sub in sub_meshes)
-                tm_sub.Dispose();
+            if (meshes != null)
+            foreach (TSOMesh mesh in meshes)
+                mesh.Dispose();
         }
     }
 
     /// <summary>
     /// 頂点
     /// </summary>
-    public struct vertex_field
+    public struct Vertex
     {
         /// <summary>
         /// 位置
@@ -216,7 +309,81 @@ namespace TDCG
         /// <summary>
         /// ボーンインデックス
         /// </summary>
-        public UInt32 skin_weight_indices;
+        public UInt32 bone_indices;
+
+        /// <summary>
+        /// 頂点を読みとります。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            reader.ReadVector3(ref this.position);
+            reader.ReadVector3(ref this.normal);
+            this.u = reader.ReadSingle();
+            this.v = reader.ReadSingle();
+            int skin_weights_count = reader.ReadInt32();
+            this.skin_weights = new SkinWeight[skin_weights_count];
+            for (int i = 0; i < skin_weights_count; i++)
+            {
+                int bone_index = reader.ReadInt32();
+                float weight = reader.ReadSingle();
+                this.skin_weights[i] = new SkinWeight(bone_index, weight);
+            }
+
+            FillSkinWeights();
+            GenerateBoneIndices();
+        }
+
+        /// <summary>
+        /// スキンウェイト配列を充填します。
+        /// </summary>
+        public void FillSkinWeights()
+        {
+            Array.Sort(this.skin_weights);
+            int len = skin_weights.Length;
+            Array.Resize(ref this.skin_weights, 4);
+            for (int i = len; i < 4; i++)
+                this.skin_weights[i] = new SkinWeight(0, 0.0f);
+        }
+
+        /// <summary>
+        /// ボーンインデックスを生成します。
+        /// </summary>
+        public void GenerateBoneIndices()
+        {
+            byte[] idx = new byte[4];
+            for (int i = 0; i < 4; i++)
+                idx[i] = (byte)this.skin_weights[i].bone_index;
+
+            this.bone_indices = BitConverter.ToUInt32(idx, 0);
+        }
+
+        /// <summary>
+        /// 頂点を書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.Write(ref this.position);
+            bw.Write(ref this.normal);
+            bw.Write(this.u);
+            bw.Write(this.v);
+
+            int skin_weights_count = 0;
+            SkinWeight[] skin_weights = new SkinWeight[4];
+            foreach (SkinWeight skin_weight in this.skin_weights)
+            {
+                if (skin_weight.weight == 0.0f)
+                    continue;
+
+                skin_weights[skin_weights_count++] = skin_weight;
+            }
+            bw.Write(skin_weights_count);
+
+            for (int i = 0; i < skin_weights_count; i++)
+            {
+                bw.Write(skin_weights[i].bone_index);
+                bw.Write(skin_weights[i].weight);
+            }
+        }
     }
 
     /// <summary>
@@ -225,23 +392,26 @@ namespace TDCG
     public class SkinWeight : IComparable
     {
         /// <summary>
-        /// ウェイト
-        /// </summary>
-        public Single weight;
-        /// <summary>
         /// ボーンインデックス
         /// </summary>
-        public UInt32 index;
+        public int bone_index;
+
+        /// <summary>
+        /// ウェイト
+        /// </summary>
+        public float weight;
+
         /// <summary>
         /// スキンウェイトを生成します。
         /// </summary>
-        /// <param name="weight"></param>
-        /// <param name="index"></param>
-        public SkinWeight(Single weight, UInt32 index)
+        /// <param name="bone_index">ボーンインデックス</param>
+        /// <param name="weight">ウェイト</param>
+        public SkinWeight(int bone_index, float weight)
         {
+            this.bone_index = bone_index;
             this.weight = weight;
-            this.index = index;
         }
+
         /// <summary>
         /// 比較関数
         /// </summary>
@@ -265,7 +435,33 @@ namespace TDCG
         /// <summary>
         /// テキスト行配列
         /// </summary>
-        public string[] script_data;
+        public string[] lines;
+
+        /// <summary>
+        /// スクリプトを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            this.name = reader.ReadCString();
+            UInt32 line_count = reader.ReadUInt32();
+            this.lines = new string[line_count];
+            for (int i = 0; i < line_count; i++)
+            {
+                lines[i] = reader.ReadCString();
+            }
+        }
+
+        /// <summary>
+        /// スクリプトを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.WriteCString(this.name);
+            bw.Write(this.lines.Length);
+
+            foreach (string line in this.lines)
+                bw.WriteCString(line);
+        }
     }
 
     /// <summary>
@@ -279,7 +475,7 @@ namespace TDCG
         /// <summary>
         /// テキスト行配列
         /// </summary>
-        public string[] script_data;
+        public string[] lines;
         internal Shader shader = null;
 
         /// <summary>
@@ -290,6 +486,45 @@ namespace TDCG
         /// ファイル名
         /// </summary>
         public string File { get { return file; } set { file = value; } }
+
+        /// <summary>
+        /// サブスクリプトを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            this.name = reader.ReadCString();
+            this.file = reader.ReadCString();
+            UInt32 line_count = reader.ReadUInt32();
+            this.lines = new string[line_count];
+            for (int i = 0; i < line_count; i++)
+            {
+                this.lines[i] = reader.ReadCString();
+            }
+
+            //Console.WriteLine("name {0} file {1}", this.name, this.file);
+        }
+
+        /// <summary>
+        /// サブスクリプトを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.WriteCString(this.name);
+            bw.WriteCString(this.file);
+            bw.Write(this.lines.Length);
+
+            foreach (string line in this.lines)
+                bw.WriteCString(line);
+        }
+
+        /// <summary>
+        /// シェーダ設定を生成します。
+        /// </summary>
+        public void GenerateShader()
+        {
+            this.shader = new Shader();
+            this.shader.Load(this.lines);
+        }
     }
 
     /// <summary>
@@ -323,6 +558,49 @@ namespace TDCG
         public byte[] data;
 
         internal Texture tex;
+
+        /// <summary>
+        /// テクスチャを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            this.name = reader.ReadCString();
+            this.file = reader.ReadCString();
+            this.width = reader.ReadInt32();
+            this.height = reader.ReadInt32();
+            this.depth = reader.ReadInt32();
+            this.data = reader.ReadBytes( this.width * this.height * this.depth );
+
+            for(int j = 0; j < this.data.Length; j += 4)
+            {
+                byte tmp = this.data[j+2];
+                this.data[j+2] = this.data[j+0];
+                this.data[j+0] = tmp;
+            }
+        }
+
+        /// <summary>
+        /// テクスチャを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.WriteCString(this.name);
+            bw.WriteCString(this.file);
+            bw.Write(this.width);
+            bw.Write(this.height);
+            bw.Write(this.depth);
+
+            byte[] buf = new byte[this.data.Length];
+            Array.Copy(this.data, 0, buf, 0, buf.Length);
+
+            for(int j = 0; j < buf.Length; j += 4)
+            {
+                byte tmp = buf[j+2];
+                buf[j+2] = buf[j+0];
+                buf[j+0] = tmp;
+            }
+            bw.Write(buf);
+        }
 
         /// <summary>
         /// 指定deviceで開きます。
@@ -384,8 +662,8 @@ namespace TDCG
     public class TSONode
     {
         private int id;
+        private string path;
         private string name;
-        private string sname;
 
         private Quaternion rotation;
         private Vector3 translation;
@@ -396,29 +674,25 @@ namespace TDCG
         /// <summary>
         /// TSONodeを生成します。
         /// </summary>
-        public TSONode(int id, string name)
+        public TSONode(int id)
         {
             this.id = id;
-            this.name = name;
-            this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
         }
 
-        public void SetName(string name)
+        /// <summary>
+        /// TSONodeを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
         {
-            this.name = name;
-            this.sname = this.name.Substring(this.name.LastIndexOf('|') + 1);
+            this.Path = reader.ReadCString();
         }
 
-        public void UpdateName()
+        /// <summary>
+        /// TSONodeを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
         {
-            string name = "";
-            TSONode bone = this;
-            while (bone != null)
-            {
-                name = "|" + bone.ShortName + name;
-                bone = bone.parent;
-            }
-            this.name = name;
+            bw.WriteCString(this.Path);
         }
 
         /// <summary>
@@ -452,7 +726,7 @@ namespace TDCG
         /// <summary>
         /// 子nodeリスト
         /// </summary>
-        public List<TSONode> child_nodes = new List<TSONode>();
+        public List<TSONode> children = new List<TSONode>();
 
         /// <summary>
         /// 親node
@@ -477,24 +751,32 @@ namespace TDCG
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get { return name; } }
+        public string Path
+        {
+            get { return path; }
+            set
+            {
+                path = value;
+                name = path.Substring(path.LastIndexOf('|') + 1);
+            }
+        }
 
         /// <summary>
         /// 名称の短い形式。これはTSOFile中で重複する可能性があります。
         /// </summary>
-        public string ShortName { get { return sname; } }
+        public string Name { get { return name; } }
 
         /// <summary>
-        /// 指定boneに対するオフセット行列を計算します。
+        /// 指定nodeに対するオフセット行列を計算します。
         /// </summary>
-        /// <param name="bone">bone</param>
-        public static Matrix GetBoneOffsetMatrix(TSONode bone)
+        /// <param name="node">node</param>
+        public static Matrix GetOffsetMatrix(TSONode node)
         {
             Matrix m = Matrix.Identity;
-            while (bone != null)
+            while (node != null)
             {
-                m.Multiply(bone.TransformationMatrix);
-                bone = bone.parent;
+                m.Multiply(node.TransformationMatrix);
+                node = node.parent;
             }
             return Matrix.Invert(m);
         }
@@ -504,16 +786,16 @@ namespace TDCG
         /// </summary>
         public void ComputeOffsetMatrix()
         {
-            offset_matrix = TSONode.GetBoneOffsetMatrix(this);
+            offset_matrix = TSONode.GetOffsetMatrix(this);
         }
 
         /// <summary>
         /// オフセット行列を得ます。
         /// </summary>
         /// <returns></returns>
-        public Matrix GetOffsetMatrix()
+        public Matrix OffsetMatrix
         {
-            return offset_matrix;
+            get { return offset_matrix; }
         }
 
         /// <summary>
@@ -522,12 +804,12 @@ namespace TDCG
         /// <returns></returns>
         public Vector3 GetWorldPosition()
         {
-            TSONode bone = this;
+            TSONode node = this;
             Vector3 v = Vector3.Empty;
-            while (bone != null)
+            while (node != null)
             {
-                v = Vector3.TransformCoordinate(v, bone.TransformationMatrix);
-                bone = bone.parent;
+                v = Vector3.TransformCoordinate(v, node.TransformationMatrix);
+                node = node.parent;
             }
             return v;
         }
@@ -538,12 +820,12 @@ namespace TDCG
         /// <returns></returns>
         public Matrix GetWorldCoordinate()
         {
-            TSONode bone = this;
+            TSONode node = this;
             Matrix m = Matrix.Identity;
-            while (bone != null)
+            while (node != null)
             {
-                m.Multiply(bone.TransformationMatrix);
-                bone = bone.parent;
+                m.Multiply(node.TransformationMatrix);
+                node = node.parent;
             }
             return m;
         }
@@ -617,152 +899,11 @@ namespace TDCG
         /// </summary>
         public TSOSubScript[] sub_scripts;
         /// <summary>
-        /// メッシュ配列
+        /// フレーム配列
         /// </summary>
-        public TSOMesh[] meshes;
+        public TSOFrame[] frames;
 
         internal Dictionary<string, TSONode> nodemap;
-
-        /// <summary>
-        /// null終端文字列を読みとります。
-        /// </summary>
-        /// <returns>文字列</returns>
-        public string ReadString()
-        {
-            StringBuilder string_builder = new StringBuilder();
-            while ( true ) {
-                char c = reader.ReadChar();
-                if (c == 0) break;
-                string_builder.Append(c);
-            }
-            return string_builder.ToString();
-        }
-
-        /// <summary>
-        /// TSOMeshを読みとります。
-        /// </summary>
-        /// <returns>TSOMesh</returns>
-        public TSOMesh ReadMesh()
-        {
-            TSOMesh mesh = new TSOMesh();
-
-            mesh.name = ReadString();
-            mesh.name = mesh.name.Replace(":", "_colon_").Replace("#", "_sharp_"); //should be compatible with directx naming conventions 
-            ReadMatrix(ref mesh.transform_matrix);
-            mesh.unknown1 = reader.ReadUInt32();
-            UInt32 sub_mesh_count = reader.ReadUInt32();
-            mesh.sub_meshes = new TSOSubMesh[sub_mesh_count];
-
-            for (int a = 0; a < sub_mesh_count; a++)
-            {
-                TSOSubMesh act_mesh = new TSOSubMesh();
-                mesh.sub_meshes[a] = act_mesh;
-
-                act_mesh.name = mesh.name + "_sub_" + a.ToString();
-
-                act_mesh.spec = reader.ReadInt32();
-                int bone_index_LUT_entry_count = reader.ReadInt32(); //numbones
-                act_mesh.maxPalettes = 16;
-                if (act_mesh.maxPalettes > bone_index_LUT_entry_count)
-                    act_mesh.maxPalettes = bone_index_LUT_entry_count;
-                act_mesh.bone_index_LUT = new List<UInt32>();
-                act_mesh.bone_LUT = new List<TSONode>();
-                for (int i = 0; i < bone_index_LUT_entry_count; i++)
-                {
-                    act_mesh.bone_index_LUT.Add(reader.ReadUInt32());
-                }
-                int vertex_count = reader.ReadInt32(); //numvertices
-                act_mesh.vertices = new vertex_field[vertex_count];
-                for (int i = 0; i < vertex_count; i++)
-                {
-                    ReadVertex(ref act_mesh.vertices[i]);
-                }
-            }
-
-            for (int a = 0; a < sub_mesh_count; a++)
-            {
-                TSOSubMesh sub_mesh = mesh.sub_meshes[a];
-
-                for (int i = 0; i < sub_mesh.bone_index_LUT.Count; i++)
-                {
-                    UInt32 bone_index = sub_mesh.bone_index_LUT[i];
-                    TSONode bone = nodes[bone_index];
-                    sub_mesh.bone_LUT.Add(bone);
-                }
-            }
-
-            return mesh;
-        }
-
-        /// <summary>
-        /// Matrixを読みとります。
-        /// </summary>
-        /// <param name="m">Matrix</param>
-        public void ReadMatrix(ref Matrix m)
-        {
-            m.M11 = reader.ReadSingle();
-            m.M12 = reader.ReadSingle();
-            m.M13 = reader.ReadSingle();
-            m.M14 = reader.ReadSingle();
-
-            m.M21 = reader.ReadSingle();
-            m.M22 = reader.ReadSingle();
-            m.M23 = reader.ReadSingle();
-            m.M24 = reader.ReadSingle();
-
-            m.M31 = reader.ReadSingle();
-            m.M32 = reader.ReadSingle();
-            m.M33 = reader.ReadSingle();
-            m.M34 = reader.ReadSingle();
-
-            m.M41 = reader.ReadSingle();
-            m.M42 = reader.ReadSingle();
-            m.M43 = reader.ReadSingle();
-            m.M44 = reader.ReadSingle();
-        }
-
-        /// <summary>
-        /// Vector3を読みとります。
-        /// </summary>
-        /// <param name="v">Vector3</param>
-        public void ReadVector3(ref Vector3 v)
-        {
-            v.X = reader.ReadSingle();
-            v.Y = reader.ReadSingle();
-            v.Z = reader.ReadSingle();
-        }
-
-        /// <summary>
-        /// 頂点を読みとります。
-        /// </summary>
-        /// <param name="v">頂点</param>
-        public void ReadVertex(ref vertex_field v)
-        {
-            ReadVector3(ref v.position);
-            ReadVector3(ref v.normal);
-            v.u = reader.ReadSingle();
-            v.v = reader.ReadSingle();
-            int bone_weight_entry_count = reader.ReadInt32();
-            v.skin_weights = new SkinWeight[bone_weight_entry_count];
-            for (int i = 0; i < bone_weight_entry_count; i++)
-            {
-                uint index = reader.ReadUInt32();
-                float weight = reader.ReadSingle();
-                v.skin_weights[i] = new SkinWeight(weight, index);
-            }
-            Array.Sort(v.skin_weights);
-            Array.Resize(ref v.skin_weights, 4);
-            for (int i = bone_weight_entry_count; i < 4; i++)
-            {
-                v.skin_weights[i] = new SkinWeight(0.0f, 0);
-            }
-
-            byte[] idx = new byte[4];
-            for (int i = 0; i < 4; i++)
-                idx[i] = (byte)v.skin_weights[i].index;
-
-            v.skin_weight_indices = BitConverter.ToUInt32(idx, 0);
-        }
 
         /// <summary>
         /// 指定パスに保存します。
@@ -782,12 +923,43 @@ namespace TDCG
         {
             BinaryWriter bw = new BinaryWriter(dest_stream);
 
-            TSOWriter.WriteMagic(bw);
-            TSOWriter.Write(bw, nodes);
-            TSOWriter.Write(bw, textures);
-            TSOWriter.Write(bw, scripts);
-            TSOWriter.Write(bw, sub_scripts);
-            TSOWriter.Write(bw, meshes);
+            WriteMagic(bw);
+
+            bw.Write(nodes.Length);
+            foreach (TSONode node in nodes)
+                node.Write(bw);
+
+            bw.Write(nodes.Length);
+            Matrix m = Matrix.Identity;
+            foreach (TSONode node in nodes)
+            {
+                m = node.TransformationMatrix;
+                bw.Write(ref m);
+            }
+
+            bw.Write(textures.Length);
+            foreach (TSOTex tex in textures)
+                tex.Write(bw);
+
+            bw.Write(scripts.Length);
+            foreach (TSOScript script in scripts)
+                script.Write(bw);
+
+            bw.Write(sub_scripts.Length);
+            foreach (TSOSubScript sub_script in sub_scripts)
+                sub_script.Write(bw);
+
+            bw.Write(frames.Length);
+            foreach (TSOFrame frame in frames)
+                frame.Write(bw);
+        }
+
+        /// <summary>
+        /// 'TSO1' を書き出します。
+        /// </summary>
+        public static void WriteMagic(BinaryWriter bw)
+        {
+            bw.Write(0x314F5354);
         }
 
         /// <summary>
@@ -818,11 +990,10 @@ namespace TDCG
 
             int node_count = reader.ReadInt32();
             nodes = new TSONode[node_count];
-
             for (int i = 0; i < node_count; i++)
             {
-                string name = ReadString();
-                nodes[i] = new TSONode(i, name);
+                nodes[i] = new TSONode(i);
+                nodes[i].Read(reader);
             }
 
             GenerateNodemapAndTree();
@@ -831,7 +1002,7 @@ namespace TDCG
             Matrix m = Matrix.Identity;
             for (int i = 0; i < node_matrix_count; i++)
             {
-                ReadMatrix(ref m);
+                reader.ReadMatrix(ref m);
                 nodes[i].TransformationMatrix = m;
             }
             for (int i = 0; i < node_matrix_count; i++)
@@ -843,31 +1014,36 @@ namespace TDCG
             textures = new TSOTex[texture_count];
             for (int i = 0; i < texture_count; i++)
             {
-                textures[i] = ReadTexture();
+                textures[i] = new TSOTex();
+                textures[i].Read(reader);
             }
 
             UInt32 script_count = reader.ReadUInt32();
             scripts = new TSOScript[script_count];
             for (int i = 0; i < script_count; i++)
             {
-                scripts[i] = ReadScript();
+                scripts[i] = new TSOScript();
+                scripts[i].Read(reader);
             }
 
             UInt32 sub_script_count = reader.ReadUInt32();
             sub_scripts = new TSOSubScript[sub_script_count];
             for (int i = 0; i < sub_script_count; i++)
             {
-                sub_scripts[i] = ReadSubScript();
+                sub_scripts[i] = new TSOSubScript();
+                sub_scripts[i].Read(reader);
+                sub_scripts[i].GenerateShader();
             }
 
-            UInt32 mesh_count = reader.ReadUInt32();
-            meshes = new TSOMesh[mesh_count];
-            for (int i = 0; i < mesh_count; i++)
+            UInt32 frame_count = reader.ReadUInt32();
+            frames = new TSOFrame[frame_count];
+            for (int i = 0; i < frame_count; i++)
             {
-                TSOMesh mesh = ReadMesh();
-                meshes[i] = mesh;
+                frames[i] = new TSOFrame();
+                frames[i].Read(reader);
+                frames[i].LinkBones(nodes);
 
-                //Console.WriteLine("mesh name {0} len {1}", mesh.name, mesh.sub_meshes.Length);
+                //Console.WriteLine("frame name {0} len {1}", frame.name, frame.meshes.Length);
             }
         }
 
@@ -877,94 +1053,61 @@ namespace TDCG
 
             for (int i = 0; i < nodes.Length; i++)
             {
-                nodemap.Add(nodes[i].Name, nodes[i]);
+                nodemap.Add(nodes[i].Path, nodes[i]);
             }
 
             for (int i = 0; i < nodes.Length; i++)
             {
-                int index = nodes[i].Name.LastIndexOf('|');
+                int index = nodes[i].Path.LastIndexOf('|');
                 if (index <= 0)
                     continue;
-                string pname = nodes[i].Name.Substring(0, index);
-                nodes[i].parent = nodemap[pname];
-                nodes[i].parent.child_nodes.Add(nodes[i]);
+                string path = nodes[i].Path.Substring(0, index);
+                nodes[i].parent = nodemap[path];
+                nodes[i].parent.children.Add(nodes[i]);
             }
-        }
-
-        public void UpdateRootNodeName(string name)
-        {
-            TSONode root_node = nodes[0];
-            root_node.SetName(name);
-            foreach (TSONode node in nodes)
-                node.UpdateName();
         }
 
         /// <summary>
-        /// スクリプトを読み込みます。
+        /// tmoを生成します。
         /// </summary>
-        /// <returns></returns>
-        public TSOScript ReadScript()
+        public TMOFile GenerateTMO()
         {
-            TSOScript script = new TSOScript();
-            script.name = ReadString();
-            UInt32 line_count = reader.ReadUInt32();
-            string[] read_lines = new string[line_count];
-            for (int i = 0; i < line_count; i++)
-            {
-                read_lines[i] = ReadString();
-            }
-            script.script_data = read_lines;
+            TMOFile tmo = new TMOFile();
+            tmo.header = new byte[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            tmo.opt0 = 1;
+            tmo.opt1 = 0;
 
-            return script;
-        }
+            int node_count = nodes.Length;
+            tmo.nodes = new TMONode[node_count];
 
-        /// <summary>
-        /// サブスクリプトを読み込みます。
-        /// </summary>
-        /// <returns></returns>
-        public TSOSubScript ReadSubScript()
-        {
-            TSOSubScript sub_script = new TSOSubScript();
-            sub_script.name = ReadString();
-            sub_script.file = ReadString();
-            UInt32 sub_line_counts = reader.ReadUInt32();
-            sub_script.script_data = new string[sub_line_counts];
-            for (int j = 0; j < sub_line_counts; j++)
+            for (int i = 0; i < node_count; i++)
             {
-                sub_script.script_data[j] = ReadString();
+                tmo.nodes[i] = new TMONode(i);
+                tmo.nodes[i].Path = nodes[i].Path;
             }
 
-            //Console.WriteLine("name {0} file {1}", sub_script.name, sub_script.file);
+            tmo.GenerateNodemapAndTree();
 
-            sub_script.shader = new Shader();
-            sub_script.shader.Load(sub_script.script_data);
+            int frame_count = 1;
+            tmo.frames = new TMOFrame[frame_count];
 
-            return sub_script;
-        }
-
-        /// <summary>
-        /// テクスチャを読み込みます。
-        /// </summary>
-        /// <returns></returns>
-        public TSOTex ReadTexture()
-        {
-            TSOTex tex = new TSOTex();
-
-            tex.name = ReadString();
-            tex.file = ReadString();
-            tex.width = reader.ReadInt32();
-            tex.height = reader.ReadInt32();
-            tex.depth = reader.ReadInt32();
-            tex.data = reader.ReadBytes( tex.width * tex.height * tex.depth );
-
-            for(int j = 0; j < tex.data.Length; j += 4)
+            for (int i = 0; i < frame_count; i++)
             {
-                byte tmp = tex.data[j+2];
-                tex.data[j+2] = tex.data[j+0];
-                tex.data[j+0] = tmp;
+                tmo.frames[i] = new TMOFrame(i);
+                int matrix_count = node_count;
+                tmo.frames[i].matrices = new TMOMat[matrix_count];
+                for (int j = 0; j < matrix_count; j++)
+                {
+                    Matrix m = nodes[j].TransformationMatrix;
+                    tmo.frames[i].matrices[j] = new TMOMat(ref m);
+                }
             }
+            foreach (TMONode node in tmo.nodes)
+                node.LinkMatrices(tmo.frames);
 
-            return tex;
+            tmo.footer = new byte[4] { 0, 0, 0, 0 };
+
+            return tmo;
         }
 
         internal Device device;
@@ -991,9 +1134,9 @@ namespace TDCG
             this.device = device;
             this.effect = effect;
 
-            foreach (TSOMesh tm in meshes)
-            foreach (TSOSubMesh tm_sub in tm.sub_meshes)
-                tm_sub.LoadMesh(device);
+            foreach (TSOFrame frame in frames)
+            foreach (TSOMesh mesh in frame.meshes)
+                mesh.LoadMesh(device);
 
             texmap = new Dictionary<string, TSOTex>();
 
@@ -1111,10 +1254,11 @@ namespace TDCG
         /// <summary>
         /// シェーダ設定を切り替えます。
         /// </summary>
-        /// <param name="tm_sub">切り替え対象となるサブメッシュ</param>
-        public void SwitchShader(TSOSubMesh tm_sub)
+        /// <param name="mesh">切り替え対象となるメッシュ</param>
+        public void SwitchShader(TSOMesh mesh)
         {
-            SwitchShader(sub_scripts[tm_sub.spec].shader);
+            Debug.Assert(mesh.spec >= 0 && mesh.spec < sub_scripts.Length, string.Format("mesh.spec out of range: {0}", mesh.spec));
+            SwitchShader(sub_scripts[mesh.spec].shader);
         }
 
         /// <summary>
@@ -1130,8 +1274,8 @@ namespace TDCG
         /// </summary>
         public void Dispose()
         {
-            foreach (TSOMesh tm in meshes)
-                tm.Dispose();
+            foreach (TSOFrame frame in frames)
+                frame.Dispose();
             foreach (TSOTex tex in textures)
                 tex.Dispose();
         }

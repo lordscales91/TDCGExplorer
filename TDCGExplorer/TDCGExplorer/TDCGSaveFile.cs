@@ -204,6 +204,10 @@ namespace TDCGExplorer
         {
             return GetFloat(TDCGSaveFileStatic.SLIDER[index].Offset).ToString();
         }
+        public float GetSlider(int index)
+        {
+            return GetFloat(TDCGSaveFileStatic.SLIDER[index].Offset);
+        }
 
         public string GetFileName(int index)
         {

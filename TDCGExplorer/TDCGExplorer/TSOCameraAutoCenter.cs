@@ -108,8 +108,8 @@ namespace TDCGExplorer
             Dictionary<string, TMONode> nodemap = new Dictionary<string, TMONode>();
             foreach (TMONode node in tmo.nodes)
             {
-                if (nodemap.ContainsKey(node.ShortName) == false)
-                    nodemap.Add(node.ShortName, node);
+                if (nodemap.ContainsKey(node.Name) == false)
+                    nodemap.Add(node.Name, node);
             }
 
             SetCurrentTSOFileName(tsoname);
@@ -213,8 +213,8 @@ namespace TDCGExplorer
             Dictionary<string, TMONode> nodemap = new Dictionary<string, TMONode>();
             foreach (TMONode node in tmo.nodes)
             {
-                if (nodemap.ContainsKey(node.ShortName) == false)
-                    nodemap.Add(node.ShortName, node);
+                if (nodemap.ContainsKey(node.Name) == false)
+                    nodemap.Add(node.Name, node);
             }
 
             if (nodemap.TryGetValue(origin, out tmo_node))
@@ -242,8 +242,8 @@ namespace TDCGExplorer
             Dictionary<string, TMONode> nodemap = new Dictionary<string, TMONode>();
             foreach (TMONode node in tmo.nodes)
             {
-                if (nodemap.ContainsKey(node.ShortName) == false)
-                    nodemap.Add(node.ShortName, node);
+                if (nodemap.ContainsKey(node.Name) == false)
+                    nodemap.Add(node.Name, node);
             }
 
             TMONode tmo_node;

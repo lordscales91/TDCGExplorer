@@ -267,7 +267,7 @@ namespace System.Windows.Forms
             {
                 // 全部ロードする.
                 streamdata.Seek(0, SeekOrigin.Begin);
-                viewer.AddFigureFromPNGStream(streamdata, false);
+                viewer.AddFigureFromPNGFile(streamdata, false);
                 //TDCGExplorer.TDCGExplorer.FigureLoad = false;
                 viewer.BackColor = Color.Yellow;
             }

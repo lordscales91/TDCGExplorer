@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="shift_jis"?>
+<TPOConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Proportions>
+    <Proportion>
+      <ClassName>TDCG.Proportion.Boin</ClassName>
+      <Ratio>0</Ratio>
+    </Proportion>
+    <Proportion>
+      <ClassName>TDCG.Proportion.Dom</ClassName>
+      <Ratio>0</Ratio>
+    </Proportion>
+    <Proportion>
+      <ClassName>TDCG.Proportion.Ika</ClassName>
+      <Ratio>0</Ratio>
+    </Proportion>
+    <Proportion>
+      <ClassName>TDCG.Proportion.Kemo</ClassName>
+      <Ratio>0</Ratio>
+    </Proportion>
+    <Proportion>
+      <ClassName>TDCG.Proportion.Pedo</ClassName>
+      <Ratio>0</Ratio>
+    </Proportion>
+    <Proportion>
+      <ClassName>TDCG.Proportion.Zoom</ClassName>
+      <Ratio>0</Ratio>
+    </Proportion>
+  </Proportions>
+</TPOConfig>

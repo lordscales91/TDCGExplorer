@@ -359,7 +359,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TDCG\TDCG.csproj">
-      <Project>{8FF03D76-4977-411C-8C17-E9268D1B799F}</Project>
+      <Project>{30D26679-E876-46FC-B8C0-E55146316C8C}</Project>
       <Name>TDCG</Name>
     </ProjectReference>
   </ItemGroup>
