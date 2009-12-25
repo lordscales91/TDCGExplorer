@@ -59,6 +59,13 @@ def dump_matrix(m)
   end
 end
 
+t1 = Vector3.new(+0.005000, +2.302570, -0.856764)
+t2 = Vector3.new(+0.541797, -1.336350, +1.364660)
+t3 = Vector3.new(+0.214305, -0.510129, +0.492141)
+t4 = Vector3.new(+0.095186, -0.016642, +0.385775)
+t5 = Vector3.new(+0.064401, +0.045397, +0.238688)
+t5e = Vector3.new(-0.000283, +0.049728, +0.110266)
+
 scaling = Matrix.scaling(1000.0, 1000.0, 1000.0)
 
 # Chichi_Left1 0.0 node ident
@@ -70,8 +77,9 @@ src = <<EOT
 EOT
 
 p1 = Matrix.invert(scaling) * vertices_to_matrix(create_vertices(src))
+m1 = Matrix.invert(Matrix.translation(t1)) * p1
 puts "Chichi_Left1"
-dump_matrix p1
+dump_matrix m1
 
 # Chichi_Left2 0.0 node ident
 src = <<EOT
@@ -82,8 +90,9 @@ src = <<EOT
 EOT
 
 p2 = Matrix.invert(scaling) * vertices_to_matrix(create_vertices(src))
+m2 = Matrix.invert(Matrix.translation(t2)) * p2 * Matrix.invert(p1)
 puts "Chichi_Left2"
-dump_matrix p2
+dump_matrix m2
 
 # Chichi_Left3 0.0 node ident
 src = <<EOT
@@ -94,8 +103,9 @@ src = <<EOT
 EOT
 
 p3 = Matrix.invert(scaling) * vertices_to_matrix(create_vertices(src))
+m3 = Matrix.invert(Matrix.translation(t3)) * p3 * Matrix.invert(p2)
 puts "Chichi_Left3"
-dump_matrix p3
+dump_matrix m3
 
 # Chichi_Left4 0.0 node ident
 src = <<EOT
@@ -106,8 +116,9 @@ src = <<EOT
 EOT
 
 p4 = Matrix.invert(scaling) * vertices_to_matrix(create_vertices(src))
+m4 = Matrix.invert(Matrix.translation(t4)) * p4 * Matrix.invert(p3)
 puts "Chichi_Left4"
-dump_matrix p4
+dump_matrix m4
 
 # Chichi_Left5 0.0 node ident
 src = <<EOT
@@ -118,8 +129,9 @@ src = <<EOT
 EOT
 
 p5 = Matrix.invert(scaling) * vertices_to_matrix(create_vertices(src))
+m5 = Matrix.invert(Matrix.translation(t5)) * p5 * Matrix.invert(p4)
 puts "Chichi_Left5"
-dump_matrix p5
+dump_matrix m5
 
 # Chichi_Left5_End 0.0 node ident
 src = <<EOT
@@ -130,5 +142,6 @@ src = <<EOT
 EOT
 
 p5e = Matrix.invert(scaling) * vertices_to_matrix(create_vertices(src))
+m5e = Matrix.invert(Matrix.translation(t5e)) * p5e * Matrix.invert(p5)
 puts "Chichi_Left5_End"
-dump_matrix p5e
+dump_matrix m5e
