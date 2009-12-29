@@ -61,7 +61,7 @@ public class Figure : IDisposable
         }
     }
 
-    internal Dictionary<TSONode, TMONode> nodemap;
+    public Dictionary<TSONode, TMONode> nodemap;
 
     private MatrixStack matrixStack = null;
     private int frame_index = 0;
