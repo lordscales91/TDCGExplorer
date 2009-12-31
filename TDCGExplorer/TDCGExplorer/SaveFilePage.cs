@@ -44,7 +44,7 @@ namespace System.Windows.Forms
                 dataGridView.AllowUserToAddRows = false;
                 dataGridView.AllowUserToDeleteRows = false;
 
-                TDCGExplorer.TDCGExplorer.SetToolTips(Text+" : 行をダブルクリックするとファイルにジャンプします。");
+                TDCGExplorer.TDCGExplorer.SetToolTips(Text + " : " + TextResource.SearchComplete);
             }
             catch (System.InvalidCastException ex)
             {
@@ -77,7 +77,7 @@ namespace System.Windows.Forms
                 dataGridView.MultiSelect = false;
                 dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
                 dataGridView.AllowUserToAddRows = false;
-                TDCGExplorer.TDCGExplorer.SetToolTips(Text + " : 行をダブルクリックするとファイルにジャンプします。");
+                TDCGExplorer.TDCGExplorer.SetToolTips(Text + " : " + TextResource.SearchComplete);
             }
             catch (System.InvalidCastException ex)
             {
@@ -151,28 +151,28 @@ namespace System.Windows.Forms
             // 
             this.toolStripMenuItemMakeTah.Name = "toolStripMenuItemMakeTah";
             this.toolStripMenuItemMakeTah.Size = new System.Drawing.Size(230, 22);
-            this.toolStripMenuItemMakeTah.Text = "TAHファイルを作成する";
+            this.toolStripMenuItemMakeTah.Text = TextResource.MakeTAHFile;
             this.toolStripMenuItemMakeTah.Click += new System.EventHandler(this.toolStripMenuItemMakeTah_Click);
             // 
             // toolStripMenuItemHSave
             // 
             this.toolStripMenuItemHSave.Name = "toolStripMenuItemHSave";
             this.toolStripMenuItemHSave.Size = new System.Drawing.Size(230, 22);
-            this.toolStripMenuItemHSave.Text = "ヘビーセーブ形式で保存する";
+            this.toolStripMenuItemHSave.Text = TextResource.MakeHeavySaveFile;
             this.toolStripMenuItemHSave.Click += new System.EventHandler(this.toolStripMenuItemHSave_Click);
             // 
             // toolStripMenuItemShowModel
             // 
             this.toolStripMenuItemShowModel.Name = "toolStripMenuItemShowModel";
             this.toolStripMenuItemShowModel.Size = new System.Drawing.Size(230, 22);
-            this.toolStripMenuItemShowModel.Text = "TSOビューに表示する";
+            this.toolStripMenuItemShowModel.Text = TextResource.DisplayTSOView;
             this.toolStripMenuItemShowModel.Click += new System.EventHandler(this.toolStripMenuItemShowModel_Click);
             // 
             // toolStripMenuItemClose
             // 
             this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
             this.toolStripMenuItemClose.Size = new System.Drawing.Size(230, 22);
-            this.toolStripMenuItemClose.Text = "閉じる";
+            this.toolStripMenuItemClose.Text = TextResource.Close;
             this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
             // 
             // SaveFilePage
@@ -213,9 +213,9 @@ namespace System.Windows.Forms
             TDCGExplorer.TDCGExplorer.MainFormWindow.SetBitmap(savefilebitmap);
 #endif
             DataTable data = new DataTable();
-            data.Columns.Add("パーツ", Type.GetType("System.String"));
-            data.Columns.Add("属性", Type.GetType("System.String"));
-            data.Columns.Add("TAHファイル", Type.GetType("System.String"));
+            data.Columns.Add(TextResource.Parts, Type.GetType("System.String"));
+            data.Columns.Add(TextResource.Category, Type.GetType("System.String"));
+            data.Columns.Add(TextResource.TAHFile, Type.GetType("System.String"));
 
             for (int i = 0; i < TDCGSaveFileStatic.PARTS_SIZE; ++i)
             {
@@ -370,8 +370,8 @@ namespace System.Windows.Forms
             {
                 SimpleTextDialog dialog = new SimpleTextDialog();
                 dialog.Owner = TDCGExplorer.TDCGExplorer.MainFormWindow;
-                dialog.dialogtext = "TAH形式の保存";
-                dialog.labeltext = "ファイル名";
+                dialog.dialogtext = TextResource.SaveTAHFile;
+                dialog.labeltext = TextResource.Filename;
                 dialog.textfield = filename;
 
                 if (dialog.ShowDialog() == DialogResult.OK)
@@ -431,9 +431,9 @@ namespace System.Windows.Forms
                 SaveFileDialog dialog = new SaveFileDialog();
                 dialog.FileName = filename;
                 dialog.InitialDirectory = TDCGExplorer.TDCGExplorer.SystemDB.savefile_directory;
-                dialog.Filter = "PNGファイル(*.tdcgsav.png)|*.tdcgsav.png";
+                dialog.Filter = TextResource.PNGSaveFileDescription;
                 dialog.FilterIndex = 0;
-                dialog.Title = "保存先のファイルを選択してください";
+                dialog.Title = TextResource.SelectSaveFileName;
                 dialog.RestoreDirectory = true;
                 dialog.OverwritePrompt = true;
                 dialog.CheckPathExists = true;
@@ -456,7 +456,7 @@ namespace System.Windows.Forms
             }
             catch (Exception ex)
             {
-                TDCGExplorer.TDCGExplorer.SetToolTips("ファイルセーブエラー:" + ex.Message);
+                TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.Error + ":" + ex.Message);
             }
         }
 
@@ -572,7 +572,7 @@ namespace System.Windows.Forms
                 if (loadtsoinfo.Count != 0) assembleTsoData();
             }
 
-            TDCGExplorer.TDCGExplorer.SetToolTips("描画中...");
+            TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.RenderingNow);
 
             try
             {
@@ -614,7 +614,7 @@ namespace System.Windows.Forms
             catch (Exception)
             {
             }
-            TDCGExplorer.TDCGExplorer.SetToolTips("描画完了...");
+            TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.RenderingComplete);
         }
 
         private void dataGridView_DoubleClick(object sender, EventArgs e)

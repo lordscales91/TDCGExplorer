@@ -116,35 +116,35 @@ namespace System.Windows.Forms
             // 
             this.toolStripMenuItemThumbs.Name = "toolStripMenuItemThumbs";
             this.toolStripMenuItemThumbs.Size = new System.Drawing.Size(264, 22);
-            this.toolStripMenuItemThumbs.Text = "サムネイルを生成する";
+            this.toolStripMenuItemThumbs.Text = TextResource.MakeThumbnail;
             this.toolStripMenuItemThumbs.Click += new System.EventHandler(this.toolStripMenuItemThumbs_Click);
             // 
             // toolStripMenuItemSaveTmo
             // 
             this.toolStripMenuItemSaveTmo.Name = "toolStripMenuItemSaveTmo";
             this.toolStripMenuItemSaveTmo.Size = new System.Drawing.Size(264, 22);
-            this.toolStripMenuItemSaveTmo.Text = "選択されたtmoファイルを保存する";
+            this.toolStripMenuItemSaveTmo.Text = TextResource.SaveTMOFile;
             this.toolStripMenuItemSaveTmo.Click += new System.EventHandler(this.toolStripMenuItemSaveTmo_Click);
             // 
             // toolStripMenuItemMakeTahFile
             // 
             this.toolStripMenuItemMakeTahFile.Name = "toolStripMenuItemMakeTahFile";
             this.toolStripMenuItemMakeTahFile.Size = new System.Drawing.Size(264, 22);
-            this.toolStripMenuItemMakeTahFile.Text = "選択されたtahファイルを生成する";
+            this.toolStripMenuItemMakeTahFile.Text = TextResource.SaveTAHFile;
             this.toolStripMenuItemMakeTahFile.Click += new System.EventHandler(this.toolStripMenuItemMakeTahFile_Click);
             // 
             // toolStripMenuItemShowPose
             // 
             this.toolStripMenuItemShowPose.Name = "toolStripMenuItemShowPose";
             this.toolStripMenuItemShowPose.Size = new System.Drawing.Size(264, 22);
-            this.toolStripMenuItemShowPose.Text = "TSOビューワにポーズを表示する";
+            this.toolStripMenuItemShowPose.Text = TextResource.DisplayPoseTSOView;
             this.toolStripMenuItemShowPose.Click += new System.EventHandler(this.toolStripMenuItemShowPose_Click);
             // 
             // toolStripMenuItemClose
             // 
             this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
             this.toolStripMenuItemClose.Size = new System.Drawing.Size(264, 22);
-            this.toolStripMenuItemClose.Text = "閉じる";
+            this.toolStripMenuItemClose.Text = TextResource.Close;
             this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
             // 
             // PoseTreeView
@@ -352,9 +352,9 @@ namespace System.Windows.Forms
                         SaveFileDialog dialog = new SaveFileDialog();
                         dialog.FileName = filename;
                         dialog.InitialDirectory = TDCGExplorer.TDCGExplorer.SystemDB.posefile_savedirectory;
-                        dialog.Filter = "PNGファイル(*.tdcgpose.png)|*.tdcgpose.png";
+                        dialog.Filter = TextResource.PNGPoseFileDescription;
                         dialog.FilterIndex = 0;
-                        dialog.Title = "保存先のファイルを選択してください";
+                        dialog.Title = TextResource.SelectSaveFileName;
                         dialog.RestoreDirectory = true;
                         dialog.OverwritePrompt = true;
                         dialog.CheckPathExists = true;
@@ -387,7 +387,7 @@ namespace System.Windows.Forms
             }
             catch (Exception ex)
             {
-                TDCGExplorer.TDCGExplorer.SetToolTips("ファイルセーブエラー:" + ex.Message);
+                TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.Error + ":" + ex.Message);
             }
             srcG.Dispose();
             dstG.Dispose();
@@ -410,25 +410,25 @@ namespace System.Windows.Forms
             // tahを展開する.
             if (posedata.scene)
             {
-                PoseDataCameraNode camera = new PoseDataCameraNode("カメラ", posedata.camera);
+                PoseDataCameraNode camera = new PoseDataCameraNode(TextResource.Camera, posedata.camera);
                 posenode.Nodes.Add(camera);
                 foreach (TDCGExplorer.PNGPoseFigureData data in posedata.figures)
                 {
-                    PoseDataFigureNode figure = new PoseDataFigureNode("Figure", data);
+                    PoseDataFigureNode figure = new PoseDataFigureNode(TextResource.Figure, data);
                     posenode.Nodes.Add(figure);
-                    PoseDataLightNode light = new PoseDataLightNode("ライト", data.light);
+                    PoseDataLightNode light = new PoseDataLightNode(TextResource.Light, data.light);
                     figure.Nodes.Add(light);
-                    PoseDataTMONode tmo = new PoseDataTMONode("TMO", data.tmo);
+                    PoseDataTMONode tmo = new PoseDataTMONode(TextResource.TMO, data.tmo);
                     figure.Nodes.Add(tmo);
-                    PoseDataTSONode tso = new PoseDataTSONode("TSO", data.tsos);
+                    PoseDataTSONode tso = new PoseDataTSONode(TextResource.TSO, data.tsos);
                     figure.Nodes.Add(tso);
                 }
             }
             else
             {
-                PoseDataCameraNode camera = new PoseDataCameraNode("カメラ", posedata.camera);
-                PoseDataLightNode light = new PoseDataLightNode("ライト", posedata.figures[0].light);
-                PoseDataTMONode tmo = new PoseDataTMONode("TMO", posedata.figures[0].tmo);
+                PoseDataCameraNode camera = new PoseDataCameraNode(TextResource.Camera, posedata.camera);
+                PoseDataLightNode light = new PoseDataLightNode(TextResource.Light, posedata.figures[0].light);
+                PoseDataTMONode tmo = new PoseDataTMONode(TextResource.TMO, posedata.figures[0].tmo);
                 posenode.Nodes.Add(camera);
                 posenode.Nodes.Add(light);
                 posenode.Nodes.Add(tmo);
@@ -443,7 +443,7 @@ namespace System.Windows.Forms
             PoseDataTMONode node = PoseTreeView.SelectedNode as PoseDataTMONode;
             if (node == null)
             {
-                MessageBox.Show("この操作はTMOにのみ実行できます", "エラー", MessageBoxButtons.OK);
+                MessageBox.Show(TextResource.OnlyTMOFile, TextResource.Error, MessageBoxButtons.OK);
                 return;
             }
 
@@ -452,9 +452,9 @@ namespace System.Windows.Forms
                 SaveFileDialog dialog = new SaveFileDialog();
                 dialog.FileName = filename + ".tmo";
                 dialog.InitialDirectory = TDCGExplorer.TDCGExplorer.SystemDB.tahpath;
-                dialog.Filter = "TMOファイル(*.tmo)|*.tmo";
+                dialog.Filter = TextResource.TMOFileDescription;
                 dialog.FilterIndex = 0;
-                dialog.Title = "保存先のファイルを選択してください";
+                dialog.Title = TextResource.SelectSaveFileName;
                 dialog.RestoreDirectory = true;
                 dialog.OverwritePrompt = true;
                 dialog.CheckPathExists = true;
@@ -480,7 +480,7 @@ namespace System.Windows.Forms
             }
             catch (Exception ex)
             {
-                TDCGExplorer.TDCGExplorer.SetToolTips("エラー:" + ex.Message);
+                TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.Error + ":" + ex.Message);
             }
 
         }
@@ -502,7 +502,7 @@ namespace System.Windows.Forms
             PoseDataTSONode node = PoseTreeView.SelectedNode as PoseDataTSONode;
             if (node == null)
             {
-                MessageBox.Show("この操作はTSOにのみ実行できます", "エラー", MessageBoxButtons.OK);
+                MessageBox.Show(TextResource.OnlyTSOFile, TextResource.Error, MessageBoxButtons.OK);
                 return;
             }
 
@@ -510,8 +510,8 @@ namespace System.Windows.Forms
             {
                 SimpleTextDialog dialog = new SimpleTextDialog();
                 dialog.Owner = TDCGExplorer.TDCGExplorer.MainFormWindow;
-                dialog.dialogtext = "TAH形式の保存";
-                dialog.labeltext = "ファイル名";
+                dialog.dialogtext = TextResource.SaveTAHFile;
+                dialog.labeltext = TextResource.Filename;
                 dialog.textfield = filename;
 
                 if (dialog.ShowDialog() == DialogResult.OK)
@@ -544,7 +544,7 @@ namespace System.Windows.Forms
             }
             catch (Exception ex)
             {
-                TDCGExplorer.TDCGExplorer.SetToolTips("エラー:" + ex.Message);
+                TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.Error + ":" + ex.Message);
             }
 
         }

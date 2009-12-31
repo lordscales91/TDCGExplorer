@@ -104,7 +104,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(85, 12);
             this.label1.TabIndex = 1;
-            this.label1.Text = "ARCSディレクトリ";
+            this.label1.Text = TextResource.ArcsDirectory;
             // 
             // tbArcsDirectory
             // 
@@ -130,7 +130,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(71, 12);
             this.label2.TabIndex = 4;
-            this.label2.Text = "ZIPディレクトリ";
+            this.label2.Text = TextResource.ZipDirectory;
             // 
             // tbZipDirectory
             // 
@@ -146,7 +146,7 @@
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(82, 12);
             this.label3.TabIndex = 6;
-            this.label3.Text = "mod ref. server";
+            this.label3.Text = TextResource.ModsRefServer;
             // 
             // tbModRefServer
             // 
@@ -169,7 +169,7 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(70, 12);
             this.label4.TabIndex = 8;
-            this.label4.Text = "ZIP正規表現";
+            this.label4.Text = TextResource.ZIPRegExp;
             // 
             // tbArcnamesServer
             // 
@@ -185,7 +185,7 @@
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(90, 12);
             this.label5.TabIndex = 10;
-            this.label5.Text = "arcnames server";
+            this.label5.Text = TextResource.ArcsNameServer;
             // 
             // tbWorkPath
             // 
@@ -201,7 +201,7 @@
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(58, 12);
             this.label6.TabIndex = 12;
-            this.label6.Text = "ZIP展開先";
+            this.label6.Text = TextResource.ZipExtractLocation;
             // 
             // checkBoxLookupModRef
             // 
@@ -210,7 +210,7 @@
             this.checkBoxLookupModRef.Name = "checkBoxLookupModRef";
             this.checkBoxLookupModRef.Size = new System.Drawing.Size(317, 16);
             this.checkBoxLookupModRef.TabIndex = 14;
-            this.checkBoxLookupModRef.Text = "常に3DCG Mods Reference Serverから最新情報を取得する";
+            this.checkBoxLookupModRef.Text = TextResource.LookupModRefServer;
             this.checkBoxLookupModRef.UseVisualStyleBackColor = true;
             // 
             // textBoxTagNameServer
@@ -227,7 +227,7 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(90, 12);
             this.label8.TabIndex = 18;
-            this.label8.Text = "tagnames server";
+            this.label8.Text = TextResource.TagNameServer;
             // 
             // groupBox1
             // 
@@ -240,7 +240,7 @@
             this.groupBox1.Size = new System.Drawing.Size(269, 109);
             this.groupBox1.TabIndex = 20;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "ZIP選択時の動作";
+            this.groupBox1.Text = TextResource.ZipFileBehavior;
             // 
             // radioButtonBehaviorText
             // 
@@ -250,7 +250,7 @@
             this.radioButtonBehaviorText.Size = new System.Drawing.Size(242, 16);
             this.radioButtonBehaviorText.TabIndex = 3;
             this.radioButtonBehaviorText.TabStop = true;
-            this.radioButtonBehaviorText.Text = "最初に見つけたテキストもしくは画像を表示する";
+            this.radioButtonBehaviorText.Text = TextResource.OpenTextOrGraphics;
             this.radioButtonBehaviorText.UseVisualStyleBackColor = true;
             // 
             // radioButtonBehaviorImage
@@ -261,7 +261,7 @@
             this.radioButtonBehaviorImage.Size = new System.Drawing.Size(242, 16);
             this.radioButtonBehaviorImage.TabIndex = 2;
             this.radioButtonBehaviorImage.TabStop = true;
-            this.radioButtonBehaviorImage.Text = "最初に見つけた画像もしくはテキストを表示する";
+            this.radioButtonBehaviorImage.Text = TextResource.OpenGraphicsOrText;
             this.radioButtonBehaviorImage.UseVisualStyleBackColor = true;
             // 
             // radioButtonBehaviorServer
@@ -272,7 +272,7 @@
             this.radioButtonBehaviorServer.Size = new System.Drawing.Size(241, 16);
             this.radioButtonBehaviorServer.TabIndex = 1;
             this.radioButtonBehaviorServer.TabStop = true;
-            this.radioButtonBehaviorServer.Text = "3DCG Mods Reference Serverにアクセスする";
+            this.radioButtonBehaviorServer.Text = TextResource.AccessModsRefServer;
             this.radioButtonBehaviorServer.UseVisualStyleBackColor = true;
             // 
             // radioButtonBehaviorNone
@@ -283,7 +283,7 @@
             this.radioButtonBehaviorNone.Size = new System.Drawing.Size(73, 16);
             this.radioButtonBehaviorNone.TabIndex = 0;
             this.radioButtonBehaviorNone.TabStop = true;
-            this.radioButtonBehaviorNone.Text = "何もしない";
+            this.radioButtonBehaviorNone.Text = TextResource.Nothing;
             this.radioButtonBehaviorNone.UseVisualStyleBackColor = true;
             // 
             // label9
@@ -293,7 +293,7 @@
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(75, 12);
             this.label9.TabIndex = 21;
-            this.label9.Text = "起動時の設定";
+            this.label9.Text = TextResource.StartupSetting;
             // 
             // label7
             // 
@@ -302,7 +302,7 @@
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(78, 12);
             this.label7.TabIndex = 15;
-            this.label7.Text = "MOD正規表現";
+            this.label7.Text = TextResource.MODRegExp;
             // 
             // textBoxModRegexp
             // 
@@ -325,7 +325,7 @@
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(85, 12);
             this.label10.TabIndex = 22;
-            this.label10.Text = "TDCGディレクトリ";
+            this.label10.Text = TextResource.TDCGDirectory;
             // 
             // label11
             // 
@@ -334,7 +334,7 @@
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(54, 12);
             this.label11.TabIndex = 25;
-            this.label11.Text = "カメラ設定";
+            this.label11.Text = TextResource.CameraAutoCenter;
             // 
             // checkBoxCameraReset
             // 
@@ -343,7 +343,7 @@
             this.checkBoxCameraReset.Name = "checkBoxCameraReset";
             this.checkBoxCameraReset.Size = new System.Drawing.Size(227, 16);
             this.checkBoxCameraReset.TabIndex = 24;
-            this.checkBoxCameraReset.Text = "新規TSOロード時、カメラ設定をリセットする";
+            this.checkBoxCameraReset.Text = TextResource.TSOLoadBehavior;
             this.checkBoxCameraReset.UseVisualStyleBackColor = true;
             // 
             // textBoxCenterBone
@@ -367,7 +367,7 @@
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(53, 12);
             this.label12.TabIndex = 28;
-            this.label12.Text = "回転中心";
+            this.label12.Text = TextResource.CameraCenter;
             // 
             // label13
             // 
@@ -376,7 +376,7 @@
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(53, 12);
             this.label13.TabIndex = 29;
-            this.label13.Text = "初期視点";
+            this.label13.Text = TextResource.CameraTransition;
             // 
             // textBoxTahEditor
             // 
@@ -392,7 +392,7 @@
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(64, 12);
             this.label14.TabIndex = 30;
-            this.label14.Text = "TAH編集先";
+            this.label14.Text = TextResource.TAHEditorPlace;
             // 
             // label15
             // 
@@ -401,7 +401,7 @@
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(53, 12);
             this.label15.TabIndex = 33;
-            this.label15.Text = "衝突検出";
+            this.label15.Text = TextResource.CollisionDetection;
             // 
             // checkBoxDuplicate
             // 
@@ -410,7 +410,7 @@
             this.checkBoxDuplicate.Name = "checkBoxDuplicate";
             this.checkBoxDuplicate.Size = new System.Drawing.Size(207, 16);
             this.checkBoxDuplicate.TabIndex = 32;
-            this.checkBoxDuplicate.Text = "ファイル名が一致する物も衝突とみなす";
+            this.checkBoxDuplicate.Text = TextResource.SameFileIsCollisioned;
             this.checkBoxDuplicate.UseVisualStyleBackColor = true;
             // 
             // groupBox2
@@ -421,7 +421,7 @@
             this.groupBox2.Size = new System.Drawing.Size(200, 48);
             this.groupBox2.TabIndex = 34;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "セーブファイルビューア";
+            this.groupBox2.Text = TextResource.SaveFileViewer;
             // 
             // checkBoxFindZipLevel
             // 
@@ -430,7 +430,7 @@
             this.checkBoxFindZipLevel.Name = "checkBoxFindZipLevel";
             this.checkBoxFindZipLevel.Size = new System.Drawing.Size(126, 16);
             this.checkBoxFindZipLevel.TabIndex = 0;
-            this.checkBoxFindZipLevel.Text = "ZIPを優先的に調べる";
+            this.checkBoxFindZipLevel.Text = TextResource.PreferredZipFile;
             this.checkBoxFindZipLevel.UseVisualStyleBackColor = true;
             // 
             // groupBox3
@@ -441,7 +441,7 @@
             this.groupBox3.Size = new System.Drawing.Size(200, 48);
             this.groupBox3.TabIndex = 35;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "TAHエディタ";
+            this.groupBox3.Text = TextResource.TAHEditor;
             // 
             // checkBoxTahPreview
             // 
@@ -450,7 +450,7 @@
             this.checkBoxTahPreview.Name = "checkBoxTahPreview";
             this.checkBoxTahPreview.Size = new System.Drawing.Size(142, 16);
             this.checkBoxTahPreview.TabIndex = 2;
-            this.checkBoxTahPreview.Text = "TSOプレビューを表示する";
+            this.checkBoxTahPreview.Text = TextResource.ShowTSOPreview;
             this.checkBoxTahPreview.UseVisualStyleBackColor = true;
             // 
             // checkBoxAlwaysNewTab
@@ -460,7 +460,7 @@
             this.checkBoxAlwaysNewTab.Name = "checkBoxAlwaysNewTab";
             this.checkBoxAlwaysNewTab.Size = new System.Drawing.Size(118, 16);
             this.checkBoxAlwaysNewTab.TabIndex = 0;
-            this.checkBoxAlwaysNewTab.Text = "新規タブで表示する";
+            this.checkBoxAlwaysNewTab.Text = TextResource.AlwaysNewTab;
             this.checkBoxAlwaysNewTab.UseVisualStyleBackColor = true;
             // 
             // groupBox4
@@ -471,7 +471,7 @@
             this.groupBox4.Size = new System.Drawing.Size(200, 41);
             this.groupBox4.TabIndex = 35;
             this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "タブブラウザ";
+            this.groupBox4.Text = TextResource.TabBrowser;
             // 
             // checkBoxTahVersionCollision
             // 
@@ -480,7 +480,7 @@
             this.checkBoxTahVersionCollision.Name = "checkBoxTahVersionCollision";
             this.checkBoxTahVersionCollision.Size = new System.Drawing.Size(198, 16);
             this.checkBoxTahVersionCollision.TabIndex = 36;
-            this.checkBoxTahVersionCollision.Text = "tahバージョン違いは衝突とみなさない";
+            this.checkBoxTahVersionCollision.Text = TextResource.DifferVersionTah;
             this.checkBoxTahVersionCollision.UseVisualStyleBackColor = true;
             // 
             // checkBoxExplorerzipfolder
@@ -490,7 +490,7 @@
             this.checkBoxExplorerzipfolder.Name = "checkBoxExplorerzipfolder";
             this.checkBoxExplorerzipfolder.Size = new System.Drawing.Size(173, 16);
             this.checkBoxExplorerzipfolder.TabIndex = 37;
-            this.checkBoxExplorerzipfolder.Text = "ZIP展開時にフォルダを表示する";
+            this.checkBoxExplorerzipfolder.Text = TextResource.AlwaysOpenFolderByExtract;
             this.checkBoxExplorerzipfolder.UseVisualStyleBackColor = true;
             // 
             // textBoxPoseDir
@@ -507,7 +507,7 @@
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(79, 12);
             this.label16.TabIndex = 38;
-            this.label16.Text = "Poseディレクトリ";
+            this.label16.Text = TextResource.PoseDirectory;
             // 
             // checkBoxArcsVacume
             // 
@@ -516,7 +516,7 @@
             this.checkBoxArcsVacume.Name = "checkBoxArcsVacume";
             this.checkBoxArcsVacume.Size = new System.Drawing.Size(124, 16);
             this.checkBoxArcsVacume.TabIndex = 40;
-            this.checkBoxArcsVacume.Text = "arcs.dbを再圧縮する";
+            this.checkBoxArcsVacume.Text = TextResource.VacumeArcsDB;
             this.checkBoxArcsVacume.UseVisualStyleBackColor = true;
             // 
             // label17
@@ -526,7 +526,7 @@
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(86, 12);
             this.label17.TabIndex = 41;
-            this.label17.Text = "データベース設定";
+            this.label17.Text = TextResource.DatabaseSetting;
             // 
             // label18
             // 
@@ -535,7 +535,7 @@
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(93, 12);
             this.label18.TabIndex = 42;
-            this.label18.Text = "ポーズファイル表示";
+            this.label18.Text = TextResource.PoseFileSetting;
             // 
             // checkBoxForceReloadHeaveSave
             // 
@@ -544,7 +544,7 @@
             this.checkBoxForceReloadHeaveSave.Name = "checkBoxForceReloadHeaveSave";
             this.checkBoxForceReloadHeaveSave.Size = new System.Drawing.Size(169, 16);
             this.checkBoxForceReloadHeaveSave.TabIndex = 43;
-            this.checkBoxForceReloadHeaveSave.Text = "ヘビーセーブファイルを読み直す";
+            this.checkBoxForceReloadHeaveSave.Text = TextResource.ReloadHeavySaveFile;
             this.checkBoxForceReloadHeaveSave.UseVisualStyleBackColor = true;
             // 
             // groupBox5
@@ -555,7 +555,7 @@
             this.groupBox5.Size = new System.Drawing.Size(200, 40);
             this.groupBox5.TabIndex = 44;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "ZIP展開時の処理";
+            this.groupBox5.Text = TextResource.ZipFileExtractBehavior;
             // 
             // EditSystemDatabase
             // 
@@ -608,7 +608,7 @@
             this.Controls.Add(this.OKButton);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "EditSystemDatabase";
-            this.Text = "初期設定";
+            this.Text = TextResource.EditConfiguration;
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);

@@ -209,21 +209,21 @@ namespace TDCGExplorer
                 GenericZipTreeNode node = (GenericZipTreeNode)lastSelectTreeNode;
                 if (TDCGExplorer.InstallZipFile(node))
                 {
-                    MessageBox.Show("ファイルを展開しました", "展開成功", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.ExtractSuccess, TextResource.ExtractSuccessCaption, MessageBoxButtons.OK);
                 }
                 else
                 {
-                    MessageBox.Show("Error extractZipToolStripMenuItem_Click.", "Extract", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.ExtractFailure,TextResource.ExtractFailureCaption, MessageBoxButtons.OK);
                 }
             }
             catch (System.InvalidCastException ex)
             {
-                MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
+                MessageBox.Show(TextResource.ZipFileOnly, TextResource.Error, MessageBoxButtons.OK);
                 Debug.WriteLine(ex.Message);
             }
             catch (Exception exception)
             {
-                TDCGExplorer.SetToolTips("error:" + exception.Message);
+                TDCGExplorer.SetToolTips(TextResource.Error+ ":" + exception.Message);
                 Debug.WriteLine(exception.Message);
             }
             Cursor.Current = Cursors.Default;
@@ -314,7 +314,6 @@ namespace TDCGExplorer
         {
             if (threadCheck() == true) return;
             TDCGExplorer.EditSystemDatabase();
-            DisplayDB();
         }
 
         // アノテーションを編集.
@@ -329,7 +328,7 @@ namespace TDCGExplorer
                 }
                 else
                 {
-                    MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.ZipFileOnly,TextResource.Error, MessageBoxButtons.OK);
                 }
             }
             catch (Exception exception)
@@ -398,7 +397,7 @@ namespace TDCGExplorer
             }
             catch (Exception exception)
             {
-                TDCGExplorer.SetToolTips("error:" + exception.Message);
+                TDCGExplorer.SetToolTips(TextResource.Error + ":" + exception.Message);
                 Debug.WriteLine(exception.Message);
             }
         }
@@ -406,7 +405,7 @@ namespace TDCGExplorer
         public void NewTab()
         {
             TabPage tabPage = new TabPage();
-            tabPage.Text = "新しいタブ";
+            tabPage.Text = TextResource.NewTabCaption;
             tabMainView.Controls.Add(tabPage);
             tabMainView.SelectTab(tabMainView.Controls.Count - 1);
         }
@@ -786,7 +785,7 @@ namespace TDCGExplorer
                 }
                 else
                 {
-                    MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.ZipFileOnly, TextResource.Error, MessageBoxButtons.OK);
                 }
             }
             catch (Exception exception)
@@ -813,7 +812,7 @@ namespace TDCGExplorer
             }
             else
             {
-                MessageBox.Show("Internet access failure. Please check firewall.", "Download", MessageBoxButtons.OK);
+                MessageBox.Show(TextResource.HttpError, TextResource.DownloadCaption, MessageBoxButtons.OK);
                 return;
             }
 
@@ -824,11 +823,11 @@ namespace TDCGExplorer
             }
             else
             {
-                MessageBox.Show("Internet access failure. Please check firewall.", "Download", MessageBoxButtons.OK);
+                MessageBox.Show(TextResource.HttpError, TextResource.DownloadCaption, MessageBoxButtons.OK);
                 return;
             }
             DisplayDB();
-            MessageBox.Show("3DCG MODS Referenceサーバから最新情報を取得しました", "Download", MessageBoxButtons.OK);
+            MessageBox.Show(TextResource.SuccessModRefServer, TextResource.DownloadCaption, MessageBoxButtons.OK);
         }
 
         private void LookupMODRefToolStripMenuItem_Click(object sender, EventArgs e)
@@ -844,12 +843,12 @@ namespace TDCGExplorer
                 }
                 else
                 {
-                    MessageBox.Show("この操作は圧縮ファイルにのみ実行できます", "エラー", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.ZipFileOnly, TextResource.Error, MessageBoxButtons.OK);
                 }
             }
             catch (Exception exception)
             {
-                TDCGExplorer.SetToolTips("error:" + exception.Message);
+                TDCGExplorer.SetToolTips(TextResource.Error + ":" + exception.Message);
                 Debug.WriteLine(exception.Message);
             }
         }
@@ -873,7 +872,7 @@ namespace TDCGExplorer
             }
             catch (Exception exception)
             {
-                MessageBox.Show("ファイル展開エラー:"+exception.Message, "エラー", MessageBoxButtons.OK);
+                MessageBox.Show(TextResource.ExtractFailure + ":" + exception.Message, TextResource.ExtractFailureCaption, MessageBoxButtons.OK);
             }
         }
 
@@ -952,7 +951,7 @@ namespace TDCGExplorer
             }
             catch (Exception exception)
             {
-                TDCGExplorer.SetToolTips("error:" + exception.Message);
+                TDCGExplorer.SetToolTips(TextResource.Error + ":" + exception.Message);
                 Debug.WriteLine(exception.Message);
             }
         }
@@ -1083,7 +1082,7 @@ namespace TDCGExplorer
             try
             {
                 //System.Diagnostics.Process.Start(Path.Combine(Directory.GetCurrentDirectory(), @"manual\\manual.html"));
-                System.Diagnostics.Process.Start(@"http://3dcustom.ath.cx/TDCGExplorer/manual.html");
+                System.Diagnostics.Process.Start(TextResource.MODRefServerUrl);
             }
             catch (Exception)
             {
@@ -1156,8 +1155,8 @@ namespace TDCGExplorer
             {
                 SimpleTextDialog dialog = new SimpleTextDialog();
                 dialog.Owner = TDCGExplorer.MainFormWindow;
-                dialog.dialogtext = "タイムスタンプの変更";
-                dialog.labeltext = "日時";
+                dialog.dialogtext = TextResource.TouchDialogText;
+                dialog.labeltext = TextResource.DateTime;
                 dialog.textfield = DateTime.Now.ToString();
 
                 if (dialog.ShowDialog() == DialogResult.OK)
@@ -1212,12 +1211,12 @@ namespace TDCGExplorer
                 }
                 else
                 {
-                    MessageBox.Show("この操作はTAHディレクトリのみ実行できます", "エラー", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.OnlyTAHDirectory, TextResource.Error, MessageBoxButtons.OK);
                 }
             }
             catch (Exception exception)
             {
-                TDCGExplorer.SetToolTips("error:" + exception.Message);
+                TDCGExplorer.SetToolTips(TextResource.Error + ":" + exception.Message);
                 Debug.WriteLine(exception.Message);
             }
         }
@@ -1226,10 +1225,10 @@ namespace TDCGExplorer
         {
             SimpleTextDialog dialog = new SimpleTextDialog();
             dialog.Owner = this;
-            dialog.dialogtext = "検索";
-            dialog.labeltext = "検索文字列";
+            dialog.dialogtext = TextResource.SearchDialogText;
+            dialog.labeltext = TextResource.SearchDialogLabel;
             dialog.checkboxenable = true;
-            dialog.checkboxtext = "アーカイブも検索する";
+            dialog.checkboxtext = TextResource.SearchWithZipFile;
             dialog.checkboxchecked = true;
             if (dialog.ShowDialog() == DialogResult.OK)
             {
@@ -1242,10 +1241,10 @@ namespace TDCGExplorer
         {
             SimpleTextDialog dialog = new SimpleTextDialog();
             dialog.Owner = this;
-            dialog.dialogtext = "検索";
-            dialog.labeltext = "検索文字列";
+            dialog.dialogtext = TextResource.SearchDialogText;
+            dialog.labeltext = TextResource.SearchDialogLabel;
             dialog.checkboxenable = true;
-            dialog.checkboxtext = "アーカイブも検索する";
+            dialog.checkboxtext = TextResource.SearchWithZipFile;
             dialog.checkboxchecked = true;
             if (dialog.ShowDialog() == DialogResult.OK)
             {

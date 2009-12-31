@@ -39,9 +39,9 @@ namespace System.Windows.Forms
             InitializeComponent();
 
             DataTable data = new DataTable();
-            data.Columns.Add("種類", Type.GetType("System.String"));
-            data.Columns.Add("ファイル名", Type.GetType("System.String"));
-            data.Columns.Add("ディレクトリ", Type.GetType("System.String"));
+            data.Columns.Add(TextResource.Category, Type.GetType("System.String"));
+            data.Columns.Add(TextResource.Filename, Type.GetType("System.String"));
+            data.Columns.Add(TextResource.Directory, Type.GetType("System.String"));
 
             dataGridView.DataSource = data;
 
@@ -54,7 +54,7 @@ namespace System.Windows.Forms
             dataGridView.AllowUserToAddRows = false;
             dataGridView.AllowUserToDeleteRows = false;
 
-            Text = "検索 : "+keyword;
+            Text = TextResource.SearchText + " : " + keyword;
 
             // データの探索はバックグラウンドスレッドで非同期実行する.
             // 二重起動防止.
@@ -104,7 +104,7 @@ namespace System.Windows.Forms
             // 
             this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
             this.toolStripMenuItemClose.Size = new System.Drawing.Size(110, 22);
-            this.toolStripMenuItemClose.Text = "閉じる";
+            this.toolStripMenuItemClose.Text = TextResource.Close;
             this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
             // 
             // FindItemPage
@@ -304,7 +304,7 @@ namespace System.Windows.Forms
                 List<ArcsZipArcEntry> zips = arcDB.GetZips();
                 foreach (ArcsZipArcEntry zip in zips)
                 {
-                    TDCGExplorer.TDCGExplorer.SetToolTips("検索中:" + zip.GetDisplayPath());
+                    TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.Searching + ":" + zip.GetDisplayPath());
                     if (HasString(zip.GetDisplayPath(), keyword))
                     {
                         FindEntryInformation entry = new FindEntryInformation();
@@ -343,7 +343,7 @@ namespace System.Windows.Forms
             }
 
             // TBN辞書をセットして終了
-            TDCGExplorer.TDCGExplorer.SetToolTips("検索完了。行をダブルクリックすると、そのファイルにジャンプします。");
+            TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.SearchComplete);
             TDCGExplorer.TDCGExplorer.DecBusy();
         }
     }

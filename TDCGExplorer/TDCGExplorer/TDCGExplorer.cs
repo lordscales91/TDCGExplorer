@@ -298,8 +298,8 @@ namespace TDCGExplorer
                 {
                     if (timeout++ > 300)
                     {
-                        MessageBox.Show("ファイルが使用中です。", "ファイル削除エラー", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        throw (new Exception("ファイル削除エラー"));
+                        MessageBox.Show(TextResource.FileUsed, TextResource.Error, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        throw (new Exception(TextResource.FileUsed));
                     }
                     Thread.Sleep(100);
                 }
@@ -922,15 +922,23 @@ namespace TDCGExplorer
             }
             if (misscount > 0)
             {
-                MessageBox.Show(installedcount.ToString() + "個のzipを展開しました。\n" +
-                    misscount.ToString() + "個のzipが見つかりませんでした。", "展開", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+//                MessageBox.Show(installedcount.ToString() + "個のzipを展開しました。\n" +
+//                    misscount.ToString() + "個のzipが見つかりませんでした。", "展開", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                MessageBox.Show(installedcount.ToString() + TextResource.PrefZip1 + "\n" +
+                    misscount.ToString() + TextResource.PrefZip2, TextResource.ExtractFailureCaption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
             else
             {
+//                if (installedcount > 0)
+//                    MessageBox.Show(installedcount.ToString() + "個のzipを展開しました。", "展開", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+//                else
+//                    MessageBox.Show("前提zipは全てインストール済みです", "展開", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
                 if (installedcount > 0)
-                    MessageBox.Show(installedcount.ToString() + "個のzipを展開しました。", "展開", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(installedcount.ToString() + TextResource.PrefZip1, TextResource.ExtractSuccessCaption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 else
-                    MessageBox.Show("前提zipは全てインストール済みです", "展開", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    MessageBox.Show(TextResource.PrefZip3, TextResource.ExtractSuccessCaption, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
             }
             if (installedcount > 0)
             {
@@ -1017,7 +1025,7 @@ namespace TDCGExplorer
                 int id = 0;
                 foreach (TAHEntry ent in tah.EntrySet.Entries)
                 {
-                    TDCGExplorer.SetToolTips("tbnファイル解析中");
+                    TDCGExplorer.SetToolTips(TextResource.TBNAnalyze);
                     TDCGExplorer.IncBusy();
                     Application.DoEvents();
                     TDCGExplorer.DecBusy();
@@ -1055,14 +1063,14 @@ namespace TDCGExplorer
                         writer.Close();
                         output.Close();
 
-                        TDCGExplorer.SetToolTips("ファイル保存中:"+entry.shortname+":"+Path.GetFileName(destfilename));
+                        TDCGExplorer.SetToolTips(TextResource.SaveFile+":"+entry.shortname+":"+Path.GetFileName(destfilename));
                         TDCGExplorer.IncBusy();
                         Application.DoEvents();
                         TDCGExplorer.DecBusy();
                     }
                 }
                 ExplorerSelectPath(savedirectory);
-                TDCGExplorer.SetToolTips("TAHファイル展開完了");
+                TDCGExplorer.SetToolTips(TextResource.TAHDecryptComplete);
             }
         }
 
@@ -1149,7 +1157,7 @@ namespace TDCGExplorer
                                         {
                                             tahfile = index.ToString("d8") + "_" + ent.Hash.ToString("x8");
                                         }
-                                        SetToolTips("ファイル読み取り中:" + tahfile);
+                                        SetToolTips(TextResource.FileReading+":" + tahfile);
                                         byte[] tahdata = TAHUtil.ReadEntryData(tah.Reader, ent);
                                         if (Path.GetExtension(tahfile) == "") tahfile += TDCGTbnUtil.ext(tahdata); // ファイル内容から拡張子を推定する
                                         editor.AddItem(tahfile, tahdata);
@@ -1176,7 +1184,7 @@ namespace TDCGExplorer
                     }
                     catch (Exception exception)
                     {
-                        MessageBox.Show("TAHの読み取りでエラーが発生しました。\n" + exception.Message, "エラー", MessageBoxButtons.OK);
+                        MessageBox.Show(TextResource.TAHFileReadError+"\n" + exception.Message, TextResource.Error, MessageBoxButtons.OK);
                     }
                 }
                 else
@@ -1197,7 +1205,7 @@ namespace TDCGExplorer
                                 using (Stream stream = File.OpenRead(infile))
                                 {
                                     string newpath = infile.Substring(fullpath.Length + 1).Replace('\\', '/');
-                                    SetToolTips("ファイル読み取り中:" + newpath);
+                                    SetToolTips(TextResource.FileReading+":" + newpath);
                                     MemoryStream ms = new MemoryStream();
                                     ZipFileUtil.CopyStream(stream, ms);
                                     byte[] tahdata = ms.ToArray();
@@ -1224,7 +1232,7 @@ namespace TDCGExplorer
                     }
                     catch (Exception exception)
                     {
-                        MessageBox.Show("ファイルの読み取りでエラーが発生しました。\n" + exception.Message, "エラー", MessageBoxButtons.OK);
+                        MessageBox.Show(TextResource.FileReadError+"\n" + exception.Message, TextResource.Error, MessageBoxButtons.OK);
                     }
                 }
             }
@@ -1284,7 +1292,7 @@ namespace TDCGExplorer
                     }
                     if (size >= 0x100000000L)
                     {
-                        MessageBox.Show("tahファイルが4GBを超えます。\n集約するtahファイルは4GB以下にしてください。", "展開エラー", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show(TextResource.TAHFileLimitError,TextResource.Error, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         throw new Exception("File Limit Over");
                     }
 
@@ -1359,7 +1367,7 @@ namespace TDCGExplorer
                                             }
                                             id++;
 
-                                            TDCGExplorer.SetToolTips("TAHファイル読み取り中... " + filename);
+                                            TDCGExplorer.SetToolTips(TextResource.TAHFileReading + " : " + filename);
                                             TDCGExplorer.IncBusy();
                                             Application.DoEvents();
                                             TDCGExplorer.DecBusy();
@@ -1401,13 +1409,13 @@ namespace TDCGExplorer
                     editor.Commit(transaction);
                     MainFormWindow.AssignTagPageControl(editor);
                     editor.SelectAll();
-                    TDCGExplorer.SetToolTips("TAHファイル読み取り完了");
+                    TDCGExplorer.SetToolTips(TextResource.TAHEncryptComplete);
                 }
             }
             catch (Exception)
             {
                 if (editor != null) editor.Dispose();
-                TDCGExplorer.SetToolTips("TAHファイル読み取りエラーが発生しました");
+                TDCGExplorer.SetToolTips(TextResource.TAHFileReadError);
             }
         }
 

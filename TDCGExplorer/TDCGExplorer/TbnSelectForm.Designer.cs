@@ -37,36 +37,36 @@
             // 
             this.checkedListBoxTbns.FormattingEnabled = true;
             this.checkedListBoxTbns.Items.AddRange(new object[] {
-            "A:身体",
-            "B:頭髪前",
-            "C:頭髪後",
-            "D:頭髪生え際",
-            "E:瞳",
-            "F:ブラ",
-            "G:全身下着",
-            "H:パンツ",
-            "I:靴下",
-            "J:上着",
-            "K:全身上着",
-            "L:上着オプション",
-            "M:スカート",
-            "N:尻尾",
-            "O:靴",
-            "P:頭部装備",
-            "Q:眼鏡",
-            "R:首輪",
-            "S:腕装備",
-            "T:背中",
-            "U:頭髪オプション",
-            "V:眼帯",
-            "W:タイツ・ガーター",
-            "X:手首",
-            "Y:リボン",
-            "Z:手持ち",
-            "0:眉",
-            "1:八重歯",
-            "2:ほくろ",
-            "3:イヤリング"});
+                TextResource.TbnCatA,
+                TextResource.TbnCatB,
+                TextResource.TbnCatC,
+                TextResource.TbnCatD,
+                TextResource.TbnCatE,
+                TextResource.TbnCatF,
+                TextResource.TbnCatG,
+                TextResource.TbnCatH,
+                TextResource.TbnCatI,
+                TextResource.TbnCatJ,
+                TextResource.TbnCatK,
+                TextResource.TbnCatL,
+                TextResource.TbnCatM,
+                TextResource.TbnCatN,
+                TextResource.TbnCatO,
+                TextResource.TbnCatP,
+                TextResource.TbnCatQ,
+                TextResource.TbnCatR,
+                TextResource.TbnCatS,
+                TextResource.TbnCatT,
+                TextResource.TbnCatU,
+                TextResource.TbnCatV,
+                TextResource.TbnCatW,
+                TextResource.TbnCatX,
+                TextResource.TbnCatY,
+                TextResource.TbnCatZ,
+                TextResource.TbnCat0,
+                TextResource.TbnCat1,
+                TextResource.TbnCat2,
+                TextResource.TbnCat3});
             this.checkedListBoxTbns.Location = new System.Drawing.Point(12, 12);
             this.checkedListBoxTbns.Name = "checkedListBoxTbns";
             this.checkedListBoxTbns.Size = new System.Drawing.Size(240, 184);
@@ -101,7 +101,7 @@
             this.Controls.Add(this.buttonOk);
             this.Controls.Add(this.checkedListBoxTbns);
             this.Name = "TbnSelectForm";
-            this.Text = "tbnファイルの生成";
+            this.Text = TextResource.MakeTbnDialogText;
             this.ResumeLayout(false);
 
         }

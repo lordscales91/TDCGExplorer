@@ -25,9 +25,9 @@ namespace System.Windows.Forms
             InitializeComponent();
 
             DataTable data = new DataTable();
-            data.Columns.Add("前提TAHが無いTAH名", Type.GetType("System.String"));
-            data.Columns.Add("不明なベースTBN名", Type.GetType("System.String"));
-            data.Columns.Add("検索された前提アーカイブファイル", Type.GetType("System.String"));
+            data.Columns.Add(TextResource.StrayTAH, Type.GetType("System.String"));
+            data.Columns.Add(TextResource.StrayTBN, Type.GetType("System.String"));
+            data.Columns.Add(TextResource.FoundStrayArchive, Type.GetType("System.String"));
 
             dataGridView.DataSource = data;
 
@@ -40,7 +40,7 @@ namespace System.Windows.Forms
             dataGridView.AllowUserToAddRows = false;
             dataGridView.AllowUserToDeleteRows = false;
 
-            Text = "前提TAH検索";
+            Text = TextResource.FoundStrayTAH;
 
             // データの探索はバックグラウンドスレッドで非同期実行する.
             // 二重起動防止.
@@ -89,14 +89,14 @@ namespace System.Windows.Forms
             // 
             this.toolStripMenuItemMakeTah.Name = "toolStripMenuItemMakeTah";
             this.toolStripMenuItemMakeTah.Size = new System.Drawing.Size(218, 22);
-            this.toolStripMenuItemMakeTah.Text = "ダミーTAHファイルの作成";
+            this.toolStripMenuItemMakeTah.Text = TextResource.MakeDummyTAH;
             this.toolStripMenuItemMakeTah.Click += new System.EventHandler(this.toolStripMenuItemMakeTah_Click);
             // 
             // toolStripMenuItemClose
             // 
             this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
             this.toolStripMenuItemClose.Size = new System.Drawing.Size(218, 22);
-            this.toolStripMenuItemClose.Text = "閉じる";
+            this.toolStripMenuItemClose.Text = TextResource.Close;
             this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
             // 
             // FindBaseModPage
@@ -125,7 +125,7 @@ namespace System.Windows.Forms
                 string zipfile="";
                 if (entry.zipfiles == null)
                 {
-                    zipfile = "アーカイブが見つかりません";
+                    zipfile = TextResource.ArchiveNotFound;
                 }
                 else
                 {
@@ -206,8 +206,8 @@ namespace System.Windows.Forms
             {
                 SimpleTextDialog dialog = new SimpleTextDialog();
                 dialog.Owner = TDCGExplorer.TDCGExplorer.MainFormWindow;
-                dialog.dialogtext = "TAH形式の保存";
-                dialog.labeltext = "ファイル名";
+                dialog.dialogtext = TextResource.SaveTAHFile;
+                dialog.labeltext = TextResource.Filename;
                 dialog.textfield = "dummy.tah";
 
                 if (dialog.ShowDialog() == DialogResult.OK)
@@ -351,7 +351,7 @@ namespace System.Windows.Forms
                 {
                     try
                     {
-                        TDCGExplorer.TDCGExplorer.SetToolTips("検索中:" + tah.shortname);
+                        TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.Searching + ":" + tah.shortname);
                         if (file.path.ToLower().StartsWith("script/items/") /*|| file.path.ToLower().StartsWith("script/backgrounds/" )*/)
                         {
                             // TBNファイルか?
@@ -427,7 +427,7 @@ namespace System.Windows.Forms
             }
             // TBN辞書をセットして終了
             control.tbnfiles = tbnfiles;
-            TDCGExplorer.TDCGExplorer.SetToolTips("検索完了。行をダブルクリックすると、そのファイルにジャンプします。");
+            TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.SearchComplete);
             TDCGExplorer.TDCGExplorer.DecBusy();
         }
     }

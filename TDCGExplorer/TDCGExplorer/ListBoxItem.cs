@@ -167,7 +167,8 @@ namespace TDCGExplorer
                     TDCGExplorer.TAHDecrypt(new GenericArcsTahInfo(entry));
                     break;
                 default:
-                    MessageBox.Show("TAHファイル以外は展開できません.", "TAHDecrypt", MessageBoxButtons.OK);
+                    //MessageBox.Show("TAHファイル以外は展開できません.", "TAHDecrypt", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.OnlyTAHFile,TextResource.Error, MessageBoxButtons.OK);
                     break;
             }
         }
@@ -180,7 +181,8 @@ namespace TDCGExplorer
                     LBFileTahUtl.OpenTahEditor(new GenericArcsTahInfo(entry));
                     break;
                 default:
-                    MessageBox.Show("TAHファイル以外は編集できません.", "TAHDecrypt", MessageBoxButtons.OK);
+                    //MessageBox.Show("TAHファイル以外は編集できません.", "TAHDecrypt", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.OnlyTAHFile, TextResource.Error, MessageBoxButtons.OK);
                     return;
             }
         }
@@ -279,7 +281,8 @@ namespace TDCGExplorer
                     LBFileTahUtl.OpenTahEditor(new GenericZipsTahInfo(entry));
                     break;
                 default:
-                    MessageBox.Show("TAHファイル以外は編集できません.", "TAHDecrypt", MessageBoxButtons.OK);
+                    //MessageBox.Show("TAHファイル以外は編集できません.", "TAHDecrypt", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.OnlyTAHFile, TextResource.Error, MessageBoxButtons.OK);
                     return;
             }
         }
@@ -293,7 +296,8 @@ namespace TDCGExplorer
                     TDCGExplorer.TAHDecrypt(new GenericZipsTahInfo(entry));
                     break;
                 default:
-                    MessageBox.Show("TAHファイル以外は展開できません.", "TAHDecrypt", MessageBoxButtons.OK);
+                    //MessageBox.Show("TAHファイル以外は展開できません.", "TAHDecrypt", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.OnlyTAHFile, TextResource.Error, MessageBoxButtons.OK);
                     break;
             }
         }
@@ -341,8 +345,8 @@ namespace TDCGExplorer
 
             SimpleTextDialog dialog = new SimpleTextDialog();
             dialog.Owner = TDCGExplorer.MainFormWindow;
-            dialog.dialogtext = "ファイル名の変更";
-            dialog.labeltext = "ファイル名";
+            dialog.dialogtext = TextResource.Rename; //"ファイル名の変更";
+            dialog.labeltext = TextResource.Filename; //"ファイル名";
             dialog.textfield = Path.GetFileName(path);
 
             if (dialog.ShowDialog() == DialogResult.OK)
@@ -360,8 +364,8 @@ namespace TDCGExplorer
 
             SimpleTextDialog dialog = new SimpleTextDialog();
             dialog.Owner = TDCGExplorer.MainFormWindow;
-            dialog.dialogtext = "タイムスタンプの変更";
-            dialog.labeltext = "日時";
+            dialog.dialogtext = TextResource.Touch; //"タイムスタンプの変更";
+            dialog.labeltext = TextResource.DateTime; //"日時";
             dialog.textfield = datetime.ToString();
 
             if (dialog.ShowDialog() == DialogResult.OK)

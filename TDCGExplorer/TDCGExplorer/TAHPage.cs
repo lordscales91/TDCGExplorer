@@ -35,11 +35,11 @@ namespace System.Windows.Forms
 
             DataTable data = new DataTable();
             data.Columns.Add("ID", Type.GetType("System.String"));
-            data.Columns.Add("ファイル名", Type.GetType("System.String"));
-            data.Columns.Add("ファイルタイプ", Type.GetType("System.String"));
-            data.Columns.Add("ハッシュ値", Type.GetType("System.String"));
-            data.Columns.Add("データサイズ", Type.GetType("System.String"));
-            data.Columns.Add("属性", Type.GetType("System.String"));
+            data.Columns.Add(TextResource.Filename, Type.GetType("System.String"));
+            data.Columns.Add(TextResource.FileType, Type.GetType("System.String"));
+            data.Columns.Add(TextResource.HashCode, Type.GetType("System.String"));
+            data.Columns.Add(TextResource.FileSize, Type.GetType("System.String"));
+            data.Columns.Add(TextResource.Category, Type.GetType("System.String"));
             foreach (ArcsTahFilesEntry file in filesentries)
             {
                 DataRow row = data.NewRow();
@@ -59,7 +59,7 @@ namespace System.Windows.Forms
 
             LoadPsdFile(0);
 
-            TDCGExplorer.TDCGExplorer.SetToolTips(info.shortname + " : tsoクリックで単体表示,ctrlキー+tsoクリックで複数表示,tmoでポーズ・アニメーションを設定");
+            TDCGExplorer.TDCGExplorer.SetToolTips(info.shortname + " : " + TextResource.TSOMessage);
         }
 
         private void InitializeComponent()
@@ -102,21 +102,21 @@ namespace System.Windows.Forms
             // 
             this.toolStripMenuItemEditMode.Name = "toolStripMenuItemEditMode";
             this.toolStripMenuItemEditMode.Size = new System.Drawing.Size(206, 22);
-            this.toolStripMenuItemEditMode.Text = "編集する";
+            this.toolStripMenuItemEditMode.Text = TextResource.EditTahFile;
             this.toolStripMenuItemEditMode.Click += new System.EventHandler(this.toolStripMenuItemEditMode_Click);
             // 
             // toolStripMenuItemSaveFile
             // 
             this.toolStripMenuItemSaveFile.Name = "toolStripMenuItemSaveFile";
             this.toolStripMenuItemSaveFile.Size = new System.Drawing.Size(206, 22);
-            this.toolStripMenuItemSaveFile.Text = "TAHファイルを展開する";
+            this.toolStripMenuItemSaveFile.Text = TextResource.ExtractTahFile;
             this.toolStripMenuItemSaveFile.Click += new System.EventHandler(this.toolStripMenuItemSaveFile_Click);
             // 
             // toolStripMenuItemClose
             // 
             this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
             this.toolStripMenuItemClose.Size = new System.Drawing.Size(206, 22);
-            this.toolStripMenuItemClose.Text = "閉じる";
+            this.toolStripMenuItemClose.Text = TextResource.Close;
             this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
             // 
             // TAHPageControl
@@ -189,7 +189,7 @@ namespace System.Windows.Forms
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error dataGridView_CellClick:" + ex.Message, "Error", MessageBoxButtons.OK);
+                MessageBox.Show(TextResource.Error + ":" + ex.Message, TextResource.Error, MessageBoxButtons.OK);
             }
         }
 

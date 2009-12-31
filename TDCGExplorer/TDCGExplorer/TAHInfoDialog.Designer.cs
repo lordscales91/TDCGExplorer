@@ -43,7 +43,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(74, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "TAHバージョン";
+            this.label1.Text = TextResource.TAHVersion; //"TAHバージョン";
             // 
             // textBoxTahVersion
             // 
@@ -59,7 +59,7 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(75, 13);
             this.label2.TabIndex = 2;
-            this.label2.Text = "TAHファイル名";
+            this.label2.Text = TextResource.TAHFilename; //"TAHファイル名";
             // 
             // textBoxTahSource
             // 
@@ -101,7 +101,7 @@
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "TAHInfoDialog";
-            this.Text = "TAH情報設定";
+            this.Text = TextResource.TAHInformation;
             this.ResumeLayout(false);
             this.PerformLayout();
 

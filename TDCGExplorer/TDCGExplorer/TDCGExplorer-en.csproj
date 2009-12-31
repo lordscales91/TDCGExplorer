@@ -5,15 +5,16 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.30729</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{963DB0BC-D701-466D-B28A-E12290878FAE}</ProjectGuid>
+    <ProjectGuid>{AEF438ED-EF00-4BFF-88A5-63B6B049BAC4}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>TDCGExplorer</RootNamespace>
-    <AssemblyName>TDCGExplorer</AssemblyName>
+    <AssemblyName>TDCGExplorer-en</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ApplicationIcon>ICON.ICO</ApplicationIcon>
+    <StartupObject>TDCGExplorer.TDCGExplorer</StartupObject>
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -106,11 +107,6 @@
     </Compile>
     <Compile Include="FindItemPage.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="TextResource.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>TextResource.resx</DependentUpon>
     </Compile>
     <Compile Include="PNGHSAVStream.cs" />
     <Compile Include="PNGPOSEStream.cs" />
@@ -211,10 +207,6 @@
     <EmbeddedResource Include="FindItemPage.resx">
       <DependentUpon>FindItemPage.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="TextResource.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>TextResource.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <EmbeddedResource Include="PoseFilePage.resx">
       <DependentUpon>PoseFilePage.cs</DependentUpon>
     </EmbeddedResource>
@@ -268,6 +260,10 @@
     <EmbeddedResource Include="TextPage.resx">
       <DependentUpon>TextPage.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="TextResource-en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TextResource-en1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="ZipFilePageControl.resx">
       <DependentUpon>ZipFilePageControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -301,6 +297,11 @@
     <Compile Include="TDCGTbn.cs" />
     <Compile Include="TextPage.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TextResource-en1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TextResource-en.resx</DependentUpon>
     </Compile>
     <Compile Include="TreeNode.cs" />
     <Compile Include="TSOCameraAutoCenter.cs" />

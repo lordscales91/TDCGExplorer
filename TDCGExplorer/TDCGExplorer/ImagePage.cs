@@ -18,7 +18,7 @@ namespace System.Windows.Forms
         {
             InitializeComponent();
             ExtractFile();
-            TDCGExplorer.TDCGExplorer.SetToolTips(tahInfo.path+" : クリックで拡大縮小");
+            TDCGExplorer.TDCGExplorer.SetToolTips(tahInfo.path + " : " + TextResource.ZoomByClick);
         }
 
         private void InitializeComponent()
@@ -80,7 +80,7 @@ namespace System.Windows.Forms
             }
             catch (Exception e)
             {
-                TDCGExplorer.TDCGExplorer.SetToolTips("error: " + e.Message);
+                TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.Error+" : " + e.Message);
             }
         }
 

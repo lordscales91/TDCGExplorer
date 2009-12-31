@@ -134,7 +134,7 @@
             this.HelpToolStripMenuItem});
             this.MainMenu.Location = new System.Drawing.Point(0, 0);
             this.MainMenu.Name = "MainMenu";
-            this.MainMenu.Size = new System.Drawing.Size(817, 24);
+            this.MainMenu.Size = new System.Drawing.Size(817, 26);
             this.MainMenu.TabIndex = 1;
             this.MainMenu.Text = "MainMenu";
             // 
@@ -152,77 +152,77 @@
             this.OpenFolderToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.tDCGExplorerToolStripMenuItem.Name = "tDCGExplorerToolStripMenuItem";
-            this.tDCGExplorerToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
-            this.tDCGExplorerToolStripMenuItem.Text = "ファイル";
+            this.tDCGExplorerToolStripMenuItem.Size = new System.Drawing.Size(68, 22);
+            this.tDCGExplorerToolStripMenuItem.Text = TextResource.FileMenu;
             // 
             // extractZipFileToolStripMenuItem1
             // 
             this.extractZipFileToolStripMenuItem1.Name = "extractZipFileToolStripMenuItem1";
-            this.extractZipFileToolStripMenuItem1.Size = new System.Drawing.Size(242, 22);
-            this.extractZipFileToolStripMenuItem1.Text = "アーカイブファイルの展開";
+            this.extractZipFileToolStripMenuItem1.Size = new System.Drawing.Size(244, 22);
+            this.extractZipFileToolStripMenuItem1.Text = TextResource.ExtractZipFile;
             this.extractZipFileToolStripMenuItem1.Click += new System.EventHandler(this.extractZipFileToolStripMenuItem1_Click_1);
             // 
             // ResearchAssumptionArchiveToolStripMenuItem
             // 
             this.ResearchAssumptionArchiveToolStripMenuItem.Name = "ResearchAssumptionArchiveToolStripMenuItem";
-            this.ResearchAssumptionArchiveToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.ResearchAssumptionArchiveToolStripMenuItem.Text = "関連アーカイブを調べる";
+            this.ResearchAssumptionArchiveToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.ResearchAssumptionArchiveToolStripMenuItem.Text = TextResource.ResearchAssumptionArchive;
             this.ResearchAssumptionArchiveToolStripMenuItem.Click += new System.EventHandler(this.LookupMODRefToolStripMenuItem_Click);
             // 
             // InstallPreferredModsToolStripMenuItem
             // 
             this.InstallPreferredModsToolStripMenuItem.Name = "InstallPreferredModsToolStripMenuItem";
-            this.InstallPreferredModsToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.InstallPreferredModsToolStripMenuItem.Text = "前提アーカイブファイルを展開";
+            this.InstallPreferredModsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.InstallPreferredModsToolStripMenuItem.Text = TextResource.InstallPreferredMods;
             this.InstallPreferredModsToolStripMenuItem.Click += new System.EventHandler(this.ExtractPreferZipMainMenuToolStripMenuItem_Click);
             // 
             // OpenArchiveToolStripMenuItem
             // 
             this.OpenArchiveToolStripMenuItem.Name = "OpenArchiveToolStripMenuItem";
-            this.OpenArchiveToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.OpenArchiveToolStripMenuItem.Text = "アーカイブ展開フォルダを開く";
+            this.OpenArchiveToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.OpenArchiveToolStripMenuItem.Text = TextResource.OpenArchive;
             this.OpenArchiveToolStripMenuItem.Click += new System.EventHandler(this.OpenArchiveToolStripMenuItem_Click);
             // 
             // findNoBaseModToolStripMenuItem
             // 
             this.findNoBaseModToolStripMenuItem.Name = "findNoBaseModToolStripMenuItem";
-            this.findNoBaseModToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.findNoBaseModToolStripMenuItem.Text = "前提TAHを検索する";
+            this.findNoBaseModToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.findNoBaseModToolStripMenuItem.Text = TextResource.FindNoBaseMod;
             this.findNoBaseModToolStripMenuItem.Click += new System.EventHandler(this.findNoBaseModToolStripMenuItem_Click);
             // 
             // labelSearchToolStripMenuItem
             // 
             this.labelSearchToolStripMenuItem.Name = "labelSearchToolStripMenuItem";
-            this.labelSearchToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.labelSearchToolStripMenuItem.Text = "検索...";
+            this.labelSearchToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.labelSearchToolStripMenuItem.Text = TextResource.Search;
             this.labelSearchToolStripMenuItem.Click += new System.EventHandler(this.labelSearchToolStripMenuItem_Click);
             // 
             // tahfilesearchToolStripMenuItem
             // 
             this.tahfilesearchToolStripMenuItem.Name = "tahfilesearchToolStripMenuItem";
-            this.tahfilesearchToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.tahfilesearchToolStripMenuItem.Text = "TAH内部ファイル検索...";
+            this.tahfilesearchToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.tahfilesearchToolStripMenuItem.Text = TextResource.tahfilesearch;
             this.tahfilesearchToolStripMenuItem.Click += new System.EventHandler(this.tahfilesearchToolStripMenuItem_Click);
             // 
             // EditAnnotationToolStripMenuItem1
             // 
             this.EditAnnotationToolStripMenuItem1.Name = "EditAnnotationToolStripMenuItem1";
-            this.EditAnnotationToolStripMenuItem1.Size = new System.Drawing.Size(242, 22);
-            this.EditAnnotationToolStripMenuItem1.Text = "注訳を入力...";
+            this.EditAnnotationToolStripMenuItem1.Size = new System.Drawing.Size(244, 22);
+            this.EditAnnotationToolStripMenuItem1.Text = TextResource.EditAnnotation;
             this.EditAnnotationToolStripMenuItem1.Click += new System.EventHandler(this.EditAnnotationToolStripMenuItem1_Click);
             // 
             // OpenFolderToolStripMenuItem
             // 
             this.OpenFolderToolStripMenuItem.Name = "OpenFolderToolStripMenuItem";
-            this.OpenFolderToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.OpenFolderToolStripMenuItem.Text = "フォルダを開く";
+            this.OpenFolderToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.OpenFolderToolStripMenuItem.Text = TextResource.OpenFolder;
             this.OpenFolderToolStripMenuItem.Click += new System.EventHandler(this.OpenFolderToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.exitToolStripMenuItem.Text = "終了";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.exitToolStripMenuItem.Text = TextResource.Exit;
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // databaseToolStripMenuItem
@@ -233,35 +233,35 @@
             this.displayUpdateToolStripMenuItem,
             this.editSystemDatabaseToolStripMenuItem});
             this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
-            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(91, 20);
-            this.databaseToolStripMenuItem.Text = "データベース";
+            this.databaseToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.databaseToolStripMenuItem.Text = TextResource.DataBaseMenu;
             // 
             // createFromArcsToolStripMenuItem
             // 
             this.createFromArcsToolStripMenuItem.Name = "createFromArcsToolStripMenuItem";
-            this.createFromArcsToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.createFromArcsToolStripMenuItem.Text = "データベースの構築・更新";
+            this.createFromArcsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.createFromArcsToolStripMenuItem.Text = TextResource.DataBaseUpdate;
             this.createFromArcsToolStripMenuItem.Click += new System.EventHandler(this.createFromArcsToolStripMenuItem_Click);
             // 
             // downloadLatestArcsnameszipToolStripMenuItem
             // 
             this.downloadLatestArcsnameszipToolStripMenuItem.Name = "downloadLatestArcsnameszipToolStripMenuItem";
-            this.downloadLatestArcsnameszipToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.downloadLatestArcsnameszipToolStripMenuItem.Text = "最新のデータベース情報を取得";
+            this.downloadLatestArcsnameszipToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.downloadLatestArcsnameszipToolStripMenuItem.Text = TextResource.DownloadLatestArcsnameszip;
             this.downloadLatestArcsnameszipToolStripMenuItem.Click += new System.EventHandler(this.downloadLatestDBZipToolStripMenuItem_Click_1);
             // 
             // displayUpdateToolStripMenuItem
             // 
             this.displayUpdateToolStripMenuItem.Name = "displayUpdateToolStripMenuItem";
-            this.displayUpdateToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.displayUpdateToolStripMenuItem.Text = "最新の情報を表示";
+            this.displayUpdateToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.displayUpdateToolStripMenuItem.Text = TextResource.DisplayUpdate;
             this.displayUpdateToolStripMenuItem.Click += new System.EventHandler(this.displayUpdateToolStripMenuItem_Click);
             // 
             // editSystemDatabaseToolStripMenuItem
             // 
             this.editSystemDatabaseToolStripMenuItem.Name = "editSystemDatabaseToolStripMenuItem";
-            this.editSystemDatabaseToolStripMenuItem.Size = new System.Drawing.Size(242, 22);
-            this.editSystemDatabaseToolStripMenuItem.Text = "初期設定";
+            this.editSystemDatabaseToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
+            this.editSystemDatabaseToolStripMenuItem.Text = TextResource.EditSystemDatabase;
             this.editSystemDatabaseToolStripMenuItem.Click += new System.EventHandler(this.editSystemDatabaseToolStripMenuItem_Click_1);
             // 
             // tSOViewToolStripMenuItem
@@ -270,21 +270,21 @@
             this.resetTSOViewerToolStripMenuItem,
             this.switchToMortionEnabledToolStripMenuItem});
             this.tSOViewToolStripMenuItem.Name = "tSOViewToolStripMenuItem";
-            this.tSOViewToolStripMenuItem.Size = new System.Drawing.Size(89, 20);
-            this.tSOViewToolStripMenuItem.Text = "TSOビューワ";
+            this.tSOViewToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
+            this.tSOViewToolStripMenuItem.Text = TextResource.TSOViewerMenu;
             // 
             // resetTSOViewerToolStripMenuItem
             // 
             this.resetTSOViewerToolStripMenuItem.Name = "resetTSOViewerToolStripMenuItem";
-            this.resetTSOViewerToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-            this.resetTSOViewerToolStripMenuItem.Text = "ビューワをリセット";
+            this.resetTSOViewerToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.resetTSOViewerToolStripMenuItem.Text = TextResource.ResetTsoViwer;
             this.resetTSOViewerToolStripMenuItem.Click += new System.EventHandler(this.resetTSOViewerToolStripMenuItem_Click);
             // 
             // switchToMortionEnabledToolStripMenuItem
             // 
             this.switchToMortionEnabledToolStripMenuItem.Name = "switchToMortionEnabledToolStripMenuItem";
-            this.switchToMortionEnabledToolStripMenuItem.Size = new System.Drawing.Size(182, 22);
-            this.switchToMortionEnabledToolStripMenuItem.Text = "アニメーション開始";
+            this.switchToMortionEnabledToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.switchToMortionEnabledToolStripMenuItem.Text = TextResource.SwitchToMortionEnabled;
             this.switchToMortionEnabledToolStripMenuItem.Click += new System.EventHandler(this.switchToMortionEnabledToolStripMenuItem_Click);
             // 
             // WindowMenuToolStripMenuItem
@@ -294,28 +294,28 @@
             this.NewTabToolStripMenuItem1,
             this.CloseTabToolStripMenuItem});
             this.WindowMenuToolStripMenuItem.Name = "WindowMenuToolStripMenuItem";
-            this.WindowMenuToolStripMenuItem.Size = new System.Drawing.Size(79, 20);
-            this.WindowMenuToolStripMenuItem.Text = "ウインドウ";
+            this.WindowMenuToolStripMenuItem.Size = new System.Drawing.Size(80, 22);
+            this.WindowMenuToolStripMenuItem.Text = TextResource.WindowMenu;
             // 
             // ExpandTreeToolStripMenuItem
             // 
             this.ExpandTreeToolStripMenuItem.Name = "ExpandTreeToolStripMenuItem";
-            this.ExpandTreeToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.ExpandTreeToolStripMenuItem.Text = "ツリーを展開";
+            this.ExpandTreeToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.ExpandTreeToolStripMenuItem.Text = TextResource.ExpandTree;
             this.ExpandTreeToolStripMenuItem.Click += new System.EventHandler(this.ExpandTreeToolStripMenuItem_Click);
             // 
             // NewTabToolStripMenuItem1
             // 
             this.NewTabToolStripMenuItem1.Name = "NewTabToolStripMenuItem1";
-            this.NewTabToolStripMenuItem1.Size = new System.Drawing.Size(170, 22);
-            this.NewTabToolStripMenuItem1.Text = "新しいタブを開く";
+            this.NewTabToolStripMenuItem1.Size = new System.Drawing.Size(172, 22);
+            this.NewTabToolStripMenuItem1.Text = TextResource.NewTab;
             this.NewTabToolStripMenuItem1.Click += new System.EventHandler(this.NewTabToolStripMenuItem1_Click);
             // 
             // CloseTabToolStripMenuItem
             // 
             this.CloseTabToolStripMenuItem.Name = "CloseTabToolStripMenuItem";
-            this.CloseTabToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.CloseTabToolStripMenuItem.Text = "タブを閉じる";
+            this.CloseTabToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.CloseTabToolStripMenuItem.Text = TextResource.CloseTab;
             this.CloseTabToolStripMenuItem.Click += new System.EventHandler(this.CloseTabToolStripMenuItem_Click);
             // 
             // HelpToolStripMenuItem
@@ -324,21 +324,21 @@
             this.ShowManualToolStripMenuItem,
             this.ShowVersionToolStripMenuItem});
             this.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem";
-            this.HelpToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
-            this.HelpToolStripMenuItem.Text = "ヘルプ";
+            this.HelpToolStripMenuItem.Size = new System.Drawing.Size(56, 22);
+            this.HelpToolStripMenuItem.Text = TextResource.HelpMenu;
             // 
             // ShowManualToolStripMenuItem
             // 
             this.ShowManualToolStripMenuItem.Name = "ShowManualToolStripMenuItem";
-            this.ShowManualToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.ShowManualToolStripMenuItem.Text = "マニュアルの表示";
+            this.ShowManualToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.ShowManualToolStripMenuItem.Text = TextResource.ShowManual;
             this.ShowManualToolStripMenuItem.Click += new System.EventHandler(this.ShowManualToolStripMenuItem_Click);
             // 
             // ShowVersionToolStripMenuItem
             // 
             this.ShowVersionToolStripMenuItem.Name = "ShowVersionToolStripMenuItem";
-            this.ShowVersionToolStripMenuItem.Size = new System.Drawing.Size(170, 22);
-            this.ShowVersionToolStripMenuItem.Text = "バージョン...";
+            this.ShowVersionToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.ShowVersionToolStripMenuItem.Text = TextResource.ShowVersion;
             this.ShowVersionToolStripMenuItem.Click += new System.EventHandler(this.ShowVersionToolStripMenuItem_Click);
             // 
             // treeViewArcs
@@ -350,7 +350,7 @@
             this.treeViewArcs.Location = new System.Drawing.Point(3, 3);
             this.treeViewArcs.Margin = new System.Windows.Forms.Padding(0);
             this.treeViewArcs.Name = "treeViewArcs";
-            this.treeViewArcs.Size = new System.Drawing.Size(159, 331);
+            this.treeViewArcs.Size = new System.Drawing.Size(159, 306);
             this.treeViewArcs.TabIndex = 3;
             this.treeViewArcs.Enter += new System.EventHandler(this.treeViewArcs_Enter);
             this.treeViewArcs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewArcs_AfterSelect);
@@ -368,62 +368,62 @@
             this.OpenFolderCXToolStripMenuItem,
             this.OpenAllTAHToolStripMenuItem});
             this.cmContextMenu.Name = "cmContextMenu";
-            this.cmContextMenu.Size = new System.Drawing.Size(339, 158);
+            this.cmContextMenu.Size = new System.Drawing.Size(341, 158);
             // 
             // expandAllToolStripMenuItem
             // 
             this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
-            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
-            this.expandAllToolStripMenuItem.Text = "ツリーを展開";
+            this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.expandAllToolStripMenuItem.Text = TextResource.ExpandTree;
             this.expandAllToolStripMenuItem.Click += new System.EventHandler(this.expandAllToolStripMenuItem1_Click);
             // 
             // extractZipToolStripMenuItem
             // 
             this.extractZipToolStripMenuItem.Name = "extractZipToolStripMenuItem";
-            this.extractZipToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
-            this.extractZipToolStripMenuItem.Text = "アーカイブファイルを展開";
+            this.extractZipToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.extractZipToolStripMenuItem.Text = TextResource.ExtractZipFile;
             this.extractZipToolStripMenuItem.Click += new System.EventHandler(this.extractZipToolStripMenuItem_Click);
             // 
             // InstallPreferredModToolStripMenuItem
             // 
             this.InstallPreferredModToolStripMenuItem.Name = "InstallPreferredModToolStripMenuItem";
-            this.InstallPreferredModToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
-            this.InstallPreferredModToolStripMenuItem.Text = "前提アーカイブファイルを展開";
+            this.InstallPreferredModToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.InstallPreferredModToolStripMenuItem.Text = TextResource.InstallPreferredMods;
             this.InstallPreferredModToolStripMenuItem.Click += new System.EventHandler(this.ExtractPreferZipToolStripMenuItem_Click);
             // 
             // EditAnnotationToolStripMenuItem
             // 
             this.EditAnnotationToolStripMenuItem.Name = "EditAnnotationToolStripMenuItem";
-            this.EditAnnotationToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
-            this.EditAnnotationToolStripMenuItem.Text = "注訳を入力";
+            this.EditAnnotationToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.EditAnnotationToolStripMenuItem.Text = TextResource.EditAnnotation;
             this.EditAnnotationToolStripMenuItem.Click += new System.EventHandler(this.EditAnnotationToolStripMenuItem_Click);
             // 
             // LookUpModrefToolStripMenuItem
             // 
             this.LookUpModrefToolStripMenuItem.Name = "LookUpModrefToolStripMenuItem";
-            this.LookUpModrefToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
-            this.LookUpModrefToolStripMenuItem.Text = "関連アーカイブを調べる";
+            this.LookUpModrefToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.LookUpModrefToolStripMenuItem.Text = TextResource.ResearchAssumptionArchive;
             this.LookUpModrefToolStripMenuItem.Click += new System.EventHandler(this.LookupModRefToolStripMenuItem_Click);
             // 
             // OpenFolderCXToolStripMenuItem
             // 
             this.OpenFolderCXToolStripMenuItem.Name = "OpenFolderCXToolStripMenuItem";
-            this.OpenFolderCXToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
-            this.OpenFolderCXToolStripMenuItem.Text = "フォルダを開く";
+            this.OpenFolderCXToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.OpenFolderCXToolStripMenuItem.Text = TextResource.OpenFolder;
             this.OpenFolderCXToolStripMenuItem.Click += new System.EventHandler(this.OpenFolderCXToolStripMenuItem_Click);
             // 
             // OpenAllTAHToolStripMenuItem
             // 
             this.OpenAllTAHToolStripMenuItem.Name = "OpenAllTAHToolStripMenuItem";
-            this.OpenAllTAHToolStripMenuItem.Size = new System.Drawing.Size(338, 22);
-            this.OpenAllTAHToolStripMenuItem.Text = "選択されている階層以下のTAHをエディタで開く";
+            this.OpenAllTAHToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
+            this.OpenAllTAHToolStripMenuItem.Text = TextResource.OpenAllTAH;
             this.OpenAllTAHToolStripMenuItem.Click += new System.EventHandler(this.OpenAllTAHToolStripMenuItem_Click);
             // 
             // StatusStrip
             // 
             this.StatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripStatusLabel});
-            this.StatusStrip.Location = new System.Drawing.Point(0, 435);
+            this.StatusStrip.Location = new System.Drawing.Point(0, 400);
             this.StatusStrip.Name = "StatusStrip";
             this.StatusStrip.Size = new System.Drawing.Size(817, 22);
             this.StatusStrip.TabIndex = 4;
@@ -452,7 +452,7 @@
             this.tabMainView.Multiline = true;
             this.tabMainView.Name = "tabMainView";
             this.tabMainView.SelectedIndex = 0;
-            this.tabMainView.Size = new System.Drawing.Size(622, 236);
+            this.tabMainView.Size = new System.Drawing.Size(622, 219);
             this.tabMainView.TabIndex = 5;
             // 
             // tabContextMenuStrip
@@ -460,13 +460,13 @@
             this.tabContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.closeToolStripMenuItem});
             this.tabContextMenuStrip.Name = "tabContextMenuStrip";
-            this.tabContextMenuStrip.Size = new System.Drawing.Size(111, 26);
+            this.tabContextMenuStrip.Size = new System.Drawing.Size(149, 26);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.closeToolStripMenuItem.Text = "閉じる";
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
+            this.closeToolStripMenuItem.Text = TextResource.CloseTab;
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // splitContainerV
@@ -475,7 +475,7 @@
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainerV.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.splitContainerV.Location = new System.Drawing.Point(0, 27);
+            this.splitContainerV.Location = new System.Drawing.Point(0, 25);
             this.splitContainerV.Margin = new System.Windows.Forms.Padding(0);
             this.splitContainerV.Name = "splitContainerV";
             // 
@@ -486,7 +486,7 @@
             // splitContainerV.Panel2
             // 
             this.splitContainerV.Panel2.Controls.Add(this.splitContainerH);
-            this.splitContainerV.Size = new System.Drawing.Size(817, 407);
+            this.splitContainerV.Size = new System.Drawing.Size(817, 376);
             this.splitContainerV.SplitterDistance = 181;
             this.splitContainerV.SplitterWidth = 8;
             this.splitContainerV.TabIndex = 6;
@@ -506,7 +506,7 @@
             this.tabControlTreeView.Multiline = true;
             this.tabControlTreeView.Name = "tabControlTreeView";
             this.tabControlTreeView.SelectedIndex = 0;
-            this.tabControlTreeView.Size = new System.Drawing.Size(173, 399);
+            this.tabControlTreeView.Size = new System.Drawing.Size(173, 368);
             this.tabControlTreeView.TabIndex = 4;
             this.tabControlTreeView.SelectedIndexChanged += new System.EventHandler(this.tabControlTreeContainor_SelectedIndexChanged);
             // 
@@ -516,9 +516,9 @@
             this.tabPageArcs.Location = new System.Drawing.Point(4, 58);
             this.tabPageArcs.Name = "tabPageArcs";
             this.tabPageArcs.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageArcs.Size = new System.Drawing.Size(165, 337);
+            this.tabPageArcs.Size = new System.Drawing.Size(165, 306);
             this.tabPageArcs.TabIndex = 0;
-            this.tabPageArcs.Text = "Arcs";
+            this.tabPageArcs.Text = TextResource.ArcsTabName;
             this.tabPageArcs.UseVisualStyleBackColor = true;
             // 
             // tabPageZips
@@ -527,9 +527,9 @@
             this.tabPageZips.Location = new System.Drawing.Point(4, 58);
             this.tabPageZips.Name = "tabPageZips";
             this.tabPageZips.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageZips.Size = new System.Drawing.Size(165, 337);
+            this.tabPageZips.Size = new System.Drawing.Size(165, 306);
             this.tabPageZips.TabIndex = 1;
-            this.tabPageZips.Text = "アーカイブ";
+            this.tabPageZips.Text = TextResource.ZipsTabName;
             this.tabPageZips.UseVisualStyleBackColor = true;
             // 
             // treeViewZips
@@ -541,7 +541,7 @@
             this.treeViewZips.Location = new System.Drawing.Point(3, 3);
             this.treeViewZips.Margin = new System.Windows.Forms.Padding(0);
             this.treeViewZips.Name = "treeViewZips";
-            this.treeViewZips.Size = new System.Drawing.Size(159, 331);
+            this.treeViewZips.Size = new System.Drawing.Size(159, 306);
             this.treeViewZips.TabIndex = 4;
             this.treeViewZips.Enter += new System.EventHandler(this.treeViewZips_Enter);
             this.treeViewZips.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewZips_AfterSelect);
@@ -554,9 +554,9 @@
             this.tabPageIntalled.Location = new System.Drawing.Point(4, 58);
             this.tabPageIntalled.Name = "tabPageIntalled";
             this.tabPageIntalled.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageIntalled.Size = new System.Drawing.Size(165, 337);
+            this.tabPageIntalled.Size = new System.Drawing.Size(165, 306);
             this.tabPageIntalled.TabIndex = 2;
-            this.tabPageIntalled.Text = "インストール済み";
+            this.tabPageIntalled.Text = TextResource.InstalledModsTabName;
             this.tabPageIntalled.UseVisualStyleBackColor = true;
             // 
             // treeViewInstalled
@@ -568,7 +568,7 @@
             this.treeViewInstalled.Location = new System.Drawing.Point(3, 3);
             this.treeViewInstalled.Margin = new System.Windows.Forms.Padding(0);
             this.treeViewInstalled.Name = "treeViewInstalled";
-            this.treeViewInstalled.Size = new System.Drawing.Size(159, 331);
+            this.treeViewInstalled.Size = new System.Drawing.Size(159, 306);
             this.treeViewInstalled.TabIndex = 4;
             this.treeViewInstalled.Enter += new System.EventHandler(this.treeViewInstalled_Enter);
             this.treeViewInstalled.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewInstalled_AfterSelect);
@@ -581,9 +581,9 @@
             this.tabPageCollsion.Location = new System.Drawing.Point(4, 58);
             this.tabPageCollsion.Name = "tabPageCollsion";
             this.tabPageCollsion.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCollsion.Size = new System.Drawing.Size(165, 337);
+            this.tabPageCollsion.Size = new System.Drawing.Size(165, 306);
             this.tabPageCollsion.TabIndex = 3;
-            this.tabPageCollsion.Text = "衝突";
+            this.tabPageCollsion.Text = TextResource.CollisionsTabName;
             this.tabPageCollsion.UseVisualStyleBackColor = true;
             // 
             // treeViewCollision
@@ -595,7 +595,7 @@
             this.treeViewCollision.Location = new System.Drawing.Point(3, 3);
             this.treeViewCollision.Margin = new System.Windows.Forms.Padding(0);
             this.treeViewCollision.Name = "treeViewCollision";
-            this.treeViewCollision.Size = new System.Drawing.Size(159, 331);
+            this.treeViewCollision.Size = new System.Drawing.Size(159, 306);
             this.treeViewCollision.TabIndex = 4;
             this.treeViewCollision.Enter += new System.EventHandler(this.treeViewCollision_Enter);
             this.treeViewCollision.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewCollision_AfterSelect);
@@ -608,9 +608,9 @@
             this.tabPageTag.Location = new System.Drawing.Point(4, 58);
             this.tabPageTag.Name = "tabPageTag";
             this.tabPageTag.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageTag.Size = new System.Drawing.Size(165, 337);
+            this.tabPageTag.Size = new System.Drawing.Size(165, 306);
             this.tabPageTag.TabIndex = 4;
-            this.tabPageTag.Text = "タグ";
+            this.tabPageTag.Text = TextResource.TagsTabName;
             this.tabPageTag.UseVisualStyleBackColor = true;
             // 
             // treeViewTag
@@ -622,7 +622,7 @@
             this.treeViewTag.Location = new System.Drawing.Point(3, 3);
             this.treeViewTag.Margin = new System.Windows.Forms.Padding(0);
             this.treeViewTag.Name = "treeViewTag";
-            this.treeViewTag.Size = new System.Drawing.Size(159, 331);
+            this.treeViewTag.Size = new System.Drawing.Size(159, 306);
             this.treeViewTag.TabIndex = 5;
             this.treeViewTag.Enter += new System.EventHandler(this.treeViewTag_Enter);
             this.treeViewTag.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewTag_AfterSelect);
@@ -635,9 +635,9 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 58);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(165, 337);
+            this.tabPage1.Size = new System.Drawing.Size(165, 306);
             this.tabPage1.TabIndex = 5;
-            this.tabPage1.Text = "セーブファイル";
+            this.tabPage1.Text = TextResource.SaveFilesTabName;
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // treeViewSaveFile
@@ -649,7 +649,7 @@
             this.treeViewSaveFile.Location = new System.Drawing.Point(3, 3);
             this.treeViewSaveFile.Margin = new System.Windows.Forms.Padding(0);
             this.treeViewSaveFile.Name = "treeViewSaveFile";
-            this.treeViewSaveFile.Size = new System.Drawing.Size(159, 331);
+            this.treeViewSaveFile.Size = new System.Drawing.Size(159, 306);
             this.treeViewSaveFile.TabIndex = 6;
             this.treeViewSaveFile.Enter += new System.EventHandler(this.treeViewSaveFile_Enter);
             this.treeViewSaveFile.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeViewSaveFile_AfterSelect);
@@ -674,9 +674,9 @@
             // splitContainerH.Panel2
             // 
             this.splitContainerH.Panel2.Controls.Add(this.tabMainView);
-            this.splitContainerH.Size = new System.Drawing.Size(623, 399);
-            this.splitContainerH.SplitterDistance = 161;
-            this.splitContainerH.SplitterWidth = 8;
+            this.splitContainerH.Size = new System.Drawing.Size(623, 368);
+            this.splitContainerH.SplitterDistance = 148;
+            this.splitContainerH.SplitterWidth = 7;
             this.splitContainerH.TabIndex = 6;
             // 
             // splitContainerWithView
@@ -696,7 +696,7 @@
             this.splitContainerWithView.Panel2.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.splitContainerWithView.Panel2.Controls.Add(this.pictureBoxImage);
             this.splitContainerWithView.Panel2.Margin = new System.Windows.Forms.Padding(4);
-            this.splitContainerWithView.Size = new System.Drawing.Size(612, 152);
+            this.splitContainerWithView.Size = new System.Drawing.Size(612, 139);
             this.splitContainerWithView.SplitterDistance = 289;
             this.splitContainerWithView.SplitterWidth = 8;
             this.splitContainerWithView.TabIndex = 1;
@@ -708,9 +708,10 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.listBoxMainListBox.ContextMenuStrip = this.ListBoxContextMenuStripTahFile;
             this.listBoxMainListBox.FormattingEnabled = true;
+            this.listBoxMainListBox.ItemHeight = 12;
             this.listBoxMainListBox.Location = new System.Drawing.Point(0, 3);
             this.listBoxMainListBox.Name = "listBoxMainListBox";
-            this.listBoxMainListBox.Size = new System.Drawing.Size(286, 147);
+            this.listBoxMainListBox.Size = new System.Drawing.Size(286, 124);
             this.listBoxMainListBox.TabIndex = 0;
             this.listBoxMainListBox.SelectedIndexChanged += new System.EventHandler(this.listBoxMainListBox_SelectedIndexChanged);
             this.listBoxMainListBox.MouseEnter += new System.EventHandler(this.listBoxMainListBox_MouseEnter);
@@ -723,27 +724,27 @@
             this.ExpandTahFileToolStripMenuItem,
             this.ExtractTahFileDirectToolStripMenuItem});
             this.ListBoxContextMenuStripTahFile.Name = "contextMenuStrip1";
-            this.ListBoxContextMenuStripTahFile.Size = new System.Drawing.Size(231, 92);
+            this.ListBoxContextMenuStripTahFile.Size = new System.Drawing.Size(209, 70);
             // 
             // NewTabToolStripMenuItem
             // 
             this.NewTabToolStripMenuItem.Name = "NewTabToolStripMenuItem";
-            this.NewTabToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.NewTabToolStripMenuItem.Text = "新しいタブを開く";
+            this.NewTabToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.NewTabToolStripMenuItem.Text = TextResource.NewTab;
             this.NewTabToolStripMenuItem.Click += new System.EventHandler(this.NewTabPageToolStripMenuItem_Click);
             // 
             // ExpandTahFileToolStripMenuItem
             // 
             this.ExpandTahFileToolStripMenuItem.Name = "ExpandTahFileToolStripMenuItem";
-            this.ExpandTahFileToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.ExpandTahFileToolStripMenuItem.Text = "TAHファイルを編集する";
+            this.ExpandTahFileToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.ExpandTahFileToolStripMenuItem.Text = TextResource.EditTahFile;
             this.ExpandTahFileToolStripMenuItem.Click += new System.EventHandler(this.TahDecryptToolStripMenuItem_Click);
             // 
             // ExtractTahFileDirectToolStripMenuItem
             // 
             this.ExtractTahFileDirectToolStripMenuItem.Name = "ExtractTahFileDirectToolStripMenuItem";
-            this.ExtractTahFileDirectToolStripMenuItem.Size = new System.Drawing.Size(230, 22);
-            this.ExtractTahFileDirectToolStripMenuItem.Text = "TAHファイルを展開する";
+            this.ExtractTahFileDirectToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.ExtractTahFileDirectToolStripMenuItem.Text = TextResource.ExtractTahFile;
             this.ExtractTahFileDirectToolStripMenuItem.Click += new System.EventHandler(this.ExtractTahFileToolStripMenuItem_Click);
             // 
             // pictureBoxImage
@@ -763,49 +764,49 @@
             this.toolStripMenuItemTouchAll,
             this.makeThumbToolStripMenuItem});
             this.contextMenuStripSaveFile.Name = "contextMenuStrip1";
-            this.contextMenuStripSaveFile.Size = new System.Drawing.Size(279, 136);
+            this.contextMenuStripSaveFile.Size = new System.Drawing.Size(281, 114);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(278, 22);
-            this.toolStripMenuItem1.Text = "新しいタブを開く";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(280, 22);
+            this.toolStripMenuItem1.Text = TextResource.NewTab;
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // ToolStripMenuItemRename
             // 
             this.ToolStripMenuItemRename.Name = "ToolStripMenuItemRename";
-            this.ToolStripMenuItemRename.Size = new System.Drawing.Size(278, 22);
-            this.ToolStripMenuItemRename.Text = "ファイル名を変更する";
+            this.ToolStripMenuItemRename.Size = new System.Drawing.Size(280, 22);
+            this.ToolStripMenuItemRename.Text = TextResource.Rename;
             this.ToolStripMenuItemRename.Click += new System.EventHandler(this.ToolStripMenuItemRename_Click);
             // 
             // toolStripMenuItemTouch
             // 
             this.toolStripMenuItemTouch.Name = "toolStripMenuItemTouch";
-            this.toolStripMenuItemTouch.Size = new System.Drawing.Size(278, 22);
-            this.toolStripMenuItemTouch.Text = "ファイルのタイムスタンプを変更する";
+            this.toolStripMenuItemTouch.Size = new System.Drawing.Size(280, 22);
+            this.toolStripMenuItemTouch.Text = TextResource.Touch;
             this.toolStripMenuItemTouch.Click += new System.EventHandler(this.toolStripMenuItemTouch_Click);
             // 
             // toolStripMenuItemTouchAll
             // 
             this.toolStripMenuItemTouchAll.Name = "toolStripMenuItemTouchAll";
-            this.toolStripMenuItemTouchAll.Size = new System.Drawing.Size(278, 22);
-            this.toolStripMenuItemTouchAll.Text = "全てのファイルの日時を変更する";
+            this.toolStripMenuItemTouchAll.Size = new System.Drawing.Size(280, 22);
+            this.toolStripMenuItemTouchAll.Text = TextResource.TouchAll;
             this.toolStripMenuItemTouchAll.Click += new System.EventHandler(this.toolStripMenuItemTouchAll_Click);
             // 
             // makeThumbToolStripMenuItem
             // 
             this.makeThumbToolStripMenuItem.Name = "makeThumbToolStripMenuItem";
-            this.makeThumbToolStripMenuItem.Size = new System.Drawing.Size(278, 22);
-            this.makeThumbToolStripMenuItem.Text = "サムネイルを作成する";
+            this.makeThumbToolStripMenuItem.Size = new System.Drawing.Size(280, 22);
+            this.makeThumbToolStripMenuItem.Text = TextResource.MakeThumbnail;
             this.makeThumbToolStripMenuItem.Click += new System.EventHandler(this.makeThumbToolStripMenuItem_Click);
             // 
             // MainForm
             // 
             this.AllowDrop = true;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(817, 457);
+            this.ClientSize = new System.Drawing.Size(817, 422);
             this.Controls.Add(this.splitContainerV);
             this.Controls.Add(this.StatusStrip);
             this.Controls.Add(this.MainMenu);

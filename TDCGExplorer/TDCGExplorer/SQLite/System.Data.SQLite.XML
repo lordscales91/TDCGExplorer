@@ -1,8 +1,5 @@
 <?xml version="1.0"?>
 <doc>
-    <assembly>
-        <name>System.Data.SQLite</name>
-    </assembly>
     <members>
         <member name="F:System.Data.SQLite.SQLiteConnectionPool._connections">
             <summary>
@@ -46,6 +43,15 @@
             <remarks>
             If the version numbers don't match between the connection and the pool, then the handle is discarded.
             </remarks>
+        </member>
+        <member name="M:System.Data.SQLite.SQLiteConnectionPool.ResizePool(System.Data.SQLite.SQLiteConnectionPool.Pool,System.Boolean)">
+            <summary>
+            We don't have to thread-lock anything in this function, because it's only called by other functions above
+            which already have a thread-safe lock.
+            </summary>
+            <param name="queue">The queue to resize</param>
+            <param name="forAdding">If a function intends to add to the pool, this is true, which forces the resize
+            to take one more than it needs from the pool</param>
         </member>
         <member name="T:System.Data.SQLite.SQLiteConnectionPool.Pool">
             <summary>
@@ -269,20 +275,6 @@
             will turn into a database when the file is opened properly.
             </summary>
             <param name="databaseFileName">The file to create</param>
-        </member>
-        <member name="M:System.Data.SQLite.SQLiteConnection.CompressFile(System.String)">
-            <summary>
-            On NTFS volumes, this function turns on the compression attribute for the given file.
-            It must not be open or referenced at the time of the function call.
-            </summary>
-            <param name="databaseFileName">The file to compress</param>
-        </member>
-        <member name="M:System.Data.SQLite.SQLiteConnection.DecompressFile(System.String)">
-            <summary>
-            On NTFS volumes, this function removes the compression attribute for the given file.
-            It must not be open or referenced at the time of the function call.
-            </summary>
-            <param name="databaseFileName">The file to decompress</param>
         </member>
         <member name="M:System.Data.SQLite.SQLiteConnection.OnStateChange(System.Data.ConnectionState)">
             <summary>
