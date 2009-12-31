@@ -42,7 +42,7 @@ namespace TDCGExplorer
                 archive.Open(zippath);
                 if (archive == null)
                 {
-                    throw new Exception("archiveがnullになりました");
+                    throw new Exception(TextResource.ArchiveIsNull);
                 }
 
                 // 

@@ -98,7 +98,7 @@ namespace System.Windows.Forms
             }
             catch (Exception e)
             {
-                TDCGExplorer.TDCGExplorer.SetToolTips("ファイル展開エラー:" + e.Message);
+                TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.Error + ":" + e.Message);
             }
         }
         public virtual void BindingStream(MemoryStream ms)

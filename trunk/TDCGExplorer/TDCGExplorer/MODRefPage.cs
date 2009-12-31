@@ -24,42 +24,42 @@ namespace System.Windows.Forms
             Thread workerThread = new Thread(workerObject.DoWorkerThread);
 
             webBrowser.DocumentText =
-    "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"" +
-    "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">" +
-    "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"ja\" lang=\"ja\">" +
-    "<head>" +
-    "  <meta http-equiv=\"content-type\" content=\"text/html;charset=Shift_JIS\" />" +
-    "  <title>3DCG mods reference</title>" +
-    "  <link href=\"" + TDCGExplorer.TDCGExplorer.SystemDB.moddb_url + "/stylesheets/application.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />" +
-    "</head>" +
-    "<body>" +
-    "<div id=\"wrapper\">" +
-    "  <div id=\"top-menu\">" +
-    "    <div id=\"account\">" +
-    "      <a href=\"/rails/\">Home</a>" +
-    "      <a href=\"/rails/session/new\">Login</a>" +
-    "    </div>" +
-    "  </div>" +
-    "  <div id=\"header\">" +
-    "    <h1>3DCG mods reference</h1>" +
-    "    <div id=\"main-menu\">" +
-    "      <ul>" +
-    "        <li><a href=\"/rails/arcs\" class=\"selected\">書庫</a></li>" +
-    "        <li><a href=\"/rails/tahs\">tah</a></li>" +
-    "        <li><a href=\"/rails/tsos\">tso</a></li>" +
-    "        <li><a href=\"/rails/tags\">タグ</a></li>" +
-    "      </ul>" +
-    "    </div>" +
-    "  </div>" +
-    "  <div id=\"main\" class=\"nosidebar\">" +
-    "    <div id=\"content\">" +
-    "    <h2>" +
-    "      <b>Loading....</b>" +
-    "    </h2>" +
-    "    </div>" +
-    "  </div>" +
-    "</body>" +
-    "</html>";
+                "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"" +
+                "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">" +
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"ja\" lang=\"ja\">" +
+                "<head>" +
+                "  <meta http-equiv=\"content-type\" content=\"text/html;charset=Shift_JIS\" />" +
+                "  <title>3DCG mods reference</title>" +
+                "  <link href=\"" + TDCGExplorer.TDCGExplorer.SystemDB.moddb_url + "/stylesheets/application.css\" media=\"screen\" rel=\"stylesheet\" type=\"text/css\" />" +
+                "</head>" +
+                "<body>" +
+                "<div id=\"wrapper\">" +
+                "  <div id=\"top-menu\">" +
+                "    <div id=\"account\">" +
+                "      <a href=\"/rails/\">Home</a>" +
+                "      <a href=\"/rails/session/new\">Login</a>" +
+                "    </div>" +
+                "  </div>" +
+                "  <div id=\"header\">" +
+                "    <h1>3DCG mods reference</h1>" +
+                "    <div id=\"main-menu\">" +
+                "      <ul>" +
+                "        <li><a href=\"/rails/arcs\" class=\"selected\">" + TextResource.Archive + "</a></li>" +
+                "        <li><a href=\"/rails/tahs\">tah</a></li>" +
+                "        <li><a href=\"/rails/tsos\">tso</a></li>" +
+                "        <li><a href=\"/rails/tags\">" + TextResource.Tag + "</a></li>" +
+                "      </ul>" +
+                "    </div>" +
+                "  </div>" +
+                "  <div id=\"main\" class=\"nosidebar\">" +
+                "    <div id=\"content\">" +
+                "    <h2>" +
+                "      <b>Loading....</b>" +
+                "    </h2>" +
+                "    </div>" +
+                "  </div>" +
+                "</body>" +
+                "</html>";
 
             workerThread.Start();
 
@@ -144,17 +144,17 @@ namespace System.Windows.Forms
                     "    <h1>3DCG mods reference</h1>" +
                     "    <div id=\"main-menu\">" +
                     "      <ul>" +
-                    "        <li><a href=\"/rails/arcs\" class=\"selected\">書庫</a></li>" +
+                    "        <li><a href=\"/rails/arcs\" class=\"selected\">" + TextResource.Archive + "</a></li>" +
                     "        <li><a href=\"/rails/tahs\">tah</a></li>" +
                     "        <li><a href=\"/rails/tsos\">tso</a></li>" +
-                    "        <li><a href=\"/rails/tags\">タグ</a></li>" +
+                    "        <li><a href=\"/rails/tags\">" + TextResource.Tag + "</a></li>" +
                     "      </ul>" +
                     "    </div>" +
                     "  </div>" +
                     "  <div id=\"main\" class=\"nosidebar\">" +
                     "    <div id=\"content\">" +
                     "    <h2>" +
-                    "      <b>このアーカイブは登録されていません。</b>" +
+                    "      <b>" + TextResource.ArchiveNotFound + "</b>" +
                     "    </h2>" +
                     "    </div>" +
                     "  </div>" +

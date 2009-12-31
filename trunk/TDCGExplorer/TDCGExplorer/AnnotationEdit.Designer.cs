@@ -42,7 +42,7 @@
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(34, 13);
             this.label1.TabIndex = 0;
-            this.label1.Text = "コード";
+            this.label1.Text = TextResource.Code;
             // 
             // textBoxAnnotation
             // 
@@ -91,7 +91,7 @@
             this.Controls.Add(this.textBoxAnnotation);
             this.Controls.Add(this.label1);
             this.Name = "AnnotationEdit";
-            this.Text = "注訳の入力";
+            this.Text = TextResource.EditAnnotationText;
             this.ResumeLayout(false);
             this.PerformLayout();
 

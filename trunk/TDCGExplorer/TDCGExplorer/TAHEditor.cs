@@ -104,7 +104,7 @@ namespace System.Windows.Forms
                     }
                     catch (Exception)
                     {
-                        TDCGExplorer.TDCGExplorer.SetToolTips("dbファイルの削除ができませんでした。手動で削除して下さい。");
+                        TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.DBFileDeleteError);
                     }
 #if false
                 }
@@ -116,9 +116,9 @@ namespace System.Windows.Forms
         private DataTable newDataTable()
         {
             DataTable data = new DataTable();
-            data.Columns.Add("ディレクトリ", Type.GetType("System.String"));
-            data.Columns.Add("ファイル名", Type.GetType("System.String"));
-            data.Columns.Add("ファイルタイプ", Type.GetType("System.String"));
+            data.Columns.Add(TextResource.Directory, Type.GetType("System.String"));
+            data.Columns.Add(TextResource.Filename, Type.GetType("System.String"));
+            data.Columns.Add(TextResource.FileType, Type.GetType("System.String"));
             return data;
         }
 
@@ -168,7 +168,7 @@ namespace System.Windows.Forms
                         entry.hash = (int) ent.Hash;
                         entry.dataid = database.AddData(dataentry);
                         // データベースにデータを登録する.
-                        TDCGExplorer.TDCGExplorer.SetToolTips(info.shortname + " : " + filename + " 展開中");
+                        TDCGExplorer.TDCGExplorer.SetToolTips(info.shortname + " : " + filename + " "+TextResource.Extracting);
                         database.AddContent(entry);
                         id++;
 
@@ -218,7 +218,7 @@ namespace System.Windows.Forms
                     }
                     transaction.Commit();
                 }
-                TDCGExplorer.TDCGExplorer.SetToolTips("展開完了");
+                TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.ExtractSuccess);
             }
 
             // データセットを作り直す.
@@ -237,7 +237,7 @@ namespace System.Windows.Forms
 
         private void setText()
         {
-            Text = "編集中 : " + database["source"] + " version " + database["version"];
+            Text = TextResource.Editing + " : " + database["source"] + " version " + database["version"];
             TDCGExplorer.TDCGExplorer.SetToolTips(Text);
         }
 
@@ -296,70 +296,70 @@ namespace System.Windows.Forms
             // 
             this.toolStripMenuItemTAHInfoEdit.Name = "toolStripMenuItemTAHInfoEdit";
             this.toolStripMenuItemTAHInfoEdit.Size = new System.Drawing.Size(290, 22);
-            this.toolStripMenuItemTAHInfoEdit.Text = "TAH情報を変更する";
+            this.toolStripMenuItemTAHInfoEdit.Text = TextResource.TAHEditorChangeTAHInformation;
             this.toolStripMenuItemTAHInfoEdit.Click += new System.EventHandler(this.toolStripMenuItemTAHInfoEdit_Click);
             // 
             // toolStripMenuItemSaveSelectFile
             // 
             this.toolStripMenuItemSaveSelectFile.Name = "toolStripMenuItemSaveSelectFile";
             this.toolStripMenuItemSaveSelectFile.Size = new System.Drawing.Size(290, 22);
-            this.toolStripMenuItemSaveSelectFile.Text = "選択したファイルを保存する";
+            this.toolStripMenuItemSaveSelectFile.Text = TextResource.TAHEditorSaveSelectedFile;
             this.toolStripMenuItemSaveSelectFile.Click += new System.EventHandler(this.toolStripMenuItemSaveSelectFile_Click);
             // 
             // toolStripMenuItemEditIdentify
             // 
             this.toolStripMenuItemEditIdentify.Name = "toolStripMenuItemEditIdentify";
             this.toolStripMenuItemEditIdentify.Size = new System.Drawing.Size(290, 22);
-            this.toolStripMenuItemEditIdentify.Text = "選択したファイルの名前を変更する";
+            this.toolStripMenuItemEditIdentify.Text = TextResource.TAHEditorRename;
             this.toolStripMenuItemEditIdentify.Click += new System.EventHandler(this.toolStripMenuItemEditIdentify_Click);
             // 
             // toolStripMenuItemEditCategory
             // 
             this.toolStripMenuItemEditCategory.Name = "toolStripMenuItemEditCategory";
             this.toolStripMenuItemEditCategory.Size = new System.Drawing.Size(290, 22);
-            this.toolStripMenuItemEditCategory.Text = "選択したファイルのカテゴリを変更する";
+            this.toolStripMenuItemEditCategory.Text = TextResource.TAHEditorChangeCategory;
             this.toolStripMenuItemEditCategory.Click += new System.EventHandler(this.toolStripMenuItemEditCategory_Click);
             // 
             // toolStripMenuItemChangeColor
             // 
             this.toolStripMenuItemChangeColor.Name = "toolStripMenuItemChangeColor";
             this.toolStripMenuItemChangeColor.Size = new System.Drawing.Size(290, 22);
-            this.toolStripMenuItemChangeColor.Text = "選択したファイルの色番号を変更する";
+            this.toolStripMenuItemChangeColor.Text = TextResource.TAHEditorChangeColorCode;
             this.toolStripMenuItemChangeColor.Click += new System.EventHandler(this.toolStripMenuItemChangeColor_Click);
             // 
             // toolStripMenuItemDeleteItem
             // 
             this.toolStripMenuItemDeleteItem.Name = "toolStripMenuItemDeleteItem";
             this.toolStripMenuItemDeleteItem.Size = new System.Drawing.Size(290, 22);
-            this.toolStripMenuItemDeleteItem.Text = "選択したファイルの削除";
+            this.toolStripMenuItemDeleteItem.Text = TextResource.TAHEditorFileDelete;
             this.toolStripMenuItemDeleteItem.Click += new System.EventHandler(this.toolStripMenuItemDeleteItem_Click);
             // 
             // toolStripMenuItemSaveTAHFile
             // 
             this.toolStripMenuItemSaveTAHFile.Name = "toolStripMenuItemSaveTAHFile";
             this.toolStripMenuItemSaveTAHFile.Size = new System.Drawing.Size(290, 22);
-            this.toolStripMenuItemSaveTAHFile.Text = "選択したファイルをTAHに梱包する";
+            this.toolStripMenuItemSaveTAHFile.Text = TextResource.TAHEditorComposeTAHFile;
             this.toolStripMenuItemSaveTAHFile.Click += new System.EventHandler(this.toolStripMenuItemSaveTAHFile_Click);
             // 
             // toolStripMenuItemMakeTBN
             // 
             this.toolStripMenuItemMakeTBN.Name = "toolStripMenuItemMakeTBN";
             this.toolStripMenuItemMakeTBN.Size = new System.Drawing.Size(290, 22);
-            this.toolStripMenuItemMakeTBN.Text = "選択したtsoファイルのtbnを生成する";
+            this.toolStripMenuItemMakeTBN.Text = TextResource.TAHEditorMakeTBN;
             this.toolStripMenuItemMakeTBN.Click += new System.EventHandler(this.toolStripMenuItemMakeTBN_Click);
             // 
             // toolStripMenuItemClose
             // 
             this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
             this.toolStripMenuItemClose.Size = new System.Drawing.Size(290, 22);
-            this.toolStripMenuItemClose.Text = "閉じる";
+            this.toolStripMenuItemClose.Text = TextResource.Close;
             this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
             // 
             // toolStripMenuItemSelectAll
             // 
             this.toolStripMenuItemSelectAll.Name = "toolStripMenuItemSelectAll";
             this.toolStripMenuItemSelectAll.Size = new System.Drawing.Size(290, 22);
-            this.toolStripMenuItemSelectAll.Text = "全て選択";
+            this.toolStripMenuItemSelectAll.Text = TextResource.SelectAll;
             this.toolStripMenuItemSelectAll.Click += new System.EventHandler(this.toolStripMenuItemSelectAll_Click);
             // 
             // TAHEditor
@@ -602,15 +602,15 @@ namespace System.Windows.Forms
             if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
 
             SimpleTextDialog dialog = new SimpleTextDialog();
-            dialog.labeltext = "新しい名前";
-            dialog.dialogtext = "ファイル名の変更";
+            dialog.labeltext = TextResource.TAHEditorRenameText;// "新しい名前";
+            dialog.dialogtext = TextResource.TAHEditorRenameLabel;// "ファイル名の変更";
             dialog.Owner = TDCGExplorer.TDCGExplorer.MainFormWindow;
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 string textto = dialog.textfield;
                 if (textto.Length > 16)
                 {
-                    MessageBox.Show("文字数が長すぎます", "エラー", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.TooLongFilename, TextResource.Error, MessageBoxButtons.OK);
                     return;
                 }
                 try
@@ -619,7 +619,7 @@ namespace System.Windows.Forms
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("エラーが発生しました:"+ex.Message, "エラー", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.Error + ":" + ex.Message, TextResource.Error, MessageBoxButtons.OK);
                     Debug.WriteLine(ex);
                 }
             }
@@ -763,7 +763,7 @@ namespace System.Windows.Forms
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("tbnの読み込みでエラーが発生しました。", "エラー", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.TBNReadError, TextResource.Error, MessageBoxButtons.OK);
                     Debug.WriteLine("tbn.open.error");
                 }
             }
@@ -790,7 +790,7 @@ namespace System.Windows.Forms
                     }
                     catch (Exception)
                     {
-                        MessageBox.Show("base.tahの読み込みでエラーが発生しました。", "エラー", MessageBoxButtons.OK);
+                        MessageBox.Show(TextResource.BaseTahReadError, TextResource.Error, MessageBoxButtons.OK);
                         Debug.WriteLine("basetah.open.error");
                     }
                 }
@@ -806,10 +806,10 @@ namespace System.Windows.Forms
             SimpleDropDownDialog dialog = new SimpleDropDownDialog();
             foreach (TBNCategoryData type in TDCGTbnUtil.CategoryData)
             {
-                dialog.AddList(type.symbol.ToString()+" : "+type.name);//+" 属性値1:"+type.byte1.ToString("x2")+" 属性値2:"+type.byte2.ToString("x2")+" 属性値3:"+type.byte3.ToString("x2") );
+                dialog.AddList(type.name);//+" 属性値1:"+type.byte1.ToString("x2")+" 属性値2:"+type.byte2.ToString("x2")+" 属性値3:"+type.byte3.ToString("x2") );
             }
-            dialog.labeltext = "TBNの属性";
-            dialog.dialogtext = "TBNの属性変更";
+            dialog.labeltext = TextResource.TAHEditorTbnCatChangeLabel;// "TBNの属性";
+            dialog.dialogtext = TextResource.TAHEditorTbnCatChangeText;// "TBNの属性変更";
             dialog.Owner = TDCGExplorer.TDCGExplorer.MainFormWindow;
             if (dialog.ShowDialog() == DialogResult.OK)
             {
@@ -828,7 +828,7 @@ namespace System.Windows.Forms
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("エラーが発生しました:" + ex.Message, "エラー", MessageBoxButtons.OK);
+                        MessageBox.Show(TextResource.Error + ":" + ex.Message, TextResource.Error, MessageBoxButtons.OK);
                         Debug.WriteLine(e);
                     }
                 }
@@ -846,9 +846,9 @@ namespace System.Windows.Forms
             SaveFileDialog dialog = new SaveFileDialog();
             dialog.FileName = Path.GetFileName(database["source"]);
             dialog.InitialDirectory = TDCGExplorer.TDCGExplorer.SystemDB.tahpath;
-            dialog.Filter = "TAHファイル(*.tah)|*.tah";
+            dialog.Filter = TextResource.TAHFileDescription; // "TAHファイル(*.tah)|*.tah";
             dialog.FilterIndex = 0;
-            dialog.Title = "保存先のファイルを選択してください";
+            dialog.Title = TextResource.SelectSaveFileName; // "保存先のファイルを選択してください";
             dialog.RestoreDirectory = true;
             dialog.OverwritePrompt = true;
             dialog.CheckPathExists = true;
@@ -894,7 +894,7 @@ namespace System.Windows.Forms
                     // データ取得delegate
                     tah.Data += delegate(string filename)
                     {
-                        TDCGExplorer.TDCGExplorer.SetToolTips(filename + " 梱包中 ("+count++.ToString()+"/"+tah.Count.ToString()+")");
+                        TDCGExplorer.TDCGExplorer.SetToolTips(filename + " " + TextResource.Compressing + " (" + count++.ToString() + "/" + tah.Count.ToString() + ")");
                         TAHLocalDbEntry tahentry = database.GetEntry(filename);
                         TAHLocalDBDataEntry dataentry = database.GetData(tahentry.dataid);
 
@@ -908,7 +908,7 @@ namespace System.Windows.Forms
                     tah.Write(stream);
                     stream.Close();
                 }
-                TDCGExplorer.TDCGExplorer.SetToolTips("梱包完了");
+                TDCGExplorer.TDCGExplorer.SetToolTips(TextResource.CompressComplete);
                 TDCGExplorer.TDCGExplorer.ExplorerSelectPath(destfilename);
             }
         }
@@ -975,15 +975,15 @@ namespace System.Windows.Forms
             if (TDCGExplorer.TDCGExplorer.BusyTest()) return;
 
             SimpleTextDialog dialog = new SimpleTextDialog();
-            dialog.labeltext = "新しい色番号";
-            dialog.dialogtext = "色番号の変更";
+            dialog.labeltext = TextResource.TAHEditorNewColorNoLabel; //"新しい色番号";
+            dialog.dialogtext = TextResource.TAHEditorNewColorNoText; //"色番号の変更";
             dialog.Owner = TDCGExplorer.TDCGExplorer.MainFormWindow;
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 string textto = dialog.textfield;
                 if (textto.Length != 2)
                 {
-                    MessageBox.Show("色番号は二文字で指定して下さい", "エラー", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.TAHEditorNewColorNoError, TextResource.Error, MessageBoxButtons.OK);
                     return;
                 }
                 try
@@ -992,7 +992,7 @@ namespace System.Windows.Forms
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("エラーが発生しました:" + ex.Message, "エラー", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.Error + ":" + ex.Message, TextResource.Error, MessageBoxButtons.OK);
                     Debug.WriteLine(ex);
                 }
             }
@@ -1188,7 +1188,7 @@ namespace System.Windows.Forms
             }
             if (tsoFileList.Count == 0)
             {
-                MessageBox.Show("tsoファイルを選択してください。", "tbnファイルの生成", MessageBoxButtons.OK);
+                MessageBox.Show(TextResource.OnlyTSOFile, TextResource.Error, MessageBoxButtons.OK);
                 return;
             }
             TbnSelectForm form = new TbnSelectForm();
@@ -1405,7 +1405,7 @@ namespace System.Windows.Forms
                 }
                 catch (Exception)
                 {
-                    MessageBox.Show("base.tahの読み込みでエラーが発生しました。", "エラー", MessageBoxButtons.OK);
+                    MessageBox.Show(TextResource.BaseTahReadError, TextResource.Error, MessageBoxButtons.OK);
                     Debug.WriteLine("basetah.open.error");
                 }
             }
@@ -1424,7 +1424,7 @@ namespace System.Windows.Forms
             }
             catch (Exception)
             {
-                MessageBox.Show("tbnの読み込みでエラーが発生しました。", "エラー", MessageBoxButtons.OK);
+                MessageBox.Show(TextResource.TBNReadError, TextResource.Error, MessageBoxButtons.OK);
                 Debug.WriteLine("tbn.open.error");
             }
 
@@ -1442,7 +1442,7 @@ namespace System.Windows.Forms
             }
             catch (Exception)
             {
-                MessageBox.Show("PSDの読み込みでエラーが発生しました。", "エラー", MessageBoxButtons.OK);
+                MessageBox.Show(TextResource.PSDFileReadError,TextResource.Error, MessageBoxButtons.OK);
                 Debug.WriteLine("PSD.open.error");
             }
 

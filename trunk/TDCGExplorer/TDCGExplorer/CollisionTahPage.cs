@@ -29,9 +29,9 @@ namespace System.Windows.Forms
             TDCGExplorer.TDCGExplorer.SetToolTips(Text);
 
             DataTable data = new DataTable();
-            data.Columns.Add("衝突元", Type.GetType("System.String"));
-            data.Columns.Add("衝突先", Type.GetType("System.String"));
-            data.Columns.Add("衝突先TAH", Type.GetType("System.String"));
+            data.Columns.Add(TextResource.CollisionFrom, Type.GetType("System.String"));
+            data.Columns.Add(TextResource.CollisionTo, Type.GetType("System.String"));
+            data.Columns.Add(TextResource.CollisionedTAH, Type.GetType("System.String"));
             foreach (ArcsCollisionRecord col in collisionEntry.entries)
             {
                 ArcsDatabase db = TDCGExplorer.TDCGExplorer.ArcsDB;
@@ -115,14 +115,14 @@ namespace System.Windows.Forms
             // 
             this.toolStripMenuItemEditTah.Name = "toolStripMenuItemEditTah";
             this.toolStripMenuItemEditTah.Size = new System.Drawing.Size(206, 22);
-            this.toolStripMenuItemEditTah.Text = "TAHファイルを編集する";
+            this.toolStripMenuItemEditTah.Text = TextResource.EditTahFile;
             this.toolStripMenuItemEditTah.Click += new System.EventHandler(this.toolStripMenuItemEditTah_Click);
             // 
             // toolStripMenuItemClose
             // 
             this.toolStripMenuItemClose.Name = "toolStripMenuItemClose";
             this.toolStripMenuItemClose.Size = new System.Drawing.Size(206, 22);
-            this.toolStripMenuItemClose.Text = "閉じる";
+            this.toolStripMenuItemClose.Text = TextResource.Close;
             this.toolStripMenuItemClose.Click += new System.EventHandler(this.toolStripMenuItemClose_Click);
             // 
             // webBrowser
@@ -174,12 +174,12 @@ namespace System.Windows.Forms
 
             string text =
                 @"<p>" +
-                @"<h2> 衝突したtah : " + from.shortname + "</h2>" +
-                @"<adress>" + "ディレクトリ : " + Path.GetDirectoryName(from.path) + "</adress>" +
-                @"<h3> 衝突先 : " + to.shortname + "</h3>" +
-                @"<adress>" + "ディレクトリ : " + Path.GetDirectoryName(to.path) + "</adress>" +
-                @"<pre>" + fromfile.GetDisplayPath().ToLower() + " → " + tofile.GetDisplayPath().ToLower() + "</pre>" +
-                @"<pre>" + "ハッシュコード : " + tofile.hash.ToString("x8") + "</pre>";
+                @"<h2> " + TextResource.CollisionHTML_CollisionFrom + " : " + from.shortname + "</h2>" +
+                @"<adress>" + TextResource.Directory + " : " + Path.GetDirectoryName(from.path) + "</adress>" +
+                @"<h3> " + TextResource.CollisionHTML_CollisionTo + " : " + to.shortname + "</h3>" +
+                @"<adress>" + TextResource.Directory + " : " + Path.GetDirectoryName(to.path) + "</adress>" +
+                @"<pre>" + fromfile.GetDisplayPath().ToLower() + " --> " + tofile.GetDisplayPath().ToLower() + "</pre>" +
+                @"<pre>" + TextResource.HashCode + " : " + tofile.hash.ToString("x8") + "</pre>";
 
             webBrowser.DocumentText = text;
 

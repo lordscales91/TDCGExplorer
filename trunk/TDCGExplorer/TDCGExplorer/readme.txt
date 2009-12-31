@@ -1,7 +1,7 @@
 TDCGExplorer 始めにお読み下さい
 
 基本全自動でなんでもかんでも管理するツールです。
-Version 1.09になりました。
+Version 1.10になりました。
 
 ・重要なお知らせ
 
@@ -288,5 +288,222 @@ CLI及びCLRはMicrosoftが権利を保有するインフラストラクチャです。
      連続して同じファイルのサムネイルを作成すると、作成したポーズファイルが壊れるバグを修正。
 1.09.6
      TAHキャッシュファイルの制限を緩和。tahファイル名に関するバグを修正。
+1.10
+     セーブファイルのスライダーに対応。TDCG.DLL 008にバージョンアップ。
+1.10.1
+     Vista英語版+日本語ランゲージパックで動作しない不具合を修正。
+     英語版とソースコードを統合。HongfireのClawさんありがとう。
+
+
+Please read TDCGExplorer. 
+
+It is all tools managed by a basic all automatic operations. 
+It became Version 1.10. 
+
+･Important news
+
+If here was not read, it embarrassed it. 
+
+- 07-11 Please erase and restructure arcs.db of the version before beta. 
+
+- Operation might become amusing because of no cash adjustment and arcs.
+  db break if System.db is rewritten excluding TDCGEXPLORER. 
+
+- Please update the data base after changing the initialization of the data base
+  beforehand when you change fuck-shit child's location and the location of ZIP. 
+  Contents of arcs.db disappear when it makes a mistake in order. 
+
+- Initialization increases fast by a thing advanced by development. 
+  Please default value must be set automatically, and open initialization and 
+  confirm a set value when the version goes up. 
+  (When the version goes up, system.db is automatically converted into the latest version. )
+
+- To distribute N001OBON_Z00.tbn again, it is permitted only to the purchase of the following either. 
+
+(1) 3D custom girl XP with privilege tah of 2008/12/24 sales. 
+(2) Ten war maiden sisters in Walkure training and Samen tank. 
+
+(note)Privilege tah is not attached to 3D custom girl XP who is putting
+      it on the market now. The usages other than building this file into
+      3D custom girl violate the use permission and hold back, please. 
+
+･File composition
+
+ArchiveLib.dll
+Unrar.dll compression file component ICSharpCode.SharpZipLib.dll
+
+Ifpsd.spi Photoshop [fairupa-sa]
+
+TDCG.dll TSOView assembly
+TDCG.xml (There is a correction only for TDCGExplorer). 
+
+Default heavy save for default.tdcgsav.png thumbnail making
+(When this file is changed, it is thumbnail revokable. )
+
+Default icon file for TBN data N999SAVE_A00.psd TAH creation of file for N001OBON_Z00.tbn Z category
+(When this file is changed, it is icon revokable. )
+
+Default pose for this file SnapShotPose.tdcgpose.png save file display of file name list readme.txt for names.txt hush reverse-haul
+(When this file is changed, it is pose of the save file revokable. )
+
+System.Data.SQLite.DLL System.Data.SQLite.xml SQLite data base engine
+
+Main body of TDCGExplorer.exe program
+
+toonshader.cgfx Toonshader2
+
+Icon file when there is no JPEG file noicon.jpg icon for title.jpg splash screen
+
+Source.zip source code
+
+･Notes
+
+.It is necessary since DirectX9 Mar-2009 since NET Framework 3.5SP1. 
+.It doesn't operate before NET Framework 3.5 and before DirectX9 Jan-2009. 
+
+Please make the backup for all files ahead of the use. 
+There is overwriting an existing file according to the operation. 
+
+The operation verification is done with Windows7 x64 Professional and
+WindowsVista x86 Business. It corresponded to the x64 environment. 
+
+It is WindowsXP and there is a thing with a heavy display.
+This. It is a limitation since NET Framework 3.0.
+It cancels it when upgrading to Windows Vista and Windows7. 
+
+The lzh file might be inaccessible in intel ATOM. 
+It is likely to be able to correspond by the thing updated to latest BIOS ROM. 
+
+It is likely to crash when 3D custom girl +3D custom girl XP is not installed. 
+
+Please execute it with PC in which 3D custom girl XP is installed without fail
+because the installed thing is a major premise (not acceptable the trial version). 
+
+When operating with SSD, the law excessive wear leveling or freezing,
+and it hurts and longevity might be shortened shortening SSD.
+Please use HDD for the disk with My Documents or the Documents folder. 
+
+Various functions of TDCGExplorer apply to the use permission of 3D custom girl
+and 3D custom girl XP. Please use the use 3D custom girl XP official site permission well reading. 
+
+Are 2ch IRC #3D custom do function demand bug report girls or 3dcustomgirl@gmail.com I hope in the workman guild and E-mail. 
+
+･To the person who uses it for the first time
+
+The first start
+
+(1) UNLHA32.DLL is obtained from the integrated archiver project and it installs it in the system. 
+http://www.madobe.net/archiver/index.html
+
+(2) Initialization is executed by the data base menu by starting the program. 
+
+(3) Various path names (arcs and zip file depository, etc.) are set. Please use other elements like default if you do not understand. 
+
+(4) Construction and the update of the data base are executed. It takes a considerable time. Please leave PC for a while. 
+
+Start from the second times
+
+(1) Please execute construction and the update of the data base when you have changed contents of arcs and the ZIP depository (It makes an error of the operation to tah and zip that was not able to be accessed though there is no problem even if it doesn't execute it only if the data that exists in the data base is operated). 
+
+･Special thanks
+
+TAHDUMP Mr.nomeu
+The TAH file analysis part was developed. 
+
+TDCG.DLL Mr.nomeu
+An important core component assembly was developed. 
+
+names.txt Mr.nomeu
+It used it for the naming part of an anonymous file. 
+
+TDCGMan
+Some core components are misappropriated. 
+
+TSO2MQO
+Some core components are misappropriated. 
+
+TAHdecryptor
+It referred to the bug correction of LZSS. 
+
+TAHdecGUI
+I was allowed to refer to a basic function. 
+
+SQLite
+It used it as a center of the core component. 
+
+TDCGSaveFileViewer
+The save file analysis part is misappropriated. 
+
+toonshader2
+Mr. kemokemo's toonshader2 Schaeder was used. 
+
+3D custom girl
+The save file pose was used. 
+
+3D custom girl XP
+The tbn file that existed only in the premium clothes of that day of the sale of the limitation was used. 
+
+[Merusennutsuisuta] MT19937
+
+A C-program for MT19937, with initialization improved 2002/1/26.
+Coded by Takuji Nishimura and Makoto Matsumoto.
+
+Before using, initialize the state by using init_genrand(seed)
+or init_by_array(init_key, key_length).
+
+Copyright (C) 1997 - 2002, Makoto Matsumoto and Takuji Nishimura,
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+
+3. The names of its contributors may not be used to endorse or promote
+products derived from this software without specific prior written
+permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Any feedback is very welcome.
+http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/emt.html
+email: m-mat @ math.sci.hiroshima-u.ac.jp (remove space)
+
+N256MOD (N256HOHO.TAH)
+It became reference that analyzed the mystery in less than LZSS 32 byte. 
+
+Code of source uncertain source
+The IArchive interface, zip, and the rar development component are used. 
+There is no source code of this component though it is a part of TDCGMan. 
+
+Microsoft .NET CLI derivation code
+The source code generated based on the meta data is contained. 
+CLI and CLR are infrastructures to which Microsoft retains one's right. 
+
+A lot of other components were used. 
+Thank you for authors. 
+
+The misappropriation modification of the source code is free. 
+The participation hope is welcomed in the development project aiming at the upcoming version. 
+
+1.10.1
+   The trouble that doesn't operate by Vista English version + Japanese language packing is corrected. 
+   An English version and the source code are integrated. Thank you for Mr. Claw about Hongfire. 
 
 Konoa/N765
