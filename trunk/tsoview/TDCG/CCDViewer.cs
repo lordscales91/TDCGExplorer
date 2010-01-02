@@ -460,7 +460,7 @@ public class CCDViewer : Viewer
         return false;
     }
 
-    static Regex re_legnode = new Regex(@"Leg");
+    static Regex re_legnode = new Regex(@"Leg|Foot|Toe");
 
     private void LimitRotation(TMONode node)
     {
