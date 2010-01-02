@@ -169,9 +169,8 @@ namespace TDCG
                 TMONode node;
                 if (tmo.nodemap.TryGetValue(effector_name, out node))
                 {
-                    Vector3 p = node.GetWorldPosition();
-                    p.Y = 0;
-                    target_dictionary[effector_name] = p;
+                    Matrix m = node.combined_matrix;
+                    target_dictionary[effector_name] = new Vector3(m.M41, 0, m.M43);
                 }
             }
         }
