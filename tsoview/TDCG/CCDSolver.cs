@@ -103,6 +103,10 @@ namespace TDCG
                 new string[] { };
 
             //âEë´
+            effector_dictionary["|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot|W_RightToeBase"] =
+                new string[] {
+                "|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot" };
+
             effector_dictionary["|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot"] =
                 new string[] {
                 "|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg",
@@ -116,6 +120,10 @@ namespace TDCG
                 new string[] { };
 
             //ç∂ë´
+            effector_dictionary["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot|W_LeftToeBase"] =
+                new string[] {
+                "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot" };
+
             effector_dictionary["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot"] =
                 new string[] {
                 "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg",
@@ -144,7 +152,8 @@ namespace TDCG
 
             effector_list.Add("|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot");
             effector_list.Add("|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot");
-
+            effector_list.Add("|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot|W_RightToeBase");
+            effector_list.Add("|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot|W_LeftToeBase");
         }
 
         /// <summary>
@@ -157,10 +166,12 @@ namespace TDCG
             target_dictionary.Clear();
             foreach (string effector_name in effector_list)
             {
-                TMONode bone;
-                if (tmo.nodemap.TryGetValue(effector_name, out bone))
+                TMONode node;
+                if (tmo.nodemap.TryGetValue(effector_name, out node))
                 {
-                    target_dictionary[effector_name] = bone.GetWorldPosition();
+                    Vector3 p = node.GetWorldPosition();
+                    p.Y = 0;
+                    target_dictionary[effector_name] = p;
                 }
             }
         }
