@@ -168,7 +168,8 @@ public class CCDViewer : Viewer
             if (FindEffectorOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, out effector))
             {
                 current_effector_path = effector.Path;
-                solver.Target = effector.GetWorldPosition();
+                Matrix m = effector.combined_matrix;
+                solver.Target = new Vector3(m.M41, m.M42, m.M43);
                 solver.Solved = true;
             }
         }
@@ -290,7 +291,8 @@ public class CCDViewer : Viewer
                 TMONode bone;
                 if (fig.Tmo.nodemap.TryGetValue(current_effector_path, out bone))
                 {
-                    solver.Target = bone.GetWorldPosition();
+                    Matrix m = bone.combined_matrix;
+                    solver.Target = new Vector3(m.M41, m.M42, m.M43);
                     solver.Solved = true;
                 }
             }
@@ -326,7 +328,8 @@ public class CCDViewer : Viewer
                 if (fig.Tmo.nodemap.TryGetValue(effector_path, out bone))
                 {
                     Vector4 color = (bone.Path == current_effector_path) ? new Vector4(1, 1, 1, 0.5f) : new Vector4(0.5f, 0.5f, 0.5f, 0.5f);
-                    Vector3 pos = bone.GetWorldPosition();
+                    Matrix m = bone.combined_matrix;
+                    Vector3 pos = new Vector3(m.M41, m.M42, m.M43);
                     DrawMesh(sphere, Matrix.Translation(pos), color);
                 }
             }
@@ -335,7 +338,7 @@ public class CCDViewer : Viewer
                 TMONode bone;
                 if (fig.Tmo.nodemap.TryGetValue(current_effector_path, out bone))
                 {
-                    Matrix m = bone.GetWorldCoordinate();
+                    Matrix m = bone.combined_matrix;
                     DrawMesh(sphere, Matrix.Translation(new Vector3(1, 0, 0)) * m, new Vector4(1, 0, 0, 0.5f));
                     DrawMesh(sphere, Matrix.Translation(new Vector3(0, 1, 0)) * m, new Vector4(0, 1, 0, 0.5f));
                     DrawMesh(sphere, Matrix.Translation(new Vector3(0, 0, 1)) * m, new Vector4(0, 0, 1, 0.5f));
@@ -399,7 +402,7 @@ public class CCDViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            Matrix m = bone.combined_matrix * world_matrix;
+            Matrix m = bone.combined_matrix;
 
             float sphereRadius = 0.25f;
             Vector3 sphereCenter = new Vector3(m.M41, m.M42, m.M43);
@@ -444,7 +447,7 @@ public class CCDViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            Matrix m = Matrix.Translation(dir) * bone.combined_matrix * world_matrix;
+            Matrix m = Matrix.Translation(dir) * bone.combined_matrix;
 
             float sphereRadius = 0.25f;
             Vector3 sphereCenter = new Vector3(m.M41, m.M42, m.M43);
