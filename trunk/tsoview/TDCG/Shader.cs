@@ -170,13 +170,13 @@ namespace TDCG
         {
             string[] token = re_float_array.Split(value.Trim('[', ']', ' ', '\t'));
             this.dim = dim;
-            if (dim > 0)
+            if (token.Length > 0)
                 f1 = float.Parse(token[0].Trim());
-            if (dim > 1)
+            if (token.Length > 1)
                 f2 = float.Parse(token[1].Trim());
-            if (dim > 2)
+            if (token.Length > 2)
                 f3 = float.Parse(token[2].Trim());
-            if (dim > 3)
+            if (token.Length > 3)
                 f4 = float.Parse(token[3].Trim());
         }
 
