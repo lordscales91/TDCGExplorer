@@ -243,12 +243,10 @@ public class CCDViewer : Viewer
     /// スクリーン位置をワールド座標へ変換します。
     public Vector3 ScreenToWorld(float screenX, float screenY, float z, Viewport viewport, Matrix view, Matrix proj)
     {
-        Matrix m = CreateViewportMatrix(viewport);
-
         //スクリーン位置
         Vector3 v = new Vector3(screenX, screenY,  z);
 
-        Matrix inv_m = Matrix.Invert(m);
+        Matrix inv_m = Matrix.Invert(CreateViewportMatrix(viewport));
         Matrix inv_proj = Matrix.Invert(proj);
         Matrix inv_view = Matrix.Invert(view);
 
@@ -260,6 +258,18 @@ public class CCDViewer : Viewer
     public Vector3 ScreenToWorld(float screenX, float screenY, float z)
     {
         return ScreenToWorld(screenX, screenY, z, device.Viewport, Transform_View, Transform_Projection);
+    }
+
+    /// ワールド座標をスクリーン位置へ変換します。
+    public Vector3 WorldToScreen(Vector3 v, Viewport viewport, Matrix view, Matrix proj)
+    {
+        return Vector3.TransformCoordinate(v, view * proj * CreateViewportMatrix(viewport));
+    }
+
+    /// ワールド座標をスクリーン位置へ変換します。
+    public Vector3 WorldToScreen(Vector3 v)
+    {
+        return WorldToScreen(v, device.Viewport, Transform_View, Transform_Projection);
     }
 
     /// <summary>
