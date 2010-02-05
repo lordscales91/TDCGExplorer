@@ -58,6 +58,7 @@
             this.cbMorphNames.Name = "cbMorphNames";
             this.cbMorphNames.Size = new System.Drawing.Size(121, 20);
             this.cbMorphNames.TabIndex = 3;
+            this.cbMorphNames.SelectedIndexChanged += new System.EventHandler(this.cbMorphNames_SelectedIndexChanged);
             // 
             // MorphSlider
             // 
@@ -67,7 +68,7 @@
             this.Controls.Add(this.lbGroupName);
             this.Controls.Add(this.tbRatio);
             this.Name = "MorphSlider";
-            this.Size = new System.Drawing.Size(150, 100);
+            this.Size = new System.Drawing.Size(150, 85);
             ((System.ComponentModel.ISupportInitialize)(this.tbRatio)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
