@@ -71,7 +71,7 @@ namespace TMOMorphing
             MorphSlider slider = sender as MorphSlider;
             {
                 MorphGroup group = slider.Tag as MorphGroup;
-                Morph morph = null;
+                Morph morph = group.FindItemByName(slider.MorphName);
                 if (morph != null)
                     morph.Ratio = slider.Ratio;
             }
@@ -80,6 +80,7 @@ namespace TMOMorphing
             if (viewer.TryGetFigure(out fig))
             {
                 morphing.Morph(fig.Tmo);
+                fig.UpdateBoneMatricesWithoutTMOFrame();
             }
         }
     }

@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
@@ -64,6 +66,20 @@ public class MorphGroup
         items = new List<Morph>();
     }
 
+    public Morph FindItemByName(string name)
+    {
+        Morph found = null;
+        foreach (Morph morph in items)
+        {
+            if (morph.Name == name)
+            {
+                found = morph;
+                break;
+            }
+        }
+        return found;
+    }
+
     /// <summary>
     /// モーフ変形の対象となるノードを選択します。
     /// </summary>
@@ -113,6 +129,7 @@ public class Morphing
 
                 TMOFile tmo = new TMOFile();
                 tmo.Load(tmo_file);
+                tmo.LoadTransformationMatrixFromFrame(0);
 
                 Morph morph = new Morph(morph_name, tmo);
                 group.Items.Add(morph);
@@ -126,6 +143,28 @@ public class Morphing
     /// <param name="tmo">対象tmo</param>
     public void Morph(TMOFile tmo)
     {
+        tmo.LoadTransformationMatrixFromFrame(0);
+
+        foreach (TMONode node in tmo.nodes)
+        {
+            if (node.Name == "W_Hips")
+            {
+                node.TransformationMatrix = Matrix.Identity;
+                continue;
+            }
+
+            foreach (MorphGroup group in groups)
+            {
+                foreach (Morph morph in group.Items)
+                {
+                    if (morph.Ratio == 0.0f)
+                        continue;
+
+                    Matrix m = morph.Tmo.FindNodeByName(node.Name).TransformationMatrix;
+                    node.TransformationMatrix = m;
+                }
+            }
+        }
     }
 }
 }
