@@ -64,6 +64,8 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="IProportion.cs" />
+    <Compile Include="Morphing.cs" />
+    <Compile Include="NodesRange.cs" />
     <Compile Include="PNGFile.cs" />
     <Compile Include="PNGWriter.cs" />
     <Compile Include="ProportionList.cs" />
