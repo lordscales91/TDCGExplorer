@@ -33,10 +33,10 @@ public class Morph
     /// <summary>
     /// ÉÇÅ[ÉtÇê∂ê¨ÇµÇ‹Ç∑ÅB
     /// </summary>
-    public Morph(string name)
+    public Morph(string name, TMOFile tmo)
     {
         this.name = name;
-        tmo = null;
+        this.tmo = tmo;
         ratio = 0.0f;
     }
 }
@@ -111,7 +111,10 @@ public class Morphing
                 string morph_name = Path.GetFileNameWithoutExtension(tmo_file);
                 Debug.WriteLine("morph_name: " + morph_name);
 
-                Morph morph = new Morph(morph_name);
+                TMOFile tmo = new TMOFile();
+                tmo.Load(tmo_file);
+
+                Morph morph = new Morph(morph_name, tmo);
                 group.Items.Add(morph);
             }
         }
