@@ -108,6 +108,8 @@ namespace TMOMorphing
                     string extension = Path.GetExtension(dest_file);
                     if (extension == ".png")
                     {
+                        TMOFile tmo = fig.Tmo.GenerateTMOFromTransformationMatrix();
+                        SavePoseToFile(tmo, dest_file);
                     }
                     else
                     if (extension == ".tmo")
@@ -137,6 +139,84 @@ namespace TMOMorphing
                 else
                     e.Effect = DragDropEffects.Move;
             }
+        }
+
+        public void SavePoseToFile(TMOFile tmo, string dest_file)
+        {
+            if (tmo.frames != null)
+            {
+                PNGFile png = CreatePNGFile();
+                png.WriteTaOb += delegate(BinaryWriter bw)
+                {
+                    PNGWriter pw = new PNGWriter(bw);
+                    WritePose(pw, tmo);
+                };
+                Debug.WriteLine("Save File: " + dest_file);
+                png.Save(dest_file);
+            }
+        }
+
+        public PNGFile CreatePNGFile()
+        {
+            MemoryStream ms = new MemoryStream();
+            using (Bitmap bmp = new Bitmap(180, 180, System.Drawing.Imaging.PixelFormat.Format24bppRgb))
+            {
+                Graphics g = Graphics.FromImage(bmp);
+                Brush brush = new SolidBrush(Color.FromArgb(0xfb, 0xc6, 0xc6));
+                g.FillRectangle(brush, 0, 0, 180, 180);
+                Font font = new Font(FontFamily.GenericSerif, 36, FontStyle.Bold);
+                g.DrawString("morphing", font, Brushes.Black, 0, 0);
+                bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+            }
+            ms.Seek(0, SeekOrigin.Begin);
+
+            PNGFile png = new PNGFile();
+            png.Load(ms);
+
+            return png;
+        }
+
+        protected byte[] ReadFloats(string dest_file)
+        {
+            List<float> floats = new List<float>();
+            string line;
+            using (StreamReader source = new StreamReader(File.OpenRead(dest_file)))
+                while ((line = source.ReadLine()) != null)
+                {
+                    floats.Add(Single.Parse(line));
+                }
+
+            byte[] data = new byte[sizeof(Single) * floats.Count];
+            int offset = 0;
+            foreach (float flo in floats)
+            {
+                byte[] buf_flo = BitConverter.GetBytes(flo);
+                buf_flo.CopyTo(data, offset);
+                offset += buf_flo.Length;
+            }
+            return data;
+        }
+
+        string GetCameraPath()
+        {
+            return Path.Combine(Application.StartupPath, "Camera.txt");
+        }
+
+        string GetLightAPath()
+        {
+            return Path.Combine(Application.StartupPath, "LightA.txt");
+        }
+
+        void WritePose(PNGWriter pw, TMOFile tmo)
+        {
+            byte[] cami = ReadFloats(GetCameraPath());
+            byte[] lgta = ReadFloats(GetLightAPath());
+
+            pw.WriteTDCG();
+            pw.WritePOSE();
+            pw.WriteCAMI(cami);
+            pw.WriteLGTA(lgta);
+            pw.WriteFTMO(tmo);
         }
     }
 }
