@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -66,6 +66,12 @@ namespace TMOMorphing
             InitializeComponent();
         }
 
+        void SelectFirstItem()
+        {
+            if (cbMorphNames.Items.Count > 0)
+                cbMorphNames.SelectedIndex = 0;
+        }
+
         public void SetMorphNames(List<string> names)
         {
             cbMorphNames.Items.Clear();
@@ -73,6 +79,7 @@ namespace TMOMorphing
             {
                 cbMorphNames.Items.Add(name);
             }
+            SelectFirstItem();
         }
 
         private void tbRatio_ValueChanged(object sender, EventArgs e)
