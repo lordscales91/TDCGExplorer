@@ -33,9 +33,9 @@ public class Morph
     /// <summary>
     /// モーフを生成します。
     /// </summary>
-    public Morph()
+    public Morph(string name)
     {
-        name = null;
+        this.name = name;
         tmo = null;
         ratio = 0.0f;
     }
@@ -57,9 +57,9 @@ public class MorphGroup
     /// <summary>
     /// モーフグループを生成します。
     /// </summary>
-    public MorphGroup()
+    public MorphGroup(string name)
     {
-        name = null;
+        this.name = name;
         nodes_range = new NodesRange();
         items = new List<Morph>();
     }
@@ -93,9 +93,28 @@ public class Morphing
     /// <summary>
     /// モーフライブラリを読み込みます。
     /// </summary>
-    /// <param name="source_file">フォルダ名</param>
-    public void Load(string source_file)
+    /// <param name="source_path">フォルダ名</param>
+    public void Load(string source_path)
     {
+        foreach (string group_path in Directory.GetDirectories(source_path))
+        {
+            //Debug.WriteLine("group_path: " + group_path);
+            string group_name = Path.GetFileName(group_path);
+            Debug.WriteLine("group_name: " + group_name);
+            
+            MorphGroup group = new MorphGroup(group_name);
+            groups.Add(group);
+
+            foreach (string tmo_file in Directory.GetFiles(Path.Combine(source_path, group_path), @"*.tmo"))
+            {
+                //Debug.WriteLine("tmo_file: " + tmo_file);
+                string morph_name = Path.GetFileNameWithoutExtension(tmo_file);
+                Debug.WriteLine("morph_name: " + morph_name);
+
+                Morph morph = new Morph(morph_name);
+                group.Items.Add(morph);
+            }
+        }
     }
 
     /// <summary>

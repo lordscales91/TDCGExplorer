@@ -47,14 +47,42 @@ namespace TMOMorphing
 
         }
 
+        string morph_name = null;
+        public string MorphName
+        {
+            get
+            {
+                return morph_name;
+            }
+            set
+            {
+                morph_name = value;
+                cbMorphNames.SelectedIndex = cbMorphNames.FindString(morph_name);
+            }
+        }
+
         public MorphSlider()
         {
             InitializeComponent();
         }
 
+        public void SetMorphNames(List<string> names)
+        {
+            cbMorphNames.Items.Clear();
+            foreach (string name in names)
+            {
+                cbMorphNames.Items.Add(name);
+            }
+        }
+
         private void tbRatio_ValueChanged(object sender, EventArgs e)
         {
             Ratio = tbRatio.Value * 0.1f;
+        }
+
+        private void cbMorphNames_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            MorphName = (string)cbMorphNames.SelectedItem;
         }
     }
 }

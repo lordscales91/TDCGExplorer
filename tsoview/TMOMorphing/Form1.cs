@@ -15,6 +15,9 @@ namespace TMOMorphing
     {
         internal Viewer viewer = null;
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
+        string morphing_path = Path.Combine(Application.StartupPath, @"Х\По");
+
+        Morphing morphing;
 
         public Form1(TSOConfig tso_config, string[] args)
         {
@@ -33,10 +36,27 @@ namespace TMOMorphing
                 timer1.Enabled = true;
             }
 
-            Figure fig;
-            if (viewer.TryGetFigure(out fig))
-            {
+            morphing = new Morphing();
+            morphing.Load(morphing_path);
 
+            for (int i = 0; i < morphing.Groups.Count; i++)
+            {
+                MorphGroup group = morphing.Groups[i];
+
+                MorphSlider slider = new MorphSlider();
+                slider.Tag = group;
+                slider.GroupName = group.Name;
+
+                List<string> names = new List<string>();
+                foreach (Morph morph in group.Items)
+                {
+                    names.Add(morph.Name);
+                }
+                slider.SetMorphNames(names);
+
+                slider.Location = new System.Drawing.Point(10, 10 + i * 95);
+                slider.ValueChanged += new System.EventHandler(this.slider_ValueChanged);
+                this.Controls.Add(slider);
             }
         }
 
@@ -44,6 +64,23 @@ namespace TMOMorphing
         {
             viewer.FrameMove();
             viewer.Render();
+        }
+
+        private void slider_ValueChanged(object sender, EventArgs e)
+        {
+            MorphSlider slider = sender as MorphSlider;
+            {
+                MorphGroup group = slider.Tag as MorphGroup;
+                Morph morph = null;
+                if (morph != null)
+                    morph.Ratio = slider.Ratio;
+            }
+
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
+            {
+                morphing.Morph(fig.Tmo);
+            }
         }
     }
 }
