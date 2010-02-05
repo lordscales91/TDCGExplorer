@@ -59,10 +59,10 @@ public class MorphGroup
     /// <summary>
     /// モーフグループを生成します。
     /// </summary>
-    public MorphGroup(string name)
+    public MorphGroup(string name, NodesRange nodes_range)
     {
         this.name = name;
-        nodes_range = new NodesRange();
+        this.nodes_range = nodes_range;
         items = new List<Morph>();
     }
 
@@ -124,7 +124,8 @@ public class Morphing
             string group_name = Path.GetFileName(group_path);
             Debug.WriteLine("group_name: " + group_name);
             
-            MorphGroup group = new MorphGroup(group_name);
+            NodesRange nodes_range = NodesRange.Load(Path.Combine(group_path, @"NodesRange.xml"));
+            MorphGroup group = new MorphGroup(group_name, nodes_range);
             groups.Add(group);
 
             foreach (string tmo_file in Directory.GetFiles(Path.Combine(source_path, group_path), @"*.tmo"))
