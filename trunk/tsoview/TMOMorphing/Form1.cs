@@ -99,9 +99,23 @@ namespace TMOMorphing
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                fig.Tmo.SaveTransformationMatrixToFrame(0);
-                fig.Tmo.Save(@"out.tmo");
-                fig.RegenerateTMO();
+                SaveFileDialog dialog = new SaveFileDialog();
+                dialog.Filter = "png files|*.png|tmo files|*.tmo";
+                dialog.FilterIndex = 0;
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    string dest_file = dialog.FileName;
+                    string extension = Path.GetExtension(dest_file);
+                    if (extension == ".png")
+                    {
+                    }
+                    else
+                    if (extension == ".tmo")
+                    {
+                        TMOFile tmo = fig.Tmo.GenerateTMOFromTransformationMatrix();
+                        tmo.Save(dest_file);
+                    }
+                }
             }
         }
 
