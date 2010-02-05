@@ -58,6 +58,8 @@ namespace TMOMorphing
             {
                 morph_name = value;
                 cbMorphNames.SelectedIndex = cbMorphNames.FindString(morph_name);
+                if (ValueChanged != null)
+                    ValueChanged(this, new EventArgs());
             }
         }
 
