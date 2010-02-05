@@ -86,6 +86,13 @@ public class MorphGroup
         return found;
     }
 
+    static void AddTreeNodes(List<TMONode> select_nodes, TMONode root_node)
+    {
+        select_nodes.Add(root_node);
+        foreach (TMONode node in root_node.children)
+            AddTreeNodes(select_nodes, node);
+    }
+
     /// <summary>
     /// モーフ変形の対象となるノードを選択します。
     /// </summary>
@@ -93,7 +100,14 @@ public class MorphGroup
     /// <returns>ノードリスト</returns>
     public List<TMONode> SelectNodes(TMOFile tmo)
     {
-        return new List<TMONode>();
+        List<TMONode> select_nodes = new List<TMONode>();
+        foreach (string root_name in nodes_range.root_names)
+        {
+            TMONode root_node = tmo.FindNodeByName(root_name);
+            if (root_node != null)
+                AddTreeNodes(select_nodes, root_node);
+        }
+        return select_nodes;
     }
 }
 
@@ -152,21 +166,17 @@ public class Morphing
     {
         tmo.LoadTransformationMatrixFromFrame(0);
 
-        foreach (TMONode node in tmo.nodes)
+        foreach (MorphGroup group in groups)
         {
-            if (node.Name == "W_Hips")
-            {
-                node.TransformationMatrix = Matrix.Identity;
-                continue;
-            }
+            List<TMONode> select_nodes = group.SelectNodes(tmo);
 
-            foreach (MorphGroup group in groups)
+            foreach (Morph morph in group.Items)
             {
-                foreach (Morph morph in group.Items)
+                if (morph.Ratio == 0.0f)
+                    continue;
+
+                foreach (TMONode node in select_nodes)
                 {
-                    if (morph.Ratio == 0.0f)
-                        continue;
-
                     Matrix m = morph.Tmo.FindNodeByName(node.Name).TransformationMatrix;
                     node.TransformationMatrix = m;
                 }
