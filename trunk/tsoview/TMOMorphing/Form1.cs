@@ -84,5 +84,16 @@ namespace TMOMorphing
                 fig.UpdateBoneMatricesWithoutTMOFrame();
             }
         }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
+            {
+                fig.Tmo.SaveTransformationMatrixToFrame(0);
+                fig.Tmo.Save(@"out.tmo");
+                fig.RegenerateTMO();
+            }
+        }
     }
 }
