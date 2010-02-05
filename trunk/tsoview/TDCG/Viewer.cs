@@ -65,6 +65,9 @@ public class Viewer : IDisposable
 
     private void control_OnSizeChanged(object sender, EventArgs e)
     {
+        if (device == null)
+            return;
+
         Transform_Projection = Matrix.PerspectiveFovRH(
                 Geometry.DegreeToRadian(30.0f),
                 (float)control.Width / (float)control.Height,
