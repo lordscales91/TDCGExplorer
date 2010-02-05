@@ -177,8 +177,9 @@ public class Morphing
 
                 foreach (TMONode node in select_nodes)
                 {
-                    Matrix m = morph.Tmo.FindNodeByName(node.Name).TransformationMatrix;
-                    node.TransformationMatrix = m;
+                    Matrix min = node.TransformationMatrix;
+                    Matrix max = morph.Tmo.FindNodeByName(node.Name).TransformationMatrix;
+                    node.TransformationMatrix = SlideMatrices.GetMatrixRatio(min, max, morph.Ratio);
                 }
             }
         }
