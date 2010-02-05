@@ -66,6 +66,12 @@ public class MorphGroup
         items = new List<Morph>();
     }
 
+    public void ClearRatios()
+    {
+        foreach (Morph morph in items)
+            morph.Ratio = 0.0f;
+    }
+
     public Morph FindItemByName(string name)
     {
         Morph found = null;
