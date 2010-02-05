@@ -32,6 +32,12 @@ namespace TMOMorphing
 
                 timer1.Enabled = true;
             }
+
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
+            {
+
+            }
         }
 
         private void timer1_Tick(object sender, EventArgs e)

@@ -7,23 +7,23 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TMOProportion
+namespace TMOMorphing
 {
-    public partial class ProportionSlider : UserControl
+    public partial class MorphSlider : UserControl
     {
         public event EventHandler ValueChanged;
 
-        string class_name = null;
-        public string ClassName
+        string Group_name = null;
+        public string GroupName
         {
             get
             {
-                return class_name;
+                return Group_name;
             }
             set
             {
-                class_name = value;
-                lbClassName.Text = class_name;
+                Group_name = value;
+                lbGroupName.Text = Group_name;
             }
         }
 
@@ -39,7 +39,6 @@ namespace TMOProportion
                 if (ratio != value)
                 {
                     ratio = value;
-                    lbRatio.Text = string.Format("{0:F2}", ratio);
                     tbRatio.Value = (int)(ratio * 10.0f);
                     if (ValueChanged != null)
                         ValueChanged(this, new EventArgs());
@@ -47,8 +46,8 @@ namespace TMOProportion
             }
 
         }
-        
-        public ProportionSlider()
+
+        public MorphSlider()
         {
             InitializeComponent();
         }
