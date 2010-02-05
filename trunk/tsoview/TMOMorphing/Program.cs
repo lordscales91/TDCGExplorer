@@ -11,6 +11,8 @@ namespace TMOMorphing
         [STAThread]
         static void Main(string[] args)
         {
+            Debug.Listeners.Add(new TextWriterTraceListener(Console.Out));
+
             TSOConfig tso_config;
 
             string tso_config_file = Path.Combine(Application.StartupPath, @"config.xml");

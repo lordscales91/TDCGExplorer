@@ -1,6 +1,6 @@
-﻿namespace TMOProportion
+﻿namespace TMOMorphing
 {
-    partial class ProportionSlider
+    partial class MorphSlider
     {
         /// <summary> 
         /// 必要なデザイナ変数です。
@@ -28,49 +28,46 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.lbClassName = new System.Windows.Forms.Label();
             this.tbRatio = new System.Windows.Forms.TrackBar();
-            this.lbRatio = new System.Windows.Forms.Label();
+            this.lbGroupName = new System.Windows.Forms.Label();
+            this.cbMorphNames = new System.Windows.Forms.ComboBox();
             ((System.ComponentModel.ISupportInitialize)(this.tbRatio)).BeginInit();
             this.SuspendLayout();
             // 
-            // lbClassName
-            // 
-            this.lbClassName.AutoSize = true;
-            this.lbClassName.Location = new System.Drawing.Point(10, 10);
-            this.lbClassName.Name = "lbClassName";
-            this.lbClassName.Size = new System.Drawing.Size(35, 12);
-            this.lbClassName.TabIndex = 0;
-            this.lbClassName.Text = "label1";
-            // 
             // tbRatio
             // 
-            this.tbRatio.Location = new System.Drawing.Point(10, 30);
-            this.tbRatio.Maximum = 20;
+            this.tbRatio.Location = new System.Drawing.Point(12, 51);
             this.tbRatio.Name = "tbRatio";
-            this.tbRatio.Size = new System.Drawing.Size(262, 45);
-            this.tbRatio.TabIndex = 1;
-            this.tbRatio.TickStyle = System.Windows.Forms.TickStyle.Both;
+            this.tbRatio.Size = new System.Drawing.Size(121, 45);
+            this.tbRatio.TabIndex = 0;
             this.tbRatio.ValueChanged += new System.EventHandler(this.tbRatio_ValueChanged);
             // 
-            // lbRatio
+            // lbGroupName
             // 
-            this.lbRatio.AutoSize = true;
-            this.lbRatio.Location = new System.Drawing.Point(237, 10);
-            this.lbRatio.Name = "lbRatio";
-            this.lbRatio.Size = new System.Drawing.Size(25, 12);
-            this.lbRatio.TabIndex = 2;
-            this.lbRatio.Text = "0.00";
+            this.lbGroupName.AutoSize = true;
+            this.lbGroupName.Location = new System.Drawing.Point(10, 10);
+            this.lbGroupName.Name = "lbGroupName";
+            this.lbGroupName.Size = new System.Drawing.Size(35, 12);
+            this.lbGroupName.TabIndex = 1;
+            this.lbGroupName.Text = "label1";
             // 
-            // ProportionSlider
+            // cbMorphNames
+            // 
+            this.cbMorphNames.FormattingEnabled = true;
+            this.cbMorphNames.Location = new System.Drawing.Point(12, 25);
+            this.cbMorphNames.Name = "cbMorphNames";
+            this.cbMorphNames.Size = new System.Drawing.Size(121, 20);
+            this.cbMorphNames.TabIndex = 3;
+            // 
+            // MorphSlider
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.lbRatio);
+            this.Controls.Add(this.cbMorphNames);
+            this.Controls.Add(this.lbGroupName);
             this.Controls.Add(this.tbRatio);
-            this.Controls.Add(this.lbClassName);
-            this.Name = "ProportionSlider";
-            this.Size = new System.Drawing.Size(280, 85);
+            this.Name = "MorphSlider";
+            this.Size = new System.Drawing.Size(150, 100);
             ((System.ComponentModel.ISupportInitialize)(this.tbRatio)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -79,9 +76,8 @@
 
         #endregion
 
-        public System.Windows.Forms.Label lbClassName;
-        public System.Windows.Forms.TrackBar tbRatio;
-        private System.Windows.Forms.Label lbRatio;
-
+        private System.Windows.Forms.TrackBar tbRatio;
+        private System.Windows.Forms.Label lbGroupName;
+        private System.Windows.Forms.ComboBox cbMorphNames;
     }
 }
