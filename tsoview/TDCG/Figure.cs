@@ -170,16 +170,12 @@ public class Figure : IDisposable
 
     /// <summary>
     /// nodemapとbone行列を更新します。
-    /// tmoが読み込まれていない場合は先頭のtsoから生成します。
+    /// tmoが読み込まれていない場合は先頭のtsoからtmoを生成します。
     /// </summary>
     public void UpdateNodeMapAndBoneMatrices()
     {
         if (tmo.frames == null)
-            if (TSOList.Count != 0)
-            {
-                Tmo = TSOList[0].GenerateTMO();
-                TransformTpo();
-            }
+            RegenerateTMO();
 
         nodemap.Clear();
         if (tmo.frames != null)
@@ -187,6 +183,18 @@ public class Figure : IDisposable
             AddNodeMap(tso);
 
         UpdateBoneMatrices(true);
+    }
+
+    /// <summary>
+    /// 先頭のtsoからtmoを生成します。
+    /// </summary>
+    public void RegenerateTMO()
+    {
+        if (TSOList.Count != 0)
+        {
+            Tmo = TSOList[0].GenerateTMO();
+            TransformTpo();
+        }
     }
 
     /// <summary>
