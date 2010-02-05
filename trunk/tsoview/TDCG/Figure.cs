@@ -61,6 +61,7 @@ public class Figure : IDisposable
         }
     }
 
+    /// tso node‚©‚çtmo node‚ğ“±o‚·‚é«‘
     public Dictionary<TSONode, TMONode> nodemap;
 
     private MatrixStack matrixStack = null;

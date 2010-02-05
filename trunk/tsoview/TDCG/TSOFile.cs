@@ -111,6 +111,7 @@ namespace TDCG
                 this.bones.Add(nodes[bone_index]);
         }
 
+        /// 頂点数
         public int VerticesCount
         {
             get { return vertices.Length; }
@@ -275,6 +276,7 @@ namespace TDCG
                 mesh.LinkBones(nodes);
         }
 
+        /// 頂点数の合計を得ます。
         public int SumVerticesCount()
         {
             int sum = 0;
@@ -1123,6 +1125,7 @@ namespace TDCG
             return tmo;
         }
 
+        /// 頂点数の合計を得ます。
         public int SumVerticesCount()
         {
             int sum = 0;
