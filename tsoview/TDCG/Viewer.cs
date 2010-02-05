@@ -224,7 +224,6 @@ public class Viewer : IDisposable
     /// <param name="source_file">TSOFileを含むディレクトリ</param>
     public void AddFigureFromTSODirectory(string source_file)
     {
-        Figure fig = new Figure();
         List<TSOFile> tso_list = new List<TSOFile>();
         try
         {
@@ -232,7 +231,9 @@ public class Viewer : IDisposable
             foreach (string file in files)
             {
                 TSOFile tso = new TSOFile();
+                Debug.WriteLine("loading " + file);
                 tso.Load(file);
+                Debug.WriteLine("tso sum vertices count: " + tso.SumVerticesCount().ToString());
                 tso_list.Add(tso);
             }
         }
@@ -240,6 +241,7 @@ public class Viewer : IDisposable
         {
             Console.WriteLine("Error: " + ex);
         }
+        Figure fig = new Figure();
         foreach (TSOFile tso in tso_list)
         {
             tso.Open(device, effect);
@@ -291,6 +293,7 @@ public class Viewer : IDisposable
     /// <param name="source_file">パス</param>
     public void LoadTSOFile(string source_file)
     {
+        Debug.WriteLine("loading " + source_file);
         using (Stream source_stream = File.OpenRead(source_file))
             LoadTSOFile(source_stream);
     }
@@ -301,17 +304,23 @@ public class Viewer : IDisposable
     /// <param name="source_stream">ストリーム</param>
     public void LoadTSOFile(Stream source_stream)
     {
-        Figure fig = GetSelectedOrCreateFigure();
+        List<TSOFile> tso_list = new List<TSOFile>();
         try
         {
             TSOFile tso = new TSOFile();
             tso.Load(source_stream);
-            tso.Open(device, effect);
-            fig.AddTSO(tso);
+            Debug.WriteLine("tso sum vertices count: " + tso.SumVerticesCount().ToString());
+            tso_list.Add(tso);
         }
         catch (Exception ex)
         {
             Console.WriteLine("Error: " + ex);
+        }
+        Figure fig = GetSelectedOrCreateFigure();
+        foreach (TSOFile tso in tso_list)
+        {
+            tso.Open(device, effect);
+            fig.AddTSO(tso);
         }
         fig.UpdateNodeMapAndBoneMatrices();
         if (FigureEvent != null)

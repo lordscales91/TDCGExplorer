@@ -74,9 +74,9 @@ namespace TDCG
                 this.bone_indices[i] = reader.ReadInt32();
             }
 
-            int vertex_count = reader.ReadInt32(); //numvertices
-            this.vertices = new Vertex[vertex_count];
-            for (int i = 0; i < vertex_count; i++)
+            int vertices_count = reader.ReadInt32(); //numvertices
+            this.vertices = new Vertex[vertices_count];
+            for (int i = 0; i < vertices_count; i++)
             {
                 this.vertices[i].Read(reader);
             }
@@ -109,6 +109,11 @@ namespace TDCG
 
             foreach (int bone_index in bone_indices)
                 this.bones.Add(nodes[bone_index]);
+        }
+
+        public int VerticesCount
+        {
+            get { return vertices.Length; }
         }
 
         static VertexElement[] ve = new VertexElement[]
@@ -268,6 +273,14 @@ namespace TDCG
         {
             foreach (TSOMesh mesh in meshes)
                 mesh.LinkBones(nodes);
+        }
+
+        public int SumVerticesCount()
+        {
+            int sum = 0;
+            foreach (TSOMesh mesh in meshes)
+                sum += mesh.VerticesCount;
+            return sum;
         }
 
         /// <summary>
@@ -1108,6 +1121,14 @@ namespace TDCG
             tmo.footer = new byte[4] { 0, 0, 0, 0 };
 
             return tmo;
+        }
+
+        public int SumVerticesCount()
+        {
+            int sum = 0;
+            foreach (TSOFrame frame in frames)
+                sum += frame.SumVerticesCount();
+            return sum;
         }
 
         internal Device device;
