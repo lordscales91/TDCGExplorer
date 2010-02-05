@@ -66,12 +66,14 @@ public class MorphGroup
         items = new List<Morph>();
     }
 
+    /// 変形割合を消去します。
     public void ClearRatios()
     {
         foreach (Morph morph in items)
             morph.Ratio = 0.0f;
     }
 
+    /// 指定した名前を持つモーフを検索します。
     public Morph FindItemByName(string name)
     {
         Morph found = null;
