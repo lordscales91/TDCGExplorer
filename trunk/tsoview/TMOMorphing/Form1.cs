@@ -165,7 +165,7 @@ namespace TMOMorphing
                 Brush brush = new SolidBrush(Color.FromArgb(0xfb, 0xc6, 0xc6));
                 g.FillRectangle(brush, 0, 0, 180, 180);
                 Font font = new Font(FontFamily.GenericSerif, 36, FontStyle.Bold);
-                g.DrawString("morphing", font, Brushes.Black, 0, 0);
+                g.DrawString("morph", font, Brushes.Black, 0, 0);
                 bmp.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
             }
             ms.Seek(0, SeekOrigin.Begin);
