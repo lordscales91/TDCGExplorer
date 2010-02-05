@@ -24,9 +24,14 @@ namespace TMOMorphing
             InitializeComponent();
             this.ClientSize = tso_config.ClientSize;
             viewer = new Viewer();
+            morphing = new Morphing();
 
             if (viewer.InitializeApplication(this))
             {
+                viewer.FigureEvent += delegate(object sender, EventArgs e)
+                {
+                    Morph();
+                };
                 foreach (string arg in args)
                     viewer.LoadAnyFile(arg, true);
                 if (viewer.FigureList.Count == 0)
@@ -36,7 +41,6 @@ namespace TMOMorphing
                 timer1.Enabled = true;
             }
 
-            morphing = new Morphing();
             morphing.Load(morphing_path);
 
             for (int i = 0; i < morphing.Groups.Count; i++)
@@ -77,6 +81,11 @@ namespace TMOMorphing
                     morph.Ratio = slider.Ratio;
             }
 
+            Morph();
+        }
+
+        private void Morph()
+        {
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
@@ -93,6 +102,26 @@ namespace TMOMorphing
                 fig.Tmo.SaveTransformationMatrixToFrame(0);
                 fig.Tmo.Save(@"out.tmo");
                 fig.RegenerateTMO();
+            }
+        }
+
+        private void Form1_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
+                    viewer.LoadAnyFile(src, (e.KeyState & 8) == 8);
+            }
+        }
+
+        private void Form1_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                if ((e.KeyState & 8) == 8)
+                    e.Effect = DragDropEffects.Copy;
+                else
+                    e.Effect = DragDropEffects.Move;
             }
         }
     }
