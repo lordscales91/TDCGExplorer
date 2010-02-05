@@ -30,7 +30,11 @@ public class ProportionList
     /// </summary>
     public void Load()
     {
-        string[] script_files = Directory.GetFiles(GetProportionPath(), "*.cs");
+        string proportion_path = GetProportionPath();
+        if (! Directory.Exists(proportion_path))
+            return;
+
+        string[] script_files = Directory.GetFiles(proportion_path, "*.cs");
         foreach (string script_file in script_files)
         {
             string class_name = "TDCG.Proportion." + Path.GetFileNameWithoutExtension(script_file);
