@@ -1152,17 +1152,6 @@ public class Viewer : IDisposable
                 tmo.Load(dest);
                 fig.Tmo = tmo;
             };
-            /*
-◆FIGU
-スライダの位置。値は float型で 0.0 .. 1.0
-    0: 姉妹
-    1: うで
-    2: あし
-    3: 胴まわり
-    4: おっぱい
-    5: つり目たれ目
-    6: やわらか
-             */
             png.Figu += delegate(Stream dest, int extract_length)
             {
                 byte[] buf = new byte[extract_length];
@@ -1174,6 +1163,17 @@ public class Viewer : IDisposable
                     float flo = BitConverter.ToSingle(buf, offset);
                     ratios.Add(flo);
                 }
+                /*
+                ◆FIGU
+                スライダの位置。値は float型で 0.0 .. 1.0
+                    0: 姉妹
+                    1: うで
+                    2: あし
+                    3: 胴まわり
+                    4: おっぱい
+                    5: つり目たれ目
+                    6: やわらか
+                 */
                 fig.slide_matrices.TallRatio = ratios[0];
                 fig.slide_matrices.ArmRatio = ratios[1];
                 fig.slide_matrices.LegRatio = ratios[2];
@@ -1187,8 +1187,10 @@ public class Viewer : IDisposable
             {
                 TSOFile tso = new TSOFile();
                 tso.Load(dest);
+                Debug.WriteLine("tso sum vertices count: " + tso.SumVerticesCount().ToString());
                 fig.TSOList.Add(tso);
             };
+            Debug.WriteLine("loading " + source_file);
             png.Load(source_file);
 
             if (png_type == "HSAV")
