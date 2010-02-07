@@ -53,3 +53,7 @@ inverse scale on children：
 
 ●Saveボタン
 Saveボタンを押すと、体型ファイルに体型情報を保存します（Proportion/*.cs）。
+
+
+ver 0.2.8 からの変更点：
+・変形グリッドで並び替えできてしまうバグを修正

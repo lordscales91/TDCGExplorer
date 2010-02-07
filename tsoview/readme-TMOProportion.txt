@@ -113,6 +113,9 @@ TMOProp.exe your.tmo
 注意：tmoは上書きされます。
 
 
+ver 0.2.8 からの変更点：
+・フィギュアを入れ替えると体型変更スライダが効かなくなるバグを修正
+
 ver 0.0.4 からの変更点：
 ・sources: TSOView, TMOComposer, TMOProportion を統合
 
