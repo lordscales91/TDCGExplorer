@@ -1,6 +1,6 @@
 ダウンロードありがとうございます
 
-●TSOView ver 0.2.8
+●TSOView ver 0.2.9
 
 これはなに
 Direct3D上でTSOをレンダリングします。
