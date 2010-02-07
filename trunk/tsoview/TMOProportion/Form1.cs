@@ -13,8 +13,9 @@ namespace TMOProportion
 {
     public partial class Form1 : Form
     {
-        internal Viewer viewer = null;
+        Viewer viewer = null;
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
+        Dictionary<IProportion, ProportionSlider> slidermap; 
 
         public Form1(TSOConfig tso_config, string[] args)
         {
@@ -37,20 +38,36 @@ namespace TMOProportion
                 timer1.Enabled = true;
             }
 
+            slidermap = new Dictionary<IProportion, ProportionSlider>();
+            {
+                int nproportion = 0;
+                foreach (IProportion proportion in Figure.ProportionList.items)
+                {
+                    ProportionSlider slider = new ProportionSlider();
+                    slider.ClassName = proportion.ToString();
+
+                    slider.Location = new System.Drawing.Point(10, 10 + nproportion * 95);
+                    slider.ValueChanged += new System.EventHandler(this.slider_ValueChanged);
+                    this.Controls.Add(slider);
+                    
+                    slidermap[proportion] = slider;
+                    nproportion++;
+                }
+            }
+
+            AssignSliderProportion();
+        }
+
+        private void AssignSliderProportion()
+        {
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                for (int i = 0; i < fig.TPOList.Count; i++)
+                foreach (TPOFile tpo in fig.TPOList.files)
                 {
-                    TPOFile tpo = fig.TPOList[i];
-                    ProportionSlider slider = new ProportionSlider();
+                    ProportionSlider slider = slidermap[tpo.Proportion];
                     slider.Tag = tpo;
-                    slider.ClassName = tpo.ProportionName;
                     slider.Ratio = tpo.Ratio;
-
-                    slider.Location = new System.Drawing.Point(10, 10 + i * 95);
-                    slider.ValueChanged += new System.EventHandler(this.slider_ValueChanged);
-                    this.Controls.Add(slider);
                 }
             }
         }
@@ -89,6 +106,7 @@ namespace TMOProportion
             {
                 foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
                     viewer.LoadAnyFile(src, (e.KeyState & 8) == 8);
+                AssignSliderProportion();
             }
         }
 
