@@ -222,8 +222,22 @@ public class WeightViewer : Viewer
         }
     }
 
-    public void GainSkinWeight(Figure fig, TSOMesh mesh, TSONode selected_node)
+    public void GainSkinWeight(TSONode selected_node)
     {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            if (selected_frame != null && selected_vertex_mesh != null)
+            {
+                foreach (TSOMesh mesh in selected_frame.meshes)
+                    GainSkinWeight(mesh, selected_node);
+            }
+        }
+    }
+
+    public void GainSkinWeight(TSOMesh mesh, TSONode selected_node)
+    {
+        bool updated = false;
         Vector3 p0 = selected_vertex_mesh.vertices[selected_vertex_id].position;
 
         for (int i = 0; i < mesh.vertices.Length; i++)
@@ -235,47 +249,50 @@ public class WeightViewer : Viewer
             float dz = p1.Z - p0.Z;
             if (dx * dx + dy * dy + dz * dz < 0.5f * 0.5f)
             {
-                SkinWeight selected_skin_weight = null;
-                foreach (SkinWeight skin_weight in mesh.vertices[i].skin_weights)
-                {
-                    TSONode bone = mesh.GetBone(skin_weight.bone_index);
-                    if (bone == selected_node)
-                    {
-                        selected_skin_weight = skin_weight;
-                        break;
-                    }
-                }
-                if (selected_skin_weight != null)
-                {
-                    float prev_selected_weight = selected_skin_weight.weight;
-                    float prev_rest_weight = 1.0f - prev_selected_weight;
-                    selected_skin_weight.weight += 0.2f;
-                    if (selected_skin_weight.weight > 1.0f)
-                        selected_skin_weight.weight = 1.0f;
-                    float gain_weight = selected_skin_weight.weight - prev_selected_weight;
-                    //reduce weight
-                    foreach (SkinWeight skin_weight in mesh.vertices[i].skin_weights)
-                    {
-                        skin_weight.weight -= gain_weight * skin_weight.weight / prev_rest_weight;
-                        if (skin_weight.weight < 0.0001f)
-                            skin_weight.weight = 0.0f;
-                    }
-                }
+                if (GainSkinWeight(mesh, selected_node, ref v))
+                    updated = true;
             }
         }
+        if (updated)
+            mesh.WriteBuffer(device);
     }
 
-    public void GainSkinWeight(TSONode selected_node)
+    private static bool GainSkinWeight(TSOMesh mesh, TSONode selected_node, ref Vertex v)
     {
-        Figure fig;
-        if (TryGetFigure(out fig))
+        bool updated = false;
+        SkinWeight selected_skin_weight = null;
+        foreach (SkinWeight skin_weight in v.skin_weights)
         {
-            if (selected_frame != null && selected_vertex_mesh != null)
+            TSONode bone = mesh.GetBone(skin_weight.bone_index);
+            if (bone == selected_node)
             {
-                foreach (TSOMesh mesh in selected_frame.meshes)
-                    GainSkinWeight(fig, mesh, selected_node);
+                selected_skin_weight = skin_weight;
+                break;
             }
         }
+        if (selected_skin_weight != null)
+        {
+            updated = true;
+
+            float prev_selected_weight = selected_skin_weight.weight;
+            float prev_rest_weight = 1.0f - prev_selected_weight;
+            selected_skin_weight.weight += 0.2f;
+            if (selected_skin_weight.weight > 1.0f)
+                selected_skin_weight.weight = 1.0f;
+            float gain_weight = selected_skin_weight.weight - prev_selected_weight;
+
+            //reduce weight
+            foreach (SkinWeight skin_weight in v.skin_weights)
+            {
+                if (skin_weight == selected_skin_weight)
+                    continue;
+
+                skin_weight.weight -= gain_weight * skin_weight.weight / prev_rest_weight;
+                if (skin_weight.weight < 0.0001f)
+                    skin_weight.weight = 0.0f;
+            }
+        }
+        return updated;
     }
 
     public static Vector3 CalcSkindeformPosition(ref Vertex v, Matrix[] boneMatrices)

@@ -73,14 +73,7 @@ public partial class TSOForm : Form
             };
             viewer.VertexEvent += delegate(object sender, EventArgs e)
             {
-                Vertex selected_vertex = viewer.selected_vertex_mesh.vertices[viewer.selected_vertex_id];
-                gvSkinWeights.Rows.Clear();
-                foreach (SkinWeight skin_weight in selected_vertex.skin_weights)
-                {
-                    TSONode bone = viewer.selected_vertex_mesh.GetBone(skin_weight.bone_index);
-                    float weight = skin_weight.weight;
-                    gvSkinWeights.Rows.Add(new string[] { bone.Name, weight.ToString("F4") });
-                }
+                AssignSkinWeights();
             };
             fig_form.NodeEvent += delegate(object sender, EventArgs e)
             {
@@ -104,6 +97,18 @@ public partial class TSOForm : Form
             }
 
             this.timer1.Enabled = true;
+        }
+    }
+
+    private void AssignSkinWeights()
+    {
+        Vertex selected_vertex = viewer.selected_vertex_mesh.vertices[viewer.selected_vertex_id];
+        gvSkinWeights.Rows.Clear();
+        foreach (SkinWeight skin_weight in selected_vertex.skin_weights)
+        {
+            TSONode bone = viewer.selected_vertex_mesh.GetBone(skin_weight.bone_index);
+            float weight = skin_weight.weight;
+            gvSkinWeights.Rows.Add(new string[] { bone.Name, weight.ToString("F4") });
         }
     }
 
@@ -273,6 +278,7 @@ public partial class TSOForm : Form
     private void btnGainSkinWeight_Click(object sender, EventArgs e)
     {
         viewer.GainSkinWeight(fig_form.selected_node);
+        AssignSkinWeights();
     }
 
     private void cbBoneHeatingView_CheckedChanged(object sender, EventArgs e)
