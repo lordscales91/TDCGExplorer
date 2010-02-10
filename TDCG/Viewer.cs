@@ -1029,8 +1029,8 @@ public class Viewer : IDisposable
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
                 tso.SwitchShader(mesh);
-                effect.Technique = "BoneCol";
-                effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
+                //effect.Technique = "BoneCol";
+                //effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
                 Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
                 int[] clipped_boneSelections = new int[mesh.maxPalettes];
 

@@ -154,29 +154,44 @@ public class WeightViewer : Viewer
                 clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
         }
 
+
         float scale = 0.1f;
+        Vector4 color = new Vector4(1, 0, 0, 0.5f);
 
-        for (int i = 0; i < mesh.vertices.Length; i++)
+        if (selected_vertex_mesh != null)
         {
-            Vector4 color = new Vector4(1, 0, 0, 0.5f);
+            Vector3 v0 = selected_vertex_mesh.vertices[selected_vertex_id].position;
 
-            if (selected_vertex_mesh != null)
+            for (int i = 0; i < mesh.vertices.Length; i++)
             {
-                Vector3 v0 = selected_vertex_mesh.vertices[selected_vertex_id].position;
                 Vector3 v1 = mesh.vertices[i].position;
                 float dx = v1.X - v0.X;
                 float dy = v1.Y - v0.Y;
                 float dz = v1.Z - v0.Z;
                 if (dx * dx + dy * dy + dz * dz < 0.5f * 0.5f)
                     color.Y = 1;
-            }
+                else
+                    color.Y = 0;
 
-            Vector3 pos = CalcSkindeformPosition(ref mesh.vertices[i], clipped_boneMatrices);
-            Matrix m = Matrix.Scaling(scale, scale, scale);
-            m.M41 = pos.X;
-            m.M42 = pos.Y;
-            m.M43 = pos.Z;
-            DrawMesh(sphere, m, color);
+                Vector3 pos = CalcSkindeformPosition(ref mesh.vertices[i], clipped_boneMatrices);
+                Matrix m = Matrix.Scaling(scale, scale, scale);
+                m.M41 = pos.X;
+                m.M42 = pos.Y;
+                m.M43 = pos.Z;
+                DrawMesh(sphere, m, color);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < mesh.vertices.Length; i++)
+            {
+                Vector3 pos = CalcSkindeformPosition(ref mesh.vertices[i], clipped_boneMatrices);
+                Matrix m = Matrix.Scaling(scale, scale, scale);
+                m.M41 = pos.X;
+                m.M42 = pos.Y;
+                m.M43 = pos.Z;
+                DrawMesh(sphere, m, color);
+            }
         }
     }
 
@@ -204,6 +219,61 @@ public class WeightViewer : Viewer
             m.M42 = pos.Y;
             m.M43 = pos.Z;
             DrawMesh(sphere, m, color);
+        }
+    }
+
+    public void GainSkinWeight(Figure fig, TSOMesh mesh, TSONode selected_node)
+    {
+        Vector3 v0 = selected_vertex_mesh.vertices[selected_vertex_id].position;
+
+        for (int i = 0; i < mesh.vertices.Length; i++)
+        {
+            Vector3 v1 = mesh.vertices[i].position;
+            float dx = v1.X - v0.X;
+            float dy = v1.Y - v0.Y;
+            float dz = v1.Z - v0.Z;
+            if (dx * dx + dy * dy + dz * dz < 0.5f * 0.5f)
+            {
+                SkinWeight selected_skin_weight = null;
+                foreach (SkinWeight skin_weight in mesh.vertices[i].skin_weights)
+                {
+                    TSONode bone = mesh.GetBone(skin_weight.bone_index);
+                    if (bone == selected_node)
+                    {
+                        selected_skin_weight = skin_weight;
+                        break;
+                    }
+                }
+                if (selected_skin_weight != null)
+                {
+                    float prev_selected_weight = selected_skin_weight.weight;
+                    float prev_rest_weight = 1.0f - prev_selected_weight;
+                    selected_skin_weight.weight += 0.2f;
+                    if (selected_skin_weight.weight > 1.0f)
+                        selected_skin_weight.weight = 1.0f;
+                    float gain_weight = selected_skin_weight.weight - prev_selected_weight;
+                    //reduce weight
+                    foreach (SkinWeight skin_weight in mesh.vertices[i].skin_weights)
+                    {
+                        skin_weight.weight -= gain_weight * skin_weight.weight / prev_rest_weight;
+                        if (skin_weight.weight < 0.0001f)
+                            skin_weight.weight = 0.0f;
+                    }
+                }
+            }
+        }
+    }
+
+    public void GainSkinWeight(TSONode selected_node)
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            if (selected_frame != null && selected_vertex_mesh != null)
+            {
+                foreach (TSOMesh mesh in selected_frame.meshes)
+                    GainSkinWeight(fig, mesh, selected_node);
+            }
         }
     }
 
