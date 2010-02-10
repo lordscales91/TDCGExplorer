@@ -1030,7 +1030,7 @@ public class Viewer : IDisposable
 
                 tso.SwitchShader(mesh);
                 effect.Technique = "BoneCol";
-                effect.SetValue("PenColor", new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+                effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
                 Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
                 int[] clipped_boneSelections = new int[mesh.maxPalettes];
 

@@ -79,6 +79,10 @@ public class TSOForm : Form
                 else
                     fig_form.Clear();
             };
+            fig_form.FrameEvent += delegate(object sender, EventArgs e)
+            {
+                viewer.selected_frame = fig_form.selected_frame;
+            };
             foreach (string arg in args)
                 viewer.LoadAnyFile(arg, true);
 
