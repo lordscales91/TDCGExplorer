@@ -33,8 +33,8 @@ public partial class FigureForm : Form
     }
 
     private Figure fig = null;
-    private TSOFile tso = null;
-    private Shader shader = null;
+    private TSOFile selected_tso = null;
+    private Shader selected_shader = null;
 
     /// <summary>
     /// フィギュア情報を削除します。
@@ -42,21 +42,31 @@ public partial class FigureForm : Form
     public void Clear()
     {
         gvShaderParams.DataSource = null;
-        this.shader = null;
+        selected_shader = null;
         lvSubScripts.Items.Clear();
-        this.tso = null;
+        selected_tso = null;
         lvTSOFiles.Items.Clear();
         this.fig = null;
     }
 
     /// <summary>
-    /// フィギュアをUIに設定します。
+    /// フィギュア
     /// </summary>
-    /// <param name="fig">フィギュア</param>
-    public void SetFigure(Figure fig)
+    public Figure Figure
     {
-        this.fig = fig;
+        get
+        {
+            return fig;
+        }
+        set
+        {
+            fig = value;
+            AssignFigure(fig);
+        }
+    }
 
+    void AssignFigure(Figure fig)
+    {
         this.tbSlideArm.Value = (int)(fig.slide_matrices.ArmRatio * (float)tbSlideArm.Maximum);
         this.tbSlideLeg.Value = (int)(fig.slide_matrices.LegRatio * (float)tbSlideLeg.Maximum);
         this.tbSlideWaist.Value = (int)(fig.slide_matrices.WaistRatio * (float)tbSlideWaist.Maximum);
@@ -64,6 +74,11 @@ public partial class FigureForm : Form
         this.tbSlideTall.Value = (int)(fig.slide_matrices.TallRatio * (float)tbSlideTall.Maximum);
         this.tbSlideEye.Value = (int)(fig.slide_matrices.EyeRatio * (float)tbSlideEye.Maximum);
 
+        AssignTSOFiles(fig);
+    }
+
+    private void AssignTSOFiles(Figure fig)
+    {
         lvTSOFiles.Items.Clear();
         for (int i = 0; i < fig.TSOList.Count; i++)
         {
@@ -75,13 +90,8 @@ public partial class FigureForm : Form
         lvTSOFiles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
     }
 
-    /// <summary>
-    /// tsoをUIに設定します。
-    /// </summary>
-    /// <param name="tso">tso</param>
-    public void SetTSOFile(TSOFile tso)
+    private void AssignTSOFile(TSOFile tso)
     {
-        this.tso = tso;
         AssignSubScripts(tso);
         AssignNodes(tso);
         AssignFrames(tso);
@@ -130,16 +140,16 @@ public partial class FigureForm : Form
     /// <param name="shader">シェーダ設定</param>
     public void SetShader(Shader shader)
     {
-        this.shader = shader;
+        selected_shader = shader;
         gvShaderParams.DataSource = shader.shader_parameters;
     }
 
     private void btnDump_Click(object sender, EventArgs e)
     {
-        if (shader == null)
+        if (selected_shader == null)
             return;
         Console.WriteLine("-- dump shader parameters --");
-        foreach (ShaderParameter param in shader.shader_parameters)
+        foreach (ShaderParameter param in selected_shader.shader_parameters)
             Console.WriteLine("Name {0} F1 {1} F2 {2} F3 {3} F4 {4}", param.Name, param.F1, param.F2, param.F3, param.F4);
     }
 
@@ -152,7 +162,7 @@ public partial class FigureForm : Form
         if (li_idx_prev < 0)
             return;
         fig.SwapAt(li_idx_prev, li_idx);
-        SetFigure(fig);
+        AssignFigure(fig);
         ListViewItem li = lvTSOFiles.Items[li_idx_prev];
         li.Selected = true;
     }
@@ -166,7 +176,7 @@ public partial class FigureForm : Form
         if (li_idx_next > lvTSOFiles.Items.Count - 1)
             return;
         fig.SwapAt(li_idx, li_idx_next);
-        SetFigure(fig);
+        AssignFigure(fig);
         ListViewItem li = lvTSOFiles.Items[li_idx_next];
         li.Selected = true;
     }
@@ -174,10 +184,14 @@ public partial class FigureForm : Form
     private void lvTSOFiles_SelectedIndexChanged(object sender, EventArgs e)
     {
         if (lvTSOFiles.SelectedItems.Count == 0)
+        {
+            selected_tso = null;
             return;
+        }
         ListViewItem li = lvTSOFiles.SelectedItems[0];
         TSOFile tso = li.Tag as TSOFile;
-        SetTSOFile(tso);
+        selected_tso = tso;
+        AssignTSOFile(tso);
     }
 
     private void lvSubScripts_SelectedIndexChanged(object sender, EventArgs e)
@@ -187,30 +201,6 @@ public partial class FigureForm : Form
         ListViewItem li = lvSubScripts.SelectedItems[0];
         TSOSubScript sub_script = li.Tag as TSOSubScript;
         SetShader(sub_script.shader);
-    }
-
-    /// <summary>
-    /// ノード選択時に呼び出されるハンドラ
-    /// </summary>
-    public event EventHandler NodeEvent;
-
-    /// <summary>
-    /// 選択中のノード
-    /// </summary>
-    public TSONode selected_node = null;
-
-    private void lvNodes_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        if (lvNodes.SelectedItems.Count == 0)
-        {
-            selected_node = null;
-            return;
-        }
-        ListViewItem li = lvNodes.SelectedItems[0];
-        TSONode node = li.Tag as TSONode;
-        selected_node = node;
-        if (NodeEvent != null)
-            NodeEvent(this, EventArgs.Empty);
     }
 
     /// <summary>
@@ -235,6 +225,37 @@ public partial class FigureForm : Form
         selected_frame = frame;
         if (FrameEvent != null)
             FrameEvent(this, EventArgs.Empty);
+    }
+
+    public void SetFrame(TSOFrame frame)
+    {
+        foreach (TSOMesh mesh in frame.meshes)
+            foreach (int bone_index in mesh.bone_indices)
+                ;
+    }
+
+    /// <summary>
+    /// ノード選択時に呼び出されるハンドラ
+    /// </summary>
+    public event EventHandler NodeEvent;
+
+    /// <summary>
+    /// 選択中のノード
+    /// </summary>
+    public TSONode selected_node = null;
+
+    private void lvNodes_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (lvNodes.SelectedItems.Count == 0)
+        {
+            selected_node = null;
+            return;
+        }
+        ListViewItem li = lvNodes.SelectedItems[0];
+        TSONode node = li.Tag as TSONode;
+        selected_node = node;
+        if (NodeEvent != null)
+            NodeEvent(this, EventArgs.Empty);
     }
 
     private void FigureForm_FormClosing(object sender, FormClosingEventArgs e)
