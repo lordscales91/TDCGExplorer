@@ -1003,7 +1003,7 @@ public class Viewer : IDisposable
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
     }
 
-    static Regex re_chichi = new Regex(@"\AChichi");
+    public TSONode selected_node = null;
 
     void DrawFigure()
     {
@@ -1042,8 +1042,7 @@ public class Viewer : IDisposable
                     if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
                     {
                         clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
-                        bool is_chichi = re_chichi.IsMatch(tmo_node.Name);
-                        clipped_boneSelections[numPalettes] = is_chichi ? 1 : 0;
+                        clipped_boneSelections[numPalettes] = selected_node == tso_node ? 1 : 0;
                     }
                 }
                 effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
