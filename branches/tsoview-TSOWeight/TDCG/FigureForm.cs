@@ -156,8 +156,18 @@ public class FigureForm : Form
         this.lvTSOFiles = new System.Windows.Forms.ListView();
         this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
         this.tabControl1 = new System.Windows.Forms.TabControl();
-        this.tpSliders = new System.Windows.Forms.TabPage();
         this.tpSubScripts = new System.Windows.Forms.TabPage();
+        this.gvShaderParams = new System.Windows.Forms.DataGridView();
+        this.lvSubScripts = new System.Windows.Forms.ListView();
+        this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
+        this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+        this.btnDump = new System.Windows.Forms.Button();
+        this.tpFramesAndNodes = new System.Windows.Forms.TabPage();
+        this.lvNodes = new System.Windows.Forms.ListView();
+        this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
+        this.lvFrames = new System.Windows.Forms.ListView();
+        this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
+        this.tpSliders = new System.Windows.Forms.TabPage();
         this.lbSlideEye = new System.Windows.Forms.Label();
         this.tbSlideEye = new System.Windows.Forms.TrackBar();
         this.lbSlideTall = new System.Windows.Forms.Label();
@@ -170,27 +180,17 @@ public class FigureForm : Form
         this.tbSlideWaist = new System.Windows.Forms.TrackBar();
         this.tbSlideArm = new System.Windows.Forms.TrackBar();
         this.tbSlideLeg = new System.Windows.Forms.TrackBar();
-        this.gvShaderParams = new System.Windows.Forms.DataGridView();
-        this.lvSubScripts = new System.Windows.Forms.ListView();
-        this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
-        this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
-        this.btnDump = new System.Windows.Forms.Button();
-        this.tpFramesAndNodes = new System.Windows.Forms.TabPage();
-        this.lvNodes = new System.Windows.Forms.ListView();
-        this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
-        this.lvFrames = new System.Windows.Forms.ListView();
-        this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
         this.tabControl1.SuspendLayout();
-        this.tpSliders.SuspendLayout();
         this.tpSubScripts.SuspendLayout();
+        ((System.ComponentModel.ISupportInitialize)(this.gvShaderParams)).BeginInit();
+        this.tpFramesAndNodes.SuspendLayout();
+        this.tpSliders.SuspendLayout();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideEye)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideTall)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideBust)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideWaist)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideArm)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideLeg)).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)(this.gvShaderParams)).BeginInit();
-        this.tpFramesAndNodes.SuspendLayout();
         this.SuspendLayout();
         // 
         // btnUp
@@ -242,14 +242,125 @@ public class FigureForm : Form
         this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                     | System.Windows.Forms.AnchorStyles.Left)
                     | System.Windows.Forms.AnchorStyles.Right)));
-        this.tabControl1.Controls.Add(this.tpSubScripts);
         this.tabControl1.Controls.Add(this.tpFramesAndNodes);
+        this.tabControl1.Controls.Add(this.tpSubScripts);
         this.tabControl1.Controls.Add(this.tpSliders);
         this.tabControl1.Location = new System.Drawing.Point(198, 12);
         this.tabControl1.Name = "tabControl1";
         this.tabControl1.SelectedIndex = 0;
         this.tabControl1.Size = new System.Drawing.Size(574, 539);
         this.tabControl1.TabIndex = 20;
+        // 
+        // tpSubScripts
+        // 
+        this.tpSubScripts.Controls.Add(this.gvShaderParams);
+        this.tpSubScripts.Controls.Add(this.lvSubScripts);
+        this.tpSubScripts.Controls.Add(this.btnDump);
+        this.tpSubScripts.Location = new System.Drawing.Point(4, 22);
+        this.tpSubScripts.Name = "tpSubScripts";
+        this.tpSubScripts.Padding = new System.Windows.Forms.Padding(3);
+        this.tpSubScripts.Size = new System.Drawing.Size(566, 513);
+        this.tpSubScripts.TabIndex = 1;
+        this.tpSubScripts.Text = "SubScripts";
+        this.tpSubScripts.UseVisualStyleBackColor = true;
+        // 
+        // gvShaderParams
+        // 
+        this.gvShaderParams.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+        this.gvShaderParams.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+        this.gvShaderParams.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+        this.gvShaderParams.Location = new System.Drawing.Point(192, 6);
+        this.gvShaderParams.Name = "gvShaderParams";
+        this.gvShaderParams.RowTemplate.Height = 21;
+        this.gvShaderParams.Size = new System.Drawing.Size(368, 472);
+        this.gvShaderParams.TabIndex = 8;
+        // 
+        // lvSubScripts
+        // 
+        this.lvSubScripts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader2,
+            this.columnHeader3});
+        this.lvSubScripts.FullRowSelect = true;
+        this.lvSubScripts.GridLines = true;
+        this.lvSubScripts.HideSelection = false;
+        this.lvSubScripts.Location = new System.Drawing.Point(6, 6);
+        this.lvSubScripts.MultiSelect = false;
+        this.lvSubScripts.Name = "lvSubScripts";
+        this.lvSubScripts.Size = new System.Drawing.Size(180, 472);
+        this.lvSubScripts.TabIndex = 7;
+        this.lvSubScripts.UseCompatibleStateImageBehavior = false;
+        this.lvSubScripts.View = System.Windows.Forms.View.Details;
+        this.lvSubScripts.SelectedIndexChanged += new System.EventHandler(this.lvSubScripts_SelectedIndexChanged);
+        // 
+        // columnHeader2
+        // 
+        this.columnHeader2.Text = "Name";
+        // 
+        // columnHeader3
+        // 
+        this.columnHeader3.Text = "File";
+        // 
+        // btnDump
+        // 
+        this.btnDump.Location = new System.Drawing.Point(485, 484);
+        this.btnDump.Name = "btnDump";
+        this.btnDump.Size = new System.Drawing.Size(75, 23);
+        this.btnDump.TabIndex = 6;
+        this.btnDump.Text = "&Dump";
+        this.btnDump.UseVisualStyleBackColor = true;
+        this.btnDump.Click += new System.EventHandler(this.btnDump_Click);
+        // 
+        // tpFramesAndNodes
+        // 
+        this.tpFramesAndNodes.Controls.Add(this.lvNodes);
+        this.tpFramesAndNodes.Controls.Add(this.lvFrames);
+        this.tpFramesAndNodes.Location = new System.Drawing.Point(4, 22);
+        this.tpFramesAndNodes.Name = "tpFramesAndNodes";
+        this.tpFramesAndNodes.Padding = new System.Windows.Forms.Padding(3);
+        this.tpFramesAndNodes.Size = new System.Drawing.Size(566, 513);
+        this.tpFramesAndNodes.TabIndex = 2;
+        this.tpFramesAndNodes.Text = "Frames and Nodes";
+        this.tpFramesAndNodes.UseVisualStyleBackColor = true;
+        // 
+        // lvNodes
+        // 
+        this.lvNodes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader5});
+        this.lvNodes.FullRowSelect = true;
+        this.lvNodes.GridLines = true;
+        this.lvNodes.HideSelection = false;
+        this.lvNodes.Location = new System.Drawing.Point(287, 6);
+        this.lvNodes.MultiSelect = false;
+        this.lvNodes.Name = "lvNodes";
+        this.lvNodes.Size = new System.Drawing.Size(274, 472);
+        this.lvNodes.TabIndex = 21;
+        this.lvNodes.UseCompatibleStateImageBehavior = false;
+        this.lvNodes.View = System.Windows.Forms.View.Details;
+        this.lvNodes.SelectedIndexChanged += new System.EventHandler(this.lvNodes_SelectedIndexChanged);
+        // 
+        // columnHeader5
+        // 
+        this.columnHeader5.Text = "Name";
+        // 
+        // lvFrames
+        // 
+        this.lvFrames.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader4});
+        this.lvFrames.FullRowSelect = true;
+        this.lvFrames.GridLines = true;
+        this.lvFrames.HideSelection = false;
+        this.lvFrames.Location = new System.Drawing.Point(6, 6);
+        this.lvFrames.MultiSelect = false;
+        this.lvFrames.Name = "lvFrames";
+        this.lvFrames.Size = new System.Drawing.Size(274, 472);
+        this.lvFrames.TabIndex = 20;
+        this.lvFrames.UseCompatibleStateImageBehavior = false;
+        this.lvFrames.View = System.Windows.Forms.View.Details;
+        this.lvFrames.SelectedIndexChanged += new System.EventHandler(this.lvFrames_SelectedIndexChanged);
+        // 
+        // columnHeader4
+        // 
+        this.columnHeader4.Text = "Name";
         // 
         // tpSliders
         // 
@@ -272,19 +383,6 @@ public class FigureForm : Form
         this.tpSliders.TabIndex = 0;
         this.tpSliders.Text = "Sliders";
         this.tpSliders.UseVisualStyleBackColor = true;
-        // 
-        // tpSubScripts
-        // 
-        this.tpSubScripts.Controls.Add(this.gvShaderParams);
-        this.tpSubScripts.Controls.Add(this.lvSubScripts);
-        this.tpSubScripts.Controls.Add(this.btnDump);
-        this.tpSubScripts.Location = new System.Drawing.Point(4, 22);
-        this.tpSubScripts.Name = "tpSubScripts";
-        this.tpSubScripts.Padding = new System.Windows.Forms.Padding(3);
-        this.tpSubScripts.Size = new System.Drawing.Size(566, 513);
-        this.tpSubScripts.TabIndex = 1;
-        this.tpSubScripts.Text = "SubScripts";
-        this.tpSubScripts.UseVisualStyleBackColor = true;
         // 
         // lbSlideEye
         // 
@@ -394,104 +492,6 @@ public class FigureForm : Form
         this.tbSlideLeg.TabIndex = 19;
         this.tbSlideLeg.ValueChanged += new System.EventHandler(this.tbSlideLeg_ValueChanged);
         // 
-        // gvShaderParams
-        // 
-        this.gvShaderParams.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-        this.gvShaderParams.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-        this.gvShaderParams.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-        this.gvShaderParams.Location = new System.Drawing.Point(192, 6);
-        this.gvShaderParams.Name = "gvShaderParams";
-        this.gvShaderParams.RowTemplate.Height = 21;
-        this.gvShaderParams.Size = new System.Drawing.Size(368, 472);
-        this.gvShaderParams.TabIndex = 8;
-        // 
-        // lvSubScripts
-        // 
-        this.lvSubScripts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader2,
-            this.columnHeader3});
-        this.lvSubScripts.FullRowSelect = true;
-        this.lvSubScripts.GridLines = true;
-        this.lvSubScripts.HideSelection = false;
-        this.lvSubScripts.Location = new System.Drawing.Point(6, 6);
-        this.lvSubScripts.MultiSelect = false;
-        this.lvSubScripts.Name = "lvSubScripts";
-        this.lvSubScripts.Size = new System.Drawing.Size(180, 472);
-        this.lvSubScripts.TabIndex = 7;
-        this.lvSubScripts.UseCompatibleStateImageBehavior = false;
-        this.lvSubScripts.View = System.Windows.Forms.View.Details;
-        this.lvSubScripts.SelectedIndexChanged += new System.EventHandler(this.lvSubScripts_SelectedIndexChanged);
-        // 
-        // columnHeader2
-        // 
-        this.columnHeader2.Text = "Name";
-        // 
-        // columnHeader3
-        // 
-        this.columnHeader3.Text = "File";
-        // 
-        // btnDump
-        // 
-        this.btnDump.Location = new System.Drawing.Point(485, 484);
-        this.btnDump.Name = "btnDump";
-        this.btnDump.Size = new System.Drawing.Size(75, 23);
-        this.btnDump.TabIndex = 6;
-        this.btnDump.Text = "&Dump";
-        this.btnDump.UseVisualStyleBackColor = true;
-        this.btnDump.Click += new System.EventHandler(this.btnDump_Click);
-        // 
-        // tpFramesAndNodes
-        // 
-        this.tpFramesAndNodes.Controls.Add(this.lvNodes);
-        this.tpFramesAndNodes.Controls.Add(this.lvFrames);
-        this.tpFramesAndNodes.Location = new System.Drawing.Point(4, 22);
-        this.tpFramesAndNodes.Name = "tpFramesAndNodes";
-        this.tpFramesAndNodes.Padding = new System.Windows.Forms.Padding(3);
-        this.tpFramesAndNodes.Size = new System.Drawing.Size(566, 513);
-        this.tpFramesAndNodes.TabIndex = 2;
-        this.tpFramesAndNodes.Text = "Frames and Nodes";
-        this.tpFramesAndNodes.UseVisualStyleBackColor = true;
-        // 
-        // lvNodes
-        // 
-        this.lvNodes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader5});
-        this.lvNodes.FullRowSelect = true;
-        this.lvNodes.GridLines = true;
-        this.lvNodes.HideSelection = false;
-        this.lvNodes.Location = new System.Drawing.Point(287, 6);
-        this.lvNodes.MultiSelect = false;
-        this.lvNodes.Name = "lvNodes";
-        this.lvNodes.Size = new System.Drawing.Size(274, 472);
-        this.lvNodes.TabIndex = 21;
-        this.lvNodes.UseCompatibleStateImageBehavior = false;
-        this.lvNodes.View = System.Windows.Forms.View.Details;
-        this.lvNodes.SelectedIndexChanged += new System.EventHandler(this.lvNodes_SelectedIndexChanged);
-        // 
-        // columnHeader5
-        // 
-        this.columnHeader5.Text = "Name";
-        // 
-        // lvFrames
-        // 
-        this.lvFrames.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader4});
-        this.lvFrames.FullRowSelect = true;
-        this.lvFrames.GridLines = true;
-        this.lvFrames.HideSelection = false;
-        this.lvFrames.Location = new System.Drawing.Point(6, 6);
-        this.lvFrames.MultiSelect = false;
-        this.lvFrames.Name = "lvFrames";
-        this.lvFrames.Size = new System.Drawing.Size(274, 472);
-        this.lvFrames.TabIndex = 20;
-        this.lvFrames.UseCompatibleStateImageBehavior = false;
-        this.lvFrames.View = System.Windows.Forms.View.Details;
-        this.lvFrames.SelectedIndexChanged += new System.EventHandler(this.lvFrames_SelectedIndexChanged);
-        // 
-        // columnHeader4
-        // 
-        this.columnHeader4.Text = "Name";
-        // 
         // FigureForm
         // 
         this.ClientSize = new System.Drawing.Size(784, 563);
@@ -503,17 +503,17 @@ public class FigureForm : Form
         this.Text = "TSOGrid";
         this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FigureForm_FormClosing);
         this.tabControl1.ResumeLayout(false);
+        this.tpSubScripts.ResumeLayout(false);
+        ((System.ComponentModel.ISupportInitialize)(this.gvShaderParams)).EndInit();
+        this.tpFramesAndNodes.ResumeLayout(false);
         this.tpSliders.ResumeLayout(false);
         this.tpSliders.PerformLayout();
-        this.tpSubScripts.ResumeLayout(false);
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideEye)).EndInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideTall)).EndInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideBust)).EndInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideWaist)).EndInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideArm)).EndInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideLeg)).EndInit();
-        ((System.ComponentModel.ISupportInitialize)(this.gvShaderParams)).EndInit();
-        this.tpFramesAndNodes.ResumeLayout(false);
         this.ResumeLayout(false);
 
     }
