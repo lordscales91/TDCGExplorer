@@ -1,4 +1,4 @@
-namespace TDCG
+namespace TSOView
 {
     partial class FigureForm
     {

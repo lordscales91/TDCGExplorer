@@ -491,7 +491,7 @@ namespace TDCG
         /// テキスト行配列
         /// </summary>
         public string[] lines;
-        internal Shader shader = null;
+        public Shader shader = null;
 
         /// <summary>
         /// 名称

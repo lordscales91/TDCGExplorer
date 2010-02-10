@@ -60,12 +60,6 @@
     <Compile Include="CCDSolver.cs" />
     <Compile Include="CCDViewer.cs" />
     <Compile Include="Figure.cs" />
-    <Compile Include="FigureForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FigureForm.Designer.cs">
-      <DependentUpon>FigureForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="IProportion.cs" />
     <Compile Include="Morphing.cs" />
     <Compile Include="NodesRange.cs" />
@@ -104,10 +98,5 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.XML" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="FigureForm.resx">
-      <DependentUpon>FigureForm.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>
