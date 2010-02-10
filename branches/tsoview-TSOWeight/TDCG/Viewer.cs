@@ -839,6 +839,8 @@ public class Viewer : IDisposable
     /// </summary>
     public RenderingHandler Rendering;
 
+    public bool BoneHeatingViewSwitch = false;
+
     /// <summary>
     /// シーンをレンダリングします。
     /// </summary>
@@ -1018,6 +1020,12 @@ public class Viewer : IDisposable
             effect.SetValue("texShadowMap", renderTextures[2]);
         }
 
+        if (BoneHeatingViewSwitch)
+        {
+            effect.Technique = "BoneCol";
+            effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
+        }
+
         foreach (Figure fig in FigureList)
         foreach (TSOFile tso in fig.TSOList)
         {
@@ -1028,9 +1036,10 @@ public class Viewer : IDisposable
             {
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
-                tso.SwitchShader(mesh);
-                //effect.Technique = "BoneCol";
-                //effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
+                if (! BoneHeatingViewSwitch)
+                {
+                    tso.SwitchShader(mesh);
+                }
                 Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
                 int[] clipped_boneSelections = new int[mesh.maxPalettes];
 

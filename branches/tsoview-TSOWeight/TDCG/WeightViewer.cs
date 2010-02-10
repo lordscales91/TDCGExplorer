@@ -224,14 +224,15 @@ public class WeightViewer : Viewer
 
     public void GainSkinWeight(Figure fig, TSOMesh mesh, TSONode selected_node)
     {
-        Vector3 v0 = selected_vertex_mesh.vertices[selected_vertex_id].position;
+        Vector3 p0 = selected_vertex_mesh.vertices[selected_vertex_id].position;
 
         for (int i = 0; i < mesh.vertices.Length; i++)
         {
-            Vector3 v1 = mesh.vertices[i].position;
-            float dx = v1.X - v0.X;
-            float dy = v1.Y - v0.Y;
-            float dz = v1.Z - v0.Z;
+            Vertex v = mesh.vertices[i];
+            Vector3 p1 = v.position;
+            float dx = p1.X - p0.X;
+            float dy = p1.Y - p0.Y;
+            float dz = p1.Z - p0.Z;
             if (dx * dx + dy * dy + dz * dz < 0.5f * 0.5f)
             {
                 SkinWeight selected_skin_weight = null;
