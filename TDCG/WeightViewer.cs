@@ -16,6 +16,19 @@ namespace TDCG
     /// </summary>
 public class WeightViewer : Viewer
 {
+    internal Mesh sphere = null;
+
+    /// <summary>
+    /// viewerを生成します。
+    /// </summary>
+    public WeightViewer()
+    {
+        this.Rendering += delegate()
+        {
+            RenderDerived();
+        };
+    }
+
     /// 球とレイの衝突を見つけます。
     public bool DetectSphereRayCollision(float sphereRadius, ref Vector3 sphereCenter, ref Vector3 rayStart, ref Vector3 rayOrientation, out Vector3 collisionPoint, out float collisionTime)
     {
@@ -75,6 +88,81 @@ public class WeightViewer : Viewer
         return ScreenToWorld(screenX, screenY, z, device.Viewport, Transform_View, Transform_Projection);
     }
 
+    /// <summary>
+    /// deviceを作成します。
+    /// </summary>
+    /// <param name="control">レンダリング先となるcontrol</param>
+    /// <returns>deviceの作成に成功したか</returns>
+    public new bool InitializeApplication(Control control)
+    {
+        return InitializeApplication(control, false);
+    }
+
+    /// <summary>
+    /// deviceを作成します。
+    /// </summary>
+    /// <param name="control">レンダリング先となるcontrol</param>
+    /// <param name="shadowMapEnabled">シャドウマップを作成するか</param>
+    /// <returns>deviceの作成に成功したか</returns>
+    public new bool InitializeApplication(Control control, bool shadowMapEnabled)
+    {
+        if (! base.InitializeApplication(control, shadowMapEnabled))
+            return false;
+
+        sphere = Mesh.Sphere(device, 0.25f, 8, 6);
+
+        return true;
+    }
+
+    /// <summary>
+    /// シーンをレンダリングします。
+    /// </summary>
+    public void RenderDerived()
+    {
+        if (motionEnabled)
+            return;
+
+        DrawFigureVertices();
+    }
+
+    void DrawFigureVertices()
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            TSOFile tso = fig.TSOList[0];
+            TSOFrame frame = tso.frames[0];
+            TSOMesh mesh = frame.meshes[0];
+            DrawVertices(fig, mesh);
+        }
+    }
+
+    void DrawVertices(Figure fig, TSOMesh mesh)
+    {
+        Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
+
+        for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
+        {
+            TSONode tso_node = mesh.GetBone(numPalettes);
+            TMONode tmo_node;
+            if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
+                clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
+        }
+
+        float scale = 0.1f;
+        Vector4 color = new Vector4(1, 1, 1, 0.5f);
+
+        for (int i = 0; i < mesh.vertices.Length; i++)
+        {
+            Vector3 pos = CalcSkindeformPosition(ref mesh.vertices[i], clipped_boneMatrices);
+            Matrix m = Matrix.Scaling(scale, scale, scale);
+            m.M41 = pos.X;
+            m.M42 = pos.Y;
+            m.M43 = pos.Z;
+            DrawMesh(sphere, m, color);
+        }
+    }
+
     public static Vector3 CalcSkindeformPosition(ref Vertex v, Matrix[] boneMatrices)
     {
         Vector3 pos = Vector3.Empty;
@@ -130,5 +218,14 @@ public class WeightViewer : Viewer
         return vertex_id;
     }
 
+    /// <summary>
+    /// 内部objectを破棄します。
+    /// </summary>
+    public new void Dispose()
+    {
+        if (sphere != null)
+            sphere.Dispose();
+        base.Dispose();
+    }
 }
 }
