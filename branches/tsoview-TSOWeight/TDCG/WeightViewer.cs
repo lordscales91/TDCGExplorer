@@ -137,7 +137,7 @@ public class WeightViewer : Viewer
                 foreach (TSOMesh mesh in selected_frame.meshes)
                     DrawVertices(fig, mesh);
                 if (selected_vertex_mesh != null)
-                    DrawSelectedVertex(fig, selected_vertex_mesh);
+                    DrawSelectedVertex(fig);
             }
         }
     }
@@ -155,10 +155,22 @@ public class WeightViewer : Viewer
         }
 
         float scale = 0.1f;
-        Vector4 color = new Vector4(1, 0, 0, 0.5f);
 
         for (int i = 0; i < mesh.vertices.Length; i++)
         {
+            Vector4 color = new Vector4(1, 0, 0, 0.5f);
+
+            if (selected_vertex_mesh != null)
+            {
+                Vector3 v0 = selected_vertex_mesh.vertices[selected_vertex_id].position;
+                Vector3 v1 = mesh.vertices[i].position;
+                float dx = v1.X - v0.X;
+                float dy = v1.Y - v0.Y;
+                float dz = v1.Z - v0.Z;
+                if (dx * dx + dy * dy + dz * dz < 0.5f * 0.5f)
+                    color.Y = 1;
+            }
+
             Vector3 pos = CalcSkindeformPosition(ref mesh.vertices[i], clipped_boneMatrices);
             Matrix m = Matrix.Scaling(scale, scale, scale);
             m.M41 = pos.X;
@@ -168,8 +180,9 @@ public class WeightViewer : Viewer
         }
     }
 
-    void DrawSelectedVertex(Figure fig, TSOMesh mesh)
+    void DrawSelectedVertex(Figure fig)
     {
+        TSOMesh mesh = selected_vertex_mesh;
         Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
 
         for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
@@ -181,7 +194,7 @@ public class WeightViewer : Viewer
         }
 
         float scale = 0.1f;
-        Vector4 color = new Vector4(1, 1, 0, 1);
+        Vector4 color = new Vector4(0, 1, 0, 1);
 
         {
             int i = selected_vertex_id;
