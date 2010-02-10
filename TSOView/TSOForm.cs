@@ -75,7 +75,7 @@ public class TSOForm : Form
             {
                 Figure fig;
                 if (viewer.TryGetFigure(out fig))
-                    fig_form.SetFigure(fig);
+                    fig_form.Figure = fig;
                 else
                     fig_form.Clear();
             };
