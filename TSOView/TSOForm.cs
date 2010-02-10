@@ -86,7 +86,7 @@ public class TSOForm : Form
                 viewer.LoadAnyFile(arg, true);
             if (viewer.FigureList.Count == 0)
                 viewer.LoadAnyFile(Path.Combine(save_path, "system.tdcgsav.png"), true);
-            viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
+            viewer.Camera.SetTranslation(0.0f, +18.0f, +10.0f);
 
             string script_file = Path.Combine(Application.StartupPath, "Script.cs");
             if (File.Exists(script_file))

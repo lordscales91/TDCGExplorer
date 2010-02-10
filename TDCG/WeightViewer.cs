@@ -136,6 +136,8 @@ public class WeightViewer : Viewer
             {
                 foreach (TSOMesh mesh in selected_frame.meshes)
                     DrawVertices(fig, mesh);
+                if (selected_vertex_mesh != null)
+                    DrawSelectedVertex(fig, selected_vertex_mesh);
             }
         }
     }
@@ -166,6 +168,32 @@ public class WeightViewer : Viewer
         }
     }
 
+    void DrawSelectedVertex(Figure fig, TSOMesh mesh)
+    {
+        Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
+
+        for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
+        {
+            TSONode tso_node = mesh.GetBone(numPalettes);
+            TMONode tmo_node;
+            if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
+                clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
+        }
+
+        float scale = 0.1f;
+        Vector4 color = new Vector4(1, 1, 0, 1);
+
+        {
+            int i = selected_vertex_id;
+            Vector3 pos = CalcSkindeformPosition(ref mesh.vertices[i], clipped_boneMatrices);
+            Matrix m = Matrix.Scaling(scale, scale, scale);
+            m.M41 = pos.X;
+            m.M42 = pos.Y;
+            m.M43 = pos.Z;
+            DrawMesh(sphere, m, color);
+        }
+    }
+
     public static Vector3 CalcSkindeformPosition(ref Vertex v, Matrix[] boneMatrices)
     {
         Vector3 pos = Vector3.Empty;
@@ -176,6 +204,50 @@ public class WeightViewer : Viewer
             pos += Vector3.TransformCoordinate(v.position, m) * w;
         }
         return pos;
+    }
+
+    /// マウスボタンを押したときに実行するハンドラ
+    protected override void form_OnMouseDown(object sender, MouseEventArgs e)
+    {
+        switch (e.Button)
+        {
+        case MouseButtons.Left:
+            if (Control.ModifierKeys == Keys.Control)
+                lightDir = ScreenToOrientation(e.X, e.Y);
+            else
+                if (!motionEnabled)
+                {
+                    SelectVertex();
+                }
+            break;
+        }
+
+        lastScreenPoint.X = e.X;
+        lastScreenPoint.Y = e.Y;
+    }
+
+    int selected_vertex_id = -1;
+    TSOMesh selected_vertex_mesh = null;
+
+    private void SelectVertex()
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            if (selected_frame != null)
+            {
+                foreach (TSOMesh mesh in selected_frame.meshes)
+                {
+                    int vertex_id = FindVertexOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, fig, mesh);
+                    if (vertex_id != -1)
+                    {
+                        selected_vertex_id = vertex_id;
+                        selected_vertex_mesh = mesh;
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     /// スクリーン座標から頂点を見つけます。
