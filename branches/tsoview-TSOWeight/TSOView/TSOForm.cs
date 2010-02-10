@@ -27,7 +27,7 @@ public class TSOForm : Form
     internal int keyCameraReset = (int)Keys.D0;
     internal int keyFigureForm = (int)Keys.G;
 
-    internal Viewer viewer = null;
+    internal WeightViewer viewer = null;
     internal FigureForm fig_form = null;
     
     private SimpleCamera camera
