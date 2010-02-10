@@ -6,6 +6,7 @@ using System.Threading;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
+using System.Text.RegularExpressions;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
@@ -26,6 +27,7 @@ public class Viewer : IDisposable
 
     private EffectHandle handle_LocalBoneMats;
     private EffectHandle handle_ShadowMap;
+    private EffectHandle handle_LocalBoneSels;
 
     private bool shadowMapEnabled = false;
     internal Texture[] renderTextures = null;
@@ -544,6 +546,7 @@ public class Viewer : IDisposable
 
             sprite = new Sprite(device);
         }
+        handle_LocalBoneSels = effect.GetParameter(null, "LocalBoneSels");
         camera.Update();
         OnDeviceReset(device, null);
 
@@ -999,7 +1002,9 @@ public class Viewer : IDisposable
         device.DepthStencilSurface = renderZ;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
     }
-    
+
+    static Regex re_chichi = new Regex(@"\AChichi");
+
     void DrawFigure()
     {
         device.RenderState.AlphaBlendEnable = true;
@@ -1024,7 +1029,10 @@ public class Viewer : IDisposable
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
                 tso.SwitchShader(mesh);
+                effect.Technique = "BoneCol";
+                effect.SetValue("PenColor", new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
                 Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
+                int[] clipped_boneSelections = new int[mesh.maxPalettes];
 
                 for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
                 {
@@ -1032,9 +1040,14 @@ public class Viewer : IDisposable
                     TSONode tso_node = mesh.GetBone(numPalettes);
                     TMONode tmo_node;
                     if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
+                    {
                         clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
+                        bool is_chichi = re_chichi.IsMatch(tmo_node.Name);
+                        clipped_boneSelections[numPalettes] = is_chichi ? 1 : 0;
+                    }
                 }
                 effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
+                effect.SetValue(handle_LocalBoneSels, clipped_boneSelections);
 
                 int npass = effect.Begin(0);
                 for (int ipass = 0; ipass < npass; ipass++)
