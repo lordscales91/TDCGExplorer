@@ -79,6 +79,10 @@ public class TSOForm : Form
                 else
                     fig_form.Clear();
             };
+            fig_form.NodeEvent += delegate(object sender, EventArgs e)
+            {
+                viewer.selected_node = fig_form.selected_node;
+            };
             fig_form.FrameEvent += delegate(object sender, EventArgs e)
             {
                 viewer.selected_frame = fig_form.selected_frame;
