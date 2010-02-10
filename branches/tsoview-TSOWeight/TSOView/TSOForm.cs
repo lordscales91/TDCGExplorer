@@ -27,8 +27,9 @@ public class TSOForm : Form
     internal int keyCameraReset = (int)Keys.D0;
     internal int keyFigureForm = (int)Keys.G;
 
-    internal WeightViewer viewer = null;
-    internal FigureForm fig_form = null;
+    WeightViewer viewer = null;
+    FigureForm fig_form = null;
+    string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
     
     private SimpleCamera camera
     {
@@ -69,12 +70,6 @@ public class TSOForm : Form
             {
                 Figure fig;
                 if (viewer.TryGetFigure(out fig))
-                    viewer.Camera.SetCenter(fig.Center);
-            };
-            viewer.FigureEvent += delegate(object sender, EventArgs e)
-            {
-                Figure fig;
-                if (viewer.TryGetFigure(out fig))
                     fig_form.Figure = fig;
                 else
                     fig_form.Clear();
@@ -89,6 +84,9 @@ public class TSOForm : Form
             };
             foreach (string arg in args)
                 viewer.LoadAnyFile(arg, true);
+            if (viewer.FigureList.Count == 0)
+                viewer.LoadAnyFile(Path.Combine(save_path, "system.tdcgsav.png"), true);
+            viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
 
             string script_file = Path.Combine(Application.StartupPath, "Script.cs");
             if (File.Exists(script_file))
