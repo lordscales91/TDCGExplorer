@@ -239,8 +239,13 @@ public class WeightViewer : Viewer
         lastScreenPoint.Y = e.Y;
     }
 
-    int selected_vertex_id = -1;
-    TSOMesh selected_vertex_mesh = null;
+    public int selected_vertex_id = -1;
+    public TSOMesh selected_vertex_mesh = null;
+
+    /// <summary>
+    /// 頂点選択時に呼び出されるハンドラ
+    /// </summary>
+    public event EventHandler VertexEvent;
 
     private void SelectVertex()
     {
@@ -256,6 +261,8 @@ public class WeightViewer : Viewer
                     {
                         selected_vertex_id = vertex_id;
                         selected_vertex_mesh = mesh;
+                        if (VertexEvent != null)
+                            VertexEvent(this, EventArgs.Empty);
                         break;
                     }
                 }
