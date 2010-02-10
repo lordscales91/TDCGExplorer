@@ -32,9 +32,10 @@ partial class TSOForm
             this.components = new System.ComponentModel.Container();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.gvSkinWeights = new System.Windows.Forms.DataGridView();
-            this.btnShowFigureForm = new System.Windows.Forms.Button();
             this.Column1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.btnShowFigureForm = new System.Windows.Forms.Button();
+            this.btnGainSkinWeight = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.gvSkinWeights)).BeginInit();
             this.SuspendLayout();
             // 
@@ -48,23 +49,13 @@ partial class TSOForm
             this.gvSkinWeights.AllowUserToAddRows = false;
             this.gvSkinWeights.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.gvSkinWeights.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-                this.Column1,
-                this.Column2});
+            this.Column1,
+            this.Column2});
             this.gvSkinWeights.Location = new System.Drawing.Point(12, 41);
             this.gvSkinWeights.Name = "gvSkinWeights";
             this.gvSkinWeights.RowTemplate.Height = 21;
             this.gvSkinWeights.Size = new System.Drawing.Size(260, 150);
             this.gvSkinWeights.TabIndex = 0;
-            // 
-            // btnShowFigureForm
-            // 
-            this.btnShowFigureForm.Location = new System.Drawing.Point(12, 12);
-            this.btnShowFigureForm.Name = "btnShowFigureForm";
-            this.btnShowFigureForm.Size = new System.Drawing.Size(260, 23);
-            this.btnShowFigureForm.TabIndex = 1;
-            this.btnShowFigureForm.Text = "show FigureForm";
-            this.btnShowFigureForm.UseVisualStyleBackColor = true;
-            this.btnShowFigureForm.Click += new System.EventHandler(this.btnShowFigureForm_Click);
             // 
             // Column1
             // 
@@ -76,9 +67,30 @@ partial class TSOForm
             this.Column2.HeaderText = "Weight";
             this.Column2.Name = "Column2";
             // 
+            // btnShowFigureForm
+            // 
+            this.btnShowFigureForm.Location = new System.Drawing.Point(12, 12);
+            this.btnShowFigureForm.Name = "btnShowFigureForm";
+            this.btnShowFigureForm.Size = new System.Drawing.Size(260, 23);
+            this.btnShowFigureForm.TabIndex = 1;
+            this.btnShowFigureForm.Text = "Show FigureForm";
+            this.btnShowFigureForm.UseVisualStyleBackColor = true;
+            this.btnShowFigureForm.Click += new System.EventHandler(this.btnShowFigureForm_Click);
+            // 
+            // btnGainSkinWeight
+            // 
+            this.btnGainSkinWeight.Location = new System.Drawing.Point(12, 197);
+            this.btnGainSkinWeight.Name = "btnGainSkinWeight";
+            this.btnGainSkinWeight.Size = new System.Drawing.Size(260, 23);
+            this.btnGainSkinWeight.TabIndex = 2;
+            this.btnGainSkinWeight.Text = "Gain SkinWeight";
+            this.btnGainSkinWeight.UseVisualStyleBackColor = true;
+            this.btnGainSkinWeight.Click += new System.EventHandler(this.btnGainSkinWeight_Click);
+            // 
             // TSOForm
             // 
             this.ClientSize = new System.Drawing.Size(284, 263);
+            this.Controls.Add(this.btnGainSkinWeight);
             this.Controls.Add(this.btnShowFigureForm);
             this.Controls.Add(this.gvSkinWeights);
             this.Name = "TSOForm";
@@ -94,5 +106,6 @@ partial class TSOForm
         private System.Windows.Forms.Button btnShowFigureForm;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
+        private System.Windows.Forms.Button btnGainSkinWeight;
     }
 }

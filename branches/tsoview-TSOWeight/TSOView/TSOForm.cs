@@ -269,5 +269,10 @@ public partial class TSOForm : Form
         fig_form.Show();
         fig_form.Activate();
     }
+
+    private void btnGainSkinWeight_Click(object sender, EventArgs e)
+    {
+        viewer.GainSkinWeight(fig_form.selected_node);
+    }
 }
 }
