@@ -109,7 +109,7 @@ public class WeightViewer : Viewer
         if (! base.InitializeApplication(control, shadowMapEnabled))
             return false;
 
-        sphere = Mesh.Sphere(device, 0.25f, 8, 6);
+        sphere = Mesh.Sphere(device, 0.25f, 4, 2);
 
         return true;
     }
@@ -125,15 +125,18 @@ public class WeightViewer : Viewer
         DrawFigureVertices();
     }
 
+    public TSOFrame selected_frame = null;
+
     void DrawFigureVertices()
     {
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            TSOFile tso = fig.TSOList[0];
-            TSOFrame frame = tso.frames[0];
-            TSOMesh mesh = frame.meshes[0];
-            DrawVertices(fig, mesh);
+            if (selected_frame != null)
+            {
+                foreach (TSOMesh mesh in selected_frame.meshes)
+                    DrawVertices(fig, mesh);
+            }
         }
     }
 
@@ -150,7 +153,7 @@ public class WeightViewer : Viewer
         }
 
         float scale = 0.1f;
-        Vector4 color = new Vector4(1, 1, 1, 0.5f);
+        Vector4 color = new Vector4(1, 0, 0, 0.5f);
 
         for (int i = 0; i < mesh.vertices.Length; i++)
         {

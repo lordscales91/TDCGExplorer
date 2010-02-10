@@ -34,6 +34,8 @@ public class FigureForm : Form
     private Label lbSlideBust;
     private Label lbSlideTall;
     private TrackBar tbSlideTall;
+    private ListView lvFrames;
+    private ColumnHeader columnHeader4;
     private DataGridView gvShaderParams;
 
     /// <summary>
@@ -113,6 +115,14 @@ public class FigureForm : Form
             lvSubScripts.Items.Add(li);
         }
         lvSubScripts.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        lvFrames.Items.Clear();
+        foreach (TSOFrame frame in tso.frames)
+        {
+            ListViewItem li = new ListViewItem(frame.name);
+            li.Tag = frame;
+            lvFrames.Items.Add(li);
+        }
+        lvFrames.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
     }
 
     /// <summary>
@@ -148,6 +158,8 @@ public class FigureForm : Form
         this.lbSlideBust = new System.Windows.Forms.Label();
         this.lbSlideTall = new System.Windows.Forms.Label();
         this.tbSlideTall = new System.Windows.Forms.TrackBar();
+        this.lvFrames = new System.Windows.Forms.ListView();
+        this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
         ((System.ComponentModel.ISupportInitialize)(this.gvShaderParams)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideEye)).BeginInit();
         ((System.ComponentModel.ISupportInitialize)(this.tbSlideLeg)).BeginInit();
@@ -351,9 +363,30 @@ public class FigureForm : Form
         this.tbSlideTall.TabIndex = 16;
         this.tbSlideTall.ValueChanged += new System.EventHandler(this.tbSlideTall_ValueChanged);
         // 
+        // lvFrames
+        // 
+        this.lvFrames.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader4});
+        this.lvFrames.FullRowSelect = true;
+        this.lvFrames.GridLines = true;
+        this.lvFrames.HideSelection = false;
+        this.lvFrames.Location = new System.Drawing.Point(254, 12);
+        this.lvFrames.MultiSelect = false;
+        this.lvFrames.Name = "lvFrames";
+        this.lvFrames.Size = new System.Drawing.Size(344, 200);
+        this.lvFrames.TabIndex = 18;
+        this.lvFrames.UseCompatibleStateImageBehavior = false;
+        this.lvFrames.View = System.Windows.Forms.View.Details;
+        this.lvFrames.SelectedIndexChanged += new System.EventHandler(this.lvFrames_SelectedIndexChanged);
+        // 
+        // columnHeader4
+        // 
+        this.columnHeader4.Text = "Name";
+        // 
         // FigureForm
         // 
         this.ClientSize = new System.Drawing.Size(784, 563);
+        this.Controls.Add(this.lvFrames);
         this.Controls.Add(this.lbSlideEye);
         this.Controls.Add(this.tbSlideEye);
         this.Controls.Add(this.lbSlideTall);
@@ -440,6 +473,30 @@ public class FigureForm : Form
         ListViewItem li = lvSubScripts.SelectedItems[0];
         TSOSubScript sub_script = li.Tag as TSOSubScript;
         SetShader(sub_script.shader);
+    }
+
+    /// <summary>
+    /// フレーム選択時に呼び出されるハンドラ
+    /// </summary>
+    public event EventHandler FrameEvent;
+
+    /// <summary>
+    /// 選択中のフレーム
+    /// </summary>
+    public TSOFrame selected_frame = null;
+
+    private void lvFrames_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (lvFrames.SelectedItems.Count == 0)
+        {
+            selected_frame = null;
+            return;
+        }
+        ListViewItem li = lvFrames.SelectedItems[0];
+        TSOFrame frame = li.Tag as TSOFrame;
+        selected_frame = frame;
+        if (FrameEvent != null)
+            FrameEvent(this, EventArgs.Empty);
     }
 
     private void FigureForm_FormClosing(object sender, FormClosingEventArgs e)
