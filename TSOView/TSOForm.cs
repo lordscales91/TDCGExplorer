@@ -77,7 +77,9 @@ public partial class TSOForm : Form
                 gvSkinWeights.Rows.Clear();
                 foreach (SkinWeight skin_weight in selected_vertex.skin_weights)
                 {
-                    gvSkinWeights.Rows.Add(new string[] { skin_weight.bone_index.ToString(), skin_weight.weight.ToString("F4") });
+                    TSONode bone = viewer.selected_vertex_mesh.GetBone(skin_weight.bone_index);
+                    float weight = skin_weight.weight;
+                    gvSkinWeights.Rows.Add(new string[] { bone.Name, weight.ToString("F4") });
                 }
             };
             fig_form.NodeEvent += delegate(object sender, EventArgs e)

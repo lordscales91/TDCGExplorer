@@ -34,8 +34,8 @@ public partial class FigureForm : Form
     }
 
     private Figure fig = null;
-    private TSOFile selected_tso = null;
-    private Shader selected_shader = null;
+    public TSOFile selected_tso = null;
+    public Shader selected_shader = null;
 
     /// <summary>
     /// フィギュア情報を削除します。
