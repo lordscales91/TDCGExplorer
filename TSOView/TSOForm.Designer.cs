@@ -36,6 +36,7 @@ partial class TSOForm
             this.Column2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnShowFigureForm = new System.Windows.Forms.Button();
             this.btnGainSkinWeight = new System.Windows.Forms.Button();
+            this.cbBoneHeatingView = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.gvSkinWeights)).BeginInit();
             this.SuspendLayout();
             // 
@@ -87,15 +88,28 @@ partial class TSOForm
             this.btnGainSkinWeight.UseVisualStyleBackColor = true;
             this.btnGainSkinWeight.Click += new System.EventHandler(this.btnGainSkinWeight_Click);
             // 
+            // cbBoneHeatingView
+            // 
+            this.cbBoneHeatingView.AutoSize = true;
+            this.cbBoneHeatingView.Location = new System.Drawing.Point(12, 226);
+            this.cbBoneHeatingView.Name = "cbBoneHeatingView";
+            this.cbBoneHeatingView.Size = new System.Drawing.Size(118, 16);
+            this.cbBoneHeatingView.TabIndex = 3;
+            this.cbBoneHeatingView.Text = "Bone heating view";
+            this.cbBoneHeatingView.UseVisualStyleBackColor = true;
+            this.cbBoneHeatingView.CheckedChanged += new System.EventHandler(this.cbBoneHeatingView_CheckedChanged);
+            // 
             // TSOForm
             // 
             this.ClientSize = new System.Drawing.Size(284, 263);
+            this.Controls.Add(this.cbBoneHeatingView);
             this.Controls.Add(this.btnGainSkinWeight);
             this.Controls.Add(this.btnShowFigureForm);
             this.Controls.Add(this.gvSkinWeights);
             this.Name = "TSOForm";
             ((System.ComponentModel.ISupportInitialize)(this.gvSkinWeights)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -107,5 +121,6 @@ partial class TSOForm
         private System.Windows.Forms.DataGridViewTextBoxColumn Column1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Column2;
         private System.Windows.Forms.Button btnGainSkinWeight;
+        private System.Windows.Forms.CheckBox cbBoneHeatingView;
     }
 }

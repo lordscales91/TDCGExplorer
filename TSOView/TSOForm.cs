@@ -274,5 +274,10 @@ public partial class TSOForm : Form
     {
         viewer.GainSkinWeight(fig_form.selected_node);
     }
+
+    private void cbBoneHeatingView_CheckedChanged(object sender, EventArgs e)
+    {
+        viewer.BoneHeatingViewSwitch = cbBoneHeatingView.Checked;
+    }
 }
 }
