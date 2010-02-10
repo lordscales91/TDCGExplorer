@@ -82,6 +82,13 @@ public partial class FigureForm : Form
     public void SetTSOFile(TSOFile tso)
     {
         this.tso = tso;
+        AssignSubScripts(tso);
+        AssignNodes(tso);
+        AssignFrames(tso);
+    }
+
+    private void AssignSubScripts(TSOFile tso)
+    {
         lvSubScripts.Items.Clear();
         foreach (TSOSubScript sub_script in tso.sub_scripts)
         {
@@ -91,6 +98,10 @@ public partial class FigureForm : Form
             lvSubScripts.Items.Add(li);
         }
         lvSubScripts.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+    }
+
+    private void AssignNodes(TSOFile tso)
+    {
         lvNodes.Items.Clear();
         foreach (TSONode node in tso.nodes)
         {
@@ -99,6 +110,10 @@ public partial class FigureForm : Form
             lvNodes.Items.Add(li);
         }
         lvNodes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+    }
+
+    private void AssignFrames(TSOFile tso)
+    {
         lvFrames.Items.Clear();
         foreach (TSOFrame frame in tso.frames)
         {
