@@ -32,6 +32,10 @@ namespace TSOWeight
                         AssignTSOFiles(fig);
                     }
                 };
+                viewer.VertexEvent += delegate(object sender, EventArgs e)
+                {
+                    AssignSkinWeights();
+                };
                 foreach (string arg in args)
                     viewer.LoadAnyFile(arg, true);
                 if (viewer.FigureList.Count == 0)
@@ -104,7 +108,7 @@ namespace TSOWeight
                 if (weight == 0.0f)
                     continue;
                 ListViewItem li = new ListViewItem(bone.Name);
-                li.SubItems.Add(weight.ToString("F4"));
+                li.SubItems.Add(weight.ToString("F3"));
                 lvSkinWeights.Items.Add(li);
             }
         }
