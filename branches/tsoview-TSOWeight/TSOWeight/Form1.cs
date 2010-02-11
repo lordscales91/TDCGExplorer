@@ -130,5 +130,15 @@ namespace TSOWeight
         {
             viewer.BoneHeatingViewSwitch = cbBoneHeatingView.Checked;
         }
+
+        private void btnCenter_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnDraw_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
