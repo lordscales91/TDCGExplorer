@@ -202,6 +202,7 @@ namespace TSOWeight
         private void btnDraw_Click(object sender, EventArgs e)
         {
             viewer.GainSkinWeight(viewer.selected_node);
+            AssignSkinWeights();
         }
 
         private void tbWeight_ValueChanged(object sender, EventArgs e)
@@ -212,6 +213,31 @@ namespace TSOWeight
         private void tbRadius_ValueChanged(object sender, EventArgs e)
         {
             WeightViewer.radius = (float)(tbRadius.Value) * 0.1f;
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (lvTSOFiles.SelectedIndices.Count == 0)
+                return;
+
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
+            {
+                SaveFileDialog dialog = new SaveFileDialog();
+                dialog.Filter = "tso files|*.tso";
+                dialog.FilterIndex = 0;
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    string dest_file = dialog.FileName;
+                    string extension = Path.GetExtension(dest_file);
+                    if (extension == ".tso")
+                    {
+                        int index = lvTSOFiles.SelectedIndices[0];
+                        TSOFile tso = fig.TSOList[index];
+                        tso.Save(dest_file);
+                    }
+                }
+            }
         }
     }
 }
