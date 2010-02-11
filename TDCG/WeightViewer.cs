@@ -286,7 +286,7 @@ public class WeightViewer : Viewer
                     continue;
 
                 skin_weight.weight -= gain_weight * skin_weight.weight / prev_rest_weight;
-                if (skin_weight.weight < 0.0001f)
+                if (skin_weight.weight < 0.001f)
                     skin_weight.weight = 0.0f;
             }
         }
