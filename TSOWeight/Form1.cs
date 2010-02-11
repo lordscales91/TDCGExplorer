@@ -125,5 +125,10 @@ namespace TSOWeight
             TSOMesh mesh = li.Tag as TSOMesh;
             AssignBoneIndices(mesh);
         }
+
+        private void cbBoneHeatingView_CheckedChanged(object sender, EventArgs e)
+        {
+            viewer.BoneHeatingViewSwitch = cbBoneHeatingView.Checked;
+        }
     }
 }
