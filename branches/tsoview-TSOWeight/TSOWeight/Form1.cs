@@ -40,7 +40,7 @@ namespace TSOWeight
                     viewer.LoadAnyFile(arg, true);
                 if (viewer.FigureList.Count == 0)
                     viewer.LoadAnyFile(Path.Combine(save_path, "system.tdcgsav.png"), true);
-                viewer.Camera.SetTranslation(0.0f, +18.0f, +10.0f);
+                viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
 
                 this.timer1.Enabled = true;
             }
@@ -168,6 +168,7 @@ namespace TSOWeight
             TSOMesh mesh = li.Tag as TSOMesh;
             AssignBoneIndices(mesh);
             viewer.selected_mesh = mesh;
+            viewer.selected_vertex_id = -1;
         }
 
         private void lvBoneIndices_SelectedIndexChanged(object sender, EventArgs e)
