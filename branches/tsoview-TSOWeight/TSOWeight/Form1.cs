@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -84,10 +84,10 @@ namespace TSOWeight
         void AssignBoneIndices(TSOMesh mesh)
         {
             lvBoneIndices.Items.Clear();
-            foreach (int bone_index in mesh.bone_indices)
+            foreach (TSONode bone in mesh.bones)
             {
-                ListViewItem li = new ListViewItem(string.Format("bone #{0}", bone_index));
-                li.Tag = bone_index;
+                ListViewItem li = new ListViewItem(bone.Name);
+                li.Tag = bone;
                 lvBoneIndices.Items.Add(li);
             }
             lvBoneIndices.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
@@ -168,6 +168,12 @@ namespace TSOWeight
 
         private void lvBoneIndices_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (lvBoneIndices.SelectedItems.Count == 0)
+                return;
+
+            ListViewItem li = lvBoneIndices.SelectedItems[0];
+            TSONode bone = li.Tag as TSONode;
+            viewer.selected_node = bone;
         }
 
         private void cbBoneHeatingView_CheckedChanged(object sender, EventArgs e)
