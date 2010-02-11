@@ -11,9 +11,10 @@ namespace TSOWeight
 {
     public partial class Form1 : Form
     {
-        public Form1()
+        public Form1(TSOConfig tso_config, string[] args)
         {
             InitializeComponent();
+            this.ClientSize = tso_config.ClientSize;
         }
     }
 }
