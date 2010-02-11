@@ -268,6 +268,26 @@ public class WeightViewer : Viewer
                 break;
             }
         }
+        if (selected_skin_weight == null)
+        {
+            bool found = false;
+            int bone_index = 0;
+            foreach (TSONode bone in mesh.bones)
+            {
+                if (bone == selected_node)
+                {
+                    found = true;
+                    break;
+                }
+                bone_index++;
+            }
+            if (found)
+            {
+                selected_skin_weight = v.skin_weights[3];
+                selected_skin_weight.bone_index = bone_index;
+                selected_skin_weight.weight = 0.0f;
+            }
+        }
         if (selected_skin_weight != null)
         {
             updated = true;
