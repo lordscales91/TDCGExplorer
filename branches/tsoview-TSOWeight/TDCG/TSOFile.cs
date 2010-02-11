@@ -222,10 +222,12 @@ namespace TDCG
     /// </summary>
     public class TSOFrame : IDisposable
     {
+        string name;
         /// <summary>
         /// –¼Ì
         /// </summary>
-        public string name;
+        public string Name { get { return name; } }
+
         /// <summary>
         /// •ÏŒ`s—ñ
         /// </summary>

@@ -78,7 +78,7 @@ public partial class FigureForm : Form
         AssignTSOFiles(fig);
     }
 
-    private void AssignTSOFiles(Figure fig)
+    void AssignTSOFiles(Figure fig)
     {
         lvTSOFiles.Items.Clear();
         for (int i = 0; i < fig.TSOList.Count; i++)
@@ -91,14 +91,14 @@ public partial class FigureForm : Form
         lvTSOFiles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
     }
 
-    private void AssignTSOFile(TSOFile tso)
+    void AssignTSOFile(TSOFile tso)
     {
         AssignSubScripts(tso);
         AssignNodes(tso);
         AssignFrames(tso);
     }
 
-    private void AssignSubScripts(TSOFile tso)
+    void AssignSubScripts(TSOFile tso)
     {
         lvSubScripts.Items.Clear();
         foreach (TSOSubScript sub_script in tso.sub_scripts)
@@ -111,7 +111,7 @@ public partial class FigureForm : Form
         lvSubScripts.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
     }
 
-    private void AssignNodes(TSOFile tso)
+    void AssignNodes(TSOFile tso)
     {
         lvNodes.Items.Clear();
         foreach (TSONode node in tso.nodes)
@@ -123,12 +123,12 @@ public partial class FigureForm : Form
         lvNodes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
     }
 
-    private void AssignFrames(TSOFile tso)
+    void AssignFrames(TSOFile tso)
     {
         lvFrames.Items.Clear();
         foreach (TSOFrame frame in tso.frames)
         {
-            ListViewItem li = new ListViewItem(frame.name);
+            ListViewItem li = new ListViewItem(frame.Name);
             li.Tag = frame;
             lvFrames.Items.Add(li);
         }
