@@ -187,7 +187,9 @@ namespace TSOWeight
 
         private void btnCenter_Click(object sender, EventArgs e)
         {
-
+            Vertex selected_vertex = viewer.selected_mesh.vertices[viewer.selected_vertex_id];
+            viewer.Camera.Reset();
+            viewer.Camera.Center = selected_vertex.position;
         }
 
         private void btnDraw_Click(object sender, EventArgs e)
