@@ -216,6 +216,9 @@ public class WeightViewer : Viewer
 
     public void GainSkinWeight(TSOMesh mesh, TSONode selected_node)
     {
+        if (selected_vertex_id == -1)
+            return;
+
         bool updated = false;
         Vector3 p0 = selected_mesh.vertices[selected_vertex_id].position;
 
