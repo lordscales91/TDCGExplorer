@@ -141,6 +141,8 @@ public class WeightViewer : Viewer
         }
     }
 
+    public static float radius = 0.5f;
+
     void DrawVertices(Figure fig, TSOMesh mesh)
     {
         Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, mesh);
@@ -158,7 +160,7 @@ public class WeightViewer : Viewer
                 float dx = v1.X - v0.X;
                 float dy = v1.Y - v0.Y;
                 float dz = v1.Z - v0.Z;
-                if (dx * dx + dy * dy + dz * dz < 0.5f * 0.5f)
+                if (dx * dx + dy * dy + dz * dz < radius * radius)
                     color.Y = 1;
                 else
                     color.Y = 0;
@@ -206,13 +208,9 @@ public class WeightViewer : Viewer
 
     public void GainSkinWeight(TSONode selected_node)
     {
-        Figure fig;
-        if (TryGetFigure(out fig))
+        if (selected_mesh != null)
         {
-            if (selected_mesh != null)
-            {
-                GainSkinWeight(selected_mesh, selected_node);
-            }
+            GainSkinWeight(selected_mesh, selected_node);
         }
     }
 
@@ -228,7 +226,7 @@ public class WeightViewer : Viewer
             float dx = p1.X - p0.X;
             float dy = p1.Y - p0.Y;
             float dz = p1.Z - p0.Z;
-            if (dx * dx + dy * dy + dz * dz < 0.5f * 0.5f)
+            if (dx * dx + dy * dy + dz * dz < radius * radius)
             {
                 if (GainSkinWeight(mesh, selected_node, ref v))
                     updated = true;
@@ -238,7 +236,9 @@ public class WeightViewer : Viewer
             mesh.WriteBuffer(device);
     }
 
-    private static bool GainSkinWeight(TSOMesh mesh, TSONode selected_node, ref Vertex v)
+    public static float weight = 0.2f;
+
+    public static bool GainSkinWeight(TSOMesh mesh, TSONode selected_node, ref Vertex v)
     {
         bool updated = false;
         SkinWeight selected_skin_weight = null;
@@ -277,7 +277,7 @@ public class WeightViewer : Viewer
 
             float prev_selected_weight = selected_skin_weight.weight;
             float prev_rest_weight = 1.0f - prev_selected_weight;
-            selected_skin_weight.weight += 0.2f;
+            selected_skin_weight.weight += weight;
             if (selected_skin_weight.weight > 1.0f)
                 selected_skin_weight.weight = 1.0f;
             float gain_weight = selected_skin_weight.weight - prev_selected_weight;
