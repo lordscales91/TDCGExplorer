@@ -187,9 +187,13 @@ namespace TSOWeight
 
         private void btnCenter_Click(object sender, EventArgs e)
         {
-            Vertex selected_vertex = viewer.selected_mesh.vertices[viewer.selected_vertex_id];
-            viewer.Camera.Reset();
-            viewer.Camera.Center = selected_vertex.position;
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
+            {
+                Vertex selected_vertex = viewer.selected_mesh.vertices[viewer.selected_vertex_id];
+                viewer.Camera.Reset();
+                viewer.Camera.Center = WeightViewer.CalcSkindeformPosition(ref selected_vertex, WeightViewer.ClipBoneMatrices(fig, viewer.selected_mesh));
+            }
         }
 
         private void btnDraw_Click(object sender, EventArgs e)
