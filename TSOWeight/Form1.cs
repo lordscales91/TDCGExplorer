@@ -68,6 +68,18 @@ namespace TSOWeight
             lvMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
+        void AssignBoneIndices(TSOMesh mesh)
+        {
+            lvBoneIndices.Items.Clear();
+            foreach (int bone_index in mesh.bone_indices)
+            {
+                ListViewItem li = new ListViewItem(string.Format("bone #{0}", bone_index));
+                li.Tag = bone_index;
+                lvBoneIndices.Items.Add(li);
+            }
+            lvBoneIndices.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+
         private void timer1_Tick(object sender, EventArgs e)
         {
             viewer.FrameMove();
@@ -102,6 +114,16 @@ namespace TSOWeight
             ListViewItem li = lvFrames.SelectedItems[0];
             TSOFrame frame = li.Tag as TSOFrame;
             AssignMeshes(frame);
+        }
+
+        private void lvMeshes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvMeshes.SelectedItems.Count == 0)
+                return;
+
+            ListViewItem li = lvMeshes.SelectedItems[0];
+            TSOMesh mesh = li.Tag as TSOMesh;
+            AssignBoneIndices(mesh);
         }
     }
 }

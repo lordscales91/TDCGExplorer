@@ -40,6 +40,9 @@
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.lbFrames = new System.Windows.Forms.Label();
             this.lbMeshes = new System.Windows.Forms.Label();
+            this.lbBoneIndices = new System.Windows.Forms.Label();
+            this.lvBoneIndices = new System.Windows.Forms.ListView();
+            this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
             this.SuspendLayout();
             // 
             // lvFrames
@@ -52,7 +55,7 @@
             this.lvFrames.Location = new System.Drawing.Point(12, 24);
             this.lvFrames.MultiSelect = false;
             this.lvFrames.Name = "lvFrames";
-            this.lvFrames.Size = new System.Drawing.Size(180, 120);
+            this.lvFrames.Size = new System.Drawing.Size(120, 120);
             this.lvFrames.TabIndex = 0;
             this.lvFrames.UseCompatibleStateImageBehavior = false;
             this.lvFrames.View = System.Windows.Forms.View.Details;
@@ -77,10 +80,11 @@
             this.lvMeshes.Location = new System.Drawing.Point(12, 162);
             this.lvMeshes.MultiSelect = false;
             this.lvMeshes.Name = "lvMeshes";
-            this.lvMeshes.Size = new System.Drawing.Size(180, 120);
+            this.lvMeshes.Size = new System.Drawing.Size(120, 120);
             this.lvMeshes.TabIndex = 2;
             this.lvMeshes.UseCompatibleStateImageBehavior = false;
             this.lvMeshes.View = System.Windows.Forms.View.Details;
+            this.lvMeshes.SelectedIndexChanged += new System.EventHandler(this.lvMeshes_SelectedIndexChanged);
             // 
             // columnHeader2
             // 
@@ -88,9 +92,9 @@
             // 
             // lbFrames
             // 
-            this.lbFrames.Location = new System.Drawing.Point(14, 9);
+            this.lbFrames.Location = new System.Drawing.Point(12, 9);
             this.lbFrames.Name = "lbFrames";
-            this.lbFrames.Size = new System.Drawing.Size(178, 12);
+            this.lbFrames.Size = new System.Drawing.Size(120, 12);
             this.lbFrames.TabIndex = 3;
             this.lbFrames.Text = "Frames";
             // 
@@ -98,9 +102,36 @@
             // 
             this.lbMeshes.Location = new System.Drawing.Point(12, 147);
             this.lbMeshes.Name = "lbMeshes";
-            this.lbMeshes.Size = new System.Drawing.Size(180, 12);
+            this.lbMeshes.Size = new System.Drawing.Size(120, 12);
             this.lbMeshes.TabIndex = 4;
             this.lbMeshes.Text = "Meshes";
+            // 
+            // lbBoneIndices
+            // 
+            this.lbBoneIndices.Location = new System.Drawing.Point(12, 285);
+            this.lbBoneIndices.Name = "lbBoneIndices";
+            this.lbBoneIndices.Size = new System.Drawing.Size(120, 12);
+            this.lbBoneIndices.TabIndex = 6;
+            this.lbBoneIndices.Text = "Bone indices";
+            // 
+            // lvBoneIndices
+            // 
+            this.lvBoneIndices.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader3});
+            this.lvBoneIndices.FullRowSelect = true;
+            this.lvBoneIndices.GridLines = true;
+            this.lvBoneIndices.HideSelection = false;
+            this.lvBoneIndices.Location = new System.Drawing.Point(12, 300);
+            this.lvBoneIndices.MultiSelect = false;
+            this.lvBoneIndices.Name = "lvBoneIndices";
+            this.lvBoneIndices.Size = new System.Drawing.Size(120, 240);
+            this.lvBoneIndices.TabIndex = 5;
+            this.lvBoneIndices.UseCompatibleStateImageBehavior = false;
+            this.lvBoneIndices.View = System.Windows.Forms.View.Details;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "Name";
             // 
             // Form1
             // 
@@ -108,6 +139,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 563);
+            this.Controls.Add(this.lbBoneIndices);
+            this.Controls.Add(this.lvBoneIndices);
             this.Controls.Add(this.lbMeshes);
             this.Controls.Add(this.lbFrames);
             this.Controls.Add(this.lvMeshes);
@@ -129,6 +162,9 @@
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.Label lbFrames;
         private System.Windows.Forms.Label lbMeshes;
+        private System.Windows.Forms.Label lbBoneIndices;
+        private System.Windows.Forms.ListView lvBoneIndices;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
     }
 }
 
