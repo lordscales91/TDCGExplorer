@@ -125,18 +125,17 @@ public class WeightViewer : Viewer
         DrawFigureVertices();
     }
 
-    public TSOFrame selected_frame = null;
+    public TSOMesh selected_mesh = null;
 
     void DrawFigureVertices()
     {
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            if (selected_frame != null)
+            if (selected_mesh != null)
             {
-                foreach (TSOMesh mesh in selected_frame.meshes)
-                    DrawVertices(fig, mesh);
-                if (selected_vertex_mesh != null)
+                DrawVertices(fig, selected_mesh);
+                if (selected_vertex_id != -1)
                     DrawSelectedVertex(fig);
             }
         }
@@ -158,9 +157,9 @@ public class WeightViewer : Viewer
         float scale = 0.1f;
         Vector4 color = new Vector4(1, 0, 0, 0.5f);
 
-        if (selected_vertex_mesh != null)
+        if (selected_vertex_id != -1)
         {
-            Vector3 v0 = selected_vertex_mesh.vertices[selected_vertex_id].position;
+            Vector3 v0 = selected_mesh.vertices[selected_vertex_id].position;
 
             for (int i = 0; i < mesh.vertices.Length; i++)
             {
@@ -197,7 +196,7 @@ public class WeightViewer : Viewer
 
     void DrawSelectedVertex(Figure fig)
     {
-        TSOMesh mesh = selected_vertex_mesh;
+        TSOMesh mesh = selected_mesh;
         Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
 
         for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
@@ -227,10 +226,9 @@ public class WeightViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            if (selected_frame != null && selected_vertex_mesh != null)
+            if (selected_mesh != null)
             {
-                foreach (TSOMesh mesh in selected_frame.meshes)
-                    GainSkinWeight(mesh, selected_node);
+                GainSkinWeight(selected_mesh, selected_node);
             }
         }
     }
@@ -238,7 +236,7 @@ public class WeightViewer : Viewer
     public void GainSkinWeight(TSOMesh mesh, TSONode selected_node)
     {
         bool updated = false;
-        Vector3 p0 = selected_vertex_mesh.vertices[selected_vertex_id].position;
+        Vector3 p0 = selected_mesh.vertices[selected_vertex_id].position;
 
         for (int i = 0; i < mesh.vertices.Length; i++)
         {
@@ -328,7 +326,6 @@ public class WeightViewer : Viewer
     }
 
     public int selected_vertex_id = -1;
-    public TSOMesh selected_vertex_mesh = null;
 
     /// <summary>
     /// 頂点選択時に呼び出されるハンドラ
@@ -340,19 +337,14 @@ public class WeightViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            if (selected_frame != null)
+            if (selected_mesh != null)
             {
-                foreach (TSOMesh mesh in selected_frame.meshes)
+                int vertex_id = FindVertexOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, fig, selected_mesh);
+                if (vertex_id != -1)
                 {
-                    int vertex_id = FindVertexOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, fig, mesh);
-                    if (vertex_id != -1)
-                    {
-                        selected_vertex_id = vertex_id;
-                        selected_vertex_mesh = mesh;
-                        if (VertexEvent != null)
-                            VertexEvent(this, EventArgs.Empty);
-                        break;
-                    }
+                    selected_vertex_id = vertex_id;
+                    if (VertexEvent != null)
+                        VertexEvent(this, EventArgs.Empty);
                 }
             }
         }

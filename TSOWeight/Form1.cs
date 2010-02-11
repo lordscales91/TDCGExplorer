@@ -93,6 +93,22 @@ namespace TSOWeight
             lvBoneIndices.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
+        void AssignSkinWeights()
+        {
+            Vertex selected_vertex = viewer.selected_mesh.vertices[viewer.selected_vertex_id];
+            lvSkinWeights.Items.Clear();
+            foreach (SkinWeight skin_weight in selected_vertex.skin_weights)
+            {
+                TSONode bone = viewer.selected_mesh.GetBone(skin_weight.bone_index);
+                float weight = skin_weight.weight;
+                if (weight == 0.0f)
+                    continue;
+                ListViewItem li = new ListViewItem(bone.Name);
+                li.SubItems.Add(weight.ToString("F4"));
+                lvSkinWeights.Items.Add(li);
+            }
+        }
+
         private void timer1_Tick(object sender, EventArgs e)
         {
             viewer.FrameMove();
@@ -147,6 +163,11 @@ namespace TSOWeight
             ListViewItem li = lvMeshes.SelectedItems[0];
             TSOMesh mesh = li.Tag as TSOMesh;
             AssignBoneIndices(mesh);
+            viewer.selected_mesh = mesh;
+        }
+
+        private void lvBoneIndices_SelectedIndexChanged(object sender, EventArgs e)
+        {
         }
 
         private void cbBoneHeatingView_CheckedChanged(object sender, EventArgs e)
