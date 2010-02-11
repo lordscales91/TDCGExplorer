@@ -187,6 +187,9 @@ namespace TSOWeight
 
         private void btnCenter_Click(object sender, EventArgs e)
         {
+            if (viewer.selected_vertex_id == -1)
+                return;
+
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
