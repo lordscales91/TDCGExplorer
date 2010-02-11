@@ -29,7 +29,7 @@ namespace TSOWeight
                     Figure fig;
                     if (viewer.TryGetFigure(out fig))
                     {
-                        AssignFrames(fig.TSOList[0]);
+                        AssignTSOFiles(fig);
                     }
                 };
                 foreach (string arg in args)
@@ -40,6 +40,19 @@ namespace TSOWeight
 
                 this.timer1.Enabled = true;
             }
+        }
+
+        void AssignTSOFiles(Figure fig)
+        {
+            lvTSOFiles.Items.Clear();
+            for (int i = 0; i < fig.TSOList.Count; i++)
+            {
+                TSOFile tso = fig.TSOList[i];
+                ListViewItem li = new ListViewItem("TSO #" + i.ToString());
+                li.Tag = tso;
+                lvTSOFiles.Items.Add(li);
+            }
+            lvTSOFiles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
         void AssignFrames(TSOFile tso)
@@ -104,6 +117,16 @@ namespace TSOWeight
                 foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
                     viewer.LoadAnyFile(src, (e.KeyState & 8) == 8);
             }
+        }
+
+        private void lvTSOFiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvTSOFiles.SelectedItems.Count == 0)
+                return;
+
+            ListViewItem li = lvTSOFiles.SelectedItems[0];
+            TSOFile tso = li.Tag as TSOFile;
+            AssignFrames(tso);
         }
 
         private void lvFrames_SelectedIndexChanged(object sender, EventArgs e)
