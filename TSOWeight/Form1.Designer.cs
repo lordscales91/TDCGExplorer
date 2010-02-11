@@ -56,6 +56,9 @@
             this.lbRadius = new System.Windows.Forms.Label();
             this.btnDraw = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
+            this.lbTSOFiles = new System.Windows.Forms.Label();
+            this.lvTSOFiles = new System.Windows.Forms.ListView();
+            this.columnHeader6 = new System.Windows.Forms.ColumnHeader();
             ((System.ComponentModel.ISupportInitialize)(this.tbWeight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbRadius)).BeginInit();
             this.SuspendLayout();
@@ -270,12 +273,44 @@
             this.btnSave.Text = "&Save";
             this.btnSave.UseVisualStyleBackColor = true;
             // 
+            // lbTSOFiles
+            // 
+            this.lbTSOFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbTSOFiles.Location = new System.Drawing.Point(652, 387);
+            this.lbTSOFiles.Name = "lbTSOFiles";
+            this.lbTSOFiles.Size = new System.Drawing.Size(120, 12);
+            this.lbTSOFiles.TabIndex = 19;
+            this.lbTSOFiles.Text = "TSO files";
+            // 
+            // lvTSOFiles
+            // 
+            this.lvTSOFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvTSOFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader6});
+            this.lvTSOFiles.FullRowSelect = true;
+            this.lvTSOFiles.GridLines = true;
+            this.lvTSOFiles.HideSelection = false;
+            this.lvTSOFiles.Location = new System.Drawing.Point(652, 402);
+            this.lvTSOFiles.MultiSelect = false;
+            this.lvTSOFiles.Name = "lvTSOFiles";
+            this.lvTSOFiles.Size = new System.Drawing.Size(120, 120);
+            this.lvTSOFiles.TabIndex = 18;
+            this.lvTSOFiles.UseCompatibleStateImageBehavior = false;
+            this.lvTSOFiles.View = System.Windows.Forms.View.Details;
+            this.lvTSOFiles.SelectedIndexChanged += new System.EventHandler(this.lvTSOFiles_SelectedIndexChanged);
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "Name";
+            // 
             // Form1
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 563);
+            this.Controls.Add(this.lbTSOFiles);
+            this.Controls.Add(this.lvTSOFiles);
             this.Controls.Add(this.lbWeight);
             this.Controls.Add(this.lbRadius);
             this.Controls.Add(this.btnSave);
@@ -329,6 +364,9 @@
         private System.Windows.Forms.Label lbRadius;
         private System.Windows.Forms.Button btnDraw;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Label lbTSOFiles;
+        private System.Windows.Forms.ListView lvTSOFiles;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
     }
 }
 
