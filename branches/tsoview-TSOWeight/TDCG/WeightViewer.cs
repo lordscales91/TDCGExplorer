@@ -282,15 +282,18 @@ public class WeightViewer : Viewer
                 selected_skin_weight.weight = 1.0f;
             float gain_weight = selected_skin_weight.weight - prev_selected_weight;
 
-            //reduce weight
-            foreach (SkinWeight skin_weight in v.skin_weights)
+            if (prev_rest_weight != 0.0f)
             {
-                if (skin_weight == selected_skin_weight)
-                    continue;
+                //reduce weight
+                foreach (SkinWeight skin_weight in v.skin_weights)
+                {
+                    if (skin_weight == selected_skin_weight)
+                        continue;
 
-                skin_weight.weight -= gain_weight * skin_weight.weight / prev_rest_weight;
-                if (skin_weight.weight < 0.001f)
-                    skin_weight.weight = 0.0f;
+                    skin_weight.weight -= gain_weight * skin_weight.weight / prev_rest_weight;
+                    if (skin_weight.weight < 0.001f)
+                        skin_weight.weight = 0.0f;
+                }
             }
         }
         return updated;
