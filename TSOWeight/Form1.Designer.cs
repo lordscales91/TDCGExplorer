@@ -234,6 +234,7 @@
             this.tbWeight.Size = new System.Drawing.Size(120, 45);
             this.tbWeight.TabIndex = 13;
             this.tbWeight.Value = 2;
+            this.tbWeight.ValueChanged += new System.EventHandler(this.tbWeight_ValueChanged);
             // 
             // tbRadius
             // 
@@ -243,6 +244,7 @@
             this.tbRadius.Size = new System.Drawing.Size(120, 45);
             this.tbRadius.TabIndex = 15;
             this.tbRadius.Value = 5;
+            this.tbRadius.ValueChanged += new System.EventHandler(this.tbRadius_ValueChanged);
             // 
             // lbRadius
             // 

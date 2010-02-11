@@ -203,5 +203,15 @@ namespace TSOWeight
         {
             viewer.GainSkinWeight(viewer.selected_node);
         }
+
+        private void tbWeight_ValueChanged(object sender, EventArgs e)
+        {
+            WeightViewer.weight = (float)(tbWeight.Value) * 0.1f;
+        }
+
+        private void tbRadius_ValueChanged(object sender, EventArgs e)
+        {
+            WeightViewer.radius = (float)(tbRadius.Value) * 0.1f;
+        }
     }
 }
