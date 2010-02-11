@@ -54,6 +54,20 @@ namespace TSOWeight
             lvFrames.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
+        void AssignMeshes(TSOFrame frame)
+        {
+            lvMeshes.Items.Clear();
+            int nmesh = 0;
+            foreach (TSOMesh mesh in frame.meshes)
+            {
+                ListViewItem li = new ListViewItem(string.Format("mesh #{0}", nmesh));
+                li.Tag = mesh;
+                lvMeshes.Items.Add(li);
+                nmesh++;
+            }
+            lvMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+
         private void timer1_Tick(object sender, EventArgs e)
         {
             viewer.FrameMove();
@@ -78,6 +92,16 @@ namespace TSOWeight
                 foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
                     viewer.LoadAnyFile(src, (e.KeyState & 8) == 8);
             }
+        }
+
+        private void lvFrames_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvFrames.SelectedItems.Count == 0)
+                return;
+
+            ListViewItem li = lvFrames.SelectedItems[0];
+            TSOFrame frame = li.Tag as TSOFrame;
+            AssignMeshes(frame);
         }
     }
 }
