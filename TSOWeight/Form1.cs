@@ -99,6 +99,9 @@ namespace TSOWeight
 
         void AssignSkinWeights()
         {
+            if (viewer.selected_vertex_id == -1)
+                return;
+
             Vertex selected_vertex = viewer.selected_mesh.vertices[viewer.selected_vertex_id];
             lvSkinWeights.Items.Clear();
             foreach (SkinWeight skin_weight in selected_vertex.skin_weights)
