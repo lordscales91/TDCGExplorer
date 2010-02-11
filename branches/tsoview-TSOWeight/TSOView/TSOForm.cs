@@ -81,7 +81,7 @@ public partial class TSOForm : Form
             };
             fig_form.FrameEvent += delegate(object sender, EventArgs e)
             {
-                viewer.selected_frame = fig_form.selected_frame;
+
             };
             foreach (string arg in args)
                 viewer.LoadAnyFile(arg, true);
@@ -100,13 +100,13 @@ public partial class TSOForm : Form
         }
     }
 
-    private void AssignSkinWeights()
+    void AssignSkinWeights()
     {
-        Vertex selected_vertex = viewer.selected_vertex_mesh.vertices[viewer.selected_vertex_id];
+        Vertex selected_vertex = viewer.selected_mesh.vertices[viewer.selected_vertex_id];
         gvSkinWeights.Rows.Clear();
         foreach (SkinWeight skin_weight in selected_vertex.skin_weights)
         {
-            TSONode bone = viewer.selected_vertex_mesh.GetBone(skin_weight.bone_index);
+            TSONode bone = viewer.selected_mesh.GetBone(skin_weight.bone_index);
             float weight = skin_weight.weight;
             if (weight == 0.0f)
                 continue;

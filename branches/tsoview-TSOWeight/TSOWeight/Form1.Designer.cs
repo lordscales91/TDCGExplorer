@@ -146,6 +146,7 @@
             this.lvBoneIndices.TabIndex = 5;
             this.lvBoneIndices.UseCompatibleStateImageBehavior = false;
             this.lvBoneIndices.View = System.Windows.Forms.View.Details;
+            this.lvBoneIndices.SelectedIndexChanged += new System.EventHandler(this.lvBoneIndices_SelectedIndexChanged);
             // 
             // columnHeader3
             // 
