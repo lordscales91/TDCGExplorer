@@ -192,7 +192,7 @@ namespace TSOWeight
 
         private void btnDraw_Click(object sender, EventArgs e)
         {
-
+            viewer.GainSkinWeight(viewer.selected_node);
         }
     }
 }
