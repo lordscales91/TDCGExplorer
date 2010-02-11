@@ -108,6 +108,8 @@ public partial class TSOForm : Form
         {
             TSONode bone = viewer.selected_vertex_mesh.GetBone(skin_weight.bone_index);
             float weight = skin_weight.weight;
+            if (weight == 0.0f)
+                continue;
             gvSkinWeights.Rows.Add(new string[] { bone.Name, weight.ToString("F4") });
         }
     }
