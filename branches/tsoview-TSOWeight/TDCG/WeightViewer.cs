@@ -29,13 +29,21 @@ namespace TDCG
         /// 変更後の属性
         public SkinWeightAttr new_attr;
     }
+    /// 頂点操作
+    public class VertexCommand
+    {
+        /// 頂点id
+        public int vertex_id;
+        /// スキンウェイト操作リスト
+        public List<SkinWeightCommand> skin_weight_commands = new List<SkinWeightCommand>();
+    }
     /// メッシュ操作
     public class MeshCommand
     {
         /// メッシュ
         public TSOMesh mesh = null;
-        /// スキンウェイト操作リスト
-        public List<SkinWeightCommand> skin_weight_commands = new List<SkinWeightCommand>();
+        /// 頂点操作リスト
+        public List<VertexCommand> vertex_commands = new List<VertexCommand>();
     }
 
     /// <summary>
@@ -254,6 +262,10 @@ public class WeightViewer : Viewer
         if (selected_vertex_id == -1)
             return;
 
+        //操作を生成する。
+        MeshCommand mesh_command = new MeshCommand();
+        mesh_command.mesh = mesh;
+
         bool updated = false;
         Vector3 p0 = selected_mesh.vertices[selected_vertex_id].position;
 
@@ -268,9 +280,17 @@ public class WeightViewer : Viewer
             float dz = p1.Z - p0.Z;
             if (dx * dx + dy * dy + dz * dz < radius * radius)
             {
-                if (GainSkinWeight(mesh, selected_node, ref v))
+                if (GainSkinWeight(mesh, selected_node, i, mesh_command))
                     updated = true;
             }
+        }
+        if (updated)
+        {
+            if (mesh_command_id == mesh_commands.Count)
+                mesh_commands.Add(mesh_command);
+            else
+                mesh_commands[mesh_command_id] = mesh_command;
+            mesh_command_id++;
         }
         if (updated)
             mesh.WriteBuffer(device);
@@ -284,24 +304,26 @@ public class WeightViewer : Viewer
 
     /// 選択ボーンに対応するウェイトを加算する。
     /// returns: ウェイトを変更したか
-    public static bool GainSkinWeight(TSOMesh mesh, TSONode selected_node, ref Vertex v)
+    public static bool GainSkinWeight(TSOMesh mesh, TSONode selected_node, int vertex_id, MeshCommand mesh_command)
     {
-        //操作を生成する。
-        MeshCommand mesh_command = new MeshCommand();
-        mesh_command.mesh = mesh;
+        Vertex v = mesh.vertices[vertex_id];
+
+        VertexCommand vertex_command = new VertexCommand();
+        vertex_command.vertex_id = vertex_id;
         foreach (SkinWeight skin_weight in v.skin_weights)
         {
             SkinWeightCommand skin_weight_command = new SkinWeightCommand();
             skin_weight_command.skin_weight = skin_weight;
-            mesh_command.skin_weight_commands.Add(skin_weight_command);
+            vertex_command.skin_weight_commands.Add(skin_weight_command);
         }
+        mesh_command.vertex_commands.Add(vertex_command);
         //処理前の値を記憶する。
         {
             int nskin_weight = 0;
             foreach (SkinWeight skin_weight in v.skin_weights)
             {
-                mesh_command.skin_weight_commands[nskin_weight].old_attr.bone_index = skin_weight.bone_index;
-                mesh_command.skin_weight_commands[nskin_weight].old_attr.weight = skin_weight.weight;
+                vertex_command.skin_weight_commands[nskin_weight].old_attr.bone_index = skin_weight.bone_index;
+                vertex_command.skin_weight_commands[nskin_weight].old_attr.weight = skin_weight.weight;
                 nskin_weight++;
             }
         }
@@ -375,18 +397,10 @@ public class WeightViewer : Viewer
             int nskin_weight = 0;
             foreach (SkinWeight skin_weight in v.skin_weights)
             {
-                mesh_command.skin_weight_commands[nskin_weight].new_attr.bone_index = skin_weight.bone_index;
-                mesh_command.skin_weight_commands[nskin_weight].new_attr.weight = skin_weight.weight;
+                vertex_command.skin_weight_commands[nskin_weight].new_attr.bone_index = skin_weight.bone_index;
+                vertex_command.skin_weight_commands[nskin_weight].new_attr.weight = skin_weight.weight;
                 nskin_weight++;
             }
-        }
-        if (updated)
-        {
-            if (mesh_command_id == mesh_commands.Count)
-                mesh_commands.Add(mesh_command);
-            else
-                mesh_commands[mesh_command_id] = mesh_command;
-            mesh_command_id++;
         }
         return updated;
     }
@@ -408,10 +422,15 @@ public class WeightViewer : Viewer
     /// 指定操作による変更を元に戻す。
     public void Undo(MeshCommand mesh_command)
     {
-        foreach (SkinWeightCommand skin_weight_command in mesh_command.skin_weight_commands)
+        foreach (VertexCommand vertex_command in mesh_command.vertex_commands)
         {
-            skin_weight_command.skin_weight.bone_index = skin_weight_command.old_attr.bone_index;
-            skin_weight_command.skin_weight.weight = skin_weight_command.old_attr.weight;
+            int nskin_weight = 0;
+            foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
+            {
+                mesh_command.mesh.vertices[vertex_command.vertex_id].skin_weights[nskin_weight].bone_index = skin_weight_command.old_attr.bone_index;
+                mesh_command.mesh.vertices[vertex_command.vertex_id].skin_weights[nskin_weight].weight = skin_weight_command.old_attr.weight;
+                nskin_weight++;
+            }
         }
         mesh_command.mesh.WriteBuffer(device);
     }
@@ -433,12 +452,16 @@ public class WeightViewer : Viewer
     /// 指定操作による変更をやり直す。
     public void Redo(MeshCommand mesh_command)
     {
-        foreach (SkinWeightCommand skin_weight_command in mesh_command.skin_weight_commands)
+        foreach (VertexCommand vertex_command in mesh_command.vertex_commands)
         {
-            skin_weight_command.skin_weight.bone_index = skin_weight_command.new_attr.bone_index;
-            skin_weight_command.skin_weight.weight = skin_weight_command.new_attr.weight;
+            int nskin_weight = 0;
+            foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
+            {
+                mesh_command.mesh.vertices[vertex_command.vertex_id].skin_weights[nskin_weight].bone_index = skin_weight_command.new_attr.bone_index;
+                mesh_command.mesh.vertices[vertex_command.vertex_id].skin_weights[nskin_weight].weight = skin_weight_command.new_attr.weight;
+                nskin_weight++;
+            }
         }
-        mesh_command.mesh.WriteBuffer(device);
     }
 
     public static Vector3 CalcSkindeformPosition(ref Vertex v, Matrix[] boneMatrices)
