@@ -54,6 +54,12 @@ namespace TDCG
             needUpdate = true;
         }
 
+        public void ResetTranslation()
+        {
+            translation = new Vector3(0.0f, 0.0f, +10.0f);
+            needUpdate = true;
+        }
+
         /// <summary>
         /// カメラの位置を更新します。
         /// </summary>
