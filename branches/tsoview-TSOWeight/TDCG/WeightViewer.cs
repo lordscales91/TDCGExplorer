@@ -462,6 +462,7 @@ public class WeightViewer : Viewer
                 nskin_weight++;
             }
         }
+        mesh_command.mesh.WriteBuffer(device);
     }
 
     public static Vector3 CalcSkindeformPosition(ref Vertex v, Matrix[] boneMatrices)
