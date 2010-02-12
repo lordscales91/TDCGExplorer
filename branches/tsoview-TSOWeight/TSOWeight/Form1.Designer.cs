@@ -92,6 +92,7 @@
             this.lbSkinWeights = new System.Windows.Forms.Label();
             this.btnCenter = new System.Windows.Forms.Button();
             this.lbCamera = new System.Windows.Forms.Label();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -113,7 +114,7 @@
             this.ヘルプHToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(784, 26);
+            this.menuStrip1.Size = new System.Drawing.Size(1008, 26);
             this.menuStrip1.TabIndex = 20;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -140,7 +141,7 @@
             this.新規作成NToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.新規作成NToolStripMenuItem.Name = "新規作成NToolStripMenuItem";
             this.新規作成NToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
-            this.新規作成NToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            this.新規作成NToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.新規作成NToolStripMenuItem.Text = "新規作成(&N)";
             // 
             // 開くOToolStripMenuItem
@@ -149,13 +150,13 @@
             this.開くOToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.開くOToolStripMenuItem.Name = "開くOToolStripMenuItem";
             this.開くOToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
-            this.開くOToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            this.開くOToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.開くOToolStripMenuItem.Text = "開く(&O)";
             // 
             // toolStripSeparator
             // 
             this.toolStripSeparator.Name = "toolStripSeparator";
-            this.toolStripSeparator.Size = new System.Drawing.Size(6, 6);
+            this.toolStripSeparator.Size = new System.Drawing.Size(198, 6);
             // 
             // 上書き保存SToolStripMenuItem
             // 
@@ -163,19 +164,19 @@
             this.上書き保存SToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.上書き保存SToolStripMenuItem.Name = "上書き保存SToolStripMenuItem";
             this.上書き保存SToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
-            this.上書き保存SToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            this.上書き保存SToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.上書き保存SToolStripMenuItem.Text = "上書き保存(&S)";
             // 
             // 名前を付けて保存AToolStripMenuItem
             // 
             this.名前を付けて保存AToolStripMenuItem.Name = "名前を付けて保存AToolStripMenuItem";
-            this.名前を付けて保存AToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            this.名前を付けて保存AToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.名前を付けて保存AToolStripMenuItem.Text = "名前を付けて保存(&A)";
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(6, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(198, 6);
             // 
             // 印刷PToolStripMenuItem
             // 
@@ -183,7 +184,7 @@
             this.印刷PToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.印刷PToolStripMenuItem.Name = "印刷PToolStripMenuItem";
             this.印刷PToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
-            this.印刷PToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            this.印刷PToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.印刷PToolStripMenuItem.Text = "印刷(&P)";
             // 
             // 印刷プレビューVToolStripMenuItem
@@ -191,18 +192,18 @@
             this.印刷プレビューVToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("印刷プレビューVToolStripMenuItem.Image")));
             this.印刷プレビューVToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.印刷プレビューVToolStripMenuItem.Name = "印刷プレビューVToolStripMenuItem";
-            this.印刷プレビューVToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            this.印刷プレビューVToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.印刷プレビューVToolStripMenuItem.Text = "印刷プレビュー(&V)";
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(6, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(198, 6);
             // 
             // 終了XToolStripMenuItem
             // 
             this.終了XToolStripMenuItem.Name = "終了XToolStripMenuItem";
-            this.終了XToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            this.終了XToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.終了XToolStripMenuItem.Text = "終了(&X)";
             // 
             // 編集EToolStripMenuItem
@@ -315,37 +316,38 @@
             // 内容CToolStripMenuItem
             // 
             this.内容CToolStripMenuItem.Name = "内容CToolStripMenuItem";
-            this.内容CToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            this.内容CToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.内容CToolStripMenuItem.Text = "内容(&C)";
             // 
             // インデックスIToolStripMenuItem
             // 
             this.インデックスIToolStripMenuItem.Name = "インデックスIToolStripMenuItem";
-            this.インデックスIToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            this.インデックスIToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.インデックスIToolStripMenuItem.Text = "インデックス(&I)";
             // 
             // 検索SToolStripMenuItem
             // 
             this.検索SToolStripMenuItem.Name = "検索SToolStripMenuItem";
-            this.検索SToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            this.検索SToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.検索SToolStripMenuItem.Text = "検索(&S)";
             // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(6, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(187, 6);
             // 
             // バージョン情報AToolStripMenuItem
             // 
             this.バージョン情報AToolStripMenuItem.Name = "バージョン情報AToolStripMenuItem";
-            this.バージョン情報AToolStripMenuItem.Size = new System.Drawing.Size(32, 19);
+            this.バージョン情報AToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.バージョン情報AToolStripMenuItem.Text = "バージョン情報(&A)...";
             // 
             // panel1
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
-            this.panel1.Controls.Add(this.cbBoneHeatingView);
+            this.panel1.Controls.Add(this.lbTSOFiles);
+            this.panel1.Controls.Add(this.lvTSOFiles);
             this.panel1.Controls.Add(this.lbBoneIndices);
             this.panel1.Controls.Add(this.lvBoneIndices);
             this.panel1.Controls.Add(this.lbMeshes);
@@ -354,13 +356,13 @@
             this.panel1.Controls.Add(this.lvFrames);
             this.panel1.Location = new System.Drawing.Point(0, 26);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(200, 525);
+            this.panel1.Size = new System.Drawing.Size(144, 681);
             this.panel1.TabIndex = 21;
             // 
             // cbBoneHeatingView
             // 
             this.cbBoneHeatingView.AutoSize = true;
-            this.cbBoneHeatingView.Location = new System.Drawing.Point(138, 293);
+            this.cbBoneHeatingView.Location = new System.Drawing.Point(150, 688);
             this.cbBoneHeatingView.Name = "cbBoneHeatingView";
             this.cbBoneHeatingView.Size = new System.Drawing.Size(48, 16);
             this.cbBoneHeatingView.TabIndex = 14;
@@ -370,7 +372,7 @@
             // 
             // lbBoneIndices
             // 
-            this.lbBoneIndices.Location = new System.Drawing.Point(12, 278);
+            this.lbBoneIndices.Location = new System.Drawing.Point(12, 415);
             this.lbBoneIndices.Name = "lbBoneIndices";
             this.lbBoneIndices.Size = new System.Drawing.Size(120, 12);
             this.lbBoneIndices.TabIndex = 13;
@@ -383,10 +385,10 @@
             this.lvBoneIndices.FullRowSelect = true;
             this.lvBoneIndices.GridLines = true;
             this.lvBoneIndices.HideSelection = false;
-            this.lvBoneIndices.Location = new System.Drawing.Point(12, 293);
+            this.lvBoneIndices.Location = new System.Drawing.Point(12, 430);
             this.lvBoneIndices.MultiSelect = false;
             this.lvBoneIndices.Name = "lvBoneIndices";
-            this.lvBoneIndices.Size = new System.Drawing.Size(120, 229);
+            this.lvBoneIndices.Size = new System.Drawing.Size(120, 248);
             this.lvBoneIndices.TabIndex = 12;
             this.lvBoneIndices.UseCompatibleStateImageBehavior = false;
             this.lvBoneIndices.View = System.Windows.Forms.View.Details;
@@ -398,7 +400,7 @@
             // 
             // lbMeshes
             // 
-            this.lbMeshes.Location = new System.Drawing.Point(12, 140);
+            this.lbMeshes.Location = new System.Drawing.Point(12, 277);
             this.lbMeshes.Name = "lbMeshes";
             this.lbMeshes.Size = new System.Drawing.Size(120, 12);
             this.lbMeshes.TabIndex = 11;
@@ -406,7 +408,7 @@
             // 
             // lbFrames
             // 
-            this.lbFrames.Location = new System.Drawing.Point(12, 2);
+            this.lbFrames.Location = new System.Drawing.Point(12, 139);
             this.lbFrames.Name = "lbFrames";
             this.lbFrames.Size = new System.Drawing.Size(120, 12);
             this.lbFrames.TabIndex = 10;
@@ -419,7 +421,7 @@
             this.lvMeshes.FullRowSelect = true;
             this.lvMeshes.GridLines = true;
             this.lvMeshes.HideSelection = false;
-            this.lvMeshes.Location = new System.Drawing.Point(12, 155);
+            this.lvMeshes.Location = new System.Drawing.Point(12, 292);
             this.lvMeshes.MultiSelect = false;
             this.lvMeshes.Name = "lvMeshes";
             this.lvMeshes.Size = new System.Drawing.Size(120, 120);
@@ -439,7 +441,7 @@
             this.lvFrames.FullRowSelect = true;
             this.lvFrames.GridLines = true;
             this.lvFrames.HideSelection = false;
-            this.lvFrames.Location = new System.Drawing.Point(12, 17);
+            this.lvFrames.Location = new System.Drawing.Point(12, 154);
             this.lvFrames.MultiSelect = false;
             this.lvFrames.Name = "lvFrames";
             this.lvFrames.Size = new System.Drawing.Size(120, 120);
@@ -456,27 +458,24 @@
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.Controls.Add(this.lbTSOFiles);
-            this.panel2.Controls.Add(this.lvTSOFiles);
             this.panel2.Controls.Add(this.lbWeight);
-            this.panel2.Controls.Add(this.lbRadius);
             this.panel2.Controls.Add(this.btnSave);
-            this.panel2.Controls.Add(this.btnDraw);
-            this.panel2.Controls.Add(this.tbRadius);
-            this.panel2.Controls.Add(this.tbWeight);
+            this.panel2.Controls.Add(this.btnCenter);
+            this.panel2.Controls.Add(this.lbRadius);
             this.panel2.Controls.Add(this.lvSkinWeights);
             this.panel2.Controls.Add(this.lbSkinWeights);
-            this.panel2.Controls.Add(this.btnCenter);
+            this.panel2.Controls.Add(this.tbWeight);
+            this.panel2.Controls.Add(this.btnDraw);
+            this.panel2.Controls.Add(this.tbRadius);
             this.panel2.Controls.Add(this.lbCamera);
-            this.panel2.Location = new System.Drawing.Point(584, 26);
+            this.panel2.Location = new System.Drawing.Point(866, 26);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(200, 525);
+            this.panel2.Size = new System.Drawing.Size(144, 681);
             this.panel2.TabIndex = 22;
             // 
             // lbTSOFiles
             // 
-            this.lbTSOFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbTSOFiles.Location = new System.Drawing.Point(77, 358);
+            this.lbTSOFiles.Location = new System.Drawing.Point(12, 1);
             this.lbTSOFiles.Name = "lbTSOFiles";
             this.lbTSOFiles.Size = new System.Drawing.Size(120, 12);
             this.lbTSOFiles.TabIndex = 31;
@@ -484,13 +483,12 @@
             // 
             // lvTSOFiles
             // 
-            this.lvTSOFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lvTSOFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader6});
             this.lvTSOFiles.FullRowSelect = true;
             this.lvTSOFiles.GridLines = true;
             this.lvTSOFiles.HideSelection = false;
-            this.lvTSOFiles.Location = new System.Drawing.Point(77, 373);
+            this.lvTSOFiles.Location = new System.Drawing.Point(12, 16);
             this.lvTSOFiles.MultiSelect = false;
             this.lvTSOFiles.Name = "lvTSOFiles";
             this.lvTSOFiles.Size = new System.Drawing.Size(120, 120);
@@ -505,8 +503,7 @@
             // 
             // lbWeight
             // 
-            this.lbWeight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbWeight.Location = new System.Drawing.Point(77, 181);
+            this.lbWeight.Location = new System.Drawing.Point(10, 180);
             this.lbWeight.Name = "lbWeight";
             this.lbWeight.Size = new System.Drawing.Size(120, 12);
             this.lbWeight.TabIndex = 24;
@@ -514,8 +511,7 @@
             // 
             // lbRadius
             // 
-            this.lbRadius.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbRadius.Location = new System.Drawing.Point(77, 244);
+            this.lbRadius.Location = new System.Drawing.Point(10, 228);
             this.lbRadius.Name = "lbRadius";
             this.lbRadius.Size = new System.Drawing.Size(120, 12);
             this.lbRadius.TabIndex = 26;
@@ -523,8 +519,7 @@
             // 
             // btnSave
             // 
-            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(77, 499);
+            this.btnSave.Location = new System.Drawing.Point(10, 655);
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(120, 23);
             this.btnSave.TabIndex = 29;
@@ -534,8 +529,7 @@
             // 
             // btnDraw
             // 
-            this.btnDraw.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnDraw.Location = new System.Drawing.Point(77, 293);
+            this.btnDraw.Location = new System.Drawing.Point(10, 277);
             this.btnDraw.Name = "btnDraw";
             this.btnDraw.Size = new System.Drawing.Size(120, 23);
             this.btnDraw.TabIndex = 28;
@@ -545,8 +539,7 @@
             // 
             // tbRadius
             // 
-            this.tbRadius.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbRadius.Location = new System.Drawing.Point(77, 259);
+            this.tbRadius.Location = new System.Drawing.Point(12, 243);
             this.tbRadius.Name = "tbRadius";
             this.tbRadius.Size = new System.Drawing.Size(120, 45);
             this.tbRadius.TabIndex = 27;
@@ -555,8 +548,7 @@
             // 
             // tbWeight
             // 
-            this.tbWeight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbWeight.Location = new System.Drawing.Point(77, 196);
+            this.tbWeight.Location = new System.Drawing.Point(12, 195);
             this.tbWeight.Name = "tbWeight";
             this.tbWeight.Size = new System.Drawing.Size(120, 45);
             this.tbWeight.TabIndex = 25;
@@ -565,14 +557,13 @@
             // 
             // lvSkinWeights
             // 
-            this.lvSkinWeights.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lvSkinWeights.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader4,
             this.columnHeader5});
             this.lvSkinWeights.FullRowSelect = true;
             this.lvSkinWeights.GridLines = true;
             this.lvSkinWeights.HideSelection = false;
-            this.lvSkinWeights.Location = new System.Drawing.Point(77, 58);
+            this.lvSkinWeights.Location = new System.Drawing.Point(10, 57);
             this.lvSkinWeights.MultiSelect = false;
             this.lvSkinWeights.Name = "lvSkinWeights";
             this.lvSkinWeights.Size = new System.Drawing.Size(120, 120);
@@ -590,8 +581,7 @@
             // 
             // lbSkinWeights
             // 
-            this.lbSkinWeights.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbSkinWeights.Location = new System.Drawing.Point(77, 43);
+            this.lbSkinWeights.Location = new System.Drawing.Point(10, 42);
             this.lbSkinWeights.Name = "lbSkinWeights";
             this.lbSkinWeights.Size = new System.Drawing.Size(120, 12);
             this.lbSkinWeights.TabIndex = 22;
@@ -599,8 +589,7 @@
             // 
             // btnCenter
             // 
-            this.btnCenter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCenter.Location = new System.Drawing.Point(77, 17);
+            this.btnCenter.Location = new System.Drawing.Point(10, 16);
             this.btnCenter.Name = "btnCenter";
             this.btnCenter.Size = new System.Drawing.Size(120, 23);
             this.btnCenter.TabIndex = 21;
@@ -610,19 +599,28 @@
             // 
             // lbCamera
             // 
-            this.lbCamera.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbCamera.Location = new System.Drawing.Point(77, 2);
+            this.lbCamera.Location = new System.Drawing.Point(10, 1);
             this.lbCamera.Name = "lbCamera";
             this.lbCamera.Size = new System.Drawing.Size(120, 12);
             this.lbCamera.TabIndex = 20;
             this.lbCamera.Text = "Camera";
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Location = new System.Drawing.Point(0, 709);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(1008, 22);
+            this.statusStrip1.TabIndex = 23;
+            this.statusStrip1.Text = "statusStrip1";
             // 
             // Form1
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(784, 563);
+            this.ClientSize = new System.Drawing.Size(1008, 731);
+            this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.cbBoneHeatingView);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
@@ -634,7 +632,6 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbRadius)).EndInit();
@@ -704,6 +701,7 @@
         private System.Windows.Forms.Label lbSkinWeights;
         private System.Windows.Forms.Button btnCenter;
         private System.Windows.Forms.Label lbCamera;
+        private System.Windows.Forms.StatusStrip statusStrip1;
     }
 }
 
