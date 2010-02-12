@@ -111,6 +111,7 @@ namespace TSOWeight
                     continue;
                 ListViewItem li = new ListViewItem(bone.Name);
                 li.SubItems.Add(weight.ToString("F3"));
+                li.Tag = skin_weight;
                 lvSkinWeights.Items.Add(li);
             }
         }
@@ -181,6 +182,17 @@ namespace TSOWeight
             ListViewItem li = lvBoneIndices.SelectedItems[0];
             TSONode bone = li.Tag as TSONode;
             viewer.selected_node = bone;
+        }
+
+        private void lvSkinWeights_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvSkinWeights.SelectedItems.Count == 0)
+                return;
+
+            ListViewItem li = lvSkinWeights.SelectedItems[0];
+            SkinWeight skin_weight = li.Tag as SkinWeight;
+            lvBoneIndices.SelectedItems.Clear();
+            lvBoneIndices.Items[skin_weight.bone_index].Selected = true;
         }
 
         private void cbBoneHeatingView_CheckedChanged(object sender, EventArgs e)
