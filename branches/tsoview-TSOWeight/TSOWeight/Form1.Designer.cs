@@ -66,7 +66,9 @@
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.バージョン情報AToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.cbBoneHeatingView = new System.Windows.Forms.CheckBox();
+            this.lbTSOFiles = new System.Windows.Forms.Label();
+            this.lvTSOFiles = new System.Windows.Forms.ListView();
+            this.columnHeader6 = new System.Windows.Forms.ColumnHeader();
             this.lbBoneIndices = new System.Windows.Forms.Label();
             this.lvBoneIndices = new System.Windows.Forms.ListView();
             this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
@@ -76,28 +78,26 @@
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.lvFrames = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
+            this.cbBoneHeatingView = new System.Windows.Forms.CheckBox();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.lbTSOFiles = new System.Windows.Forms.Label();
-            this.lvTSOFiles = new System.Windows.Forms.ListView();
-            this.columnHeader6 = new System.Windows.Forms.ColumnHeader();
             this.lbWeight = new System.Windows.Forms.Label();
-            this.lbRadius = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
-            this.btnDraw = new System.Windows.Forms.Button();
-            this.tbRadius = new System.Windows.Forms.TrackBar();
-            this.tbWeight = new System.Windows.Forms.TrackBar();
+            this.btnCenter = new System.Windows.Forms.Button();
+            this.lbRadius = new System.Windows.Forms.Label();
             this.lvSkinWeights = new System.Windows.Forms.ListView();
             this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
             this.lbSkinWeights = new System.Windows.Forms.Label();
-            this.btnCenter = new System.Windows.Forms.Button();
+            this.tbWeight = new System.Windows.Forms.TrackBar();
+            this.btnDraw = new System.Windows.Forms.Button();
+            this.tbRadius = new System.Windows.Forms.TrackBar();
             this.lbCamera = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbWeight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbRadius)).BeginInit();
             this.SuspendLayout();
             // 
             // timer1
@@ -359,16 +359,33 @@
             this.panel1.Size = new System.Drawing.Size(144, 681);
             this.panel1.TabIndex = 21;
             // 
-            // cbBoneHeatingView
+            // lbTSOFiles
             // 
-            this.cbBoneHeatingView.AutoSize = true;
-            this.cbBoneHeatingView.Location = new System.Drawing.Point(150, 688);
-            this.cbBoneHeatingView.Name = "cbBoneHeatingView";
-            this.cbBoneHeatingView.Size = new System.Drawing.Size(48, 16);
-            this.cbBoneHeatingView.TabIndex = 14;
-            this.cbBoneHeatingView.Text = "&Heat";
-            this.cbBoneHeatingView.UseVisualStyleBackColor = true;
-            this.cbBoneHeatingView.CheckedChanged += new System.EventHandler(this.cbBoneHeatingView_CheckedChanged);
+            this.lbTSOFiles.Location = new System.Drawing.Point(12, 1);
+            this.lbTSOFiles.Name = "lbTSOFiles";
+            this.lbTSOFiles.Size = new System.Drawing.Size(120, 12);
+            this.lbTSOFiles.TabIndex = 31;
+            this.lbTSOFiles.Text = "TSO files";
+            // 
+            // lvTSOFiles
+            // 
+            this.lvTSOFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader6});
+            this.lvTSOFiles.FullRowSelect = true;
+            this.lvTSOFiles.GridLines = true;
+            this.lvTSOFiles.HideSelection = false;
+            this.lvTSOFiles.Location = new System.Drawing.Point(12, 16);
+            this.lvTSOFiles.MultiSelect = false;
+            this.lvTSOFiles.Name = "lvTSOFiles";
+            this.lvTSOFiles.Size = new System.Drawing.Size(120, 120);
+            this.lvTSOFiles.TabIndex = 30;
+            this.lvTSOFiles.UseCompatibleStateImageBehavior = false;
+            this.lvTSOFiles.View = System.Windows.Forms.View.Details;
+            this.lvTSOFiles.SelectedIndexChanged += new System.EventHandler(this.lvTSOFiles_SelectedIndexChanged);
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "Name";
             // 
             // lbBoneIndices
             // 
@@ -454,6 +471,17 @@
             // 
             this.columnHeader1.Text = "Name";
             // 
+            // cbBoneHeatingView
+            // 
+            this.cbBoneHeatingView.AutoSize = true;
+            this.cbBoneHeatingView.Location = new System.Drawing.Point(150, 688);
+            this.cbBoneHeatingView.Name = "cbBoneHeatingView";
+            this.cbBoneHeatingView.Size = new System.Drawing.Size(48, 16);
+            this.cbBoneHeatingView.TabIndex = 14;
+            this.cbBoneHeatingView.Text = "&Heat";
+            this.cbBoneHeatingView.UseVisualStyleBackColor = true;
+            this.cbBoneHeatingView.CheckedChanged += new System.EventHandler(this.cbBoneHeatingView_CheckedChanged);
+            // 
             // panel2
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
@@ -473,34 +501,6 @@
             this.panel2.Size = new System.Drawing.Size(144, 681);
             this.panel2.TabIndex = 22;
             // 
-            // lbTSOFiles
-            // 
-            this.lbTSOFiles.Location = new System.Drawing.Point(12, 1);
-            this.lbTSOFiles.Name = "lbTSOFiles";
-            this.lbTSOFiles.Size = new System.Drawing.Size(120, 12);
-            this.lbTSOFiles.TabIndex = 31;
-            this.lbTSOFiles.Text = "TSO files";
-            // 
-            // lvTSOFiles
-            // 
-            this.lvTSOFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader6});
-            this.lvTSOFiles.FullRowSelect = true;
-            this.lvTSOFiles.GridLines = true;
-            this.lvTSOFiles.HideSelection = false;
-            this.lvTSOFiles.Location = new System.Drawing.Point(12, 16);
-            this.lvTSOFiles.MultiSelect = false;
-            this.lvTSOFiles.Name = "lvTSOFiles";
-            this.lvTSOFiles.Size = new System.Drawing.Size(120, 120);
-            this.lvTSOFiles.TabIndex = 30;
-            this.lvTSOFiles.UseCompatibleStateImageBehavior = false;
-            this.lvTSOFiles.View = System.Windows.Forms.View.Details;
-            this.lvTSOFiles.SelectedIndexChanged += new System.EventHandler(this.lvTSOFiles_SelectedIndexChanged);
-            // 
-            // columnHeader6
-            // 
-            this.columnHeader6.Text = "Name";
-            // 
             // lbWeight
             // 
             this.lbWeight.Location = new System.Drawing.Point(10, 180);
@@ -508,14 +508,6 @@
             this.lbWeight.Size = new System.Drawing.Size(120, 12);
             this.lbWeight.TabIndex = 24;
             this.lbWeight.Text = "Weight";
-            // 
-            // lbRadius
-            // 
-            this.lbRadius.Location = new System.Drawing.Point(10, 228);
-            this.lbRadius.Name = "lbRadius";
-            this.lbRadius.Size = new System.Drawing.Size(120, 12);
-            this.lbRadius.TabIndex = 26;
-            this.lbRadius.Text = "Radius";
             // 
             // btnSave
             // 
@@ -526,6 +518,66 @@
             this.btnSave.Text = "&Save";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
+            // btnCenter
+            // 
+            this.btnCenter.Location = new System.Drawing.Point(10, 16);
+            this.btnCenter.Name = "btnCenter";
+            this.btnCenter.Size = new System.Drawing.Size(120, 23);
+            this.btnCenter.TabIndex = 21;
+            this.btnCenter.Text = "&Center";
+            this.btnCenter.UseVisualStyleBackColor = true;
+            this.btnCenter.Click += new System.EventHandler(this.btnCenter_Click);
+            // 
+            // lbRadius
+            // 
+            this.lbRadius.Location = new System.Drawing.Point(10, 228);
+            this.lbRadius.Name = "lbRadius";
+            this.lbRadius.Size = new System.Drawing.Size(120, 12);
+            this.lbRadius.TabIndex = 26;
+            this.lbRadius.Text = "Radius";
+            // 
+            // lvSkinWeights
+            // 
+            this.lvSkinWeights.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader4,
+            this.columnHeader5});
+            this.lvSkinWeights.FullRowSelect = true;
+            this.lvSkinWeights.GridLines = true;
+            this.lvSkinWeights.HideSelection = false;
+            this.lvSkinWeights.Location = new System.Drawing.Point(10, 57);
+            this.lvSkinWeights.MultiSelect = false;
+            this.lvSkinWeights.Name = "lvSkinWeights";
+            this.lvSkinWeights.Size = new System.Drawing.Size(120, 120);
+            this.lvSkinWeights.TabIndex = 23;
+            this.lvSkinWeights.UseCompatibleStateImageBehavior = false;
+            this.lvSkinWeights.View = System.Windows.Forms.View.Details;
+            this.lvSkinWeights.SelectedIndexChanged += new System.EventHandler(this.lvSkinWeights_SelectedIndexChanged);
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "Bone";
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "Weight";
+            // 
+            // lbSkinWeights
+            // 
+            this.lbSkinWeights.Location = new System.Drawing.Point(10, 42);
+            this.lbSkinWeights.Name = "lbSkinWeights";
+            this.lbSkinWeights.Size = new System.Drawing.Size(120, 12);
+            this.lbSkinWeights.TabIndex = 22;
+            this.lbSkinWeights.Text = "Skin weights";
+            // 
+            // tbWeight
+            // 
+            this.tbWeight.Location = new System.Drawing.Point(12, 195);
+            this.tbWeight.Name = "tbWeight";
+            this.tbWeight.Size = new System.Drawing.Size(120, 45);
+            this.tbWeight.TabIndex = 25;
+            this.tbWeight.Value = 2;
+            this.tbWeight.ValueChanged += new System.EventHandler(this.tbWeight_ValueChanged);
             // 
             // btnDraw
             // 
@@ -545,57 +597,6 @@
             this.tbRadius.TabIndex = 27;
             this.tbRadius.Value = 5;
             this.tbRadius.ValueChanged += new System.EventHandler(this.tbRadius_ValueChanged);
-            // 
-            // tbWeight
-            // 
-            this.tbWeight.Location = new System.Drawing.Point(12, 195);
-            this.tbWeight.Name = "tbWeight";
-            this.tbWeight.Size = new System.Drawing.Size(120, 45);
-            this.tbWeight.TabIndex = 25;
-            this.tbWeight.Value = 2;
-            this.tbWeight.ValueChanged += new System.EventHandler(this.tbWeight_ValueChanged);
-            // 
-            // lvSkinWeights
-            // 
-            this.lvSkinWeights.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader4,
-            this.columnHeader5});
-            this.lvSkinWeights.FullRowSelect = true;
-            this.lvSkinWeights.GridLines = true;
-            this.lvSkinWeights.HideSelection = false;
-            this.lvSkinWeights.Location = new System.Drawing.Point(10, 57);
-            this.lvSkinWeights.MultiSelect = false;
-            this.lvSkinWeights.Name = "lvSkinWeights";
-            this.lvSkinWeights.Size = new System.Drawing.Size(120, 120);
-            this.lvSkinWeights.TabIndex = 23;
-            this.lvSkinWeights.UseCompatibleStateImageBehavior = false;
-            this.lvSkinWeights.View = System.Windows.Forms.View.Details;
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "Bone";
-            // 
-            // columnHeader5
-            // 
-            this.columnHeader5.Text = "Weight";
-            // 
-            // lbSkinWeights
-            // 
-            this.lbSkinWeights.Location = new System.Drawing.Point(10, 42);
-            this.lbSkinWeights.Name = "lbSkinWeights";
-            this.lbSkinWeights.Size = new System.Drawing.Size(120, 12);
-            this.lbSkinWeights.TabIndex = 22;
-            this.lbSkinWeights.Text = "Skin weights";
-            // 
-            // btnCenter
-            // 
-            this.btnCenter.Location = new System.Drawing.Point(10, 16);
-            this.btnCenter.Name = "btnCenter";
-            this.btnCenter.Size = new System.Drawing.Size(120, 23);
-            this.btnCenter.TabIndex = 21;
-            this.btnCenter.Text = "&Center";
-            this.btnCenter.UseVisualStyleBackColor = true;
-            this.btnCenter.Click += new System.EventHandler(this.btnCenter_Click);
             // 
             // lbCamera
             // 
@@ -634,8 +635,8 @@
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbRadius)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbWeight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbRadius)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
