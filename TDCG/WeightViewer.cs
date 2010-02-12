@@ -520,20 +520,6 @@ public class WeightViewer : Viewer
         }
     }
 
-    public static Matrix[] ClipBoneMatrices(Figure fig, TSOMesh mesh)
-    {
-        Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
-
-        for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
-        {
-            TSONode tso_node = mesh.GetBone(numPalettes);
-            TMONode tmo_node;
-            if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
-                clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
-        }
-        return clipped_boneMatrices;
-    }
-
     /// スクリーン座標から頂点を見つけます。
     /// 衝突する頂点の中で最も近い位置にある頂点を返します。
     private int FindVertexOnScreenPoint(float x, float y, Figure fig, TSOMesh mesh)
