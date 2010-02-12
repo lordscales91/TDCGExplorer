@@ -160,9 +160,6 @@ public class WeightViewer : Viewer
         DrawFigureVertices();
     }
 
-    /// 選択メッシュ
-    public TSOMesh selected_mesh = null;
-
     /// 頂点を描画する。
     void DrawFigureVertices()
     {

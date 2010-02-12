@@ -1005,6 +1005,10 @@ public class Viewer : IDisposable
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
     }
 
+    /// 選択メッシュ
+    public TSOMesh selected_mesh = null;
+
+    /// 選択ボーン
     public TSONode selected_node = null;
 
     void DrawFigure()
@@ -1022,24 +1026,15 @@ public class Viewer : IDisposable
 
         if (BoneHeatingViewSwitch)
         {
-            effect.Technique = "BoneCol";
-            effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
-        }
-
-        foreach (Figure fig in FigureList)
-        foreach (TSOFile tso in fig.TSOList)
-        {
-            tso.BeginRender();
-
-            foreach (TSOFrame frame in tso.frames)
-            foreach (TSOMesh mesh in frame.meshes)
+            Figure fig;
+            if (selected_mesh != null && TryGetFigure(out fig))
             {
-                device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                TSOMesh mesh = selected_mesh;
 
-                if (! BoneHeatingViewSwitch)
-                {
-                    tso.SwitchShader(mesh);
-                }
+                device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                effect.Technique = "BoneCol";
+                effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
+
                 Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
                 int[] clipped_boneSelections = new int[mesh.maxPalettes];
 
@@ -1066,7 +1061,48 @@ public class Viewer : IDisposable
                 }
                 effect.End();
             }
+        }
+        else
+        {
+            Figure fig;
+            if (TryGetFigure(out fig))
+            {
+        foreach (TSOFile tso in fig.TSOList)
+        {
+            tso.BeginRender();
+
+            foreach (TSOFrame frame in tso.frames)
+            foreach (TSOMesh mesh in frame.meshes)
+            {
+                device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                tso.SwitchShader(mesh);
+
+                Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
+
+                for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
+                {
+                    //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
+                    TSONode tso_node = mesh.GetBone(numPalettes);
+                    TMONode tmo_node;
+                    if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
+                    {
+                        clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
+                    }
+                }
+                effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
+
+                int npass = effect.Begin(0);
+                for (int ipass = 0; ipass < npass; ipass++)
+                {
+                    effect.BeginPass(ipass);
+                    mesh.dm.DrawSubset(0);
+                    effect.EndPass();
+                }
+                effect.End();
+            }
             tso.EndRender();
+        }
+            }
         }
     }
 
