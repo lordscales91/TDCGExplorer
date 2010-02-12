@@ -102,9 +102,8 @@ namespace TSOWeight
             if (viewer.selected_vertex_id == -1)
                 return;
 
-            Vertex selected_vertex = viewer.selected_mesh.vertices[viewer.selected_vertex_id];
             lvSkinWeights.Items.Clear();
-            foreach (SkinWeight skin_weight in selected_vertex.skin_weights)
+            foreach (SkinWeight skin_weight in viewer.selected_mesh.vertices[viewer.selected_vertex_id].skin_weights)
             {
                 TSONode bone = viewer.selected_mesh.GetBone(skin_weight.bone_index);
                 float weight = skin_weight.weight;
@@ -197,9 +196,8 @@ namespace TSOWeight
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                Vertex selected_vertex = viewer.selected_mesh.vertices[viewer.selected_vertex_id];
                 viewer.Camera.Reset();
-                viewer.Camera.Center = WeightViewer.CalcSkindeformPosition(ref selected_vertex, WeightViewer.ClipBoneMatrices(fig, viewer.selected_mesh));
+                viewer.Camera.Center = WeightViewer.CalcSkindeformPosition(ref viewer.selected_mesh.vertices[viewer.selected_vertex_id], WeightViewer.ClipBoneMatrices(fig, viewer.selected_mesh));
             }
         }
 
@@ -242,6 +240,18 @@ namespace TSOWeight
                     }
                 }
             }
+        }
+
+        private void Œ³‚É–ß‚·UToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.Undo();
+            AssignSkinWeights();
+        }
+
+        private void ‚â‚è’¼‚µRToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.Redo();
+            AssignSkinWeights();
         }
     }
 }
