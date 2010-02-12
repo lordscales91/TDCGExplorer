@@ -195,11 +195,6 @@ namespace TSOWeight
             lvBoneIndices.Items[skin_weight.bone_index].Selected = true;
         }
 
-        private void cbBoneHeatingView_CheckedChanged(object sender, EventArgs e)
-        {
-            viewer.BoneHeatingViewSwitch = cbBoneHeatingView.Checked;
-        }
-
         private void btnCenter_Click(object sender, EventArgs e)
         {
             if (viewer.selected_vertex_id == -1)
@@ -264,6 +259,16 @@ namespace TSOWeight
         {
             viewer.Redo();
             AssignSkinWeights();
+        }
+
+        private void btnToon_Click(object sender, EventArgs e)
+        {
+            viewer.view_mode = Viewer.ViewMode.Toon;
+        }
+
+        private void btnHeat_Click(object sender, EventArgs e)
+        {
+            viewer.view_mode = Viewer.ViewMode.Weight;
         }
     }
 }

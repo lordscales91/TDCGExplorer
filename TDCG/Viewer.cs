@@ -839,7 +839,8 @@ public class Viewer : IDisposable
     /// </summary>
     public RenderingHandler Rendering;
 
-    public bool BoneHeatingViewSwitch = false;
+    public enum ViewMode { Toon, Weight };
+    public ViewMode view_mode = ViewMode.Toon;
 
     /// <summary>
     /// シーンをレンダリングします。
@@ -1050,58 +1051,58 @@ public class Viewer : IDisposable
             effect.SetValue("texShadowMap", renderTextures[2]);
         }
 
-        if (BoneHeatingViewSwitch)
+        Figure fig;
+        if (TryGetFigure(out fig))
         {
-            Figure fig;
-            if (selected_mesh != null && TryGetFigure(out fig))
+            switch (view_mode)
             {
-                TSOMesh mesh = selected_mesh;
-
-                device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                effect.Technique = "BoneCol";
-                effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
-
-                effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, mesh));
-                effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(fig, mesh, selected_node));
-
-                int npass = effect.Begin(0);
-                for (int ipass = 0; ipass < npass; ipass++)
+            case ViewMode.Toon:
+                foreach (TSOFile tso in fig.TSOList)
                 {
-                    effect.BeginPass(ipass);
-                    mesh.dm.DrawSubset(0);
-                    effect.EndPass();
+                    tso.BeginRender();
+
+                    foreach (TSOFrame frame in tso.frames)
+                    foreach (TSOMesh mesh in frame.meshes)
+                    {
+                        device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                        tso.SwitchShader(mesh);
+
+                        effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, mesh));
+
+                        int npass = effect.Begin(0);
+                        for (int ipass = 0; ipass < npass; ipass++)
+                        {
+                            effect.BeginPass(ipass);
+                            mesh.dm.DrawSubset(0);
+                            effect.EndPass();
+                        }
+                        effect.End();
+                    }
+                    tso.EndRender();
                 }
-                effect.End();
-            }
-        }
-        else
-        {
-            Figure fig;
-            if (TryGetFigure(out fig))
-            {
-        foreach (TSOFile tso in fig.TSOList)
-        {
-            tso.BeginRender();
-
-            foreach (TSOFrame frame in tso.frames)
-            foreach (TSOMesh mesh in frame.meshes)
-            {
-                device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                tso.SwitchShader(mesh);
-
-                effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, mesh));
-
-                int npass = effect.Begin(0);
-                for (int ipass = 0; ipass < npass; ipass++)
+                break;
+            case ViewMode.Weight:
+                if (selected_mesh != null)
                 {
-                    effect.BeginPass(ipass);
-                    mesh.dm.DrawSubset(0);
-                    effect.EndPass();
+                    TSOMesh mesh = selected_mesh;
+
+                    device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                    effect.Technique = "BoneCol";
+                    effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
+
+                    effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, mesh));
+                    effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(fig, mesh, selected_node));
+
+                    int npass = effect.Begin(0);
+                    for (int ipass = 0; ipass < npass; ipass++)
+                    {
+                        effect.BeginPass(ipass);
+                        mesh.dm.DrawSubset(0);
+                        effect.EndPass();
+                    }
+                    effect.End();
                 }
-                effect.End();
-            }
-            tso.EndRender();
-        }
+                break;
             }
         }
     }
