@@ -78,8 +78,10 @@
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.lvFrames = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-            this.cbBoneHeatingView = new System.Windows.Forms.CheckBox();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnWeight = new System.Windows.Forms.Button();
+            this.btnToon = new System.Windows.Forms.Button();
+            this.lbViewMode = new System.Windows.Forms.Label();
             this.lbWeight = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
             this.btnCenter = new System.Windows.Forms.Button();
@@ -471,21 +473,13 @@
             // 
             this.columnHeader1.Text = "Name";
             // 
-            // cbBoneHeatingView
-            // 
-            this.cbBoneHeatingView.AutoSize = true;
-            this.cbBoneHeatingView.Location = new System.Drawing.Point(150, 688);
-            this.cbBoneHeatingView.Name = "cbBoneHeatingView";
-            this.cbBoneHeatingView.Size = new System.Drawing.Size(48, 16);
-            this.cbBoneHeatingView.TabIndex = 14;
-            this.cbBoneHeatingView.Text = "&Heat";
-            this.cbBoneHeatingView.UseVisualStyleBackColor = true;
-            this.cbBoneHeatingView.CheckedChanged += new System.EventHandler(this.cbBoneHeatingView_CheckedChanged);
-            // 
             // panel2
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.Controls.Add(this.btnWeight);
+            this.panel2.Controls.Add(this.btnToon);
+            this.panel2.Controls.Add(this.lbViewMode);
             this.panel2.Controls.Add(this.lbWeight);
             this.panel2.Controls.Add(this.btnSave);
             this.panel2.Controls.Add(this.btnCenter);
@@ -501,9 +495,37 @@
             this.panel2.Size = new System.Drawing.Size(144, 681);
             this.panel2.TabIndex = 22;
             // 
+            // btnWeight
+            // 
+            this.btnWeight.Location = new System.Drawing.Point(10, 45);
+            this.btnWeight.Name = "btnWeight";
+            this.btnWeight.Size = new System.Drawing.Size(120, 23);
+            this.btnWeight.TabIndex = 32;
+            this.btnWeight.Text = "Weight";
+            this.btnWeight.UseVisualStyleBackColor = true;
+            this.btnWeight.Click += new System.EventHandler(this.btnHeat_Click);
+            // 
+            // btnToon
+            // 
+            this.btnToon.Location = new System.Drawing.Point(10, 16);
+            this.btnToon.Name = "btnToon";
+            this.btnToon.Size = new System.Drawing.Size(120, 23);
+            this.btnToon.TabIndex = 31;
+            this.btnToon.Text = "&Toon";
+            this.btnToon.UseVisualStyleBackColor = true;
+            this.btnToon.Click += new System.EventHandler(this.btnToon_Click);
+            // 
+            // lbViewMode
+            // 
+            this.lbViewMode.Location = new System.Drawing.Point(10, 1);
+            this.lbViewMode.Name = "lbViewMode";
+            this.lbViewMode.Size = new System.Drawing.Size(120, 12);
+            this.lbViewMode.TabIndex = 30;
+            this.lbViewMode.Text = "View mode";
+            // 
             // lbWeight
             // 
-            this.lbWeight.Location = new System.Drawing.Point(10, 180);
+            this.lbWeight.Location = new System.Drawing.Point(10, 250);
             this.lbWeight.Name = "lbWeight";
             this.lbWeight.Size = new System.Drawing.Size(120, 12);
             this.lbWeight.TabIndex = 24;
@@ -521,7 +543,7 @@
             // 
             // btnCenter
             // 
-            this.btnCenter.Location = new System.Drawing.Point(10, 16);
+            this.btnCenter.Location = new System.Drawing.Point(10, 86);
             this.btnCenter.Name = "btnCenter";
             this.btnCenter.Size = new System.Drawing.Size(120, 23);
             this.btnCenter.TabIndex = 21;
@@ -531,7 +553,7 @@
             // 
             // lbRadius
             // 
-            this.lbRadius.Location = new System.Drawing.Point(10, 228);
+            this.lbRadius.Location = new System.Drawing.Point(10, 298);
             this.lbRadius.Name = "lbRadius";
             this.lbRadius.Size = new System.Drawing.Size(120, 12);
             this.lbRadius.TabIndex = 26;
@@ -545,7 +567,7 @@
             this.lvSkinWeights.FullRowSelect = true;
             this.lvSkinWeights.GridLines = true;
             this.lvSkinWeights.HideSelection = false;
-            this.lvSkinWeights.Location = new System.Drawing.Point(10, 57);
+            this.lvSkinWeights.Location = new System.Drawing.Point(10, 127);
             this.lvSkinWeights.MultiSelect = false;
             this.lvSkinWeights.Name = "lvSkinWeights";
             this.lvSkinWeights.Size = new System.Drawing.Size(120, 120);
@@ -564,7 +586,7 @@
             // 
             // lbSkinWeights
             // 
-            this.lbSkinWeights.Location = new System.Drawing.Point(10, 42);
+            this.lbSkinWeights.Location = new System.Drawing.Point(10, 112);
             this.lbSkinWeights.Name = "lbSkinWeights";
             this.lbSkinWeights.Size = new System.Drawing.Size(120, 12);
             this.lbSkinWeights.TabIndex = 22;
@@ -572,7 +594,7 @@
             // 
             // tbWeight
             // 
-            this.tbWeight.Location = new System.Drawing.Point(12, 195);
+            this.tbWeight.Location = new System.Drawing.Point(12, 265);
             this.tbWeight.Name = "tbWeight";
             this.tbWeight.Size = new System.Drawing.Size(120, 45);
             this.tbWeight.TabIndex = 25;
@@ -581,7 +603,7 @@
             // 
             // btnDraw
             // 
-            this.btnDraw.Location = new System.Drawing.Point(10, 277);
+            this.btnDraw.Location = new System.Drawing.Point(10, 347);
             this.btnDraw.Name = "btnDraw";
             this.btnDraw.Size = new System.Drawing.Size(120, 23);
             this.btnDraw.TabIndex = 28;
@@ -591,7 +613,7 @@
             // 
             // tbRadius
             // 
-            this.tbRadius.Location = new System.Drawing.Point(12, 243);
+            this.tbRadius.Location = new System.Drawing.Point(12, 313);
             this.tbRadius.Name = "tbRadius";
             this.tbRadius.Size = new System.Drawing.Size(120, 45);
             this.tbRadius.TabIndex = 27;
@@ -600,7 +622,7 @@
             // 
             // lbCamera
             // 
-            this.lbCamera.Location = new System.Drawing.Point(10, 1);
+            this.lbCamera.Location = new System.Drawing.Point(10, 71);
             this.lbCamera.Name = "lbCamera";
             this.lbCamera.Size = new System.Drawing.Size(120, 12);
             this.lbCamera.TabIndex = 20;
@@ -621,7 +643,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1008, 731);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.cbBoneHeatingView);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.menuStrip1);
@@ -676,7 +697,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem バージョン情報AToolStripMenuItem;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.CheckBox cbBoneHeatingView;
         private System.Windows.Forms.Label lbBoneIndices;
         private System.Windows.Forms.ListView lvBoneIndices;
         private System.Windows.Forms.ColumnHeader columnHeader3;
@@ -703,6 +723,9 @@
         private System.Windows.Forms.Button btnCenter;
         private System.Windows.Forms.Label lbCamera;
         private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.Button btnWeight;
+        private System.Windows.Forms.Button btnToon;
+        private System.Windows.Forms.Label lbViewMode;
     }
 }
 
