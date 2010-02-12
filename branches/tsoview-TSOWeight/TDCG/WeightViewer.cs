@@ -11,6 +11,33 @@ using Direct3D = Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
+    /// スキンウェイト属性
+    public struct SkinWeightAttr
+    {
+        /// ボーン参照インデックス
+        public int bone_index;
+        /// ウェイト値
+        public float weight;
+    }
+    /// スキンウェイト操作
+    public class SkinWeightCommand
+    {
+        /// スキンウェイト
+        public SkinWeight skin_weight = null;
+        /// 変更前の属性
+        public SkinWeightAttr old_attr;
+        /// 変更後の属性
+        public SkinWeightAttr new_attr;
+    }
+    /// メッシュ操作
+    public class MeshCommand
+    {
+        /// メッシュ
+        public TSOMesh mesh = null;
+        /// スキンウェイト操作リスト
+        public List<SkinWeightCommand> skin_weight_commands = new List<SkinWeightCommand>();
+    }
+
     /// <summary>
     /// TSOFileをDirect3D上でレンダリングします。
     /// </summary>
@@ -125,8 +152,10 @@ public class WeightViewer : Viewer
         DrawFigureVertices();
     }
 
+    /// 選択メッシュ
     public TSOMesh selected_mesh = null;
 
+    /// 頂点を描画する。
     void DrawFigureVertices()
     {
         Figure fig;
@@ -141,8 +170,10 @@ public class WeightViewer : Viewer
         }
     }
 
+    /// 半径
     public static float radius = 0.5f;
 
+    /// 頂点を描画する。
     void DrawVertices(Figure fig, TSOMesh mesh)
     {
         Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, mesh);
@@ -156,6 +187,7 @@ public class WeightViewer : Viewer
 
             for (int i = 0; i < mesh.vertices.Length; i++)
             {
+                //頂点間距離が半径未満なら黄色にする。
                 Vector3 v1 = mesh.vertices[i].position;
                 float dx = v1.X - v0.X;
                 float dy = v1.Y - v0.Y;
@@ -187,6 +219,7 @@ public class WeightViewer : Viewer
         }
     }
 
+    /// 選択頂点を描画する。
     void DrawSelectedVertex(Figure fig)
     {
         TSOMesh mesh = selected_mesh;
@@ -206,6 +239,7 @@ public class WeightViewer : Viewer
         }
     }
 
+    /// 選択ボーンに対応するウェイトを加算する。
     public void GainSkinWeight(TSONode selected_node)
     {
         if (selected_mesh != null)
@@ -214,6 +248,7 @@ public class WeightViewer : Viewer
         }
     }
 
+    /// 選択ボーンに対応するウェイトを加算する。
     public void GainSkinWeight(TSOMesh mesh, TSONode selected_node)
     {
         if (selected_vertex_id == -1)
@@ -225,6 +260,8 @@ public class WeightViewer : Viewer
         for (int i = 0; i < mesh.vertices.Length; i++)
         {
             Vertex v = mesh.vertices[i];
+
+            //頂点間距離が半径未満ならウェイトを加算する。
             Vector3 p1 = v.position;
             float dx = p1.X - p0.X;
             float dy = p1.Y - p0.Y;
@@ -239,11 +276,38 @@ public class WeightViewer : Viewer
             mesh.WriteBuffer(device);
     }
 
+    /// 加算ウェイト値
     public static float weight = 0.2f;
+    /// メッシュ操作リスト
+    public static List<MeshCommand> mesh_commands = new List<MeshCommand>();
+    static int mesh_command_id = 0;
 
+    /// 選択ボーンに対応するウェイトを加算する。
+    /// returns: ウェイトを変更したか
     public static bool GainSkinWeight(TSOMesh mesh, TSONode selected_node, ref Vertex v)
     {
+        //操作を生成する。
+        MeshCommand mesh_command = new MeshCommand();
+        mesh_command.mesh = mesh;
+        foreach (SkinWeight skin_weight in v.skin_weights)
+        {
+            SkinWeightCommand skin_weight_command = new SkinWeightCommand();
+            skin_weight_command.skin_weight = skin_weight;
+            mesh_command.skin_weight_commands.Add(skin_weight_command);
+        }
+        //処理前の値を記憶する。
+        {
+            int nskin_weight = 0;
+            foreach (SkinWeight skin_weight in v.skin_weights)
+            {
+                mesh_command.skin_weight_commands[nskin_weight].old_attr.bone_index = skin_weight.bone_index;
+                mesh_command.skin_weight_commands[nskin_weight].old_attr.weight = skin_weight.weight;
+                nskin_weight++;
+            }
+        }
         bool updated = false;
+
+        //選択ボーンに対応するウェイトを検索する。
         SkinWeight selected_skin_weight = null;
         foreach (SkinWeight skin_weight in v.skin_weights)
         {
@@ -254,8 +318,10 @@ public class WeightViewer : Viewer
                 break;
             }
         }
+        //選択ボーンに対応するウェイトがなければ、最小値を持つウェイトを置き換える。
         if (selected_skin_weight == null)
         {
+            //メッシュのボーン参照に指定ノードが含まれるか。
             bool found = false;
             int bone_index = 0;
             foreach (TSONode bone in mesh.bones)
@@ -274,20 +340,25 @@ public class WeightViewer : Viewer
                 selected_skin_weight.weight = 0.0f;
             }
         }
+        //選択ボーンに対応するウェイトを加算する。
         if (selected_skin_weight != null)
         {
             updated = true;
 
+            //変更前の対象ウェイト値
             float prev_selected_weight = selected_skin_weight.weight;
+            //変更前の残りウェイト値
             float prev_rest_weight = 1.0f - prev_selected_weight;
+            //ウェイトを加算する。
             selected_skin_weight.weight += weight;
             if (selected_skin_weight.weight > 1.0f)
                 selected_skin_weight.weight = 1.0f;
-            float gain_weight = selected_skin_weight.weight - prev_selected_weight;
 
             if (prev_rest_weight != 0.0f)
             {
-                //reduce weight
+                //実際の加算値
+                float gain_weight = selected_skin_weight.weight - prev_selected_weight;
+                //残りウェイトを減算する。
                 foreach (SkinWeight skin_weight in v.skin_weights)
                 {
                     if (skin_weight == selected_skin_weight)
@@ -299,7 +370,75 @@ public class WeightViewer : Viewer
                 }
             }
         }
+        //処理後の値を記憶する。
+        {
+            int nskin_weight = 0;
+            foreach (SkinWeight skin_weight in v.skin_weights)
+            {
+                mesh_command.skin_weight_commands[nskin_weight].new_attr.bone_index = skin_weight.bone_index;
+                mesh_command.skin_weight_commands[nskin_weight].new_attr.weight = skin_weight.weight;
+                nskin_weight++;
+            }
+        }
+        if (updated)
+        {
+            if (mesh_command_id == mesh_commands.Count)
+                mesh_commands.Add(mesh_command);
+            else
+                mesh_commands[mesh_command_id] = mesh_command;
+            mesh_command_id++;
+        }
         return updated;
+    }
+
+    /// ひとつ前の操作による変更を元に戻せるか。
+    public bool CanUndo()
+    {
+        return (mesh_command_id > 0);
+    }
+    /// ひとつ前の操作による変更を元に戻す。
+    public void Undo()
+    {
+        if (!CanUndo())
+            return;
+
+        mesh_command_id--;
+        Undo(mesh_commands[mesh_command_id]);
+    }
+    /// 指定操作による変更を元に戻す。
+    public void Undo(MeshCommand mesh_command)
+    {
+        foreach (SkinWeightCommand skin_weight_command in mesh_command.skin_weight_commands)
+        {
+            skin_weight_command.skin_weight.bone_index = skin_weight_command.old_attr.bone_index;
+            skin_weight_command.skin_weight.weight = skin_weight_command.old_attr.weight;
+        }
+        mesh_command.mesh.WriteBuffer(device);
+    }
+
+    /// ひとつ前の操作による変更をやり直せるか。
+    public bool CanRedo()
+    {
+        return (mesh_command_id < mesh_commands.Count);
+    }
+    /// ひとつ前の操作による変更をやり直す。
+    public void Redo()
+    {
+        if (!CanRedo())
+            return;
+
+        Redo(mesh_commands[mesh_command_id]);
+        mesh_command_id++;
+    }
+    /// 指定操作による変更をやり直す。
+    public void Redo(MeshCommand mesh_command)
+    {
+        foreach (SkinWeightCommand skin_weight_command in mesh_command.skin_weight_commands)
+        {
+            skin_weight_command.skin_weight.bone_index = skin_weight_command.new_attr.bone_index;
+            skin_weight_command.skin_weight.weight = skin_weight_command.new_attr.weight;
+        }
+        mesh_command.mesh.WriteBuffer(device);
     }
 
     public static Vector3 CalcSkindeformPosition(ref Vertex v, Matrix[] boneMatrices)
@@ -334,6 +473,7 @@ public class WeightViewer : Viewer
         lastScreenPoint.Y = e.Y;
     }
 
+    /// 選択頂点id
     public int selected_vertex_id = -1;
 
     /// <summary>
