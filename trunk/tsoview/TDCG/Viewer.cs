@@ -1078,38 +1078,39 @@ public class Viewer : IDisposable
             effect.SetValue("texShadowMap", renderTextures[2]);
         }
 
-        Figure fig;
-        if (TryGetFigure(out fig))
+        switch (view_mode)
         {
-            switch (view_mode)
+        case ViewMode.Toon:
+            foreach (Figure fig in FigureList)
+            foreach (TSOFile tso in fig.TSOList)
             {
-            case ViewMode.Toon:
-                foreach (TSOFile tso in fig.TSOList)
+                tso.BeginRender();
+
+                foreach (TSOFrame frame in tso.frames)
+                foreach (TSOMesh mesh in frame.meshes)
                 {
-                    tso.BeginRender();
+                    device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                    tso.SwitchShader(mesh);
 
-                    foreach (TSOFrame frame in tso.frames)
-                    foreach (TSOMesh mesh in frame.meshes)
+                    effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, mesh));
+
+                    int npass = effect.Begin(0);
+                    for (int ipass = 0; ipass < npass; ipass++)
                     {
-                        device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                        tso.SwitchShader(mesh);
-
-                        effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, mesh));
-
-                        int npass = effect.Begin(0);
-                        for (int ipass = 0; ipass < npass; ipass++)
-                        {
-                            effect.BeginPass(ipass);
-                            mesh.dm.DrawSubset(0);
-                            effect.EndPass();
-                        }
-                        effect.End();
+                        effect.BeginPass(ipass);
+                        mesh.dm.DrawSubset(0);
+                        effect.EndPass();
                     }
-                    tso.EndRender();
+                    effect.End();
                 }
-                break;
-            case ViewMode.Weight:
-                if (selected_mesh != null)
+                tso.EndRender();
+            }
+            break;
+        case ViewMode.Weight:
+            if (selected_mesh != null)
+            {
+                Figure fig;
+                if (TryGetFigure(out fig))
                 {
                     TSOMesh mesh = selected_mesh;
 
@@ -1129,8 +1130,8 @@ public class Viewer : IDisposable
                     }
                     effect.End();
                 }
-                break;
             }
+            break;
         }
     }
 
