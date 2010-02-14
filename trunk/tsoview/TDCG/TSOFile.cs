@@ -222,7 +222,7 @@ namespace TDCG
     /// <summary>
     /// フレーム
     /// </summary>
-    public class TSOFrame : IDisposable
+    public class TSOMesh : IDisposable
     {
         string name;
         /// <summary>
@@ -928,7 +928,7 @@ namespace TDCG
         /// <summary>
         /// フレーム配列
         /// </summary>
-        public TSOFrame[] frames;
+        public TSOMesh[] frames;
 
         internal Dictionary<string, TSONode> nodemap;
 
@@ -977,7 +977,7 @@ namespace TDCG
                 sub_script.Write(bw);
 
             bw.Write(frames.Length);
-            foreach (TSOFrame frame in frames)
+            foreach (TSOMesh frame in frames)
                 frame.Write(bw);
         }
 
@@ -1063,10 +1063,10 @@ namespace TDCG
             }
 
             UInt32 frame_count = reader.ReadUInt32();
-            frames = new TSOFrame[frame_count];
+            frames = new TSOMesh[frame_count];
             for (int i = 0; i < frame_count; i++)
             {
-                frames[i] = new TSOFrame();
+                frames[i] = new TSOMesh();
                 frames[i].Read(reader);
                 frames[i].LinkBones(nodes);
 
@@ -1141,7 +1141,7 @@ namespace TDCG
         public int SumVerticesCount()
         {
             int sum = 0;
-            foreach (TSOFrame frame in frames)
+            foreach (TSOMesh frame in frames)
                 sum += frame.SumVerticesCount();
             return sum;
         }
@@ -1170,7 +1170,7 @@ namespace TDCG
             this.device = device;
             this.effect = effect;
 
-            foreach (TSOFrame frame in frames)
+            foreach (TSOMesh frame in frames)
             foreach (TSOSubMesh mesh in frame.meshes)
                 mesh.WriteBuffer(device);
 
@@ -1310,7 +1310,7 @@ namespace TDCG
         /// </summary>
         public void Dispose()
         {
-            foreach (TSOFrame frame in frames)
+            foreach (TSOMesh frame in frames)
                 frame.Dispose();
             foreach (TSOTex tex in textures)
                 tex.Dispose();

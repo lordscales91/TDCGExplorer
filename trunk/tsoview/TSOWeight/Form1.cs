@@ -62,7 +62,7 @@ namespace TSOWeight
         void AssignFrames(TSOFile tso)
         {
             lvFrames.Items.Clear();
-            foreach (TSOFrame frame in tso.frames)
+            foreach (TSOMesh frame in tso.frames)
             {
                 ListViewItem li = new ListViewItem(frame.Name);
                 li.Tag = frame;
@@ -71,7 +71,7 @@ namespace TSOWeight
             lvFrames.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
-        void AssignMeshes(TSOFrame frame)
+        void AssignMeshes(TSOMesh frame)
         {
             lvMeshes.Items.Clear();
             int nmesh = 0;
@@ -161,7 +161,7 @@ namespace TSOWeight
                 return;
 
             ListViewItem li = lvFrames.SelectedItems[0];
-            TSOFrame frame = li.Tag as TSOFrame;
+            TSOMesh frame = li.Tag as TSOMesh;
             AssignMeshes(frame);
         }
 
