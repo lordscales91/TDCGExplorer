@@ -402,6 +402,7 @@ public class WeightViewer : Viewer
         return updated;
     }
 
+    /// 操作を消去します。
     public void ClearCommands()
     {
         mesh_commands.Clear();
@@ -467,6 +468,12 @@ public class WeightViewer : Viewer
         mesh_command.mesh.WriteBuffer(device);
     }
 
+    /// <summary>
+    /// スキン変形後の指定頂点の位置を得ます。
+    /// </summary>
+    /// <param name="v">頂点</param>
+    /// <param name="boneMatrices">スキン変形行列の配列</param>
+    /// <returns></returns>
     public static Vector3 CalcSkindeformPosition(ref Vertex v, Matrix[] boneMatrices)
     {
         Vector3 pos = Vector3.Empty;
