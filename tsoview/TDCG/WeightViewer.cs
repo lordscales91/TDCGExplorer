@@ -197,7 +197,7 @@ public class WeightViewer : Viewer
                 float dx = v1.X - v0.X;
                 float dy = v1.Y - v0.Y;
                 float dz = v1.Z - v0.Z;
-                if (dx * dx + dy * dy + dz * dz < radius * radius)
+                if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
                     color.Y = 1;
                 else
                     color.Y = 0;
@@ -275,7 +275,7 @@ public class WeightViewer : Viewer
             float dx = p1.X - p0.X;
             float dy = p1.Y - p0.Y;
             float dz = p1.Z - p0.Z;
-            if (dx * dx + dy * dy + dz * dz < radius * radius)
+            if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
             {
                 if (GainSkinWeight(mesh, selected_node, i, mesh_command))
                     updated = true;
