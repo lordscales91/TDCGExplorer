@@ -166,9 +166,9 @@ public class WeightViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            if (selected_submesh != null)
+            if (selected_sub_mesh != null)
             {
-                DrawVertices(fig, selected_submesh);
+                DrawVertices(fig, selected_sub_mesh);
                 if (selected_vertex_id != -1)
                     DrawSelectedVertex(fig);
             }
@@ -188,7 +188,7 @@ public class WeightViewer : Viewer
 
         if (selected_vertex_id != -1)
         {
-            Vector3 v0 = selected_submesh.vertices[selected_vertex_id].position;
+            Vector3 v0 = selected_sub_mesh.vertices[selected_vertex_id].position;
 
             for (int i = 0; i < mesh.vertices.Length; i++)
             {
@@ -227,7 +227,7 @@ public class WeightViewer : Viewer
     /// 選択頂点を描画する。
     void DrawSelectedVertex(Figure fig)
     {
-        TSOSubMesh mesh = selected_submesh;
+        TSOSubMesh mesh = selected_sub_mesh;
         Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, mesh);
 
         float scale = 0.1f;
@@ -247,9 +247,9 @@ public class WeightViewer : Viewer
     /// 選択ボーンに対応するウェイトを加算する。
     public void GainSkinWeight(TSONode selected_node)
     {
-        if (selected_submesh != null)
+        if (selected_sub_mesh != null)
         {
-            GainSkinWeight(selected_submesh, selected_node);
+            GainSkinWeight(selected_sub_mesh, selected_node);
         }
     }
 
@@ -264,7 +264,7 @@ public class WeightViewer : Viewer
         mesh_command.mesh = mesh;
 
         bool updated = false;
-        Vector3 p0 = selected_submesh.vertices[selected_vertex_id].position;
+        Vector3 p0 = selected_sub_mesh.vertices[selected_vertex_id].position;
 
         for (int i = 0; i < mesh.vertices.Length; i++)
         {
@@ -521,9 +521,9 @@ public class WeightViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            if (selected_submesh != null)
+            if (selected_sub_mesh != null)
             {
-                int vertex_id = FindVertexOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, fig, selected_submesh);
+                int vertex_id = FindVertexOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, fig, selected_sub_mesh);
                 if (vertex_id != -1)
                 {
                     selected_vertex_id = vertex_id;
