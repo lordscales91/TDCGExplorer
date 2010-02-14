@@ -6,8 +6,9 @@ using System.Threading;
 //using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
+using TDCG;
 
-namespace TDCG
+namespace TSOView
 {
     /// <summary>
     /// フィギュア情報を扱うフォーム
