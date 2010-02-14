@@ -402,6 +402,11 @@ public class WeightViewer : Viewer
         return updated;
     }
 
+    public void ClearCommands()
+    {
+        mesh_commands.Clear();
+    }
+
     /// ‚Ğ‚Æ‚Â‘O‚Ì‘€ì‚É‚æ‚é•ÏX‚ğŒ³‚É–ß‚¹‚é‚©B
     public bool CanUndo()
     {

@@ -137,6 +137,9 @@ namespace TSOWeight
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
+                viewer.selected_mesh = null;
+                viewer.selected_vertex_id = -1;
+                viewer.ClearCommands();
                 foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
                     viewer.LoadAnyFile(src, (e.KeyState & 8) == 8);
             }
