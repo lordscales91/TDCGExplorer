@@ -241,7 +241,7 @@ namespace TDCG
         /// <summary>
         /// サブメッシュ配列
         /// </summary>
-        public TSOSubMesh[] meshes;
+        public TSOSubMesh[] sub_meshes;
 
         /// <summary>
         /// メッシュを読み込みます。
@@ -252,12 +252,12 @@ namespace TDCG
             reader.ReadMatrix(ref this.transform_matrix);
             this.unknown1 = reader.ReadUInt32();
             UInt32 mesh_count = reader.ReadUInt32();
-            this.meshes = new TSOSubMesh[mesh_count];
+            this.sub_meshes = new TSOSubMesh[mesh_count];
             for (int i = 0; i < mesh_count; i++)
             {
                 TSOSubMesh mesh = new TSOSubMesh();
                 mesh.Read(reader);
-                this.meshes[i] = mesh;
+                this.sub_meshes[i] = mesh;
             }
         }
 
@@ -270,9 +270,9 @@ namespace TDCG
             Matrix m = this.transform_matrix;
             bw.Write(ref m);
             bw.Write(this.unknown1);
-            bw.Write(this.meshes.Length);
+            bw.Write(this.sub_meshes.Length);
 
-            foreach (TSOSubMesh i in this.meshes)
+            foreach (TSOSubMesh i in this.sub_meshes)
                 i.Write(bw);
         }
 
@@ -281,7 +281,7 @@ namespace TDCG
         /// </summary>
         public void LinkBones(TSONode[] nodes)
         {
-            foreach (TSOSubMesh mesh in meshes)
+            foreach (TSOSubMesh mesh in sub_meshes)
                 mesh.LinkBones(nodes);
         }
 
@@ -289,7 +289,7 @@ namespace TDCG
         public int SumVerticesCount()
         {
             int sum = 0;
-            foreach (TSOSubMesh mesh in meshes)
+            foreach (TSOSubMesh mesh in sub_meshes)
                 sum += mesh.VerticesCount;
             return sum;
         }
@@ -299,8 +299,8 @@ namespace TDCG
         /// </summary>
         public void Dispose()
         {
-            if (meshes != null)
-            foreach (TSOSubMesh mesh in meshes)
+            if (sub_meshes != null)
+            foreach (TSOSubMesh mesh in sub_meshes)
                 mesh.Dispose();
         }
     }
@@ -1070,7 +1070,7 @@ namespace TDCG
                 frames[i].Read(reader);
                 frames[i].LinkBones(nodes);
 
-                //Console.WriteLine("frame name {0} len {1}", frame.name, frame.meshes.Length);
+                //Console.WriteLine("frame name {0} len {1}", frame.name, frame.sub_meshes.Length);
             }
         }
 
@@ -1171,7 +1171,7 @@ namespace TDCG
             this.effect = effect;
 
             foreach (TSOMesh frame in frames)
-            foreach (TSOSubMesh mesh in frame.meshes)
+            foreach (TSOSubMesh mesh in frame.sub_meshes)
                 mesh.WriteBuffer(device);
 
             texmap = new Dictionary<string, TSOTex>();

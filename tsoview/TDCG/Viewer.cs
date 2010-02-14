@@ -934,7 +934,7 @@ public class Viewer : IDisposable
             //tso.BeginRender();
 
             foreach (TSOMesh frame in tso.frames)
-            foreach (TSOSubMesh mesh in frame.meshes)
+            foreach (TSOSubMesh mesh in frame.sub_meshes)
             {
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
@@ -1021,7 +1021,7 @@ public class Viewer : IDisposable
     }
 
     /// 選択サブメッシュ
-    public TSOSubMesh selected_submesh = null;
+    public TSOSubMesh selected_sub_mesh = null;
 
     /// 選択ボーン
     public TSONode selected_node = null;
@@ -1087,7 +1087,7 @@ public class Viewer : IDisposable
                 tso.BeginRender();
 
                 foreach (TSOMesh frame in tso.frames)
-                foreach (TSOSubMesh mesh in frame.meshes)
+                foreach (TSOSubMesh mesh in frame.sub_meshes)
                 {
                     device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
                     tso.SwitchShader(mesh);
@@ -1107,12 +1107,12 @@ public class Viewer : IDisposable
             }
             break;
         case ViewMode.Weight:
-            if (selected_submesh != null)
+            if (selected_sub_mesh != null)
             {
                 Figure fig;
                 if (TryGetFigure(out fig))
                 {
-                    TSOSubMesh mesh = selected_submesh;
+                    TSOSubMesh mesh = selected_sub_mesh;
 
                     device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
                     effect.Technique = "BoneCol";
