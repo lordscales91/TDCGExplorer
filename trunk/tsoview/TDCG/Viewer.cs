@@ -934,17 +934,17 @@ public class Viewer : IDisposable
             //tso.BeginRender();
 
             foreach (TSOMesh frame in tso.frames)
-            foreach (TSOSubMesh mesh in frame.sub_meshes)
+            foreach (TSOSubMesh sub_mesh in frame.sub_meshes)
             {
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
-                //tso.SwitchShader(mesh);
-                Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
+                //tso.SwitchShader(sub_mesh);
+                Matrix[] clipped_boneMatrices = new Matrix[sub_mesh.maxPalettes];
 
-                for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
+                for (int numPalettes = 0; numPalettes < sub_mesh.maxPalettes; numPalettes++)
                 {
                     //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
-                    TSONode tso_node = mesh.GetBone(numPalettes);
+                    TSONode tso_node = sub_mesh.GetBone(numPalettes);
                     TMONode tmo_node;
                     if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
                         clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
@@ -955,7 +955,7 @@ public class Viewer : IDisposable
                 for (int ipass = 0; ipass < npass; ipass++)
                 {
                     effect.BeginPass(ipass);
-                    mesh.dm.DrawSubset(0);
+                    sub_mesh.dm.DrawSubset(0);
                     effect.EndPass();
                 }
                 effect.End();
@@ -1030,15 +1030,15 @@ public class Viewer : IDisposable
     /// スキン変形行列の配列を得ます。
     /// </summary>
     /// <param name="fig">フィギュア</param>
-    /// <param name="mesh">サブメッシュ</param>
+    /// <param name="sub_mesh">サブメッシュ</param>
     /// <returns>スキン変形行列の配列</returns>
-    public static Matrix[] ClipBoneMatrices(Figure fig, TSOSubMesh mesh)
+    public static Matrix[] ClipBoneMatrices(Figure fig, TSOSubMesh sub_mesh)
     {
-        Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
+        Matrix[] clipped_boneMatrices = new Matrix[sub_mesh.maxPalettes];
 
-        for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
+        for (int numPalettes = 0; numPalettes < sub_mesh.maxPalettes; numPalettes++)
         {
-            TSONode tso_node = mesh.GetBone(numPalettes);
+            TSONode tso_node = sub_mesh.GetBone(numPalettes);
             TMONode tmo_node;
             if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
                 clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
@@ -1050,16 +1050,16 @@ public class Viewer : IDisposable
     /// ボーン選択の配列を得ます。
     /// </summary>
     /// <param name="fig">フィギュア</param>
-    /// <param name="mesh">サブメッシュ</param>
+    /// <param name="sub_mesh">サブメッシュ</param>
     /// <param name="selected_node">選択ボーン</param>
     /// <returns>ボーン選択の配列</returns>
-    public static int[] ClipBoneSelections(Figure fig, TSOSubMesh mesh, TSONode selected_node)
+    public static int[] ClipBoneSelections(Figure fig, TSOSubMesh sub_mesh, TSONode selected_node)
     {
-        int[] clipped_boneSelections = new int[mesh.maxPalettes];
+        int[] clipped_boneSelections = new int[sub_mesh.maxPalettes];
 
-        for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
+        for (int numPalettes = 0; numPalettes < sub_mesh.maxPalettes; numPalettes++)
         {
-            TSONode tso_node = mesh.GetBone(numPalettes);
+            TSONode tso_node = sub_mesh.GetBone(numPalettes);
             clipped_boneSelections[numPalettes] = (selected_node == tso_node) ? 1 : 0;
         }
         return clipped_boneSelections;
@@ -1087,18 +1087,18 @@ public class Viewer : IDisposable
                 tso.BeginRender();
 
                 foreach (TSOMesh frame in tso.frames)
-                foreach (TSOSubMesh mesh in frame.sub_meshes)
+                foreach (TSOSubMesh sub_mesh in frame.sub_meshes)
                 {
                     device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                    tso.SwitchShader(mesh);
+                    tso.SwitchShader(sub_mesh);
 
-                    effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, mesh));
+                    effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
 
                     int npass = effect.Begin(0);
                     for (int ipass = 0; ipass < npass; ipass++)
                     {
                         effect.BeginPass(ipass);
-                        mesh.dm.DrawSubset(0);
+                        sub_mesh.dm.DrawSubset(0);
                         effect.EndPass();
                     }
                     effect.End();
@@ -1112,20 +1112,20 @@ public class Viewer : IDisposable
                 Figure fig;
                 if (TryGetFigure(out fig))
                 {
-                    TSOSubMesh mesh = selected_sub_mesh;
+                    TSOSubMesh sub_mesh = selected_sub_mesh;
 
                     device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
                     effect.Technique = "BoneCol";
                     effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
 
-                    effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, mesh));
-                    effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(fig, mesh, selected_node));
+                    effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
+                    effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(fig, sub_mesh, selected_node));
 
                     int npass = effect.Begin(0);
                     for (int ipass = 0; ipass < npass; ipass++)
                     {
                         effect.BeginPass(ipass);
-                        mesh.dm.DrawSubset(0);
+                        sub_mesh.dm.DrawSubset(0);
                         effect.EndPass();
                     }
                     effect.End();
