@@ -59,30 +59,30 @@ namespace TSOWeight
             lvTSOFiles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
-        void AssignFrames(TSOFile tso)
+        void AssignMeshes(TSOFile tso)
         {
-            lvFrames.Items.Clear();
+            lvMeshes.Items.Clear();
             foreach (TSOMesh mesh in tso.meshes)
             {
                 ListViewItem li = new ListViewItem(mesh.Name);
                 li.Tag = mesh;
-                lvFrames.Items.Add(li);
-            }
-            lvFrames.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-        }
-
-        void AssignMeshes(TSOMesh frame)
-        {
-            lvMeshes.Items.Clear();
-            int nmesh = 0;
-            foreach (TSOSubMesh mesh in frame.sub_meshes)
-            {
-                ListViewItem li = new ListViewItem(string.Format("mesh #{0}", nmesh));
-                li.Tag = mesh;
                 lvMeshes.Items.Add(li);
-                nmesh++;
             }
             lvMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+
+        void AssignSubMeshes(TSOMesh frame)
+        {
+            lvSubMeshes.Items.Clear();
+            int nsub_mesh = 0;
+            foreach (TSOSubMesh mesh in frame.sub_meshes)
+            {
+                ListViewItem li = new ListViewItem(string.Format("sub_mesh #{0}", nsub_mesh));
+                li.Tag = mesh;
+                lvSubMeshes.Items.Add(li);
+                nsub_mesh++;
+            }
+            lvSubMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
         void AssignBoneIndices(TSOSubMesh mesh)
@@ -152,25 +152,25 @@ namespace TSOWeight
 
             ListViewItem li = lvTSOFiles.SelectedItems[0];
             TSOFile tso = li.Tag as TSOFile;
-            AssignFrames(tso);
+            AssignMeshes(tso);
         }
 
         private void lvFrames_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (lvFrames.SelectedItems.Count == 0)
-                return;
-
-            ListViewItem li = lvFrames.SelectedItems[0];
-            TSOMesh frame = li.Tag as TSOMesh;
-            AssignMeshes(frame);
-        }
-
-        private void lvMeshes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lvMeshes.SelectedItems.Count == 0)
                 return;
 
             ListViewItem li = lvMeshes.SelectedItems[0];
+            TSOMesh frame = li.Tag as TSOMesh;
+            AssignSubMeshes(frame);
+        }
+
+        private void lvMeshes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvSubMeshes.SelectedItems.Count == 0)
+                return;
+
+            ListViewItem li = lvSubMeshes.SelectedItems[0];
             TSOSubMesh mesh = li.Tag as TSOSubMesh;
             AssignBoneIndices(mesh);
             viewer.selected_sub_mesh = mesh;
