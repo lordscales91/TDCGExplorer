@@ -41,7 +41,7 @@ namespace TDCG
     public class MeshCommand
     {
         /// メッシュ
-        public TSOMesh mesh = null;
+        public TSOSubMesh mesh = null;
         /// 頂点操作リスト
         public List<VertexCommand> vertex_commands = new List<VertexCommand>();
     }
@@ -179,7 +179,7 @@ public class WeightViewer : Viewer
     public static float radius = 0.5f;
 
     /// 頂点を描画する。
-    void DrawVertices(Figure fig, TSOMesh mesh)
+    void DrawVertices(Figure fig, TSOSubMesh mesh)
     {
         Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, mesh);
 
@@ -227,7 +227,7 @@ public class WeightViewer : Viewer
     /// 選択頂点を描画する。
     void DrawSelectedVertex(Figure fig)
     {
-        TSOMesh mesh = selected_mesh;
+        TSOSubMesh mesh = selected_mesh;
         Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, mesh);
 
         float scale = 0.1f;
@@ -254,7 +254,7 @@ public class WeightViewer : Viewer
     }
 
     /// 選択ボーンに対応するウェイトを加算する。
-    public void GainSkinWeight(TSOMesh mesh, TSONode selected_node)
+    public void GainSkinWeight(TSOSubMesh mesh, TSONode selected_node)
     {
         if (selected_vertex_id == -1)
             return;
@@ -301,7 +301,7 @@ public class WeightViewer : Viewer
 
     /// 選択ボーンに対応するウェイトを加算する。
     /// returns: ウェイトを変更したか
-    public static bool GainSkinWeight(TSOMesh mesh, TSONode selected_node, int vertex_id, MeshCommand mesh_command)
+    public static bool GainSkinWeight(TSOSubMesh mesh, TSONode selected_node, int vertex_id, MeshCommand mesh_command)
     {
         Vertex v = mesh.vertices[vertex_id];
 
@@ -536,7 +536,7 @@ public class WeightViewer : Viewer
 
     /// スクリーン座標から頂点を見つけます。
     /// 衝突する頂点の中で最も近い位置にある頂点を返します。
-    private int FindVertexOnScreenPoint(float x, float y, Figure fig, TSOMesh mesh)
+    private int FindVertexOnScreenPoint(float x, float y, Figure fig, TSOSubMesh mesh)
     {
         int vertex_id = -1;
 

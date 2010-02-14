@@ -13,7 +13,7 @@ namespace TDCG
     /// <summary>
     /// メッシュ
     /// </summary>
-    public class TSOMesh : IDisposable
+    public class TSOSubMesh : IDisposable
     {
         /// <summary>
         /// シェーダ設定番号
@@ -241,7 +241,7 @@ namespace TDCG
         /// <summary>
         /// メッシュ配列
         /// </summary>
-        public TSOMesh[] meshes;
+        public TSOSubMesh[] meshes;
 
         /// <summary>
         /// フレームを読み込みます。
@@ -252,10 +252,10 @@ namespace TDCG
             reader.ReadMatrix(ref this.transform_matrix);
             this.unknown1 = reader.ReadUInt32();
             UInt32 mesh_count = reader.ReadUInt32();
-            this.meshes = new TSOMesh[mesh_count];
+            this.meshes = new TSOSubMesh[mesh_count];
             for (int i = 0; i < mesh_count; i++)
             {
-                TSOMesh mesh = new TSOMesh();
+                TSOSubMesh mesh = new TSOSubMesh();
                 mesh.Read(reader);
                 this.meshes[i] = mesh;
             }
@@ -272,7 +272,7 @@ namespace TDCG
             bw.Write(this.unknown1);
             bw.Write(this.meshes.Length);
 
-            foreach (TSOMesh i in this.meshes)
+            foreach (TSOSubMesh i in this.meshes)
                 i.Write(bw);
         }
 
@@ -281,7 +281,7 @@ namespace TDCG
         /// </summary>
         public void LinkBones(TSONode[] nodes)
         {
-            foreach (TSOMesh mesh in meshes)
+            foreach (TSOSubMesh mesh in meshes)
                 mesh.LinkBones(nodes);
         }
 
@@ -289,7 +289,7 @@ namespace TDCG
         public int SumVerticesCount()
         {
             int sum = 0;
-            foreach (TSOMesh mesh in meshes)
+            foreach (TSOSubMesh mesh in meshes)
                 sum += mesh.VerticesCount;
             return sum;
         }
@@ -300,7 +300,7 @@ namespace TDCG
         public void Dispose()
         {
             if (meshes != null)
-            foreach (TSOMesh mesh in meshes)
+            foreach (TSOSubMesh mesh in meshes)
                 mesh.Dispose();
         }
     }
@@ -1171,7 +1171,7 @@ namespace TDCG
             this.effect = effect;
 
             foreach (TSOFrame frame in frames)
-            foreach (TSOMesh mesh in frame.meshes)
+            foreach (TSOSubMesh mesh in frame.meshes)
                 mesh.WriteBuffer(device);
 
             texmap = new Dictionary<string, TSOTex>();
@@ -1291,7 +1291,7 @@ namespace TDCG
         /// シェーダ設定を切り替えます。
         /// </summary>
         /// <param name="mesh">切り替え対象となるメッシュ</param>
-        public void SwitchShader(TSOMesh mesh)
+        public void SwitchShader(TSOSubMesh mesh)
         {
             Debug.Assert(mesh.spec >= 0 && mesh.spec < sub_scripts.Length, string.Format("mesh.spec out of range: {0}", mesh.spec));
             SwitchShader(sub_scripts[mesh.spec].shader);

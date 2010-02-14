@@ -934,7 +934,7 @@ public class Viewer : IDisposable
             //tso.BeginRender();
 
             foreach (TSOFrame frame in tso.frames)
-            foreach (TSOMesh mesh in frame.meshes)
+            foreach (TSOSubMesh mesh in frame.meshes)
             {
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
@@ -1021,7 +1021,7 @@ public class Viewer : IDisposable
     }
 
     /// 選択メッシュ
-    public TSOMesh selected_mesh = null;
+    public TSOSubMesh selected_mesh = null;
 
     /// 選択ボーン
     public TSONode selected_node = null;
@@ -1032,7 +1032,7 @@ public class Viewer : IDisposable
     /// <param name="fig">フィギュア</param>
     /// <param name="mesh">メッシュ</param>
     /// <returns>スキン変形行列の配列</returns>
-    public static Matrix[] ClipBoneMatrices(Figure fig, TSOMesh mesh)
+    public static Matrix[] ClipBoneMatrices(Figure fig, TSOSubMesh mesh)
     {
         Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
 
@@ -1053,7 +1053,7 @@ public class Viewer : IDisposable
     /// <param name="mesh">メッシュ</param>
     /// <param name="selected_node">選択ボーン</param>
     /// <returns>ボーン選択の配列</returns>
-    public static int[] ClipBoneSelections(Figure fig, TSOMesh mesh, TSONode selected_node)
+    public static int[] ClipBoneSelections(Figure fig, TSOSubMesh mesh, TSONode selected_node)
     {
         int[] clipped_boneSelections = new int[mesh.maxPalettes];
 
@@ -1087,7 +1087,7 @@ public class Viewer : IDisposable
                 tso.BeginRender();
 
                 foreach (TSOFrame frame in tso.frames)
-                foreach (TSOMesh mesh in frame.meshes)
+                foreach (TSOSubMesh mesh in frame.meshes)
                 {
                     device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
                     tso.SwitchShader(mesh);
@@ -1112,7 +1112,7 @@ public class Viewer : IDisposable
                 Figure fig;
                 if (TryGetFigure(out fig))
                 {
-                    TSOMesh mesh = selected_mesh;
+                    TSOSubMesh mesh = selected_mesh;
 
                     device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
                     effect.Technique = "BoneCol";
