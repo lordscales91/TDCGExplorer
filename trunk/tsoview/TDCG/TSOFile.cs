@@ -78,7 +78,9 @@ namespace TDCG
             this.vertices = new Vertex[vertices_count];
             for (int i = 0; i < vertices_count; i++)
             {
-                this.vertices[i].Read(reader);
+                Vertex v = new Vertex();
+                v.Read(reader);
+                this.vertices[i] = v;
             }
         }
 
@@ -306,7 +308,7 @@ namespace TDCG
     /// <summary>
     /// ’¸“_
     /// </summary>
-    public struct Vertex
+    public class Vertex
     {
         /// <summary>
         /// ˆÊ’u

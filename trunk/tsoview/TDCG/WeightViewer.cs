@@ -202,7 +202,7 @@ public class WeightViewer : Viewer
                 else
                     color.Y = 0;
 
-                Vector3 pos = CalcSkindeformPosition(ref mesh.vertices[i], clipped_boneMatrices);
+                Vector3 pos = CalcSkindeformPosition(mesh.vertices[i], clipped_boneMatrices);
                 Matrix m = Matrix.Scaling(scale, scale, scale);
                 m.M41 = pos.X;
                 m.M42 = pos.Y;
@@ -214,7 +214,7 @@ public class WeightViewer : Viewer
         {
             for (int i = 0; i < mesh.vertices.Length; i++)
             {
-                Vector3 pos = CalcSkindeformPosition(ref mesh.vertices[i], clipped_boneMatrices);
+                Vector3 pos = CalcSkindeformPosition(mesh.vertices[i], clipped_boneMatrices);
                 Matrix m = Matrix.Scaling(scale, scale, scale);
                 m.M41 = pos.X;
                 m.M42 = pos.Y;
@@ -235,7 +235,7 @@ public class WeightViewer : Viewer
 
         {
             int i = selected_vertex_id;
-            Vector3 pos = CalcSkindeformPosition(ref mesh.vertices[i], clipped_boneMatrices);
+            Vector3 pos = CalcSkindeformPosition(mesh.vertices[i], clipped_boneMatrices);
             Matrix m = Matrix.Scaling(scale, scale, scale);
             m.M41 = pos.X;
             m.M42 = pos.Y;
@@ -388,6 +388,8 @@ public class WeightViewer : Viewer
                         skin_weight.weight = 0.0f;
                 }
             }
+            v.FillSkinWeights();
+            v.GenerateBoneIndices();
         }
         //処理後の値を記憶する。
         {
@@ -474,7 +476,7 @@ public class WeightViewer : Viewer
     /// <param name="v">頂点</param>
     /// <param name="boneMatrices">スキン変形行列の配列</param>
     /// <returns></returns>
-    public static Vector3 CalcSkindeformPosition(ref Vertex v, Matrix[] boneMatrices)
+    public static Vector3 CalcSkindeformPosition(Vertex v, Matrix[] boneMatrices)
     {
         Vector3 pos = Vector3.Empty;
         for (int i = 0; i < 4; i++)
@@ -552,7 +554,7 @@ public class WeightViewer : Viewer
 
             for (int i = 0; i < mesh.vertices.Length; i++)
             {
-                Vector3 sphereCenter = CalcSkindeformPosition(ref mesh.vertices[i], clipped_boneMatrices);
+                Vector3 sphereCenter = CalcSkindeformPosition(mesh.vertices[i], clipped_boneMatrices);
                 if (DetectSphereRayCollision(sphereRadius, ref sphereCenter, ref rayStart, ref rayOrientation, out collisionPoint, out collisionTime))
                 {
                     if (collisionTime < min_time)
