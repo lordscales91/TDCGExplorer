@@ -220,7 +220,7 @@ namespace TDCG
     }
 
     /// <summary>
-    /// フレーム
+    /// メッシュ
     /// </summary>
     public class TSOMesh : IDisposable
     {
@@ -244,7 +244,7 @@ namespace TDCG
         public TSOSubMesh[] meshes;
 
         /// <summary>
-        /// フレームを読み込みます。
+        /// メッシュを読み込みます。
         /// </summary>
         public void Read(BinaryReader reader)
         {
@@ -262,7 +262,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// フレームを書き出します。
+        /// メッシュを書き出します。
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -926,7 +926,7 @@ namespace TDCG
         /// </summary>
         public TSOSubScript[] sub_scripts;
         /// <summary>
-        /// フレーム配列
+        /// メッシュ配列
         /// </summary>
         public TSOMesh[] frames;
 
