@@ -933,7 +933,7 @@ public class Viewer : IDisposable
         {
             //tso.BeginRender();
 
-            foreach (TSOMesh frame in tso.frames)
+            foreach (TSOMesh frame in tso.meshes)
             foreach (TSOSubMesh sub_mesh in frame.sub_meshes)
             {
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
@@ -1086,7 +1086,7 @@ public class Viewer : IDisposable
             {
                 tso.BeginRender();
 
-                foreach (TSOMesh frame in tso.frames)
+                foreach (TSOMesh frame in tso.meshes)
                 foreach (TSOSubMesh sub_mesh in frame.sub_meshes)
                 {
                     device.RenderState.VertexBlend = (VertexBlend)(4 - 1);

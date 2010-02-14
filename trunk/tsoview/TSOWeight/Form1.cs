@@ -62,7 +62,7 @@ namespace TSOWeight
         void AssignFrames(TSOFile tso)
         {
             lvFrames.Items.Clear();
-            foreach (TSOMesh frame in tso.frames)
+            foreach (TSOMesh frame in tso.meshes)
             {
                 ListViewItem li = new ListViewItem(frame.Name);
                 li.Tag = frame;
