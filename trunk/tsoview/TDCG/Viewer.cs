@@ -1020,7 +1020,7 @@ public class Viewer : IDisposable
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
     }
 
-    /// 選択メッシュ
+    /// 選択サブメッシュ
     public TSOSubMesh selected_submesh = null;
 
     /// 選択ボーン
@@ -1030,7 +1030,7 @@ public class Viewer : IDisposable
     /// スキン変形行列の配列を得ます。
     /// </summary>
     /// <param name="fig">フィギュア</param>
-    /// <param name="mesh">メッシュ</param>
+    /// <param name="mesh">サブメッシュ</param>
     /// <returns>スキン変形行列の配列</returns>
     public static Matrix[] ClipBoneMatrices(Figure fig, TSOSubMesh mesh)
     {
@@ -1050,7 +1050,7 @@ public class Viewer : IDisposable
     /// ボーン選択の配列を得ます。
     /// </summary>
     /// <param name="fig">フィギュア</param>
-    /// <param name="mesh">メッシュ</param>
+    /// <param name="mesh">サブメッシュ</param>
     /// <param name="selected_node">選択ボーン</param>
     /// <returns>ボーン選択の配列</returns>
     public static int[] ClipBoneSelections(Figure fig, TSOSubMesh mesh, TSONode selected_node)

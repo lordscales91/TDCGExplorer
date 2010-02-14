@@ -11,7 +11,7 @@ using TDCG.Extensions;
 namespace TDCG
 {
     /// <summary>
-    /// メッシュ
+    /// サブメッシュ
     /// </summary>
     public class TSOSubMesh : IDisposable
     {
@@ -58,7 +58,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// メッシュを読み込みます。
+        /// サブメッシュを読み込みます。
         /// </summary>
         public void Read(BinaryReader reader)
         {
@@ -85,7 +85,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// メッシュを書き出します。
+        /// サブメッシュを書き出します。
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -210,7 +210,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// Direct3Dメッシュを破棄します。
+        /// Direct3Dサブメッシュを破棄します。
         /// </summary>
         public void Dispose()
         {
@@ -239,7 +239,7 @@ namespace TDCG
         /// </summary>
         public UInt32 unknown1;
         /// <summary>
-        /// メッシュ配列
+        /// サブメッシュ配列
         /// </summary>
         public TSOSubMesh[] meshes;
 
@@ -1290,7 +1290,7 @@ namespace TDCG
         /// <summary>
         /// シェーダ設定を切り替えます。
         /// </summary>
-        /// <param name="mesh">切り替え対象となるメッシュ</param>
+        /// <param name="mesh">切り替え対象となるサブメッシュ</param>
         public void SwitchShader(TSOSubMesh mesh)
         {
             Debug.Assert(mesh.spec >= 0 && mesh.spec < sub_scripts.Length, string.Format("mesh.spec out of range: {0}", mesh.spec));

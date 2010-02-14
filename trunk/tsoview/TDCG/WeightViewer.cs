@@ -37,10 +37,10 @@ namespace TDCG
         /// スキンウェイト操作リスト
         public List<SkinWeightCommand> skin_weight_commands = new List<SkinWeightCommand>();
     }
-    /// メッシュ操作
+    /// サブメッシュ操作
     public class SubMeshCommand
     {
-        /// メッシュ
+        /// サブメッシュ
         public TSOSubMesh mesh = null;
         /// 頂点操作リスト
         public List<VertexCommand> vertex_commands = new List<VertexCommand>();
@@ -295,7 +295,7 @@ public class WeightViewer : Viewer
 
     /// 加算ウェイト値
     public static float weight = 0.2f;
-    /// メッシュ操作リスト
+    /// サブメッシュ操作リスト
     public static List<SubMeshCommand> submesh_commands = new List<SubMeshCommand>();
     static int submesh_command_id = 0;
 
@@ -340,7 +340,7 @@ public class WeightViewer : Viewer
         //選択ボーンに対応するウェイトがなければ、最小値を持つウェイトを置き換える。
         if (selected_skin_weight == null)
         {
-            //メッシュのボーン参照に指定ノードが含まれるか。
+            //サブメッシュのボーン参照に指定ノードが含まれるか。
             bool found = false;
             int bone_index = 0;
             foreach (TSONode bone in mesh.bones)
