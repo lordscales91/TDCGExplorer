@@ -53,6 +53,9 @@
     <Compile Include="FigureForm.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FigureForm.Designer.cs">
+      <DependentUpon>FigureForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <None Include="Script.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
