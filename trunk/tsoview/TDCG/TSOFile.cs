@@ -498,6 +498,9 @@ namespace TDCG
         /// テキスト行配列
         /// </summary>
         public string[] lines;
+        /// <summary>
+        /// シェーダ設定
+        /// </summary>
         public Shader shader = null;
 
         /// <summary>

@@ -839,7 +839,21 @@ public class Viewer : IDisposable
     /// </summary>
     public RenderingHandler Rendering;
 
-    public enum ViewMode { Toon, Weight };
+    /// <summary>
+    /// 描画モード
+    /// </summary>
+    public enum ViewMode {
+        /// <summary>
+        /// トゥーン描画
+        /// </summary>
+        Toon,
+        /// <summary>
+        /// ウェイト描画
+        /// </summary>
+        Weight };
+    /// <summary>
+    /// 描画モード
+    /// </summary>
     public ViewMode view_mode = ViewMode.Toon;
 
     /// <summary>
@@ -1012,6 +1026,12 @@ public class Viewer : IDisposable
     /// 選択ボーン
     public TSONode selected_node = null;
 
+    /// <summary>
+    /// スキン変形行列の配列を得ます。
+    /// </summary>
+    /// <param name="fig">フィギュア</param>
+    /// <param name="mesh">メッシュ</param>
+    /// <returns>スキン変形行列の配列</returns>
     public static Matrix[] ClipBoneMatrices(Figure fig, TSOMesh mesh)
     {
         Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
@@ -1026,6 +1046,13 @@ public class Viewer : IDisposable
         return clipped_boneMatrices;
     }
 
+    /// <summary>
+    /// ボーン選択の配列を得ます。
+    /// </summary>
+    /// <param name="fig">フィギュア</param>
+    /// <param name="mesh">メッシュ</param>
+    /// <param name="selected_node">選択ボーン</param>
+    /// <returns>ボーン選択の配列</returns>
     public static int[] ClipBoneSelections(Figure fig, TSOMesh mesh, TSONode selected_node)
     {
         int[] clipped_boneSelections = new int[mesh.maxPalettes];

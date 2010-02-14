@@ -254,6 +254,9 @@ namespace TDCG
     /// </summary>
     public class Shader
     {
+        /// <summary>
+        /// シェーダ設定パラメータの配列
+        /// </summary>
         public ShaderParameter[] shader_parameters;
 
         //internal string     description;     // = "TA ToonShader v0.50"
