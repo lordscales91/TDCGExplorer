@@ -38,7 +38,7 @@ namespace TDCG
         public List<SkinWeightCommand> skin_weight_commands = new List<SkinWeightCommand>();
     }
     /// メッシュ操作
-    public class MeshCommand
+    public class SubMeshCommand
     {
         /// メッシュ
         public TSOSubMesh mesh = null;
@@ -166,9 +166,9 @@ public class WeightViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            if (selected_mesh != null)
+            if (selected_submesh != null)
             {
-                DrawVertices(fig, selected_mesh);
+                DrawVertices(fig, selected_submesh);
                 if (selected_vertex_id != -1)
                     DrawSelectedVertex(fig);
             }
@@ -188,7 +188,7 @@ public class WeightViewer : Viewer
 
         if (selected_vertex_id != -1)
         {
-            Vector3 v0 = selected_mesh.vertices[selected_vertex_id].position;
+            Vector3 v0 = selected_submesh.vertices[selected_vertex_id].position;
 
             for (int i = 0; i < mesh.vertices.Length; i++)
             {
@@ -227,7 +227,7 @@ public class WeightViewer : Viewer
     /// 選択頂点を描画する。
     void DrawSelectedVertex(Figure fig)
     {
-        TSOSubMesh mesh = selected_mesh;
+        TSOSubMesh mesh = selected_submesh;
         Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, mesh);
 
         float scale = 0.1f;
@@ -247,9 +247,9 @@ public class WeightViewer : Viewer
     /// 選択ボーンに対応するウェイトを加算する。
     public void GainSkinWeight(TSONode selected_node)
     {
-        if (selected_mesh != null)
+        if (selected_submesh != null)
         {
-            GainSkinWeight(selected_mesh, selected_node);
+            GainSkinWeight(selected_submesh, selected_node);
         }
     }
 
@@ -260,11 +260,11 @@ public class WeightViewer : Viewer
             return;
 
         //操作を生成する。
-        MeshCommand mesh_command = new MeshCommand();
+        SubMeshCommand mesh_command = new SubMeshCommand();
         mesh_command.mesh = mesh;
 
         bool updated = false;
-        Vector3 p0 = selected_mesh.vertices[selected_vertex_id].position;
+        Vector3 p0 = selected_submesh.vertices[selected_vertex_id].position;
 
         for (int i = 0; i < mesh.vertices.Length; i++)
         {
@@ -283,11 +283,11 @@ public class WeightViewer : Viewer
         }
         if (updated)
         {
-            if (mesh_command_id == mesh_commands.Count)
-                mesh_commands.Add(mesh_command);
+            if (submesh_command_id == submesh_commands.Count)
+                submesh_commands.Add(mesh_command);
             else
-                mesh_commands[mesh_command_id] = mesh_command;
-            mesh_command_id++;
+                submesh_commands[submesh_command_id] = mesh_command;
+            submesh_command_id++;
         }
         if (updated)
             mesh.WriteBuffer(device);
@@ -296,12 +296,12 @@ public class WeightViewer : Viewer
     /// 加算ウェイト値
     public static float weight = 0.2f;
     /// メッシュ操作リスト
-    public static List<MeshCommand> mesh_commands = new List<MeshCommand>();
-    static int mesh_command_id = 0;
+    public static List<SubMeshCommand> submesh_commands = new List<SubMeshCommand>();
+    static int submesh_command_id = 0;
 
     /// 選択ボーンに対応するウェイトを加算する。
     /// returns: ウェイトを変更したか
-    public static bool GainSkinWeight(TSOSubMesh mesh, TSONode selected_node, int vertex_id, MeshCommand mesh_command)
+    public static bool GainSkinWeight(TSOSubMesh mesh, TSONode selected_node, int vertex_id, SubMeshCommand mesh_command)
     {
         Vertex v = mesh.vertices[vertex_id];
 
@@ -407,13 +407,13 @@ public class WeightViewer : Viewer
     /// 操作を消去します。
     public void ClearCommands()
     {
-        mesh_commands.Clear();
+        submesh_commands.Clear();
     }
 
     /// ひとつ前の操作による変更を元に戻せるか。
     public bool CanUndo()
     {
-        return (mesh_command_id > 0);
+        return (submesh_command_id > 0);
     }
     /// ひとつ前の操作による変更を元に戻す。
     public void Undo()
@@ -421,11 +421,11 @@ public class WeightViewer : Viewer
         if (!CanUndo())
             return;
 
-        mesh_command_id--;
-        Undo(mesh_commands[mesh_command_id]);
+        submesh_command_id--;
+        Undo(submesh_commands[submesh_command_id]);
     }
     /// 指定操作による変更を元に戻す。
-    public void Undo(MeshCommand mesh_command)
+    public void Undo(SubMeshCommand mesh_command)
     {
         foreach (VertexCommand vertex_command in mesh_command.vertex_commands)
         {
@@ -443,7 +443,7 @@ public class WeightViewer : Viewer
     /// ひとつ前の操作による変更をやり直せるか。
     public bool CanRedo()
     {
-        return (mesh_command_id < mesh_commands.Count);
+        return (submesh_command_id < submesh_commands.Count);
     }
     /// ひとつ前の操作による変更をやり直す。
     public void Redo()
@@ -451,11 +451,11 @@ public class WeightViewer : Viewer
         if (!CanRedo())
             return;
 
-        Redo(mesh_commands[mesh_command_id]);
-        mesh_command_id++;
+        Redo(submesh_commands[submesh_command_id]);
+        submesh_command_id++;
     }
     /// 指定操作による変更をやり直す。
-    public void Redo(MeshCommand mesh_command)
+    public void Redo(SubMeshCommand mesh_command)
     {
         foreach (VertexCommand vertex_command in mesh_command.vertex_commands)
         {
@@ -521,9 +521,9 @@ public class WeightViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            if (selected_mesh != null)
+            if (selected_submesh != null)
             {
-                int vertex_id = FindVertexOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, fig, selected_mesh);
+                int vertex_id = FindVertexOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, fig, selected_submesh);
                 if (vertex_id != -1)
                 {
                     selected_vertex_id = vertex_id;

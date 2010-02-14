@@ -1021,7 +1021,7 @@ public class Viewer : IDisposable
     }
 
     /// 選択メッシュ
-    public TSOSubMesh selected_mesh = null;
+    public TSOSubMesh selected_submesh = null;
 
     /// 選択ボーン
     public TSONode selected_node = null;
@@ -1107,12 +1107,12 @@ public class Viewer : IDisposable
             }
             break;
         case ViewMode.Weight:
-            if (selected_mesh != null)
+            if (selected_submesh != null)
             {
                 Figure fig;
                 if (TryGetFigure(out fig))
                 {
-                    TSOSubMesh mesh = selected_mesh;
+                    TSOSubMesh mesh = selected_submesh;
 
                     device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
                     effect.Technique = "BoneCol";
