@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -50,6 +50,9 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="FigureForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Program.cs" />
     <None Include="Script.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -80,6 +83,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="FigureForm.resx">
+      <DependentUpon>FigureForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="TSOForm.resx">
       <DependentUpon>TSOForm.cs</DependentUpon>
     </EmbeddedResource>
