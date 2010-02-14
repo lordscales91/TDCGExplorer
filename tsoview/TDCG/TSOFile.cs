@@ -977,8 +977,8 @@ namespace TDCG
                 sub_script.Write(bw);
 
             bw.Write(meshes.Length);
-            foreach (TSOMesh frame in meshes)
-                frame.Write(bw);
+            foreach (TSOMesh mesh in meshes)
+                mesh.Write(bw);
         }
 
         /// <summary>
@@ -1062,15 +1062,15 @@ namespace TDCG
                 sub_scripts[i].GenerateShader();
             }
 
-            UInt32 frame_count = reader.ReadUInt32();
-            meshes = new TSOMesh[frame_count];
-            for (int i = 0; i < frame_count; i++)
+            UInt32 mesh_count = reader.ReadUInt32();
+            meshes = new TSOMesh[mesh_count];
+            for (int i = 0; i < mesh_count; i++)
             {
                 meshes[i] = new TSOMesh();
                 meshes[i].Read(reader);
                 meshes[i].LinkBones(nodes);
 
-                //Console.WriteLine("frame name {0} len {1}", frame.name, frame.sub_meshes.Length);
+                //Console.WriteLine("mesh name {0} len {1}", mesh.name, mesh.sub_meshes.Length);
             }
         }
 
@@ -1141,8 +1141,8 @@ namespace TDCG
         public int SumVerticesCount()
         {
             int sum = 0;
-            foreach (TSOMesh frame in meshes)
-                sum += frame.SumVerticesCount();
+            foreach (TSOMesh mesh in meshes)
+                sum += mesh.SumVerticesCount();
             return sum;
         }
 
@@ -1170,8 +1170,8 @@ namespace TDCG
             this.device = device;
             this.effect = effect;
 
-            foreach (TSOMesh frame in meshes)
-            foreach (TSOSubMesh sub_mesh in frame.sub_meshes)
+            foreach (TSOMesh mesh in meshes)
+            foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
                 sub_mesh.WriteBuffer(device);
 
             texmap = new Dictionary<string, TSOTex>();
@@ -1310,8 +1310,8 @@ namespace TDCG
         /// </summary>
         public void Dispose()
         {
-            foreach (TSOMesh frame in meshes)
-                frame.Dispose();
+            foreach (TSOMesh mesh in meshes)
+                mesh.Dispose();
             foreach (TSOTex tex in textures)
                 tex.Dispose();
         }

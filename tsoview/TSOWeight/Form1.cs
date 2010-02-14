@@ -62,10 +62,10 @@ namespace TSOWeight
         void AssignFrames(TSOFile tso)
         {
             lvFrames.Items.Clear();
-            foreach (TSOMesh frame in tso.meshes)
+            foreach (TSOMesh mesh in tso.meshes)
             {
-                ListViewItem li = new ListViewItem(frame.Name);
-                li.Tag = frame;
+                ListViewItem li = new ListViewItem(mesh.Name);
+                li.Tag = mesh;
                 lvFrames.Items.Add(li);
             }
             lvFrames.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
