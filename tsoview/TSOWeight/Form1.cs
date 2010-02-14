@@ -75,7 +75,7 @@ namespace TSOWeight
         {
             lvMeshes.Items.Clear();
             int nmesh = 0;
-            foreach (TSOMesh mesh in frame.meshes)
+            foreach (TSOSubMesh mesh in frame.meshes)
             {
                 ListViewItem li = new ListViewItem(string.Format("mesh #{0}", nmesh));
                 li.Tag = mesh;
@@ -85,7 +85,7 @@ namespace TSOWeight
             lvMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
-        void AssignBoneIndices(TSOMesh mesh)
+        void AssignBoneIndices(TSOSubMesh mesh)
         {
             lvBoneIndices.Items.Clear();
             foreach (TSONode bone in mesh.bones)
@@ -171,7 +171,7 @@ namespace TSOWeight
                 return;
 
             ListViewItem li = lvMeshes.SelectedItems[0];
-            TSOMesh mesh = li.Tag as TSOMesh;
+            TSOSubMesh mesh = li.Tag as TSOSubMesh;
             AssignBoneIndices(mesh);
             viewer.selected_mesh = mesh;
             viewer.selected_vertex_id = -1;
