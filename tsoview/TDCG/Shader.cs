@@ -254,7 +254,7 @@ namespace TDCG
     /// </summary>
     public class Shader
     {
-        internal ShaderParameter[] shader_parameters;
+        public ShaderParameter[] shader_parameters;
 
         //internal string     description;     // = "TA ToonShader v0.50"
         //internal string     shader;          // = "TAToonshade_050.cgfx"

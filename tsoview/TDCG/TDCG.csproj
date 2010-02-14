@@ -81,6 +81,7 @@
     <Compile Include="TPOFileList.cs" />
     <Compile Include="TSOFile.cs" />
     <Compile Include="Viewer.cs" />
+    <Compile Include="WeightViewer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CSScriptLibrary, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">

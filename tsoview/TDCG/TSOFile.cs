@@ -140,11 +140,16 @@ namespace TDCG
         /// 頂点をDirect3Dバッファに書き込みます。
         /// </summary>
         /// <param name="device">device</param>
-        public void LoadMesh(Device device)
+        public void WriteBuffer(Device device)
         {
             int numVertices = vertices.Length;
             int numFaces = numVertices - 2;
 
+            if (dm != null)
+            {
+                dm.Dispose();
+                dm = null;
+            }
             dm = new Mesh(numFaces, numVertices, MeshFlags.Managed | MeshFlags.WriteOnly, ve, device);
 
             //
@@ -217,10 +222,12 @@ namespace TDCG
     /// </summary>
     public class TSOFrame : IDisposable
     {
+        string name;
         /// <summary>
         /// 名称
         /// </summary>
-        public string name;
+        public string Name { get { return name; } }
+
         /// <summary>
         /// 変形行列
         /// </summary>
@@ -491,7 +498,7 @@ namespace TDCG
         /// テキスト行配列
         /// </summary>
         public string[] lines;
-        internal Shader shader = null;
+        public Shader shader = null;
 
         /// <summary>
         /// 名称
@@ -1160,7 +1167,7 @@ namespace TDCG
 
             foreach (TSOFrame frame in frames)
             foreach (TSOMesh mesh in frame.meshes)
-                mesh.LoadMesh(device);
+                mesh.WriteBuffer(device);
 
             texmap = new Dictionary<string, TSOTex>();
 
