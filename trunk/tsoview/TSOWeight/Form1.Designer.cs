@@ -145,6 +145,7 @@
             this.新規作成NToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
             this.新規作成NToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.新規作成NToolStripMenuItem.Text = "新規作成(&N)";
+            this.新規作成NToolStripMenuItem.Click += new System.EventHandler(this.新規作成NToolStripMenuItem_Click);
             // 
             // 開くOToolStripMenuItem
             // 
@@ -162,6 +163,7 @@
             // 
             // 上書き保存SToolStripMenuItem
             // 
+            this.上書き保存SToolStripMenuItem.Enabled = false;
             this.上書き保存SToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("上書き保存SToolStripMenuItem.Image")));
             this.上書き保存SToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.上書き保存SToolStripMenuItem.Name = "上書き保存SToolStripMenuItem";
@@ -174,6 +176,7 @@
             this.名前を付けて保存AToolStripMenuItem.Name = "名前を付けて保存AToolStripMenuItem";
             this.名前を付けて保存AToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.名前を付けて保存AToolStripMenuItem.Text = "名前を付けて保存(&A)";
+            this.名前を付けて保存AToolStripMenuItem.Click += new System.EventHandler(this.名前を付けて保存AToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -182,6 +185,7 @@
             // 
             // 印刷PToolStripMenuItem
             // 
+            this.印刷PToolStripMenuItem.Enabled = false;
             this.印刷PToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("印刷PToolStripMenuItem.Image")));
             this.印刷PToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.印刷PToolStripMenuItem.Name = "印刷PToolStripMenuItem";
@@ -191,6 +195,7 @@
             // 
             // 印刷プレビューVToolStripMenuItem
             // 
+            this.印刷プレビューVToolStripMenuItem.Enabled = false;
             this.印刷プレビューVToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("印刷プレビューVToolStripMenuItem.Image")));
             this.印刷プレビューVToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.印刷プレビューVToolStripMenuItem.Name = "印刷プレビューVToolStripMenuItem";
@@ -207,6 +212,7 @@
             this.終了XToolStripMenuItem.Name = "終了XToolStripMenuItem";
             this.終了XToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.終了XToolStripMenuItem.Text = "終了(&X)";
+            this.終了XToolStripMenuItem.Click += new System.EventHandler(this.終了XToolStripMenuItem_Click);
             // 
             // 編集EToolStripMenuItem
             // 
@@ -246,6 +252,7 @@
             // 
             // 切り取りTToolStripMenuItem
             // 
+            this.切り取りTToolStripMenuItem.Enabled = false;
             this.切り取りTToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("切り取りTToolStripMenuItem.Image")));
             this.切り取りTToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.切り取りTToolStripMenuItem.Name = "切り取りTToolStripMenuItem";
@@ -255,6 +262,7 @@
             // 
             // コピーCToolStripMenuItem
             // 
+            this.コピーCToolStripMenuItem.Enabled = false;
             this.コピーCToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("コピーCToolStripMenuItem.Image")));
             this.コピーCToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.コピーCToolStripMenuItem.Name = "コピーCToolStripMenuItem";
@@ -264,6 +272,7 @@
             // 
             // 貼り付けPToolStripMenuItem
             // 
+            this.貼り付けPToolStripMenuItem.Enabled = false;
             this.貼り付けPToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("貼り付けPToolStripMenuItem.Image")));
             this.貼り付けPToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.貼り付けPToolStripMenuItem.Name = "貼り付けPToolStripMenuItem";
@@ -278,6 +287,7 @@
             // 
             // すべて選択AToolStripMenuItem
             // 
+            this.すべて選択AToolStripMenuItem.Enabled = false;
             this.すべて選択AToolStripMenuItem.Name = "すべて選択AToolStripMenuItem";
             this.すべて選択AToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.すべて選択AToolStripMenuItem.Text = "すべて選択(&A)";
@@ -293,12 +303,14 @@
             // 
             // カスタマイズCToolStripMenuItem
             // 
+            this.カスタマイズCToolStripMenuItem.Enabled = false;
             this.カスタマイズCToolStripMenuItem.Name = "カスタマイズCToolStripMenuItem";
             this.カスタマイズCToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.カスタマイズCToolStripMenuItem.Text = "カスタマイズ(&C)";
             // 
             // オプションOToolStripMenuItem
             // 
+            this.オプションOToolStripMenuItem.Enabled = false;
             this.オプションOToolStripMenuItem.Name = "オプションOToolStripMenuItem";
             this.オプションOToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.オプションOToolStripMenuItem.Text = "オプション(&O)";
@@ -317,18 +329,21 @@
             // 
             // 内容CToolStripMenuItem
             // 
+            this.内容CToolStripMenuItem.Enabled = false;
             this.内容CToolStripMenuItem.Name = "内容CToolStripMenuItem";
             this.内容CToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.内容CToolStripMenuItem.Text = "内容(&C)";
             // 
             // インデックスIToolStripMenuItem
             // 
+            this.インデックスIToolStripMenuItem.Enabled = false;
             this.インデックスIToolStripMenuItem.Name = "インデックスIToolStripMenuItem";
             this.インデックスIToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.インデックスIToolStripMenuItem.Text = "インデックス(&I)";
             // 
             // 検索SToolStripMenuItem
             // 
+            this.検索SToolStripMenuItem.Enabled = false;
             this.検索SToolStripMenuItem.Name = "検索SToolStripMenuItem";
             this.検索SToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.検索SToolStripMenuItem.Text = "検索(&S)";
@@ -340,6 +355,7 @@
             // 
             // バージョン情報AToolStripMenuItem
             // 
+            this.バージョン情報AToolStripMenuItem.Enabled = false;
             this.バージョン情報AToolStripMenuItem.Name = "バージョン情報AToolStripMenuItem";
             this.バージョン情報AToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.バージョン情報AToolStripMenuItem.Text = "バージョン情報(&A)...";
