@@ -33,8 +33,8 @@ namespace TDCG
     /// 頂点操作
     public class VertexCommand
     {
-        /// 頂点id
-        public int vertex_id;
+        /// 頂点
+        public Vertex vertex;
         /// スキンウェイト操作リスト
         public List<SkinWeightCommand> skin_weight_commands = new List<SkinWeightCommand>();
     }
@@ -371,7 +371,7 @@ public class WeightViewer : Viewer
             float dz = p1.Z - p0.Z;
             if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
             {
-                if (GainSkinWeight(sub_mesh, selected_node, i, mesh_command))
+                if (GainSkinWeight(sub_mesh, selected_node, v, mesh_command))
                 {
                     updated = true;
 
@@ -400,12 +400,10 @@ public class WeightViewer : Viewer
 
     /// 選択ボーンに対応するウェイトを加算する。
     /// returns: ウェイトを変更したか
-    public static bool GainSkinWeight(TSOSubMesh sub_mesh, TSONode selected_node, int vertex_id, SubMeshCommand mesh_command)
+    public static bool GainSkinWeight(TSOSubMesh sub_mesh, TSONode selected_node, Vertex v, SubMeshCommand mesh_command)
     {
-        Vertex v = sub_mesh.vertices[vertex_id];
-
         VertexCommand vertex_command = new VertexCommand();
-        vertex_command.vertex_id = vertex_id;
+        vertex_command.vertex = v;
         foreach (SkinWeight skin_weight in v.skin_weights)
         {
             SkinWeightCommand skin_weight_command = new SkinWeightCommand();
@@ -526,7 +524,7 @@ public class WeightViewer : Viewer
     {
         foreach (VertexCommand vertex_command in mesh_command.vertex_commands)
         {
-            Vertex v = mesh_command.sub_mesh.vertices[vertex_command.vertex_id];
+            Vertex v = vertex_command.vertex;
             int nskin_weight = 0;
             foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
             {
@@ -559,7 +557,7 @@ public class WeightViewer : Viewer
     {
         foreach (VertexCommand vertex_command in mesh_command.vertex_commands)
         {
-            Vertex v = mesh_command.sub_mesh.vertices[vertex_command.vertex_id];
+            Vertex v = vertex_command.vertex;
             int nskin_weight = 0;
             foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
             {
