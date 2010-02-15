@@ -46,6 +46,14 @@ namespace TDCG
         /// 頂点操作リスト
         public List<VertexCommand> vertex_commands = new List<VertexCommand>();
     }
+    /// メッシュ操作
+    public class MeshCommand
+    {
+        /// メッシュ
+        public TSOMesh mesh = null;
+        /// サブメッシュ操作リスト
+        public List<SubMeshCommand> sub_mesh_commands = new List<SubMeshCommand>();
+    }
 
     /// <summary>
     /// TSOFileをDirect3D上でレンダリングします。
@@ -343,24 +351,37 @@ public class WeightViewer : Viewer
     {
         if (SelectedMesh != null)
         {
+            MeshCommand mesh_command = new MeshCommand();
+            mesh_command.mesh = SelectedMesh;
+            bool updated = false;
             foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
             {
-                GainSkinWeight(sub_mesh, selected_node);
+                if (GainSkinWeight(sub_mesh, selected_node, mesh_command))
+                    updated = true;
+            }
+            if (updated)
+            {
+                if (mesh_command_id == mesh_commands.Count)
+                    mesh_commands.Add(mesh_command);
+                else
+                    mesh_commands[mesh_command_id] = mesh_command;
+                mesh_command_id++;
             }
         }
     }
 
     /// 選択ボーンに対応するウェイトを加算する。
-    public void GainSkinWeight(TSOSubMesh sub_mesh, TSONode selected_node)
+    public bool GainSkinWeight(TSOSubMesh sub_mesh, TSONode selected_node, MeshCommand mesh_command)
     {
+        bool updated = false;
+
         if (selected_vertex == null)
-            return;
+            return updated;
 
         //操作を生成する。
-        SubMeshCommand mesh_command = new SubMeshCommand();
-        mesh_command.sub_mesh = sub_mesh;
+        SubMeshCommand sub_mesh_command = new SubMeshCommand();
+        sub_mesh_command.sub_mesh = sub_mesh;
 
-        bool updated = false;
         Vector3 p0 = selected_vertex.position;
 
         for (int i = 0; i < sub_mesh.vertices.Length; i++)
@@ -374,7 +395,7 @@ public class WeightViewer : Viewer
             float dz = p1.Z - p0.Z;
             if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
             {
-                if (GainSkinWeight(sub_mesh, selected_node, v, mesh_command))
+                if (GainSkinWeight(sub_mesh, selected_node, v, sub_mesh_command))
                 {
                     updated = true;
 
@@ -384,22 +405,18 @@ public class WeightViewer : Viewer
             }
         }
         if (updated)
-        {
-            if (submesh_command_id == submesh_commands.Count)
-                submesh_commands.Add(mesh_command);
-            else
-                submesh_commands[submesh_command_id] = mesh_command;
-            submesh_command_id++;
-        }
-        if (updated)
             sub_mesh.WriteBuffer(device);
+        if (updated)
+            mesh_command.sub_mesh_commands.Add(sub_mesh_command);
+
+        return updated;
     }
 
     /// 加算ウェイト値
     public static float weight = 0.2f;
-    /// サブメッシュ操作リスト
-    public static List<SubMeshCommand> submesh_commands = new List<SubMeshCommand>();
-    static int submesh_command_id = 0;
+    /// メッシュ操作リスト
+    public static List<MeshCommand> mesh_commands = new List<MeshCommand>();
+    static int mesh_command_id = 0;
 
     /// 選択ボーンに対応するウェイトを加算する。
     /// returns: ウェイトを変更したか
@@ -505,13 +522,13 @@ public class WeightViewer : Viewer
     /// 操作を消去します。
     public void ClearCommands()
     {
-        submesh_commands.Clear();
+        mesh_commands.Clear();
     }
 
     /// ひとつ前の操作による変更を元に戻せるか。
     public bool CanUndo()
     {
-        return (submesh_command_id > 0);
+        return (mesh_command_id > 0);
     }
     /// ひとつ前の操作による変更を元に戻す。
     public void Undo()
@@ -519,32 +536,35 @@ public class WeightViewer : Viewer
         if (!CanUndo())
             return;
 
-        submesh_command_id--;
-        Undo(submesh_commands[submesh_command_id]);
+        mesh_command_id--;
+        Undo(mesh_commands[mesh_command_id]);
     }
     /// 指定操作による変更を元に戻す。
-    public void Undo(SubMeshCommand mesh_command)
+    public void Undo(MeshCommand mesh_command)
     {
-        foreach (VertexCommand vertex_command in mesh_command.vertex_commands)
+        foreach (SubMeshCommand sub_mesh_command in mesh_command.sub_mesh_commands)
         {
-            Vertex v = vertex_command.vertex;
-            int nskin_weight = 0;
-            foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
+            foreach (VertexCommand vertex_command in sub_mesh_command.vertex_commands)
             {
-                v.skin_weights[nskin_weight].bone_index = skin_weight_command.old_attr.bone_index;
-                v.skin_weights[nskin_weight].weight = skin_weight_command.old_attr.weight;
-                nskin_weight++;
+                Vertex v = vertex_command.vertex;
+                int nskin_weight = 0;
+                foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
+                {
+                    v.skin_weights[nskin_weight].bone_index = skin_weight_command.old_attr.bone_index;
+                    v.skin_weights[nskin_weight].weight = skin_weight_command.old_attr.weight;
+                    nskin_weight++;
+                }
+                v.FillSkinWeights();
+                v.GenerateBoneIndices();
             }
-            v.FillSkinWeights();
-            v.GenerateBoneIndices();
+            sub_mesh_command.sub_mesh.WriteBuffer(device);
         }
-        mesh_command.sub_mesh.WriteBuffer(device);
     }
 
     /// ひとつ前の操作による変更をやり直せるか。
     public bool CanRedo()
     {
-        return (submesh_command_id < submesh_commands.Count);
+        return (mesh_command_id < mesh_commands.Count);
     }
     /// ひとつ前の操作による変更をやり直す。
     public void Redo()
@@ -552,26 +572,29 @@ public class WeightViewer : Viewer
         if (!CanRedo())
             return;
 
-        Redo(submesh_commands[submesh_command_id]);
-        submesh_command_id++;
+        Redo(mesh_commands[mesh_command_id]);
+        mesh_command_id++;
     }
     /// 指定操作による変更をやり直す。
-    public void Redo(SubMeshCommand mesh_command)
+    public void Redo(MeshCommand mesh_command)
     {
-        foreach (VertexCommand vertex_command in mesh_command.vertex_commands)
+        foreach (SubMeshCommand sub_mesh_command in mesh_command.sub_mesh_commands)
         {
-            Vertex v = vertex_command.vertex;
-            int nskin_weight = 0;
-            foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
+            foreach (VertexCommand vertex_command in sub_mesh_command.vertex_commands)
             {
-                v.skin_weights[nskin_weight].bone_index = skin_weight_command.new_attr.bone_index;
-                v.skin_weights[nskin_weight].weight = skin_weight_command.new_attr.weight;
-                nskin_weight++;
+                Vertex v = vertex_command.vertex;
+                int nskin_weight = 0;
+                foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
+                {
+                    v.skin_weights[nskin_weight].bone_index = skin_weight_command.new_attr.bone_index;
+                    v.skin_weights[nskin_weight].weight = skin_weight_command.new_attr.weight;
+                    nskin_weight++;
+                }
+                v.FillSkinWeights();
+                v.GenerateBoneIndices();
             }
-            v.FillSkinWeights();
-            v.GenerateBoneIndices();
+            sub_mesh_command.sub_mesh.WriteBuffer(device);
         }
-        mesh_command.sub_mesh.WriteBuffer(device);
     }
 
     /// <summary>
