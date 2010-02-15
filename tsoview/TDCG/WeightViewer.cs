@@ -598,8 +598,8 @@ public class WeightViewer : Viewer
         lastScreenPoint.Y = e.Y;
     }
 
-    /// 選択サブメッシュ
     TSOSubMesh selected_sub_mesh = null;
+    /// 選択サブメッシュ
     public TSOSubMesh SelectedSubMesh
     {
         get { return selected_sub_mesh; }
@@ -610,11 +610,12 @@ public class WeightViewer : Viewer
         }
     }
 
+    TSONode selected_node = null;
     /// 選択ボーン
-    public TSONode selected_node = null;
+    public TSONode SelectedNode { get { return selected_node; } set { selected_node = value; } }
 
-    /// 選択頂点id
     Vertex selected_vertex = null;
+    /// 選択頂点id
     public Vertex SelectedVertex { get { return selected_vertex; } set { selected_vertex = value; } }
 
     /// <summary>
