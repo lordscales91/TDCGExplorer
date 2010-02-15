@@ -169,7 +169,7 @@ public class WeightViewer : Viewer
     /// </summary>
     public ViewMode view_mode = ViewMode.Toon;
 
-    void DrawFigure()
+    protected override void DrawFigure()
     {
         device.RenderState.AlphaBlendEnable = true;
 
