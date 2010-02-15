@@ -99,11 +99,11 @@ namespace TSOWeight
 
         void AssignSkinWeights()
         {
-            if (viewer.selected_vertex_id == -1)
+            if (viewer.selected_vertex == null)
                 return;
 
             lvSkinWeights.Items.Clear();
-            foreach (SkinWeight skin_weight in viewer.selected_sub_mesh.vertices[viewer.selected_vertex_id].skin_weights)
+            foreach (SkinWeight skin_weight in viewer.selected_vertex.skin_weights)
             {
                 TSONode bone = viewer.selected_sub_mesh.GetBone(skin_weight.bone_index);
                 float weight = skin_weight.weight;
@@ -138,7 +138,7 @@ namespace TSOWeight
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 viewer.selected_sub_mesh = null;
-                viewer.selected_vertex_id = -1;
+                viewer.selected_vertex = null;
                 viewer.ClearCommands();
                 foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
                     viewer.LoadAnyFile(src, (e.KeyState & 8) == 8);
@@ -174,7 +174,7 @@ namespace TSOWeight
             TSOSubMesh mesh = li.Tag as TSOSubMesh;
             AssignBoneIndices(mesh);
             viewer.selected_sub_mesh = mesh;
-            viewer.selected_vertex_id = -1;
+            viewer.selected_vertex = null;
         }
 
         private void lvBoneIndices_SelectedIndexChanged(object sender, EventArgs e)
@@ -200,13 +200,13 @@ namespace TSOWeight
 
         private void btnCenter_Click(object sender, EventArgs e)
         {
-            if (viewer.selected_vertex_id == -1)
+            if (viewer.selected_vertex == null)
                 return;
 
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                viewer.Camera.Center = WeightViewer.CalcSkindeformPosition(viewer.selected_sub_mesh.vertices[viewer.selected_vertex_id], WeightViewer.ClipBoneMatrices(fig, viewer.selected_sub_mesh));
+                viewer.Camera.Center = WeightViewer.CalcSkindeformPosition(viewer.selected_vertex, WeightViewer.ClipBoneMatrices(fig, viewer.selected_sub_mesh));
                 viewer.Camera.ResetTranslation();
             }
         }

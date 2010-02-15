@@ -169,8 +169,7 @@ public class WeightViewer : Viewer
             if (selected_sub_mesh != null)
             {
                 DrawVertices(fig, selected_sub_mesh);
-                if (selected_vertex_id != -1)
-                    DrawSelectedVertex(fig);
+                DrawSelectedVertex(fig);
             }
         }
     }
@@ -186,9 +185,9 @@ public class WeightViewer : Viewer
         float scale = 0.1f;
         Vector4 color = new Vector4(1, 0, 0, 0.5f);
 
-        if (selected_vertex_id != -1)
+        if (selected_vertex != null)
         {
-            Vector3 v0 = selected_sub_mesh.vertices[selected_vertex_id].position;
+            Vector3 v0 = selected_vertex.position;
 
             for (int i = 0; i < sub_mesh.vertices.Length; i++)
             {
@@ -227,15 +226,16 @@ public class WeightViewer : Viewer
     /// 選択頂点を描画する。
     void DrawSelectedVertex(Figure fig)
     {
-        TSOSubMesh sub_mesh = selected_sub_mesh;
-        Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
+        if (selected_vertex == null)
+            return;
+
+        Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, selected_sub_mesh);
 
         float scale = 0.1f;
         Vector4 color = new Vector4(0, 1, 0, 1);
 
         {
-            int i = selected_vertex_id;
-            Vector3 pos = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+            Vector3 pos = CalcSkindeformPosition(selected_vertex, clipped_boneMatrices);
             Matrix m = Matrix.Scaling(scale, scale, scale);
             m.M41 = pos.X;
             m.M42 = pos.Y;
@@ -256,7 +256,7 @@ public class WeightViewer : Viewer
     /// 選択ボーンに対応するウェイトを加算する。
     public void GainSkinWeight(TSOSubMesh sub_mesh, TSONode selected_node)
     {
-        if (selected_vertex_id == -1)
+        if (selected_vertex == null)
             return;
 
         //操作を生成する。
@@ -264,7 +264,7 @@ public class WeightViewer : Viewer
         mesh_command.sub_mesh = sub_mesh;
 
         bool updated = false;
-        Vector3 p0 = selected_sub_mesh.vertices[selected_vertex_id].position;
+        Vector3 p0 = selected_vertex.position;
 
         for (int i = 0; i < sub_mesh.vertices.Length; i++)
         {
@@ -509,7 +509,7 @@ public class WeightViewer : Viewer
     }
 
     /// 選択頂点id
-    public int selected_vertex_id = -1;
+    public Vertex selected_vertex = null;
 
     /// <summary>
     /// 頂点選択時に呼び出されるハンドラ
@@ -523,10 +523,10 @@ public class WeightViewer : Viewer
         {
             if (selected_sub_mesh != null)
             {
-                int vertex_id = FindVertexOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, fig, selected_sub_mesh);
-                if (vertex_id != -1)
+                Vertex vertex = FindVertexOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, fig, selected_sub_mesh);
+                if (vertex != null)
                 {
-                    selected_vertex_id = vertex_id;
+                    selected_vertex = vertex;
                     if (VertexEvent != null)
                         VertexEvent(this, EventArgs.Empty);
                 }
@@ -536,9 +536,9 @@ public class WeightViewer : Viewer
 
     /// スクリーン座標から頂点を見つけます。
     /// 衝突する頂点の中で最も近い位置にある頂点を返します。
-    private int FindVertexOnScreenPoint(float x, float y, Figure fig, TSOSubMesh sub_mesh)
+    private Vertex FindVertexOnScreenPoint(float x, float y, Figure fig, TSOSubMesh sub_mesh)
     {
-        int vertex_id = -1;
+        Vertex vertex = null;
 
         Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
 
@@ -560,13 +560,13 @@ public class WeightViewer : Viewer
                     if (collisionTime < min_time)
                     {
                         min_time = collisionTime;
-                        vertex_id = i;
+                        vertex = sub_mesh.vertices[i];
                     }
                 }
             }
         }
 
-        return vertex_id;
+        return vertex;
     }
 
     /// <summary>
