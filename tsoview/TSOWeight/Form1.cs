@@ -62,6 +62,7 @@ namespace TSOWeight
 
         void AssignTSOFiles(Figure fig)
         {
+            lvTSOFiles.BeginUpdate();
             lvTSOFiles.Items.Clear();
             for (int i = 0; i < fig.TSOList.Count; i++)
             {
@@ -71,10 +72,12 @@ namespace TSOWeight
                 lvTSOFiles.Items.Add(li);
             }
             lvTSOFiles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            lvTSOFiles.EndUpdate();
         }
 
         void AssignMeshes(TSOFile tso)
         {
+            lvMeshes.BeginUpdate();
             lvMeshes.Items.Clear();
             foreach (TSOMesh mesh in tso.meshes)
             {
@@ -83,10 +86,12 @@ namespace TSOWeight
                 lvMeshes.Items.Add(li);
             }
             lvMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            lvMeshes.EndUpdate();
         }
 
         void AssignSubMeshes(TSOMesh mesh)
         {
+            lvSubMeshes.BeginUpdate();
             lvSubMeshes.Items.Clear();
             int nsub_mesh = 0;
             foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
@@ -97,10 +102,12 @@ namespace TSOWeight
                 nsub_mesh++;
             }
             lvSubMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            lvSubMeshes.EndUpdate();
         }
 
         void AssignBoneIndices(TSOSubMesh sub_mesh)
         {
+            lvBoneIndices.BeginUpdate();
             lvBoneIndices.Items.Clear();
             foreach (TSONode bone in sub_mesh.bones)
             {
@@ -109,6 +116,7 @@ namespace TSOWeight
                 lvBoneIndices.Items.Add(li);
             }
             lvBoneIndices.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            lvBoneIndices.EndUpdate();
         }
 
         void AssignSkinWeights(Vertex vertex)
@@ -116,6 +124,7 @@ namespace TSOWeight
             if (vertex == null)
                 return;
 
+            lvSkinWeights.BeginUpdate();
             lvSkinWeights.Items.Clear();
             foreach (SkinWeight skin_weight in vertex.skin_weights)
             {
@@ -128,6 +137,7 @@ namespace TSOWeight
                 li.Tag = skin_weight;
                 lvSkinWeights.Items.Add(li);
             }
+            lvSkinWeights.EndUpdate();
         }
 
         private void timer1_Tick(object sender, EventArgs e)
