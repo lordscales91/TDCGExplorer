@@ -598,6 +598,19 @@ public class WeightViewer : Viewer
         lastScreenPoint.Y = e.Y;
     }
 
+    TSOMesh selected_mesh = null;
+    /// 選択メッシュ
+    public TSOMesh SelectedMesh
+    {
+        get { return selected_mesh; }
+        set
+        {
+            selected_mesh = value;
+            selected_sub_mesh = null;
+            selected_vertex = null;
+        }
+    }
+
     TSOSubMesh selected_sub_mesh = null;
     /// 選択サブメッシュ
     public TSOSubMesh SelectedSubMesh
