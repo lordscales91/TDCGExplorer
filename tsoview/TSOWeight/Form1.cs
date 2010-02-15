@@ -31,6 +31,11 @@ namespace TSOWeight
                     {
                         AssignTSOFiles(fig);
                     }
+                    else
+                    {
+                        viewer.SelectedMesh = null;
+                        viewer.ClearCommands();
+                    }
                 };
                 viewer.SubMeshEvent += delegate(object sender, EventArgs e)
                 {
@@ -162,8 +167,6 @@ namespace TSOWeight
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                viewer.SelectedMesh = null;
-                viewer.ClearCommands();
                 foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
                     viewer.LoadAnyFile(src, (e.KeyState & 8) == 8);
             }
