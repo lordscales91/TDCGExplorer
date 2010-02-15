@@ -137,6 +137,7 @@ namespace TSOWeight
                 li.Tag = skin_weight;
                 lvSkinWeights.Items.Add(li);
             }
+            lvSkinWeights.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
             lvSkinWeights.EndUpdate();
         }
 
