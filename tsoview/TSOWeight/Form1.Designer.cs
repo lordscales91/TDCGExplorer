@@ -155,6 +155,7 @@
             this.開くOToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
             this.開くOToolStripMenuItem.Size = new System.Drawing.Size(201, 22);
             this.開くOToolStripMenuItem.Text = "開く(&O)";
+            this.開くOToolStripMenuItem.Click += new System.EventHandler(this.開くOToolStripMenuItem_Click);
             // 
             // toolStripSeparator
             // 
