@@ -526,6 +526,7 @@ public class WeightViewer : Viewer
     public void ClearCommands()
     {
         mesh_commands.Clear();
+        mesh_command_id = 0;
     }
 
     /// ‚Ğ‚Æ‚Â‘O‚Ì‘€ì‚É‚æ‚é•ÏX‚ğŒ³‚É–ß‚¹‚é‚©B
