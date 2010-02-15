@@ -1046,6 +1046,9 @@ public class Viewer : IDisposable
         return clipped_boneSelections;
     }
 
+    /// <summary>
+    /// フィギュアを描画します。
+    /// </summary>
     protected virtual void DrawFigure()
     {
         device.RenderState.AlphaBlendEnable = true;
