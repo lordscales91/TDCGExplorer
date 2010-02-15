@@ -25,12 +25,25 @@ public class Viewer : IDisposable
     internal Direct3D.Font font;
     internal Effect effect;
 
+    /// <summary>
+    /// effect handle for LocalBoneMats
+    /// </summary>
     protected EffectHandle handle_LocalBoneMats;
+    /// <summary>
+    /// effect handle for ShadowMap
+    /// </summary>
     protected EffectHandle handle_ShadowMap;
+    /// <summary>
+    /// effect handle for LocalBoneSels
+    /// </summary>
     protected EffectHandle handle_LocalBoneSels;
 
     bool shadow_map_enabled = false;
+    /// <summary>
+    /// シャドウマップを作成するか
+    /// </summary>
     public bool ShadowMapEnabled { get { return shadow_map_enabled; } }
+
     internal Texture[] renderTextures = null;
     int ztexw = 0;
     int ztexh = 0;
