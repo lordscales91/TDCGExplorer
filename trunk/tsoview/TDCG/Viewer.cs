@@ -25,11 +25,12 @@ public class Viewer : IDisposable
     internal Direct3D.Font font;
     internal Effect effect;
 
-    private EffectHandle handle_LocalBoneMats;
-    private EffectHandle handle_ShadowMap;
-    private EffectHandle handle_LocalBoneSels;
+    protected EffectHandle handle_LocalBoneMats;
+    protected EffectHandle handle_ShadowMap;
+    protected EffectHandle handle_LocalBoneSels;
 
-    private bool shadowMapEnabled = false;
+    bool shadow_map_enabled = false;
+    public bool ShadowMapEnabled { get { return shadow_map_enabled; } }
     internal Texture[] renderTextures = null;
     int ztexw = 0;
     int ztexh = 0;
@@ -460,11 +461,11 @@ public class Viewer : IDisposable
     /// deviceを作成します。
     /// </summary>
     /// <param name="control">レンダリング先となるcontrol</param>
-    /// <param name="shadowMapEnabled">シャドウマップを作成するか</param>
+    /// <param name="shadow_map_enabled">シャドウマップを作成するか</param>
     /// <returns>deviceの作成に成功したか</returns>
-    public bool InitializeApplication(Control control, bool shadowMapEnabled)
+    public bool InitializeApplication(Control control, bool shadow_map_enabled)
     {
-        this.shadowMapEnabled = shadowMapEnabled;
+        this.shadow_map_enabled = shadow_map_enabled;
         SetControl(control);
 
         control.SizeChanged += new EventHandler(control_OnSizeChanged);
@@ -539,7 +540,7 @@ public class Viewer : IDisposable
             }
         }
         handle_LocalBoneMats = effect.GetParameter(null, "LocalBoneMats");
-        if (shadowMapEnabled)
+        if (shadow_map_enabled)
         {
             handle_ShadowMap = effect.GetTechnique("ShadowMap");
             effect.ValidateTechnique(effect.Technique);
@@ -591,7 +592,7 @@ public class Viewer : IDisposable
         }
         Console.WriteLine("dev_zbuf {0}x{1}", dev_zbufw, dev_zbufh);
 
-        if (shadowMapEnabled)
+        if (shadow_map_enabled)
         {
             renderTextures = new Texture[3];
             renderSurfaces = new Surface[3];
@@ -623,7 +624,7 @@ public class Viewer : IDisposable
         device.Transform.Projection = Transform_Projection;
         effect.SetValue("proj", Transform_Projection);
 
-        if (shadowMapEnabled)
+        if (shadow_map_enabled)
         {
             Light_Projection = Matrix.PerspectiveFovLH(
                 Geometry.DegreeToRadian(45.0f),
@@ -648,7 +649,7 @@ public class Viewer : IDisposable
 
         device.RenderState.IndexedVertexBlendEnable = true;
 
-        if (shadowMapEnabled)
+        if (shadow_map_enabled)
         {
             CustomVertex.PositionTextured[] verts = new CustomVertex.PositionTextured[4];
             verts[0] = new CustomVertex.PositionTextured(-1, +1, 0, 0, 0);
@@ -660,7 +661,7 @@ public class Viewer : IDisposable
             vbGauss.SetData(verts, 0, LockFlags.None);
         }
 
-        if (shadowMapEnabled)
+        if (shadow_map_enabled)
             SetGaussianWeight(12.5f);
     }
 
@@ -782,7 +783,7 @@ public class Viewer : IDisposable
             effect.SetValue("view", Transform_View);
         }
 
-        if (shadowMapEnabled)
+        if (shadow_map_enabled)
         {
             float scale = 40.0f;
 
@@ -840,23 +841,6 @@ public class Viewer : IDisposable
     public RenderingHandler Rendering;
 
     /// <summary>
-    /// 描画モード
-    /// </summary>
-    public enum ViewMode {
-        /// <summary>
-        /// トゥーン描画
-        /// </summary>
-        Toon,
-        /// <summary>
-        /// ウェイト描画
-        /// </summary>
-        Weight };
-    /// <summary>
-    /// 描画モード
-    /// </summary>
-    public ViewMode view_mode = ViewMode.Toon;
-
-    /// <summary>
     /// シーンをレンダリングします。
     /// </summary>
     public void Render()
@@ -871,7 +855,7 @@ public class Viewer : IDisposable
             effect.SetValue("wvp", world_view_projection_matrix);
         }
 
-        if (shadowMapEnabled)
+        if (shadow_map_enabled)
         {
             if (shadowShown)
             {
@@ -886,7 +870,7 @@ public class Viewer : IDisposable
 
         DrawFigure();
 
-        if (shadowMapEnabled && SpriteShown)
+        if (shadow_map_enabled && SpriteShown)
         {
             DrawSprite();
         }
@@ -939,17 +923,7 @@ public class Viewer : IDisposable
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
                 //tso.SwitchShader(sub_mesh);
-                Matrix[] clipped_boneMatrices = new Matrix[sub_mesh.maxPalettes];
-
-                for (int numPalettes = 0; numPalettes < sub_mesh.maxPalettes; numPalettes++)
-                {
-                    //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
-                    TSONode tso_node = sub_mesh.GetBone(numPalettes);
-                    TMONode tmo_node;
-                    if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
-                        clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
-                }
-                effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
+                effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
 
                 int npass = effect.Begin(0);
                 for (int ipass = 0; ipass < npass; ipass++)
@@ -1021,7 +995,8 @@ public class Viewer : IDisposable
     }
 
     /// 選択サブメッシュ
-    public TSOSubMesh selected_sub_mesh = null;
+    TSOSubMesh selected_sub_mesh = null;
+    public TSOSubMesh SelectedSubMesh { get { return selected_sub_mesh; } set { selected_sub_mesh = value; } }
 
     /// 選択ボーン
     public TSONode selected_node = null;
@@ -1073,65 +1048,34 @@ public class Viewer : IDisposable
         device.DepthStencilSurface = dev_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
 
-        if (shadowMapEnabled)
+        if (shadow_map_enabled)
         {
             effect.SetValue("texShadowMap", renderTextures[2]);
         }
 
-        switch (view_mode)
+        foreach (Figure fig in FigureList)
+        foreach (TSOFile tso in fig.TSOList)
         {
-        case ViewMode.Toon:
-            foreach (Figure fig in FigureList)
-            foreach (TSOFile tso in fig.TSOList)
+            tso.BeginRender();
+
+            foreach (TSOMesh mesh in tso.meshes)
+            foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
-                tso.BeginRender();
+                device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                tso.SwitchShader(sub_mesh);
 
-                foreach (TSOMesh mesh in tso.meshes)
-                foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
+                effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
+
+                int npass = effect.Begin(0);
+                for (int ipass = 0; ipass < npass; ipass++)
                 {
-                    device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                    tso.SwitchShader(sub_mesh);
-
-                    effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
-
-                    int npass = effect.Begin(0);
-                    for (int ipass = 0; ipass < npass; ipass++)
-                    {
-                        effect.BeginPass(ipass);
-                        sub_mesh.dm.DrawSubset(0);
-                        effect.EndPass();
-                    }
-                    effect.End();
+                    effect.BeginPass(ipass);
+                    sub_mesh.dm.DrawSubset(0);
+                    effect.EndPass();
                 }
-                tso.EndRender();
+                effect.End();
             }
-            break;
-        case ViewMode.Weight:
-            if (selected_sub_mesh != null)
-            {
-                Figure fig;
-                if (TryGetFigure(out fig))
-                {
-                    TSOSubMesh sub_mesh = selected_sub_mesh;
-
-                    device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                    effect.Technique = "BoneCol";
-                    effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
-
-                    effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
-                    effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(fig, sub_mesh, selected_node));
-
-                    int npass = effect.Begin(0);
-                    for (int ipass = 0; ipass < npass; ipass++)
-                    {
-                        effect.BeginPass(ipass);
-                        sub_mesh.dm.DrawSubset(0);
-                        effect.EndPass();
-                    }
-                    effect.End();
-                }
-            }
-            break;
+            tso.EndRender();
         }
     }
 
