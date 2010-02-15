@@ -320,5 +320,22 @@ namespace TSOWeight
         {
             viewer.ClearFigureList();
         }
+
+        private void ŠJ‚­OToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LoadFigure();
+        }
+
+        private void LoadFigure()
+        {
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "png files|*.png|tso files|*.tso";
+            dialog.FilterIndex = 0;
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                string source_file = dialog.FileName;
+                viewer.LoadAnyFile(source_file);
+            }
+        }
     }
 }
