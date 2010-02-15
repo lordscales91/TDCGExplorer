@@ -34,7 +34,17 @@ namespace TSOWeight
                 };
                 viewer.SubMeshEvent += delegate(object sender, EventArgs e)
                 {
-                    AssignBoneIndices(viewer.SelectedSubMesh);
+                    TSOSubMesh selected_sub_mesh = viewer.SelectedSubMesh;
+                    lvSubMeshes.SelectedItems.Clear();
+                    foreach (ListViewItem li in lvSubMeshes.Items)
+                    {
+                        TSOSubMesh sub_mesh = li.Tag as TSOSubMesh;
+                        if (sub_mesh == selected_sub_mesh)
+                        {
+                            li.Selected = true;
+                            break;
+                        }
+                    }
                 };
                 viewer.VertexEvent += delegate(object sender, EventArgs e)
                 {

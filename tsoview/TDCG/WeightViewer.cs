@@ -657,8 +657,6 @@ public class WeightViewer : Viewer
         {
             selected_sub_mesh = value;
             selected_vertex = null;
-            if (SubMeshEvent != null)
-                SubMeshEvent(this, EventArgs.Empty);
         }
     }
 
@@ -674,8 +672,6 @@ public class WeightViewer : Viewer
         set
         {
             selected_vertex = value;
-            if (VertexEvent != null)
-                VertexEvent(this, EventArgs.Empty);
         }
     }
 
@@ -702,9 +698,9 @@ public class WeightViewer : Viewer
                     if (vertex != null)
                     {
                         selected_sub_mesh = sub_mesh;
-                        selected_vertex = vertex;
                         if (SubMeshEvent != null)
                             SubMeshEvent(this, EventArgs.Empty);
+                        selected_vertex = vertex;
                         if (VertexEvent != null)
                             VertexEvent(this, EventArgs.Empty);
                         break;
