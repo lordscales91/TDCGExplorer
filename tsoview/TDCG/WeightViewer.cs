@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 using System.Text;
@@ -150,6 +151,95 @@ public class WeightViewer : Viewer
     }
 
     /// <summary>
+    /// 描画モード
+    /// </summary>
+    public enum ViewMode
+    {
+        /// <summary>
+        /// トゥーン描画
+        /// </summary>
+        Toon,
+        /// <summary>
+        /// ウェイト描画
+        /// </summary>
+        Weight
+    };
+    /// <summary>
+    /// 描画モード
+    /// </summary>
+    public ViewMode view_mode = ViewMode.Toon;
+
+    void DrawFigure()
+    {
+        device.RenderState.AlphaBlendEnable = true;
+
+        device.SetRenderTarget(0, dev_surface);
+        device.DepthStencilSurface = dev_zbuf;
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
+
+        if (ShadowMapEnabled)
+        {
+            effect.SetValue("texShadowMap", renderTextures[2]);
+        }
+
+        switch (view_mode)
+        {
+            case ViewMode.Toon:
+                foreach (Figure fig in FigureList)
+                    foreach (TSOFile tso in fig.TSOList)
+                    {
+                        tso.BeginRender();
+
+                        foreach (TSOMesh mesh in tso.meshes)
+                            foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
+                            {
+                                device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                                tso.SwitchShader(sub_mesh);
+
+                                effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
+
+                                int npass = effect.Begin(0);
+                                for (int ipass = 0; ipass < npass; ipass++)
+                                {
+                                    effect.BeginPass(ipass);
+                                    sub_mesh.dm.DrawSubset(0);
+                                    effect.EndPass();
+                                }
+                                effect.End();
+                            }
+                        tso.EndRender();
+                    }
+                break;
+            case ViewMode.Weight:
+                if (SelectedSubMesh != null)
+                {
+                    Figure fig;
+                    if (TryGetFigure(out fig))
+                    {
+                        TSOSubMesh sub_mesh = SelectedSubMesh;
+
+                        device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                        effect.Technique = "BoneCol";
+                        effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
+
+                        effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
+                        effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(fig, sub_mesh, selected_node));
+
+                        int npass = effect.Begin(0);
+                        for (int ipass = 0; ipass < npass; ipass++)
+                        {
+                            effect.BeginPass(ipass);
+                            sub_mesh.dm.DrawSubset(0);
+                            effect.EndPass();
+                        }
+                        effect.End();
+                    }
+                }
+                break;
+        }
+    }
+
+    /// <summary>
     /// シーンをレンダリングします。
     /// </summary>
     public void RenderDerived()
@@ -166,9 +256,9 @@ public class WeightViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            if (selected_sub_mesh != null)
+            if (SelectedSubMesh != null)
             {
-                DrawVertices(fig, selected_sub_mesh);
+                DrawVertices(fig, SelectedSubMesh);
                 DrawSelectedVertex(fig);
             }
         }
@@ -229,7 +319,7 @@ public class WeightViewer : Viewer
         if (selected_vertex == null)
             return;
 
-        Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, selected_sub_mesh);
+        Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, SelectedSubMesh);
 
         float scale = 0.1f;
         Vector4 color = new Vector4(0, 1, 0, 1);
@@ -247,9 +337,9 @@ public class WeightViewer : Viewer
     /// 選択ボーンに対応するウェイトを加算する。
     public void GainSkinWeight(TSONode selected_node)
     {
-        if (selected_sub_mesh != null)
+        if (SelectedSubMesh != null)
         {
-            GainSkinWeight(selected_sub_mesh, selected_node);
+            GainSkinWeight(SelectedSubMesh, selected_node);
         }
     }
 
@@ -521,9 +611,9 @@ public class WeightViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            if (selected_sub_mesh != null)
+            if (SelectedSubMesh != null)
             {
-                Vertex vertex = FindVertexOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, fig, selected_sub_mesh);
+                Vertex vertex = FindVertexOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, fig, SelectedSubMesh);
                 if (vertex != null)
                 {
                     selected_vertex = vertex;

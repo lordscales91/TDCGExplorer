@@ -105,7 +105,7 @@ namespace TSOWeight
             lvSkinWeights.Items.Clear();
             foreach (SkinWeight skin_weight in viewer.selected_vertex.skin_weights)
             {
-                TSONode bone = viewer.selected_sub_mesh.GetBone(skin_weight.bone_index);
+                TSONode bone = viewer.SelectedSubMesh.GetBone(skin_weight.bone_index);
                 float weight = skin_weight.weight;
                 if (weight == 0.0f)
                     continue;
@@ -137,7 +137,7 @@ namespace TSOWeight
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                viewer.selected_sub_mesh = null;
+                viewer.SelectedSubMesh = null;
                 viewer.selected_vertex = null;
                 viewer.ClearCommands();
                 foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
@@ -173,7 +173,7 @@ namespace TSOWeight
             ListViewItem li = lvSubMeshes.SelectedItems[0];
             TSOSubMesh mesh = li.Tag as TSOSubMesh;
             AssignBoneIndices(mesh);
-            viewer.selected_sub_mesh = mesh;
+            viewer.SelectedSubMesh = mesh;
             viewer.selected_vertex = null;
         }
 
@@ -206,7 +206,7 @@ namespace TSOWeight
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                viewer.Camera.Center = WeightViewer.CalcSkindeformPosition(viewer.selected_vertex, WeightViewer.ClipBoneMatrices(fig, viewer.selected_sub_mesh));
+                viewer.Camera.Center = WeightViewer.CalcSkindeformPosition(viewer.selected_vertex, WeightViewer.ClipBoneMatrices(fig, viewer.SelectedSubMesh));
                 viewer.Camera.ResetTranslation();
             }
         }
@@ -266,12 +266,12 @@ namespace TSOWeight
 
         private void btnToon_Click(object sender, EventArgs e)
         {
-            viewer.view_mode = Viewer.ViewMode.Toon;
+            viewer.view_mode = WeightViewer.ViewMode.Toon;
         }
 
         private void btnHeat_Click(object sender, EventArgs e)
         {
-            viewer.view_mode = Viewer.ViewMode.Weight;
+            viewer.view_mode = WeightViewer.ViewMode.Weight;
         }
     }
 }
