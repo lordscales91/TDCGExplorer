@@ -994,13 +994,6 @@ public class Viewer : IDisposable
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
     }
 
-    /// 選択サブメッシュ
-    TSOSubMesh selected_sub_mesh = null;
-    public TSOSubMesh SelectedSubMesh { get { return selected_sub_mesh; } set { selected_sub_mesh = value; } }
-
-    /// 選択ボーン
-    public TSONode selected_node = null;
-
     /// <summary>
     /// スキン変形行列の配列を得ます。
     /// </summary>
