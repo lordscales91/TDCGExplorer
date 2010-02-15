@@ -182,7 +182,7 @@ namespace TSOWeight
 
             ListViewItem li = lvBoneIndices.SelectedItems[0];
             TSONode bone = li.Tag as TSONode;
-            viewer.selected_node = bone;
+            viewer.SelectedNode = bone;
         }
 
         private void lvSkinWeights_SelectedIndexChanged(object sender, EventArgs e)
@@ -211,7 +211,7 @@ namespace TSOWeight
 
         private void btnDraw_Click(object sender, EventArgs e)
         {
-            viewer.GainSkinWeight(viewer.selected_node);
+            viewer.GainSkinWeight(viewer.SelectedNode);
             AssignSkinWeights();
         }
 
