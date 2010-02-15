@@ -1046,7 +1046,7 @@ public class Viewer : IDisposable
         return clipped_boneSelections;
     }
 
-    void DrawFigure()
+    protected virtual void DrawFigure()
     {
         device.RenderState.AlphaBlendEnable = true;
 
@@ -1054,7 +1054,7 @@ public class Viewer : IDisposable
         device.DepthStencilSurface = dev_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
 
-        if (shadow_map_enabled)
+        if (ShadowMapEnabled)
         {
             effect.SetValue("texShadowMap", renderTextures[2]);
         }
