@@ -292,25 +292,24 @@ public class WeightViewer : Viewer
 
         if (selected_vertex != null)
         {
-            Vector3 v0 = selected_vertex.position;
+            Vector3 p0 = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
 
             for (int i = 0; i < sub_mesh.vertices.Length; i++)
             {
                 //頂点間距離が半径未満なら黄色にする。
-                Vector3 v1 = sub_mesh.vertices[i].position;
-                float dx = v1.X - v0.X;
-                float dy = v1.Y - v0.Y;
-                float dz = v1.Z - v0.Z;
+                Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+                float dx = p1.X - p0.X;
+                float dy = p1.Y - p0.Y;
+                float dz = p1.Z - p0.Z;
                 if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
                     color.Y = 1;
                 else
                     color.Y = 0;
 
-                Vector3 pos = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
                 Matrix m = Matrix.Scaling(scale, scale, scale);
-                m.M41 = pos.X;
-                m.M42 = pos.Y;
-                m.M43 = pos.Z;
+                m.M41 = p1.X;
+                m.M42 = p1.Y;
+                m.M43 = p1.Z;
                 DrawMesh(sphere, m, color);
             }
         }
@@ -318,11 +317,11 @@ public class WeightViewer : Viewer
         {
             for (int i = 0; i < sub_mesh.vertices.Length; i++)
             {
-                Vector3 pos = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+                Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
                 Matrix m = Matrix.Scaling(scale, scale, scale);
-                m.M41 = pos.X;
-                m.M42 = pos.Y;
-                m.M43 = pos.Z;
+                m.M41 = p1.X;
+                m.M42 = p1.Y;
+                m.M43 = p1.Z;
                 DrawMesh(sphere, m, color);
             }
         }
@@ -352,61 +351,68 @@ public class WeightViewer : Viewer
     /// 選択ボーンに対応するウェイトを加算する。
     public void GainSkinWeight(TSONode selected_node)
     {
-        if (SelectedMesh != null)
+        Figure fig;
+        if (TryGetFigure(out fig))
         {
-            MeshCommand mesh_command = new MeshCommand();
-            mesh_command.mesh = SelectedMesh;
-            bool updated = false;
-            foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
+            if (SelectedMesh != null)
             {
-                if (GainSkinWeight(sub_mesh, selected_node, mesh_command))
-                    updated = true;
-            }
-            if (updated)
-            {
-                if (mesh_command_id == mesh_commands.Count)
-                    mesh_commands.Add(mesh_command);
-                else
-                    mesh_commands[mesh_command_id] = mesh_command;
-                mesh_command_id++;
+                MeshCommand mesh_command = new MeshCommand();
+                mesh_command.mesh = SelectedMesh;
+                bool updated = false;
+                foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
+                {
+                    if (GainSkinWeight(fig, sub_mesh, selected_node, mesh_command))
+                        updated = true;
+                }
+                if (updated)
+                {
+                    if (mesh_command_id == mesh_commands.Count)
+                        mesh_commands.Add(mesh_command);
+                    else
+                        mesh_commands[mesh_command_id] = mesh_command;
+                    mesh_command_id++;
+                }
             }
         }
     }
 
     /// 選択ボーンに対応するウェイトを加算する。
-    public bool GainSkinWeight(TSOSubMesh sub_mesh, TSONode selected_node, MeshCommand mesh_command)
+    public bool GainSkinWeight(Figure fig, TSOSubMesh sub_mesh, TSONode selected_node, MeshCommand mesh_command)
     {
         bool updated = false;
-
-        if (selected_vertex == null)
-            return updated;
 
         //操作を生成する。
         SubMeshCommand sub_mesh_command = new SubMeshCommand();
         sub_mesh_command.sub_mesh = sub_mesh;
 
-        Vector3 p0 = selected_vertex.position;
+        Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
 
-        for (int i = 0; i < sub_mesh.vertices.Length; i++)
+        if (selected_vertex != null)
         {
-            Vertex v = sub_mesh.vertices[i];
+            Vector3 p0 = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
 
-            //頂点間距離が半径未満ならウェイトを加算する。
-            Vector3 p1 = v.position;
-            float dx = p1.X - p0.X;
-            float dy = p1.Y - p0.Y;
-            float dz = p1.Z - p0.Z;
-            if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
+            for (int i = 0; i < sub_mesh.vertices.Length; i++)
             {
-                if (GainSkinWeight(sub_mesh, selected_node, v, sub_mesh_command))
-                {
-                    updated = true;
+                Vertex v = sub_mesh.vertices[i];
 
-                    v.FillSkinWeights();
-                    v.GenerateBoneIndices();
+                //頂点間距離が半径未満ならウェイトを加算する。
+                Vector3 p1 = CalcSkindeformPosition(v, clipped_boneMatrices);
+                float dx = p1.X - p0.X;
+                float dy = p1.Y - p0.Y;
+                float dz = p1.Z - p0.Z;
+                if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
+                {
+                    if (GainSkinWeight(sub_mesh, selected_node, v, sub_mesh_command))
+                    {
+                        updated = true;
+
+                        v.FillSkinWeights();
+                        v.GenerateBoneIndices();
+                    }
                 }
             }
         }
+
         if (updated)
             sub_mesh.WriteBuffer(device);
         if (updated)
