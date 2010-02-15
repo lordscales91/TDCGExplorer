@@ -256,6 +256,11 @@ namespace TSOWeight
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            SaveFigure();
+        }
+
+        private void SaveFigure()
+        {
             if (lvTSOFiles.SelectedIndices.Count == 0)
                 return;
 
@@ -299,6 +304,21 @@ namespace TSOWeight
         private void btnHeat_Click(object sender, EventArgs e)
         {
             viewer.view_mode = WeightViewer.ViewMode.Weight;
+        }
+
+        private void 名前を付けて保存AToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SaveFigure();
+        }
+
+        private void 終了XToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Close();
+        }
+
+        private void 新規作成NToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.ClearFigureList();
         }
     }
 }
