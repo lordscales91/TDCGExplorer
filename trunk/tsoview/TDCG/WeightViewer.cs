@@ -211,28 +211,29 @@ public class WeightViewer : Viewer
                     }
                 break;
             case ViewMode.Weight:
-                if (SelectedSubMesh != null)
+                if (SelectedMesh != null)
                 {
                     Figure fig;
                     if (TryGetFigure(out fig))
                     {
-                        TSOSubMesh sub_mesh = SelectedSubMesh;
-
-                        device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                        effect.Technique = "BoneCol";
-                        effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
-
-                        effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
-                        effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(fig, sub_mesh, selected_node));
-
-                        int npass = effect.Begin(0);
-                        for (int ipass = 0; ipass < npass; ipass++)
+                        foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
                         {
-                            effect.BeginPass(ipass);
-                            sub_mesh.dm.DrawSubset(0);
-                            effect.EndPass();
+                            device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                            effect.Technique = "BoneCol";
+                            effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
+
+                            effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
+                            effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(fig, sub_mesh, selected_node));
+
+                            int npass = effect.Begin(0);
+                            for (int ipass = 0; ipass < npass; ipass++)
+                            {
+                                effect.BeginPass(ipass);
+                                sub_mesh.dm.DrawSubset(0);
+                                effect.EndPass();
+                            }
+                            effect.End();
                         }
-                        effect.End();
                     }
                 }
                 break;
@@ -256,9 +257,12 @@ public class WeightViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            if (SelectedSubMesh != null)
+            if (SelectedMesh != null)
             {
-                DrawVertices(fig, SelectedSubMesh);
+                foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
+                {
+                    DrawVertices(fig, sub_mesh);
+                }
                 DrawSelectedVertex(fig);
             }
         }
@@ -368,7 +372,12 @@ public class WeightViewer : Viewer
             if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
             {
                 if (GainSkinWeight(sub_mesh, selected_node, i, mesh_command))
+                {
                     updated = true;
+
+                    v.FillSkinWeights();
+                    v.GenerateBoneIndices();
+                }
             }
         }
         if (updated)
@@ -478,8 +487,6 @@ public class WeightViewer : Viewer
                         skin_weight.weight = 0.0f;
                 }
             }
-            v.FillSkinWeights();
-            v.GenerateBoneIndices();
         }
         //ˆ—Œã‚Ì’l‚ð‹L‰¯‚·‚éB
         {
@@ -519,13 +526,16 @@ public class WeightViewer : Viewer
     {
         foreach (VertexCommand vertex_command in mesh_command.vertex_commands)
         {
+            Vertex v = mesh_command.sub_mesh.vertices[vertex_command.vertex_id];
             int nskin_weight = 0;
             foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
             {
-                mesh_command.sub_mesh.vertices[vertex_command.vertex_id].skin_weights[nskin_weight].bone_index = skin_weight_command.old_attr.bone_index;
-                mesh_command.sub_mesh.vertices[vertex_command.vertex_id].skin_weights[nskin_weight].weight = skin_weight_command.old_attr.weight;
+                v.skin_weights[nskin_weight].bone_index = skin_weight_command.old_attr.bone_index;
+                v.skin_weights[nskin_weight].weight = skin_weight_command.old_attr.weight;
                 nskin_weight++;
             }
+            v.FillSkinWeights();
+            v.GenerateBoneIndices();
         }
         mesh_command.sub_mesh.WriteBuffer(device);
     }
@@ -549,13 +559,16 @@ public class WeightViewer : Viewer
     {
         foreach (VertexCommand vertex_command in mesh_command.vertex_commands)
         {
+            Vertex v = mesh_command.sub_mesh.vertices[vertex_command.vertex_id];
             int nskin_weight = 0;
             foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
             {
-                mesh_command.sub_mesh.vertices[vertex_command.vertex_id].skin_weights[nskin_weight].bone_index = skin_weight_command.new_attr.bone_index;
-                mesh_command.sub_mesh.vertices[vertex_command.vertex_id].skin_weights[nskin_weight].weight = skin_weight_command.new_attr.weight;
+                v.skin_weights[nskin_weight].bone_index = skin_weight_command.new_attr.bone_index;
+                v.skin_weights[nskin_weight].weight = skin_weight_command.new_attr.weight;
                 nskin_weight++;
             }
+            v.FillSkinWeights();
+            v.GenerateBoneIndices();
         }
         mesh_command.sub_mesh.WriteBuffer(device);
     }
@@ -641,14 +654,19 @@ public class WeightViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            if (SelectedSubMesh != null)
+            if (SelectedMesh != null)
             {
-                Vertex vertex = FindVertexOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, fig, SelectedSubMesh);
-                if (vertex != null)
+                foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
                 {
-                    selected_vertex = vertex;
-                    if (VertexEvent != null)
-                        VertexEvent(this, EventArgs.Empty);
+                    Vertex vertex = FindVertexOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, fig, sub_mesh);
+                    if (vertex != null)
+                    {
+                        selected_sub_mesh = sub_mesh;
+                        selected_vertex = vertex;
+                        if (VertexEvent != null)
+                            VertexEvent(this, EventArgs.Empty);
+                        break;
+                    }
                 }
             }
         }
