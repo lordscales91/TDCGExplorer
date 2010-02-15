@@ -71,24 +71,24 @@ namespace TSOWeight
             lvMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
-        void AssignSubMeshes(TSOMesh frame)
+        void AssignSubMeshes(TSOMesh mesh)
         {
             lvSubMeshes.Items.Clear();
             int nsub_mesh = 0;
-            foreach (TSOSubMesh mesh in frame.sub_meshes)
+            foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
                 ListViewItem li = new ListViewItem(string.Format("sub_mesh #{0}", nsub_mesh));
-                li.Tag = mesh;
+                li.Tag = sub_mesh;
                 lvSubMeshes.Items.Add(li);
                 nsub_mesh++;
             }
             lvSubMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
-        void AssignBoneIndices(TSOSubMesh mesh)
+        void AssignBoneIndices(TSOSubMesh sub_mesh)
         {
             lvBoneIndices.Items.Clear();
-            foreach (TSONode bone in mesh.bones)
+            foreach (TSONode bone in sub_mesh.bones)
             {
                 ListViewItem li = new ListViewItem(bone.Name);
                 li.Tag = bone;
@@ -137,7 +137,7 @@ namespace TSOWeight
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                viewer.SelectedSubMesh = null;
+                viewer.SelectedMesh = null;
                 viewer.ClearCommands();
                 foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
                     viewer.LoadAnyFile(src, (e.KeyState & 8) == 8);
@@ -160,8 +160,9 @@ namespace TSOWeight
                 return;
 
             ListViewItem li = lvMeshes.SelectedItems[0];
-            TSOMesh frame = li.Tag as TSOMesh;
-            AssignSubMeshes(frame);
+            TSOMesh mesh = li.Tag as TSOMesh;
+            AssignSubMeshes(mesh);
+            viewer.SelectedMesh = mesh;
         }
 
         private void lvMeshes_SelectedIndexChanged(object sender, EventArgs e)
@@ -170,9 +171,9 @@ namespace TSOWeight
                 return;
 
             ListViewItem li = lvSubMeshes.SelectedItems[0];
-            TSOSubMesh mesh = li.Tag as TSOSubMesh;
-            AssignBoneIndices(mesh);
-            viewer.SelectedSubMesh = mesh;
+            TSOSubMesh sub_mesh = li.Tag as TSOSubMesh;
+            AssignBoneIndices(sub_mesh);
+            viewer.SelectedSubMesh = sub_mesh;
         }
 
         private void lvBoneIndices_SelectedIndexChanged(object sender, EventArgs e)
