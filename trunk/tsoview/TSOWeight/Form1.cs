@@ -32,6 +32,10 @@ namespace TSOWeight
                         AssignTSOFiles(fig);
                     }
                 };
+                viewer.SubMeshEvent += delegate(object sender, EventArgs e)
+                {
+                    AssignBoneIndices(viewer.SelectedSubMesh);
+                };
                 viewer.VertexEvent += delegate(object sender, EventArgs e)
                 {
                     AssignSkinWeights(viewer.SelectedVertex);

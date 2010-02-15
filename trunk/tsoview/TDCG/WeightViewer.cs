@@ -657,6 +657,8 @@ public class WeightViewer : Viewer
         {
             selected_sub_mesh = value;
             selected_vertex = null;
+            if (SubMeshEvent != null)
+                SubMeshEvent(this, EventArgs.Empty);
         }
     }
 
@@ -666,7 +668,21 @@ public class WeightViewer : Viewer
 
     Vertex selected_vertex = null;
     /// 選択頂点id
-    public Vertex SelectedVertex { get { return selected_vertex; } set { selected_vertex = value; } }
+    public Vertex SelectedVertex
+    {
+        get { return selected_vertex; }
+        set
+        {
+            selected_vertex = value;
+            if (VertexEvent != null)
+                VertexEvent(this, EventArgs.Empty);
+        }
+    }
+
+    /// <summary>
+    /// サブメッシュ選択時に呼び出されるハンドラ
+    /// </summary>
+    public event EventHandler SubMeshEvent;
 
     /// <summary>
     /// 頂点選択時に呼び出されるハンドラ
@@ -687,6 +703,8 @@ public class WeightViewer : Viewer
                     {
                         selected_sub_mesh = sub_mesh;
                         selected_vertex = vertex;
+                        if (SubMeshEvent != null)
+                            SubMeshEvent(this, EventArgs.Empty);
                         if (VertexEvent != null)
                             VertexEvent(this, EventArgs.Empty);
                         break;
