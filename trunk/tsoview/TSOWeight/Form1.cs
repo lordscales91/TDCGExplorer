@@ -99,11 +99,11 @@ namespace TSOWeight
 
         void AssignSkinWeights()
         {
-            if (viewer.selected_vertex == null)
+            if (viewer.SelectedVertex == null)
                 return;
 
             lvSkinWeights.Items.Clear();
-            foreach (SkinWeight skin_weight in viewer.selected_vertex.skin_weights)
+            foreach (SkinWeight skin_weight in viewer.SelectedVertex.skin_weights)
             {
                 TSONode bone = viewer.SelectedSubMesh.GetBone(skin_weight.bone_index);
                 float weight = skin_weight.weight;
@@ -138,7 +138,6 @@ namespace TSOWeight
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 viewer.SelectedSubMesh = null;
-                viewer.selected_vertex = null;
                 viewer.ClearCommands();
                 foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
                     viewer.LoadAnyFile(src, (e.KeyState & 8) == 8);
@@ -174,7 +173,6 @@ namespace TSOWeight
             TSOSubMesh mesh = li.Tag as TSOSubMesh;
             AssignBoneIndices(mesh);
             viewer.SelectedSubMesh = mesh;
-            viewer.selected_vertex = null;
         }
 
         private void lvBoneIndices_SelectedIndexChanged(object sender, EventArgs e)
@@ -200,13 +198,13 @@ namespace TSOWeight
 
         private void btnCenter_Click(object sender, EventArgs e)
         {
-            if (viewer.selected_vertex == null)
+            if (viewer.SelectedVertex == null)
                 return;
 
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                viewer.Camera.Center = WeightViewer.CalcSkindeformPosition(viewer.selected_vertex, WeightViewer.ClipBoneMatrices(fig, viewer.SelectedSubMesh));
+                viewer.Camera.Center = WeightViewer.CalcSkindeformPosition(viewer.SelectedVertex, WeightViewer.ClipBoneMatrices(fig, viewer.SelectedSubMesh));
                 viewer.Camera.ResetTranslation();
             }
         }
