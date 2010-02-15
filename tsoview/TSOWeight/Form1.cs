@@ -34,7 +34,7 @@ namespace TSOWeight
                 };
                 viewer.VertexEvent += delegate(object sender, EventArgs e)
                 {
-                    AssignSkinWeights();
+                    AssignSkinWeights(viewer.SelectedVertex);
                 };
                 foreach (string arg in args)
                     viewer.LoadAnyFile(arg, true);
@@ -97,13 +97,13 @@ namespace TSOWeight
             lvBoneIndices.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
-        void AssignSkinWeights()
+        void AssignSkinWeights(Vertex vertex)
         {
-            if (viewer.SelectedVertex == null)
+            if (vertex == null)
                 return;
 
             lvSkinWeights.Items.Clear();
-            foreach (SkinWeight skin_weight in viewer.SelectedVertex.skin_weights)
+            foreach (SkinWeight skin_weight in vertex.skin_weights)
             {
                 TSONode bone = viewer.SelectedSubMesh.GetBone(skin_weight.bone_index);
                 float weight = skin_weight.weight;
@@ -213,7 +213,7 @@ namespace TSOWeight
         private void btnDraw_Click(object sender, EventArgs e)
         {
             viewer.GainSkinWeight(viewer.SelectedNode);
-            AssignSkinWeights();
+            AssignSkinWeights(viewer.SelectedVertex);
         }
 
         private void tbWeight_ValueChanged(object sender, EventArgs e)
@@ -254,13 +254,13 @@ namespace TSOWeight
         private void Œ³‚É–ß‚·UToolStripMenuItem_Click(object sender, EventArgs e)
         {
             viewer.Undo();
-            AssignSkinWeights();
+            AssignSkinWeights(viewer.SelectedVertex);
         }
 
         private void ‚â‚è’¼‚µRToolStripMenuItem_Click(object sender, EventArgs e)
         {
             viewer.Redo();
-            AssignSkinWeights();
+            AssignSkinWeights(viewer.SelectedVertex);
         }
 
         private void btnToon_Click(object sender, EventArgs e)
