@@ -595,6 +595,7 @@
             // tbWeight
             // 
             this.tbWeight.Location = new System.Drawing.Point(12, 265);
+            this.tbWeight.Maximum = 20;
             this.tbWeight.Name = "tbWeight";
             this.tbWeight.Size = new System.Drawing.Size(120, 45);
             this.tbWeight.TabIndex = 25;
@@ -614,6 +615,7 @@
             // tbRadius
             // 
             this.tbRadius.Location = new System.Drawing.Point(12, 313);
+            this.tbRadius.Maximum = 20;
             this.tbRadius.Name = "tbRadius";
             this.tbRadius.Size = new System.Drawing.Size(120, 45);
             this.tbRadius.TabIndex = 27;

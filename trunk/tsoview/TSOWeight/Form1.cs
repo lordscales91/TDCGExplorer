@@ -243,12 +243,12 @@ namespace TSOWeight
 
         private void tbWeight_ValueChanged(object sender, EventArgs e)
         {
-            WeightViewer.weight = (float)(tbWeight.Value) * 0.1f;
+            WeightViewer.weight = (float)(tbWeight.Value) * 0.05f;
         }
 
         private void tbRadius_ValueChanged(object sender, EventArgs e)
         {
-            WeightViewer.radius = (float)(tbRadius.Value) * 0.1f;
+            WeightViewer.radius = (float)(tbRadius.Value) * 0.05f;
         }
 
         private void btnSave_Click(object sender, EventArgs e)
