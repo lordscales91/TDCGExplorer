@@ -341,9 +341,12 @@ public class WeightViewer : Viewer
     /// 選択ボーンに対応するウェイトを加算する。
     public void GainSkinWeight(TSONode selected_node)
     {
-        if (SelectedSubMesh != null)
+        if (SelectedMesh != null)
         {
-            GainSkinWeight(SelectedSubMesh, selected_node);
+            foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
+            {
+                GainSkinWeight(sub_mesh, selected_node);
+            }
         }
     }
 
@@ -400,7 +403,7 @@ public class WeightViewer : Viewer
 
     /// 選択ボーンに対応するウェイトを加算する。
     /// returns: ウェイトを変更したか
-    public static bool GainSkinWeight(TSOSubMesh sub_mesh, TSONode selected_node, Vertex v, SubMeshCommand mesh_command)
+    public static bool GainSkinWeight(TSOSubMesh sub_mesh, TSONode selected_node, Vertex v, SubMeshCommand sub_mesh_command)
     {
         VertexCommand vertex_command = new VertexCommand();
         vertex_command.vertex = v;
@@ -410,7 +413,7 @@ public class WeightViewer : Viewer
             skin_weight_command.skin_weight = skin_weight;
             vertex_command.skin_weight_commands.Add(skin_weight_command);
         }
-        mesh_command.vertex_commands.Add(vertex_command);
+        sub_mesh_command.vertex_commands.Add(vertex_command);
         //処理前の値を記憶する。
         {
             int nskin_weight = 0;
