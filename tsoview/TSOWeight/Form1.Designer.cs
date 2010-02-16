@@ -384,7 +384,7 @@
             this.lbTSOFiles.Name = "lbTSOFiles";
             this.lbTSOFiles.Size = new System.Drawing.Size(120, 12);
             this.lbTSOFiles.TabIndex = 31;
-            this.lbTSOFiles.Text = "TSO files";
+            this.lbTSOFiles.Text = "TSOファイル";
             // 
             // lvTSOFiles
             // 
@@ -404,7 +404,7 @@
             // 
             // columnHeader6
             // 
-            this.columnHeader6.Text = "Name";
+            this.columnHeader6.Text = "名前";
             // 
             // lbBoneIndices
             // 
@@ -412,7 +412,7 @@
             this.lbBoneIndices.Name = "lbBoneIndices";
             this.lbBoneIndices.Size = new System.Drawing.Size(120, 12);
             this.lbBoneIndices.TabIndex = 13;
-            this.lbBoneIndices.Text = "Bone indices";
+            this.lbBoneIndices.Text = "ボーン参照";
             // 
             // lvBoneIndices
             // 
@@ -432,7 +432,7 @@
             // 
             // columnHeader3
             // 
-            this.columnHeader3.Text = "Name";
+            this.columnHeader3.Text = "名前";
             // 
             // lbSubMeshes
             // 
@@ -440,7 +440,7 @@
             this.lbSubMeshes.Name = "lbSubMeshes";
             this.lbSubMeshes.Size = new System.Drawing.Size(120, 12);
             this.lbSubMeshes.TabIndex = 11;
-            this.lbSubMeshes.Text = "Sub meshes";
+            this.lbSubMeshes.Text = "サブメッシュ";
             // 
             // lbMeshes
             // 
@@ -448,7 +448,7 @@
             this.lbMeshes.Name = "lbMeshes";
             this.lbMeshes.Size = new System.Drawing.Size(120, 12);
             this.lbMeshes.TabIndex = 10;
-            this.lbMeshes.Text = "Meshes";
+            this.lbMeshes.Text = "メッシュ";
             // 
             // lvSubMeshes
             // 
@@ -468,7 +468,7 @@
             // 
             // columnHeader2
             // 
-            this.columnHeader2.Text = "Name";
+            this.columnHeader2.Text = "名前";
             // 
             // lvMeshes
             // 
@@ -488,7 +488,7 @@
             // 
             // columnHeader1
             // 
-            this.columnHeader1.Text = "Name";
+            this.columnHeader1.Text = "名前";
             // 
             // panel2
             // 
@@ -518,7 +518,7 @@
             this.btnWeight.Name = "btnWeight";
             this.btnWeight.Size = new System.Drawing.Size(120, 23);
             this.btnWeight.TabIndex = 32;
-            this.btnWeight.Text = "Weight";
+            this.btnWeight.Text = "ウェイト(&2)";
             this.btnWeight.UseVisualStyleBackColor = true;
             this.btnWeight.Click += new System.EventHandler(this.btnHeat_Click);
             // 
@@ -528,7 +528,7 @@
             this.btnToon.Name = "btnToon";
             this.btnToon.Size = new System.Drawing.Size(120, 23);
             this.btnToon.TabIndex = 31;
-            this.btnToon.Text = "&Toon";
+            this.btnToon.Text = "トゥーン(&1)";
             this.btnToon.UseVisualStyleBackColor = true;
             this.btnToon.Click += new System.EventHandler(this.btnToon_Click);
             // 
@@ -538,7 +538,7 @@
             this.lbViewMode.Name = "lbViewMode";
             this.lbViewMode.Size = new System.Drawing.Size(120, 12);
             this.lbViewMode.TabIndex = 30;
-            this.lbViewMode.Text = "View mode";
+            this.lbViewMode.Text = "描画モード";
             // 
             // lbWeight
             // 
@@ -546,7 +546,7 @@
             this.lbWeight.Name = "lbWeight";
             this.lbWeight.Size = new System.Drawing.Size(120, 12);
             this.lbWeight.TabIndex = 24;
-            this.lbWeight.Text = "Weight";
+            this.lbWeight.Text = "加算ウェイト";
             // 
             // btnSave
             // 
@@ -554,7 +554,7 @@
             this.btnSave.Name = "btnSave";
             this.btnSave.Size = new System.Drawing.Size(120, 23);
             this.btnSave.TabIndex = 29;
-            this.btnSave.Text = "&Save";
+            this.btnSave.Text = "保存(&S)";
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
@@ -564,7 +564,7 @@
             this.btnCenter.Name = "btnCenter";
             this.btnCenter.Size = new System.Drawing.Size(120, 23);
             this.btnCenter.TabIndex = 21;
-            this.btnCenter.Text = "&Center";
+            this.btnCenter.Text = "中心(&C)";
             this.btnCenter.UseVisualStyleBackColor = true;
             this.btnCenter.Click += new System.EventHandler(this.btnCenter_Click);
             // 
@@ -574,7 +574,7 @@
             this.lbRadius.Name = "lbRadius";
             this.lbRadius.Size = new System.Drawing.Size(120, 12);
             this.lbRadius.TabIndex = 26;
-            this.lbRadius.Text = "Radius";
+            this.lbRadius.Text = "半径";
             // 
             // lvSkinWeights
             // 
@@ -595,11 +595,11 @@
             // 
             // columnHeader4
             // 
-            this.columnHeader4.Text = "Bone";
+            this.columnHeader4.Text = "ボーン";
             // 
             // columnHeader5
             // 
-            this.columnHeader5.Text = "Weight";
+            this.columnHeader5.Text = "ウェイト";
             // 
             // lbSkinWeights
             // 
@@ -607,7 +607,7 @@
             this.lbSkinWeights.Name = "lbSkinWeights";
             this.lbSkinWeights.Size = new System.Drawing.Size(120, 12);
             this.lbSkinWeights.TabIndex = 22;
-            this.lbSkinWeights.Text = "Skin weights";
+            this.lbSkinWeights.Text = "頂点ウェイト";
             // 
             // tbWeight
             // 
@@ -625,7 +625,7 @@
             this.btnDraw.Name = "btnDraw";
             this.btnDraw.Size = new System.Drawing.Size(120, 23);
             this.btnDraw.TabIndex = 28;
-            this.btnDraw.Text = "&Draw";
+            this.btnDraw.Text = "塗る(&D)";
             this.btnDraw.UseVisualStyleBackColor = true;
             this.btnDraw.Click += new System.EventHandler(this.btnDraw_Click);
             // 
@@ -645,7 +645,7 @@
             this.lbCamera.Name = "lbCamera";
             this.lbCamera.Size = new System.Drawing.Size(120, 12);
             this.lbCamera.TabIndex = 20;
-            this.lbCamera.Text = "Camera";
+            this.lbCamera.Text = "カメラ";
             // 
             // statusStrip1
             // 
