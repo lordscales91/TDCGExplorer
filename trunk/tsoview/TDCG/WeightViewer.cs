@@ -750,23 +750,18 @@ public class WeightViewer : Viewer
         Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
 
         {
-            Vector3 collisionPoint;
-            float collisionTime;
-            float min_time = 1e12f;
-
-            float sphereRadius = 0.25f * 0.1f;
-            Vector3 rayStart = ScreenToWorld(x, y, 0.0f);
-            Vector3 rayEnd = ScreenToWorld(x, y, 1.0f);
-            Vector3 rayOrientation = rayEnd - rayStart;
+            int width = 2;
+            float min_z = 1e12f;
 
             for (int i = 0; i < sub_mesh.vertices.Length; i++)
             {
-                Vector3 sphereCenter = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
-                if (DetectSphereRayCollision(sphereRadius, ref sphereCenter, ref rayStart, ref rayOrientation, out collisionPoint, out collisionTime))
+                Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+                Vector3 p2 = WorldToScreen(p1);
+                if (p2.X - width <= x && x <= p2.X + width && p2.Y - width <= y && y <= p2.Y + width)
                 {
-                    if (collisionTime < min_time)
+                    if (p2.Z < min_z)
                     {
-                        min_time = collisionTime;
+                        min_z = p2.Z;
                         vertex = sub_mesh.vertices[i];
                     }
                 }
