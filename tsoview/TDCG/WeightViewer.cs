@@ -353,16 +353,19 @@ public class WeightViewer : Viewer
 
         Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, SelectedSubMesh);
 
-        float scale = 0.1f;
-        Vector4 color = new Vector4(0, 1, 0, 1);
+        int width = 2;
+        Color color = Color.LightGreen;
 
         {
-            Vector3 pos = CalcSkindeformPosition(selected_vertex, clipped_boneMatrices);
-            Matrix m = Matrix.Scaling(scale, scale, scale);
-            m.M41 = pos.X;
-            m.M42 = pos.Y;
-            m.M43 = pos.Z;
-            DrawMesh(sphere, m, color);
+            Vector3 p1 = CalcSkindeformPosition(selected_vertex, clipped_boneMatrices);
+            Vector3 p2 = WorldToScreen(p1);
+            Vector2[] positions = new Vector2[5];
+            positions[0] = new Vector2(p2.X - width, p2.Y - width);
+            positions[1] = new Vector2(p2.X + width, p2.Y - width);
+            positions[2] = new Vector2(p2.X + width, p2.Y + width);
+            positions[3] = new Vector2(p2.X - width, p2.Y + width);
+            positions[4] = new Vector2(p2.X - width, p2.Y - width);
+            line.Draw(positions, color);
         }
     }
 
