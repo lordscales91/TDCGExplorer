@@ -51,6 +51,7 @@ public class Viewer : IDisposable
     internal Surface renderZ = null;
 
     internal Sprite sprite = null;
+    internal Line line = null;
     float w_scale = 1.0f;
     float h_scale = 1.0f;
 
@@ -560,6 +561,7 @@ public class Viewer : IDisposable
 
             sprite = new Sprite(device);
         }
+        line = new Line(device);
         handle_LocalBoneSels = effect.GetParameter(null, "LocalBoneSels");
         camera.Update();
         OnDeviceReset(device, null);
@@ -1136,6 +1138,8 @@ public class Viewer : IDisposable
     {
         foreach (Figure fig in FigureList)
             fig.Dispose();
+        if (line != null)
+            line.Dispose();
         if (sprite != null)
             sprite.Dispose();
         if (renderZ != null)

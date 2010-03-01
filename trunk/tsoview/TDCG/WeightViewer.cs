@@ -132,6 +132,18 @@ public class WeightViewer : Viewer
         return ScreenToWorld(screenX, screenY, z, device.Viewport, Transform_View, Transform_Projection);
     }
 
+    /// ワールド座標をスクリーン位置へ変換します。
+    public Vector3 WorldToScreen(Vector3 v, Viewport viewport, Matrix view, Matrix proj)
+    {
+        return Vector3.TransformCoordinate(v, view * proj * CreateViewportMatrix(viewport));
+    }
+
+    /// ワールド座標をスクリーン位置へ変換します。
+    public Vector3 WorldToScreen(Vector3 v)
+    {
+        return WorldToScreen(v, device.Viewport, Transform_View, Transform_Projection);
+    }
+
     /// <summary>
     /// deviceを作成します。
     /// </summary>
@@ -287,8 +299,8 @@ public class WeightViewer : Viewer
     {
         Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
 
-        float scale = 0.1f;
-        Vector4 color = new Vector4(1, 0, 0, 0.5f);
+        int width = 2;
+        Color color = Color.Red;
 
         if (selected_vertex != null)
         {
@@ -302,15 +314,18 @@ public class WeightViewer : Viewer
                 float dy = p1.Y - p0.Y;
                 float dz = p1.Z - p0.Z;
                 if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
-                    color.Y = 1;
+                    color = Color.Yellow;
                 else
-                    color.Y = 0;
+                    color = Color.Red;
 
-                Matrix m = Matrix.Scaling(scale, scale, scale);
-                m.M41 = p1.X;
-                m.M42 = p1.Y;
-                m.M43 = p1.Z;
-                DrawMesh(sphere, m, color);
+                Vector3 p2 = WorldToScreen(p1);
+                Vector2[] positions = new Vector2[5];
+                positions[0] = new Vector2(p2.X - width, p2.Y - width);
+                positions[1] = new Vector2(p2.X + width, p2.Y - width);
+                positions[2] = new Vector2(p2.X + width, p2.Y + width);
+                positions[3] = new Vector2(p2.X - width, p2.Y + width);
+                positions[4] = new Vector2(p2.X - width, p2.Y - width);
+                line.Draw(positions, color);
             }
         }
         else
@@ -318,11 +333,14 @@ public class WeightViewer : Viewer
             for (int i = 0; i < sub_mesh.vertices.Length; i++)
             {
                 Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
-                Matrix m = Matrix.Scaling(scale, scale, scale);
-                m.M41 = p1.X;
-                m.M42 = p1.Y;
-                m.M43 = p1.Z;
-                DrawMesh(sphere, m, color);
+                Vector3 p2 = WorldToScreen(p1);
+                Vector2[] positions = new Vector2[5];
+                positions[0] = new Vector2(p2.X - width, p2.Y - width);
+                positions[1] = new Vector2(p2.X + width, p2.Y - width);
+                positions[2] = new Vector2(p2.X + width, p2.Y + width);
+                positions[3] = new Vector2(p2.X - width, p2.Y + width);
+                positions[4] = new Vector2(p2.X - width, p2.Y - width);
+                line.Draw(positions, color);
             }
         }
     }
