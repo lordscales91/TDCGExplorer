@@ -200,11 +200,6 @@ public class WeightViewer : Viewer
         device.DepthStencilSurface = dev_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
 
-        if (ShadowMapEnabled)
-        {
-            effect.SetValue("texShadowMap", renderTextures[2]);
-        }
-
         switch (view_mode)
         {
             case ViewMode.Toon:
