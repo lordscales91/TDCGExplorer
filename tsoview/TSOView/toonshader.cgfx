@@ -489,8 +489,8 @@ cVertexData3 cShadowMapVS( appdata IN )
 
    // 普通に world view projection
    float4x4 mat = wld;
-   mat  = mul( mat, lightview );
-   mat  = mul( mat, lightproj );
+   mat  = mul( mat, view );
+   mat  = mul( mat, proj );
    OUT.Position = mul( opos, mat );
    
    // テクスチャ座標を頂点に合わせる
@@ -865,16 +865,6 @@ float4 cShadowMapPS( float4 ShadowMapTex : TEXCOORD0 ) : COLOR
 float4 cMainPS( cVertexData IN ) : COLOR //デフォルトピクセルシェーダ
 {
 	float	L		 = dot( IN.Normal, -LightDirForced );
-
-	float2 texcoord;
-	texcoord.x = ( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
-	texcoord.y = ( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
-	float4 c = tex2D( ShadowMap, texcoord );
-	float z = c.r + (c.g + c.b/256.0)/256.0;
-	if ( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
-	{
-		L = -1.0; /* depth-buffer-shadow */
-	}
 	float	lp		 = min( 1.0, max( 0.0, ( L * 0.6   ) + ( Ambient   * 0.01 ) ) );
 	float	hp0		 = min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
 	float	hp		 = pow( abs(hp0), HighLightPower );
