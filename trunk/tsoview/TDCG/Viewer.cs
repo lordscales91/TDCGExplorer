@@ -49,7 +49,7 @@ public class Viewer : IDisposable
     int ztexh = 0;
     internal Surface ztex_surface = null;
     internal Surface ztex_zbuf = null;
-
+    internal Surface plain_surface = null;
     internal Sprite sprite = null;
     internal Line line = null;
     float w_scale = 1.0f;
@@ -605,7 +605,7 @@ public class Viewer : IDisposable
 
         if (shadow_map_enabled)
         {
-            ztex = new Texture(device, 1024, 1024, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+            ztex = new Texture(device, 1024, 768, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
             ztex_surface = ztex.GetSurfaceLevel(0);
 
             effect.SetValue("texShadowMap", ztex);
@@ -619,13 +619,15 @@ public class Viewer : IDisposable
 
             w_scale = (float)devw / ztexw;
             h_scale = (float)devh / ztexh;
+
+            plain_surface = device.CreateOffscreenPlainSurface(ztexw, ztexh, Format.A8R8G8B8, Pool.SystemMemory);
         }
 
         Transform_Projection = Matrix.PerspectiveFovRH(
                 Geometry.DegreeToRadian(30.0f),
                 (float)device.Viewport.Width / (float)device.Viewport.Height,
-                1.0f,
-                1000.0f );
+                2.0f,
+                250.0f );
         // xxx: for w-buffering
         device.Transform.Projection = Transform_Projection;
         effect.SetValue("proj", Transform_Projection);
@@ -1015,7 +1017,7 @@ public class Viewer : IDisposable
     {
         device.RenderState.AlphaBlendEnable = false;
 
-        sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
+        //sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
         Rectangle rect = new Rectangle(0, 0, ztexw, ztexh);
 
         sprite.Begin(0);
