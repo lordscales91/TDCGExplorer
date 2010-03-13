@@ -22,7 +22,7 @@ namespace TSOWeight
 
             this.viewer = new WeightViewer();
 
-            if (viewer.InitializeApplication(this, true))
+            if (viewer.InitializeApplication(this))
             {
                 viewer.FigureEvent += delegate(object sender, EventArgs e)
                 {
@@ -60,8 +60,7 @@ namespace TSOWeight
                 if (viewer.FigureList.Count == 0)
                     viewer.LoadAnyFile(Path.Combine(save_path, "system.tdcgsav.png"), true);
                 viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
-                viewer.SwitchShadowShown();
-                //viewer.SwitchSpriteShown();
+
                 //this.timer1.Enabled = true;
             }
         }
