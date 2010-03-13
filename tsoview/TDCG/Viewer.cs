@@ -102,7 +102,10 @@ public class Viewer : IDisposable
         {
         case MouseButtons.Left:
             if (Control.ModifierKeys == Keys.Control)
+            {
                 lightDir = ScreenToOrientation(e.X, e.Y);
+                control.Invalidate(false);
+            }
             break;
         }
 
@@ -123,12 +126,15 @@ public class Viewer : IDisposable
                 lightDir = ScreenToOrientation(e.X, e.Y);
             else
                 Camera.Move(dx, -dy, 0.0f);
+            control.Invalidate(false);
             break;
         case MouseButtons.Middle:
             Camera.MoveView(-dx*0.125f, dy*0.125f);
+            control.Invalidate(false);
             break;
         case MouseButtons.Right:
             Camera.Move(0.0f, 0.0f, -dy*0.125f);
+            control.Invalidate(false);
             break;
         }
 

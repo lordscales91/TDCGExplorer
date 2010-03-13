@@ -62,7 +62,7 @@ namespace TSOWeight
                 viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
                 viewer.SwitchShadowShown();
                 //viewer.SwitchSpriteShown();
-                this.timer1.Enabled = true;
+                //this.timer1.Enabled = true;
             }
         }
 
@@ -170,6 +170,7 @@ namespace TSOWeight
             {
                 foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
                     viewer.LoadAnyFile(src, (e.KeyState & 8) == 8);
+                Invalidate(false);
             }
         }
 
@@ -192,6 +193,7 @@ namespace TSOWeight
             TSOMesh mesh = li.Tag as TSOMesh;
             AssignSubMeshes(mesh);
             viewer.SelectedMesh = mesh;
+            Invalidate(false);
         }
 
         private void lvMeshes_SelectedIndexChanged(object sender, EventArgs e)
@@ -213,6 +215,7 @@ namespace TSOWeight
             ListViewItem li = lvBoneIndices.SelectedItems[0];
             TSONode bone = li.Tag as TSONode;
             viewer.SelectedNode = bone;
+            Invalidate(false);
         }
 
         private void lvSkinWeights_SelectedIndexChanged(object sender, EventArgs e)
@@ -237,22 +240,26 @@ namespace TSOWeight
                 viewer.Camera.Center = WeightViewer.CalcSkindeformPosition(viewer.SelectedVertex, WeightViewer.ClipBoneMatrices(fig, viewer.SelectedSubMesh));
                 viewer.Camera.ResetTranslation();
             }
+            Invalidate(false);
         }
 
         private void btnDraw_Click(object sender, EventArgs e)
         {
             viewer.GainSkinWeight(viewer.SelectedNode);
             AssignSkinWeights(viewer.SelectedVertex);
+            Invalidate(false);
         }
 
         private void tbWeight_ValueChanged(object sender, EventArgs e)
         {
             WeightViewer.weight = (float)(tbWeight.Value) * 0.05f;
+            Invalidate(false);
         }
 
         private void tbRadius_ValueChanged(object sender, EventArgs e)
         {
             WeightViewer.radius = (float)(tbRadius.Value) * 0.05f;
+            Invalidate(false);
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -289,22 +296,26 @@ namespace TSOWeight
         {
             viewer.Undo();
             AssignSkinWeights(viewer.SelectedVertex);
+            Invalidate(false);
         }
 
         private void やり直しRToolStripMenuItem_Click(object sender, EventArgs e)
         {
             viewer.Redo();
             AssignSkinWeights(viewer.SelectedVertex);
+            Invalidate(false);
         }
 
         private void btnToon_Click(object sender, EventArgs e)
         {
             viewer.view_mode = WeightViewer.ViewMode.Toon;
+            Invalidate(false);
         }
 
         private void btnHeat_Click(object sender, EventArgs e)
         {
             viewer.view_mode = WeightViewer.ViewMode.Weight;
+            Invalidate(false);
         }
 
         private void 名前を付けて保存AToolStripMenuItem_Click(object sender, EventArgs e)
@@ -320,11 +331,13 @@ namespace TSOWeight
         private void 新規作成NToolStripMenuItem_Click(object sender, EventArgs e)
         {
             viewer.ClearFigureList();
+            Invalidate(false);
         }
 
         private void 開くOToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LoadFigure();
+            Invalidate(false);
         }
 
         private void LoadFigure()
@@ -337,6 +350,18 @@ namespace TSOWeight
                 string source_file = dialog.FileName;
                 viewer.LoadAnyFile(source_file);
             }
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+            viewer.FrameMove();
+            viewer.Render();
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            //base.OnPaintBackground(e);
         }
     }
 }
