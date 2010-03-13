@@ -696,11 +696,15 @@ public class WeightViewer : Viewer
         {
         case MouseButtons.Left:
             if (Control.ModifierKeys == Keys.Control)
+            {
                 lightDir = ScreenToOrientation(e.X, e.Y);
+                control.Invalidate(false);
+            }
             else
                 if (!motionEnabled)
                 {
                     SelectVertex();
+                    control.Invalidate(false);
                 }
             break;
         }
