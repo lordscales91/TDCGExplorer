@@ -297,12 +297,48 @@ public class WeightViewer : Viewer
         int width = 2;
         Color color = Color.Red;
 
+        Vector3[] view_positions = new Vector3[sub_mesh.vertices.Length];
+        Vector3[] screen_positions = new Vector3[sub_mesh.vertices.Length];
+        for (int i = 0; i < sub_mesh.vertices.Length; i++)
+        {
+            Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+            view_positions[i] = Vector3.TransformCoordinate(p1, Transform_View);
+            screen_positions[i] = WorldToScreen(p1);
+        }
+        bool[] ccws = new bool[sub_mesh.vertices.Length];
+        for (int i = 2; i < sub_mesh.vertices.Length; i++)
+        {
+            ccws[i] = false;
+        }
+        for (int i = 2; i < sub_mesh.vertices.Length; i++)
+        {
+            int a, b, c;
+            if (i % 2 != 0)
+            {
+                a = i-0;
+                b = i-1;
+                c = i-2;
+            }
+            else
+            {
+                a = i-2;
+                b = i-1;
+                c = i-0;
+            }
+            ccws[i] = ccws[i] || IsCounterClockWise(view_positions[a], view_positions[b], view_positions[c]);
+        }
+        ccws[0] = ccws[2];
+        ccws[1] = ccws[2];
+
         if (selected_vertex != null)
         {
             Vector3 p0 = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
 
             for (int i = 0; i < sub_mesh.vertices.Length; i++)
             {
+                if (!ccws[i])
+                    continue;
+
                 //頂点間距離が半径未満なら黄色にする。
                 Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
                 float dx = p1.X - p0.X;
@@ -327,8 +363,10 @@ public class WeightViewer : Viewer
         {
             for (int i = 0; i < sub_mesh.vertices.Length; i++)
             {
-                Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
-                Vector3 p2 = WorldToScreen(p1);
+                if (!ccws[i])
+                    continue;
+
+                Vector3 p2 = screen_positions[i];
                 Vector2[] positions = new Vector2[5];
                 positions[0] = new Vector2(p2.X - width, p2.Y - width);
                 positions[1] = new Vector2(p2.X + width, p2.Y - width);
@@ -338,6 +376,16 @@ public class WeightViewer : Viewer
                 line.Draw(positions, color);
             }
         }
+    }
+
+    bool IsCounterClockWise(float x0, float y0, float x1, float y1, float x2, float y2)
+    {
+        return (x2-x0) * (y1-y0) - (y2-y0) * (x1-x0) < 0.0f;
+    }
+
+    bool IsCounterClockWise(Vector3 p0, Vector3 p1, Vector3 p2)
+    {
+        return IsCounterClockWise(p0.X, p0.Y, p1.X, p1.Y, p2.X, p2.Y);
     }
 
     /// 選択頂点を描画する。
