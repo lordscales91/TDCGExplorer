@@ -311,9 +311,8 @@ public class WeightViewer : Viewer
                 Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
                 Vector3 p2 = WorldToScreen(p1);
 
-                Vector3 p1_proj = Vector3.TransformCoordinate(p1, Transform_View * Transform_Projection);
-                int x = (int)p2.X;
-                int y = (int)p2.Y;
+                int x = (int)(p2.X + 0.5f);
+                int y = (int)(p2.Y + 0.5f);
 
                 uint hit_z = 0;
                 if (x >= 0 && x < 1024 && y >= 0 && y < 768)
@@ -323,7 +322,7 @@ public class WeightViewer : Viewer
                 }
                 float z = PackDepth(hit_z);
 
-                if (p1_proj.Z <= z + 0.005f)//1.0f / 256.0f == 0.003906;
+                if (p2.Z <= z + 0.005f)//1.0f / 256.0f == 0.003906;
                 {
                     //’¸“_ŠÔ‹——£‚ª”¼Œa–¢–ž‚È‚ç‰©F‚É‚·‚éB
                     float dx = p1.X - p0.X;
@@ -357,9 +356,8 @@ public class WeightViewer : Viewer
                 Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
                 Vector3 p2 = WorldToScreen(p1);
 
-                Vector3 p1_proj = Vector3.TransformCoordinate(p1, Transform_View * Transform_Projection);
-                int x = (int)p2.X;
-                int y = (int)p2.Y;
+                int x = (int)(p2.X + 0.5f);
+                int y = (int)(p2.Y + 0.5f);
 
                 uint hit_z = 0;
                 if (x >= 0 && x < 1024 && y >= 0 && y < 768)
@@ -369,7 +367,7 @@ public class WeightViewer : Viewer
                 }
                 float z = PackDepth(hit_z);
 
-                if (p1_proj.Z <= z + 0.005f)//1.0f / 256.0f == 0.003906;
+                if (p2.Z <= z + 0.005f)//1.0f / 256.0f == 0.003906;
                 {
                     Vector2[] positions = new Vector2[5];
                     positions[0] = new Vector2(p2.X - width, p2.Y - width);
@@ -707,16 +705,14 @@ public class WeightViewer : Viewer
                 if (selected_sub_mesh != null && selected_vertex != null)
                 {
                     Vector3 p1 = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
-                    Vector3 p1_proj = Vector3.TransformCoordinate(p1, Transform_View * Transform_Projection);
                     Vector3 p2 = WorldToScreen(p1);
-                    int x = (int)p2.X;
-                    int y = (int)p2.Y;
-                    Console.WriteLine("selected vertex projected position: z {0:F6}", p1_proj.Z);
+                    int x = (int)(p2.X + 0.5f);
+                    int y = (int)(p2.Y + 0.5f);
                     Console.WriteLine("selected vertex on screen: x {0} y {1}", x, y);
 
                     uint hit_z = GetUnpackedDepth(x, y);
                     float z = PackDepth(hit_z);
-                    Console.WriteLine("depth {0:F6} gap {1:F6}", z, p1_proj.Z - z);
+                    Console.WriteLine("depth {0:F6} gap {1:F6}", z, p2.Z - z);
                 }
             }
             break;
