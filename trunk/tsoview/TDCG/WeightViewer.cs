@@ -301,84 +301,42 @@ public class WeightViewer : Viewer
         {
             Vector3 p0 = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
 
-            device.GetRenderTargetData(ztex_surface, plain_surface);
-            Rectangle rect = new Rectangle(0, 0, 1024, 768);
-            int pitch;
-            GraphicsStream gs = plain_surface.LockRectangle(rect, LockFlags.None, out pitch);
-
             for (int i = 0; i < sub_mesh.vertices.Length; i++)
             {
+                //頂点間距離が半径未満なら黄色にする。
                 Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+                float dx = p1.X - p0.X;
+                float dy = p1.Y - p0.Y;
+                float dz = p1.Z - p0.Z;
+                if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
+                    color = Color.Yellow;
+                else
+                    color = Color.Red;
+
                 Vector3 p2 = WorldToScreen(p1);
-
-                int x = (int)(p2.X + 0.5f);
-                int y = (int)(p2.Y + 0.5f);
-
-                uint hit_z = 0;
-                if (x >= 0 && x < 1024 && y >= 0 && y < 768)
-                {
-                    gs.Seek((x + y * 1024) * 4, SeekOrigin.Begin);
-                    hit_z = (uint)gs.Read(typeof(uint));
-                }
-                float z = PackDepth(hit_z);
-
-                if (p2.Z <= z + 0.005f)//1.0f / 256.0f == 0.003906;
-                {
-                    //頂点間距離が半径未満なら黄色にする。
-                    float dx = p1.X - p0.X;
-                    float dy = p1.Y - p0.Y;
-                    float dz = p1.Z - p0.Z;
-                    if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
-                        color = Color.Yellow;
-                    else
-                        color = Color.Red;
-
-                    Vector2[] positions = new Vector2[5];
-                    positions[0] = new Vector2(p2.X - width, p2.Y - width);
-                    positions[1] = new Vector2(p2.X + width, p2.Y - width);
-                    positions[2] = new Vector2(p2.X + width, p2.Y + width);
-                    positions[3] = new Vector2(p2.X - width, p2.Y + width);
-                    positions[4] = new Vector2(p2.X - width, p2.Y - width);
-                    line.Draw(positions, color);
-                }
+                Vector2[] positions = new Vector2[5];
+                positions[0] = new Vector2(p2.X - width, p2.Y - width);
+                positions[1] = new Vector2(p2.X + width, p2.Y - width);
+                positions[2] = new Vector2(p2.X + width, p2.Y + width);
+                positions[3] = new Vector2(p2.X - width, p2.Y + width);
+                positions[4] = new Vector2(p2.X - width, p2.Y - width);
+                line.Draw(positions, color);
             }
-            plain_surface.UnlockRectangle();
         }
         else
         {
-            device.GetRenderTargetData(ztex_surface, plain_surface);
-            Rectangle rect = new Rectangle(0, 0, 1024, 768);
-            int pitch;
-            GraphicsStream gs = plain_surface.LockRectangle(rect, LockFlags.None, out pitch);
-
             for (int i = 0; i < sub_mesh.vertices.Length; i++)
             {
                 Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
                 Vector3 p2 = WorldToScreen(p1);
-
-                int x = (int)(p2.X + 0.5f);
-                int y = (int)(p2.Y + 0.5f);
-
-                uint hit_z = 0;
-                if (x >= 0 && x < 1024 && y >= 0 && y < 768)
-                {
-                    gs.Seek((x + y * 1024) * 4, SeekOrigin.Begin);
-                    hit_z = (uint)gs.Read(typeof(uint));
-                }
-                float z = PackDepth(hit_z);
-
-                if (p2.Z <= z + 0.005f)//1.0f / 256.0f == 0.003906;
-                {
-                    Vector2[] positions = new Vector2[5];
-                    positions[0] = new Vector2(p2.X - width, p2.Y - width);
-                    positions[1] = new Vector2(p2.X + width, p2.Y - width);
-                    positions[2] = new Vector2(p2.X + width, p2.Y + width);
-                    positions[3] = new Vector2(p2.X - width, p2.Y + width);
-                    positions[4] = new Vector2(p2.X - width, p2.Y - width);
-                    line.Draw(positions, color);
-                }
+                Vector2[] positions = new Vector2[5];
+                positions[0] = new Vector2(p2.X - width, p2.Y - width);
+                positions[1] = new Vector2(p2.X + width, p2.Y - width);
+                positions[2] = new Vector2(p2.X + width, p2.Y + width);
+                positions[3] = new Vector2(p2.X - width, p2.Y + width);
+                positions[4] = new Vector2(p2.X - width, p2.Y - width);
+                line.Draw(positions, color);
             }
-            plain_surface.UnlockRectangle();
         }
     }
 
@@ -689,8 +647,6 @@ public class WeightViewer : Viewer
         switch (e.Button)
         {
         case MouseButtons.Left:
-            Console.WriteLine("on mouse down: x {0} y {1}", e.X, e.Y);
-
             if (Control.ModifierKeys == Keys.Control)
                 lightDir = ScreenToOrientation(e.X, e.Y);
             else
@@ -698,57 +654,11 @@ public class WeightViewer : Viewer
                 {
                     SelectVertex();
                 }
-
-            Figure fig;
-            if (TryGetFigure(out fig))
-            {
-                if (selected_sub_mesh != null && selected_vertex != null)
-                {
-                    Vector3 p1 = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
-                    Vector3 p2 = WorldToScreen(p1);
-                    int x = (int)(p2.X + 0.5f);
-                    int y = (int)(p2.Y + 0.5f);
-                    Console.WriteLine("selected vertex on screen: x {0} y {1}", x, y);
-
-                    uint hit_z = GetUnpackedDepth(x, y);
-                    float z = PackDepth(hit_z);
-                    Console.WriteLine("depth {0:F6} gap {1:F6}", z, p2.Z - z);
-                }
-            }
             break;
         }
 
         lastScreenPoint.X = e.X;
         lastScreenPoint.Y = e.Y;
-    }
-
-    private uint GetUnpackedDepth(int x, int y)
-    {
-        uint hit_z = 0;
-        if (x >= 0 && x < 1024 && y >= 0 && y < 768)
-        {
-            Rectangle rect = new Rectangle(x, y, x, y);
-            device.GetRenderTargetData(ztex_surface, plain_surface);
-            {
-                int pitch;
-                GraphicsStream gs = plain_surface.LockRectangle(rect, LockFlags.None, out pitch);
-                {
-                    hit_z = (uint)gs.Read(typeof(uint));
-                }
-                plain_surface.UnlockRectangle();
-            }
-        }
-        return hit_z;
-    }
-
-    private static float PackDepth(uint hit_z)
-    {
-        byte[] bytes = BitConverter.GetBytes(hit_z);
-        float r = bytes[2] / 256.0f;
-        float g = bytes[1] / 256.0f;
-        float b = bytes[0] / 256.0f;
-        float z = r + (g + b / 256.0f) / 256.0f;
-        return z;
     }
 
     TSOMesh selected_mesh = null;
