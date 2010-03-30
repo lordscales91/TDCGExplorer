@@ -24,8 +24,8 @@ public static class TMODump
         Console.WriteLine(source_file);
         try
         {
-            string ext = Path.GetExtension(source_file).ToUpper();
-            if (ext == ".TMO")
+            string ext = Path.GetExtension(source_file).ToLower();
+            if (ext == ".tmo")
             {
                 re = new Regex(@"\A" + Regex.Escape(Path.GetDirectoryName(source_file)) + @"\\?");
                 Console.WriteLine(re);
