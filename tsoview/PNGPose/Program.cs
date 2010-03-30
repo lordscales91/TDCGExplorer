@@ -19,7 +19,7 @@ class Program
 
         string source_file = args[0];
 
-        if (Path.GetExtension(source_file).ToUpper() == ".PNG")
+        if (Path.GetExtension(source_file).ToLower() == ".png")
         {
             string dest_path = Path.GetDirectoryName(source_file);
             string file_name = Path.GetFileName(source_file);

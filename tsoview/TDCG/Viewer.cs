@@ -198,17 +198,17 @@ public class Viewer : IDisposable
     /// <param name="append">FigureListÇè¡ãéÇπÇ∏Ç…í«â¡Ç∑ÇÈÇ©</param>
     public void LoadAnyFile(string source_file, bool append)
     {
-        switch (Path.GetExtension(source_file).ToUpper())
+        switch (Path.GetExtension(source_file).ToLower())
         {
-        case ".TSO":
+        case ".tso":
             if (! append)
                 ClearFigureList();
             LoadTSOFile(source_file);
             break;
-        case ".TMO":
+        case ".tmo":
             LoadTMOFile(source_file);
             break;
-        case ".PNG":
+        case ".png":
             AddFigureFromPNGFile(source_file, append);
             break;
         default:
