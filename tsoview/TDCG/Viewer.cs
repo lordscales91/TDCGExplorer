@@ -50,7 +50,8 @@ public class Viewer : IDisposable
     internal Surface ztex_surface = null;
     internal Surface ztex_zbuf = null;
 
-    internal Sprite sprite = null;
+    /// sprite
+    public Sprite sprite = null;
     internal Line line = null;
     float w_scale = 1.0f;
     float h_scale = 1.0f;
@@ -558,9 +559,8 @@ public class Viewer : IDisposable
         {
             handle_ShadowMap = effect.GetTechnique("ShadowMap");
             effect.ValidateTechnique(effect.Technique);
-
-            sprite = new Sprite(device);
         }
+        sprite = new Sprite(device);
         line = new Line(device);
         handle_LocalBoneSels = effect.GetParameter(null, "LocalBoneSels");
         camera.Update();

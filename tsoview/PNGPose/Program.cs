@@ -213,7 +213,7 @@ class Program
         protected void WriteScne(PNGWriter pw)
         {
             pw.WriteTDCG();
-            pw.WriteSCNE(FigureCount());
+            pw.WriteSCNE(GetFiguresCount());
             WriteCAMI(pw);
             while (NextFIGUExists())
             {
@@ -237,7 +237,7 @@ class Program
             return File.Exists(dest_file);
         }
 
-        protected int FigureCount()
+        protected int GetFiguresCount()
         {
             int num = 0;
             while ( true )

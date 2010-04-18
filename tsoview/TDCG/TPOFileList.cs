@@ -161,7 +161,7 @@ public class TPOFileList
         }
     }
 
-    //初期モーション行列値を保持する領域を確保する。
+    //初期モーション行列値を保持する領域を確保します。
     private void CreateFrames()
     {
         if (tmo.frames == null)
