@@ -61,6 +61,7 @@ namespace TDCG
 public class WeightViewer : Viewer
 {
     internal Mesh sphere = null;
+    internal Texture dot_texture = null;
 
     /// <summary>
     /// viewerを生成します。
@@ -144,6 +145,12 @@ public class WeightViewer : Viewer
         return WorldToScreen(v, device.Viewport, Transform_View, Transform_Projection);
     }
 
+    /// get path to dot.bmp
+    public static string GetDotBitmapPath()
+    {
+        return Path.Combine(Application.StartupPath, @"dot.bmp");
+    }
+
     /// <summary>
     /// deviceを作成します。
     /// </summary>
@@ -166,6 +173,7 @@ public class WeightViewer : Viewer
             return false;
 
         sphere = Mesh.Sphere(device, 0.25f, 4, 2);
+        dot_texture = TextureLoader.FromFile(device, GetDotBitmapPath());
 
         return true;
     }
@@ -294,8 +302,8 @@ public class WeightViewer : Viewer
     {
         Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
 
-        int width = 2;
-        Color color = Color.Red;
+        Rectangle rect = new Rectangle(0, 0, 7, 7);//red
+        Vector3 rect_center = new Vector3(3, 3, 0);
 
         Vector3[] view_positions = new Vector3[sub_mesh.vertices.Length];
         Vector3[] screen_positions = new Vector3[sub_mesh.vertices.Length];
@@ -334,6 +342,8 @@ public class WeightViewer : Viewer
         {
             Vector3 p0 = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
 
+            sprite.Begin(SpriteFlags.None);
+
             for (int i = 0; i < sub_mesh.vertices.Length; i++)
             {
                 if (!ccws[i])
@@ -345,36 +355,30 @@ public class WeightViewer : Viewer
                 float dy = p1.Y - p0.Y;
                 float dz = p1.Z - p0.Z;
                 if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
-                    color = Color.Yellow;
+                    rect = new Rectangle(8, 8, 7, 7);//yellow
                 else
-                    color = Color.Red;
+                    rect = new Rectangle(0, 0, 7, 7);//red
 
                 Vector3 p2 = WorldToScreen(p1);
-                Vector2[] positions = new Vector2[5];
-                positions[0] = new Vector2(p2.X - width, p2.Y - width);
-                positions[1] = new Vector2(p2.X + width, p2.Y - width);
-                positions[2] = new Vector2(p2.X + width, p2.Y + width);
-                positions[3] = new Vector2(p2.X - width, p2.Y + width);
-                positions[4] = new Vector2(p2.X - width, p2.Y - width);
-                line.Draw(positions, color);
+                p2.Z = 0.0f;
+                sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
             }
+            sprite.End();
         }
         else
         {
+            sprite.Begin(SpriteFlags.None);
+
             for (int i = 0; i < sub_mesh.vertices.Length; i++)
             {
                 if (!ccws[i])
                     continue;
 
                 Vector3 p2 = screen_positions[i];
-                Vector2[] positions = new Vector2[5];
-                positions[0] = new Vector2(p2.X - width, p2.Y - width);
-                positions[1] = new Vector2(p2.X + width, p2.Y - width);
-                positions[2] = new Vector2(p2.X + width, p2.Y + width);
-                positions[3] = new Vector2(p2.X - width, p2.Y + width);
-                positions[4] = new Vector2(p2.X - width, p2.Y - width);
-                line.Draw(positions, color);
+                p2.Z = 0.0f;
+                sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
             }
+            sprite.End();
         }
     }
 
@@ -396,20 +400,17 @@ public class WeightViewer : Viewer
 
         Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, SelectedSubMesh);
 
-        int width = 2;
-        Color color = Color.LightGreen;
+        Rectangle rect = new Rectangle(8, 0, 7, 7);//green
+        Vector3 rect_center = new Vector3(3, 3, 0);
 
+        sprite.Begin(SpriteFlags.None);
         {
             Vector3 p1 = CalcSkindeformPosition(selected_vertex, clipped_boneMatrices);
             Vector3 p2 = WorldToScreen(p1);
-            Vector2[] positions = new Vector2[5];
-            positions[0] = new Vector2(p2.X - width, p2.Y - width);
-            positions[1] = new Vector2(p2.X + width, p2.Y - width);
-            positions[2] = new Vector2(p2.X + width, p2.Y + width);
-            positions[3] = new Vector2(p2.X - width, p2.Y + width);
-            positions[4] = new Vector2(p2.X - width, p2.Y - width);
-            line.Draw(positions, color);
+            p2.Z = 0.0f;
+            sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
         }
+        sprite.End();
     }
 
     /// 選択ボーンに対応するウェイトを加算する。
@@ -826,7 +827,7 @@ public class WeightViewer : Viewer
         Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
 
         {
-            int width = 2;
+            int width = 3;
             float min_z = 1e12f;
 
             for (int i = 0; i < sub_mesh.vertices.Length; i++)
@@ -852,6 +853,8 @@ public class WeightViewer : Viewer
     /// </summary>
     public new void Dispose()
     {
+        if (dot_texture != null)
+            dot_texture.Dispose();
         if (sphere != null)
             sphere.Dispose();
         base.Dispose();
