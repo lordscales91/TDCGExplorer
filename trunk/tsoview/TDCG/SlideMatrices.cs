@@ -24,7 +24,7 @@ public class SlideMatrices
     /// Žo–…ƒXƒ‰ƒCƒ_1.0‚Å‚Ìlocal scaling factor
     public static Vector3 GetMaxLocal()
     {
-        float scale = 1.1048f;
+        float scale = 1.05f;
         return new Vector3(scale, scale, scale);
     }
 
