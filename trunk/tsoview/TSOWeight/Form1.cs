@@ -230,7 +230,7 @@ namespace TSOWeight
             lvBoneIndices.Items[skin_weight.bone_index].Selected = true;
         }
 
-        private void btnCenter_Click(object sender, EventArgs e)
+        private void btnCenterToSelectedVertex_Click(object sender, EventArgs e)
         {
             if (viewer.SelectedVertex == null)
                 return;
@@ -241,6 +241,13 @@ namespace TSOWeight
                 viewer.Camera.Center = WeightViewer.CalcSkindeformPosition(viewer.SelectedVertex, WeightViewer.ClipBoneMatrices(fig, viewer.SelectedSubMesh));
                 viewer.Camera.ResetTranslation();
             }
+            Invalidate(false);
+        }
+
+        private void btnCameraInitialize_Click(object sender, EventArgs e)
+        {
+            viewer.Camera.Reset();
+            viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
             Invalidate(false);
         }
 
