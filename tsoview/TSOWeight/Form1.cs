@@ -392,19 +392,19 @@ namespace TSOWeight
 
         private void btnAllVertices_Click(object sender, EventArgs e)
         {
-            viewer.vertex_view_mode = WeightViewer.VertexViewMode.AllVertices;
+            viewer.vertex_selection_mode = WeightViewer.VertexSelectionMode.AllVertices;
             Invalidate(false);
         }
 
         private void btnCCWVertices_Click(object sender, EventArgs e)
         {
-            viewer.vertex_view_mode = WeightViewer.VertexViewMode.CCWVertices;
+            viewer.vertex_selection_mode = WeightViewer.VertexSelectionMode.CCWVertices;
             Invalidate(false);
         }
 
         private void btnNone_Click(object sender, EventArgs e)
         {
-            viewer.vertex_view_mode = WeightViewer.VertexViewMode.None;
+            viewer.vertex_selection_mode = WeightViewer.VertexSelectionMode.None;
             Invalidate(false);
         }
     }

@@ -201,17 +201,47 @@ public class WeightViewer : Viewer
     /// </summary>
     public MeshViewMode mesh_view_mode = MeshViewMode.Toon;
 
+    /// <summary>
+    /// 描画メッシュ選択モード
+    /// </summary>
     public enum MeshSelectionMode
     {
-        AllMeshes, SelectedMesh
+        /// <summary>
+        /// 全てのメッシュを描画
+        /// </summary>
+        AllMeshes,
+        /// <summary>
+        /// 選択メッシュのみ描画
+        /// </summary>
+        SelectedMesh
     }
+    /// <summary>
+    /// 描画メッシュ選択モード
+    /// </summary>
     public MeshSelectionMode mesh_selection_mode = MeshSelectionMode.AllMeshes;
 
-    public enum VertexViewMode
+    /// <summary>
+    /// 頂点描画モード
+    /// </summary>
+    public enum VertexSelectionMode
     {
-        AllVertices, CCWVertices, None
+        /// <summary>
+        /// 全ての頂点を描画
+        /// </summary>
+        AllVertices,
+        /// <summary>
+        /// 表面頂点のみ描画
+        /// </summary>
+        CCWVertices,
+        /// <summary>
+        /// 頂点を描画しない
+        /// </summary>
+        None
     }
-    public VertexViewMode vertex_view_mode = VertexViewMode.CCWVertices;
+    /// <summary>
+    /// 頂点描画モード
+    /// </summary>
+    public VertexSelectionMode vertex_selection_mode = VertexSelectionMode.CCWVertices;
 
     /// <summary>
     /// フィギュアを描画します。
@@ -421,9 +451,9 @@ public class WeightViewer : Viewer
             view_positions[i] = Vector3.TransformCoordinate(p1, Transform_View);
             screen_positions[i] = WorldToScreen(p1);
         }
-        switch (vertex_view_mode)
+        switch (vertex_selection_mode)
         {
-            case VertexViewMode.AllVertices:
+            case VertexSelectionMode.AllVertices:
                 {
                     if (selected_vertex != null)
                     {
@@ -463,7 +493,7 @@ public class WeightViewer : Viewer
                     }
                 }
                 break;
-            case VertexViewMode.CCWVertices:
+            case VertexSelectionMode.CCWVertices:
                 {
                     bool[] ccws = new bool[sub_mesh.vertices.Length];
                     for (int i = 2; i < sub_mesh.vertices.Length; i++)
@@ -534,7 +564,7 @@ public class WeightViewer : Viewer
                     }
                 }
                 break;
-            case VertexViewMode.None:
+            case VertexSelectionMode.None:
                 break;
         }
 
@@ -561,10 +591,10 @@ public class WeightViewer : Viewer
         Rectangle rect = new Rectangle(8, 0, 7, 7);//green
         Vector3 rect_center = new Vector3(3, 3, 0);
 
-        switch (vertex_view_mode)
+        switch (vertex_selection_mode)
         {
-            case VertexViewMode.AllVertices:
-            case VertexViewMode.CCWVertices:
+            case VertexSelectionMode.AllVertices:
+            case VertexSelectionMode.CCWVertices:
                 {
                     sprite.Begin(SpriteFlags.None);
                     {
@@ -576,7 +606,7 @@ public class WeightViewer : Viewer
                     sprite.End();
                 }
                 break;
-            case VertexViewMode.None:
+            case VertexSelectionMode.None:
                 break;
         }
     }
@@ -912,7 +942,7 @@ public class WeightViewer : Viewer
     }
 
     TSOFile selected_tso_file = null;
-
+    /// 選択TSOファイル
     public TSOFile SelectedTSOFile
     {
         get { return selected_tso_file; }
