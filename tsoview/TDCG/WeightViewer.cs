@@ -203,6 +203,12 @@ public class WeightViewer : Viewer
     }
     public MeshSelectionMode mesh_selection_mode = MeshSelectionMode.AllMeshes;
 
+    public enum VertexViewMode
+    {
+        AllVertices, CCWVertices, None
+    }
+    public VertexViewMode vertex_view_mode = VertexViewMode.CCWVertices;
+
     /// <summary>
     /// フィギュアを描画します。
     /// </summary>
@@ -362,73 +368,123 @@ public class WeightViewer : Viewer
             view_positions[i] = Vector3.TransformCoordinate(p1, Transform_View);
             screen_positions[i] = WorldToScreen(p1);
         }
-        bool[] ccws = new bool[sub_mesh.vertices.Length];
-        for (int i = 2; i < sub_mesh.vertices.Length; i++)
+        switch (vertex_view_mode)
         {
-            ccws[i] = false;
+            case VertexViewMode.AllVertices:
+                {
+                    if (selected_vertex != null)
+                    {
+                        Vector3 p0 = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
+
+                        sprite.Begin(SpriteFlags.None);
+
+                        for (int i = 0; i < sub_mesh.vertices.Length; i++)
+                        {
+                            //頂点間距離が半径未満なら黄色にする。
+                            Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+                            float dx = p1.X - p0.X;
+                            float dy = p1.Y - p0.Y;
+                            float dz = p1.Z - p0.Z;
+                            if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
+                                rect = new Rectangle(8, 8, 7, 7);//yellow
+                            else
+                                rect = new Rectangle(0, 0, 7, 7);//red
+
+                            Vector3 p2 = WorldToScreen(p1);
+                            p2.Z = 0.0f;
+                            sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
+                        }
+                        sprite.End();
+                    }
+                    else
+                    {
+                        sprite.Begin(SpriteFlags.None);
+
+                        for (int i = 0; i < sub_mesh.vertices.Length; i++)
+                        {
+                            Vector3 p2 = screen_positions[i];
+                            p2.Z = 0.0f;
+                            sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
+                        }
+                        sprite.End();
+                    }
+                }
+                break;
+            case VertexViewMode.CCWVertices:
+                {
+                    bool[] ccws = new bool[sub_mesh.vertices.Length];
+                    for (int i = 2; i < sub_mesh.vertices.Length; i++)
+                    {
+                        ccws[i] = false;
+                    }
+                    for (int i = 2; i < sub_mesh.vertices.Length; i++)
+                    {
+                        int a, b, c;
+                        if (i % 2 != 0)
+                        {
+                            a = i - 0;
+                            b = i - 1;
+                            c = i - 2;
+                        }
+                        else
+                        {
+                            a = i - 2;
+                            b = i - 1;
+                            c = i - 0;
+                        }
+                        ccws[i] = ccws[i] || IsCounterClockWise(view_positions[a], view_positions[b], view_positions[c]);
+                    }
+                    ccws[0] = ccws[2];
+                    ccws[1] = ccws[2];
+
+                    if (selected_vertex != null)
+                    {
+                        Vector3 p0 = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
+
+                        sprite.Begin(SpriteFlags.None);
+
+                        for (int i = 0; i < sub_mesh.vertices.Length; i++)
+                        {
+                            if (!ccws[i])
+                                continue;
+
+                            //頂点間距離が半径未満なら黄色にする。
+                            Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+                            float dx = p1.X - p0.X;
+                            float dy = p1.Y - p0.Y;
+                            float dz = p1.Z - p0.Z;
+                            if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
+                                rect = new Rectangle(8, 8, 7, 7);//yellow
+                            else
+                                rect = new Rectangle(0, 0, 7, 7);//red
+
+                            Vector3 p2 = WorldToScreen(p1);
+                            p2.Z = 0.0f;
+                            sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
+                        }
+                        sprite.End();
+                    }
+                    else
+                    {
+                        sprite.Begin(SpriteFlags.None);
+
+                        for (int i = 0; i < sub_mesh.vertices.Length; i++)
+                        {
+                            if (!ccws[i])
+                                continue;
+
+                            Vector3 p2 = screen_positions[i];
+                            p2.Z = 0.0f;
+                            sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
+                        }
+                        sprite.End();
+                    }
+                }
+                break;
+            case VertexViewMode.None:
+                break;
         }
-        for (int i = 2; i < sub_mesh.vertices.Length; i++)
-        {
-            int a, b, c;
-            if (i % 2 != 0)
-            {
-                a = i-0;
-                b = i-1;
-                c = i-2;
-            }
-            else
-            {
-                a = i-2;
-                b = i-1;
-                c = i-0;
-            }
-            ccws[i] = ccws[i] || IsCounterClockWise(view_positions[a], view_positions[b], view_positions[c]);
-        }
-        ccws[0] = ccws[2];
-        ccws[1] = ccws[2];
 
-        if (selected_vertex != null)
-        {
-            Vector3 p0 = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
-
-            sprite.Begin(SpriteFlags.None);
-
-            for (int i = 0; i < sub_mesh.vertices.Length; i++)
-            {
-                if (!ccws[i])
-                    continue;
-
-                //頂点間距離が半径未満なら黄色にする。
-                Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
-                float dx = p1.X - p0.X;
-                float dy = p1.Y - p0.Y;
-                float dz = p1.Z - p0.Z;
-                if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
-                    rect = new Rectangle(8, 8, 7, 7);//yellow
-                else
-                    rect = new Rectangle(0, 0, 7, 7);//red
-
-                Vector3 p2 = WorldToScreen(p1);
-                p2.Z = 0.0f;
-                sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
-            }
-            sprite.End();
-        }
-        else
-        {
-            sprite.Begin(SpriteFlags.None);
-
-            for (int i = 0; i < sub_mesh.vertices.Length; i++)
-            {
-                if (!ccws[i])
-                    continue;
-
-                Vector3 p2 = screen_positions[i];
-                p2.Z = 0.0f;
-                sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
-            }
-            sprite.End();
-        }
     }
 
     bool IsCounterClockWise(float x0, float y0, float x1, float y1, float x2, float y2)
@@ -452,14 +508,24 @@ public class WeightViewer : Viewer
         Rectangle rect = new Rectangle(8, 0, 7, 7);//green
         Vector3 rect_center = new Vector3(3, 3, 0);
 
-        sprite.Begin(SpriteFlags.None);
+        switch (vertex_view_mode)
         {
-            Vector3 p1 = CalcSkindeformPosition(selected_vertex, clipped_boneMatrices);
-            Vector3 p2 = WorldToScreen(p1);
-            p2.Z = 0.0f;
-            sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
+            case VertexViewMode.AllVertices:
+            case VertexViewMode.CCWVertices:
+                {
+                    sprite.Begin(SpriteFlags.None);
+                    {
+                        Vector3 p1 = CalcSkindeformPosition(selected_vertex, clipped_boneMatrices);
+                        Vector3 p2 = WorldToScreen(p1);
+                        p2.Z = 0.0f;
+                        sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
+                    }
+                    sprite.End();
+                }
+                break;
+            case VertexViewMode.None:
+                break;
         }
-        sprite.End();
     }
 
     /// 選択ボーンに対応するウェイトを加算する。

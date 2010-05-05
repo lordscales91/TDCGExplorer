@@ -79,6 +79,9 @@
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnSelectedMesh = new System.Windows.Forms.Button();
+            this.btnAllMeshes = new System.Windows.Forms.Button();
+            this.lbMeshSelectionMode = new System.Windows.Forms.Label();
             this.btnWeight = new System.Windows.Forms.Button();
             this.btnToon = new System.Windows.Forms.Button();
             this.lbViewMode = new System.Windows.Forms.Label();
@@ -95,9 +98,10 @@
             this.tbRadius = new System.Windows.Forms.TrackBar();
             this.lbCamera = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.btnSelectedMesh = new System.Windows.Forms.Button();
-            this.btnAllMeshes = new System.Windows.Forms.Button();
-            this.lbMeshSelectionMode = new System.Windows.Forms.Label();
+            this.btnCCWVertices = new System.Windows.Forms.Button();
+            this.btnAllVertices = new System.Windows.Forms.Button();
+            this.lbVertexViewMode = new System.Windows.Forms.Label();
+            this.btnNone = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -497,6 +501,10 @@
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.Controls.Add(this.btnNone);
+            this.panel2.Controls.Add(this.btnCCWVertices);
+            this.panel2.Controls.Add(this.btnAllVertices);
+            this.panel2.Controls.Add(this.lbVertexViewMode);
             this.panel2.Controls.Add(this.btnSelectedMesh);
             this.panel2.Controls.Add(this.btnAllMeshes);
             this.panel2.Controls.Add(this.lbMeshSelectionMode);
@@ -517,6 +525,34 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(144, 681);
             this.panel2.TabIndex = 22;
+            // 
+            // btnSelectedMesh
+            // 
+            this.btnSelectedMesh.Location = new System.Drawing.Point(10, 115);
+            this.btnSelectedMesh.Name = "btnSelectedMesh";
+            this.btnSelectedMesh.Size = new System.Drawing.Size(120, 23);
+            this.btnSelectedMesh.TabIndex = 35;
+            this.btnSelectedMesh.Text = "選択メッシュのみ";
+            this.btnSelectedMesh.UseVisualStyleBackColor = true;
+            this.btnSelectedMesh.Click += new System.EventHandler(this.btnSelectedMesh_Click);
+            // 
+            // btnAllMeshes
+            // 
+            this.btnAllMeshes.Location = new System.Drawing.Point(10, 86);
+            this.btnAllMeshes.Name = "btnAllMeshes";
+            this.btnAllMeshes.Size = new System.Drawing.Size(120, 23);
+            this.btnAllMeshes.TabIndex = 34;
+            this.btnAllMeshes.Text = "すべてのメッシュ";
+            this.btnAllMeshes.UseVisualStyleBackColor = true;
+            this.btnAllMeshes.Click += new System.EventHandler(this.btnAllMeshes_Click);
+            // 
+            // lbMeshSelectionMode
+            // 
+            this.lbMeshSelectionMode.Location = new System.Drawing.Point(10, 71);
+            this.lbMeshSelectionMode.Name = "lbMeshSelectionMode";
+            this.lbMeshSelectionMode.Size = new System.Drawing.Size(120, 12);
+            this.lbMeshSelectionMode.TabIndex = 33;
+            this.lbMeshSelectionMode.Text = "描画するメッシュ";
             // 
             // btnWeight
             // 
@@ -548,7 +584,7 @@
             // 
             // lbWeight
             // 
-            this.lbWeight.Location = new System.Drawing.Point(10, 318);
+            this.lbWeight.Location = new System.Drawing.Point(10, 430);
             this.lbWeight.Name = "lbWeight";
             this.lbWeight.Size = new System.Drawing.Size(120, 12);
             this.lbWeight.TabIndex = 24;
@@ -566,7 +602,7 @@
             // 
             // btnCenter
             // 
-            this.btnCenter.Location = new System.Drawing.Point(10, 154);
+            this.btnCenter.Location = new System.Drawing.Point(10, 266);
             this.btnCenter.Name = "btnCenter";
             this.btnCenter.Size = new System.Drawing.Size(120, 23);
             this.btnCenter.TabIndex = 21;
@@ -576,7 +612,7 @@
             // 
             // lbRadius
             // 
-            this.lbRadius.Location = new System.Drawing.Point(10, 366);
+            this.lbRadius.Location = new System.Drawing.Point(10, 478);
             this.lbRadius.Name = "lbRadius";
             this.lbRadius.Size = new System.Drawing.Size(120, 12);
             this.lbRadius.TabIndex = 26;
@@ -590,7 +626,7 @@
             this.lvSkinWeights.FullRowSelect = true;
             this.lvSkinWeights.GridLines = true;
             this.lvSkinWeights.HideSelection = false;
-            this.lvSkinWeights.Location = new System.Drawing.Point(10, 195);
+            this.lvSkinWeights.Location = new System.Drawing.Point(10, 307);
             this.lvSkinWeights.MultiSelect = false;
             this.lvSkinWeights.Name = "lvSkinWeights";
             this.lvSkinWeights.Size = new System.Drawing.Size(120, 120);
@@ -609,7 +645,7 @@
             // 
             // lbSkinWeights
             // 
-            this.lbSkinWeights.Location = new System.Drawing.Point(10, 180);
+            this.lbSkinWeights.Location = new System.Drawing.Point(10, 292);
             this.lbSkinWeights.Name = "lbSkinWeights";
             this.lbSkinWeights.Size = new System.Drawing.Size(120, 12);
             this.lbSkinWeights.TabIndex = 22;
@@ -617,7 +653,7 @@
             // 
             // tbWeight
             // 
-            this.tbWeight.Location = new System.Drawing.Point(12, 333);
+            this.tbWeight.Location = new System.Drawing.Point(12, 445);
             this.tbWeight.Maximum = 20;
             this.tbWeight.Name = "tbWeight";
             this.tbWeight.Size = new System.Drawing.Size(120, 45);
@@ -627,7 +663,7 @@
             // 
             // btnDraw
             // 
-            this.btnDraw.Location = new System.Drawing.Point(10, 415);
+            this.btnDraw.Location = new System.Drawing.Point(10, 527);
             this.btnDraw.Name = "btnDraw";
             this.btnDraw.Size = new System.Drawing.Size(120, 23);
             this.btnDraw.TabIndex = 28;
@@ -637,7 +673,7 @@
             // 
             // tbRadius
             // 
-            this.tbRadius.Location = new System.Drawing.Point(12, 381);
+            this.tbRadius.Location = new System.Drawing.Point(12, 493);
             this.tbRadius.Maximum = 20;
             this.tbRadius.Name = "tbRadius";
             this.tbRadius.Size = new System.Drawing.Size(120, 45);
@@ -647,7 +683,7 @@
             // 
             // lbCamera
             // 
-            this.lbCamera.Location = new System.Drawing.Point(10, 139);
+            this.lbCamera.Location = new System.Drawing.Point(10, 251);
             this.lbCamera.Name = "lbCamera";
             this.lbCamera.Size = new System.Drawing.Size(120, 12);
             this.lbCamera.TabIndex = 20;
@@ -661,33 +697,43 @@
             this.statusStrip1.TabIndex = 23;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // btnSelectedMesh
+            // btnCCWVertices
             // 
-            this.btnSelectedMesh.Location = new System.Drawing.Point(10, 115);
-            this.btnSelectedMesh.Name = "btnSelectedMesh";
-            this.btnSelectedMesh.Size = new System.Drawing.Size(120, 23);
-            this.btnSelectedMesh.TabIndex = 35;
-            this.btnSelectedMesh.Text = "選択メッシュのみ";
-            this.btnSelectedMesh.UseVisualStyleBackColor = true;
-            this.btnSelectedMesh.Click += new System.EventHandler(this.btnSelectedMesh_Click);
+            this.btnCCWVertices.Location = new System.Drawing.Point(10, 185);
+            this.btnCCWVertices.Name = "btnCCWVertices";
+            this.btnCCWVertices.Size = new System.Drawing.Size(120, 23);
+            this.btnCCWVertices.TabIndex = 38;
+            this.btnCCWVertices.Text = "表面頂点のみ";
+            this.btnCCWVertices.UseVisualStyleBackColor = true;
+            this.btnCCWVertices.Click += new System.EventHandler(this.btnCCWVertices_Click);
             // 
-            // btnAllMeshes
+            // btnAllVertices
             // 
-            this.btnAllMeshes.Location = new System.Drawing.Point(10, 86);
-            this.btnAllMeshes.Name = "btnAllMeshes";
-            this.btnAllMeshes.Size = new System.Drawing.Size(120, 23);
-            this.btnAllMeshes.TabIndex = 34;
-            this.btnAllMeshes.Text = "すべてのメッシュ";
-            this.btnAllMeshes.UseVisualStyleBackColor = true;
-            this.btnAllMeshes.Click += new System.EventHandler(this.btnAllMeshes_Click);
+            this.btnAllVertices.Location = new System.Drawing.Point(10, 156);
+            this.btnAllVertices.Name = "btnAllVertices";
+            this.btnAllVertices.Size = new System.Drawing.Size(120, 23);
+            this.btnAllVertices.TabIndex = 37;
+            this.btnAllVertices.Text = "すべての頂点";
+            this.btnAllVertices.UseVisualStyleBackColor = true;
+            this.btnAllVertices.Click += new System.EventHandler(this.btnAllVertices_Click);
             // 
-            // lbMeshSelectionMode
+            // lbVertexViewMode
             // 
-            this.lbMeshSelectionMode.Location = new System.Drawing.Point(10, 71);
-            this.lbMeshSelectionMode.Name = "lbMeshSelectionMode";
-            this.lbMeshSelectionMode.Size = new System.Drawing.Size(120, 12);
-            this.lbMeshSelectionMode.TabIndex = 33;
-            this.lbMeshSelectionMode.Text = "描画するメッシュ";
+            this.lbVertexViewMode.Location = new System.Drawing.Point(10, 141);
+            this.lbVertexViewMode.Name = "lbVertexViewMode";
+            this.lbVertexViewMode.Size = new System.Drawing.Size(120, 12);
+            this.lbVertexViewMode.TabIndex = 36;
+            this.lbVertexViewMode.Text = "描画する頂点";
+            // 
+            // btnNone
+            // 
+            this.btnNone.Location = new System.Drawing.Point(10, 214);
+            this.btnNone.Name = "btnNone";
+            this.btnNone.Size = new System.Drawing.Size(120, 23);
+            this.btnNone.TabIndex = 39;
+            this.btnNone.Text = "頂点を描画しない";
+            this.btnNone.UseVisualStyleBackColor = true;
+            this.btnNone.Click += new System.EventHandler(this.btnNone_Click);
             // 
             // Form1
             // 
@@ -782,6 +828,10 @@
         private System.Windows.Forms.Button btnSelectedMesh;
         private System.Windows.Forms.Button btnAllMeshes;
         private System.Windows.Forms.Label lbMeshSelectionMode;
+        private System.Windows.Forms.Button btnNone;
+        private System.Windows.Forms.Button btnCCWVertices;
+        private System.Windows.Forms.Button btnAllVertices;
+        private System.Windows.Forms.Label lbVertexViewMode;
     }
 }
 

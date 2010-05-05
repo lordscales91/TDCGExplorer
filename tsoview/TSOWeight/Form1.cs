@@ -376,5 +376,23 @@ namespace TSOWeight
             viewer.mesh_selection_mode = WeightViewer.MeshSelectionMode.SelectedMesh;
             Invalidate(false);
         }
+
+        private void btnAllVertices_Click(object sender, EventArgs e)
+        {
+            viewer.vertex_view_mode = WeightViewer.VertexViewMode.AllVertices;
+            Invalidate(false);
+        }
+
+        private void btnCCWVertices_Click(object sender, EventArgs e)
+        {
+            viewer.vertex_view_mode = WeightViewer.VertexViewMode.CCWVertices;
+            Invalidate(false);
+        }
+
+        private void btnNone_Click(object sender, EventArgs e)
+        {
+            viewer.vertex_view_mode = WeightViewer.VertexViewMode.None;
+            Invalidate(false);
+        }
     }
 }
