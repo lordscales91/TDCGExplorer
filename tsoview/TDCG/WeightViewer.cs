@@ -197,6 +197,12 @@ public class WeightViewer : Viewer
     /// </summary>
     public ViewMode view_mode = ViewMode.Toon;
 
+    public enum MeshSelectionMode
+    {
+        AllMeshes, SelectedMesh
+    }
+    public MeshSelectionMode mesh_selection_mode = MeshSelectionMode.AllMeshes;
+
     /// <summary>
     /// ÉtÉBÉMÉÖÉAÇï`âÊÇµÇ‹Ç∑ÅB
     /// </summary>
@@ -208,62 +214,105 @@ public class WeightViewer : Viewer
         device.DepthStencilSurface = dev_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
 
-        switch (view_mode)
+        Figure fig;
+        if (TryGetFigure(out fig))
         {
-            case ViewMode.Toon:
-                foreach (Figure fig in FigureList)
-                    foreach (TSOFile tso in fig.TSOList)
+            switch (view_mode)
+            {
+                case ViewMode.Toon:
+                    switch (mesh_selection_mode)
                     {
-                        tso.BeginRender();
-
-                        foreach (TSOMesh mesh in tso.meshes)
-                            foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
+                        case MeshSelectionMode.AllMeshes:
                             {
-                                device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                                tso.SwitchShader(sub_mesh);
-
-                                effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
-
-                                int npass = effect.Begin(0);
-                                for (int ipass = 0; ipass < npass; ipass++)
+                                foreach (TSOFile tso in fig.TSOList)
                                 {
-                                    effect.BeginPass(ipass);
-                                    sub_mesh.dm.DrawSubset(0);
-                                    effect.EndPass();
+                                    tso.BeginRender();
+                                    foreach (TSOMesh mesh in tso.meshes)
+                                        foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
+                                            DrawSubMeshForToonRendering(fig, tso, sub_mesh);
+                                    tso.EndRender();
                                 }
-                                effect.End();
                             }
-                        tso.EndRender();
-                    }
-                break;
-            case ViewMode.Weight:
-                if (SelectedMesh != null)
-                {
-                    Figure fig;
-                    if (TryGetFigure(out fig))
-                    {
-                        foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
-                        {
-                            device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                            effect.Technique = "BoneCol";
-                            effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
-
-                            effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
-                            effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(fig, sub_mesh, selected_node));
-
-                            int npass = effect.Begin(0);
-                            for (int ipass = 0; ipass < npass; ipass++)
+                            break;
+                        case MeshSelectionMode.SelectedMesh:
+                            if (SelectedTSOFile != null && SelectedMesh != null)
                             {
-                                effect.BeginPass(ipass);
-                                sub_mesh.dm.DrawSubset(0);
-                                effect.EndPass();
+                                {
+                                    TSOFile tso = SelectedTSOFile;
+                                    tso.BeginRender();
+                                    foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
+                                        DrawSubMeshForToonRendering(fig, tso, sub_mesh);
+                                    tso.EndRender();
+                                }
                             }
-                            effect.End();
-                        }
+                            break;
                     }
-                }
-                break;
+                    break;
+                case ViewMode.Weight:
+                    switch (mesh_selection_mode)
+                    {
+                        case MeshSelectionMode.AllMeshes:
+                            {
+                                foreach (TSOFile tso in fig.TSOList)
+                                {
+                                    tso.BeginRender();
+                                    foreach (TSOMesh mesh in tso.meshes)
+                                        foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
+                                            DrawSubMeshForWeightPainting(fig, sub_mesh);
+                                    tso.EndRender();
+                                }
+                            }
+                            break;
+                        case MeshSelectionMode.SelectedMesh:
+                            if (SelectedTSOFile != null && SelectedMesh != null)
+                            {
+                                TSOFile tso = SelectedTSOFile;
+                                tso.BeginRender();
+                                foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
+                                    DrawSubMeshForWeightPainting(fig, sub_mesh);
+                                tso.EndRender();
+                            }
+                            break;
+                    }
+                    break;
+            }
         }
+    }
+
+    private void DrawSubMeshForToonRendering(Figure fig, TSOFile tso, TSOSubMesh sub_mesh)
+    {
+        device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+        tso.SwitchShader(sub_mesh);
+
+        effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
+
+        int npass = effect.Begin(0);
+        for (int ipass = 0; ipass < npass; ipass++)
+        {
+            effect.BeginPass(ipass);
+            sub_mesh.dm.DrawSubset(0);
+            effect.EndPass();
+        }
+        effect.End();
+    }
+
+    private void DrawSubMeshForWeightPainting(Figure fig, TSOSubMesh sub_mesh)
+    {
+        device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+        effect.Technique = "BoneCol";
+        effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
+
+        effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
+        effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(fig, sub_mesh, selected_node));
+
+        int npass = effect.Begin(0);
+        for (int ipass = 0; ipass < npass; ipass++)
+        {
+            effect.BeginPass(ipass);
+            sub_mesh.dm.DrawSubset(0);
+            effect.EndPass();
+        }
+        effect.End();
     }
 
     /// <summary>
@@ -741,6 +790,20 @@ public class WeightViewer : Viewer
 
         lastScreenPoint.X = e.X;
         lastScreenPoint.Y = e.Y;
+    }
+
+    TSOFile selected_tso_file = null;
+
+    public TSOFile SelectedTSOFile
+    {
+        get { return selected_tso_file; }
+        set
+        {
+            selected_tso_file = value;
+            selected_mesh = null;
+            selected_sub_mesh = null;
+            selected_vertex = null;
+        }
     }
 
     TSOMesh selected_mesh = null;

@@ -181,6 +181,8 @@ namespace TSOWeight
             ListViewItem li = lvTSOFiles.SelectedItems[0];
             TSOFile tso = li.Tag as TSOFile;
             AssignMeshes(tso);
+            viewer.SelectedTSOFile = tso;
+            Invalidate(false);
         }
 
         private void lvFrames_SelectedIndexChanged(object sender, EventArgs e)
@@ -361,6 +363,18 @@ namespace TSOWeight
         protected override void OnPaintBackground(PaintEventArgs e)
         {
             //base.OnPaintBackground(e);
+        }
+
+        private void btnAllMeshes_Click(object sender, EventArgs e)
+        {
+            viewer.mesh_selection_mode = WeightViewer.MeshSelectionMode.AllMeshes;
+            Invalidate(false);
+        }
+
+        private void btnSelectedMesh_Click(object sender, EventArgs e)
+        {
+            viewer.mesh_selection_mode = WeightViewer.MeshSelectionMode.SelectedMesh;
+            Invalidate(false);
         }
     }
 }
