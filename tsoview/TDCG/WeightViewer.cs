@@ -179,9 +179,9 @@ public class WeightViewer : Viewer
     }
 
     /// <summary>
-    /// 描画モード
+    /// メッシュ描画モード
     /// </summary>
-    public enum ViewMode
+    public enum MeshViewMode
     {
         /// <summary>
         /// トゥーン描画
@@ -190,12 +190,16 @@ public class WeightViewer : Viewer
         /// <summary>
         /// ウェイト描画
         /// </summary>
-        Weight
+        Weight,
+        /// <summary>
+        /// ワイヤー描画
+        /// </summary>
+        Wire
     };
     /// <summary>
-    /// 描画モード
+    /// メッシュ描画モード
     /// </summary>
-    public ViewMode view_mode = ViewMode.Toon;
+    public MeshViewMode mesh_view_mode = MeshViewMode.Toon;
 
     public enum MeshSelectionMode
     {
@@ -223,9 +227,9 @@ public class WeightViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            switch (view_mode)
+            switch (mesh_view_mode)
             {
-                case ViewMode.Toon:
+                case MeshViewMode.Toon:
                     switch (mesh_selection_mode)
                     {
                         case MeshSelectionMode.AllMeshes:
@@ -254,7 +258,7 @@ public class WeightViewer : Viewer
                             break;
                     }
                     break;
-                case ViewMode.Weight:
+                case MeshViewMode.Weight:
                     switch (mesh_selection_mode)
                     {
                         case MeshSelectionMode.AllMeshes:
@@ -281,12 +285,42 @@ public class WeightViewer : Viewer
                             break;
                     }
                     break;
+                case MeshViewMode.Wire:
+                    switch (mesh_selection_mode)
+                    {
+                        case MeshSelectionMode.AllMeshes:
+                            {
+                                foreach (TSOFile tso in fig.TSOList)
+                                {
+                                    tso.BeginRender();
+                                    foreach (TSOMesh mesh in tso.meshes)
+                                        foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
+                                            DrawSubMeshForWireFrame(fig, tso, sub_mesh);
+                                    tso.EndRender();
+                                }
+                            }
+                            break;
+                        case MeshSelectionMode.SelectedMesh:
+                            if (SelectedTSOFile != null && SelectedMesh != null)
+                            {
+                                {
+                                    TSOFile tso = SelectedTSOFile;
+                                    tso.BeginRender();
+                                    foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
+                                        DrawSubMeshForWireFrame(fig, tso, sub_mesh);
+                                    tso.EndRender();
+                                }
+                            }
+                            break;
+                    }
+                    break;
             }
         }
     }
 
     private void DrawSubMeshForToonRendering(Figure fig, TSOFile tso, TSOSubMesh sub_mesh)
     {
+        device.RenderState.FillMode = FillMode.Solid;
         device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
         tso.SwitchShader(sub_mesh);
 
@@ -304,12 +338,31 @@ public class WeightViewer : Viewer
 
     private void DrawSubMeshForWeightPainting(Figure fig, TSOSubMesh sub_mesh)
     {
+        device.RenderState.FillMode = FillMode.Solid;
         device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
         effect.Technique = "BoneCol";
         effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
 
         effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
         effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(fig, sub_mesh, selected_node));
+
+        int npass = effect.Begin(0);
+        for (int ipass = 0; ipass < npass; ipass++)
+        {
+            effect.BeginPass(ipass);
+            sub_mesh.dm.DrawSubset(0);
+            effect.EndPass();
+        }
+        effect.End();
+    }
+
+    private void DrawSubMeshForWireFrame(Figure fig, TSOFile tso, TSOSubMesh sub_mesh)
+    {
+        device.RenderState.FillMode = FillMode.WireFrame;
+        device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+        tso.SwitchShader(sub_mesh);
+
+        effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
 
         int npass = effect.Begin(0);
         for (int ipass = 0; ipass < npass; ipass++)

@@ -309,13 +309,19 @@ namespace TSOWeight
 
         private void btnToon_Click(object sender, EventArgs e)
         {
-            viewer.view_mode = WeightViewer.ViewMode.Toon;
+            viewer.mesh_view_mode = WeightViewer.MeshViewMode.Toon;
             Invalidate(false);
         }
 
         private void btnHeat_Click(object sender, EventArgs e)
         {
-            viewer.view_mode = WeightViewer.ViewMode.Weight;
+            viewer.mesh_view_mode = WeightViewer.MeshViewMode.Weight;
+            Invalidate(false);
+        }
+
+        private void btnWire_Click(object sender, EventArgs e)
+        {
+            viewer.mesh_view_mode = WeightViewer.MeshViewMode.Wire;
             Invalidate(false);
         }
 
