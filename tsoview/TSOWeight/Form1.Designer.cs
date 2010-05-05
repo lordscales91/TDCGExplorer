@@ -79,6 +79,8 @@
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.btnCameraInitialize = new System.Windows.Forms.Button();
+            this.btnWire = new System.Windows.Forms.Button();
             this.btnNone = new System.Windows.Forms.Button();
             this.btnCCWVertices = new System.Windows.Forms.Button();
             this.btnAllVertices = new System.Windows.Forms.Button();
@@ -91,7 +93,7 @@
             this.lbViewMode = new System.Windows.Forms.Label();
             this.lbWeight = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
-            this.btnCenter = new System.Windows.Forms.Button();
+            this.btnCenterToSelectedVertex = new System.Windows.Forms.Button();
             this.lbRadius = new System.Windows.Forms.Label();
             this.lvSkinWeights = new System.Windows.Forms.ListView();
             this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
@@ -102,7 +104,6 @@
             this.tbRadius = new System.Windows.Forms.TrackBar();
             this.lbCamera = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.btnWire = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -502,6 +503,7 @@
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.Controls.Add(this.btnCameraInitialize);
             this.panel2.Controls.Add(this.btnWire);
             this.panel2.Controls.Add(this.btnNone);
             this.panel2.Controls.Add(this.btnCCWVertices);
@@ -515,7 +517,7 @@
             this.panel2.Controls.Add(this.lbViewMode);
             this.panel2.Controls.Add(this.lbWeight);
             this.panel2.Controls.Add(this.btnSave);
-            this.panel2.Controls.Add(this.btnCenter);
+            this.panel2.Controls.Add(this.btnCenterToSelectedVertex);
             this.panel2.Controls.Add(this.lbRadius);
             this.panel2.Controls.Add(this.lvSkinWeights);
             this.panel2.Controls.Add(this.lbSkinWeights);
@@ -527,6 +529,26 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(144, 681);
             this.panel2.TabIndex = 22;
+            // 
+            // btnCameraInitialize
+            // 
+            this.btnCameraInitialize.Location = new System.Drawing.Point(10, 321);
+            this.btnCameraInitialize.Name = "btnCameraInitialize";
+            this.btnCameraInitialize.Size = new System.Drawing.Size(120, 23);
+            this.btnCameraInitialize.TabIndex = 41;
+            this.btnCameraInitialize.Text = "初期位置(&0)";
+            this.btnCameraInitialize.UseVisualStyleBackColor = true;
+            this.btnCameraInitialize.Click += new System.EventHandler(this.btnCameraInitialize_Click);
+            // 
+            // btnWire
+            // 
+            this.btnWire.Location = new System.Drawing.Point(10, 74);
+            this.btnWire.Name = "btnWire";
+            this.btnWire.Size = new System.Drawing.Size(120, 23);
+            this.btnWire.TabIndex = 40;
+            this.btnWire.Text = "ワイヤー(&3)";
+            this.btnWire.UseVisualStyleBackColor = true;
+            this.btnWire.Click += new System.EventHandler(this.btnWire_Click);
             // 
             // btnNone
             // 
@@ -624,7 +646,7 @@
             // 
             // lbWeight
             // 
-            this.lbWeight.Location = new System.Drawing.Point(10, 456);
+            this.lbWeight.Location = new System.Drawing.Point(10, 490);
             this.lbWeight.Name = "lbWeight";
             this.lbWeight.Size = new System.Drawing.Size(120, 12);
             this.lbWeight.TabIndex = 24;
@@ -640,19 +662,19 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // btnCenter
+            // btnCenterToSelectedVertex
             // 
-            this.btnCenter.Location = new System.Drawing.Point(10, 292);
-            this.btnCenter.Name = "btnCenter";
-            this.btnCenter.Size = new System.Drawing.Size(120, 23);
-            this.btnCenter.TabIndex = 21;
-            this.btnCenter.Text = "中心(&C)";
-            this.btnCenter.UseVisualStyleBackColor = true;
-            this.btnCenter.Click += new System.EventHandler(this.btnCenter_Click);
+            this.btnCenterToSelectedVertex.Location = new System.Drawing.Point(10, 292);
+            this.btnCenterToSelectedVertex.Name = "btnCenterToSelectedVertex";
+            this.btnCenterToSelectedVertex.Size = new System.Drawing.Size(120, 23);
+            this.btnCenterToSelectedVertex.TabIndex = 21;
+            this.btnCenterToSelectedVertex.Text = "頂点中心(&C)";
+            this.btnCenterToSelectedVertex.UseVisualStyleBackColor = true;
+            this.btnCenterToSelectedVertex.Click += new System.EventHandler(this.btnCenterToSelectedVertex_Click);
             // 
             // lbRadius
             // 
-            this.lbRadius.Location = new System.Drawing.Point(10, 504);
+            this.lbRadius.Location = new System.Drawing.Point(10, 538);
             this.lbRadius.Name = "lbRadius";
             this.lbRadius.Size = new System.Drawing.Size(120, 12);
             this.lbRadius.TabIndex = 26;
@@ -666,7 +688,7 @@
             this.lvSkinWeights.FullRowSelect = true;
             this.lvSkinWeights.GridLines = true;
             this.lvSkinWeights.HideSelection = false;
-            this.lvSkinWeights.Location = new System.Drawing.Point(10, 333);
+            this.lvSkinWeights.Location = new System.Drawing.Point(10, 367);
             this.lvSkinWeights.MultiSelect = false;
             this.lvSkinWeights.Name = "lvSkinWeights";
             this.lvSkinWeights.Size = new System.Drawing.Size(120, 120);
@@ -685,7 +707,7 @@
             // 
             // lbSkinWeights
             // 
-            this.lbSkinWeights.Location = new System.Drawing.Point(10, 318);
+            this.lbSkinWeights.Location = new System.Drawing.Point(10, 352);
             this.lbSkinWeights.Name = "lbSkinWeights";
             this.lbSkinWeights.Size = new System.Drawing.Size(120, 12);
             this.lbSkinWeights.TabIndex = 22;
@@ -693,7 +715,7 @@
             // 
             // tbWeight
             // 
-            this.tbWeight.Location = new System.Drawing.Point(12, 471);
+            this.tbWeight.Location = new System.Drawing.Point(12, 505);
             this.tbWeight.Maximum = 20;
             this.tbWeight.Name = "tbWeight";
             this.tbWeight.Size = new System.Drawing.Size(120, 45);
@@ -703,7 +725,7 @@
             // 
             // btnDraw
             // 
-            this.btnDraw.Location = new System.Drawing.Point(10, 553);
+            this.btnDraw.Location = new System.Drawing.Point(10, 587);
             this.btnDraw.Name = "btnDraw";
             this.btnDraw.Size = new System.Drawing.Size(120, 23);
             this.btnDraw.TabIndex = 28;
@@ -713,7 +735,7 @@
             // 
             // tbRadius
             // 
-            this.tbRadius.Location = new System.Drawing.Point(12, 519);
+            this.tbRadius.Location = new System.Drawing.Point(12, 553);
             this.tbRadius.Maximum = 20;
             this.tbRadius.Name = "tbRadius";
             this.tbRadius.Size = new System.Drawing.Size(120, 45);
@@ -736,16 +758,6 @@
             this.statusStrip1.Size = new System.Drawing.Size(1008, 22);
             this.statusStrip1.TabIndex = 23;
             this.statusStrip1.Text = "statusStrip1";
-            // 
-            // btnWire
-            // 
-            this.btnWire.Location = new System.Drawing.Point(10, 74);
-            this.btnWire.Name = "btnWire";
-            this.btnWire.Size = new System.Drawing.Size(120, 23);
-            this.btnWire.TabIndex = 40;
-            this.btnWire.Text = "ワイヤー(&3)";
-            this.btnWire.UseVisualStyleBackColor = true;
-            this.btnWire.Click += new System.EventHandler(this.btnWire_Click);
             // 
             // Form1
             // 
@@ -831,7 +843,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.Label lbSkinWeights;
-        private System.Windows.Forms.Button btnCenter;
+        private System.Windows.Forms.Button btnCenterToSelectedVertex;
         private System.Windows.Forms.Label lbCamera;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.Button btnWeight;
@@ -845,6 +857,7 @@
         private System.Windows.Forms.Button btnAllVertices;
         private System.Windows.Forms.Label lbVertexViewMode;
         private System.Windows.Forms.Button btnWire;
+        private System.Windows.Forms.Button btnCameraInitialize;
     }
 }
 
