@@ -28,6 +28,8 @@ namespace TBNTest
                 if (re_tsofile.IsMatch(str))
                     Console.WriteLine(str);
             }
+
+            tbn.Save(@"out.tbn");
         }
     }
 }

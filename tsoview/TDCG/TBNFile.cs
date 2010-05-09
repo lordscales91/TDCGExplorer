@@ -95,6 +95,30 @@ namespace TDCG
             SearchUnknownBlock();
         }
 
+        /// <summary>
+        /// 指定パスに保存します。
+        /// </summary>
+        /// <param name="dest_file">パス</param>
+        public void Save(string dest_file)
+        {
+            using (Stream dest_stream = File.Create(dest_file))
+                Save(dest_stream);
+        }
+
+        /// <summary>
+        /// 指定ストリームに保存します。
+        /// </summary>
+        /// <param name="dest_stream">ストリーム</param>
+        public void Save(Stream dest_stream)
+        {
+            BinaryWriter bw = new BinaryWriter(dest_stream);
+
+            for (uint i = 0; i < W.Length; i++)
+            {
+                bw.Write(W[i].X);
+            }
+        }
+
         bool IsSJISChar(UInt32 c)
         {
             if (0 == c) return (true);
@@ -551,21 +575,35 @@ namespace TDCG
             } while (loop && (0 < Cs.Count));
         }
 
+        int ReadBytes(byte[] b, ref uint i)
+        {
+            int k = 0;
+            while (k < 4096)
+            {
+                byte[] buf = BitConverter.GetBytes(W[i].X);
+
+                if (buf[0] == 0) break;
+                b[k++] = buf[0];
+
+                if (buf[1] == 0) break;
+                b[k++] = buf[1];
+
+                if (buf[2] == 0) break;
+                b[k++] = buf[2];
+
+                if (buf[3] == 0) break;
+                b[k++] = buf[3];
+
+                i++;
+            }
+            return k;
+        }
+
         string DW2Str(ref UInt32 i)
         {
             Byte[] b = new Byte[4096];
-            int k = 0;
-            for (UInt32 j = 4; (4 == j) && (4096 > k); i++)
-            {
-                UInt32 x = W[i].X;
-                for (j = 0; j < 4; j++)
-                {
-                    if (0 == x) break;
-                    b[k++] += (Byte)(x & 0xff);
-                    x = x >> 8;
-                }
-            }
-            i--;
+            int k = ReadBytes(b, ref i);
+
             int bu, cu;
             bool comp;
             Char[] c = new Char[4096];
@@ -581,18 +619,8 @@ namespace TDCG
         string DW2StrDump(ref UInt32 i)
         {
             Byte[] b = new Byte[4096];
-            int k = 0;
-            for (UInt32 j = 4; (4 == j) && (4096 > k); i++)
-            {
-                UInt32 x = W[i].X;
-                for (j = 0; j < 4; j++)
-                {
-                    if (0 == x) break;
-                    b[k++] += (Byte)(x & 0xff);
-                    x = x >> 8;
-                }
-            }
-            i--;
+            int k = ReadBytes(b, ref i);
+
             int bu, cu;
             bool comp;
             Char[] c = new Char[4096];
