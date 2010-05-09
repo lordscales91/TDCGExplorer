@@ -287,6 +287,15 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 陰テクスチャのファイル名
+        /// </summary>
+        public string ShadeTexName { get { return shadeTex; } }
+        /// <summary>
+        /// 色テクスチャのファイル名
+        /// </summary>
+        public string ColorTexName { get { return colorTex; } }
+
+        /// <summary>
         /// シェーダ設定を読み込みます。
         /// </summary>
         /// <param name="lines">テキスト行配列</param>
