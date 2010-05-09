@@ -562,11 +562,11 @@ namespace TDCG
         /// <summary>
         /// 名称
         /// </summary>
-        public string name;
+        internal string name;
         /// <summary>
         /// ファイル名
         /// </summary>
-        public string file;
+        internal string file;
         /// <summary>
         /// 幅
         /// </summary>
@@ -585,6 +585,15 @@ namespace TDCG
         public byte[] data;
 
         internal Texture tex;
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public string Name { get { return name; } set { name = value; } }
+        /// <summary>
+        /// ファイル名
+        /// </summary>
+        public string File { get { return file; } set { file = value; } }
 
         /// <summary>
         /// テクスチャを読み込みます。
