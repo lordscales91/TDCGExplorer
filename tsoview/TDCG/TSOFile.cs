@@ -551,6 +551,7 @@ namespace TDCG
         /// </summary>
         public void Load(string source_file)
         {
+            this.lines = File.ReadAllLines(source_file);
         }
 
         /// <summary>
@@ -590,6 +591,14 @@ namespace TDCG
         {
             this.shader = new Shader();
             this.shader.Load(this.lines);
+        }
+
+        /// <summary>
+        /// シェーダ設定を保存します。
+        /// </summary>
+        public void SaveShader()
+        {
+            this.lines = this.shader.GetLines();
         }
     }
 
@@ -1345,6 +1354,9 @@ namespace TDCG
 
             foreach (ShaderParameter p in shader.shader_parameters)
             {
+                if (p.system_p)
+                    continue;
+
                 switch (p.type)
                 {
                 case ShaderParameter.Type.String:
@@ -1367,11 +1379,11 @@ namespace TDCG
             effect.SetValue(handle_UVSCR, UVSCR());
 
             TSOTex shadeTex;
-            if (shader.shadeTex != null && texmap.TryGetValue(shader.shadeTex, out shadeTex))
+            if (shader.shadeTex != null && texmap.TryGetValue(shader.ShadeTexName, out shadeTex))
                 effect.SetValue(handle_ShadeTex_texture, shadeTex.tex);
 
             TSOTex colorTex;
-            if (shader.colorTex != null && texmap.TryGetValue(shader.colorTex, out colorTex))
+            if (shader.colorTex != null && texmap.TryGetValue(shader.ColorTexName, out colorTex))
                 effect.SetValue(handle_ColorTex_texture, colorTex.tex);
 
             effect.Technique = techmap[shader.technique];
