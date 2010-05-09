@@ -694,6 +694,23 @@ namespace TDCG
         }
 
         /// <summary>
+        /// •¶š—ñ‚Ì«‘‚ğ“¾‚Ü‚·B
+        /// </summary>
+        /// <returns>•¶š—ñ‚Ì«‘</returns>
+        public Dictionary<uint, string> GetStringDictionary()
+        {
+            Dictionary<uint, string> ret = new Dictionary<uint, string>();
+            for (uint i = 0; i < W.Length; i++)
+            {
+                if (0 != (W[i].T & T_String))
+                {
+                    ret.Add(i, DW2Str(ref i));
+                }
+            }
+            return ret;
+        }
+
+        /// <summary>
         /// •¶š—ñ‚ğİ’è‚µ‚Ü‚·B
         /// </summary>
         public void SetString(uint i, string str)
