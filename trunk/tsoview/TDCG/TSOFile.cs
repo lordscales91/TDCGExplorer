@@ -4,12 +4,44 @@ using System.Diagnostics;
 using System.IO;
 using System.ComponentModel;
 using System.Text;
+using System.Runtime.InteropServices;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using TDCG.Extensions;
 
 namespace TDCG
 {
+    using BYTE  = Byte;
+    using WORD  = UInt16;
+    using DWORD = UInt32;
+    using LONG  = Int32;
+
+    [StructLayout(LayoutKind.Sequential, Pack=1)]
+    struct BITMAPFILEHEADER
+    {
+        public WORD    bfType;
+        public DWORD   bfSize;
+        public WORD    bfReserved1;
+        public WORD    bfReserved2;
+        public DWORD   bfOffBits;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack=1)]
+    struct BITMAPINFOHEADER
+    {
+        public DWORD      biSize;
+        public LONG       biWidth;
+        public LONG       biHeight;
+        public WORD       biPlanes;
+        public WORD       biBitCount;
+        public DWORD      biCompression;
+        public DWORD      biSizeImage;
+        public LONG       biXPelsPerMeter;
+        public LONG       biYPelsPerMeter;
+        public DWORD      biClrUsed;
+        public DWORD      biClrImportant;
+    }
+
     /// <summary>
     /// サブメッシュ
     /// </summary>
@@ -512,7 +544,7 @@ namespace TDCG
         /// <summary>
         /// ファイル名
         /// </summary>
-        public string File { get { return file; } set { file = value; } }
+        public string FileName { get { return file; } set { file = value; } }
 
         /// <summary>
         /// サブスクリプトを読み込みます。
@@ -593,13 +625,49 @@ namespace TDCG
         /// <summary>
         /// ファイル名
         /// </summary>
-        public string File { get { return file; } set { file = value; } }
+        public string FileName { get { return file; } set { file = value; } }
 
         /// <summary>
         /// テクスチャを読み込みます。
         /// </summary>
         public void Load(string source_file)
         {
+            using (FileStream stream = File.OpenRead(source_file))
+            {
+                Load(stream);
+                this.file = "\"" + Path.GetFileName(source_file) + "\"";
+            }
+        }
+
+        static readonly int sizeof_bfh = Marshal.SizeOf(typeof(BITMAPFILEHEADER));
+        static readonly int sizeof_bih = Marshal.SizeOf(typeof(BITMAPINFOHEADER));
+
+        /// <summary>
+        /// テクスチャを読み込みます。
+        /// </summary>
+        public void Load(Stream stream)
+        {
+            BinaryReader br = new BinaryReader(stream);
+            BITMAPFILEHEADER bfh;
+            BITMAPINFOHEADER bih;
+
+            IntPtr bfh_ptr = Marshal.AllocHGlobal(sizeof_bfh);
+            Marshal.Copy(br.ReadBytes(sizeof_bfh), 0, bfh_ptr, sizeof_bfh);
+            bfh = (BITMAPFILEHEADER)Marshal.PtrToStructure(bfh_ptr, typeof(BITMAPFILEHEADER));
+
+            IntPtr bih_ptr = Marshal.AllocHGlobal(sizeof_bih);
+            Marshal.Copy(br.ReadBytes(sizeof_bih), 0, bih_ptr, sizeof_bih);
+            bih = (BITMAPINFOHEADER)Marshal.PtrToStructure(bih_ptr, typeof(BITMAPINFOHEADER));
+
+            if (bfh.bfType != 0x4D42)
+                throw new Exception("Invalid imagetype: " + file);
+            if (bih.biBitCount != 24 && bih.biBitCount != 32)
+                throw new Exception("Invalid depth: " + file);
+
+            this.width = bih.biWidth;
+            this.height = bih.biHeight;
+            this.depth = bih.biBitCount / 8;
+            this.data = br.ReadBytes( this.width * this.height * this.depth );
         }
 
         /// <summary>
