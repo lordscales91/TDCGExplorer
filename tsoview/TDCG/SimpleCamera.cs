@@ -186,6 +186,7 @@ namespace TDCG
         {
             dirD = Vector3.Empty;
             zD = 0.0f;
+            rotZD = 0.0f;
         }
     }
 }
