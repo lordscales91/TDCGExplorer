@@ -51,7 +51,11 @@ namespace TSOHair
             foreach (TSOSubScript sub in tso.sub_scripts)
             {
                 Console.WriteLine("sub name {0} file {1}", sub.Name, sub.FileName);
+
                 Shader shader = sub.shader;
+                string color_tex_name = shader.ColorTexName;
+                string shade_tex_name = shader.ShadeTexName;
+
                 if (re_kami.IsMatch(sub.Name))
                 {
                     string sub_path = Path.Combine(GetHairKitPath(), @"Cgfx_kami\Cgfxkami_19");
@@ -59,12 +63,12 @@ namespace TSOHair
 
                     string tex_path = Path.Combine(GetHairKitPath(), @"image_kami\KIT_BASE_19.bmp");
                     TSOTex colorTex;
-                    if (texmap.TryGetValue(shader.ColorTexName, out colorTex))
+                    if (texmap.TryGetValue(color_tex_name, out colorTex))
                     {
-                        colorTex.Name = "Kami_Tex";
                         colorTex.Load(tex_path);
                     }
                 }
+                else
                 if (re_housen.IsMatch(sub.Name))
                 {
                     string sub_path = Path.Combine(GetHairKitPath(), @"Cgfx_kage\Cgfxkami_19");
@@ -72,23 +76,30 @@ namespace TSOHair
 
                     string tex_path = Path.Combine(GetHairKitPath(), @"image_kage\KIT_KAGE_19.bmp");
                     TSOTex colorTex;
-                    if (texmap.TryGetValue(shader.ColorTexName, out colorTex))
+                    if (texmap.TryGetValue(color_tex_name, out colorTex))
                     {
-                        colorTex.Name = "Housen_Tex";
                         colorTex.Load(tex_path);
                     }
                 }
+                else
                 if (re_ribon.IsMatch(sub.Name))
                 {
                     string tex_path = Path.Combine(GetHairKitPath(), @"image_ribon\KIT_RIBON_19.bmp");
                     TSOTex colorTex;
-                    if (texmap.TryGetValue(shader.ColorTexName, out colorTex))
+                    if (texmap.TryGetValue(color_tex_name, out colorTex))
                     {
                         colorTex.Load(tex_path);
                     }
                 }
-                Console.WriteLine("shader shade tex name {0}", shader.ShadeTexName);
-                Console.WriteLine("shader color tex name {0}", shader.ColorTexName);
+
+                sub.GenerateShader();
+                Shader new_shader = sub.shader;
+                new_shader.ColorTexName = color_tex_name;
+                new_shader.ShadeTexName = shade_tex_name;
+                sub.SaveShader();
+
+                Console.WriteLine("shader color tex name {0}", color_tex_name);
+                Console.WriteLine("shader shade tex name {0}", shade_tex_name);
             }
 
             foreach (TSOTex tex in tso.textures)
