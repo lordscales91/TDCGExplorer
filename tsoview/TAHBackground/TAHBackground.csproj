@@ -106,7 +106,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="PSDFile.cs" />
-    <Compile Include="TBNFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="names.txt" />

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
-namespace TBNTest
+namespace TDCG
 {
     struct _W
     {
@@ -26,7 +26,7 @@ namespace TBNTest
     /// <summary>
     /// TBNファイルを扱います。
     /// </summary>
-    class TBNFile
+    public class TBNFile
     {
         const UInt32 T_Integer = 0x01000000;
         const UInt32 T_Pointer = 0x02000000;
@@ -73,7 +73,7 @@ namespace TBNTest
                 throw new Exception("File is not TBN");
 
             float opt1 = reader.ReadSingle();
-            Console.WriteLine(opt1);
+            //Console.WriteLine(opt1);
 
             uint WC = reader.ReadUInt32();
             W = new _W[WC];
@@ -614,6 +614,9 @@ namespace TBNTest
             return sb.ToString();
         }
 
+        /// <summary>
+        /// 文字列を書き出します。
+        /// </summary>
         public void Dump()
         {
             for (uint i = 0; i < W.Length; i++)
@@ -626,6 +629,10 @@ namespace TBNTest
             }
         }
 
+        /// <summary>
+        /// 文字列リストを得ます。
+        /// </summary>
+        /// <returns>文字列リスト</returns>
         public List<string> GetStringList()
         {
             List<string> ret = new List<string>();
