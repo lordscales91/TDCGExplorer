@@ -598,6 +598,13 @@ namespace TDCG
         /// <summary>
         /// テクスチャを読み込みます。
         /// </summary>
+        public void Load(string source_file)
+        {
+        }
+
+        /// <summary>
+        /// テクスチャを読み込みます。
+        /// </summary>
         public void Read(BinaryReader reader)
         {
             this.name = reader.ReadCString();
