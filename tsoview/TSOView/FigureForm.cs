@@ -87,7 +87,7 @@ public partial class FigureForm : Form
         foreach (TSOSubScript sub_script in tso.sub_scripts)
         {
             ListViewItem li = new ListViewItem(sub_script.Name);
-            li.SubItems.Add(sub_script.File);
+            li.SubItems.Add(sub_script.FileName);
             li.Tag = sub_script;
             lvSubScripts.Items.Add(li);
         }

@@ -50,31 +50,31 @@ namespace TSOHair
 
             foreach (TSOSubScript sub in tso.sub_scripts)
             {
-                Console.WriteLine("sub name {0} file {1}", sub.Name, sub.File);
+                Console.WriteLine("sub name {0} file {1}", sub.Name, sub.FileName);
                 Shader shader = sub.shader;
-                if (re_kami.IsMatch(shader.ColorTexName))
+                if (re_kami.IsMatch(sub.Name))
                 {
                     string path = Path.Combine(GetHairKitPath(), @"image_kami\KIT_BASE_19.bmp");
                     TSOTex colorTex;
-                    if (shader.colorTex != null && texmap.TryGetValue(shader.colorTex, out colorTex))
+                    if (texmap.TryGetValue(shader.ColorTexName, out colorTex))
                     {
                         colorTex.Load(path);
                     }
                 }
-                if (re_housen.IsMatch(shader.ShadeTexName))
+                if (re_housen.IsMatch(sub.Name))
                 {
                     string path = Path.Combine(GetHairKitPath(), @"image_kage\KIT_KAGE_19.bmp");
                     TSOTex colorTex;
-                    if (shader.colorTex != null && texmap.TryGetValue(shader.colorTex, out colorTex))
+                    if (texmap.TryGetValue(shader.ColorTexName, out colorTex))
                     {
                         colorTex.Load(path);
                     }
                 }
-                if (re_ribon.IsMatch(shader.ShadeTexName))
+                if (re_ribon.IsMatch(sub.Name))
                 {
                     string path = Path.Combine(GetHairKitPath(), @"image_ribon\KIT_RIBON_19.bmp");
                     TSOTex colorTex;
-                    if (shader.colorTex != null && texmap.TryGetValue(shader.colorTex, out colorTex))
+                    if (texmap.TryGetValue(shader.ColorTexName, out colorTex))
                     {
                         colorTex.Load(path);
                     }
@@ -85,8 +85,10 @@ namespace TSOHair
 
             foreach (TSOTex tex in tso.textures)
             {
-                Console.WriteLine("tex name {0} file {1}", tex.Name, tex.File);
+                Console.WriteLine("tex name {0} file {1}", tex.Name, tex.FileName);
             }
+
+            tso.Save(string.Format("{0}.tso", basename));
         }
     }
 }
