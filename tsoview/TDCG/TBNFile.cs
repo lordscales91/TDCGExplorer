@@ -578,7 +578,7 @@ namespace TDCG
         int ReadBytes(byte[] b, ref uint i)
         {
             int k = 0;
-            while (k < 4096)
+            while (k < b.Length)
             {
                 byte[] buf = BitConverter.GetBytes(W[i].X);
 
@@ -594,6 +594,25 @@ namespace TDCG
                 if (buf[3] == 0) break;
                 b[k++] = buf[3];
 
+                i++;
+            }
+            return k;
+        }
+
+        int WriteBytes(byte[] b, ref uint i)
+        {
+            int k = 0;
+            while (k < b.Length)
+            {
+                byte[] buf = BitConverter.GetBytes(W[i].X);
+
+                for (int j = 0; j < 4; j++)
+                {
+                    if (k < b.Length)
+                        buf[j] = b[k++];
+                }
+
+                W[i].X = BitConverter.ToUInt32(buf, 0);
                 i++;
             }
             return k;
@@ -672,6 +691,17 @@ namespace TDCG
                 }
             }
             return ret;
+        }
+
+        /// <summary>
+        /// •¶š—ñ‚ğİ’è‚µ‚Ü‚·B
+        /// </summary>
+        public void SetString(uint i, string str)
+        {
+            Byte[] b = new Byte[4096];
+            Encoding enc = Encoding.GetEncoding("Shift_JIS");
+            b = enc.GetBytes(str);
+            WriteBytes(b, ref i);
         }
     }
 }
