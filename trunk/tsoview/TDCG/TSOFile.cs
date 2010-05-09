@@ -549,6 +549,13 @@ namespace TDCG
         /// <summary>
         /// サブスクリプトを読み込みます。
         /// </summary>
+        public void Load(string source_file)
+        {
+        }
+
+        /// <summary>
+        /// サブスクリプトを読み込みます。
+        /// </summary>
         public void Read(BinaryReader reader)
         {
             this.name = reader.ReadCString();
@@ -634,8 +641,8 @@ namespace TDCG
         {
             using (FileStream stream = File.OpenRead(source_file))
             {
-                Load(stream);
                 this.file = "\"" + Path.GetFileName(source_file) + "\"";
+                Load(stream);
             }
         }
 

@@ -54,29 +54,37 @@ namespace TSOHair
                 Shader shader = sub.shader;
                 if (re_kami.IsMatch(sub.Name))
                 {
-                    string path = Path.Combine(GetHairKitPath(), @"image_kami\KIT_BASE_19.bmp");
+                    string sub_path = Path.Combine(GetHairKitPath(), @"Cgfx_kami\Cgfxkami_19");
+                    sub.Load(sub_path);
+
+                    string tex_path = Path.Combine(GetHairKitPath(), @"image_kami\KIT_BASE_19.bmp");
                     TSOTex colorTex;
                     if (texmap.TryGetValue(shader.ColorTexName, out colorTex))
                     {
-                        colorTex.Load(path);
+                        colorTex.Name = "Kami_Tex";
+                        colorTex.Load(tex_path);
                     }
                 }
                 if (re_housen.IsMatch(sub.Name))
                 {
-                    string path = Path.Combine(GetHairKitPath(), @"image_kage\KIT_KAGE_19.bmp");
+                    string sub_path = Path.Combine(GetHairKitPath(), @"Cgfx_kage\Cgfxkami_19");
+                    sub.Load(sub_path);
+
+                    string tex_path = Path.Combine(GetHairKitPath(), @"image_kage\KIT_KAGE_19.bmp");
                     TSOTex colorTex;
                     if (texmap.TryGetValue(shader.ColorTexName, out colorTex))
                     {
-                        colorTex.Load(path);
+                        colorTex.Name = "Housen_Tex";
+                        colorTex.Load(tex_path);
                     }
                 }
                 if (re_ribon.IsMatch(sub.Name))
                 {
-                    string path = Path.Combine(GetHairKitPath(), @"image_ribon\KIT_RIBON_19.bmp");
+                    string tex_path = Path.Combine(GetHairKitPath(), @"image_ribon\KIT_RIBON_19.bmp");
                     TSOTex colorTex;
                     if (texmap.TryGetValue(shader.ColorTexName, out colorTex))
                     {
-                        colorTex.Load(path);
+                        colorTex.Load(tex_path);
                     }
                 }
                 Console.WriteLine("shader shade tex name {0}", shader.ShadeTexName);
