@@ -29,6 +29,7 @@ namespace TBNTest
                     Console.WriteLine(str);
             }
 
+            tbn.SetString(0x08A6, "data/model/N327BHEA_C01.tso");
             tbn.Save(@"out.tbn");
         }
     }
