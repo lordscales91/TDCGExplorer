@@ -38,6 +38,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAHTest", "TAHTest\TAHTest.csproj", "{2FC96A46-A9DB-43EC-A3EA-EC4197989A69}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TBNTest", "TBNTest\TBNTest.csproj", "{14DD80FD-70A6-4074-96FF-16D3C541D9DC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{30D26679-E876-46FC-B8C0-E55146316C8C} = {30D26679-E876-46FC-B8C0-E55146316C8C}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAHBackground", "TAHBackground\TAHBackground.csproj", "{D50962BC-AEA1-43E8-951E-0AB706776914}"
 	ProjectSection(ProjectDependencies) = postProject
