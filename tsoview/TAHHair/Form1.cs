@@ -71,6 +71,8 @@ namespace TAHHair
             bwCompress.RunWorkerAsync(source_file);
         }
 
+        Regex re_tsofile = new Regex(@"\.tso$");
+
         private void bwCompress_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
@@ -129,7 +131,22 @@ namespace TAHHair
                     using (FileStream source_stream = File.OpenRead(src_path))
                     {
                         ret_stream = new MemoryStream();
-                        Copy(source_stream, ret_stream);
+
+                        TBNFile tbn = new TBNFile();
+                        tbn.Load(source_stream);
+
+                        Dictionary<uint, string> strings = tbn.GetStringDictionary();
+                        foreach (uint i in strings.Keys)
+                        {
+                            string str = strings[i];
+                            if (re_tsofile.IsMatch(str))
+                            {
+                                Console.WriteLine("{0:X4}: {1}", i, str);
+                                tbn.SetString(i, string.Format("data/model/{0}.tso", basename));
+                            }
+                        }
+
+                        tbn.Save(ret_stream);
                     }
                     ret_stream.Seek(0, SeekOrigin.Begin);
                 }
