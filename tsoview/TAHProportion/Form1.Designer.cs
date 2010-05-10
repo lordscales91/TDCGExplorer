@@ -1,4 +1,4 @@
-﻿namespace TAHTool
+﻿namespace TAHProportion
 {
     partial class Form1
     {

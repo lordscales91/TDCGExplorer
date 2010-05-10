@@ -37,6 +37,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMOComposerConfig", "TMOComposerConfig\TMOComposerConfig.csproj", "{E1AEAF48-BC1B-4B0E-BC77-3B6461541A92}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAHTest", "TAHTest\TAHTest.csproj", "{2FC96A46-A9DB-43EC-A3EA-EC4197989A69}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F50AD59B-747E-4296-A950-B0B4456D8BD7} = {F50AD59B-747E-4296-A950-B0B4456D8BD7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TBNTest", "TBNTest\TBNTest.csproj", "{14DD80FD-70A6-4074-96FF-16D3C541D9DC}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -211,7 +214,8 @@ Global
 		{F50AD59B-747E-4296-A950-B0B4456D8BD7}.Debug|x86.Build.0 = Debug|x86
 		{F50AD59B-747E-4296-A950-B0B4456D8BD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F50AD59B-747E-4296-A950-B0B4456D8BD7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F50AD59B-747E-4296-A950-B0B4456D8BD7}.Release|x86.ActiveCfg = Release|Any CPU
+		{F50AD59B-747E-4296-A950-B0B4456D8BD7}.Release|x86.ActiveCfg = Release|x86
+		{F50AD59B-747E-4296-A950-B0B4456D8BD7}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

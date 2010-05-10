@@ -15,12 +15,12 @@ namespace TAHTest
                 return;
             }
             string source_file = args[0];
-            
-            TAHTool.Decrypter decrypter = new TAHTool.Decrypter();
+
+            TDCG.TAHTool.Decrypter decrypter = new TDCG.TAHTool.Decrypter();
             decrypter.Load(source_file);
             decrypter.Close();
 
-            foreach (TAHTool.TAHEntry entry in decrypter.Entries)
+            foreach (TDCG.TAHTool.TAHEntry entry in decrypter.Entries)
             {
                 string dirname = Path.GetDirectoryName(entry.file_name);
                 string basename = Path.GetFileNameWithoutExtension(entry.file_name);
