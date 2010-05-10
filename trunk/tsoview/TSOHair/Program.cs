@@ -48,6 +48,8 @@ namespace TSOHair
                 texmap[tex.Name] = tex;
             }
 
+            string col = basename.Substring(10,2);
+
             foreach (TSOSubScript sub in tso.sub_scripts)
             {
                 Console.WriteLine("sub name {0} file {1}", sub.Name, sub.FileName);
@@ -58,10 +60,10 @@ namespace TSOHair
 
                 if (re_kami.IsMatch(sub.Name))
                 {
-                    string sub_path = Path.Combine(GetHairKitPath(), @"Cgfx_kami\Cgfxkami_19");
+                    string sub_path = Path.Combine(GetHairKitPath(), string.Format(@"Cgfx_kami\Cgfxkami_{0}", col));
                     sub.Load(sub_path);
 
-                    string tex_path = Path.Combine(GetHairKitPath(), @"image_kami\KIT_BASE_19.bmp");
+                    string tex_path = Path.Combine(GetHairKitPath(), string.Format(@"image_kami\KIT_BASE_{0}.bmp", col));
                     TSOTex colorTex;
                     if (texmap.TryGetValue(color_tex_name, out colorTex))
                     {
@@ -71,10 +73,10 @@ namespace TSOHair
                 else
                 if (re_housen.IsMatch(sub.Name))
                 {
-                    string sub_path = Path.Combine(GetHairKitPath(), @"Cgfx_kage\Cgfxkami_19");
+                    string sub_path = Path.Combine(GetHairKitPath(), string.Format(@"Cgfx_kage\Cgfxkami_{0}", col));
                     sub.Load(sub_path);
 
-                    string tex_path = Path.Combine(GetHairKitPath(), @"image_kage\KIT_KAGE_19.bmp");
+                    string tex_path = Path.Combine(GetHairKitPath(), string.Format(@"image_kage\KIT_KAGE_{0}.bmp", col));
                     TSOTex colorTex;
                     if (texmap.TryGetValue(color_tex_name, out colorTex))
                     {
@@ -84,7 +86,7 @@ namespace TSOHair
                 else
                 if (re_ribon.IsMatch(sub.Name))
                 {
-                    string tex_path = Path.Combine(GetHairKitPath(), @"image_ribon\KIT_RIBON_19.bmp");
+                    string tex_path = Path.Combine(GetHairKitPath(), string.Format(@"image_ribon\KIT_RIBON_{0}.bmp", col));
                     TSOTex colorTex;
                     if (texmap.TryGetValue(color_tex_name, out colorTex))
                     {
