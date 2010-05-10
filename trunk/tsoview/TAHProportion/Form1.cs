@@ -12,7 +12,7 @@ using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using TDCG;
 using TDCG.TAHTool;
 
-namespace TAHTool
+namespace TAHProportion
 {
     public partial class Form1 : Form
     {
