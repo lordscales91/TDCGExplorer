@@ -75,7 +75,7 @@ namespace TAHHair
 
         public static string GetColsPath()
         {
-            return @"D:\TechArts3D\mod0416\cols.txt";
+            return Path.Combine(Application.StartupPath, @"cols.txt");
         }
 
         private void bwCompress_DoWork(object sender, DoWorkEventArgs e)
@@ -212,7 +212,7 @@ namespace TAHHair
 
         public static string GetHairKitPath()
         {
-            return @"D:\TechArts3D\mod0416\_HAIR_KIT";
+            return Path.Combine(Application.StartupPath, @"HAIR_KIT");
         }
 
         public void Copy(Stream source_stream, Stream ret_stream)
