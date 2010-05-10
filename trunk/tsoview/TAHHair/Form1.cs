@@ -105,7 +105,7 @@ namespace TAHHair
                     string tso_path = encrypter.SourcePath + "/data/model/" + new_basename + ".tso";
                     encrypter.Add(tso_path);
 
-                    string psd_path = encrypter.SourcePath + "/data/icon/" + new_basename + ".psd";
+                    string psd_path = encrypter.SourcePath + "/data/icon/items/" + new_basename + ".psd";
                     encrypter.Add(psd_path);
                 }
             }
