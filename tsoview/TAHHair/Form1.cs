@@ -137,7 +137,12 @@ namespace TAHHair
                 Stream ret_stream = null;
                 if (ext == ".tbn")
                 {
-                    string src_path = Path.Combine(GetHairKitPath(), @"N000BHEA_C00.tbn");
+                    string src_basename = null;
+                    if (row == "B")
+                        src_basename = "N000FHEA_B00";
+                    if (row == "C")
+                        src_basename = "N000BHEA_C00";
+                    string src_path = Path.Combine(GetHairKitPath(), string.Format(@"{0}.tbn", src_basename));
                     using (FileStream source_stream = File.OpenRead(src_path))
                     {
                         ret_stream = new MemoryStream();
