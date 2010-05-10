@@ -89,7 +89,6 @@ namespace TAHHair
 
                 if (re_hair_tsofile.IsMatch(path))
                 {
-                    string dir  = Path.GetDirectoryName(path).Replace("\\", "/");
                     string basename = Path.GetFileNameWithoutExtension(path);
                     string code = basename.Substring(0, 8);
                     string row  = basename.Substring(9, 1);
@@ -98,8 +97,14 @@ namespace TAHHair
 
                     entries[code] = entry;
 
-                    string tso_path = encrypter.SourcePath + "/" + dir + "/" + new_basename + ".tso";
+                    string tbn_path = encrypter.SourcePath + "/script/items/" + new_basename + ".tbn";
+                    encrypter.Add(tbn_path);
+
+                    string tso_path = encrypter.SourcePath + "/data/model/" + new_basename + ".tso";
                     encrypter.Add(tso_path);
+
+                    string psd_path = encrypter.SourcePath + "/data/icon/" + new_basename + ".psd";
+                    encrypter.Add(psd_path);
                 }
             }
             
@@ -116,15 +121,39 @@ namespace TAHHair
 
                 TAHEntry entry = entries[code];
                 string ext = Path.GetExtension(path).ToLower();
-                byte[] data_output;
-                decrypter.ExtractResource(entry, out data_output);
 
                 Stream ret_stream = null;
+                if (ext == ".tbn")
+                {
+                    string src_path = Path.Combine(GetHairKitPath(), @"N000BHEA_C00.tbn");
+                    using (FileStream source_stream = File.OpenRead(src_path))
+                    {
+                        ret_stream = new MemoryStream();
+                        Copy(source_stream, ret_stream);
+                    }
+                    ret_stream.Seek(0, SeekOrigin.Begin);
+                }
+                else
                 if (ext == ".tso")
                 {
-                    MemoryStream tso_stream = new MemoryStream(data_output);
-                    ret_stream = new MemoryStream();
-                    Process(tso_stream, ret_stream, col);
+                    byte[] data_output;
+                    decrypter.ExtractResource(entry, out data_output);
+                    using (MemoryStream tso_stream = new MemoryStream(data_output))
+                    {
+                        ret_stream = new MemoryStream();
+                        Process(tso_stream, ret_stream, col);
+                    }
+                    ret_stream.Seek(0, SeekOrigin.Begin);
+                }
+                else
+                if (ext == ".psd")
+                {
+                    string src_path = Path.Combine(GetHairKitPath(), string.Format(@"icon\ICON_{0}.psd", col));
+                    using (FileStream source_stream = File.OpenRead(src_path))
+                    {
+                        ret_stream = new MemoryStream();
+                        Copy(source_stream, ret_stream);
+                    }
                     ret_stream.Seek(0, SeekOrigin.Begin);
                 }
                 current_index++;
@@ -132,7 +161,7 @@ namespace TAHHair
                 worker.ReportProgress(percent);
                 return ret_stream;
             };
-            encrypter.Save(@"tso-" + Path.GetFileName(source_file));
+            encrypter.Save(@"col-" + Path.GetFileName(source_file));
         }
 
         private void bwCompress_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -154,6 +183,17 @@ namespace TAHHair
             return @"D:\TechArts3D\mod0416\_HAIR_KIT";
         }
 
+        public void Copy(Stream source_stream, Stream ret_stream)
+        {
+            const int BUFSIZE = 4096;
+            byte[] buf = new byte[BUFSIZE];
+            int nbyte;
+            while ((nbyte = source_stream.Read(buf, 0, BUFSIZE)) > 0)
+            {
+                ret_stream.Write(buf, 0, nbyte);
+            }
+        }
+
         public bool Process(Stream tso_stream, Stream ret_stream, string col)
         {
             TSOFile tso = new TSOFile();
@@ -172,7 +212,7 @@ namespace TAHHair
 
             foreach (TSOSubScript sub in tso.sub_scripts)
             {
-                Console.WriteLine("sub name {0} file {1}", sub.Name, sub.FileName);
+                Console.WriteLine("  sub name {0} file {1}", sub.Name, sub.FileName);
 
                 Shader shader = sub.shader;
                 string color_tex_name = shader.ColorTexName;
@@ -220,17 +260,22 @@ namespace TAHHair
                 new_shader.ShadeTexName = shade_tex_name;
                 sub.SaveShader();
 
-                Console.WriteLine("shader color tex name {0}", color_tex_name);
-                Console.WriteLine("shader shade tex name {0}", shade_tex_name);
+                Console.WriteLine("    shader color tex name {0}", color_tex_name);
+                Console.WriteLine("    shader shade tex name {0}", shade_tex_name);
             }
 
             foreach (TSOTex tex in tso.textures)
             {
-                Console.WriteLine("tex name {0} file {1}", tex.Name, tex.FileName);
+                Console.WriteLine("  tex name {0} file {1}", tex.Name, tex.FileName);
             }
 
             tso.Save(ret_stream);
             return true;
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            decrypter.Close();
         }
     }
 }
