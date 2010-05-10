@@ -85,23 +85,37 @@ namespace TAHHair
                 if (entry.flag % 2 == 1)
                     continue;
 
-                string file_name = entry.file_name;
+                string path = entry.file_name;
 
-                if (re_hair_tsofile.IsMatch(file_name))
+                if (re_hair_tsofile.IsMatch(path))
                 {
-                    string true_file_name = encrypter.SourcePath + "/" + file_name;
-                    entries[true_file_name] = entry;
-                    encrypter.Add(true_file_name);
+                    string dir  = Path.GetDirectoryName(path).Replace("\\", "/");
+                    string basename = Path.GetFileNameWithoutExtension(path);
+                    string code = basename.Substring(0, 8);
+                    string row  = basename.Substring(9, 1);
+                    string col  = "19";
+                    string new_basename = code + "_" + row + col;
+
+                    entries[code] = entry;
+
+                    string tso_path = encrypter.SourcePath + "/" + dir + "/" + new_basename + ".tso";
+                    encrypter.Add(tso_path);
                 }
             }
             
             int entries_count = encrypter.Count;
             int current_index = 0;
-            encrypter.GetFileEntryStream = delegate(string true_file_name)
+            encrypter.GetFileEntryStream = delegate(string path)
             {
-                Console.WriteLine("compressing {0}", true_file_name);
-                TAHEntry entry = entries[true_file_name];
-                string ext = Path.GetExtension(true_file_name).ToLower();
+                Console.WriteLine("compressing {0}", path);
+
+                string basename = Path.GetFileNameWithoutExtension(path);
+                string code = basename.Substring(0, 8);
+                string row  = basename.Substring(9, 1);
+                string col  = basename.Substring(10, 2);
+
+                TAHEntry entry = entries[code];
+                string ext = Path.GetExtension(path).ToLower();
                 byte[] data_output;
                 decrypter.ExtractResource(entry, out data_output);
 
@@ -110,7 +124,7 @@ namespace TAHHair
                 {
                     MemoryStream tso_stream = new MemoryStream(data_output);
                     ret_stream = new MemoryStream();
-                    Process(tso_stream, ret_stream);
+                    Process(tso_stream, ret_stream, col);
                     ret_stream.Seek(0, SeekOrigin.Begin);
                 }
                 current_index++;
@@ -140,7 +154,7 @@ namespace TAHHair
             return @"D:\TechArts3D\mod0416\_HAIR_KIT";
         }
 
-        public bool Process(Stream tso_stream, Stream ret_stream)
+        public bool Process(Stream tso_stream, Stream ret_stream, string col)
         {
             TSOFile tso = new TSOFile();
             tso.Load(tso_stream);
@@ -155,10 +169,6 @@ namespace TAHHair
             {
                 texmap[tex.Name] = tex;
             }
-
-            string basename = "N000BHEA_C19";
-
-            string col = basename.Substring(10,2);
 
             foreach (TSOSubScript sub in tso.sub_scripts)
             {
