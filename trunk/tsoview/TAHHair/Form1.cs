@@ -250,22 +250,11 @@ namespace TAHHair
                 string color_tex_name = shader.ColorTexName;
                 string shade_tex_name = shader.ShadeTexName;
 
-                if (re_kami.IsMatch(sub.Name))
-                {
-                    string sub_path = Path.Combine(GetHairKitPath(), string.Format(@"Cgfx_kami\Cgfxkami_{0}", col));
-                    sub.Load(sub_path);
-
-                    string tex_path = Path.Combine(GetHairKitPath(), string.Format(@"image_kami\KIT_BASE_{0}.bmp", col));
-                    TSOTex colorTex;
-                    if (texmap.TryGetValue(color_tex_name, out colorTex))
-                    {
-                        colorTex.Load(tex_path);
-                    }
-                }
-                else
+                // Housen ÇÕ Kami ÇÊÇËóDêÊÇ∑ÇÈÅB
+                // ex. KamiHousen ÇÃèÍçáÇÕ Housen Ç∆ÇµÇƒèàóù
                 if (re_housen.IsMatch(sub.Name))
                 {
-                    string sub_path = Path.Combine(GetHairKitPath(), string.Format(@"Cgfx_kage\Cgfxkami_{0}", col));
+                    string sub_path = Path.Combine(GetHairKitPath(), string.Format(@"Cgfx_kage\Cgfxkage_{0}", col));
                     sub.Load(sub_path);
 
                     string tex_path = Path.Combine(GetHairKitPath(), string.Format(@"image_kage\KIT_KAGE_{0}.bmp", col));
@@ -279,6 +268,19 @@ namespace TAHHair
                 if (re_ribon.IsMatch(sub.Name))
                 {
                     string tex_path = Path.Combine(GetHairKitPath(), string.Format(@"image_ribon\KIT_RIBON_{0}.bmp", col));
+                    TSOTex colorTex;
+                    if (texmap.TryGetValue(color_tex_name, out colorTex))
+                    {
+                        colorTex.Load(tex_path);
+                    }
+                }
+                else
+                if (re_kami.IsMatch(sub.Name))
+                {
+                    string sub_path = Path.Combine(GetHairKitPath(), string.Format(@"Cgfx_kami\Cgfxkami_{0}", col));
+                    sub.Load(sub_path);
+
+                    string tex_path = Path.Combine(GetHairKitPath(), string.Format(@"image_kami\KIT_BASE_{0}.bmp", col));
                     TSOTex colorTex;
                     if (texmap.TryGetValue(color_tex_name, out colorTex))
                     {
