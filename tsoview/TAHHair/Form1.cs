@@ -73,9 +73,16 @@ namespace TAHHair
 
         Regex re_tsofile = new Regex(@"\.tso$");
 
+        public static string GetColsPath()
+        {
+            return @"D:\TechArts3D\mod0416\cols.txt";
+        }
+
         private void bwCompress_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
+
+            string[] cols = File.ReadAllLines(GetColsPath());
 
             Encrypter encrypter = new Encrypter();
             encrypter.SourcePath = @".";
@@ -94,19 +101,22 @@ namespace TAHHair
                     string basename = Path.GetFileNameWithoutExtension(path);
                     string code = basename.Substring(0, 8);
                     string row  = basename.Substring(9, 1);
-                    string col  = "19";
-                    string new_basename = code + "_" + row + col;
 
                     entries[code] = entry;
 
-                    string tbn_path = encrypter.SourcePath + "/script/items/" + new_basename + ".tbn";
-                    encrypter.Add(tbn_path);
+                    foreach (string col in cols)
+                    {
+                        string new_basename = code + "_" + row + col;
 
-                    string tso_path = encrypter.SourcePath + "/data/model/" + new_basename + ".tso";
-                    encrypter.Add(tso_path);
+                        string tbn_path = encrypter.SourcePath + "/script/items/" + new_basename + ".tbn";
+                        encrypter.Add(tbn_path);
 
-                    string psd_path = encrypter.SourcePath + "/data/icon/items/" + new_basename + ".psd";
-                    encrypter.Add(psd_path);
+                        string tso_path = encrypter.SourcePath + "/data/model/" + new_basename + ".tso";
+                        encrypter.Add(tso_path);
+
+                        string psd_path = encrypter.SourcePath + "/data/icon/items/" + new_basename + ".psd";
+                        encrypter.Add(psd_path);
+                    }
                 }
             }
             
