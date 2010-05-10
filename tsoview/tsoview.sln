@@ -16,6 +16,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAHProportion", "TAHProportion\TAHProportion.csproj", "{A99FA50A-C976-4ACA-B0CB-22F273ADC0F2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{30D26679-E876-46FC-B8C0-E55146316C8C} = {30D26679-E876-46FC-B8C0-E55146316C8C}
+		{F50AD59B-747E-4296-A950-B0B4456D8BD7} = {F50AD59B-747E-4296-A950-B0B4456D8BD7}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PNGProportion", "PNGProportion\PNGProportion.csproj", "{2914D2D6-9C27-46A6-B1D6-EEDAEE61CE30}"
@@ -45,6 +46,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAHBackground", "TAHBackground\TAHBackground.csproj", "{D50962BC-AEA1-43E8-951E-0AB706776914}"
 	ProjectSection(ProjectDependencies) = postProject
 		{30D26679-E876-46FC-B8C0-E55146316C8C} = {30D26679-E876-46FC-B8C0-E55146316C8C}
+		{F50AD59B-747E-4296-A950-B0B4456D8BD7} = {F50AD59B-747E-4296-A950-B0B4456D8BD7}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSDTest", "PSDTest\PSDTest.csproj", "{3E5DF5EA-6A2B-4192-837B-17F97B48D781}"
@@ -65,6 +67,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAHHair", "TAHHair\TAHHair.
 	ProjectSection(ProjectDependencies) = postProject
 		{30D26679-E876-46FC-B8C0-E55146316C8C} = {30D26679-E876-46FC-B8C0-E55146316C8C}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDCG.TAHTool", "TDCG.TAHTool\TDCG.TAHTool.csproj", "{F50AD59B-747E-4296-A950-B0B4456D8BD7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -201,6 +205,13 @@ Global
 		{C1337B85-DC89-492B-B9EE-4541C00971A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C1337B85-DC89-492B-B9EE-4541C00971A3}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C1337B85-DC89-492B-B9EE-4541C00971A3}.Release|x86.ActiveCfg = Release|Any CPU
+		{F50AD59B-747E-4296-A950-B0B4456D8BD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F50AD59B-747E-4296-A950-B0B4456D8BD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F50AD59B-747E-4296-A950-B0B4456D8BD7}.Debug|x86.ActiveCfg = Debug|x86
+		{F50AD59B-747E-4296-A950-B0B4456D8BD7}.Debug|x86.Build.0 = Debug|x86
+		{F50AD59B-747E-4296-A950-B0B4456D8BD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F50AD59B-747E-4296-A950-B0B4456D8BD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F50AD59B-747E-4296-A950-B0B4456D8BD7}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

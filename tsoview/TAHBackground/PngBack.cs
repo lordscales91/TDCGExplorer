@@ -5,8 +5,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
-using TAHTool;
 using TDCG;
+using TDCG.TAHTool;
 
 namespace TAHBackground
 {

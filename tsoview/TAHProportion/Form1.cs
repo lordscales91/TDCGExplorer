@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using TDCG;
+using TDCG.TAHTool;
 
 namespace TAHTool
 {
