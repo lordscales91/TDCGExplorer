@@ -226,14 +226,29 @@ namespace TAHHair
             }
         }
 
+        Regex re_kami = new Regex(@"kami", RegexOptions.IgnoreCase);
+        Regex re_housen = new Regex(@"housen", RegexOptions.IgnoreCase);
+        Regex re_ribon = new Regex(@"ribon", RegexOptions.IgnoreCase);
+
+        public string GetKamiTexPath(string col)
+        {
+            return Path.Combine(GetHairKitPath(), string.Format(@"image_kami\KIT_BASE_{0}.bmp", col));
+        }
+
+        public string GetKageTexPath(string col)
+        {
+            return Path.Combine(GetHairKitPath(), string.Format(@"image_kage\KIT_KAGE_{0}.bmp", col));
+        }
+
+        public string GetRibonTexPath(string col)
+        {
+            return Path.Combine(GetHairKitPath(), string.Format(@"image_ribon\KIT_RIBON_{0}.bmp", col));
+        }
+
         public bool Process(Stream tso_stream, Stream ret_stream, string col)
         {
             TSOFile tso = new TSOFile();
             tso.Load(tso_stream);
-
-            Regex re_kami = new Regex(@"Kami");
-            Regex re_housen = new Regex(@"Housen");
-            Regex re_ribon = new Regex(@"Ribon");
 
             Dictionary<string, TSOTex> texmap = new Dictionary<string, TSOTex>();
 
@@ -260,8 +275,7 @@ namespace TAHHair
                     TSOTex colorTex;
                     if (texmap.TryGetValue(color_tex_name, out colorTex))
                     {
-                        string tex_path = Path.Combine(GetHairKitPath(), string.Format(@"image_kage\KIT_KAGE_{0}.bmp", col));
-                        colorTex.Load(tex_path);
+                        colorTex.Load(GetKageTexPath(col));
                     }
                 }
                 else
@@ -270,8 +284,7 @@ namespace TAHHair
                     TSOTex colorTex;
                     if (texmap.TryGetValue(color_tex_name, out colorTex))
                     {
-                        string tex_path = Path.Combine(GetHairKitPath(), string.Format(@"image_ribon\KIT_RIBON_{0}.bmp", col));
-                        colorTex.Load(tex_path);
+                        colorTex.Load(GetRibonTexPath(col));
                     }
                 }
                 else
@@ -283,8 +296,7 @@ namespace TAHHair
                     TSOTex colorTex;
                     if (texmap.TryGetValue(color_tex_name, out colorTex))
                     {
-                        string tex_path = Path.Combine(GetHairKitPath(), string.Format(@"image_kami\KIT_BASE_{0}.bmp", col));
-                        colorTex.Load(tex_path);
+                        colorTex.Load(GetKamiTexPath(col));
                     }
                 }
                 else
@@ -292,10 +304,21 @@ namespace TAHHair
                     TSOTex colorTex;
                     if (texmap.TryGetValue(color_tex_name, out colorTex))
                     {
-                        if (colorTex.FileName.Trim('"') == "KAMI_TEX_00.bmp")
+                        string file = colorTex.FileName.Trim('"');
+
+                        if (re_housen.IsMatch(file))
                         {
-                            string tex_path = Path.Combine(GetHairKitPath(), string.Format(@"image_kami\KIT_BASE_{0}.bmp", col));
-                            colorTex.Load(tex_path);
+                            colorTex.Load(GetKageTexPath(col));
+                        }
+                        else
+                        if (re_ribon.IsMatch(file))
+                        {
+                            colorTex.Load(GetRibonTexPath(col));
+                        }
+                        else
+                        if (re_kami.IsMatch(file))
+                        {
+                            colorTex.Load(GetKamiTexPath(col));
                         }
                     }
                 }
