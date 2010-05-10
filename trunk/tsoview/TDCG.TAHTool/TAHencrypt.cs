@@ -4,9 +4,9 @@ using System.IO;
 
 namespace TDCG.TAHTool
 {
-    class TAHancrypt
+    public class TAHencrypt
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             if (args.Length > 0)
             {
@@ -20,7 +20,7 @@ namespace TDCG.TAHTool
             }
         }
 
-        static int encrypt_archive(string file_path_name, string source_path)
+        public static int encrypt_archive(string file_path_name, string source_path)
         {
             //check if file already exists... if yes rename it
             try

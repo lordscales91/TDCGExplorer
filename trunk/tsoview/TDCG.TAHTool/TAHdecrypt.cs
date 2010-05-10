@@ -4,9 +4,9 @@ using System.IO;
 
 namespace TDCG.TAHTool
 {
-    class TAHdecrypt
+    public class TAHdecrypt
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             if (args.Length > 0)
             {
@@ -14,7 +14,7 @@ namespace TDCG.TAHTool
             }
         }
 
-        static int DumpFiles(string source_file)
+        public static int DumpFiles(string source_file)
         {
             Decrypter decrypter = new Decrypter();
             decrypter.Load(source_file);
@@ -48,7 +48,7 @@ namespace TDCG.TAHTool
             return 0;
         }
 
-        static string GetExtensionFromMagic(byte[] data_output)
+        public static string GetExtensionFromMagic(byte[] data_output)
         {
             string ext;
             string magic = System.Text.Encoding.ASCII.GetString(data_output, 0, 4);
