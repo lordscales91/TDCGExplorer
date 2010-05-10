@@ -60,7 +60,7 @@
             this.btnLoad.TabIndex = 0;
             this.btnLoad.Text = "&Load";
             this.btnLoad.UseVisualStyleBackColor = true;
-            this.btnLoad.Click += new System.EventHandler(this.button1_Click);
+            this.btnLoad.Click += new System.EventHandler(this.btnLoad_Click);
             // 
             // gvEntries
             // 
