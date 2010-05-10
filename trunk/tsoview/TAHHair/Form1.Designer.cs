@@ -38,6 +38,7 @@
             this.Length = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnLoad = new System.Windows.Forms.Button();
             this.diaOpen1 = new System.Windows.Forms.OpenFileDialog();
+            this.bwCompress = new System.ComponentModel.BackgroundWorker();
             this.staStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvEntries)).BeginInit();
             this.SuspendLayout();
@@ -73,6 +74,7 @@
             this.btnCompress.TabIndex = 5;
             this.btnCompress.Text = "&Compress";
             this.btnCompress.UseVisualStyleBackColor = true;
+            this.btnCompress.Click += new System.EventHandler(this.btnCompress_Click);
             // 
             // gvEntries
             // 
@@ -123,6 +125,13 @@
             // 
             this.diaOpen1.FileName = "openFileDialog1";
             // 
+            // bwCompress
+            // 
+            this.bwCompress.WorkerReportsProgress = true;
+            this.bwCompress.DoWork += new System.ComponentModel.DoWorkEventHandler(this.bwCompress_DoWork);
+            this.bwCompress.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwCompress_RunWorkerCompleted);
+            this.bwCompress.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bwCompress_ProgressChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -154,6 +163,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Length;
         private System.Windows.Forms.Button btnLoad;
         private System.Windows.Forms.OpenFileDialog diaOpen1;
+        private System.ComponentModel.BackgroundWorker bwCompress;
     }
 }
 

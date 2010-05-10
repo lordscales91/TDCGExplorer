@@ -17,8 +17,6 @@ namespace TSOHair
             return @"D:\TechArts3D\mod0416\_HAIR_KIT";
         }
 
-        internal static Dictionary<string, TSOTex> texmap;
-
         public static void Main(string[] args)
         {
             if (args.Length < 1)
@@ -41,7 +39,7 @@ namespace TSOHair
             Regex re_housen = new Regex(@"Housen");
             Regex re_ribon = new Regex(@"Ribon");
 
-            texmap = new Dictionary<string, TSOTex>();
+            Dictionary<string, TSOTex> texmap = new Dictionary<string, TSOTex>();
 
             foreach (TSOTex tex in tso.textures)
             {
