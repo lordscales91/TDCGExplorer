@@ -78,6 +78,8 @@ namespace TAHHair
             return Path.Combine(Application.StartupPath, @"cols.txt");
         }
 
+        int tah_version = 10;
+
         private void bwCompress_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
@@ -86,6 +88,7 @@ namespace TAHHair
 
             Encrypter encrypter = new Encrypter();
             encrypter.SourcePath = @".";
+            encrypter.Version = tah_version;
 
             Dictionary<string, TAHEntry> entries = new Dictionary<string, TAHEntry>();
 
@@ -236,6 +239,11 @@ namespace TAHHair
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             decrypter.Close();
+        }
+
+        private void udTahVersion_ValueChanged(object sender, EventArgs e)
+        {
+            tah_version = (int)udTahVersion.Value;
         }
     }
 }

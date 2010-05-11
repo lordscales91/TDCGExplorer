@@ -39,8 +39,11 @@
             this.btnLoad = new System.Windows.Forms.Button();
             this.diaOpen1 = new System.Windows.Forms.OpenFileDialog();
             this.bwCompress = new System.ComponentModel.BackgroundWorker();
+            this.lbTahVersion = new System.Windows.Forms.Label();
+            this.udTahVersion = new System.Windows.Forms.NumericUpDown();
             this.staStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvEntries)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udTahVersion)).BeginInit();
             this.SuspendLayout();
             // 
             // staStrip1
@@ -132,11 +135,35 @@
             this.bwCompress.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwCompress_RunWorkerCompleted);
             this.bwCompress.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bwCompress_ProgressChanged);
             // 
+            // lbTahVersion
+            // 
+            this.lbTahVersion.AutoSize = true;
+            this.lbTahVersion.Location = new System.Drawing.Point(10, 12);
+            this.lbTahVersion.Name = "lbTahVersion";
+            this.lbTahVersion.Size = new System.Drawing.Size(62, 12);
+            this.lbTahVersion.TabIndex = 6;
+            this.lbTahVersion.Text = "tah version";
+            // 
+            // udTahVersion
+            // 
+            this.udTahVersion.Location = new System.Drawing.Point(12, 27);
+            this.udTahVersion.Name = "udTahVersion";
+            this.udTahVersion.Size = new System.Drawing.Size(78, 19);
+            this.udTahVersion.TabIndex = 7;
+            this.udTahVersion.Value = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.udTahVersion.ValueChanged += new System.EventHandler(this.udTahVersion_ValueChanged);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 443);
+            this.Controls.Add(this.udTahVersion);
+            this.Controls.Add(this.lbTahVersion);
             this.Controls.Add(this.btnCompress);
             this.Controls.Add(this.gvEntries);
             this.Controls.Add(this.btnLoad);
@@ -147,6 +174,7 @@
             this.staStrip1.ResumeLayout(false);
             this.staStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvEntries)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udTahVersion)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -165,6 +193,8 @@
         private System.Windows.Forms.Button btnLoad;
         private System.Windows.Forms.OpenFileDialog diaOpen1;
         private System.ComponentModel.BackgroundWorker bwCompress;
+        private System.Windows.Forms.Label lbTahVersion;
+        private System.Windows.Forms.NumericUpDown udTahVersion;
     }
 }
 
