@@ -10,11 +10,11 @@ namespace TDCG.TSOHair
 {
     public class TSOHairProcessor
     {
-        public enum Type { Unknown, Kami, Housen, Ribon };
+        public enum Type { Unknown, Kami, Housen, Ribbon };
 
         static Regex re_kami = new Regex(@"kami", RegexOptions.IgnoreCase);
         static Regex re_housen = new Regex(@"housen|w_faceparts", RegexOptions.IgnoreCase);
-        static Regex re_ribon = new Regex(@"ribon", RegexOptions.IgnoreCase);
+        static Regex re_ribbon = new Regex(@"ribb?on", RegexOptions.IgnoreCase);
 
         public static string GetHairKitPath()
         {
@@ -71,9 +71,9 @@ namespace TDCG.TSOHair
                     type = Type.Housen;
                 }
                 else
-                if (re_ribon.IsMatch(sub.Name))
+                if (re_ribbon.IsMatch(sub.Name))
                 {
-                    type = Type.Ribon;
+                    type = Type.Ribbon;
                 }
                 else
                 if (re_kami.IsMatch(sub.Name))
@@ -92,9 +92,9 @@ namespace TDCG.TSOHair
                             type = Type.Housen;
                         }
                         else
-                        if (re_ribon.IsMatch(file))
+                        if (re_ribbon.IsMatch(file))
                         {
-                            type = Type.Ribon;
+                            type = Type.Ribbon;
                         }
                         else
                         if (re_kami.IsMatch(file))
@@ -129,7 +129,7 @@ namespace TDCG.TSOHair
                             }
                         }
                         break;
-                    case Type.Ribon:
+                    case Type.Ribbon:
                         {
                             TSOTex colorTex;
                             if (texmap.TryGetValue(color_tex_name, out colorTex))
