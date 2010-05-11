@@ -41,6 +41,8 @@
             this.bwCompress = new System.ComponentModel.BackgroundWorker();
             this.lbTahVersion = new System.Windows.Forms.Label();
             this.udTahVersion = new System.Windows.Forms.NumericUpDown();
+            this.lbColorSet = new System.Windows.Forms.Label();
+            this.cbColorSet = new System.Windows.Forms.ComboBox();
             this.staStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvEntries)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udTahVersion)).BeginInit();
@@ -157,11 +159,30 @@
             0});
             this.udTahVersion.ValueChanged += new System.EventHandler(this.udTahVersion_ValueChanged);
             // 
+            // lbColorSet
+            // 
+            this.lbColorSet.AutoSize = true;
+            this.lbColorSet.Location = new System.Drawing.Point(10, 49);
+            this.lbColorSet.Name = "lbColorSet";
+            this.lbColorSet.Size = new System.Drawing.Size(50, 12);
+            this.lbColorSet.TabIndex = 8;
+            this.lbColorSet.Text = "color set";
+            // 
+            // cbColorSet
+            // 
+            this.cbColorSet.FormattingEnabled = true;
+            this.cbColorSet.Location = new System.Drawing.Point(12, 64);
+            this.cbColorSet.Name = "cbColorSet";
+            this.cbColorSet.Size = new System.Drawing.Size(78, 20);
+            this.cbColorSet.TabIndex = 9;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 443);
+            this.Controls.Add(this.cbColorSet);
+            this.Controls.Add(this.lbColorSet);
             this.Controls.Add(this.udTahVersion);
             this.Controls.Add(this.lbTahVersion);
             this.Controls.Add(this.btnCompress);
@@ -195,6 +216,8 @@
         private System.ComponentModel.BackgroundWorker bwCompress;
         private System.Windows.Forms.Label lbTahVersion;
         private System.Windows.Forms.NumericUpDown udTahVersion;
+        private System.Windows.Forms.Label lbColorSet;
+        private System.Windows.Forms.ComboBox cbColorSet;
     }
 }
 
