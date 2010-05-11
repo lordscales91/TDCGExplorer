@@ -226,21 +226,21 @@ namespace TAHHair
             }
         }
 
-        Regex re_kami = new Regex(@"kami", RegexOptions.IgnoreCase);
-        Regex re_housen = new Regex(@"housen", RegexOptions.IgnoreCase);
-        Regex re_ribon = new Regex(@"ribon", RegexOptions.IgnoreCase);
+        static Regex re_kami = new Regex(@"kami", RegexOptions.IgnoreCase);
+        static Regex re_housen = new Regex(@"housen", RegexOptions.IgnoreCase);
+        static Regex re_ribon = new Regex(@"ribon", RegexOptions.IgnoreCase);
 
-        public string GetKamiTexPath(string col)
+        public static string GetKamiTexPath(string col)
         {
             return Path.Combine(GetHairKitPath(), string.Format(@"image_kami\KIT_BASE_{0}.bmp", col));
         }
 
-        public string GetKageTexPath(string col)
+        public static string GetKageTexPath(string col)
         {
             return Path.Combine(GetHairKitPath(), string.Format(@"image_kage\KIT_KAGE_{0}.bmp", col));
         }
 
-        public string GetRibonTexPath(string col)
+        public static string GetRibonTexPath(string col)
         {
             return Path.Combine(GetHairKitPath(), string.Format(@"image_ribon\KIT_RIBON_{0}.bmp", col));
         }
@@ -308,6 +308,9 @@ namespace TAHHair
 
                         if (re_housen.IsMatch(file))
                         {
+                            string sub_path = Path.Combine(GetHairKitPath(), string.Format(@"Cgfx_kage\Cgfxkage_{0}", col));
+                            sub.Load(sub_path);
+
                             colorTex.Load(GetKageTexPath(col));
                         }
                         else
@@ -318,6 +321,9 @@ namespace TAHHair
                         else
                         if (re_kami.IsMatch(file))
                         {
+                            string sub_path = Path.Combine(GetHairKitPath(), string.Format(@"Cgfx_kami\Cgfxkami_{0}", col));
+                            sub.Load(sub_path);
+
                             colorTex.Load(GetKamiTexPath(col));
                         }
                     }
