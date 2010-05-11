@@ -20,6 +20,26 @@ namespace TAHHair
         public Form1()
         {
             InitializeComponent();
+
+            SetColsItems();
+        }
+
+        public static string GetColsRoot()
+        {
+            return Path.Combine(Application.StartupPath, @"cols");
+        }
+
+        private void SetColsItems()
+        {
+            cbColorSet.Items.Clear();
+            string[] files = Directory.GetFiles(GetColsRoot(), "*.txt");
+            foreach (string file in files)
+            {
+                string name = Path.GetFileNameWithoutExtension(file);
+                cbColorSet.Items.Add(name);
+            }
+            if (cbColorSet.Items.Count > 0)
+                cbColorSet.SelectedIndex = 0;
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
@@ -68,17 +88,19 @@ namespace TAHHair
 
         private void DumpFiles()
         {
+            colsname = (string)cbColorSet.Items[cbColorSet.SelectedIndex];
             bwCompress.RunWorkerAsync(source_file);
         }
 
         Regex re_tsofile = new Regex(@"\.tso$");
 
-        public static string GetColsPath()
+        public string GetColsPath()
         {
-            return Path.Combine(Application.StartupPath, @"cols.txt");
+            return Path.Combine(GetColsRoot(), colsname + ".txt");
         }
 
         int tah_version = 10;
+        string colsname = "default";
 
         private void bwCompress_DoWork(object sender, DoWorkEventArgs e)
         {
