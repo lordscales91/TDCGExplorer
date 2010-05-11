@@ -1,6 +1,6 @@
 ダウンロードありがとうございます
 
-●TAHHair ver 0.0.2
+●TAHHair ver 0.0.3
 
 これはなに
 髪色補完を簡単に行うためのツールです。
@@ -28,6 +28,11 @@ HAIR_KITフォルダは 髪色補完キットRY.ver.1.1 (mod0416) から流用しています。
 仕組み
 ・材質名とテクスチャファイル名から材質type（Kami or Housen or Ribbon）を判定する
 ・材質typeに対応するcgfxファイルとテクスチャを入れ替える
+
+ver 0.0.2 からの変更点：
+・判定規則を外部ファイルから読む (TSOHairProcessor.xml)
+・tah version 指定
+・color set 指定
 
 ver 0.0.1 からの変更点：
 ・テクスチャファイル名で判定した場合でもcgfxファイルを入れ替える
