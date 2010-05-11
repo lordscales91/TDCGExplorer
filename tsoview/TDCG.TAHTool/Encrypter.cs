@@ -135,7 +135,7 @@ namespace TDCG.TAHTool
         public GetFileEntryStreamHandler GetFileEntryStream;
 
         int version = 0x10;
-        public int Version { get { return version; } set { version = value;  } }
+        public int Version { get { return version; } set { version = value; } }
 
         //entryî•ñ
         byte[] b_file_index = null;
