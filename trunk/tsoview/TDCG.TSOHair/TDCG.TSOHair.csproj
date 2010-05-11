@@ -57,6 +57,7 @@
     <Reference Include="TDCG, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TSOHairPart.cs" />
     <Compile Include="TSOHairProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

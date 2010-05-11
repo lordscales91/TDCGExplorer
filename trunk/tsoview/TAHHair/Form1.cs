@@ -226,7 +226,7 @@ namespace TAHHair
             TSOFile tso = new TSOFile();
             tso.Load(tso_stream);
 
-            TDCG.TSOHair.TSOHairProcessor processor = new TDCG.TSOHair.TSOHairProcessor();
+            TDCG.TSOHair.TSOHairProcessor processor = TDCG.TSOHair.TSOHairProcessor.Load(Path.Combine(Application.StartupPath, @"TSOHairProcessor.xml"));
             processor.Process(tso, col);
 
             tso.Save(ret_stream);

@@ -2,42 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
 using TDCG;
 
 namespace TDCG.TSOHair
 {
-    public class TSOHairPart
-    {
-        Regex re = null;
-        string text_pattern = null;
-
-        public string Name { get; set; }
-        public string TextPattern
-        {
-            get
-            {
-                return text_pattern;
-            }
-            set
-            {
-                text_pattern = value;
-                re = new Regex(text_pattern, RegexOptions.IgnoreCase);
-            }
-        }
-        public string SubPath { get; set; }
-        public string TexPath { get; set; }
-
-        public Regex GetTextRegex()
-        {
-            return re;
-        }
-    }
-
     public class TSOHairProcessor
     {
-        List<TSOHairPart> parts = new List<TSOHairPart>();
+        public List<TSOHairPart> parts = new List<TSOHairPart>();
 
         public TSOHairProcessor()
         {
@@ -65,6 +39,26 @@ namespace TDCG.TSOHair
             part.SubPath = @"Cgfx_kami\Cgfxkami_{0}";
             part.TexPath = @"image_kami\KIT_BASE_{0}.bmp";
             parts.Add(part);
+        }
+
+        public void Dump(string dest_file)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(TSOHairProcessor));
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Encoding = Encoding.GetEncoding("Shift_JIS");
+            settings.Indent = true;
+            XmlWriter writer = XmlWriter.Create(dest_file, settings);
+            serializer.Serialize(writer, this);
+            writer.Close();
+        }
+
+        public static TSOHairProcessor Load(string source_file)
+        {
+            XmlReader reader = XmlReader.Create(source_file);
+            XmlSerializer serializer = new XmlSerializer(typeof(TSOHairProcessor));
+            TSOHairProcessor program = serializer.Deserialize(reader) as TSOHairProcessor;
+            reader.Close();
+            return program;
         }
 
         public static string GetHairKitPath()
