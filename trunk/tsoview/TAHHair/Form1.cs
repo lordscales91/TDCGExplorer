@@ -218,7 +218,7 @@ namespace TAHHair
                 worker.ReportProgress(percent);
                 return ret_stream;
             };
-            encrypter.Save(@"col-" + Path.GetFileName(source_file));
+            encrypter.Save(@"col-" + colsname + "-" + Path.GetFileName(source_file));
         }
 
         private void bwCompress_ProgressChanged(object sender, ProgressChangedEventArgs e)
