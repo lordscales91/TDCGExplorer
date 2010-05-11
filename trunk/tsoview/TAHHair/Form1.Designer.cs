@@ -178,6 +178,7 @@
             // 
             // Form1
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(624, 443);
@@ -191,7 +192,9 @@
             this.Controls.Add(this.staStrip1);
             this.Name = "Form1";
             this.Text = "tah hair";
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
+            this.DragOver += new System.Windows.Forms.DragEventHandler(this.Form1_DragOver);
             this.staStrip1.ResumeLayout(false);
             this.staStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvEntries)).EndInit();

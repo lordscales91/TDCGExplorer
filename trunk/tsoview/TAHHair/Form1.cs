@@ -46,16 +46,21 @@ namespace TAHHair
         {
             if (diaOpen1.ShowDialog() == DialogResult.OK)
             {
-                source_file = diaOpen1.FileName;
-                decrypter.Load(source_file);
-                btnCompress.Enabled = false;
-                btnLoad.Enabled = false;
-                lbStatus.Text = "Processing...";
-                DumpEntries();
-                lbStatus.Text = "ok. Loaded";
-                btnLoad.Enabled = true;
-                btnCompress.Enabled = true;
+                LoadTahFile(diaOpen1.FileName);
             }
+        }
+
+        private void LoadTahFile(string source_file)
+        {
+            this.source_file = source_file;
+            decrypter.Load(source_file);
+            btnCompress.Enabled = false;
+            btnLoad.Enabled = false;
+            lbStatus.Text = "Processing...";
+            DumpEntries();
+            lbStatus.Text = "ok. Loaded";
+            btnLoad.Enabled = true;
+            btnCompress.Enabled = true;
         }
 
         Regex re_hair_tsofile = new Regex(@"(B|C)00\.tso$");
@@ -266,6 +271,36 @@ namespace TAHHair
         private void udTahVersion_ValueChanged(object sender, EventArgs e)
         {
             tah_version = (int)udTahVersion.Value;
+        }
+
+        private void Form1_DragOver(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                if ((e.KeyState & 8) == 8)
+                    e.Effect = DragDropEffects.Copy;
+                else
+                    e.Effect = DragDropEffects.Move;
+            }
+        }
+
+        private void Form1_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
+                    LoadAnyFile(src, (e.KeyState & 8) == 8);
+            }
+        }
+
+        public void LoadAnyFile(string source_file, bool append)
+        {
+            switch (Path.GetExtension(source_file).ToLower())
+            {
+                case ".tah":
+                    LoadTahFile(source_file);
+                    break;
+            }
         }
     }
 }
