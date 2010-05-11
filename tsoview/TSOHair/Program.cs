@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
+using System.Windows.Forms;
 using TDCG;
 
 namespace TSOHair
@@ -28,7 +29,7 @@ namespace TSOHair
             TSOFile tso = new TSOFile();
             tso.Load(source_file);
 
-            TDCG.TSOHair.TSOHairProcessor processor = new TDCG.TSOHair.TSOHairProcessor();
+            TDCG.TSOHair.TSOHairProcessor processor = TDCG.TSOHair.TSOHairProcessor.Load(Path.Combine(Application.StartupPath, @"TSOHairProcessor.xml"));
             processor.Process(tso, col);
 
             tso.Save(string.Format("{0}.tso", basename));
