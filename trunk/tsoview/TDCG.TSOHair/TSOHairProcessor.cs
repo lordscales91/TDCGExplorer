@@ -149,9 +149,10 @@ namespace TDCG.TSOHair
                 Console.WriteLine("    shader color tex name {0}", color_tex_name);
                 Console.WriteLine("    shader shade tex name {0}", shade_tex_name);
             }
+
             foreach (TSOTex tex in tso.textures)
             {
-                Console.WriteLine("tex name {0} file {1}", tex.Name, tex.FileName);
+                Console.WriteLine("  tex name {0} file {1}", tex.Name, tex.FileName);
             }
         }
     }
