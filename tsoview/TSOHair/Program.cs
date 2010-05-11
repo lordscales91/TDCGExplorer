@@ -13,13 +13,25 @@ namespace TSOHair
 {
     public static class Program
     {
+        public enum Type { Unknown, Kami, Housen, Ribon };
+
         static Regex re_kami = new Regex(@"kami", RegexOptions.IgnoreCase);
-        static Regex re_housen = new Regex(@"housen", RegexOptions.IgnoreCase);
+        static Regex re_housen = new Regex(@"housen|w_faceparts", RegexOptions.IgnoreCase);
         static Regex re_ribon = new Regex(@"ribon", RegexOptions.IgnoreCase);
 
         public static string GetHairKitPath()
         {
             return Path.Combine(Application.StartupPath, @"HAIR_KIT");
+        }
+
+        public static string GetKamiSubPath(string col)
+        {
+            return Path.Combine(GetHairKitPath(), string.Format(@"Cgfx_kami\Cgfxkami_{0}", col));
+        }
+
+        public static string GetKageSubPath(string col)
+        {
+            return Path.Combine(GetHairKitPath(), string.Format(@"Cgfx_kage\Cgfxkage_{0}", col));
         }
 
         public static string GetKamiTexPath(string col)
@@ -67,6 +79,7 @@ namespace TSOHair
             foreach (TSOSubScript sub in tso.sub_scripts)
             {
                 Console.WriteLine("  sub name {0} file {1}", sub.Name, sub.FileName);
+                Type type = Type.Unknown;
 
                 Shader shader = sub.shader;
                 string color_tex_name = shader.ColorTexName;
@@ -76,35 +89,17 @@ namespace TSOHair
                 // ex. KamiHousen ÇÃèÍçáÇÕ Housen Ç∆ÇµÇƒèàóù
                 if (re_housen.IsMatch(sub.Name))
                 {
-                    string sub_path = Path.Combine(GetHairKitPath(), string.Format(@"Cgfx_kage\Cgfxkage_{0}", col));
-                    sub.Load(sub_path);
-
-                    TSOTex colorTex;
-                    if (texmap.TryGetValue(color_tex_name, out colorTex))
-                    {
-                        colorTex.Load(GetKageTexPath(col));
-                    }
+                    type = Type.Housen;
                 }
                 else
                 if (re_ribon.IsMatch(sub.Name))
                 {
-                    TSOTex colorTex;
-                    if (texmap.TryGetValue(color_tex_name, out colorTex))
-                    {
-                        colorTex.Load(GetRibonTexPath(col));
-                    }
+                    type = Type.Ribon;
                 }
                 else
                 if (re_kami.IsMatch(sub.Name))
                 {
-                    string sub_path = Path.Combine(GetHairKitPath(), string.Format(@"Cgfx_kami\Cgfxkami_{0}", col));
-                    sub.Load(sub_path);
-
-                    TSOTex colorTex;
-                    if (texmap.TryGetValue(color_tex_name, out colorTex))
-                    {
-                        colorTex.Load(GetKamiTexPath(col));
-                    }
+                    type = Type.Kami;
                 }
                 else
                 {
@@ -115,25 +110,55 @@ namespace TSOHair
 
                         if (re_housen.IsMatch(file))
                         {
-                            string sub_path = Path.Combine(GetHairKitPath(), string.Format(@"Cgfx_kage\Cgfxkage_{0}", col));
-                            sub.Load(sub_path);
-
-                            colorTex.Load(GetKageTexPath(col));
+                            type = Type.Housen;
                         }
                         else
                         if (re_ribon.IsMatch(file))
                         {
-                            colorTex.Load(GetRibonTexPath(col));
+                            type = Type.Ribon;
                         }
                         else
                         if (re_kami.IsMatch(file))
                         {
-                            string sub_path = Path.Combine(GetHairKitPath(), string.Format(@"Cgfx_kami\Cgfxkami_{0}", col));
-                            sub.Load(sub_path);
-
-                            colorTex.Load(GetKamiTexPath(col));
+                            type = Type.Kami;
                         }
                     }
+                }
+                Console.WriteLine("    : type {0}", type);
+
+                switch (type)
+                {
+                    case Type.Kami:
+                        {
+                            sub.Load(GetKamiSubPath(col));
+
+                            TSOTex colorTex;
+                            if (texmap.TryGetValue(color_tex_name, out colorTex))
+                            {
+                                colorTex.Load(GetKamiTexPath(col));
+                            }
+                        }
+                        break;
+                    case Type.Housen:
+                        {
+                            sub.Load(GetKageSubPath(col));
+
+                            TSOTex colorTex;
+                            if (texmap.TryGetValue(color_tex_name, out colorTex))
+                            {
+                                colorTex.Load(GetKageTexPath(col));
+                            }
+                        }
+                        break;
+                    case Type.Ribon:
+                        {
+                            TSOTex colorTex;
+                            if (texmap.TryGetValue(color_tex_name, out colorTex))
+                            {
+                                colorTex.Load(GetRibonTexPath(col));
+                            }
+                        }
+                        break;
                 }
 
                 sub.GenerateShader();
