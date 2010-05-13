@@ -4,23 +4,24 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using System.Xml;
+using System.Xml.Serialization;
 using TDCG;
 using TDCG.TAHTool;
 using TDCG.TSOHair;
 
 namespace TAHHair
 {
-    class TAHHairProcessor
+    public class TAHHairProcessor
     {
         Decrypter decrypter = new Decrypter();
-        string source_file = null;
+        TSOHairProcessor tsohair_processor;
 
         public List<TBNHairPart> parts;
-        TSOHairProcessor tsohair_processor;
+        public string PsdPath { get; set; }
 
         public TAHHairProcessor()
         {
-            CreateParts();
             tsohair_processor = TSOHairProcessor.Load(Path.Combine(Application.StartupPath, @"TSOHairProcessor.xml"));
         }
 
@@ -38,6 +39,26 @@ namespace TAHHair
             part.Row = "C";
             part.TbnPath = "N000BHEA_C00.tbn";
             parts.Add(part);
+        }
+
+        public void Dump(string dest_file)
+        {
+            XmlSerializer serializer = new XmlSerializer(typeof(TAHHairProcessor));
+            XmlWriterSettings settings = new XmlWriterSettings();
+            settings.Encoding = Encoding.GetEncoding("Shift_JIS");
+            settings.Indent = true;
+            XmlWriter writer = XmlWriter.Create(dest_file, settings);
+            serializer.Serialize(writer, this);
+            writer.Close();
+        }
+
+        public static TAHHairProcessor Load(string source_file)
+        {
+            XmlReader reader = XmlReader.Create(source_file);
+            XmlSerializer serializer = new XmlSerializer(typeof(TAHHairProcessor));
+            TAHHairProcessor program = serializer.Deserialize(reader) as TAHHairProcessor;
+            reader.Close();
+            return program;
         }
 
         int tah_version = 10;
@@ -85,7 +106,9 @@ namespace TAHHair
             return Path.Combine(Application.StartupPath, @"HAIR_KIT");
         }
 
-        public void Load(string source_file)
+        string source_file = null;
+
+        public void Open(string source_file)
         {
             this.source_file = source_file;
             decrypter.Load(source_file);
@@ -99,6 +122,7 @@ namespace TAHHair
         Regex re_hair_tsofile = new Regex(@"(B|C)00\.tso$");
 
         public delegate void ProgressChangedHandler(int percent);
+        [XmlIgnore]
         public ProgressChangedHandler ProgressChanged;
 
         public List<TAHEntry> GetTSOHairEntries()
@@ -202,7 +226,7 @@ namespace TAHHair
                 else
                 if (ext == ".psd")
                 {
-                    string src_path = Path.Combine(GetHairKitPath(), string.Format(@"icon\Icon_{0}.psd", col));
+                    string src_path = Path.Combine(GetHairKitPath(), string.Format(PsdPath, col));
                     using (FileStream source_stream = File.OpenRead(src_path))
                     {
                         ret_stream = new MemoryStream();
@@ -255,8 +279,7 @@ namespace TAHHair
             TSOFile tso = new TSOFile();
             tso.Load(tso_stream);
 
-            TDCG.TSOHair.TSOHairProcessor processor = TDCG.TSOHair.TSOHairProcessor.Load(Path.Combine(Application.StartupPath, @"TSOHairProcessor.xml"));
-            processor.Process(tso, col);
+            tsohair_processor.Process(tso, col);
 
             tso.Save(ret_stream);
         }
