@@ -21,6 +21,7 @@ namespace TAHHair
             InitializeComponent();
 
             processor = TAHHairProcessor.Load(Path.Combine(Application.StartupPath, @"TAHHairProcessor.xml"));
+            //processor.Dump(@"TAHHairProcessor.xml");
             SetColsItems();
         }
 
@@ -31,8 +32,13 @@ namespace TAHHair
             {
                 cbColorSet.Items.Add(name);
             }
-            if (cbColorSet.Items.Count > 0)
-                cbColorSet.SelectedIndex = 0;
+            foreach (string name in cbColorSet.Items)
+            {
+                if (name == processor.ColorSet)
+                {
+                    cbColorSet.SelectedItem = name;
+                }
+            }
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
@@ -76,7 +82,7 @@ namespace TAHHair
 
         private void DumpFiles()
         {
-            processor.Colsname = (string)cbColorSet.Items[cbColorSet.SelectedIndex];
+            processor.ColorSet = (string)cbColorSet.SelectedItem;
             bwCompress.RunWorkerAsync();
         }
 

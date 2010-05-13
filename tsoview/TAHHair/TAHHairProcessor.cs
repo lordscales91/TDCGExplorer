@@ -24,6 +24,7 @@ namespace TAHHair
         public TAHHairProcessor()
         {
             tsohair_processor = TSOHairProcessor.Load(Path.Combine(Application.StartupPath, @"TSOHairProcessor.xml"));
+            //tsohair_processor.Dump(@"TSOHairProcessor.xml");
         }
 
         public void CreateParts()
@@ -65,6 +66,10 @@ namespace TAHHair
         int tah_version = 10;
         public int TahVersion
         {
+            get
+            {
+                return tah_version;
+            }
             set
             {
                 tah_version = value;
@@ -72,8 +77,12 @@ namespace TAHHair
         }
 
         string colsname = "default";
-        public string Colsname
+        public string ColorSet
         {
+            get
+            {
+                return colsname;
+            }
             set
             {
                 colsname = value;
