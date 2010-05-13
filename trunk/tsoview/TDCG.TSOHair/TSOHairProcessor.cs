@@ -11,6 +11,7 @@ namespace TDCG.TSOHair
 {
     public class TSOHairProcessor
     {
+        public string KitRoot { get; set; }
         public List<TSOHairPart> parts;
 
         public TSOHairProcessor()
@@ -66,11 +67,6 @@ namespace TDCG.TSOHair
             return program;
         }
 
-        public static string GetHairKitPath()
-        {
-            return Path.Combine(Application.StartupPath, @"HAIR_KIT");
-        }
-
         public void Process(TSOFile tso, string col)
         {
             Dictionary<string, TSOTex> texmap = new Dictionary<string, TSOTex>();
@@ -122,7 +118,7 @@ namespace TDCG.TSOHair
                 {
                     if (detected_part.SubPath != null)
                     {
-                        sub.Load(Path.Combine(GetHairKitPath(), string.Format(detected_part.SubPath, col)));
+                        sub.Load(Path.Combine(KitRoot, string.Format(detected_part.SubPath, col)));
                     }
 
                     if (detected_part.TexPath != null)
@@ -130,7 +126,7 @@ namespace TDCG.TSOHair
                         TSOTex colorTex;
                         if (texmap.TryGetValue(color_tex_name, out colorTex))
                         {
-                            colorTex.Load(Path.Combine(GetHairKitPath(), string.Format(detected_part.TexPath, col)));
+                            colorTex.Load(Path.Combine(KitRoot, string.Format(detected_part.TexPath, col)));
                         }
                     }
                 }

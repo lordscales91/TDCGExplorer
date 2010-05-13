@@ -17,6 +17,7 @@ namespace TAHHair
         Decrypter decrypter = new Decrypter();
         TSOHairProcessor tsohair_processor;
 
+        public string KitRoot { get; set; }
         public List<TBNHairPart> parts;
         public string PsdPath { get; set; }
 
@@ -99,11 +100,6 @@ namespace TAHHair
         public string GetColsPath()
         {
             return Path.Combine(GetColsRoot(), colsname + ".txt");
-        }
-
-        public static string GetHairKitPath()
-        {
-            return Path.Combine(Application.StartupPath, @"HAIR_KIT");
         }
 
         string source_file = null;
@@ -204,7 +200,7 @@ namespace TAHHair
                             break;
                         }
                     }
-                    using (FileStream source_stream = File.OpenRead(Path.Combine(GetHairKitPath(), src_path)))
+                    using (FileStream source_stream = File.OpenRead(Path.Combine(KitRoot, src_path)))
                     {
                         ret_stream = new MemoryStream();
                         ProcessTBNFile(source_stream, ret_stream, basename);
@@ -226,7 +222,7 @@ namespace TAHHair
                 else
                 if (ext == ".psd")
                 {
-                    string src_path = Path.Combine(GetHairKitPath(), string.Format(PsdPath, col));
+                    string src_path = Path.Combine(KitRoot, string.Format(PsdPath, col));
                     using (FileStream source_stream = File.OpenRead(src_path))
                     {
                         ret_stream = new MemoryStream();
