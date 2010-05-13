@@ -145,6 +145,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "Form1";
             this.Text = "tah background";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.staStrip1.ResumeLayout(false);
             this.staStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gvEntries)).EndInit();

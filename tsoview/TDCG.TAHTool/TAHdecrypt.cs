@@ -17,7 +17,7 @@ namespace TDCG.TAHTool
         public static int DumpFiles(string source_file)
         {
             Decrypter decrypter = new Decrypter();
-            decrypter.Load(source_file);
+            decrypter.Open(source_file);
 
             string base_path = Path.GetFileNameWithoutExtension(source_file);
 
