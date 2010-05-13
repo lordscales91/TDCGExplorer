@@ -11,7 +11,7 @@
     </TBNHairPart>
   </parts>
   <KitRoot>HAIR_KIT</KitRoot>
-  <PsdPath>icon\Icon_{0}.psd</PsdPath>
+  <PsdPath>Icon\Icon_{0}.psd</PsdPath>
   <TahVersion>10</TahVersion>
   <ColorSet>default</ColorSet>
 </TAHHairProcessor>

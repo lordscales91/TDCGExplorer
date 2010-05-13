@@ -10,7 +10,7 @@
     <TSOHairPart>
       <Name>Ribbon</Name>
       <TextPattern>ribb?on</TextPattern>
-      <SubPath>Cgfx_kage\Cgfx_kage_{0}</SubPath>
+      <SubPath>Cgfx_ribon\Cgfx_ribon_{0}</SubPath>
       <TexPath>Image_ribon\Image_ribon_{0}.bmp</TexPath>
     </TSOHairPart>
     <TSOHairPart>
