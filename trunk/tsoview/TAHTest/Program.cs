@@ -17,7 +17,7 @@ namespace TAHTest
             string source_file = args[0];
 
             TDCG.TAHTool.Decrypter decrypter = new TDCG.TAHTool.Decrypter();
-            decrypter.Load(source_file);
+            decrypter.Open(source_file);
             decrypter.Close();
 
             foreach (TDCG.TAHTool.TAHEntry entry in decrypter.Entries)

@@ -41,7 +41,7 @@ namespace TAHProportion
             if (diaOpen1.ShowDialog() == DialogResult.OK)
             {
                 source_file = diaOpen1.FileName;
-                decrypter.Load(source_file);
+                decrypter.Open(source_file);
                 btnCompress.Enabled = false;
                 btnLoad.Enabled = false;
                 lbStatus.Text = "Processing...";

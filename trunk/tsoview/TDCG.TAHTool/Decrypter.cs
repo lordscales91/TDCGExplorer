@@ -307,7 +307,7 @@ namespace TDCG.TAHTool
 
         public TAHEntry[] Entries { get; set; }
 
-        public void Load(string source_file)
+        public void Open(string source_file)
         {
             reader = new BinaryReader(File.OpenRead(source_file));
             extract_TAH_directory();

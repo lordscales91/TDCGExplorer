@@ -111,7 +111,7 @@ namespace TAHHair
         public void Open(string source_file)
         {
             this.source_file = source_file;
-            decrypter.Load(source_file);
+            decrypter.Open(source_file);
         }
 
         public void Close()
