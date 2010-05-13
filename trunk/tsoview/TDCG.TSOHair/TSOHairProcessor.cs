@@ -11,33 +11,38 @@ namespace TDCG.TSOHair
 {
     public class TSOHairProcessor
     {
-        public List<TSOHairPart> parts = new List<TSOHairPart>();
+        public List<TSOHairPart> parts;
 
         public TSOHairProcessor()
         {
+        }
+
+        public void CreateParts()
+        {
+            parts = new List<TSOHairPart>();
             TSOHairPart part;
 
             // Housen ÇÕ Kami ÇÊÇËóDêÊÇ∑ÇÈÅB
             // ex. KamiHousen ÇÃèÍçáÇÕ Housen Ç∆ÇµÇƒèàóù
             part = new TSOHairPart();
             part.Name = "Housen";
-            part.TextPattern = @"housen|w_faceparts";
-            part.SubPath = @"Cgfx_kage\Cgfxkage_{0}";
-            part.TexPath = @"image_kage\KIT_KAGE_{0}.bmp";
+            part.TextPattern = @"housen|w_facepartsa";
+            part.SubPath = @"Cgfx_kage\Cgfx_kage_{0}";
+            part.TexPath = @"Image_kage\Image_kage_{0}.bmp";
             parts.Add(part);
 
             part = new TSOHairPart();
             part.Name = "Ribbon";
             part.TextPattern = @"ribb?on";
-            part.SubPath = null;
-            part.TexPath = @"image_ribon\KIT_RIBON_{0}.bmp";
+            part.SubPath = @"Cgfx_ribon\Cgfx_ribon_{0}";
+            part.TexPath = @"Image_ribon\Image_ribon_{0}.bmp";
             parts.Add(part);
 
             part = new TSOHairPart();
             part.Name = "Kami";
             part.TextPattern = @"kami";
-            part.SubPath = @"Cgfx_kami\Cgfxkami_{0}";
-            part.TexPath = @"image_kami\KIT_BASE_{0}.bmp";
+            part.SubPath = @"Cgfx_kami\Cgfx_kami_{0}";
+            part.TexPath = @"Image_kami\Image_kami_{0}.bmp";
             parts.Add(part);
         }
 
