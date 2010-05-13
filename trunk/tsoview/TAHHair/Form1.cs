@@ -22,6 +22,7 @@ namespace TAHHair
 
             processor = TAHHairProcessor.Load(Path.Combine(Application.StartupPath, @"TAHHairProcessor.xml"));
             //processor.Dump(@"TAHHairProcessor.xml");
+            udTahVersion.Value = processor.TahVersion;
             SetColsItems();
         }
 
