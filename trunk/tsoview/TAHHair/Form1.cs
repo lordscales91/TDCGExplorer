@@ -12,6 +12,12 @@ using TDCG.TAHTool;
 
 namespace TAHHair
 {
+    public class TBNHairPart
+    {
+        public string Row { get; set; }
+        public string TbnPath { get; set; }
+    }
+
     public partial class Form1 : Form
     {
         string source_file = null;
@@ -22,6 +28,7 @@ namespace TAHHair
             InitializeComponent();
 
             SetColsItems();
+            CreateParts();
         }
 
         public static string GetColsRoot()
@@ -40,6 +47,24 @@ namespace TAHHair
             }
             if (cbColorSet.Items.Count > 0)
                 cbColorSet.SelectedIndex = 0;
+        }
+
+        public List<TBNHairPart> parts;
+
+        public void CreateParts()
+        {
+            parts = new List<TBNHairPart>();
+            TBNHairPart part;
+
+            part = new TBNHairPart();
+            part.Row = "B";
+            part.TbnPath = "N000FHEA_B00.tbn";
+            parts.Add(part);
+
+            part = new TBNHairPart();
+            part.Row = "C";
+            part.TbnPath = "N000BHEA_C00.tbn";
+            parts.Add(part);
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
@@ -107,6 +132,11 @@ namespace TAHHair
         int tah_version = 10;
         string colsname = "default";
 
+        public static string GetHairKitPath()
+        {
+            return Path.Combine(Application.StartupPath, @"HAIR_KIT");
+        }
+
         private void bwCompress_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
@@ -167,13 +197,16 @@ namespace TAHHair
                 Stream ret_stream = null;
                 if (ext == ".tbn")
                 {
-                    string src_basename = null;
-                    if (row == "B")
-                        src_basename = "N000FHEA_B00";
-                    if (row == "C")
-                        src_basename = "N000BHEA_C00";
-                    string src_path = Path.Combine(TDCG.TSOHair.TSOHairProcessor.GetHairKitPath(), string.Format(@"{0}.tbn", src_basename));
-                    using (FileStream source_stream = File.OpenRead(src_path))
+                    string src_path = null;
+                    foreach (TBNHairPart part in parts)
+                    {
+                        if (row == part.Row)
+                        {
+                            src_path = part.TbnPath;
+                            break;
+                        }
+                    }
+                    using (FileStream source_stream = File.OpenRead(Path.Combine(GetHairKitPath(), src_path)))
                     {
                         ret_stream = new MemoryStream();
 
@@ -210,7 +243,7 @@ namespace TAHHair
                 else
                 if (ext == ".psd")
                 {
-                    string src_path = Path.Combine(TDCG.TSOHair.TSOHairProcessor.GetHairKitPath(), string.Format(@"icon\ICON_{0}.psd", col));
+                    string src_path = Path.Combine(GetHairKitPath(), string.Format(@"icon\Icon_{0}.psd", col));
                     using (FileStream source_stream = File.OpenRead(src_path))
                     {
                         ret_stream = new MemoryStream();
