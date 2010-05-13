@@ -124,11 +124,11 @@ namespace TAHHair
             decrypter.Close();
         }
 
-        Regex re_hair_tsofile = new Regex(@"(B|C)00\.tso$");
-
         public delegate void ProgressChangedHandler(int percent);
         [XmlIgnore]
         public ProgressChangedHandler ProgressChanged;
+
+        Regex re_hair_tsofile = new Regex(@"(B|C)00\.tso$");
 
         public List<TAHEntry> GetTSOHairEntries()
         {
@@ -148,6 +148,26 @@ namespace TAHHair
             return entries;
         }
 
+        Regex re_icon_psdfile = new Regex(@"(B|C)00\.psd$");
+
+        public List<TAHEntry> GetPSDIconEntries()
+        {
+            List<TAHEntry> entries = new List<TAHEntry>();
+            foreach (TAHEntry entry in decrypter.Entries)
+            {
+                if (entry.flag % 2 == 1)
+                    continue;
+
+                string path = entry.file_name;
+
+                if (re_icon_psdfile.IsMatch(path))
+                {
+                    entries.Add(entry);
+                }
+            }
+            return entries;
+        }
+
         public void Process()
         {
             string[] cols = File.ReadAllLines(GetColsPath());
@@ -156,7 +176,8 @@ namespace TAHHair
             encrypter.SourcePath = @".";
             encrypter.Version = tah_version;
 
-            Dictionary<string, TAHEntry> entries = new Dictionary<string, TAHEntry>();
+            Dictionary<string, TAHEntry> tso_entries = new Dictionary<string, TAHEntry>();
+            Dictionary<string, TAHEntry> psd_entries = new Dictionary<string, TAHEntry>();
 
             foreach (TAHEntry entry in GetTSOHairEntries())
             {
@@ -166,7 +187,7 @@ namespace TAHHair
                 string code = basename.Substring(0, 8);
                 string row = basename.Substring(9, 1);
 
-                entries[code] = entry;
+                tso_entries[code] = entry;
 
                 foreach (string col in cols)
                 {
@@ -183,21 +204,32 @@ namespace TAHHair
                 }
             }
 
+            foreach (TAHEntry entry in GetPSDIconEntries())
+            {
+                string path = entry.file_name;
+
+                string basename = Path.GetFileNameWithoutExtension(path);
+                string code = basename.Substring(0, 8);
+                string row = basename.Substring(9, 1);
+
+                psd_entries[code] = entry;
+            }
+
             int entries_count = encrypter.Count;
             int current_index = 0;
             encrypter.GetFileEntryStream = delegate(string path)
             {
                 Console.WriteLine("compressing {0}", path);
 
+                Stream ret_stream = null;
+
                 string basename = Path.GetFileNameWithoutExtension(path);
                 string code = basename.Substring(0, 8);
                 string row = basename.Substring(9, 1);
                 string col = basename.Substring(10, 2);
 
-                TAHEntry entry = entries[code];
                 string ext = Path.GetExtension(path).ToLower();
 
-                Stream ret_stream = null;
                 if (ext == ".tbn")
                 {
                     string src_path = null;
@@ -219,6 +251,7 @@ namespace TAHHair
                 else
                 if (ext == ".tso")
                 {
+                    TAHEntry entry = tso_entries[code];
                     byte[] data_output;
                     decrypter.ExtractResource(entry, out data_output);
                     using (MemoryStream tso_stream = new MemoryStream(data_output))
@@ -231,17 +264,28 @@ namespace TAHHair
                 else
                 if (ext == ".psd")
                 {
-                    string src_path = Path.Combine(KitRoot, string.Format(PsdPath, col));
-                    using (FileStream source_stream = File.OpenRead(src_path))
+                    if (col == "00")
                     {
-                        ret_stream = new MemoryStream();
-                        Copy(source_stream, ret_stream);
+                        TAHEntry entry = psd_entries[code];
+                        byte[] data_output;
+                        decrypter.ExtractResource(entry, out data_output);
+                        ret_stream = new MemoryStream(data_output);
                     }
-                    ret_stream.Seek(0, SeekOrigin.Begin);
+                    else
+                    {
+                        string src_path = Path.Combine(KitRoot, string.Format(PsdPath, col));
+                        using (FileStream source_stream = File.OpenRead(src_path))
+                        {
+                            ret_stream = new MemoryStream();
+                            Copy(source_stream, ret_stream);
+                        }
+                        ret_stream.Seek(0, SeekOrigin.Begin);
+                    }
                 }
                 current_index++;
                 int percent = current_index * 100 / entries_count;
                 ProgressChanged(percent);
+
                 return ret_stream;
             };
             encrypter.Save(@"col-" + colsname + "-" + Path.GetFileName(source_file));
