@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="shift_jis"?>
 <TSOHairProcessor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <KitRoot>HAIR_KIT</KitRoot>
   <parts>
     <TSOHairPart>
       <Name>Housen</Name>
@@ -21,4 +20,5 @@
       <TexPath>Image_kami\Image_kami_{0}.bmp</TexPath>
     </TSOHairPart>
   </parts>
+  <KitRoot>HAIR_KIT</KitRoot>
 </TSOHairProcessor>
