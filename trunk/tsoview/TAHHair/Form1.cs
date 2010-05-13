@@ -12,12 +12,6 @@ using TDCG.TAHTool;
 
 namespace TAHHair
 {
-    public class TBNHairPart
-    {
-        public string Row { get; set; }
-        public string TbnPath { get; set; }
-    }
-
     public partial class Form1 : Form
     {
         string source_file = null;
@@ -209,22 +203,7 @@ namespace TAHHair
                     using (FileStream source_stream = File.OpenRead(Path.Combine(GetHairKitPath(), src_path)))
                     {
                         ret_stream = new MemoryStream();
-
-                        TBNFile tbn = new TBNFile();
-                        tbn.Load(source_stream);
-
-                        Dictionary<uint, string> strings = tbn.GetStringDictionary();
-                        foreach (uint i in strings.Keys)
-                        {
-                            string str = strings[i];
-                            if (re_tsofile.IsMatch(str))
-                            {
-                                Console.WriteLine("{0:X4}: {1}", i, str);
-                                tbn.SetString(i, string.Format("data/model/{0}.tso", basename));
-                            }
-                        }
-
-                        tbn.Save(ret_stream);
+                        ProcessTBNFile(source_stream, ret_stream, basename);
                     }
                     ret_stream.Seek(0, SeekOrigin.Begin);
                 }
@@ -236,7 +215,7 @@ namespace TAHHair
                     using (MemoryStream tso_stream = new MemoryStream(data_output))
                     {
                         ret_stream = new MemoryStream();
-                        Process(tso_stream, ret_stream, col);
+                        ProcessTSOFile(tso_stream, ret_stream, col);
                     }
                     ret_stream.Seek(0, SeekOrigin.Begin);
                 }
@@ -284,7 +263,26 @@ namespace TAHHair
             }
         }
 
-        public bool Process(Stream tso_stream, Stream ret_stream, string col)
+        public void ProcessTBNFile(FileStream source_stream, Stream ret_stream, string basename)
+        {
+            TBNFile tbn = new TBNFile();
+            tbn.Load(source_stream);
+
+            Dictionary<uint, string> strings = tbn.GetStringDictionary();
+            foreach (uint i in strings.Keys)
+            {
+                string str = strings[i];
+                if (re_tsofile.IsMatch(str))
+                {
+                    Console.WriteLine("{0:X4}: {1}", i, str);
+                    tbn.SetString(i, string.Format("data/model/{0}.tso", basename));
+                }
+            }
+
+            tbn.Save(ret_stream);
+        }
+
+        public void ProcessTSOFile(Stream tso_stream, Stream ret_stream, string col)
         {
             TSOFile tso = new TSOFile();
             tso.Load(tso_stream);
@@ -293,7 +291,6 @@ namespace TAHHair
             processor.Process(tso, col);
 
             tso.Save(ret_stream);
-            return true;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
