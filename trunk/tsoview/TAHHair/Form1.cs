@@ -20,7 +20,7 @@ namespace TAHHair
         {
             InitializeComponent();
 
-            processor = new TAHHairProcessor();
+            processor = TAHHairProcessor.Load(Path.Combine(Application.StartupPath, @"TAHHairProcessor.xml"));
             SetColsItems();
         }
 
@@ -39,13 +39,13 @@ namespace TAHHair
         {
             if (diaOpen1.ShowDialog() == DialogResult.OK)
             {
-                LoadTahFile(diaOpen1.FileName);
+                LoadTAHFile(diaOpen1.FileName);
             }
         }
 
-        private void LoadTahFile(string source_file)
+        private void LoadTAHFile(string source_file)
         {
-            processor.Load(source_file);
+            processor.Open(source_file);
 
             btnCompress.Enabled = false;
             btnLoad.Enabled = false;
@@ -139,7 +139,7 @@ namespace TAHHair
             switch (Path.GetExtension(source_file).ToLower())
             {
                 case ".tah":
-                    LoadTahFile(source_file);
+                    LoadTAHFile(source_file);
                     break;
             }
         }
