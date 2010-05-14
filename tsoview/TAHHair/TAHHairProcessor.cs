@@ -128,11 +128,20 @@ namespace TAHHair
         [XmlIgnore]
         public ProgressChangedHandler ProgressChanged;
 
-        Regex re_hair_tsofile = new Regex(@"(B|C)00\.tso$");
+        public string GetTSOFilePattern()
+        {
+            return @"(B|C)00\.tso";
+        }
+
+        public Regex CreateTSOFileRegex()
+        {
+            return new Regex(GetTSOFilePattern());
+        }
 
         public List<TAHEntry> GetTSOHairEntries()
         {
             List<TAHEntry> entries = new List<TAHEntry>();
+            Regex re = CreateTSOFileRegex();
             foreach (TAHEntry entry in decrypter.Entries)
             {
                 if (entry.flag % 2 == 1)
@@ -140,7 +149,7 @@ namespace TAHHair
 
                 string path = entry.file_name;
 
-                if (re_hair_tsofile.IsMatch(path))
+                if (re.IsMatch(path))
                 {
                     entries.Add(entry);
                 }
@@ -148,11 +157,20 @@ namespace TAHHair
             return entries;
         }
 
-        Regex re_icon_psdfile = new Regex(@"(B|C)00\.psd$");
+        public string GetPSDFilePattern()
+        {
+            return @"(B|C)00\.psd";
+        }
+
+        public Regex CreatePSDFileRegex()
+        {
+            return new Regex(GetPSDFilePattern());
+        }
 
         public List<TAHEntry> GetPSDIconEntries()
         {
             List<TAHEntry> entries = new List<TAHEntry>();
+            Regex re = CreatePSDFileRegex();
             foreach (TAHEntry entry in decrypter.Entries)
             {
                 if (entry.flag % 2 == 1)
@@ -160,7 +178,7 @@ namespace TAHHair
 
                 string path = entry.file_name;
 
-                if (re_icon_psdfile.IsMatch(path))
+                if (re.IsMatch(path))
                 {
                     entries.Add(entry);
                 }
