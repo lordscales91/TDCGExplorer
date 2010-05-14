@@ -128,9 +128,25 @@ namespace TAHHair
         [XmlIgnore]
         public ProgressChangedHandler ProgressChanged;
 
+        public string GetFileWithoutExtensionPattern()
+        {
+            string[] rows = new string[parts.Count];
+            int i = 0;
+            foreach (TBNHairPart part in parts)
+            {
+                rows[i++] = part.Row;
+            }
+            return "(" + string.Join("|", rows) + ")" + "00";
+        }
+
+        public string GetFilePattern(string ext)
+        {
+            return GetFileWithoutExtensionPattern() + @"\." + ext;
+        }
+
         public string GetTSOFilePattern()
         {
-            return @"(B|C)00\.tso";
+            return GetFilePattern("tso");
         }
 
         public Regex CreateTSOFileRegex()
@@ -159,7 +175,7 @@ namespace TAHHair
 
         public string GetPSDFilePattern()
         {
-            return @"(B|C)00\.psd";
+            return GetFilePattern("psd");
         }
 
         public Regex CreatePSDFileRegex()
