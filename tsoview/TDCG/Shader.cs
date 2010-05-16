@@ -208,7 +208,7 @@ namespace TDCG
             str = value.Trim('"', ' ', '\t');
         }
 
-        static Regex re_float_array = new Regex(@"\s+|\s*,\s*");
+        static Regex re_float_array = new Regex(@"\s*,\s*|\s+");
 
         /// <summary>
         /// float値の配列を設定します。
@@ -243,7 +243,14 @@ namespace TDCG
         /// <param name="value">float値の文字列表現</param>
         public void SetFloat(string value)
         {
-            SetFloatDim(value, 1);
+            try
+            {
+                SetFloatDim(value, 1);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("shader format error (type float): " + value);
+            }
         }
 
         /// <summary>
@@ -260,7 +267,14 @@ namespace TDCG
         /// <param name="value">float3値の文字列表現</param>
         public void SetFloat3(string value)
         {
-            SetFloatDim(value, 3);
+            try
+            {
+                SetFloatDim(value, 3);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("shader format error (type float3): " + value);
+            }
         }
 
         /// <summary>
@@ -277,7 +291,14 @@ namespace TDCG
         /// <param name="value">float4値の文字列表現</param>
         public void SetFloat4(string value)
         {
-            SetFloatDim(value, 4);
+            try
+            {
+                SetFloatDim(value, 4);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("shader format error (type float4): " + value);
+            }
         }
 
         /// <summary>
