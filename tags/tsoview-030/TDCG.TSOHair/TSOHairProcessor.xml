@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="shift_jis"?>
+<TSOHairProcessor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <parts>
+    <TSOHairPart>
+      <Name>Housen</Name>
+      <TextPattern>housen|w_facepartsa</TextPattern>
+      <SubPath>Cgfx_kage\Cgfx_kage_{0}</SubPath>
+      <TexPath>Image_kage\Image_kage_{0}.bmp</TexPath>
+    </TSOHairPart>
+    <TSOHairPart>
+      <Name>Ribbon</Name>
+      <TextPattern>ribb?on</TextPattern>
+      <SubPath>Cgfx_ribon\Cgfx_ribon_{0}</SubPath>
+      <TexPath>Image_ribon\Image_ribon_{0}.bmp</TexPath>
+    </TSOHairPart>
+    <TSOHairPart>
+      <Name>Kami</Name>
+      <TextPattern>kami</TextPattern>
+      <SubPath>Cgfx_kami\Cgfx_kami_{0}</SubPath>
+      <TexPath>Image_kami\Image_kami_{0}.bmp</TexPath>
+    </TSOHairPart>
+  </parts>
+  <KitRoot>HAIR_KIT</KitRoot>
+</TSOHairProcessor>
