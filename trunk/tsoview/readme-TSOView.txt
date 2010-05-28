@@ -1,6 +1,6 @@
 ダウンロードありがとうございます
 
-●TSOView ver 0.2.9
+●TSOView ver 0.3.0
 
 これはなに
 Direct3D上でTSOをレンダリングします。
@@ -66,6 +66,9 @@ TSOView.exe [file ... ]
 　Crtlキーを押しながらtsoまたはpngをd&dすると選択フィギュアに追加します。
 　tmoをd&dすると選択フィギュアのモーションを置き換えます。
 
+ver 0.2.9 からの変更点：
+・XPC01766 新テク20100320版 + depth buffer shadow
+・姉妹スライダ再現性を向上
 
 ver 0.2.5 からの変更点：
 ・sources: TSOView, TMOComposer, TMOProportion を統合

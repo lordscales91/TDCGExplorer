@@ -1,6 +1,6 @@
 ダウンロードありがとうございます
 
-●TMOProportion ver 0.2.9
+●TMOProportion ver 0.3.0
 
 これはなに
 体型変更を簡単に行うためのツールです。
