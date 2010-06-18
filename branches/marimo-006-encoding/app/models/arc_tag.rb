@@ -7,7 +7,7 @@ class ArcTag < ActiveRecord::Base
   # end
 
   def trim(string)
-    string.sub(/^[ @]+/, '').sub(/[ @]+$/, '')
+    string.sub(/^[ ã€€]+/, '').sub(/[ ã€€]+$/, '')
   end
 
   def tag_name

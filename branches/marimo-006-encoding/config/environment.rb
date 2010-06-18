@@ -65,13 +65,13 @@ Rails::Initializer.run do |config|
   # Activate observers that should always be running
   # config.active_record.observers = :cacher, :garbage_collector
 end
-$KCODE = 'SJIS'
+$KCODE = 'UTF8'
 
 ActiveRecord::Base.colorize_logging = false
 ActionController::Base.default_charset = 'Shift_JIS'
 
-WillPaginate::ViewHelpers.pagination_options[:prev_label] = '&laquo; ëOÇ÷'
-WillPaginate::ViewHelpers.pagination_options[:next_label] = 'éüÇ÷ &raquo;'
+WillPaginate::ViewHelpers.pagination_options[:prev_label] = '&laquo; Ââç„Å∏'
+WillPaginate::ViewHelpers.pagination_options[:next_label] = 'Ê¨°„Å∏ &raquo;'
 
 class String
   def to_json(options = nil) #:nodoc:

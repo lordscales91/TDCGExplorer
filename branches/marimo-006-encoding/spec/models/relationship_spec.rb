@@ -3,33 +3,33 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe Relationship, "assign from_code" do
   fixtures :arcs, :relationships
 
-  it "from_code Ç 'TA0583' Ç…Ç∑ÇÈÇ∆ from_id ÇÕ 1 Ç…Ç»ÇÈ" do
+  it "from_code „Çí 'TA0583' „Å´„Åô„Çã„Å® from_id „ÅØ 1 „Å´„Å™„Çã" do
     rel = relationships(:one)
     rel.from_code = 'TA0583'
     rel.from_id.should == 1
   end
 
-  it "from_code Ç 'TA0583 ' Ç…Ç∑ÇÈÇ∆ from_id ÇÕ 1 Ç…Ç»ÇÈ" do
+  it "from_code „Çí 'TA0583 ' „Å´„Åô„Çã„Å® from_id „ÅØ 1 „Å´„Å™„Çã" do
     rel = relationships(:one)
     rel.from_code = 'TA0583 '
     rel.from_id.should == 1
   end
 
-  it "from_code Ç 'TA0583Å@' Ç…Ç∑ÇÈÇ∆ from_id ÇÕ 1 Ç…Ç»ÇÈ" do
+  it "from_code „Çí 'TA0583„ÄÄ' „Å´„Åô„Çã„Å® from_id „ÅØ 1 „Å´„Å™„Çã" do
     rel = relationships(:one)
-    rel.from_code = 'TA0583Å@'
+    rel.from_code = 'TA0583„ÄÄ'
     rel.from_id.should == 1
   end
 
-  it "from_code Ç ' TA0583' Ç…Ç∑ÇÈÇ∆ from_id ÇÕ 1 Ç…Ç»ÇÈ" do
+  it "from_code „Çí ' TA0583' „Å´„Åô„Çã„Å® from_id „ÅØ 1 „Å´„Å™„Çã" do
     rel = relationships(:one)
     rel.from_code = ' TA0583'
     rel.from_id.should == 1
   end
 
-  it "from_code Ç 'Å@TA0583' Ç…Ç∑ÇÈÇ∆ from_id ÇÕ 1 Ç…Ç»ÇÈ" do
+  it "from_code „Çí '„ÄÄTA0583' „Å´„Åô„Çã„Å® from_id „ÅØ 1 „Å´„Å™„Çã" do
     rel = relationships(:one)
-    rel.from_code = 'Å@TA0583'
+    rel.from_code = '„ÄÄTA0583'
     rel.from_id.should == 1
   end
 end
@@ -37,33 +37,33 @@ end
 describe Relationship, "assign to_code" do
   fixtures :arcs, :relationships
 
-  it "to_code Ç 'TA0013' Ç…Ç∑ÇÈÇ∆ to_id ÇÕ 2 Ç…Ç»ÇÈ" do
+  it "to_code „Çí 'TA0013' „Å´„Åô„Çã„Å® to_id „ÅØ 2 „Å´„Å™„Çã" do
     rel = relationships(:one)
     rel.to_code = 'TA0013'
     rel.to_id.should == 2
   end
 
-  it "to_code Ç 'TA0013 ' Ç…Ç∑ÇÈÇ∆ to_id ÇÕ 2 Ç…Ç»ÇÈ" do
+  it "to_code „Çí 'TA0013 ' „Å´„Åô„Çã„Å® to_id „ÅØ 2 „Å´„Å™„Çã" do
     rel = relationships(:one)
     rel.to_code = 'TA0013 '
     rel.to_id.should == 2
   end
 
-  it "to_code Ç 'TA0013Å@' Ç…Ç∑ÇÈÇ∆ to_id ÇÕ 2 Ç…Ç»ÇÈ" do
+  it "to_code „Çí 'TA0013„ÄÄ' „Å´„Åô„Çã„Å® to_id „ÅØ 2 „Å´„Å™„Çã" do
     rel = relationships(:one)
-    rel.to_code = 'TA0013Å@'
+    rel.to_code = 'TA0013„ÄÄ'
     rel.to_id.should == 2
   end
 
-  it "to_code Ç ' TA0013' Ç…Ç∑ÇÈÇ∆ to_id ÇÕ 2 Ç…Ç»ÇÈ" do
+  it "to_code „Çí ' TA0013' „Å´„Åô„Çã„Å® to_id „ÅØ 2 „Å´„Å™„Çã" do
     rel = relationships(:one)
     rel.to_code = ' TA0013'
     rel.to_id.should == 2
   end
 
-  it "to_code Ç 'Å@TA0013' Ç…Ç∑ÇÈÇ∆ to_id ÇÕ 2 Ç…Ç»ÇÈ" do
+  it "to_code „Çí '„ÄÄTA0013' „Å´„Åô„Çã„Å® to_id „ÅØ 2 „Å´„Å™„Çã" do
     rel = relationships(:one)
-    rel.to_code = 'Å@TA0013'
+    rel.to_code = '„ÄÄTA0013'
     rel.to_id.should == 2
   end
 end
@@ -71,35 +71,35 @@ end
 describe Relationship do
   fixtures :arcs, :relationships
 
-  it "one ÇÕä÷åWê´ÇéùÇ¬" do
+  it "one „ÅØÈñ¢‰øÇÊÄß„ÇíÊåÅ„Å§" do
     arcs(:one).relationships.should == [ relationships(:one) ]
   end
 
-  it "one ÇÕ two Ç∆ä÷åWÇéùÇ¬" do
+  it "one „ÅØ two „Å®Èñ¢‰øÇ„ÇíÊåÅ„Å§" do
     arcs(:one).relations.should == [ arcs(:two) ]
   end
 
-  it "two ÇÕãtä÷åWê´ÇéùÇ¬" do
+  it "two „ÅØÈÄÜÈñ¢‰øÇÊÄß„ÇíÊåÅ„Å§" do
     arcs(:two).rev_relationships.should == [ relationships(:one) ]
   end
 
-  it "two ÇÕ one Ç∆ãtä÷åWÇéùÇ¬" do
+  it "two „ÅØ one „Å®ÈÄÜÈñ¢‰øÇ„ÇíÊåÅ„Å§" do
     arcs(:two).rev_relations.should == [ arcs(:one) ]
   end
 
-  it "from Ç∆ to Ç™ìØÇ∂Ç»ÇÁ valid Ç≈Ç»Ç¢" do
+  it "from „Å® to „ÅåÂêå„Åò„Å™„Çâ valid „Åß„Å™„ÅÑ" do
     Relationship.new(:from_id => 1, :to_id => 1).should_not be_valid
   end
 
-  it "ìØÇ∂ from, to ÇÃëgÇ›çáÇÌÇπÇéùÇ¬ rel Ç™Ç†ÇÈÇ»ÇÁ valid Ç≈Ç»Ç¢" do
+  it "Âêå„Åò from, to „ÅÆÁµÑ„ÅøÂêà„Çè„Åõ„ÇíÊåÅ„Å§ rel „Åå„ÅÇ„Çã„Å™„Çâ valid „Åß„Å™„ÅÑ" do
     Relationship.new(:from_id => 1, :to_id => 2).should_not be_valid
   end
 
-  it "ãtÇÃ from, to ÇÃëgÇ›çáÇÌÇπÇéùÇ¬ rel Ç™Ç†ÇÈÇ»ÇÁ valid Ç≈Ç»Ç¢" do
+  it "ÈÄÜ„ÅÆ from, to „ÅÆÁµÑ„ÅøÂêà„Çè„Åõ„ÇíÊåÅ„Å§ rel „Åå„ÅÇ„Çã„Å™„Çâ valid „Åß„Å™„ÅÑ" do
     Relationship.new(:from_id => 2, :to_id => 1).should_not be_valid
   end
 
-  it "one ÇÕ valid Ç≈Ç†ÇÈ" do
+  it "one „ÅØ valid „Åß„ÅÇ„Çã" do
     relationships(:one).should be_valid
   end
 end
