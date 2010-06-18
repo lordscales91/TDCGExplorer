@@ -7,19 +7,19 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: marimo 0.0.1\n"
-"POT-Creation-Date: 2009-06-15 21:19+0900\n"
+"POT-Creation-Date: 2010-06-18 12:09+0900\n"
 "PO-Revision-Date: 2009-04-30 04:29+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=Shift_JIS\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #: app/models/arc.rb:- app/views/layouts/anon.html.erb:27
 #: app/views/layouts/sessions.html.erb:22 app/views/welcome/index.html.erb:21
 msgid "arc"
-msgstr "‘ŒÉ"
+msgstr "æ›¸åº«"
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:3
 #: app/views/arcs/index.html.erb:14 app/views/arcs/show.html.erb:2
@@ -39,7 +39,7 @@ msgstr "Code"
 #: app/views/tahs/index.html.erb:15 app/views/welcome/index.html.erb:27
 #: app/views/welcome/index.html.erb:67
 msgid "Arc|Extname"
-msgstr "Šg’£q"
+msgstr "æ‹¡å¼µå­"
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:16
 #: app/views/arcs/show.html.erb:12 app/views/arcs/show.html.erb:51
@@ -49,7 +49,7 @@ msgstr "Šg’£q"
 #: app/views/tahs/index.html.erb:16 app/views/welcome/index.html.erb:28
 #: app/views/welcome/index.html.erb:68
 msgid "Arc|Location"
-msgstr "Šİ"
+msgstr "æ‰€åœ¨"
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:3
 #: app/views/arcs/index.html.erb:17 app/views/arcs/show.html.erb:17
@@ -58,7 +58,7 @@ msgstr "Šİ"
 #: app/views/arcs/tags.html.erb:31 app/views/equips/show.html.erb:19
 #: app/views/tags/show.html.erb:19 app/views/welcome/index.html.erb:29
 msgid "Arc|Summary"
-msgstr "—v–ñ"
+msgstr "è¦ç´„"
 
 #: app/models/arc.rb:- app/views/arcs/index.html.erb:18
 #: app/views/arcs/show.html.erb:22 app/views/arcs/show.html.erb:122
@@ -70,124 +70,124 @@ msgstr "Origname"
 
 #: app/models/arc.rb:-
 msgid "Arc|Created at"
-msgstr "ì¬“ú"
+msgstr "ä½œæˆæ—¥æ™‚"
 
 #: app/models/arc.rb:-
 msgid "Arc|Updated at"
-msgstr "XV“ú"
+msgstr "æ›´æ–°æ—¥æ™‚"
 
 #: app/models/arc.rb:31
 msgid "detect a duplicate tag"
-msgstr "“¯‚¶ƒ^ƒO‚ª‚ ‚è‚Ü‚·"
+msgstr "åŒã˜ã‚¿ã‚°ãŒã‚ã‚Šã¾ã™"
 
 #: app/models/arc_equip.rb:-
 msgid "arc equip"
-msgstr "‘ŒÉ‘•”õˆÊ’u"
+msgstr "æ›¸åº«è£…å‚™ä½ç½®"
 
 #: app/models/arc_equip.rb:-
 msgid "ArcEquip|Arc"
-msgstr "‘ŒÉ"
+msgstr "æ›¸åº«"
 
 #: app/models/arc_equip.rb:-
 msgid "ArcEquip|Equip"
-msgstr "‘•”õˆÊ’u"
+msgstr "è£…å‚™ä½ç½®"
 
 #: app/models/arc_equip.rb:-
 msgid "ArcEquip|Created at"
-msgstr "ì¬“ú"
+msgstr "ä½œæˆæ—¥æ™‚"
 
 #: app/models/arc_equip.rb:-
 msgid "ArcEquip|Updated at"
-msgstr "XV“ú"
+msgstr "æ›´æ–°æ—¥æ™‚"
 
 #: app/models/arc_tag.rb:-
 msgid "arc tag"
-msgstr "‘ŒÉƒ^ƒO"
+msgstr "æ›¸åº«ã‚¿ã‚°"
 
 #: app/models/arc_tag.rb:-
 msgid "ArcTag|Arc"
-msgstr "‘ŒÉ"
+msgstr "æ›¸åº«"
 
 #: app/models/arc_tag.rb:-
 msgid "ArcTag|Tag"
-msgstr "ƒ^ƒO"
+msgstr "ã‚¿ã‚°"
 
 #: app/models/arc_tag.rb:-
 msgid "ArcTag|Created at"
-msgstr "ì¬“ú"
+msgstr "ä½œæˆæ—¥æ™‚"
 
 #: app/models/arc_tag.rb:-
 msgid "ArcTag|Updated at"
-msgstr "XV“ú"
+msgstr "æ›´æ–°æ—¥æ™‚"
 
 #: app/models/equip.rb:-
 msgid "equip"
-msgstr "‘•”õˆÊ’u"
+msgstr "è£…å‚™ä½ç½®"
 
 #: app/models/equip.rb:- app/views/equips/index.html.erb:4
 #: app/views/equips/show.html.erb:2
 msgid "Equip|Name"
-msgstr "–¼Ì"
+msgstr "åç§°"
 
 #: app/models/equip.rb:-
 msgid "Equip|Created at"
-msgstr "ì¬“ú"
+msgstr "ä½œæˆæ—¥æ™‚"
 
 #: app/models/equip.rb:-
 msgid "Equip|Updated at"
-msgstr "XV“ú"
+msgstr "æ›´æ–°æ—¥æ™‚"
 
 #: app/models/relationship.rb:-
 msgid "relationship"
-msgstr "ŠÖŒW«"
+msgstr "é–¢ä¿‚æ€§"
 
 #: app/models/relationship.rb:-
 msgid "Relationship|From"
-msgstr "‘ŒÉ"
+msgstr "æ›¸åº«"
 
 #: app/models/relationship.rb:- app/views/arcs/edit.html.erb:28
 msgid "Relationship|To"
-msgstr "‘ŒÉ"
+msgstr "æ›¸åº«"
 
 #: app/models/relationship.rb:- app/views/arcs/edit.html.erb:29
 #: app/views/arcs/show.html.erb:53
 msgid "Relationship|Kind"
-msgstr "ŠÖŒW«"
+msgstr "é–¢ä¿‚æ€§"
 
 #: app/models/relationship.rb:- app/views/arcs/edit.html.erb:30
 #: app/views/arcs/show.html.erb:54
 msgid "Relationship|Note"
-msgstr "’ß"
+msgstr "æ³¨é‡ˆ"
 
 #: app/models/relationship.rb:-
 msgid "Relationship|Created at"
-msgstr "ì¬“ú"
+msgstr "ä½œæˆæ—¥æ™‚"
 
 #: app/models/relationship.rb:-
 msgid "Relationship|Updated at"
-msgstr "XV“ú"
+msgstr "æ›´æ–°æ—¥æ™‚"
 
 #: app/models/tag.rb:- app/views/layouts/anon.html.erb:30
 #: app/views/layouts/sessions.html.erb:25 app/views/welcome/index.html.erb:12
 msgid "tag"
-msgstr "ƒ^ƒO"
+msgstr "ã‚¿ã‚°"
 
 #: app/models/tag.rb:- app/views/tags/index.html.erb:3
 #: app/views/tags/index.html.erb:14 app/views/tags/show.html.erb:2
 msgid "Tag|Name"
-msgstr "–¼Ì"
+msgstr "åç§°"
 
 #: app/models/tag.rb:-
 msgid "Tag|Created at"
-msgstr "ì¬“ú"
+msgstr "ä½œæˆæ—¥æ™‚"
 
 #: app/models/tag.rb:-
 msgid "Tag|Updated at"
-msgstr "XV“ú"
+msgstr "æ›´æ–°æ—¥æ™‚"
 
 #: app/models/tag.rb:-
 msgid "Tag|Locked"
-msgstr "ƒƒbƒN"
+msgstr "ãƒ­ãƒƒã‚¯"
 
 #: app/models/tah.rb:- app/views/layouts/anon.html.erb:28
 #: app/views/layouts/sessions.html.erb:23 app/views/welcome/index.html.erb:61
@@ -196,7 +196,7 @@ msgstr "tah"
 
 #: app/models/tah.rb:- app/views/tahs/show.html.erb:16
 msgid "Tah|Arc"
-msgstr "‘ŒÉ"
+msgstr "æ›¸åº«"
 
 #: app/models/tah.rb:- app/views/arcs/show.html.erb:88
 #: app/views/tahs/index.html.erb:3 app/views/tahs/index.html.erb:17
@@ -208,15 +208,15 @@ msgstr "Path"
 
 #: app/models/tah.rb:-
 msgid "Tah|Created at"
-msgstr "ì¬“ú"
+msgstr "ä½œæˆæ—¥æ™‚"
 
 #: app/models/tah.rb:-
 msgid "Tah|Updated at"
-msgstr "XV“ú"
+msgstr "æ›´æ–°æ—¥æ™‚"
 
 #: app/models/tah.rb:-
 msgid "Tah|Position"
-msgstr "ˆÊ’u"
+msgstr "ä½ç½®"
 
 #: app/models/tso.rb:- app/views/layouts/anon.html.erb:29
 #: app/views/layouts/sessions.html.erb:24
@@ -239,11 +239,11 @@ msgstr "Path"
 
 #: app/models/tso.rb:-
 msgid "Tso|Created at"
-msgstr "ì¬“ú"
+msgstr "ä½œæˆæ—¥æ™‚"
 
 #: app/models/tso.rb:-
 msgid "Tso|Updated at"
-msgstr "XV“ú"
+msgstr "æ›´æ–°æ—¥æ™‚"
 
 #: app/models/tso.rb:- app/views/tahs/show.html.erb:27
 #: app/views/tsos/index.html.erb:21 app/views/tsos/show.html.erb:7
@@ -252,12 +252,32 @@ msgstr "tah hash"
 
 #: app/models/tso.rb:-
 msgid "Tso|Position"
-msgstr "ˆÊ’u"
+msgstr "ä½ç½®"
 
 #: app/models/tso.rb:- app/views/tsos/md5.html.erb:3
 #: app/views/tsos/md5.html.erb:21 app/views/tsos/show.html.erb:17
 msgid "Tso|Md5"
 msgstr "MD5"
+
+#: app/models/tso_col_basis.rb:-
+msgid "tso col basis"
+msgstr "è‰²00é–¢é€£"
+
+#: app/models/tso_col_basis.rb:-
+msgid "TsoColBasis|Tso"
+msgstr "tso"
+
+#: app/models/tso_col_basis.rb:-
+msgid "TsoColBasis|Col basis"
+msgstr "è‰²00"
+
+#: app/models/tso_col_basis.rb:-
+msgid "TsoColBasis|Created at"
+msgstr "ä½œæˆæ—¥æ™‚"
+
+#: app/models/tso_col_basis.rb:-
+msgid "TsoColBasis|Updated at"
+msgstr "æ›´æ–°æ—¥æ™‚"
 
 #: app/models/user.rb:-
 msgid "user"
@@ -273,33 +293,33 @@ msgstr "Password"
 
 #: app/models/user.rb:-
 msgid "User|Created at"
-msgstr "ì¬“ú"
+msgstr "ä½œæˆæ—¥æ™‚"
 
 #: app/models/user.rb:-
 msgid "User|Updated at"
-msgstr "XV“ú"
+msgstr "æ›´æ–°æ—¥æ™‚"
 
 #: app/views/arcs/edit.html.erb:25 app/views/arcs/show.html.erb:44
 msgid "Arc|Relations"
-msgstr "ŠÖ˜A‘ŒÉ"
+msgstr "é–¢é€£æ›¸åº«"
 
 #: app/views/arcs/edit.html.erb:40
 msgid "Add a relation"
-msgstr "ŠÖ˜A‘ŒÉ‚ğ’Ç‰Á"
+msgstr "é–¢é€£æ›¸åº«ã‚’è¿½åŠ "
 
 #: app/views/arcs/edit.html.erb:43 app/views/arcs/show.html.erb:32
 #: app/views/arcs/tags.html.erb:49
 msgid "Arc|Tags"
-msgstr "ƒ^ƒO"
+msgstr "ã‚¿ã‚°"
 
 #: app/views/arcs/edit.html.erb:47 app/views/arcs/tags.html.erb:53
 msgid "Add a tag"
-msgstr "ƒ^ƒO‚ğ’Ç‰Á"
+msgstr "ã‚¿ã‚°ã‚’è¿½åŠ "
 
 #: app/views/arcs/edit.html.erb:50 app/views/equips/edit.html.erb:9
 #: app/views/tahs/edit.html.erb:9 app/views/tsos/edit.html.erb:13
 msgid "Update"
-msgstr "XV"
+msgstr "æ›´æ–°"
 
 #: app/views/arcs/edit.html.erb:54 app/views/arcs/show.html.erb:101
 #: app/views/equips/edit.html.erb:13 app/views/equips/index.html.erb:17
@@ -311,14 +331,14 @@ msgstr "XV"
 #: app/views/tsos/show.html.erb:48 app/views/tsos/show.html.erb:73
 #: app/views/tsos/show.html.erb:98 app/views/welcome/index.html.erb:85
 msgid "Show"
-msgstr "Ú×"
+msgstr "è©³ç´°"
 
 #: app/views/arcs/index.html.erb:5 app/views/tags/index.html.erb:5
 #: app/views/tahs/index.html.erb:5 app/views/tsos/index.html.erb:5
 #: app/views/tsos/index.html.erb:9 app/views/tsos/md5.html.erb:5
 #: app/views/tsos/md5.html.erb:9 app/views/welcome/index.html.erb:5
 msgid "Search"
-msgstr "ŒŸõ"
+msgstr "æ¤œç´¢"
 
 #: app/views/arcs/index.html.erb:35 app/views/arcs/show.html.erb:36
 #: app/views/arcs/show.html.erb:40 app/views/arcs/show.html.erb:103
@@ -330,7 +350,7 @@ msgstr "ŒŸõ"
 #: app/views/tsos/md5.html.erb:37 app/views/tsos/show.html.erb:27
 #: app/views/welcome/index.html.erb:47 app/views/welcome/index.html.erb:87
 msgid "Edit"
-msgstr "•ÒW"
+msgstr "ç·¨é›†"
 
 #: app/views/arcs/index.html.erb:36 app/views/arcs/show.html.erb:104
 #: app/views/equips/index.html.erb:20 app/views/equips/show.html.erb:38
@@ -339,7 +359,7 @@ msgstr "•ÒW"
 #: app/views/tsos/index.html.erb:38 app/views/tsos/md5.html.erb:38
 #: app/views/welcome/index.html.erb:48 app/views/welcome/index.html.erb:88
 msgid "Destroy"
-msgstr "íœ"
+msgstr "å‰Šé™¤"
 
 #: app/views/arcs/index.html.erb:36 app/views/arcs/show.html.erb:104
 #: app/views/equips/show.html.erb:38 app/views/tags/show.html.erb:38
@@ -347,11 +367,11 @@ msgstr "íœ"
 #: app/views/tsos/index.html.erb:38 app/views/tsos/md5.html.erb:38
 #: app/views/welcome/index.html.erb:48 app/views/welcome/index.html.erb:88
 msgid "Are you sure?"
-msgstr "‚æ‚ë‚µ‚¢‚Å‚·‚©?"
+msgstr "ã‚ˆã‚ã—ã„ã§ã™ã‹?"
 
 #: app/views/arcs/show.html.erb:27 app/views/arcs/tags.html.erb:41
 msgid "Arc|Rows"
-msgstr "oŒ»•”ˆÊ"
+msgstr "å‡ºç¾éƒ¨ä½"
 
 #: app/views/arcs/show.html.erb:83
 msgid "Arc|Tahs"
@@ -359,11 +379,11 @@ msgstr "Tahs"
 
 #: app/views/arcs/show.html.erb:113
 msgid "Arc|Collisions"
-msgstr "Õ“Ë"
+msgstr "è¡çª"
 
 #: app/views/arcs/show.html.erb:142
 msgid "Arc|Duplicates"
-msgstr "d•¡"
+msgstr "é‡è¤‡"
 
 #: app/views/arcs/show.html.erb:171
 msgid "Arc|Col bases"
@@ -371,15 +391,15 @@ msgstr "Col bases"
 
 #: app/views/arcs/tags.html.erb:56
 msgid "Save"
-msgstr "•Û‘¶"
+msgstr "ä¿å­˜"
 
 #: app/views/arcs/tags.html.erb:60
 msgid "Back"
-msgstr "–ß‚é"
+msgstr "æˆ»ã‚‹"
 
 #: app/views/equips/show.html.erb:11
 msgid "Equip|Arcs"
-msgstr "‘ŒÉ"
+msgstr "æ›¸åº«"
 
 #: app/views/layouts/anon.html.erb:32 app/views/layouts/sessions.html.erb:27
 msgid "tahdump"
@@ -387,7 +407,7 @@ msgstr "tahdump"
 
 #: app/views/tags/show.html.erb:11
 msgid "Tag|Arcs"
-msgstr "‘ŒÉ"
+msgstr "æ›¸åº«"
 
 #: app/views/tahdumps/show.html.erb:6
 msgid "Commit"
@@ -395,7 +415,7 @@ msgstr "Commit"
 
 #: app/views/tahs/show.html.erb:7
 msgid "Tah|Rows"
-msgstr "oŒ»•”ˆÊ"
+msgstr "å‡ºç¾éƒ¨ä½"
 
 #: app/views/tahs/show.html.erb:21
 msgid "Tah|Tsos"
@@ -403,11 +423,11 @@ msgstr "Tsos"
 
 #: app/views/tahs/show.html.erb:55
 msgid "Tah|Collisions"
-msgstr "Õ“Ë"
+msgstr "è¡çª"
 
 #: app/views/tahs/show.html.erb:78
 msgid "Tah|Duplicates"
-msgstr "d•¡"
+msgstr "é‡è¤‡"
 
 #: app/views/tahs/show.html.erb:101
 msgid "Tah|Col bases"
@@ -415,23 +435,23 @@ msgstr "Col bases"
 
 #: app/views/tsos/index.html.erb:11
 msgid "MD5 search"
-msgstr "MD5 ŒŸõ"
+msgstr "MD5 æ¤œç´¢"
 
 #: app/views/tsos/md5.html.erb:11
 msgid "Path search"
-msgstr "Path ŒŸõ"
+msgstr "Path æ¤œç´¢"
 
 #: app/views/tsos/show.html.erb:12
 msgid "Tso|Row"
-msgstr "oŒ»•”ˆÊ"
+msgstr "å‡ºç¾éƒ¨ä½"
 
 #: app/views/tsos/show.html.erb:32
 msgid "Tso|Collisions"
-msgstr "Õ“Ë"
+msgstr "è¡çª"
 
 #: app/views/tsos/show.html.erb:57
 msgid "Tso|Duplicates"
-msgstr "d•¡"
+msgstr "é‡è¤‡"
 
 #: app/views/tsos/show.html.erb:82
 msgid "Tso|Col bases"
@@ -439,4 +459,4 @@ msgstr "Col bases"
 
 #: app/views/welcome/index.html.erb:55 app/views/welcome/index.html.erb:95
 msgid "and more"
-msgstr "‚à‚Á‚ÆŒ©‚é"
+msgstr "ã‚‚ã£ã¨è¦‹ã‚‹"
