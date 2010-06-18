@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   unless RAILS_ENV == 'test'
     GetText.locale = 'ja'
   end
-  init_gettext 'marimo', :charset => 'Shift_JIS'
+  init_gettext 'marimo', :charset => 'UTF-8'
 
   helper :all # include all helpers, all the time
 
