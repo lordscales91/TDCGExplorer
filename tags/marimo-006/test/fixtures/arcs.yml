@@ -1,0 +1,17 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  id: 1
+  code: TA0583
+  extname: zip
+  location: 3ch
+  summary: COBRA_COS
+  origname: 
+
+two:
+  id: 2
+  code: TA0013
+  extname: zip
+  location: 3ch
+  summary: tattoo
+  origname: 
