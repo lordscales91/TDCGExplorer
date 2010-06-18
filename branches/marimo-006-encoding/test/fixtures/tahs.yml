@@ -1,0 +1,11 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  id: 1
+  arc_id: 1
+  path: COBRA_COS.tah
+
+two:
+  id: 2
+  arc_id: 2
+  path: tattoo/tattoo.tah
