@@ -23,7 +23,7 @@ describe TahsController do
 
   describe "GET index" do
 
-    it "tahs ‚ğ“¾‚é" do
+    it "tahs ã‚’å¾—ã‚‹" do
       Tah.should_receive(:paginate).and_return([ mock_tah ])
       get :index
       assigns[:tahs].should == [ mock_tah ]
@@ -33,7 +33,7 @@ describe TahsController do
 
   describe "GET show" do
 
-    it "w’è tah ‚ğ“¾‚é" do
+    it "æŒ‡å®š tah ã‚’å¾—ã‚‹" do
       Tah.should_receive(:find).with("42").and_return(mock_tah(:tsos => mock_tah_tsos(:paginate => [ mock_tso ])))
       get :show, :id => "42"
       assigns[:tah].should == mock_tah
@@ -43,13 +43,13 @@ describe TahsController do
 
   describe "GET edit" do
 
-    it "w’è tah ‚ğ“¾‚é" do
+    it "æŒ‡å®š tah ã‚’å¾—ã‚‹" do
       Tah.should_receive(:find).with("42").and_return(mock_tah)
       get :edit, :id => "42"
       assigns[:tah].should == mock_tah
     end
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Tah.stub!(:find).and_return(mock_tah)
       get :edit, :id => "1"
@@ -59,14 +59,14 @@ describe TahsController do
 
   describe "PUT update" do
 
-    it "w’è tah ‚ğXV‚·‚é" do
+    it "æŒ‡å®š tah ã‚’æ›´æ–°ã™ã‚‹" do
       Tah.should_receive(:find).with("42").and_return(mock_tah)
       mock_tah.should_receive(:update_attributes).with({'these' => 'params'}).and_return(true)
       put :update, :id => "42", :tah => {:these => 'params'}
       response.should redirect_to(tah_path(mock_tah))
     end
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Tah.stub!(:find).and_return(mock_tah)
       mock_tah.stub!(:update_attributes).and_return(true)
@@ -77,7 +77,7 @@ describe TahsController do
 
   describe "DELETE destroy" do
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Tah.stub!(:find).and_return(mock_tah)
       mock_tah.stub!(:destroy).and_return(true)

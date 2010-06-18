@@ -11,7 +11,7 @@ describe Tah, "col_bases" do
     tahs(:two).col_bases.should == [ tahs(:one) ]
   end
 
-  describe "tsos(:two).tah == tahs(:one) ‚È‚ç" do
+  describe "tsos(:two).tah == tahs(:one) ãªã‚‰" do
     before do
       TAHHash.should_receive(:calc).with('data/model/N400BODY_A00.tso').and_return(0xBC0EEF52) # in update_col_base
       TAHHash.should_receive(:calc).with('data/model/N400BODY_A01.tso').and_return(0xBC0EFF52) # in before_save
@@ -19,7 +19,7 @@ describe Tah, "col_bases" do
       tsos(:two).save!
     end
 
-    it "one: self ‚ÍŠÜ‚Ü‚È‚¢" do
+    it "one: self ã¯å«ã¾ãªã„" do
       tahs(:one).col_bases.should == [ ]
     end
 
@@ -32,12 +32,12 @@ end
 describe Tah, "search" do
   fixtures :tahs
 
-  it "path tattoo/tattoo.tah ‚ÅŒŸõ‚·‚é‚Æ two ‚Éƒ}ƒbƒ`‚·‚é" do
+  it "path tattoo/tattoo.tah ã§æ¤œç´¢ã™ã‚‹ã¨ two ã«ãƒžãƒƒãƒã™ã‚‹" do
     @search = Tah::Search.new('path' => 'tattoo/tattoo.tah')
     Tah.find(:all, @search.find_options).should == [ tahs(:two) ]
   end
 
-  it "path tattoo ‚ÅŒŸõ‚·‚é‚Æ two ‚Éƒ}ƒbƒ`‚·‚é" do
+  it "path tattoo ã§æ¤œç´¢ã™ã‚‹ã¨ two ã«ãƒžãƒƒãƒã™ã‚‹" do
     @search = Tah::Search.new('path' => 'tattoo')
     Tah.find(:all, @search.find_options).should == [ tahs(:two) ]
   end

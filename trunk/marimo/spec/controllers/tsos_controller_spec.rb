@@ -19,7 +19,7 @@ describe TsosController do
 
   describe "GET show" do
 
-    it "w’è tso ‚ğ“¾‚é" do
+    it "æŒ‡å®š tso ã‚’å¾—ã‚‹" do
       Tso.should_receive(:find).with("42").and_return(mock_tso)
       get :show, :id => "42"
       assigns[:tso].should == mock_tso
@@ -29,13 +29,13 @@ describe TsosController do
 
   describe "GET edit" do
 
-    it "w’è tso ‚ğ“¾‚é" do
+    it "æŒ‡å®š tso ã‚’å¾—ã‚‹" do
       Tso.should_receive(:find).with("42").and_return(mock_tso)
       get :edit, :id => "42"
       assigns[:tso].should == mock_tso
     end
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Tso.stub!(:find).and_return(mock_tso)
       get :edit, :id => "1"
@@ -45,14 +45,14 @@ describe TsosController do
 
   describe "PUT update" do
 
-    it "w’è tso ‚ğXV‚·‚é" do
+    it "æŒ‡å®š tso ã‚’æ›´æ–°ã™ã‚‹" do
       Tso.should_receive(:find).with("42").and_return(mock_tso)
       mock_tso.should_receive(:update_attributes).with({'these' => 'params'}).and_return(true)
       put :update, :id => "42", :tso => {:these => 'params'}
       response.should redirect_to(tso_path(mock_tso))
     end
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Tso.stub!(:find).and_return(mock_tso)
       mock_tso.stub!(:update_attributes).and_return(true)
@@ -63,7 +63,7 @@ describe TsosController do
 
   describe "DELETE destroy" do
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Tso.stub!(:find).and_return(mock_tso)
       mock_tso.stub!(:destroy).and_return(true)
