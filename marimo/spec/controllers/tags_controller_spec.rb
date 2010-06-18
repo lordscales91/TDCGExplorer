@@ -40,7 +40,7 @@ describe TagsController do
       assigns[:tag].should equal(mock_tag)
     end
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Tag.stub!(:new).and_return(mock_tag)
       get :new
@@ -54,7 +54,7 @@ describe TagsController do
       assigns[:tag].should equal(mock_tag)
     end
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Tag.stub!(:find).and_return(mock_tag)
       get :edit, :id => "1"
@@ -91,7 +91,7 @@ describe TagsController do
       end
     end
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Tag.stub!(:new).and_return(mock_tag(:save => true))
       put :create, :tag => {}
@@ -141,7 +141,7 @@ describe TagsController do
       end
     end
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Tag.stub!(:find).and_return(mock_tag(:update_attributes => true))
       put :update, :id => "1"
@@ -162,7 +162,7 @@ describe TagsController do
       response.should redirect_to(tags_url)
     end
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Tag.stub!(:find).and_return(mock_tag)
       mock_tag.stub!(:destroy).and_return(true)

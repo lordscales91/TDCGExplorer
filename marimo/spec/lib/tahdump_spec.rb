@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Tahdump do
 
-  it "w’è code ‚ğ‚ÂŠù‘¶‚Ì arc ‚ª‚È‚¢ê‡ arc ‚ğì¬‚·‚é" do
+  it "æŒ‡å®š code ã‚’æŒã¤æ—¢å­˜ã® arc ãŒãªã„å ´åˆ arc ã‚’ä½œæˆã™ã‚‹" do
     data = <<'EOT'
 # zip 3ch\TA0002.zip
 EOT
@@ -13,7 +13,7 @@ EOT
     arc.should_not be_nil
   end
 
-  it "w’è code ‚ğ‚ÂŠù‘¶‚Ì arc ‚ª‚ ‚éê‡ arc ‚ğXV‚·‚é" do
+  it "æŒ‡å®š code ã‚’æŒã¤æ—¢å­˜ã® arc ãŒã‚ã‚‹å ´åˆ arc ã‚’æ›´æ–°ã™ã‚‹" do
     arc = Arc.create(:code => "TA0002")
 
     data = <<'EOT'
@@ -26,7 +26,7 @@ EOT
     arc.should == new_arc
   end
 
-  it "extname ‚ğİ’è" do
+  it "extname ã‚’è¨­å®š" do
     arc = Arc.create(:code => "TA0002")
 
     data = <<'EOT'
@@ -39,7 +39,7 @@ EOT
     arc.extname.should == "zip"
   end
 
-  it "location ‚ğİ’è" do
+  it "location ã‚’è¨­å®š" do
     arc = Arc.create(:code => "TA0002")
 
     data = <<'EOT'
@@ -52,69 +52,69 @@ EOT
     arc.location.should == "3ch"
   end
 
-  it "summary ‚ğİ’è" do
+  it "summary ã‚’è¨­å®š" do
     arc = Arc.create(:code => "TA0026")
 
     data = <<'EOT'
-# zip 3ch\TA0026_“¯’…—p‚µ‚½‚¢‚à‚Ì‚ğ`B•ÏX•’Ç‰ÁB@”û€–Ú‚Ö’Ç‰Á.zip
+# zip 3ch\TA0026_åŒæ™‚ç€ç”¨ã—ãŸã„ã‚‚ã®ã‚’ï½ã€‚å¤‰æ›´ï¼†è¿½åŠ ã€‚@çœ‰é …ç›®ã¸è¿½åŠ .zip
 EOT
     tahdump = Tahdump.new(data)
     tahdump.commit
 
     arc.reload
-    arc.summary.should == "“¯’…—p‚µ‚½‚¢‚à‚Ì‚ğ`B•ÏX•’Ç‰ÁB"
+    arc.summary.should == "åŒæ™‚ç€ç”¨ã—ãŸã„ã‚‚ã®ã‚’ï½ã€‚å¤‰æ›´ï¼†è¿½åŠ ã€‚"
   end
 
-  it "origname ‚ğİ’è" do
+  it "origname ã‚’è¨­å®š" do
     arc = Arc.create(:code => "TA0026")
 
     data = <<'EOT'
-# zip 3ch\TA0026_“¯’…—p‚µ‚½‚¢‚à‚Ì‚ğ`B•ÏX•’Ç‰ÁB@”û€–Ú‚Ö’Ç‰Á.zip
+# zip 3ch\TA0026_åŒæ™‚ç€ç”¨ã—ãŸã„ã‚‚ã®ã‚’ï½ã€‚å¤‰æ›´ï¼†è¿½åŠ ã€‚@çœ‰é …ç›®ã¸è¿½åŠ .zip
 EOT
     tahdump = Tahdump.new(data)
     tahdump.commit
 
     arc.reload
-    arc.origname.should == "”û€–Ú‚Ö’Ç‰Á"
+    arc.origname.should == "çœ‰é …ç›®ã¸è¿½åŠ "
   end
 
-  it "w’è path ‚ğ‚ÂŠù‘¶‚Ì tah ‚ª‚È‚¢ê‡ tah ‚ğì¬‚·‚é" do
+  it "æŒ‡å®š path ã‚’æŒã¤æ—¢å­˜ã® tah ãŒãªã„å ´åˆ tah ã‚’ä½œæˆã™ã‚‹" do
     arc = Arc.create(:code => "TA0026")
 
     data = <<'EOT'
-# zip 3ch\TA0026_“¯’…—p‚µ‚½‚¢‚à‚Ì‚ğ`B•ÏX•’Ç‰ÁB@”û€–Ú‚Ö’Ç‰Á.zip
-# TAH in archive ”û€–Ú‚Ö’Ç‰Á/hoku.tah
+# zip 3ch\TA0026_åŒæ™‚ç€ç”¨ã—ãŸã„ã‚‚ã®ã‚’ï½ã€‚å¤‰æ›´ï¼†è¿½åŠ ã€‚@çœ‰é …ç›®ã¸è¿½åŠ .zip
+# TAH in archive çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah
 EOT
     tahdump = Tahdump.new(data)
     tahdump.commit
 
-    tah = arc.tahs.find_by_path("”û€–Ú‚Ö’Ç‰Á/hoku.tah")
+    tah = arc.tahs.find_by_path("çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah")
     tah.should_not be_nil
   end
 
-  it "w’è path ‚ğ‚ÂŠù‘¶‚Ì tah ‚ª‚ ‚éê‡ tah ‚ğXV‚·‚é" do
+  it "æŒ‡å®š path ã‚’æŒã¤æ—¢å­˜ã® tah ãŒã‚ã‚‹å ´åˆ tah ã‚’æ›´æ–°ã™ã‚‹" do
     arc = Arc.create(:code => "TA0026")
-    tah = arc.tahs.create(:path => "”û€–Ú‚Ö’Ç‰Á/hoku.tah")
+    tah = arc.tahs.create(:path => "çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah")
 
     data = <<'EOT'
-# zip 3ch\TA0026_“¯’…—p‚µ‚½‚¢‚à‚Ì‚ğ`B•ÏX•’Ç‰ÁB@”û€–Ú‚Ö’Ç‰Á.zip
-# TAH in archive ”û€–Ú‚Ö’Ç‰Á/hoku.tah
+# zip 3ch\TA0026_åŒæ™‚ç€ç”¨ã—ãŸã„ã‚‚ã®ã‚’ï½ã€‚å¤‰æ›´ï¼†è¿½åŠ ã€‚@çœ‰é …ç›®ã¸è¿½åŠ .zip
+# TAH in archive çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah
 EOT
     tahdump = Tahdump.new(data)
     tahdump.commit
 
-    new_tah = arc.tahs.find_by_path("”û€–Ú‚Ö’Ç‰Á/hoku.tah")
+    new_tah = arc.tahs.find_by_path("çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah")
     tah.should == new_tah
   end
 
-  it "tah ”‚ªŒ¸­‚µ‚Ä‚¢‚éê‡ íœ‚·‚é" do
+  it "tah æ•°ãŒæ¸›å°‘ã—ã¦ã„ã‚‹å ´åˆ å‰Šé™¤ã™ã‚‹" do
     arc = Arc.create(:code => "TA0026")
-    tah_1 = arc.tahs.create(:path => "”û€–Ú‚Ö’Ç‰Á/hoku.tah")
-    tah_2 = arc.tahs.create(:path => "”û€–Ú‚Ö’Ç‰Á/kiba.tah")
+    tah_1 = arc.tahs.create(:path => "çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah")
+    tah_2 = arc.tahs.create(:path => "çœ‰é …ç›®ã¸è¿½åŠ /kiba.tah")
 
     data = <<'EOT'
-# zip 3ch\TA0026_“¯’…—p‚µ‚½‚¢‚à‚Ì‚ğ`B•ÏX•’Ç‰ÁB@”û€–Ú‚Ö’Ç‰Á.zip
-# TAH in archive ”û€–Ú‚Ö’Ç‰Á/hoku.tah
+# zip 3ch\TA0026_åŒæ™‚ç€ç”¨ã—ãŸã„ã‚‚ã®ã‚’ï½ã€‚å¤‰æ›´ï¼†è¿½åŠ ã€‚@çœ‰é …ç›®ã¸è¿½åŠ .zip
+# TAH in archive çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah
 EOT
     tahdump = Tahdump.new(data)
     tahdump.commit
@@ -122,14 +122,14 @@ EOT
     arc.tahs.should have(1).items
   end
 
-  it "tah ”‚ª‘‰Á‚µ‚Ä‚¢‚éê‡ ’Ç‰Á‚·‚é" do
+  it "tah æ•°ãŒå¢—åŠ ã—ã¦ã„ã‚‹å ´åˆ è¿½åŠ ã™ã‚‹" do
     arc = Arc.create(:code => "TA0026")
-    tah_1 = arc.tahs.create(:path => "”û€–Ú‚Ö’Ç‰Á/hoku.tah")
+    tah_1 = arc.tahs.create(:path => "çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah")
 
     data = <<'EOT'
-# zip 3ch\TA0026_“¯’…—p‚µ‚½‚¢‚à‚Ì‚ğ`B•ÏX•’Ç‰ÁB@”û€–Ú‚Ö’Ç‰Á.zip
-# TAH in archive ”û€–Ú‚Ö’Ç‰Á/hoku.tah
-# TAH in archive ”û€–Ú‚Ö’Ç‰Á/kiba.tah
+# zip 3ch\TA0026_åŒæ™‚ç€ç”¨ã—ãŸã„ã‚‚ã®ã‚’ï½ã€‚å¤‰æ›´ï¼†è¿½åŠ ã€‚@çœ‰é …ç›®ã¸è¿½åŠ .zip
+# TAH in archive çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah
+# TAH in archive çœ‰é …ç›®ã¸è¿½åŠ /kiba.tah
 EOT
     tahdump = Tahdump.new(data)
     tahdump.commit
@@ -137,14 +137,14 @@ EOT
     arc.tahs.should have(2).items
   end
 
-  it "w’è path ‚ğ‚ÂŠù‘¶‚Ì tso ‚ª‚È‚¢ê‡ tso ‚ğì¬‚·‚é" do
+  it "æŒ‡å®š path ã‚’æŒã¤æ—¢å­˜ã® tso ãŒãªã„å ´åˆ tso ã‚’ä½œæˆã™ã‚‹" do
     TAHHash.stub!(:calc).and_return(0xBC0EEF52)
     arc = Arc.create(:code => "TA0026")
-    tah = arc.tahs.create(:path => "”û€–Ú‚Ö’Ç‰Á/hoku.tah")
+    tah = arc.tahs.create(:path => "çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah")
 
     data = <<'EOT'
-# zip 3ch\TA0026_“¯’…—p‚µ‚½‚¢‚à‚Ì‚ğ`B•ÏX•’Ç‰ÁB@”û€–Ú‚Ö’Ç‰Á.zip
-# TAH in archive ”û€–Ú‚Ö’Ç‰Á/hoku.tah
+# zip 3ch\TA0026_åŒæ™‚ç€ç”¨ã—ãŸã„ã‚‚ã®ã‚’ï½ã€‚å¤‰æ›´ï¼†è¿½åŠ ã€‚@çœ‰é …ç›®ã¸è¿½åŠ .zip
+# TAH in archive çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah
 6df59c0777761af5d8d55585b52c613d data/model/N005HOKU_200.tso
 EOT
     tahdump = Tahdump.new(data)
@@ -154,15 +154,15 @@ EOT
     tso.should_not be_nil
   end
 
-  it "w’è path ‚ğ‚ÂŠù‘¶‚Ì tso ‚ª‚ ‚éê‡ tso ‚ğXV‚·‚é" do
+  it "æŒ‡å®š path ã‚’æŒã¤æ—¢å­˜ã® tso ãŒã‚ã‚‹å ´åˆ tso ã‚’æ›´æ–°ã™ã‚‹" do
     TAHHash.stub!(:calc).and_return(0xBC0EEF52)
     arc = Arc.create(:code => "TA0026")
-    tah = arc.tahs.create(:path => "”û€–Ú‚Ö’Ç‰Á/hoku.tah")
+    tah = arc.tahs.create(:path => "çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah")
     tso = tah.tsos.create(:path => "data/model/N005HOKU_200.tso")
 
     data = <<'EOT'
-# zip 3ch\TA0026_“¯’…—p‚µ‚½‚¢‚à‚Ì‚ğ`B•ÏX•’Ç‰ÁB@”û€–Ú‚Ö’Ç‰Á.zip
-# TAH in archive ”û€–Ú‚Ö’Ç‰Á/hoku.tah
+# zip 3ch\TA0026_åŒæ™‚ç€ç”¨ã—ãŸã„ã‚‚ã®ã‚’ï½ã€‚å¤‰æ›´ï¼†è¿½åŠ ã€‚@çœ‰é …ç›®ã¸è¿½åŠ .zip
+# TAH in archive çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah
 6df59c0777761af5d8d55585b52c613d data/model/N005HOKU_200.tso
 EOT
     tahdump = Tahdump.new(data)
@@ -172,16 +172,16 @@ EOT
     tso.should == new_tso
   end
 
-  it "tso ”‚ªŒ¸­‚µ‚Ä‚¢‚éê‡ íœ‚·‚é" do
+  it "tso æ•°ãŒæ¸›å°‘ã—ã¦ã„ã‚‹å ´åˆ å‰Šé™¤ã™ã‚‹" do
     TAHHash.stub!(:calc).and_return(0xBC0EEF52)
     arc = Arc.create(:code => "TA0026")
-    tah = arc.tahs.create(:path => "”û€–Ú‚Ö’Ç‰Á/hoku.tah")
+    tah = arc.tahs.create(:path => "çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah")
     tso_1 = tah.tsos.create(:path => "data/model/N005HOKU_200.tso")
     tso_2 = tah.tsos.create(:path => "data/model/N005HOKU_201.tso")
 
     data = <<'EOT'
-# zip 3ch\TA0026_“¯’…—p‚µ‚½‚¢‚à‚Ì‚ğ`B•ÏX•’Ç‰ÁB@”û€–Ú‚Ö’Ç‰Á.zip
-# TAH in archive ”û€–Ú‚Ö’Ç‰Á/hoku.tah
+# zip 3ch\TA0026_åŒæ™‚ç€ç”¨ã—ãŸã„ã‚‚ã®ã‚’ï½ã€‚å¤‰æ›´ï¼†è¿½åŠ ã€‚@çœ‰é …ç›®ã¸è¿½åŠ .zip
+# TAH in archive çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah
 6df59c0777761af5d8d55585b52c613d data/model/N005HOKU_200.tso
 EOT
     tahdump = Tahdump.new(data)
@@ -190,15 +190,15 @@ EOT
     tah.tsos.should have(1).items
   end
 
-  it "tso ”‚ª‘‰Á‚µ‚Ä‚¢‚éê‡ ’Ç‰Á‚·‚é" do
+  it "tso æ•°ãŒå¢—åŠ ã—ã¦ã„ã‚‹å ´åˆ è¿½åŠ ã™ã‚‹" do
     TAHHash.stub!(:calc).and_return(0xBC0EEF52)
     arc = Arc.create(:code => "TA0026")
-    tah = arc.tahs.create(:path => "”û€–Ú‚Ö’Ç‰Á/hoku.tah")
+    tah = arc.tahs.create(:path => "çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah")
     tso_1 = tah.tsos.create(:path => "data/model/N005HOKU_200.tso")
 
     data = <<'EOT'
-# zip 3ch\TA0026_“¯’…—p‚µ‚½‚¢‚à‚Ì‚ğ`B•ÏX•’Ç‰ÁB@”û€–Ú‚Ö’Ç‰Á.zip
-# TAH in archive ”û€–Ú‚Ö’Ç‰Á/hoku.tah
+# zip 3ch\TA0026_åŒæ™‚ç€ç”¨ã—ãŸã„ã‚‚ã®ã‚’ï½ã€‚å¤‰æ›´ï¼†è¿½åŠ ã€‚@çœ‰é …ç›®ã¸è¿½åŠ .zip
+# TAH in archive çœ‰é …ç›®ã¸è¿½åŠ /hoku.tah
 6df59c0777761af5d8d55585b52c613d data/model/N005HOKU_200.tso
 7ad8006d091820d78962755b23fb6d5e data/model/N005HOKU_201.tso
 EOT

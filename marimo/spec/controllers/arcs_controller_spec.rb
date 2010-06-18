@@ -23,7 +23,7 @@ describe ArcsController do
 
   describe "GET index" do
 
-    it "arcs ‚ğ“¾‚é" do
+    it "arcs ã‚’å¾—ã‚‹" do
       Arc.should_receive(:paginate).and_return([ mock_arc ])
       get :index
       assigns[:arcs].should == [ mock_arc ]
@@ -33,7 +33,7 @@ describe ArcsController do
 
   describe "GET show" do
 
-    it "w’è arc ‚ğ“¾‚é" do
+    it "æŒ‡å®š arc ã‚’å¾—ã‚‹" do
       Arc.should_receive(:find).with("42").and_return(mock_arc)
       get :show, :id => "42"
       assigns[:arc].should == mock_arc
@@ -43,7 +43,7 @@ describe ArcsController do
 
   describe "GET code" do
 
-    it "w’è arc ‚ğ“¾‚é" do
+    it "æŒ‡å®š arc ã‚’å¾—ã‚‹" do
       Arc.should_receive(:find_by_code).with("TA0042").and_return(mock_arc)
       get :code, :code => "TA0042"
       assigns[:arc].should == mock_arc
@@ -53,7 +53,7 @@ describe ArcsController do
 
   describe "GET code_rels" do
 
-    it "w’è arc rels ‚ğ“¾‚é" do
+    it "æŒ‡å®š arc rels ã‚’å¾—ã‚‹" do
       Arc.should_receive(:find_by_code).with("TA0042").and_return(mock_arc)
       mock_arc.should_receive(:relationships).and_return([ mock_rel ])
       get :code_rels, :code => "TA0042"
@@ -65,7 +65,7 @@ describe ArcsController do
 
   describe "GET code_revs" do
 
-    it "w’è arc revs ‚ğ“¾‚é" do
+    it "æŒ‡å®š arc revs ã‚’å¾—ã‚‹" do
       Arc.should_receive(:find_by_code).with("TA0042").and_return(mock_arc)
       mock_arc.should_receive(:rev_relationships).and_return([ mock_rev ])
       get :code_revs, :code => "TA0042"
@@ -77,13 +77,13 @@ describe ArcsController do
 
   describe "GET edit" do
 
-    it "w’è arc ‚ğ“¾‚é" do
+    it "æŒ‡å®š arc ã‚’å¾—ã‚‹" do
       Arc.should_receive(:find).with("42").and_return(mock_arc)
       get :edit, :id => "42"
       assigns[:arc].should == mock_arc
     end
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Arc.stub!(:find).and_return(mock_arc)
       get :edit, :id => "1"
@@ -93,14 +93,14 @@ describe ArcsController do
 
   describe "PUT update" do
 
-    it "w’è arc ‚ğXV‚·‚é" do
+    it "æŒ‡å®š arc ã‚’æ›´æ–°ã™ã‚‹" do
       Arc.should_receive(:find).with("42").and_return(mock_arc)
       mock_arc.should_receive(:update_attributes).with({'these' => 'params'}).and_return(true)
       put :update, :id => "42", :arc => {:these => 'params'}
       response.should redirect_to(arc_path(mock_arc))
     end
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Arc.stub!(:find).and_return(mock_arc)
       mock_arc.stub!(:update_attributes).and_return(true)
@@ -111,7 +111,7 @@ describe ArcsController do
 
   describe "DELETE destroy" do
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Arc.stub!(:find).and_return(mock_arc)
       mock_arc.stub!(:destroy).and_return(true)
