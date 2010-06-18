@@ -3,11 +3,11 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe ArcTag, "validate" do
   fixtures :arcs, :arc_tags, :tags
 
-  # it "“¯‚¶ arc, tag ‚Ì‘g‚İ‡‚í‚¹‚ğ‚Â arc_tag ‚ª‚ ‚é‚È‚ç valid ‚Å‚È‚¢" do
+  # it "åŒã˜ arc, tag ã®çµ„ã¿åˆã‚ã›ã‚’æŒã¤ arc_tag ãŒã‚ã‚‹ãªã‚‰ valid ã§ãªã„" do
   #   ArcTag.new(:arc_id => 1, :tag_id => 1).should_not be_valid
   # end
 
-  it "one ‚Í valid ‚Å‚ ‚é" do
+  it "one ã¯ valid ã§ã‚ã‚‹" do
     arc_tags(:one).should be_valid
   end
 end
@@ -27,7 +27,7 @@ end
 describe ArcTag, "tag_name" do
   fixtures :arcs, :arc_tags, :tags
 
-  it "one.tag_name ‚Í tag1 ‚Å‚ ‚é" do
+  it "one.tag_name ã¯ tag1 ã§ã‚ã‚‹" do
     arc_tags(:one).tag_name.should == "tag1"
   end
 end
@@ -35,38 +35,38 @@ end
 describe ArcTag, "assign tag_name" do
   fixtures :arcs, :arc_tags, :tags
 
-  it "one.tag_name ‚ğ '' ‚Éİ’è‚·‚é‚Æ one.tag_id ‚Í nil ‚É‚È‚é" do
+  it "one.tag_name ã‚’ '' ã«è¨­å®šã™ã‚‹ã¨ one.tag_id ã¯ nil ã«ãªã‚‹" do
     arc_tags(:one).tag_name = ''
     arc_tags(:one).tag_id.should be_nil
   end
 
-  it "one.tag_name ‚ğ ' ' ‚Éİ’è‚·‚é‚Æ one.tag_id ‚Í nil ‚É‚È‚é" do
+  it "one.tag_name ã‚’ ' ' ã«è¨­å®šã™ã‚‹ã¨ one.tag_id ã¯ nil ã«ãªã‚‹" do
     arc_tags(:one).tag_name = ' '
     arc_tags(:one).tag_id.should be_nil
   end
 
-  it "one.tag_name ‚ğ 'tag1' ‚Éİ’è‚·‚é‚Æ one.tag_id ‚Í 1 ‚É‚È‚é" do
+  it "one.tag_name ã‚’ 'tag1' ã«è¨­å®šã™ã‚‹ã¨ one.tag_id ã¯ 1 ã«ãªã‚‹" do
     arc_tags(:one).tag_name = 'tag1'
     arc_tags(:one).tag_id.should == 1
   end
 
-  it "one.tag_name ‚ğ 'tag1 ' ‚Éİ’è‚·‚é‚Æ one.tag_id ‚Í 1 ‚É‚È‚é" do
+  it "one.tag_name ã‚’ 'tag1 ' ã«è¨­å®šã™ã‚‹ã¨ one.tag_id ã¯ 1 ã«ãªã‚‹" do
     arc_tags(:one).tag_name = 'tag1 '
     arc_tags(:one).tag_id.should == 1
   end
 
-  it "one.tag_name ‚ğ 'tag1@' ‚Éİ’è‚·‚é‚Æ one.tag_id ‚Í 1 ‚É‚È‚é" do
-    arc_tags(:one).tag_name = 'tag1@'
+  it "one.tag_name ã‚’ 'tag1ã€€' ã«è¨­å®šã™ã‚‹ã¨ one.tag_id ã¯ 1 ã«ãªã‚‹" do
+    arc_tags(:one).tag_name = 'tag1ã€€'
     arc_tags(:one).tag_id.should == 1
   end
 
-  it "one.tag_name ‚ğ ' tag1' ‚Éİ’è‚·‚é‚Æ one.tag_id ‚Í 1 ‚É‚È‚é" do
+  it "one.tag_name ã‚’ ' tag1' ã«è¨­å®šã™ã‚‹ã¨ one.tag_id ã¯ 1 ã«ãªã‚‹" do
     arc_tags(:one).tag_name = ' tag1'
     arc_tags(:one).tag_id.should == 1
   end
 
-  it "one.tag_name ‚ğ '@tag1' ‚Éİ’è‚·‚é‚Æ one.tag_id ‚Í 1 ‚É‚È‚é" do
-    arc_tags(:one).tag_name = '@tag1'
+  it "one.tag_name ã‚’ 'ã€€tag1' ã«è¨­å®šã™ã‚‹ã¨ one.tag_id ã¯ 1 ã«ãªã‚‹" do
+    arc_tags(:one).tag_name = 'ã€€tag1'
     arc_tags(:one).tag_id.should == 1
   end
 end

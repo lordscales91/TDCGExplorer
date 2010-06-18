@@ -11,7 +11,7 @@ describe Arc, "col_bases" do
     arcs(:two).col_bases.should == [ arcs(:one) ]
   end
 
-  describe "tsos(:two).tah == tahs(:one) ‚È‚ç" do
+  describe "tsos(:two).tah == tahs(:one) ãªã‚‰" do
     before do
       TAHHash.should_receive(:calc).with('data/model/N400BODY_A00.tso').and_return(0xBC0EEF52) # in update_col_base
       TAHHash.should_receive(:calc).with('data/model/N400BODY_A01.tso').and_return(0xBC0EFF52) # in before_save
@@ -19,7 +19,7 @@ describe Arc, "col_bases" do
       tsos(:two).save!
     end
 
-    it "one: self ‚ÍŠÜ‚Ü‚È‚¢" do
+    it "one: self ã¯å«ã¾ãªã„" do
       arcs(:one).col_bases.should == [ ]
     end
 
@@ -28,13 +28,13 @@ describe Arc, "col_bases" do
     end
   end
 
-  describe "tahs(:two).arc == arcs(:one) ‚È‚ç" do
+  describe "tahs(:two).arc == arcs(:one) ãªã‚‰" do
     before do
       tahs(:two).arc_id = 1
       tahs(:two).save!
     end
 
-    it "one: self ‚ðŠÜ‚Ü‚È‚¢" do
+    it "one: self ã‚’å«ã¾ãªã„" do
       arcs(:one).col_bases.should == [ ]
     end
 
@@ -47,19 +47,19 @@ end
 describe Arc, "tags" do
   fixtures :arcs, :arc_tags, :tags
 
-  it "one ‚Í tags ‚É tags.one ‚ðŠÜ‚Þ" do
+  it "one ã¯ tags ã« tags.one ã‚’å«ã‚€" do
     arcs(:one).tags.should include( tags(:one) )
   end
 
-  it "one ‚Í tags ‚É tags.two ‚ðŠÜ‚Þ" do
+  it "one ã¯ tags ã« tags.two ã‚’å«ã‚€" do
     arcs(:one).tags.should include( tags(:two) )
   end
 
-  it "one ‚Í valid ‚Å‚ ‚é" do
+  it "one ã¯ valid ã§ã‚ã‚‹" do
     arcs(:one).should be_valid
   end
 
-  it "d•¡ arc_tag ‚ª‚ ‚é‚È‚ç one ‚Í valid ‚Å‚È‚¢" do
+  it "é‡è¤‡ arc_tag ãŒã‚ã‚‹ãªã‚‰ one ã¯ valid ã§ãªã„" do
     arc_tag = arcs(:one).arc_tags.detect { |at| at.tag_id == 1 }
     arc_tag.tag_id = 2
     arcs(:one).should_not be_valid
@@ -69,12 +69,12 @@ end
 describe Arc, "search" do
   fixtures :arcs
 
-  it "text TA0013 ‚ÅŒŸõ‚·‚é‚Æ two ‚Éƒ}ƒbƒ`‚·‚é" do
+  it "text TA0013 ã§æ¤œç´¢ã™ã‚‹ã¨ two ã«ãƒžãƒƒãƒã™ã‚‹" do
     @search = Arc::Search.new('text' => 'TA0013')
     Arc.find(:all, @search.find_options).should == [ arcs(:two) ]
   end
 
-  it "text tattoo ‚ÅŒŸõ‚·‚é‚Æ two ‚Éƒ}ƒbƒ`‚·‚é" do
+  it "text tattoo ã§æ¤œç´¢ã™ã‚‹ã¨ two ã«ãƒžãƒƒãƒã™ã‚‹" do
     @search = Arc::Search.new('text' => 'tattoo')
     Arc.find(:all, @search.find_options).should == [ arcs(:two) ]
   end

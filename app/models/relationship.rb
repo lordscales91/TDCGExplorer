@@ -11,45 +11,45 @@ class Relationship < ActiveRecord::Base
   end
 
   def self.kind_collection
-    [['“¯ˆê“à—e', 1], ['V”Å', 2], ['‘O’ñ', 3], ['‹Œ”Å',-2], ['’ñ‹Ÿ',-3]]
+    [['åŒä¸€å†…å®¹', 1], ['æ–°ç‰ˆ', 2], ['å‰æ', 3], ['æ—§ç‰ˆ',-2], ['æä¾›',-3]]
   end
 
   def kind_caption
     case kind
     when 1
-      '“¯ˆê“à—e'
+      'åŒä¸€å†…å®¹'
     when 2
-      'V”Å'
+      'æ–°ç‰ˆ'
     when 3
-      '‘O’ñ'
+      'å‰æ'
     when -2
-      '‹Œ”Å'
+      'æ—§ç‰ˆ'
     when -3
-      '’ñ‹Ÿ'
+      'æä¾›'
     end
   end
 
   def self.rev_kind_collection
-    [['“¯ˆê“à—e', 1], ['V”Å',-2], ['‘O’ñ',-3], ['‹Œ”Å', 2], ['’ñ‹Ÿ', 3]]
+    [['åŒä¸€å†…å®¹', 1], ['æ–°ç‰ˆ',-2], ['å‰æ',-3], ['æ—§ç‰ˆ', 2], ['æä¾›', 3]]
   end
 
   def rev_kind_caption
     case kind
     when 1
-      '“¯ˆê“à—e'
+      'åŒä¸€å†…å®¹'
     when -2
-      'V”Å'
+      'æ–°ç‰ˆ'
     when -3
-      '‘O’ñ'
+      'å‰æ'
     when 2
-      '‹Œ”Å'
+      'æ—§ç‰ˆ'
     when 3
-      '’ñ‹Ÿ'
+      'æä¾›'
     end
   end
 
   def trim(string)
-    string.sub(/^[ @]+/, '').sub(/[ @]+$/, '')
+    string.sub(/^[ ã€€]+/, '').sub(/[ ã€€]+$/, '')
   end
 
   def from_code

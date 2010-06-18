@@ -15,7 +15,7 @@ describe EquipsController do
 
   describe "GET index" do
 
-    it "equips ‚ğ“¾‚é" do
+    it "equips ã‚’å¾—ã‚‹" do
       Equip.should_receive(:find).with(:all).and_return([ mock_equip ])
       get :index
       assigns[:equips].should == [ mock_equip ]
@@ -25,7 +25,7 @@ describe EquipsController do
 
   describe "GET show" do
 
-    it "w’è equip ‚ğ“¾‚é" do
+    it "æŒ‡å®š equip ã‚’å¾—ã‚‹" do
       Equip.should_receive(:find).with("42").and_return(mock_equip)
       get :show, :id => "42"
       assigns[:equip].should == mock_equip
@@ -35,13 +35,13 @@ describe EquipsController do
 
   describe "GET edit" do
 
-    it "w’è equip ‚ğ“¾‚é" do
+    it "æŒ‡å®š equip ã‚’å¾—ã‚‹" do
       Equip.should_receive(:find).with("42").and_return(mock_equip)
       get :edit, :id => "42"
       assigns[:equip].should == mock_equip
     end
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Equip.stub!(:find).and_return(mock_equip)
       get :edit, :id => "1"
@@ -51,14 +51,14 @@ describe EquipsController do
 
   describe "PUT update" do
 
-    it "w’è equip ‚ğXV‚·‚é" do
+    it "æŒ‡å®š equip ã‚’æ›´æ–°ã™ã‚‹" do
       Equip.should_receive(:find).with("42").and_return(mock_equip)
       mock_equip.should_receive(:update_attributes).with({'these' => 'params'}).and_return(true)
       put :update, :id => "42", :equip => {:these => 'params'}
       response.should redirect_to(equip_path(mock_equip))
     end
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Equip.stub!(:find).and_return(mock_equip)
       mock_equip.stub!(:update_attributes).and_return(true)
@@ -69,7 +69,7 @@ describe EquipsController do
 
   describe "DELETE destroy" do
 
-    it "—v user ”FØ" do
+    it "è¦ user èªè¨¼" do
       controller.should_receive(:current_user).and_return(mock_user)
       Equip.stub!(:find).and_return(mock_equip)
       mock_equip.stub!(:destroy).and_return(true)

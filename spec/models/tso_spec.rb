@@ -7,7 +7,7 @@ describe Tso, "row" do
     tsos(:one).row.should == 'A'
   end
 
-  it "”wŒi‚È‚ç nil ‚ð“¾‚é" do
+  it "èƒŒæ™¯ãªã‚‰ nil ã‚’å¾—ã‚‹" do
     tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso')
     tso.row.should be_nil
   end
@@ -24,7 +24,7 @@ describe Tso, "col_basis_path" do
     tsos(:two).col_basis_path.should == 'data/model/N400BODY_A00.tso'
   end
 
-  it "”wŒi‚È‚ç nil ‚ð“¾‚é" do
+  it "èƒŒæ™¯ãªã‚‰ nil ã‚’å¾—ã‚‹" do
     tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso', :tah_hash => '27BF16BA')
     tso.col_basis_path.should be_nil
   end
@@ -43,12 +43,12 @@ describe Tso, "find_col_bases" do
     tsos(:two).find_col_bases.should == [ tsos(:one) ]
   end
 
-  it "”wŒi‚È‚ç nil ‚ð“¾‚é" do
+  it "èƒŒæ™¯ãªã‚‰ nil ã‚’å¾—ã‚‹" do
     tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso', :tah_hash => '27BF16BA')
     tso.find_col_bases.should be_empty
   end
 
-  it "Õ“Ë tso ‚ÍŠÜ‚Ü‚È‚¢" do
+  it "è¡çª tso ã¯å«ã¾ãªã„" do
     TAHHash.should_receive(:calc).with('data/model/N000BODY_A01.tso').and_return(0xBC0EEF52)
     tso_collision = Tso.new(:path => 'data/model/N000BODY_A01.tso')
     tso_collision.save!
@@ -69,7 +69,7 @@ describe Tso, "col_bases" do
     tsos(:two).col_bases.should == [ tsos(:one) ]
   end
 
-  it "”wŒi‚È‚ç nil ‚ð“¾‚é" do
+  it "èƒŒæ™¯ãªã‚‰ nil ã‚’å¾—ã‚‹" do
     tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso', :tah_hash => '27BF16BA')
     tso.col_bases.should be_empty
   end
@@ -78,18 +78,18 @@ end
 describe Tso, "search" do
   fixtures :tsos
 
-  it "path data/model/N400BODY_A00.tso ‚ÅŒŸõ‚·‚é‚Æ one ‚Éƒ}ƒbƒ`‚·‚é" do
+  it "path data/model/N400BODY_A00.tso ã§æ¤œç´¢ã™ã‚‹ã¨ one ã«ãƒžãƒƒãƒã™ã‚‹" do
     TAHHash.should_receive(:calc).with('data/model/N400BODY_A00.tso').and_return(0xBC0EEF52)
     @search = Tso::Search.new('path' => 'data/model/N400BODY_A00.tso')
     Tso.find(:all, @search.find_options).should == [ tsos(:one) ]
   end
 
-  it "path data/model/N400BODY_A00 ‚ÅŒŸõ‚·‚é‚Æ one ‚Éƒ}ƒbƒ`‚·‚é" do
+  it "path data/model/N400BODY_A00 ã§æ¤œç´¢ã™ã‚‹ã¨ one ã«ãƒžãƒƒãƒã™ã‚‹" do
     @search = Tso::Search.new('path' => 'data/model/N400BODY_A00')
     Tso.find(:all, @search.find_options).should == [ tsos(:one) ]
   end
 
-  it "path data/model/N400BODY ‚ÅŒŸõ‚·‚é‚Æ one two ‚Éƒ}ƒbƒ`‚·‚é" do
+  it "path data/model/N400BODY ã§æ¤œç´¢ã™ã‚‹ã¨ one two ã«ãƒžãƒƒãƒã™ã‚‹" do
     @search = Tso::Search.new('path' => 'data/model/N400BODY_A')
     Tso.find(:all, @search.find_options).should == [ tsos(:one), tsos(:two) ]
   end
