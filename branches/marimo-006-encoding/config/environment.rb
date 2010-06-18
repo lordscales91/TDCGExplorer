@@ -68,7 +68,7 @@ end
 $KCODE = 'UTF8'
 
 ActiveRecord::Base.colorize_logging = false
-ActionController::Base.default_charset = 'Shift_JIS'
+ActionController::Base.default_charset = 'UTF-8'
 
 WillPaginate::ViewHelpers.pagination_options[:prev_label] = '&laquo; 前へ'
 WillPaginate::ViewHelpers.pagination_options[:next_label] = '次へ &raquo;'
