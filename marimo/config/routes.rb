@@ -9,7 +9,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resource :session
 
-  map.resources :tsos, :collection => { :md5 => :get }
+  map.resources :tsos, :collection => { :md5 => :get, :recent => :get }
 
   map.resources :tahs, :collection => { :recent => :get }
 
