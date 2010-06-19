@@ -1,0 +1,18 @@
+<%-fields_for 'arc[rev_relationship_attributes][]', rev_relationship do |relationship_f|-%>
+<tr>
+<td>
+  <%= relationship_f.text_field :from_code, :index => nil, :id => '' %>
+</td>
+<td>
+  <%= relationship_f.select :kind, rev_relationship_kind_collection, {}, {:index => nil, :id => ''} %>
+</td>
+<td>
+  <%= relationship_f.text_field :note, :index => nil, :id => '' %>
+</td>
+<td>
+  <%-unless rev_relationship.new_record?-%>
+    <%= relationship_f.hidden_field :id, :index => nil, :id => '' %>
+  <%-end-%>
+</td>
+</tr>
+<%-end-%>
