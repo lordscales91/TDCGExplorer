@@ -3,7 +3,7 @@ gem 'activeresource'
 require 'active_resource'
 module Marimo
   mattr_accessor :model_names
-  self.model_names = %w(Arc Tah Tso Tag)
+  self.model_names = %w(Arc Tah Tso Tag ArcTag)
   self.model_names.push 'Relationship'
 end
 module Remote
