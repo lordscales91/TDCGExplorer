@@ -13,7 +13,7 @@
 <%-end-%>
 
 <p>
-  <b>�܂܂��<%= _'Tah|Arc' %>:</b>
+  <b>含まれる<%= _'Tah|Arc' %>:</b>
   <%= link_to h(@tah.arc.code), arc_path(@tah.arc) %>
 </p>
 
@@ -96,7 +96,7 @@
 </table>
 <%-end-%>
 
-<%-unless @tah.col_bases.empty?-%>
+<%-unless @tah.col_zeros.empty?-%>
 <p>
   <b><%= _'Tah|Col bases' %>:</b>
 </p>
@@ -109,7 +109,7 @@
   </thead>
 
   <tbody>
-<% for tah in @tah.col_bases %>
+<% for tah in @tah.col_zeros %>
   <tr class="<%= cycle('odd', 'even') %>">
     <td><%=h tah.path %></td>
     <td><%= link_to _('Show'), tah %></td>
