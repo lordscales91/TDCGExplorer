@@ -11,7 +11,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :tsos, :collection => { :md5 => :get }
 
-  map.resources :tahs
+  map.resources :tahs, :collection => { :recent => :get }
 
   map.resources :arcs, :collection => { :recent => :get }, :member => { :tags => :any }
   map.connect 'arcs/code/:code', :controller => 'arcs', :action => 'code', :conditions => {:method => :get}
