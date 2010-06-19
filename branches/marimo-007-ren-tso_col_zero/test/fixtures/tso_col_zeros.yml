@@ -3,4 +3,4 @@
 one:
   id: 1
   tso_id: 2
-  col_basis_id: 1
+  col_zero_id: 1

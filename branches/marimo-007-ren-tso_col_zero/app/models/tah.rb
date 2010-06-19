@@ -23,8 +23,8 @@ class Tah < ActiveRecord::Base
     row_names.join('/')
   end
 
-  def col_bases
-    ary = tsos.map(&:col_bases).flatten.uniq.map(&:tah).uniq
+  def col_zeros
+    ary = tsos.map(&:col_zeros).flatten.uniq.map(&:tah).uniq
     ary.delete(self)
     ary
   end

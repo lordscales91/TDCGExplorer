@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090615125301) do
+ActiveRecord::Schema.define(:version => 20100619122552) do
 
   create_table "arc_tags", :force => true do |t|
     t.integer  "arc_id"
@@ -62,15 +62,15 @@ ActiveRecord::Schema.define(:version => 20090615125301) do
 
   add_index "tahs", ["arc_id"], :name => "index_tahs_on_arc_id"
 
-  create_table "tso_col_bases", :force => true do |t|
+  create_table "tso_col_zeros", :force => true do |t|
     t.integer  "tso_id"
-    t.integer  "col_basis_id"
+    t.integer  "col_zero_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "tso_col_bases", ["col_basis_id"], :name => "index_tso_col_bases_on_col_basis_id"
-  add_index "tso_col_bases", ["tso_id"], :name => "index_tso_col_bases_on_tso_id"
+  add_index "tso_col_zeros", ["col_zero_id"], :name => "index_tso_col_zeros_on_col_zero_id"
+  add_index "tso_col_zeros", ["tso_id"], :name => "index_tso_col_zeros_on_tso_id"
 
   create_table "tsos", :force => true do |t|
     t.integer  "tah_id"
