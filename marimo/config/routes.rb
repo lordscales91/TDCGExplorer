@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :arc_tags, :collection => { :recent => :get }
+
   map.resources :relationships, :collection => { :recent => :get }
 
   map.resources :tags, :collection => { :recent => :get }
