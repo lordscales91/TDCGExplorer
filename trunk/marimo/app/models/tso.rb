@@ -8,9 +8,9 @@ class Tso < ActiveRecord::Base
   belongs_to :tah
   acts_as_list :scope => :tah
 
-  has_many :tso_col_bases, :dependent => :destroy
-  has_many :col_bases, :through => :tso_col_bases
-  after_update :update_col_bases
+  has_many :tso_col_zeros, :dependent => :destroy
+  has_many :col_zeros, :through => :tso_col_zeros
+  after_update :update_col_zeros
 
   def before_save
     self.tah_hash = '%08X' % TAHHash.calc(path) if defined?(TAHHash)
@@ -95,7 +95,7 @@ Z 手持ちの小物
     row ? row + ":" + ROW_NAMES[row] : nil
   end
 
-  def col_basis_path
+  def col_zero_path
     case path
     when %r[data/bgmodel/]
       nil
@@ -104,9 +104,9 @@ Z 手持ちの小物
     end
   end
 
-  def find_col_bases
+  def find_col_zeros
     return [ ] unless defined?(TAHHash)
-    path = col_basis_path
+    path = col_zero_path
     return [ ] if path.nil?
     tah_hash = '%08X' % TAHHash.calc(path)
     ary = self.class.find(:all, :conditions => ['tah_hash = ?', tah_hash])
@@ -116,19 +116,19 @@ Z 手持ちの小物
     ary
   end
 
-  def update_col_bases
-    old_col_bases = col_bases
-    new_col_bases = find_col_bases
-    old_ids = old_col_bases.map(&:id)
-    new_ids = new_col_bases.map(&:id)
+  def update_col_zeros
+    old_col_zeros = col_zeros
+    new_col_zeros = find_col_zeros
+    old_ids = old_col_zeros.map(&:id)
+    new_ids = new_col_zeros.map(&:id)
     add_ids = new_ids - old_ids
     sub_ids = old_ids - new_ids
-    sub_ids.each do |col_basis_id|
-      tso_col_basis = tso_col_bases.detect { |tc| tc.col_basis_id == col_basis_id }
-      tso_col_basis.destroy
+    sub_ids.each do |col_zero_id|
+      tso_col_zero = tso_col_zeros.detect { |tc| tc.col_zero_id == col_zero_id }
+      tso_col_zero.destroy
     end
-    add_ids.each do |col_basis_id|
-      tso_col_basis = tso_col_bases.create(:col_basis_id => col_basis_id)
+    add_ids.each do |col_zero_id|
+      tso_col_zero = tso_col_zeros.create(:col_zero_id => col_zero_id)
     end
   end
 

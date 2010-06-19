@@ -1,14 +1,14 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Tah, "col_bases" do
-  fixtures :tahs, :tsos, :tso_col_bases
+describe Tah, "col_zeros" do
+  fixtures :tahs, :tsos, :tso_col_zeros
 
   it "one" do
-    tahs(:one).col_bases.should be_empty
+    tahs(:one).col_zeros.should be_empty
   end
 
   it "two" do
-    tahs(:two).col_bases.should == [ tahs(:one) ]
+    tahs(:two).col_zeros.should == [ tahs(:one) ]
   end
 
   describe "tsos(:two).tah == tahs(:one) なら" do
@@ -20,11 +20,11 @@ describe Tah, "col_bases" do
     end
 
     it "one: self は含まない" do
-      tahs(:one).col_bases.should == [ ]
+      tahs(:one).col_zeros.should == [ ]
     end
 
     it "two" do
-      tahs(:two).col_bases.should == [ ]
+      tahs(:two).col_zeros.should == [ ]
     end
   end
 end

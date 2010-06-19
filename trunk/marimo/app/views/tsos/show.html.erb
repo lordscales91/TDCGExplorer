@@ -19,7 +19,7 @@
 </p>
 
 <p>
-  <b>�܂܂��<%= _'Tso|Tah' %>:</b>
+  <b>含まれる<%= _'Tso|Tah' %>:</b>
   <%= link_to h(@tso.tah.path), tah_path(@tso.tah) %>
 </p>
 
@@ -77,7 +77,7 @@
 </table>
 <%-end-%>
 
-<%-unless @tso.col_bases.empty?-%>
+<%-unless @tso.col_zeros.empty?-%>
 <p>
   <b><%= _'Tso|Col bases' %>:</b>
 </p>
@@ -91,7 +91,7 @@
   </thead>
 
   <tbody>
-<% for tso in @tso.col_bases %>
+<% for tso in @tso.col_zeros %>
   <tr class="<%= cycle('odd', 'even') %>">
     <td><%=h tso.path %></td>
     <td><%=h tso.tah.path %></td>
