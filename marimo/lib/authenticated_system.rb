@@ -18,11 +18,11 @@ module AuthenticatedSystem
     end
 
     def access_denied
+      store_location
       redirect_to new_session_path
     end
 
     def store_location
-      store_location
       session[:return_to] = request.request_uri
     end
 
