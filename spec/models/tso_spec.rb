@@ -13,39 +13,39 @@ describe Tso, "row" do
   end
 end
 
-describe Tso, "col_basis_path" do
-  fixtures :tsos, :tso_col_bases
+describe Tso, "col_zero_path" do
+  fixtures :tsos, :tso_col_zeros
 
   it "one" do
-    tsos(:one).col_basis_path.should == 'data/model/N400BODY_A00.tso'
+    tsos(:one).col_zero_path.should == 'data/model/N400BODY_A00.tso'
   end
 
   it "two" do
-    tsos(:two).col_basis_path.should == 'data/model/N400BODY_A00.tso'
+    tsos(:two).col_zero_path.should == 'data/model/N400BODY_A00.tso'
   end
 
   it "背景なら nil を得る" do
     tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso', :tah_hash => '27BF16BA')
-    tso.col_basis_path.should be_nil
+    tso.col_zero_path.should be_nil
   end
 end
 
-describe Tso, "find_col_bases" do
-  fixtures :tsos, :tso_col_bases
+describe Tso, "find_col_zeros" do
+  fixtures :tsos, :tso_col_zeros
 
   it "one" do
     TAHHash.should_receive(:calc).with('data/model/N400BODY_A00.tso').and_return(0xBC0EEF52)
-    tsos(:one).find_col_bases.should be_empty
+    tsos(:one).find_col_zeros.should be_empty
   end
 
   it "two" do
     TAHHash.should_receive(:calc).with('data/model/N400BODY_A00.tso').and_return(0xBC0EEF52)
-    tsos(:two).find_col_bases.should == [ tsos(:one) ]
+    tsos(:two).find_col_zeros.should == [ tsos(:one) ]
   end
 
   it "背景なら nil を得る" do
     tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso', :tah_hash => '27BF16BA')
-    tso.find_col_bases.should be_empty
+    tso.find_col_zeros.should be_empty
   end
 
   it "衝突 tso は含まない" do
@@ -53,25 +53,25 @@ describe Tso, "find_col_bases" do
     tso_collision = Tso.new(:path => 'data/model/N000BODY_A01.tso')
     tso_collision.save!
     TAHHash.should_receive(:calc).with('data/model/N400BODY_A00.tso').and_return(0xBC0EEF52)
-    # FAIL: tsos(:one).find_col_bases.should == [ tso_collision ]
-    tsos(:one).find_col_bases.should be_empty
+    # FAIL: tsos(:one).find_col_zeros.should == [ tso_collision ]
+    tsos(:one).find_col_zeros.should be_empty
   end
 end
 
-describe Tso, "col_bases" do
-  fixtures :tsos, :tso_col_bases
+describe Tso, "col_zeros" do
+  fixtures :tsos, :tso_col_zeros
 
   it "one" do
-    tsos(:one).col_bases.should be_empty
+    tsos(:one).col_zeros.should be_empty
   end
 
   it "two" do
-    tsos(:two).col_bases.should == [ tsos(:one) ]
+    tsos(:two).col_zeros.should == [ tsos(:one) ]
   end
 
   it "背景なら nil を得る" do
     tso = Tso.new(:path => 'data/bgmodel/HOTEL_C.tso', :tah_hash => '27BF16BA')
-    tso.col_bases.should be_empty
+    tso.col_zeros.should be_empty
   end
 end
 

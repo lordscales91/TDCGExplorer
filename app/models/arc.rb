@@ -52,8 +52,8 @@ class Arc < ActiveRecord::Base
     row_names.join('/')
   end
 
-  def col_bases
-    ary = tahs.map(&:col_bases).flatten.uniq.map(&:arc).uniq
+  def col_zeros
+    ary = tahs.map(&:col_zeros).flatten.uniq.map(&:arc).uniq
     ary.delete(self)
     ary
   end

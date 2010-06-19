@@ -1,14 +1,14 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Arc, "col_bases" do
-  fixtures :arcs, :tahs, :tsos, :tso_col_bases
+describe Arc, "col_zeros" do
+  fixtures :arcs, :tahs, :tsos, :tso_col_zeros
 
   it "one" do
-    arcs(:one).col_bases.should be_empty
+    arcs(:one).col_zeros.should be_empty
   end
 
   it "two" do
-    arcs(:two).col_bases.should == [ arcs(:one) ]
+    arcs(:two).col_zeros.should == [ arcs(:one) ]
   end
 
   describe "tsos(:two).tah == tahs(:one) なら" do
@@ -20,11 +20,11 @@ describe Arc, "col_bases" do
     end
 
     it "one: self は含まない" do
-      arcs(:one).col_bases.should == [ ]
+      arcs(:one).col_zeros.should == [ ]
     end
 
     it "two" do
-      arcs(:two).col_bases.should == [ ]
+      arcs(:two).col_zeros.should == [ ]
     end
   end
 
@@ -35,11 +35,11 @@ describe Arc, "col_bases" do
     end
 
     it "one: self を含まない" do
-      arcs(:one).col_bases.should == [ ]
+      arcs(:one).col_zeros.should == [ ]
     end
 
     it "two" do
-      arcs(:two).col_bases.should == [ ]
+      arcs(:two).col_zeros.should == [ ]
     end
   end
 end
