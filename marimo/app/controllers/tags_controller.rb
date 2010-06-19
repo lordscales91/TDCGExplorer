@@ -22,6 +22,11 @@ class TagsController < ApplicationController
     end
   end
 
+  def recent
+    @tags = Tag.find(:all, :conditions => ["updated_at > ?", 3.days.ago])
+    render :xml => @tags
+  end
+
   # GET /tags/1
   # GET /tags/1.xml
   def show
