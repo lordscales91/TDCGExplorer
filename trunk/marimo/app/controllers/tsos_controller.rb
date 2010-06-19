@@ -25,6 +25,11 @@ class TsosController < ApplicationController
     end
   end
 
+  def recent
+    @tsos = Tso.find(:all, :conditions => ["updated_at > ?", 3.days.ago])
+    render :xml => @tsos
+  end
+
   # GET /tsos/1
   # GET /tsos/1.xml
   def show
