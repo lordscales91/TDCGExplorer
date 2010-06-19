@@ -166,9 +166,9 @@
 </table>
 <%-end-%>
 
-<%-unless @arc.col_bases.empty?-%>
+<%-unless @arc.col_zeros.empty?-%>
 <p>
-  <b><%= _'Arc|Col bases' %>:</b>
+  <b><%= _'Arc|Col zeros' %>:</b>
 </p>
 <table class="list arcs">
   <thead>
@@ -182,7 +182,7 @@
   </thead>
 
   <tbody>
-<% for arc in @arc.col_bases %>
+<% for arc in @arc.col_zeros %>
   <tr class="<%= cycle('odd', 'even') %>">
     <td><%=link_to h(arc.code), arc %></td>
     <td><%=h arc.extname %></td>
