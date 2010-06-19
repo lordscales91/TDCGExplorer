@@ -22,6 +22,11 @@ class ArcsController < ApplicationController
     end
   end
 
+  def recent
+    @arcs = Arc.find(:all, :conditions => ["updated_at > ?", 3.days.ago])
+    render :xml => @arcs
+  end
+
   # GET /arcs/1
   # GET /arcs/1.xml
   def show
