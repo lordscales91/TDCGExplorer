@@ -6,9 +6,15 @@ module Remoting
     # self.site = 'http://localhost:3000'
     self.site = 'http://3dcustom.ath.cx/rails'
   end
+  class Tah < ActiveResource::Base
+    # self.site = 'http://localhost:3000'
+    self.site = 'http://3dcustom.ath.cx/rails'
+  end
 end
 rarcs = Remoting::Arc.find(:all, :from => :recent)
 p rarcs.size
+rtahs = Remoting::Tah.find(:all, :from => :recent)
+p rtahs.size
 gem 'activerecord'
 require 'active_record'
 config = YAML.load(IO.read('config/database.yml'))
@@ -26,4 +32,13 @@ rarcs.each do |rarc|
   attributes.delete('id')
   p attributes
   p arc.update_attributes(attributes)
+end
+class Tah < ActiveRecord::Base
+end
+rtahs.each do |rtah|
+  tah = Tah.find_or_initialize_by_id(rtah.id)
+  attributes = rtah.attributes
+  attributes.delete('id')
+  p attributes
+  p tah.update_attributes(attributes)
 end
