@@ -1,4 +1,6 @@
 ActionController::Routing::Routes.draw do |map|
+  map.resources :relationships, :collection => { :recent => :get }
+
   map.resources :tags
 
   map.resource :tahdump
