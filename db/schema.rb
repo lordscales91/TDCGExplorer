@@ -11,19 +11,9 @@
 
 ActiveRecord::Schema.define(:version => 20090615125301) do
 
-  create_table "arc_equips", :force => true do |t|
-    t.integer  "arc_id",     :limit => 11
-    t.integer  "equip_id",   :limit => 11
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "arc_equips", ["arc_id"], :name => "index_arc_equips_on_arc_id"
-  add_index "arc_equips", ["equip_id"], :name => "index_arc_equips_on_equip_id"
-
   create_table "arc_tags", :force => true do |t|
-    t.integer  "arc_id",     :limit => 11
-    t.integer  "tag_id",     :limit => 11
+    t.integer  "arc_id"
+    t.integer  "tag_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -43,16 +33,10 @@ ActiveRecord::Schema.define(:version => 20090615125301) do
 
   add_index "arcs", ["location", "code"], :name => "index_arcs_on_location_and_code", :unique => true
 
-  create_table "equips", :force => true do |t|
-    t.string   "name",       :limit => 15, :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "relationships", :force => true do |t|
-    t.integer  "from_id",    :limit => 11
-    t.integer  "to_id",      :limit => 11
-    t.integer  "kind",       :limit => 11, :default => 1, :null => false
+    t.integer  "from_id"
+    t.integer  "to_id"
+    t.integer  "kind",                     :default => 1, :null => false
     t.string   "note",       :limit => 30
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -69,38 +53,38 @@ ActiveRecord::Schema.define(:version => 20090615125301) do
   end
 
   create_table "tahs", :force => true do |t|
-    t.integer  "arc_id",     :limit => 11
+    t.integer  "arc_id"
     t.string   "path"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "position",   :limit => 11
+    t.integer  "position"
   end
 
   add_index "tahs", ["arc_id"], :name => "index_tahs_on_arc_id"
 
   create_table "tso_col_bases", :force => true do |t|
-    t.integer  "tso_id",       :limit => 11
-    t.integer  "col_basis_id", :limit => 11
+    t.integer  "tso_id"
+    t.integer  "col_basis_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "tso_col_bases", ["tso_id"], :name => "index_tso_col_bases_on_tso_id"
   add_index "tso_col_bases", ["col_basis_id"], :name => "index_tso_col_bases_on_col_basis_id"
+  add_index "tso_col_bases", ["tso_id"], :name => "index_tso_col_bases_on_tso_id"
 
   create_table "tsos", :force => true do |t|
-    t.integer  "tah_id",     :limit => 11
+    t.integer  "tah_id"
     t.string   "path"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "tah_hash",   :limit => 8,  :null => false
-    t.integer  "position",   :limit => 11
+    t.integer  "position"
     t.string   "md5",        :limit => 32, :null => false
   end
 
-  add_index "tsos", ["tah_id"], :name => "index_tsos_on_tah_id"
-  add_index "tsos", ["tah_hash"], :name => "index_tsos_on_tah_hash"
   add_index "tsos", ["md5"], :name => "index_tsos_on_md5"
+  add_index "tsos", ["tah_hash"], :name => "index_tsos_on_tah_hash"
+  add_index "tsos", ["tah_id"], :name => "index_tsos_on_tah_id"
 
   create_table "users", :force => true do |t|
     t.string   "login"
