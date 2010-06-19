@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: marimo 0.0.1\n"
-"POT-Creation-Date: 2010-06-19 21:57+0900\n"
+"POT-Creation-Date: 2010-06-19 22:10+0900\n"
 "PO-Revision-Date: 2009-04-30 04:29+0900\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -246,8 +246,8 @@ msgid "Tah|Duplicates"
 msgstr "重複"
 
 #: app/views/tahs/show.html.erb:101
-msgid "Tah|Col bases"
-msgstr "Col bases"
+msgid "Tah|Col zeros"
+msgstr "色00"
 
 #: app/views/tsos/index.html.erb:11
 msgid "MD5 search"
@@ -280,8 +280,8 @@ msgid "Tso|Duplicates"
 msgstr "重複"
 
 #: app/views/tsos/show.html.erb:82
-msgid "Tso|Col bases"
-msgstr "Col bases"
+msgid "Tso|Col zeros"
+msgstr "色00"
 
 #: app/views/welcome/index.html.erb:55 app/views/welcome/index.html.erb:95
 msgid "and more"
