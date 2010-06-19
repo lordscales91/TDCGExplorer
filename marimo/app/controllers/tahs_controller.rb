@@ -15,6 +15,11 @@ class TahsController < ApplicationController
     end
   end
 
+  def recent
+    @tahs = Tah.find(:all, :conditions => ["updated_at > ?", 3.days.ago])
+    render :xml => @tahs
+  end
+
   # GET /tahs/1
   # GET /tahs/1.xml
   def show
