@@ -7,7 +7,7 @@ class TahsController < ApplicationController
   # GET /tahs.xml
   def index
     @search = Tah::Search.new(params[:search])
-    @tahs = Tah.paginate(@search.find_options.merge(:page => params[:page]))
+    @tahs = Tah.paginate(@search.find_options.merge(:page => params[:page], :include => :arc))
 
     respond_to do |format|
       format.html # index.html.erb
