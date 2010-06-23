@@ -18,7 +18,7 @@ end
 gem 'activerecord'
 require 'active_record'
 config = YAML.load(IO.read('config/database.yml'))
-environment = 'test'
+environment = ENV['RAILS_ENV'] || 'development'
 p config[environment]
 require 'logger'
 ActiveRecord::Base.logger = Logger.new("debug.log")
