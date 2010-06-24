@@ -25,9 +25,10 @@ public class Viewer : IDisposable
     internal Effect effect;
 
     private EffectHandle handle_LocalBoneMats;
-    private EffectHandle handle_ShadowMap;
 
-    private bool shadowMapEnabled = false;
+    //private EffectHandle handle_ShadowMap;
+    //private bool shadowMapEnabled = false;
+
     internal Texture[] renderTextures = null;
     int ztexw = 0;
     int ztexh = 0;
@@ -469,7 +470,7 @@ public class Viewer : IDisposable
     /// <returns>deviceÇÃçÏê¨Ç…ê¨å˜ÇµÇΩÇ©</returns>
     public bool InitializeApplication(Control control, bool shadowMapEnabled)
     {
-        this.shadowMapEnabled = shadowMapEnabled;
+        //this.shadowMapEnabled = shadowMapEnabled;
         SetControl(control);
 
         control.SizeChanged += new EventHandler(control_OnSizeChanged);
@@ -544,6 +545,7 @@ public class Viewer : IDisposable
             }
         }
         handle_LocalBoneMats = effect.GetParameter(null, "LocalBoneMats");
+#if false
         if (shadowMapEnabled)
         {
             handle_ShadowMap = effect.GetTechnique("ShadowMap");
@@ -551,6 +553,7 @@ public class Viewer : IDisposable
 
             sprite = new Sprite(device);
         }
+#endif
         camera.Update();
         OnDeviceReset(device, null);
 
@@ -594,7 +597,7 @@ public class Viewer : IDisposable
             dev_zbufh = dev_surface.Description.Height;
         }
         Console.WriteLine("dev_zbuf {0}x{1}", dev_zbufw, dev_zbufh);
-
+#if false
         if (shadowMapEnabled)
         {
             renderTextures = new Texture[3];
@@ -617,7 +620,7 @@ public class Viewer : IDisposable
             w_scale = (float)devw / ztexw;
             h_scale = (float)devh / ztexh;
         }
-
+#endif
         Transform_Projection = Matrix.PerspectiveFovRH(
                 Geometry.DegreeToRadian(30.0f),
                 (float)device.Viewport.Width / (float)device.Viewport.Height,
@@ -626,7 +629,7 @@ public class Viewer : IDisposable
         // xxx: for w-buffering
         device.Transform.Projection = Transform_Projection;
         effect.SetValue("proj", Transform_Projection);
-
+#if false
         if (shadowMapEnabled)
         {
             Light_Projection = Matrix.PerspectiveFovLH(
@@ -636,7 +639,7 @@ public class Viewer : IDisposable
                 250.0f );
             effect.SetValue("lightproj", Light_Projection);
         }
-
+#endif
         device.RenderState.Lighting = false;
         device.RenderState.CullMode = Cull.CounterClockwise;
 
@@ -651,7 +654,7 @@ public class Viewer : IDisposable
         device.RenderState.AlphaFunction = Compare.GreaterEqual;
 
         device.RenderState.IndexedVertexBlendEnable = true;
-
+#if false
         if (shadowMapEnabled)
         {
             CustomVertex.PositionTextured[] verts = new CustomVertex.PositionTextured[4];
@@ -663,9 +666,9 @@ public class Viewer : IDisposable
             vbGauss = new VertexBuffer(typeof(CustomVertex.PositionTextured), 4, device, Usage.Dynamic | Usage.WriteOnly, CustomVertex.PositionTextured.Format, Pool.Default);
             vbGauss.SetData(verts, 0, LockFlags.None);
         }
-
         if (shadowMapEnabled)
             SetGaussianWeight(12.5f);
+#endif
     }
 
     private void CancelResize(object sender, CancelEventArgs e)
@@ -785,7 +788,7 @@ public class Viewer : IDisposable
             device.Transform.View = Transform_View;
             effect.SetValue("view", Transform_View);
         }
-
+#if false
         if (shadowMapEnabled)
         {
             float scale = 40.0f;
@@ -796,7 +799,7 @@ public class Viewer : IDisposable
                     new Vector3( 0.0f, 1.0f, 0.0f ) );
             effect.SetValue("lightview", Light_View);
         }
-
+#endif
         foreach (Figure fig in FigureList)
         foreach (TSOFile tso in fig.TSOList)
             tso.lightDir = lightDir;
@@ -857,7 +860,7 @@ public class Viewer : IDisposable
             effect.SetValue("wv", world_view_matrix);
             effect.SetValue("wvp", world_view_projection_matrix);
         }
-
+#if false
         if (shadowMapEnabled)
         {
             if (shadowShown)
@@ -870,14 +873,14 @@ public class Viewer : IDisposable
                 ClearShadowMap();
             }
         }
-
+#endif
         DrawFigure();
-
+#if false
         if (shadowMapEnabled && SpriteShown)
         {
             DrawSprite();
         }
-
+#endif
         if (Rendering != null)
             Rendering();
 
@@ -904,7 +907,7 @@ public class Viewer : IDisposable
         device.Present();
         Thread.Sleep(30);
     }
-
+#if false
     void DrawShadowMap()
     {
         device.RenderState.AlphaBlendEnable = false;
@@ -912,7 +915,6 @@ public class Viewer : IDisposable
         device.SetRenderTarget(0, renderSurfaces[0]);
         device.DepthStencilSurface = renderZ;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
-
         effect.Technique = handle_ShadowMap;
 
         foreach (Figure fig in FigureList)
@@ -950,7 +952,9 @@ public class Viewer : IDisposable
             //tso.EndRender();
         }
     }
+#endif 
 
+#if false
     void SetGaussianWeight(float disp)
     {
         float[] weights = new float[8];
@@ -965,7 +969,9 @@ public class Viewer : IDisposable
             weights[i] /= t;
         effect.SetValue("gaussw", weights);
     }
+#endif
 
+#if false
     void DrawGaussianBlur()
     {
         effect.Technique = "Tec4_GaussDraw";
@@ -999,13 +1005,16 @@ public class Viewer : IDisposable
         }
         effect.End();
     }
+#endif
 
+#if false
     void ClearShadowMap()
     {
         device.SetRenderTarget(0, renderSurfaces[2]);
         device.DepthStencilSurface = renderZ;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
     }
+#endif
     
     void DrawFigure()
     {
@@ -1014,12 +1023,12 @@ public class Viewer : IDisposable
         device.SetRenderTarget(0, dev_surface);
         device.DepthStencilSurface = dev_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, backcolor, 1.0f, 0);
-
+#if false
         if (shadowMapEnabled)
         {
             effect.SetValue("texShadowMap", renderTextures[2]);
         }
-
+#endif
         foreach (Figure fig in FigureList)
         foreach (TSOFile tso in fig.TSOList)
         {
