@@ -1,0 +1,384 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{AEF438ED-EF00-4BFF-88A5-63B6B049BAC4}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>TDCGExplorer</RootNamespace>
+    <AssemblyName>TDCGExplorer-en</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <ApplicationIcon>ICON.ICO</ApplicationIcon>
+    <StartupObject>TDCGExplorer.TDCGExplorer</StartupObject>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ArchiveLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Archivers\ArchiveLib.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.85.4.369, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Archivers\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.Direct3DX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.SQLite, Version=1.0.62.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>SQLite\System.Data.SQLite.DLL</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AnnotationDB.cs" />
+    <Compile Include="ArcNames.cs" />
+    <Compile Include="ArcsDataBase.cs" />
+    <Compile Include="DefaultTMOPng.cs" />
+    <Compile Include="FindBaseModPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FindItemPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PNGHSAVStream.cs" />
+    <Compile Include="PNGPOSEStream.cs" />
+    <Compile Include="PNGWriter.cs" />
+    <Compile Include="PoseFilePage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="PSDFile.cs" />
+    <Compile Include="SimpleDropDownDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SimpleDropDownDialog.Designer.cs">
+      <DependentUpon>SimpleDropDownDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SplashForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SplashForm.Designer.cs">
+      <DependentUpon>SplashForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TAHInfoDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TAHInfoDialog.Designer.cs">
+      <DependentUpon>TAHInfoDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TAHWriter.cs" />
+    <Compile Include="Collision.cs" />
+    <Compile Include="CollisionTahPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DirectAccess.cs" />
+    <Compile Include="EditSystemDatabase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditSystemDatabase.Designer.cs">
+      <DependentUpon>EditSystemDatabase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="AnnotationEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AnnotationEdit.Designer.cs">
+      <DependentUpon>AnnotationEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SimpleTextDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SimpleTextDialog.Designer.cs">
+      <DependentUpon>SimpleTextDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GenTahInfo.cs" />
+    <Compile Include="HttpUtil.cs" />
+    <Compile Include="ImagePage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ListBoxItem.cs" />
+    <Compile Include="LZSS.cs" />
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MODRefPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="mt19937.cs" />
+    <Compile Include="PNGFile.cs" />
+    <Compile Include="SaveFilePage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="SystemDatabase.cs" />
+    <Compile Include="TagNames.cs" />
+    <Compile Include="TAHCryptStream.cs" />
+    <Compile Include="TAHDataBase.cs" />
+    <Compile Include="TAHDump.cs" />
+    <Compile Include="TAHEditor.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TAHFile.cs" />
+    <Compile Include="TAHPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TAHStream.cs" />
+    <Compile Include="TAHUtil.cs" />
+    <Compile Include="TbnSelectForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TbnSelectForm.Designer.cs">
+      <DependentUpon>TbnSelectForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="TDCGExplorer.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="FindBaseModPage.resx">
+      <DependentUpon>FindBaseModPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FindItemPage.resx">
+      <DependentUpon>FindItemPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PoseFilePage.resx">
+      <DependentUpon>PoseFilePage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SimpleDropDownDialog.resx">
+      <DependentUpon>SimpleDropDownDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CollisionTahPage.resx">
+      <DependentUpon>CollisionTahPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditSystemDatabase.resx">
+      <DependentUpon>EditSystemDatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AnnotationEdit.resx">
+      <DependentUpon>AnnotationEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SimpleTextDialog.resx">
+      <DependentUpon>SimpleTextDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImagePage.resx">
+      <DependentUpon>ImagePage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MODRefPage.resx">
+      <DependentUpon>MODRefPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SaveFilePage.resx">
+      <DependentUpon>SaveFilePage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SplashForm.resx">
+      <DependentUpon>SplashForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TAHEditor.resx">
+      <DependentUpon>TAHEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TAHInfoDialog.resx">
+      <DependentUpon>TAHInfoDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TAHPage.resx">
+      <DependentUpon>TAHPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TbnSelectForm.resx">
+      <DependentUpon>TbnSelectForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TextPage.resx">
+      <DependentUpon>TextPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TextResource-en.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>TextResource-en1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ZipFilePageControl.resx">
+      <DependentUpon>ZipFilePageControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="ifpsd.spi">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="N001OBON_Z00.tbn">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="N999SAVE_A00.psd">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="title.psd" />
+    <None Include="toonshader.cgfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="TDCGSaveFile.cs" />
+    <Compile Include="TDCGTbn.cs" />
+    <Compile Include="TextPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TextResource-en1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>TextResource-en.resx</DependentUpon>
+    </Compile>
+    <Compile Include="TreeNode.cs" />
+    <Compile Include="TSOCameraAutoCenter.cs" />
+    <Compile Include="XML.cs" />
+    <Compile Include="ZipFilePageControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="ZipFileUtil.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows インストーラ 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="default.tdcgsav.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ICON.ICO" />
+    <Content Include="names.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="NOIMAGE.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="readme.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SnapShotPose.tdcgpose.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="title.jpg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="unrar.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TDCG\TDCG.csproj">
+      <Project>{30D26679-E876-46FC-B8C0-E55146316C8C}</Project>
+      <Name>TDCG</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
