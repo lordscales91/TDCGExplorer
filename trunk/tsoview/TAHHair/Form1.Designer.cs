@@ -128,7 +128,8 @@
             // 
             // diaOpen1
             // 
-            this.diaOpen1.FileName = "openFileDialog1";
+            this.diaOpen1.FileName = "base.tah";
+            this.diaOpen1.Filter = "tah Files|*.tah|All Files|*.*";
             // 
             // bwCompress
             // 
