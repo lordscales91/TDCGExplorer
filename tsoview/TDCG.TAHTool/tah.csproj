@@ -58,13 +58,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compression.cs" />
-    <Compile Include="Decompression.cs" />
-    <Compile Include="Decrypter.cs" />
     <Compile Include="Encrypter.cs" />
     <Compile Include="MT19937ar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TAHdecrypt.cs" />
     <Compile Include="TAHencrypt.cs" />
+    <Compile Include="TAHFileUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="names.txt">
