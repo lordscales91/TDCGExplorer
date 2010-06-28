@@ -224,26 +224,6 @@ public class TSOForm : Form
         viewer.Render();
     }
 
-    public void Render()
-    {
-        /*
-        int height = 24;
-        for (int i = 0; i < keys.Length; i++)
-        {
-            if (keys[i])
-            {
-                font.DrawText(null, ((Keys)i).ToString(), 0, height, Color.Black);
-                height += 24;
-            }
-        }
-        */
-    }
-
-    protected override void OnPaint(System.Windows.Forms.PaintEventArgs e)
-    {
-        //this.Render(); // Render on painting
-    }
-
     protected override void OnKeyPress(System.Windows.Forms.KeyPressEventArgs e)
     {
         if ((int)(byte)e.KeyChar == (int)System.Windows.Forms.Keys.Escape)
