@@ -56,7 +56,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="TDCG, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\build\TDCG.dll</HintPath>
+      <HintPath>TDCG.dll</HintPath>
     </Reference>
     <Reference Include="TDCG.TSOHair, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86" />
   </ItemGroup>
