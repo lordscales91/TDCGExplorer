@@ -48,7 +48,7 @@ namespace TAHBackground
                 {
                     byte[] data_output;
                     decrypter.ExtractResource(entry, out data_output);
-                    file_name += TAHdecrypt.GetExtensionFromMagic(data_output);
+                    file_name += TAHFileUtils.GetExtensionFromMagic(data_output);
                 }
 
                 string ext = Path.GetExtension(file_name).ToLower();
@@ -122,7 +122,7 @@ namespace TAHBackground
                 {
                     byte[] data_output;
                     decrypter.ExtractResource(entry, out data_output);
-                    file_name += TAHdecrypt.GetExtensionFromMagic(data_output);
+                    file_name += TAHFileUtils.GetExtensionFromMagic(data_output);
                 }
 
                 string ext = Path.GetExtension(file_name).ToLower();
