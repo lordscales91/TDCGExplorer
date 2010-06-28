@@ -81,21 +81,6 @@ public class Viewer : IDisposable
         Figure.ProportionList = pro_list;
     }
 
-    private void control_OnSizeChanged(object sender, EventArgs e)
-    {
-        if (device == null)
-            return;
-
-        Transform_Projection = Matrix.PerspectiveFovRH(
-                Geometry.DegreeToRadian(30.0f),
-                (float)control.Width / (float)control.Height,
-                1.0f,
-                1000.0f );
-        // xxx: for w-buffering
-        device.Transform.Projection = Transform_Projection;
-        effect.SetValue("proj", Transform_Projection);
-    }
-
     /// マウスボタンを押したときに実行するハンドラ
     protected virtual void form_OnMouseDown(object sender, MouseEventArgs e)
     {
@@ -483,7 +468,6 @@ public class Viewer : IDisposable
         this.shadow_map_enabled = shadow_map_enabled;
         SetControl(control);
 
-        control.SizeChanged += new EventHandler(control_OnSizeChanged);
         control.MouseDown += new MouseEventHandler(form_OnMouseDown);
         control.MouseMove += new MouseEventHandler(form_OnMouseMove);
 
@@ -521,7 +505,7 @@ public class Viewer : IDisposable
                 flags = CreateFlags.HardwareVertexProcessing;
             if (caps.DeviceCaps.SupportsPureDevice)
                 flags |= CreateFlags.PureDevice;
-            device = new Device(adapter_ordinal, DeviceType.Hardware, control.Handle, flags, pp);
+            device = new Device(adapter_ordinal, DeviceType.Hardware, control, flags, pp);
 
             device.DeviceLost += new EventHandler(OnDeviceLost);
             device.DeviceReset += new EventHandler(OnDeviceReset);
