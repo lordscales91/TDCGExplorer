@@ -509,7 +509,6 @@ public class Viewer : IDisposable
 
             device.DeviceLost += new EventHandler(OnDeviceLost);
             device.DeviceReset += new EventHandler(OnDeviceReset);
-            device.DeviceResizing += new CancelEventHandler(CancelResize);
 
             FontDescription fd = new FontDescription();
             fd.Height = 24;
@@ -640,12 +639,6 @@ public class Viewer : IDisposable
         device.RenderState.AlphaFunction = Compare.GreaterEqual;
 
         device.RenderState.IndexedVertexBlendEnable = true;
-    }
-
-    private void CancelResize(object sender, CancelEventArgs e)
-    {
-        Console.WriteLine("CancelResize");
-        //e.Cancel = true;
     }
 
     /// <summary>
