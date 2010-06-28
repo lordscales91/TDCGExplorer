@@ -345,7 +345,7 @@ sampler2D RotateTex = sampler_state {
 	MipFilter = NONE;
 };
 
-sampler ShadowMap = sampler_state
+sampler ShadowTex = sampler_state
 {
 	Texture		= <texShadowMap>;
 
@@ -907,14 +907,14 @@ float4 psGaussXDraw(VS_OUTPUT2 v) : COLOR
 
 	float2	offset = {16.0f / MAP_WIDTH, 0.0f};
 
-	col  = gaussw[0] * (tex2D(ShadowMap, v.vTex0) + tex2D(ShadowMap, v.vTex7 + offset));
-	col += gaussw[1] * (tex2D(ShadowMap, v.vTex1) + tex2D(ShadowMap, v.vTex6 + offset));
-	col += gaussw[2] * (tex2D(ShadowMap, v.vTex2) + tex2D(ShadowMap, v.vTex5 + offset));
-	col += gaussw[3] * (tex2D(ShadowMap, v.vTex3) + tex2D(ShadowMap, v.vTex4 + offset));
-	col += gaussw[4] * (tex2D(ShadowMap, v.vTex4) + tex2D(ShadowMap, v.vTex3 + offset));
-	col += gaussw[5] * (tex2D(ShadowMap, v.vTex5) + tex2D(ShadowMap, v.vTex2 + offset));
-	col += gaussw[6] * (tex2D(ShadowMap, v.vTex6) + tex2D(ShadowMap, v.vTex1 + offset));
-	col += gaussw[7] * (tex2D(ShadowMap, v.vTex7) + tex2D(ShadowMap, v.vTex0 + offset));
+	col  = gaussw[0] * (tex2D(ShadowTex, v.vTex0) + tex2D(ShadowTex, v.vTex7 + offset));
+	col += gaussw[1] * (tex2D(ShadowTex, v.vTex1) + tex2D(ShadowTex, v.vTex6 + offset));
+	col += gaussw[2] * (tex2D(ShadowTex, v.vTex2) + tex2D(ShadowTex, v.vTex5 + offset));
+	col += gaussw[3] * (tex2D(ShadowTex, v.vTex3) + tex2D(ShadowTex, v.vTex4 + offset));
+	col += gaussw[4] * (tex2D(ShadowTex, v.vTex4) + tex2D(ShadowTex, v.vTex3 + offset));
+	col += gaussw[5] * (tex2D(ShadowTex, v.vTex5) + tex2D(ShadowTex, v.vTex2 + offset));
+	col += gaussw[6] * (tex2D(ShadowTex, v.vTex6) + tex2D(ShadowTex, v.vTex1 + offset));
+	col += gaussw[7] * (tex2D(ShadowTex, v.vTex7) + tex2D(ShadowTex, v.vTex0 + offset));
 
 	return col;
 }
@@ -924,14 +924,14 @@ float4 psGaussYDraw(VS_OUTPUT2 v) : COLOR
 
 	float2	offset = {0.0f, 16.0f / MAP_HEIGHT};
 
-	col  = gaussw[0] * (tex2D(ShadowMap, v.vTex0) + tex2D(ShadowMap, v.vTex7 + offset));
-	col += gaussw[1] * (tex2D(ShadowMap, v.vTex1) + tex2D(ShadowMap, v.vTex6 + offset));
-	col += gaussw[2] * (tex2D(ShadowMap, v.vTex2) + tex2D(ShadowMap, v.vTex5 + offset));
-	col += gaussw[3] * (tex2D(ShadowMap, v.vTex3) + tex2D(ShadowMap, v.vTex4 + offset));
-	col += gaussw[4] * (tex2D(ShadowMap, v.vTex4) + tex2D(ShadowMap, v.vTex3 + offset));
-	col += gaussw[5] * (tex2D(ShadowMap, v.vTex5) + tex2D(ShadowMap, v.vTex2 + offset));
-	col += gaussw[6] * (tex2D(ShadowMap, v.vTex6) + tex2D(ShadowMap, v.vTex1 + offset));
-	col += gaussw[7] * (tex2D(ShadowMap, v.vTex7) + tex2D(ShadowMap, v.vTex0 + offset));
+	col  = gaussw[0] * (tex2D(ShadowTex, v.vTex0) + tex2D(ShadowTex, v.vTex7 + offset));
+	col += gaussw[1] * (tex2D(ShadowTex, v.vTex1) + tex2D(ShadowTex, v.vTex6 + offset));
+	col += gaussw[2] * (tex2D(ShadowTex, v.vTex2) + tex2D(ShadowTex, v.vTex5 + offset));
+	col += gaussw[3] * (tex2D(ShadowTex, v.vTex3) + tex2D(ShadowTex, v.vTex4 + offset));
+	col += gaussw[4] * (tex2D(ShadowTex, v.vTex4) + tex2D(ShadowTex, v.vTex3 + offset));
+	col += gaussw[5] * (tex2D(ShadowTex, v.vTex5) + tex2D(ShadowTex, v.vTex2 + offset));
+	col += gaussw[6] * (tex2D(ShadowTex, v.vTex6) + tex2D(ShadowTex, v.vTex1 + offset));
+	col += gaussw[7] * (tex2D(ShadowTex, v.vTex7) + tex2D(ShadowTex, v.vTex0 + offset));
 
 	return col;
 }
@@ -943,7 +943,7 @@ float4 cMainPS( cVertexData IN ) : COLOR //デフォルトピクセルシェーダ
 	float2 texcoord;
 	texcoord.x = ( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
 	texcoord.y = ( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
-	float4 c = tex2D( ShadowMap, texcoord );
+	float4 c = tex2D( ShadowTex, texcoord );
 	float z = IN.ZTex.z / IN.ZTex.w;
 	float depth_sq = c.x * c.x;
         float lit_fact = (z <= c.x);
