@@ -196,8 +196,9 @@ namespace mqoview
         {
             if (tokens[0] == "}")
                 return false;
-
-            current.vertices.Add(ParsePoint3(tokens, 0));
+            UVertex v = new UVertex();
+            v.position = ParsePoint3(tokens, 0);
+            current.vertices.Add(v);
 
             return true;
         }
@@ -284,7 +285,7 @@ namespace mqoview
         {
             if (tokens[2].ToLower() != "{") Error(tokens);
 
-            current.vertices = new List<Vector3>(int.Parse(tokens[1]));
+            current.vertices = new List<UVertex>(int.Parse(tokens[1]));
             DoRead(SectionVertex);
         }
 
@@ -352,7 +353,7 @@ namespace mqoview
         }
     }
 
-    public class MqoObject
+    public class MqoObject : IDisposable
     {
         public string name;
         public int visible;
@@ -361,8 +362,10 @@ namespace mqoview
         public float facet;
         public Vector3 color;
         public int color_type;
-        public List<Vector3> vertices;
+        public List<UVertex> vertices;
         public List<MqoFace> faces;
+
+        Mesh dm = null;
 
         public MqoObject() { }
         public MqoObject(string n) { name = n; }
@@ -380,6 +383,93 @@ namespace mqoview
                 .Append(" faces: ").Append(faces.Count)
                 .Append(" name: ").Append(name)
                 .ToString();
+        }
+
+        static VertexElement[] ve = new VertexElement[]
+        {
+            new VertexElement(0,  0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
+            //new VertexElement(0, 12, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 3),
+            //new VertexElement(0, 28, DeclarationType.Ubyte4, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 4),
+            new VertexElement(0, 32, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0),
+            new VertexElement(0, 44, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
+                VertexElement.VertexDeclarationEnd
+        };
+
+        static AttributeRange ar = new AttributeRange();
+        /*
+        ar.AttributeId = 0;
+        ar.FaceStart = 0;
+        ar.FaceCount = 0;
+        ar.VertexStart = 0;
+        ar.VertexCount = 0;
+        */
+
+        /// <summary>
+        /// 頂点をDirect3Dバッファに書き込みます。
+        /// </summary>
+        /// <param name="device">device</param>
+        public void WriteBuffer(Device device)
+        {
+            int numVertices = vertices.Count;
+            int numFaces = numVertices - 2;
+
+            if (dm != null)
+            {
+                dm.Dispose();
+                dm = null;
+            }
+            dm = new Mesh(numFaces, numVertices, MeshFlags.Managed | MeshFlags.WriteOnly, ve, device);
+
+            //
+            // rewrite vertex buffer
+            //
+            {
+                GraphicsStream gs = dm.LockVertexBuffer(LockFlags.None);
+                {
+                    for (int i = 0; i < vertices.Count; i++)
+                    {
+                        UVertex v = vertices[i];
+
+                        gs.Write(v.position);
+                        //for (int j = 0; j < 4; j++)
+                        //    gs.Write(v.skin_weights[j].weight);
+                        //gs.Write(v.bone_indices);
+                        gs.Write(v.normal);
+                        gs.Write(v.u);
+                        gs.Write(v.v);
+                    }
+                }
+                dm.UnlockVertexBuffer();
+            }
+
+            //
+            // rewrite index buffer
+            //
+            {
+                GraphicsStream gs = dm.LockIndexBuffer(LockFlags.None);
+                {
+                    foreach (MqoFace face in faces)
+                    {
+                        gs.Write(face.a);
+                        gs.Write(face.b);
+                        gs.Write(face.c);
+                    }
+                }
+                dm.UnlockIndexBuffer();
+            }
+
+            //
+            // rewrite attribute buffer
+            //
+            {
+                dm.SetAttributeTable(new AttributeRange[] { ar }); 
+            }
+        }
+
+        public void Dispose()
+        {
+            if (dm != null)
+                dm.Dispose();
         }
     }
 
@@ -410,6 +500,27 @@ namespace mqoview
                 .Append(" mtl: ").Append(mtl)
                 .Append(" uv: ").Append(ta).Append(" ").Append(tb).Append(" ").Append(tc)
                 .ToString();
+        }
+    }
+
+    public class UVertex
+    {
+        public Vector3 position;
+        public Vector3 normal;
+        public float u, v;
+        public int mtl;
+
+        public UVertex()
+        {
+        }
+
+        public UVertex(Vector3 position, Vector3 normal, float u, float v, int mtl)
+        {
+            this.position = position;
+            this.normal = normal;
+            this.u = u;
+            this.v = v;
+            this.mtl = mtl;
         }
     }
 }
