@@ -929,7 +929,7 @@ public class Viewer : IDisposable
             TSONode tso_node = sub_mesh.GetBone(numPalettes);
             TMONode tmo_node;
             if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
-                clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
+                clipped_boneMatrices[numPalettes] = tso_node.offset_matrix * tmo_node.combined_matrix;
         }
         return clipped_boneMatrices;
     }
