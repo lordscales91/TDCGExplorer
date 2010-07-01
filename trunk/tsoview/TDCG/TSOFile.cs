@@ -866,11 +866,6 @@ namespace TDCG
         public Matrix offset_matrix;
 
         /// <summary>
-        /// ワールド座標系での位置と向きを表します。これはviewerから更新されます。
-        /// </summary>
-        public Matrix combined_matrix;
-
-        /// <summary>
         /// ID
         /// </summary>
         public int ID { get { return id; } }
