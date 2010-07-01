@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Drawing;
-using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
@@ -13,20 +13,50 @@ namespace mqoview
     public partial class Form1 : Form
     {
         Device device = null;
+        Effect effect = null;
+        Matrix world_matrix = Matrix.Identity;
+        Matrix Transform_View = Matrix.Identity;
+        Matrix Transform_Projection = Matrix.Identity;
 
         public Form1()
         {
             InitializeComponent();
         }
 
-        public void InitializeGraphics()
+        public bool InitializeGraphics()
         {
             PresentParameters pp = new PresentParameters();
 
             pp.Windowed = true;
             pp.SwapEffect = SwapEffect.Discard;
 
-            device = new Device(0, DeviceType.Hardware, this, CreateFlags.SoftwareVertexProcessing, pp);
+            int adapter_ordinal = Manager.Adapters.Default.Adapter;
+
+            CreateFlags flags = CreateFlags.SoftwareVertexProcessing;
+            Caps caps = Manager.GetDeviceCaps(adapter_ordinal, DeviceType.Hardware);
+            if (caps.DeviceCaps.SupportsHardwareTransformAndLight)
+                flags = CreateFlags.HardwareVertexProcessing;
+            if (caps.DeviceCaps.SupportsPureDevice)
+                flags |= CreateFlags.PureDevice;
+            device = new Device(adapter_ordinal, DeviceType.Hardware, this, flags, pp);
+
+            string effect_file = Path.Combine(Application.StartupPath, @"default.cgfx");
+            if (!File.Exists(effect_file))
+            {
+                Console.WriteLine("File not found: " + effect_file);
+                return false;
+            }
+            using (FileStream effect_stream = File.OpenRead(effect_file))
+            {
+                string compile_error;
+                effect = Effect.FromStream(device, effect_stream, null, ShaderFlags.None, null, out compile_error);
+                if (compile_error != null)
+                {
+                    Console.WriteLine(compile_error);
+                    return false;
+                }
+            }
+            return true;
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -89,5 +119,45 @@ namespace mqoview
                 obj.WriteBuffer(device);
             }
         }
+
+        /// <summary>
+        /// シーンをレンダリングします。
+        /// </summary>
+        public void Render()
+        {
+            device.BeginScene();
+
+            {
+                Matrix world_view_matrix = world_matrix * Transform_View;
+                Matrix world_view_projection_matrix = world_view_matrix * Transform_Projection;
+                effect.SetValue("wld", world_matrix);
+                effect.SetValue("wv", world_view_matrix);
+                effect.SetValue("wvp", world_view_projection_matrix);
+            }
+
+            device.EndScene();
+            {
+                int ret;
+                if (!device.CheckCooperativeLevel(out ret))
+                {
+                    switch ((ResultCode)ret)
+                    {
+                        case ResultCode.DeviceLost:
+                            Thread.Sleep(30);
+                            return;
+                        case ResultCode.DeviceNotReset:
+                            device.Reset(device.PresentationParameters);
+                            break;
+                        default:
+                            Console.WriteLine((ResultCode)ret);
+                            return;
+                    }
+                }
+            }
+
+            device.Present();
+            Thread.Sleep(30);
+        }
+
     }
 }
