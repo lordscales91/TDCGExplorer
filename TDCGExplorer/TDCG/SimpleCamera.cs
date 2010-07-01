@@ -55,6 +55,15 @@ namespace TDCG
         }
 
         /// <summary>
+        /// view座標上のカメラの位置をリセットします。
+        /// </summary>
+        public void ResetTranslation()
+        {
+            translation = new Vector3(0.0f, 0.0f, +10.0f);
+            needUpdate = true;
+        }
+
+        /// <summary>
         /// カメラの位置を更新します。
         /// </summary>
         /// <param name="dirX">移動方向（経度）</param>
@@ -177,6 +186,7 @@ namespace TDCG
         {
             dirD = Vector3.Empty;
             zD = 0.0f;
+            rotZD = 0.0f;
         }
 
         // konoa modified.

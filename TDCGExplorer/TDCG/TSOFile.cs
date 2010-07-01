@@ -4,16 +4,48 @@ using System.Diagnostics;
 using System.IO;
 using System.ComponentModel;
 using System.Text;
+using System.Runtime.InteropServices;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using TDCG.Extensions;
 
 namespace TDCG
 {
+    using BYTE  = Byte;
+    using WORD  = UInt16;
+    using DWORD = UInt32;
+    using LONG  = Int32;
+
+    [StructLayout(LayoutKind.Sequential, Pack=1)]
+    struct BITMAPFILEHEADER
+    {
+        public WORD    bfType;
+        public DWORD   bfSize;
+        public WORD    bfReserved1;
+        public WORD    bfReserved2;
+        public DWORD   bfOffBits;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack=1)]
+    struct BITMAPINFOHEADER
+    {
+        public DWORD      biSize;
+        public LONG       biWidth;
+        public LONG       biHeight;
+        public WORD       biPlanes;
+        public WORD       biBitCount;
+        public DWORD      biCompression;
+        public DWORD      biSizeImage;
+        public LONG       biXPelsPerMeter;
+        public LONG       biYPelsPerMeter;
+        public DWORD      biClrUsed;
+        public DWORD      biClrImportant;
+    }
+
     /// <summary>
-    /// メッシュ
+    /// サブメッシュ
     /// </summary>
-    public class TSOMesh : IDisposable
+    public class TSOSubMesh : IDisposable
     {
         /// <summary>
         /// シェーダ設定番号
@@ -58,7 +90,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// メッシュを読み込みます。
+        /// サブメッシュを読み込みます。
         /// </summary>
         public void Read(BinaryReader reader)
         {
@@ -74,16 +106,18 @@ namespace TDCG
                 this.bone_indices[i] = reader.ReadInt32();
             }
 
-            int vertex_count = reader.ReadInt32(); //numvertices
-            this.vertices = new Vertex[vertex_count];
-            for (int i = 0; i < vertex_count; i++)
+            int vertices_count = reader.ReadInt32(); //numvertices
+            this.vertices = new Vertex[vertices_count];
+            for (int i = 0; i < vertices_count; i++)
             {
-                this.vertices[i].Read(reader);
+                Vertex v = new Vertex();
+                v.Read(reader);
+                this.vertices[i] = v;
             }
         }
 
         /// <summary>
-        /// メッシュを書き出します。
+        /// サブメッシュを書き出します。
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -111,6 +145,12 @@ namespace TDCG
                 this.bones.Add(nodes[bone_index]);
         }
 
+        /// 頂点数
+        public int VerticesCount
+        {
+            get { return vertices.Length; }
+        }
+
         static VertexElement[] ve = new VertexElement[]
         {
             new VertexElement(0,  0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
@@ -134,11 +174,16 @@ namespace TDCG
         /// 頂点をDirect3Dバッファに書き込みます。
         /// </summary>
         /// <param name="device">device</param>
-        public void LoadMesh(Device device)
+        public void WriteBuffer(Device device)
         {
             int numVertices = vertices.Length;
             int numFaces = numVertices - 2;
 
+            if (dm != null)
+            {
+                dm.Dispose();
+                dm = null;
+            }
             dm = new Mesh(numFaces, numVertices, MeshFlags.Managed | MeshFlags.WriteOnly, ve, device);
 
             //
@@ -197,7 +242,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// Direct3Dメッシュを破棄します。
+        /// Direct3Dサブメッシュを破棄します。
         /// </summary>
         public void Dispose()
         {
@@ -207,14 +252,16 @@ namespace TDCG
     }
 
     /// <summary>
-    /// フレーム
+    /// メッシュ
     /// </summary>
-    public class TSOFrame : IDisposable
+    public class TSOMesh : IDisposable
     {
+        string name;
         /// <summary>
         /// 名称
         /// </summary>
-        public string name;
+        public string Name { get { return name; } }
+
         /// <summary>
         /// 変形行列
         /// </summary>
@@ -224,12 +271,12 @@ namespace TDCG
         /// </summary>
         public UInt32 unknown1;
         /// <summary>
-        /// メッシュ配列
+        /// サブメッシュ配列
         /// </summary>
-        public TSOMesh[] meshes;
+        public TSOSubMesh[] sub_meshes;
 
         /// <summary>
-        /// フレームを読み込みます。
+        /// メッシュを読み込みます。
         /// </summary>
         public void Read(BinaryReader reader)
         {
@@ -237,17 +284,17 @@ namespace TDCG
             reader.ReadMatrix(ref this.transform_matrix);
             this.unknown1 = reader.ReadUInt32();
             UInt32 mesh_count = reader.ReadUInt32();
-            this.meshes = new TSOMesh[mesh_count];
+            this.sub_meshes = new TSOSubMesh[mesh_count];
             for (int i = 0; i < mesh_count; i++)
             {
-                TSOMesh mesh = new TSOMesh();
-                mesh.Read(reader);
-                this.meshes[i] = mesh;
+                TSOSubMesh sub_mesh = new TSOSubMesh();
+                sub_mesh.Read(reader);
+                this.sub_meshes[i] = sub_mesh;
             }
         }
 
         /// <summary>
-        /// フレームを書き出します。
+        /// メッシュを書き出します。
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -255,10 +302,10 @@ namespace TDCG
             Matrix m = this.transform_matrix;
             bw.Write(ref m);
             bw.Write(this.unknown1);
-            bw.Write(this.meshes.Length);
+            bw.Write(this.sub_meshes.Length);
 
-            foreach (TSOMesh i in this.meshes)
-                i.Write(bw);
+            foreach (TSOSubMesh sub_mesh in this.sub_meshes)
+                sub_mesh.Write(bw);
         }
 
         /// <summary>
@@ -266,8 +313,17 @@ namespace TDCG
         /// </summary>
         public void LinkBones(TSONode[] nodes)
         {
-            foreach (TSOMesh mesh in meshes)
-                mesh.LinkBones(nodes);
+            foreach (TSOSubMesh sub_mesh in sub_meshes)
+                sub_mesh.LinkBones(nodes);
+        }
+
+        /// 頂点数の合計を得ます。
+        public int SumVerticesCount()
+        {
+            int sum = 0;
+            foreach (TSOSubMesh sub_mesh in sub_meshes)
+                sum += sub_mesh.VerticesCount;
+            return sum;
         }
 
         /// <summary>
@@ -275,16 +331,16 @@ namespace TDCG
         /// </summary>
         public void Dispose()
         {
-            if (meshes != null)
-            foreach (TSOMesh mesh in meshes)
-                mesh.Dispose();
+            if (sub_meshes != null)
+            foreach (TSOSubMesh sub_mesh in sub_meshes)
+                sub_mesh.Dispose();
         }
     }
 
     /// <summary>
     /// 頂点
     /// </summary>
-    public struct Vertex
+    public class Vertex
     {
         /// <summary>
         /// 位置
@@ -476,7 +532,10 @@ namespace TDCG
         /// テキスト行配列
         /// </summary>
         public string[] lines;
-        internal Shader shader = null;
+        /// <summary>
+        /// シェーダ設定
+        /// </summary>
+        public Shader shader = null;
 
         /// <summary>
         /// 名称
@@ -485,7 +544,15 @@ namespace TDCG
         /// <summary>
         /// ファイル名
         /// </summary>
-        public string File { get { return file; } set { file = value; } }
+        public string FileName { get { return file; } set { file = value; } }
+
+        /// <summary>
+        /// サブスクリプトを読み込みます。
+        /// </summary>
+        public void Load(string source_file)
+        {
+            this.lines = File.ReadAllLines(source_file);
+        }
 
         /// <summary>
         /// サブスクリプトを読み込みます。
@@ -525,6 +592,14 @@ namespace TDCG
             this.shader = new Shader();
             this.shader.Load(this.lines);
         }
+
+        /// <summary>
+        /// シェーダ設定を保存します。
+        /// </summary>
+        public void SaveShader()
+        {
+            this.lines = this.shader.GetLines();
+        }
     }
 
     /// <summary>
@@ -535,11 +610,11 @@ namespace TDCG
         /// <summary>
         /// 名称
         /// </summary>
-        public string name;
+        internal string name;
         /// <summary>
         /// ファイル名
         /// </summary>
-        public string file;
+        internal string file;
         /// <summary>
         /// 幅
         /// </summary>
@@ -558,6 +633,58 @@ namespace TDCG
         public byte[] data;
 
         internal Texture tex;
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public string Name { get { return name; } set { name = value; } }
+        /// <summary>
+        /// ファイル名
+        /// </summary>
+        public string FileName { get { return file; } set { file = value; } }
+
+        /// <summary>
+        /// テクスチャを読み込みます。
+        /// </summary>
+        public void Load(string source_file)
+        {
+            using (FileStream stream = File.OpenRead(source_file))
+            {
+                this.file = "\"" + Path.GetFileName(source_file) + "\"";
+                Load(stream);
+            }
+        }
+
+        static readonly int sizeof_bfh = Marshal.SizeOf(typeof(BITMAPFILEHEADER));
+        static readonly int sizeof_bih = Marshal.SizeOf(typeof(BITMAPINFOHEADER));
+
+        /// <summary>
+        /// テクスチャを読み込みます。
+        /// </summary>
+        public void Load(Stream stream)
+        {
+            BinaryReader br = new BinaryReader(stream);
+            BITMAPFILEHEADER bfh;
+            BITMAPINFOHEADER bih;
+
+            IntPtr bfh_ptr = Marshal.AllocHGlobal(sizeof_bfh);
+            Marshal.Copy(br.ReadBytes(sizeof_bfh), 0, bfh_ptr, sizeof_bfh);
+            bfh = (BITMAPFILEHEADER)Marshal.PtrToStructure(bfh_ptr, typeof(BITMAPFILEHEADER));
+
+            IntPtr bih_ptr = Marshal.AllocHGlobal(sizeof_bih);
+            Marshal.Copy(br.ReadBytes(sizeof_bih), 0, bih_ptr, sizeof_bih);
+            bih = (BITMAPINFOHEADER)Marshal.PtrToStructure(bih_ptr, typeof(BITMAPINFOHEADER));
+
+            if (bfh.bfType != 0x4D42)
+                throw new Exception("Invalid imagetype: " + file);
+            if (bih.biBitCount != 24 && bih.biBitCount != 32)
+                throw new Exception("Invalid depth: " + file);
+
+            this.width = bih.biWidth;
+            this.height = bih.biHeight;
+            this.depth = bih.biBitCount / 8;
+            this.data = br.ReadBytes( this.width * this.height * this.depth );
+        }
 
         /// <summary>
         /// テクスチャを読み込みます。
@@ -899,9 +1026,9 @@ namespace TDCG
         /// </summary>
         public TSOSubScript[] sub_scripts;
         /// <summary>
-        /// フレーム配列
+        /// メッシュ配列
         /// </summary>
-        public TSOFrame[] frames;
+        public TSOMesh[] meshes;
 
         internal Dictionary<string, TSONode> nodemap;
 
@@ -949,9 +1076,9 @@ namespace TDCG
             foreach (TSOSubScript sub_script in sub_scripts)
                 sub_script.Write(bw);
 
-            bw.Write(frames.Length);
-            foreach (TSOFrame frame in frames)
-                frame.Write(bw);
+            bw.Write(meshes.Length);
+            foreach (TSOMesh mesh in meshes)
+                mesh.Write(bw);
         }
 
         /// <summary>
@@ -1035,15 +1162,15 @@ namespace TDCG
                 sub_scripts[i].GenerateShader();
             }
 
-            UInt32 frame_count = reader.ReadUInt32();
-            frames = new TSOFrame[frame_count];
-            for (int i = 0; i < frame_count; i++)
+            UInt32 mesh_count = reader.ReadUInt32();
+            meshes = new TSOMesh[mesh_count];
+            for (int i = 0; i < mesh_count; i++)
             {
-                frames[i] = new TSOFrame();
-                frames[i].Read(reader);
-                frames[i].LinkBones(nodes);
+                meshes[i] = new TSOMesh();
+                meshes[i].Read(reader);
+                meshes[i].LinkBones(nodes);
 
-                //Console.WriteLine("frame name {0} len {1}", frame.name, frame.meshes.Length);
+                //Console.WriteLine("mesh name {0} len {1}", mesh.name, mesh.sub_meshes.Length);
             }
         }
 
@@ -1110,6 +1237,15 @@ namespace TDCG
             return tmo;
         }
 
+        /// 頂点数の合計を得ます。
+        public int SumVerticesCount()
+        {
+            int sum = 0;
+            foreach (TSOMesh mesh in meshes)
+                sum += mesh.SumVerticesCount();
+            return sum;
+        }
+
         internal Device device;
         internal Effect effect;
 
@@ -1134,9 +1270,9 @@ namespace TDCG
             this.device = device;
             this.effect = effect;
 
-            foreach (TSOFrame frame in frames)
-            foreach (TSOMesh mesh in frame.meshes)
-                mesh.LoadMesh(device);
+            foreach (TSOMesh mesh in meshes)
+            foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
+                sub_mesh.WriteBuffer(device);
 
             texmap = new Dictionary<string, TSOTex>();
 
@@ -1218,6 +1354,9 @@ namespace TDCG
 
             foreach (ShaderParameter p in shader.shader_parameters)
             {
+                if (p.system_p)
+                    continue;
+
                 switch (p.type)
                 {
                 case ShaderParameter.Type.String:
@@ -1240,11 +1379,11 @@ namespace TDCG
             effect.SetValue(handle_UVSCR, UVSCR());
 
             TSOTex shadeTex;
-            if (shader.shadeTex != null && texmap.TryGetValue(shader.shadeTex, out shadeTex))
+            if (shader.shadeTex != null && texmap.TryGetValue(shader.ShadeTexName, out shadeTex))
                 effect.SetValue(handle_ShadeTex_texture, shadeTex.tex);
 
             TSOTex colorTex;
-            if (shader.colorTex != null && texmap.TryGetValue(shader.colorTex, out colorTex))
+            if (shader.colorTex != null && texmap.TryGetValue(shader.ColorTexName, out colorTex))
                 effect.SetValue(handle_ColorTex_texture, colorTex.tex);
 
             effect.Technique = techmap[shader.technique];
@@ -1254,11 +1393,11 @@ namespace TDCG
         /// <summary>
         /// シェーダ設定を切り替えます。
         /// </summary>
-        /// <param name="mesh">切り替え対象となるメッシュ</param>
-        public void SwitchShader(TSOMesh mesh)
+        /// <param name="sub_mesh">切り替え対象となるサブメッシュ</param>
+        public void SwitchShader(TSOSubMesh sub_mesh)
         {
-            Debug.Assert(mesh.spec >= 0 && mesh.spec < sub_scripts.Length, string.Format("mesh.spec out of range: {0}", mesh.spec));
-            SwitchShader(sub_scripts[mesh.spec].shader);
+            Debug.Assert(sub_mesh.spec >= 0 && sub_mesh.spec < sub_scripts.Length, string.Format("mesh.spec out of range: {0}", sub_mesh.spec));
+            SwitchShader(sub_scripts[sub_mesh.spec].shader);
         }
 
         /// <summary>
@@ -1274,8 +1413,8 @@ namespace TDCG
         /// </summary>
         public void Dispose()
         {
-            foreach (TSOFrame frame in frames)
-                frame.Dispose();
+            foreach (TSOMesh mesh in meshes)
+                mesh.Dispose();
             foreach (TSOTex tex in textures)
                 tex.Dispose();
         }

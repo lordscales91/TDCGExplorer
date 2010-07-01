@@ -6,6 +6,7 @@ using System.Threading;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
+using System.Text.RegularExpressions;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
@@ -24,18 +25,34 @@ public class Viewer : IDisposable
     internal Direct3D.Font font;
     internal Effect effect;
 
-    private EffectHandle handle_LocalBoneMats;
+    /// <summary>
+    /// effect handle for LocalBoneMats
+    /// </summary>
+    protected EffectHandle handle_LocalBoneMats;
+    /// <summary>
+    /// effect handle for ShadowMap
+    /// </summary>
+    protected EffectHandle handle_ShadowMap;
+    /// <summary>
+    /// effect handle for LocalBoneSels
+    /// </summary>
+    protected EffectHandle handle_LocalBoneSels;
 
-    //private EffectHandle handle_ShadowMap;
-    //private bool shadowMapEnabled = false;
+    bool shadow_map_enabled = false;
+    /// <summary>
+    /// シャドウマップを作成するか
+    /// </summary>
+    public bool ShadowMapEnabled { get { return shadow_map_enabled; } }
 
-    internal Texture[] renderTextures = null;
+    internal Texture ztex = null;
     int ztexw = 0;
     int ztexh = 0;
-    internal Surface[] renderSurfaces = null;
-    internal Surface renderZ = null;
+    internal Surface ztex_surface = null;
+    internal Surface ztex_zbuf = null;
 
-    internal Sprite sprite = null;
+    /// sprite
+    public Sprite sprite = null;
+    internal Line line = null;
     float w_scale = 1.0f;
     float h_scale = 1.0f;
 
@@ -71,18 +88,6 @@ public class Viewer : IDisposable
         Figure.ProportionList = pro_list;
     }
 
-    private void control_OnSizeChanged(object sender, EventArgs e)
-    {
-        Transform_Projection = Matrix.PerspectiveFovRH(
-                Geometry.DegreeToRadian(30.0f),
-                (float)control.Width / (float)control.Height,
-                1.0f,
-                1000.0f );
-        // xxx: for w-buffering
-        device.Transform.Projection = Transform_Projection;
-        effect.SetValue("proj", Transform_Projection);
-    }
-
     /// マウスボタンを押したときに実行するハンドラ
     protected virtual void form_OnMouseDown(object sender, MouseEventArgs e)
     {
@@ -90,7 +95,9 @@ public class Viewer : IDisposable
         {
         case MouseButtons.Left:
             if (Control.ModifierKeys == Keys.Control)
+            {
                 lightDir = ScreenToOrientation(e.X, e.Y);
+            }
             break;
         }
 
@@ -184,17 +191,17 @@ public class Viewer : IDisposable
     /// <param name="append">FigureListを消去せずに追加するか</param>
     public void LoadAnyFile(string source_file, bool append)
     {
-        switch (Path.GetExtension(source_file).ToUpper())
+        switch (Path.GetExtension(source_file).ToLower())
         {
-        case ".TSO":
+        case ".tso":
             if (! append)
                 ClearFigureList();
             LoadTSOFile(source_file);
             break;
-        case ".TMO":
+        case ".tmo":
             LoadTMOFile(source_file);
             break;
-        case ".PNG":
+        case ".png":
             AddFigureFromPNGFile(source_file, append);
             break;
         default:
@@ -232,7 +239,6 @@ public class Viewer : IDisposable
     /// <param name="source_file">TSOFileを含むディレクトリ</param>
     public void AddFigureFromTSODirectory(string source_file)
     {
-        Figure fig = new Figure();
         List<TSOFile> tso_list = new List<TSOFile>();
         try
         {
@@ -240,7 +246,9 @@ public class Viewer : IDisposable
             foreach (string file in files)
             {
                 TSOFile tso = new TSOFile();
+                Debug.WriteLine("loading " + file);
                 tso.Load(file);
+                Debug.WriteLine("tso sum vertices count: " + tso.SumVerticesCount().ToString());
                 tso_list.Add(tso);
             }
         }
@@ -248,6 +256,7 @@ public class Viewer : IDisposable
         {
             Console.WriteLine("Error: " + ex);
         }
+        Figure fig = new Figure();
         foreach (TSOFile tso in tso_list)
         {
             tso.Open(device, effect);
@@ -299,6 +308,7 @@ public class Viewer : IDisposable
     /// <param name="source_file">パス</param>
     public void LoadTSOFile(string source_file)
     {
+        Debug.WriteLine("loading " + source_file);
         using (Stream source_stream = File.OpenRead(source_file))
             LoadTSOFile(source_stream);
     }
@@ -309,17 +319,23 @@ public class Viewer : IDisposable
     /// <param name="source_stream">ストリーム</param>
     public void LoadTSOFile(Stream source_stream)
     {
-        Figure fig = GetSelectedOrCreateFigure();
+        List<TSOFile> tso_list = new List<TSOFile>();
         try
         {
             TSOFile tso = new TSOFile();
             tso.Load(source_stream);
-            tso.Open(device, effect);
-            fig.AddTSO(tso);
+            Debug.WriteLine("tso sum vertices count: " + tso.SumVerticesCount().ToString());
+            tso_list.Add(tso);
         }
         catch (Exception ex)
         {
             Console.WriteLine("Error: " + ex);
+        }
+        Figure fig = GetSelectedOrCreateFigure();
+        foreach (TSOFile tso in tso_list)
+        {
+            tso.Open(device, effect);
+            fig.AddTSO(tso);
         }
         fig.UpdateNodeMapAndBoneMatrices();
         if (FigureEvent != null)
@@ -378,6 +394,7 @@ public class Viewer : IDisposable
         }
     }
 
+#if false
     /// <summary>
     /// 指定パスからPNGFileを読み込みフィギュアを作成して追加します。
     /// </summary>
@@ -385,19 +402,7 @@ public class Viewer : IDisposable
     /// <param name="append">FigureListを消去せずに追加するか</param>
     public void AddFigureFromPNGFile(string source_file, bool append)
     {
-        Stream stream = File.OpenRead(source_file);
-        AddFigureFromPNGFile(stream, append);
-    }
-
-
-    /// <summary>
-    /// 指定パスからPNGFileを読み込みフィギュアを作成して追加します。
-    /// </summary>
-    /// <param name="source_file">PNGFile のパス</param>
-    /// <param name="append">FigureListを消去せずに追加するか</param>
-    public void AddFigureFromPNGFile(Stream stream, bool append)
-    {
-        List<Figure> fig_list = LoadPNGFile(stream);
+        List<Figure> fig_list = LoadPNGFile(source_file);
         if (fig_list.Count != 0) //taOb png
         if (fig_list[0].TSOList.Count == 0) //POSE png
         {
@@ -428,6 +433,56 @@ public class Viewer : IDisposable
             SetFigureIndex(idx);
         }
     }
+#endif
+    /// <summary>
+    /// 指定パスからPNGFileを読み込みフィギュアを作成して追加します。
+    /// </summary>
+    /// <param name="source_file">PNGFile のパス</param>
+    /// <param name="append">FigureListを消去せずに追加するか</param>
+    public void AddFigureFromPNGFile(string source_file, bool append)
+    {
+        Stream stream = File.OpenRead(source_file);
+        AddFigureFromPNGFile(stream, append);
+    }
+    /// <summary>
+    /// 指定パスからPNGFileを読み込みフィギュアを作成して追加します。
+    /// </summary>
+    /// <param name="source_file">PNGFile のパス</param>
+    /// <param name="append">FigureListを消去せずに追加するか</param>
+    public void AddFigureFromPNGFile(Stream stream, bool append)
+    {
+        List<Figure> fig_list = LoadPNGFile(stream);
+        if (fig_list.Count != 0) //taOb png
+            if (fig_list[0].TSOList.Count == 0) //POSE png
+            {
+                TMOFile tmo = fig_list[0].Tmo;
+                Debug.Assert(tmo != null);
+                Figure fig;
+                if (TryGetFigure(out fig))
+                {
+                    fig.Tmo = tmo;
+                    fig.TransformTpo();
+                    fig.UpdateNodeMapAndBoneMatrices();
+                    if (FigureEvent != null)
+                        FigureEvent(this, EventArgs.Empty);
+                }
+            }
+            else
+            {
+                if (!append)
+                    ClearFigureList();
+
+                int idx = FigureList.Count;
+                foreach (Figure fig in fig_list)
+                {
+                    fig.OpenTSOFile(device, effect);
+                    fig.UpdateNodeMapAndBoneMatrices();
+                    FigureList.Add(fig);
+                }
+                SetFigureIndex(idx);
+            }
+    }
+
 
     private SimpleCamera camera = new SimpleCamera();
 
@@ -450,8 +505,6 @@ public class Viewer : IDisposable
     internal Matrix Light_View = Matrix.Identity;
     internal Matrix Light_Projection = Matrix.Identity;
 
-    private VertexBuffer vbGauss;
-
     /// <summary>
     /// deviceを作成します。
     /// </summary>
@@ -466,14 +519,13 @@ public class Viewer : IDisposable
     /// deviceを作成します。
     /// </summary>
     /// <param name="control">レンダリング先となるcontrol</param>
-    /// <param name="shadowMapEnabled">シャドウマップを作成するか</param>
+    /// <param name="shadow_map_enabled">シャドウマップを作成するか</param>
     /// <returns>deviceの作成に成功したか</returns>
-    public bool InitializeApplication(Control control, bool shadowMapEnabled)
+    public bool InitializeApplication(Control control, bool shadow_map_enabled)
     {
-        //this.shadowMapEnabled = shadowMapEnabled;
+        this.shadow_map_enabled = shadow_map_enabled;
         SetControl(control);
 
-        control.SizeChanged += new EventHandler(control_OnSizeChanged);
         control.MouseDown += new MouseEventHandler(form_OnMouseDown);
         control.MouseMove += new MouseEventHandler(form_OnMouseMove);
 
@@ -511,11 +563,10 @@ public class Viewer : IDisposable
                 flags = CreateFlags.HardwareVertexProcessing;
             if (caps.DeviceCaps.SupportsPureDevice)
                 flags |= CreateFlags.PureDevice;
-            device = new Device(adapter_ordinal, DeviceType.Hardware, control.Handle, flags, pp);
+            device = new Device(adapter_ordinal, DeviceType.Hardware, control, flags, pp);
 
             device.DeviceLost += new EventHandler(OnDeviceLost);
             device.DeviceReset += new EventHandler(OnDeviceReset);
-            device.DeviceResizing += new CancelEventHandler(CancelResize);
 
             FontDescription fd = new FontDescription();
             fd.Height = 24;
@@ -545,15 +596,14 @@ public class Viewer : IDisposable
             }
         }
         handle_LocalBoneMats = effect.GetParameter(null, "LocalBoneMats");
-#if false
-        if (shadowMapEnabled)
+        if (shadow_map_enabled)
         {
             handle_ShadowMap = effect.GetTechnique("ShadowMap");
             effect.ValidateTechnique(effect.Technique);
-
-            sprite = new Sprite(device);
         }
-#endif
+        sprite = new Sprite(device);
+        line = new Line(device);
+        handle_LocalBoneSels = effect.GetParameter(null, "LocalBoneSels");
         camera.Update();
         OnDeviceReset(device, null);
 
@@ -563,14 +613,12 @@ public class Viewer : IDisposable
     private void OnDeviceLost(object sender, EventArgs e)
     {
         Console.WriteLine("OnDeviceLost");
-        if (renderZ != null)
-            renderZ.Dispose();
-        if (renderSurfaces != null)
-            foreach (Surface surface in renderSurfaces)
-                surface.Dispose();
-        if (renderTextures != null)
-            foreach (Texture texture in renderTextures)
-                texture.Dispose();
+        if (ztex_zbuf != null)
+            ztex_zbuf.Dispose();
+        if (ztex_surface != null)
+            ztex_surface.Dispose();
+        if (ztex != null)
+            ztex.Dispose();
         if (dev_zbuf != null)
             dev_zbuf.Dispose();
         if (dev_surface != null)
@@ -597,30 +645,25 @@ public class Viewer : IDisposable
             dev_zbufh = dev_surface.Description.Height;
         }
         Console.WriteLine("dev_zbuf {0}x{1}", dev_zbufw, dev_zbufh);
-#if false
-        if (shadowMapEnabled)
-        {
-            renderTextures = new Texture[3];
-            renderSurfaces = new Surface[3];
-            for (int i = 0; i < 3; i++)
-            {
-                renderTextures[i] = new Texture(device, 512, 512, 1, Usage.RenderTarget, Format.G32R32F, Pool.Default);
-                renderSurfaces[i] = renderTextures[i].GetSurfaceLevel(0);
-            }
 
-            //effect.SetValue("texShadowMap", renderTextures[0]);
+        if (shadow_map_enabled)
+        {
+            ztex = new Texture(device, 1024, 1024, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+            ztex_surface = ztex.GetSurfaceLevel(0);
+
+            effect.SetValue("texShadowMap", ztex);
             {
-                ztexw = renderSurfaces[0].Description.Width;
-                ztexh = renderSurfaces[0].Description.Height;
+                ztexw = ztex_surface.Description.Width;
+                ztexh = ztex_surface.Description.Height;
             }
             Console.WriteLine("ztex {0}x{1}", ztexw, ztexh);
 
-            renderZ = device.CreateDepthStencilSurface(ztexw, ztexh, DepthFormat.D24S8, MultiSampleType.None, 0, false);
+            ztex_zbuf = device.CreateDepthStencilSurface(ztexw, ztexh, DepthFormat.D16, MultiSampleType.None, 0, false);
 
             w_scale = (float)devw / ztexw;
             h_scale = (float)devh / ztexh;
         }
-#endif
+
         Transform_Projection = Matrix.PerspectiveFovRH(
                 Geometry.DegreeToRadian(30.0f),
                 (float)device.Viewport.Width / (float)device.Viewport.Height,
@@ -629,8 +672,8 @@ public class Viewer : IDisposable
         // xxx: for w-buffering
         device.Transform.Projection = Transform_Projection;
         effect.SetValue("proj", Transform_Projection);
-#if false
-        if (shadowMapEnabled)
+
+        if (shadow_map_enabled)
         {
             Light_Projection = Matrix.PerspectiveFovLH(
                 Geometry.DegreeToRadian(45.0f),
@@ -639,7 +682,7 @@ public class Viewer : IDisposable
                 250.0f );
             effect.SetValue("lightproj", Light_Projection);
         }
-#endif
+
         device.RenderState.Lighting = false;
         device.RenderState.CullMode = Cull.CounterClockwise;
 
@@ -654,27 +697,6 @@ public class Viewer : IDisposable
         device.RenderState.AlphaFunction = Compare.GreaterEqual;
 
         device.RenderState.IndexedVertexBlendEnable = true;
-#if false
-        if (shadowMapEnabled)
-        {
-            CustomVertex.PositionTextured[] verts = new CustomVertex.PositionTextured[4];
-            verts[0] = new CustomVertex.PositionTextured(-1, +1, 0, 0, 0);
-            verts[1] = new CustomVertex.PositionTextured(+1, +1, 0, 1, 0);
-            verts[2] = new CustomVertex.PositionTextured(-1, -1, 0, 0, 1);
-            verts[3] = new CustomVertex.PositionTextured(+1, -1, 0, 1, 1);
-
-            vbGauss = new VertexBuffer(typeof(CustomVertex.PositionTextured), 4, device, Usage.Dynamic | Usage.WriteOnly, CustomVertex.PositionTextured.Format, Pool.Default);
-            vbGauss.SetData(verts, 0, LockFlags.None);
-        }
-        if (shadowMapEnabled)
-            SetGaussianWeight(12.5f);
-#endif
-    }
-
-    private void CancelResize(object sender, CancelEventArgs e)
-    {
-        Console.WriteLine("CancelResize");
-        //e.Cancel = true;
     }
 
     /// <summary>
@@ -788,8 +810,8 @@ public class Viewer : IDisposable
             device.Transform.View = Transform_View;
             effect.SetValue("view", Transform_View);
         }
-#if false
-        if (shadowMapEnabled)
+
+        if (shadow_map_enabled)
         {
             float scale = 40.0f;
 
@@ -799,7 +821,7 @@ public class Viewer : IDisposable
                     new Vector3( 0.0f, 1.0f, 0.0f ) );
             effect.SetValue("lightview", Light_View);
         }
-#endif
+
         foreach (Figure fig in FigureList)
         foreach (TSOFile tso in fig.TSOList)
             tso.lightDir = lightDir;
@@ -860,27 +882,26 @@ public class Viewer : IDisposable
             effect.SetValue("wv", world_view_matrix);
             effect.SetValue("wvp", world_view_projection_matrix);
         }
-#if false
-        if (shadowMapEnabled)
+
+        if (shadow_map_enabled)
         {
             if (shadowShown)
             {
                 DrawShadowMap();
-                DrawGaussianBlur();
             }
             else
             {
                 ClearShadowMap();
             }
         }
-#endif
+
         DrawFigure();
-#if false
-        if (shadowMapEnabled && SpriteShown)
+
+        if (shadow_map_enabled && SpriteShown)
         {
             DrawSprite();
         }
-#endif
+
         if (Rendering != null)
             Rendering();
 
@@ -907,14 +928,15 @@ public class Viewer : IDisposable
         device.Present();
         Thread.Sleep(30);
     }
-#if false
+
     void DrawShadowMap()
     {
         device.RenderState.AlphaBlendEnable = false;
 
-        device.SetRenderTarget(0, renderSurfaces[0]);
-        device.DepthStencilSurface = renderZ;
+        device.SetRenderTarget(0, ztex_surface);
+        device.DepthStencilSurface = ztex_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
+
         effect.Technique = handle_ShadowMap;
 
         foreach (Figure fig in FigureList)
@@ -922,29 +944,19 @@ public class Viewer : IDisposable
         {
             //tso.BeginRender();
 
-            foreach (TSOFrame frame in tso.frames)
-            foreach (TSOMesh mesh in frame.meshes)
+            foreach (TSOMesh mesh in tso.meshes)
+            foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
-                //tso.SwitchShader(mesh);
-                Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
-
-                for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
-                {
-                    //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
-                    TSONode tso_node = mesh.GetBone(numPalettes);
-                    TMONode tmo_node;
-                    if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
-                        clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
-                }
-                effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
+                //tso.SwitchShader(sub_mesh);
+                effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
 
                 int npass = effect.Begin(0);
                 for (int ipass = 0; ipass < npass; ipass++)
                 {
                     effect.BeginPass(ipass);
-                    mesh.dm.DrawSubset(0);
+                    sub_mesh.dm.DrawSubset(0);
                     effect.EndPass();
                 }
                 effect.End();
@@ -952,111 +964,83 @@ public class Viewer : IDisposable
             //tso.EndRender();
         }
     }
-#endif 
 
-#if false
-    void SetGaussianWeight(float disp)
-    {
-        float[] weights = new float[8];
-        float t = 0.0f;
-        for (int i = 0; i < 8; i++)
-        {
-            float p = 1.0f + 2.0f * (float)i;
-            weights[i] = (float)Math.Exp(-0.5f * p * p / disp);
-            t += 2.0f * weights[i];
-        }
-        for (int i = 0; i < 8; i++)
-            weights[i] /= t;
-        effect.SetValue("gaussw", weights);
-    }
-#endif
-
-#if false
-    void DrawGaussianBlur()
-    {
-        effect.Technique = "Tec4_GaussDraw";
-
-        int npass = effect.Begin(0);
-
-        device.SetRenderTarget(0, renderSurfaces[1]);
-        device.DepthStencilSurface = renderZ;
-        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
-
-        effect.SetValue("texShadowMap", renderTextures[0]);
-        device.VertexFormat = CustomVertex.PositionTextured.Format;
-        {
-            effect.BeginPass(0);
-            device.SetStreamSource(0, vbGauss, 0);
-            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
-            effect.EndPass();
-        }
-
-        device.SetRenderTarget(0, renderSurfaces[2]);
-        device.DepthStencilSurface = renderZ;
-        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
-
-        effect.SetValue("texShadowMap", renderTextures[1]);
-        device.VertexFormat = CustomVertex.PositionTextured.Format;
-        {
-            effect.BeginPass(1);
-            device.SetStreamSource(0, vbGauss, 0);
-            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
-            effect.EndPass();
-        }
-        effect.End();
-    }
-#endif
-
-#if false
     void ClearShadowMap()
     {
-        device.SetRenderTarget(0, renderSurfaces[2]);
-        device.DepthStencilSurface = renderZ;
+        device.SetRenderTarget(0, ztex_surface);
+        device.DepthStencilSurface = ztex_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
     }
-#endif
-    
-    void DrawFigure()
+
+    /// <summary>
+    /// スキン変形行列の配列を得ます。
+    /// </summary>
+    /// <param name="fig">フィギュア</param>
+    /// <param name="sub_mesh">サブメッシュ</param>
+    /// <returns>スキン変形行列の配列</returns>
+    public static Matrix[] ClipBoneMatrices(Figure fig, TSOSubMesh sub_mesh)
+    {
+        Matrix[] clipped_boneMatrices = new Matrix[sub_mesh.maxPalettes];
+
+        for (int numPalettes = 0; numPalettes < sub_mesh.maxPalettes; numPalettes++)
+        {
+            TSONode tso_node = sub_mesh.GetBone(numPalettes);
+            TMONode tmo_node;
+            if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
+                clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
+        }
+        return clipped_boneMatrices;
+    }
+
+    /// <summary>
+    /// ボーン選択の配列を得ます。
+    /// </summary>
+    /// <param name="fig">フィギュア</param>
+    /// <param name="sub_mesh">サブメッシュ</param>
+    /// <param name="selected_node">選択ボーン</param>
+    /// <returns>ボーン選択の配列</returns>
+    public static int[] ClipBoneSelections(Figure fig, TSOSubMesh sub_mesh, TSONode selected_node)
+    {
+        int[] clipped_boneSelections = new int[sub_mesh.maxPalettes];
+
+        for (int numPalettes = 0; numPalettes < sub_mesh.maxPalettes; numPalettes++)
+        {
+            TSONode tso_node = sub_mesh.GetBone(numPalettes);
+            clipped_boneSelections[numPalettes] = (selected_node == tso_node) ? 1 : 0;
+        }
+        return clipped_boneSelections;
+    }
+
+    /// <summary>
+    /// フィギュアを描画します。
+    /// </summary>
+    protected virtual void DrawFigure()
     {
         device.RenderState.AlphaBlendEnable = true;
 
         device.SetRenderTarget(0, dev_surface);
         device.DepthStencilSurface = dev_zbuf;
+        //device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, backcolor, 1.0f, 0);
-#if false
-        if (shadowMapEnabled)
-        {
-            effect.SetValue("texShadowMap", renderTextures[2]);
-        }
-#endif
+
         foreach (Figure fig in FigureList)
         foreach (TSOFile tso in fig.TSOList)
         {
             tso.BeginRender();
 
-            foreach (TSOFrame frame in tso.frames)
-            foreach (TSOMesh mesh in frame.meshes)
+            foreach (TSOMesh mesh in tso.meshes)
+            foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                tso.SwitchShader(sub_mesh);
 
-                tso.SwitchShader(mesh);
-                Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
-
-                for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
-                {
-                    //device.Transform.SetWorldMatrixByIndex(numPalettes, combined_matrix);
-                    TSONode tso_node = mesh.GetBone(numPalettes);
-                    TMONode tmo_node;
-                    if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
-                        clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
-                }
-                effect.SetValue(handle_LocalBoneMats, clipped_boneMatrices);
+                effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
 
                 int npass = effect.Begin(0);
                 for (int ipass = 0; ipass < npass; ipass++)
                 {
                     effect.BeginPass(ipass);
-                    mesh.dm.DrawSubset(0);
+                    sub_mesh.dm.DrawSubset(0);
                     effect.EndPass();
                 }
                 effect.End();
@@ -1073,7 +1057,7 @@ public class Viewer : IDisposable
         Rectangle rect = new Rectangle(0, 0, ztexw, ztexh);
 
         sprite.Begin(0);
-        sprite.Draw(renderTextures[2], rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
+        sprite.Draw(ztex, rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
         sprite.End();
     }
 
@@ -1113,16 +1097,12 @@ public class Viewer : IDisposable
     {
         foreach (Figure fig in FigureList)
             fig.Dispose();
+        if (line != null)
+            line.Dispose();
         if (sprite != null)
             sprite.Dispose();
-        if (renderZ != null)
-            renderZ.Dispose();
-        if (renderSurfaces != null)
-            foreach (Surface surface in renderSurfaces)
-                surface.Dispose();
-        if (renderTextures != null)
-            foreach (Texture texture in renderTextures)
-                texture.Dispose();
+        if (ztex_zbuf != null)
+            ztex_zbuf.Dispose();
         if (dev_zbuf != null)
             dev_zbuf.Dispose();
         if (dev_surface != null)
@@ -1135,7 +1115,106 @@ public class Viewer : IDisposable
             device.Dispose();
     }
 
-        /// <summary>
+#if false
+    /// <summary>
+    /// 指定パスからPNGFileを読み込みフィギュアを作成します。
+    /// </summary>
+    /// <param name="source_file">PNGFileのパス</param>
+    public List<Figure> LoadPNGFile(string source_file)
+    {
+        List<Figure> fig_list = new List<Figure>();
+
+        if (File.Exists(source_file))
+        try
+        {
+            PNGFile png = new PNGFile();
+            Figure fig = null;
+            TMOFile tmo = null;
+            string png_type = null;
+
+            png.Hsav += delegate(string type)
+            {
+                fig = new Figure();
+                fig_list.Add(fig);
+                png_type = type;
+            };
+            png.Lgta += delegate(Stream dest, int extract_length)
+            {
+                fig = new Figure();
+                fig_list.Add(fig);
+            };
+            png.Ftmo += delegate(Stream dest, int extract_length)
+            {
+                tmo = new TMOFile();
+                tmo.Load(dest);
+                fig.Tmo = tmo;
+            };
+            png.Figu += delegate(Stream dest, int extract_length)
+            {
+                byte[] buf = new byte[extract_length];
+                dest.Read(buf, 0, extract_length);
+
+                List<float> ratios = new List<float>();
+                for (int offset = 0; offset < extract_length; offset += sizeof(float))
+                {
+                    float flo = BitConverter.ToSingle(buf, offset);
+                    ratios.Add(flo);
+                }
+                /*
+                ◆FIGU
+                スライダの位置。値は float型で 0.0 .. 1.0
+                    0: 姉妹
+                    1: うで
+                    2: あし
+                    3: 胴まわり
+                    4: おっぱい
+                    5: つり目たれ目
+                    6: やわらか
+                 */
+                fig.slide_matrices.TallRatio = ratios[0];
+                fig.slide_matrices.ArmRatio = ratios[1];
+                fig.slide_matrices.LegRatio = ratios[2];
+                fig.slide_matrices.WaistRatio = ratios[3];
+                fig.slide_matrices.BustRatio = ratios[4];
+                fig.slide_matrices.EyeRatio = ratios[5];
+
+                fig.TransformTpo();
+            };
+            png.Ftso += delegate(Stream dest, int extract_length, byte[] opt1)
+            {
+                TSOFile tso = new TSOFile();
+                tso.Load(dest);
+                Debug.WriteLine("tso sum vertices count: " + tso.SumVerticesCount().ToString());
+                fig.TSOList.Add(tso);
+            };
+            Debug.WriteLine("loading " + source_file);
+            png.Load(source_file);
+
+            if (png_type == "HSAV")
+            {
+                MemoryStream ms = new MemoryStream();
+                png.Save(ms);
+                ms.Seek(0, SeekOrigin.Begin);
+                BMPSaveData data = new BMPSaveData();
+                data.Read(ms);
+
+                fig.slide_matrices.TallRatio = data.proportions[1];
+                fig.slide_matrices.ArmRatio = data.proportions[2];
+                fig.slide_matrices.LegRatio = data.proportions[3];
+                fig.slide_matrices.WaistRatio = data.proportions[4];
+                fig.slide_matrices.BustRatio = data.proportions[0];
+                fig.slide_matrices.EyeRatio = data.proportions[5];
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("Error: " + ex);
+        }
+        return fig_list;
+    }
+#endif
+
+    /// <summary>
     /// 指定パスからPNGFileを読み込みフィギュアを作成します。
     /// </summary>
     /// <param name="source_file">PNGFileのパス</param>
@@ -1153,7 +1232,7 @@ public class Viewer : IDisposable
     {
         List<Figure> fig_list = new List<Figure>();
 
-//        if (File.Exists(source_file))
+        //        if (File.Exists(source_file))
         try
         {
             PNGFile png = new PNGFile();

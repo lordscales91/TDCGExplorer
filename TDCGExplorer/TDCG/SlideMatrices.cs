@@ -24,7 +24,6 @@ public class SlideMatrices
     /// Žo–…ƒXƒ‰ƒCƒ_1.0‚Å‚Ìlocal scaling factor
     public static Vector3 GetMaxLocal()
     {
-        //float scale = 1.1048f;
         float scale = 1.05f;
         return new Vector3(scale, scale, scale);
     }
@@ -676,16 +675,16 @@ m.M44 = 1.000000F;
     /// •n“û‹«ŠE”ä—¦
     public static float FlatRatio = 0.2250F;
 
-    float age_ratio;
+    float tall_ratio;
     /// Žo–…ƒXƒ‰ƒCƒ_”ä—¦
     public float TallRatio
     {
-        get { return age_ratio; }
+        get { return tall_ratio; }
         set
         {
-            age_ratio = value;
-            Local = GetVector3Ratio(GetMinLocal(), GetMaxLocal(), age_ratio);
-            FaceOya = GetVector3Ratio(GetMinFaceOya(), GetMaxFaceOya(), age_ratio);
+            tall_ratio = value;
+            Local = GetVector3Ratio(GetMinLocal(), GetMaxLocal(), tall_ratio);
+            FaceOya = GetVector3Ratio(GetMinFaceOya(), GetMaxFaceOya(), tall_ratio);
         }
     }
 

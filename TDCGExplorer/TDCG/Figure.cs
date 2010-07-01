@@ -61,7 +61,8 @@ public class Figure : IDisposable
         }
     }
 
-    internal Dictionary<TSONode, TMONode> nodemap;
+    /// tso nodeからtmo nodeを導出する辞書
+    public Dictionary<TSONode, TMONode> nodemap;
 
     private MatrixStack matrixStack = null;
     private int frame_index = 0;
@@ -169,16 +170,12 @@ public class Figure : IDisposable
 
     /// <summary>
     /// nodemapとbone行列を更新します。
-    /// tmoが読み込まれていない場合は先頭のtsoから生成します。
+    /// tmoが読み込まれていない場合は先頭のtsoからtmoを生成します。
     /// </summary>
     public void UpdateNodeMapAndBoneMatrices()
     {
         if (tmo.frames == null)
-            if (TSOList.Count != 0)
-            {
-                Tmo = TSOList[0].GenerateTMO();
-                TransformTpo();
-            }
+            RegenerateTMO();
 
         nodemap.Clear();
         if (tmo.frames != null)
@@ -186,6 +183,18 @@ public class Figure : IDisposable
             AddNodeMap(tso);
 
         UpdateBoneMatrices(true);
+    }
+
+    /// <summary>
+    /// 先頭のtsoからtmoを生成します。
+    /// </summary>
+    public void RegenerateTMO()
+    {
+        if (TSOList.Count != 0)
+        {
+            Tmo = TSOList[0].GenerateTMO();
+            TransformTpo();
+        }
     }
 
     /// <summary>
@@ -436,9 +445,8 @@ public class Figure : IDisposable
                 break;
             }
 
-            // スライダ行列とは別にChichiが保持するfactorでscalingを行う。
-            // ただしここでのscalingはtranslationを変更してはならないため
-            // scalingを打ち消す演算をtranslationに適用する。
+            // translationを維持する必要があるため
+            // translationに対してscalingを打ち消す演算を行う。
             Vector3 scaling = slide_matrices.Chichi;
 
             m.M41 /= scaling.X;
@@ -476,8 +484,8 @@ public class Figure : IDisposable
         m = matrixStack.Top;
 
         // スライダによる体型変更
-        // このscalingはtranslationを変更してはならないため
-        // matrixStackに適用しない。
+        // translationを維持する必要があるため
+        // このscalingはmatrixStackに適用しない。
         switch (tmo_node.Name)
         {
             case "W_Spine_Dummy":
