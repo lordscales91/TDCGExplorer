@@ -6,20 +6,20 @@ using System.IO;
 namespace TDCG
 {
 /// <summary>
-/// TPOƒtƒ@ƒCƒ‹‚ÌƒŠƒXƒg‚Å‚·B
+/// TPOãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒªã‚¹ãƒˆã§ã™ã€‚
 /// </summary>
 public class TPOFileList
 {
-    /// TPOƒtƒ@ƒCƒ‹ƒŠƒXƒg
+    /// TPOãƒ•ã‚¡ã‚¤ãƒ«ãƒªã‚¹ãƒˆ
     public List<TPOFile> files = new List<TPOFile>();
 
-    //‰Šúƒ‚[ƒVƒ‡ƒ“s—ñ’l‚ğ•Û‚·‚éƒtƒŒ[ƒ€”z—ñ
+    //åˆæœŸãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³è¡Œåˆ—å€¤ã‚’ä¿æŒã™ã‚‹ãƒ•ãƒ¬ãƒ¼ãƒ é…åˆ—
     private TMOFrame[] frames;
 
     private TMOFile tmo = null;
 
     /// <summary>
-    /// ƒCƒ“ƒfƒNƒT
+    /// ã‚¤ãƒ³ãƒ‡ã‚¯ã‚µ
     /// </summary>
     /// <param name="i">index</param>
     /// <returns>tpo</returns>
@@ -32,7 +32,7 @@ public class TPOFileList
     }
 
     /// <summary>
-    /// ƒCƒ“ƒfƒNƒT
+    /// ã‚¤ãƒ³ãƒ‡ã‚¯ã‚µ
     /// </summary>
     /// <param name="name">proportion name</param>
     /// <returns>tpo</returns>
@@ -45,7 +45,7 @@ public class TPOFileList
     }
 
     /// <summary>
-    /// —v‘f”
+    /// è¦ç´ æ•°
     /// </summary>
     public int Count
     {
@@ -56,7 +56,7 @@ public class TPOFileList
     }
     
     /// <summary>
-    /// tpo‚ğ’Ç‰Á‚µ‚Ü‚·B
+    /// tpoã‚’è¿½åŠ ã—ã¾ã™ã€‚
     /// </summary>
     /// <param name="tpo"></param>
     public void Add(TPOFile tpo)
@@ -66,7 +66,7 @@ public class TPOFileList
     }
 
     /// <summary>
-    /// TPOƒtƒ@ƒCƒ‹ƒŠƒXƒg‚ğÁ‹‚µ‚Ü‚·B
+    /// TPOãƒ•ã‚¡ã‚¤ãƒ«ãƒªã‚¹ãƒˆã‚’æ¶ˆå»ã—ã¾ã™ã€‚
     /// </summary>
     public void Clear()
     {
@@ -74,9 +74,9 @@ public class TPOFileList
     }
 
     /// <summary>
-    /// ‘ÌŒ^ƒŠƒXƒg‚ğİ’è‚µ‚Ü‚·B
+    /// ä½“å‹ãƒªã‚¹ãƒˆã‚’è¨­å®šã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="pro_list">‘ÌŒ^ƒŠƒXƒg</param>
+    /// <param name="pro_list">ä½“å‹ãƒªã‚¹ãƒˆ</param>
     public void SetProportionList(ProportionList pro_list)
     {
         Clear();
@@ -89,9 +89,9 @@ public class TPOFileList
     }
 
     /// <summary>
-    /// ‘ÌŒ^ƒŒƒVƒs‚©‚ç•ÏŒ`”ä—¦‚ğİ’è‚µ‚Ü‚·B
+    /// ä½“å‹ãƒ¬ã‚·ãƒ”ã‹ã‚‰å¤‰å½¢æ¯”ç‡ã‚’è¨­å®šã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="config">‘ÌŒ^ƒŒƒVƒs</param>
+    /// <param name="config">ä½“å‹ãƒ¬ã‚·ãƒ”</param>
     public void SetRatiosFromConfig(TPOConfig config)
     {
         Dictionary<string, Proportion> proportion_map = new Dictionary<string, Proportion>();
@@ -109,7 +109,7 @@ public class TPOFileList
     }
 
     /// <summary>
-    /// •ÏŒ`”ä—¦‚ğÁ‹‚µ‚Ü‚·B
+    /// å¤‰å½¢æ¯”ç‡ã‚’æ¶ˆå»ã—ã¾ã™ã€‚
     /// </summary>
     public void ClearRatios()
     {
@@ -120,7 +120,7 @@ public class TPOFileList
     }
 
     /// <summary>
-    /// ‘S‚Ä‚ÌƒtƒŒ[ƒ€‚ÉŠÜ‚Ü‚ê‚éƒ‚[ƒVƒ‡ƒ“s—ñ’l‚ğ•ÏŒ`‚µ‚Ü‚·B
+    /// å…¨ã¦ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã«å«ã¾ã‚Œã‚‹ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³è¡Œåˆ—å€¤ã‚’å¤‰å½¢ã—ã¾ã™ã€‚
     /// </summary>
     public void Transform()
     {
@@ -130,9 +130,9 @@ public class TPOFileList
     }
 
     /// <summary>
-    /// w’è”Ô†‚ÌƒtƒŒ[ƒ€‚ÉŠÜ‚Ü‚ê‚éƒ‚[ƒVƒ‡ƒ“s—ñ’l‚ğ•ÏŒ`‚µ‚Ü‚·B
+    /// æŒ‡å®šç•ªå·ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã«å«ã¾ã‚Œã‚‹ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³è¡Œåˆ—å€¤ã‚’å¤‰å½¢ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="frame_index">ƒtƒŒ[ƒ€”Ô†</param>
+    /// <param name="frame_index">ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·</param>
     public void Transform(int frame_index)
     {
         LoadMatrix();
@@ -161,7 +161,7 @@ public class TPOFileList
         }
     }
 
-    //‰Šúƒ‚[ƒVƒ‡ƒ“s—ñ’l‚ğ•Û‚·‚é—Ìˆæ‚ğŠm•Û‚µ‚Ü‚·B
+    //åˆæœŸãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³è¡Œåˆ—å€¤ã‚’ä¿æŒã™ã‚‹é ˜åŸŸã‚’ç¢ºä¿ã—ã¾ã™ã€‚
     private void CreateFrames()
     {
         if (tmo.frames == null)
@@ -182,7 +182,7 @@ public class TPOFileList
     }
 
     /// <summary>
-    /// ‘Ş”ğƒ‚[ƒVƒ‡ƒ“s—ñ’l‚ğtmo‚É–ß‚µ‚Ü‚·B
+    /// é€€é¿ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³è¡Œåˆ—å€¤ã‚’tmoã«æˆ»ã—ã¾ã™ã€‚
     /// </summary>
     public void LoadMatrix()
     {
@@ -202,7 +202,7 @@ public class TPOFileList
     }
 
     /// <summary>
-    /// ƒ‚[ƒVƒ‡ƒ“s—ñ’l‚ğtmo‚©‚ç‘Ş”ğ‚µ‚Ü‚·B
+    /// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³è¡Œåˆ—å€¤ã‚’tmoã‹ã‚‰é€€é¿ã—ã¾ã™ã€‚
     /// </summary>
     public void SaveMatrix()
     {

@@ -7,26 +7,26 @@ using CSScriptLibrary;
 namespace TDCG
 {
     /// <summary>
-    /// ‘ÌŒ^ƒXƒNƒŠƒvƒg‚ÌƒŠƒXƒg‚ğˆµ‚¢‚Ü‚·B
+    /// ä½“å‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆã®ãƒªã‚¹ãƒˆã‚’æ‰±ã„ã¾ã™ã€‚
     /// </summary>
 public class ProportionList
 {
     /// <summary>
-    /// ‘ÌŒ^ƒXƒNƒŠƒvƒg‚ÌƒŠƒXƒg
+    /// ä½“å‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆã®ãƒªã‚¹ãƒˆ
     /// </summary>
     public List<IProportion> items = new List<IProportion>();
 
     /// <summary>
-    /// ‘ÌŒ^ƒXƒNƒŠƒvƒgƒtƒHƒ‹ƒ_‚ÌƒpƒX‚ğ“¾‚Ü‚·B
+    /// ä½“å‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆãƒ•ã‚©ãƒ«ãƒ€ã®ãƒ‘ã‚¹ã‚’å¾—ã¾ã™ã€‚
     /// </summary>
-    /// <returns>‘ÌŒ^ƒXƒNƒŠƒvƒgƒtƒHƒ‹ƒ_‚ÌƒpƒX</returns>
+    /// <returns>ä½“å‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆãƒ•ã‚©ãƒ«ãƒ€ã®ãƒ‘ã‚¹</returns>
     public static string GetProportionPath()
     {
         return Path.Combine(Application.StartupPath, @"Proportion");
     }
 
     /// <summary>
-    /// ‘ÌŒ^ƒXƒNƒŠƒvƒg‚ğ“Ç‚İ‚İ‚Ü‚·B
+    /// ä½“å‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
     /// </summary>
     public void Load()
     {

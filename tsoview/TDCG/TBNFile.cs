@@ -24,7 +24,7 @@ namespace TDCG
     }
 
     /// <summary>
-    /// TBNƒtƒ@ƒCƒ‹‚ğˆµ‚¢‚Ü‚·B
+    /// TBNãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ‰±ã„ã¾ã™ã€‚
     /// </summary>
     public class TBNFile
     {
@@ -42,14 +42,14 @@ namespace TDCG
         Queue<_C> Cs;
 
         /// <summary>
-        /// ƒoƒCƒiƒŠ’l‚Æ‚µ‚Ä“Ç‚İæ‚è‚Ü‚·B
+        /// ãƒã‚¤ãƒŠãƒªå€¤ã¨ã—ã¦èª­ã¿å–ã‚Šã¾ã™ã€‚
         /// </summary>
         protected BinaryReader reader;
 
         /// <summary>
-        /// w’èƒpƒX‚©‚ç“Ç‚İ‚İ‚Ü‚·B
+        /// æŒ‡å®šãƒ‘ã‚¹ã‹ã‚‰èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
-        /// <param name="source_file">ƒpƒX</param>
+        /// <param name="source_file">ãƒ‘ã‚¹</param>
         public void Load(string source_file)
         {
             using (Stream source_stream = File.OpenRead(source_file))
@@ -57,9 +57,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èƒXƒgƒŠ[ƒ€‚©‚ç“Ç‚İ‚İ‚Ü‚·B
+        /// æŒ‡å®šã‚¹ãƒˆãƒªãƒ¼ãƒ ã‹ã‚‰èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
-        /// <param name="source_stream">ƒXƒgƒŠ[ƒ€</param>
+        /// <param name="source_stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
         public void Load(Stream source_stream)
         {
             this.reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
@@ -96,9 +96,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èƒpƒX‚É•Û‘¶‚µ‚Ü‚·B
+        /// æŒ‡å®šãƒ‘ã‚¹ã«ä¿å­˜ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="dest_file">ƒpƒX</param>
+        /// <param name="dest_file">ãƒ‘ã‚¹</param>
         public void Save(string dest_file)
         {
             using (Stream dest_stream = File.Create(dest_file))
@@ -106,9 +106,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èƒXƒgƒŠ[ƒ€‚É•Û‘¶‚µ‚Ü‚·B
+        /// æŒ‡å®šã‚¹ãƒˆãƒªãƒ¼ãƒ ã«ä¿å­˜ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="dest_stream">ƒXƒgƒŠ[ƒ€</param>
+        /// <param name="dest_stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
         public void Save(Stream dest_stream)
         {
             BinaryWriter bw = new BinaryWriter(dest_stream);
@@ -662,7 +662,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// •¶š—ñ‚ğ‘‚«o‚µ‚Ü‚·B
+        /// æ–‡å­—åˆ—ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         public void Dump()
         {
@@ -677,9 +677,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// •¶š—ñƒŠƒXƒg‚ğ“¾‚Ü‚·B
+        /// æ–‡å­—åˆ—ãƒªã‚¹ãƒˆã‚’å¾—ã¾ã™ã€‚
         /// </summary>
-        /// <returns>•¶š—ñƒŠƒXƒg</returns>
+        /// <returns>æ–‡å­—åˆ—ãƒªã‚¹ãƒˆ</returns>
         public List<string> GetStringList()
         {
             List<string> ret = new List<string>();
@@ -694,9 +694,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// •¶š—ñ‚Ì«‘‚ğ“¾‚Ü‚·B
+        /// æ–‡å­—åˆ—ã®è¾æ›¸ã‚’å¾—ã¾ã™ã€‚
         /// </summary>
-        /// <returns>•¶š—ñ‚Ì«‘</returns>
+        /// <returns>æ–‡å­—åˆ—ã®è¾æ›¸</returns>
         public Dictionary<uint, string> GetStringDictionary()
         {
             Dictionary<uint, string> ret = new Dictionary<uint, string>();
@@ -711,7 +711,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// •¶š—ñ‚ğİ’è‚µ‚Ü‚·B
+        /// æ–‡å­—åˆ—ã‚’è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
         public void SetString(uint i, string str)
         {

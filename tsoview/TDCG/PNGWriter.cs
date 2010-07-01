@@ -8,31 +8,31 @@ using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 namespace TDCG
 {
     /// <summary>
-    /// PNGFile‚ğ‘‚«o‚·ƒƒ\ƒbƒhŒQ
+    /// PNGFileã‚’æ›¸ãå‡ºã™ãƒ¡ã‚½ãƒƒãƒ‰ç¾¤
     /// </summary>
     public class PNGWriter
     {
         /// <summary>
-        /// CSCƒ`ƒFƒbƒN‚ğs‚¤ƒIƒuƒWƒFƒNƒg
+        /// CSCãƒã‚§ãƒƒã‚¯ã‚’è¡Œã†ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
         /// </summary>
         protected static Crc32 crc = new Crc32();
 
         /// <summary>
-        /// w’èƒ‰ƒCƒ^‚Ébyte”z—ñ‚ğ‘‚«o‚µ‚Ü‚·B
+        /// æŒ‡å®šãƒ©ã‚¤ã‚¿ã«byteé…åˆ—ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="bw">ƒ‰ƒCƒ^</param>
-        /// <param name="bytes">bute”z—ñ</param>
+        /// <param name="bw">ãƒ©ã‚¤ã‚¿</param>
+        /// <param name="bytes">buteé…åˆ—</param>
         public static void Write(BinaryWriter bw, byte[] bytes)
         {
             if (bw != null)
                 bw.Write(bytes);
         }
         /// <summary>
-        /// w’èƒ‰ƒCƒ^‚Éƒ`ƒƒƒ“ƒN‚ğ‘‚«o‚µ‚Ü‚·B
+        /// æŒ‡å®šãƒ©ã‚¤ã‚¿ã«ãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="bw">ƒ‰ƒCƒ^</param>
-        /// <param name="type">ƒ`ƒƒƒ“ƒNƒ^ƒCƒv</param>
-        /// <param name="chunk_data">ƒ`ƒƒƒ“ƒN</param>
+        /// <param name="bw">ãƒ©ã‚¤ã‚¿</param>
+        /// <param name="type">ãƒãƒ£ãƒ³ã‚¯ã‚¿ã‚¤ãƒ—</param>
+        /// <param name="chunk_data">ãƒãƒ£ãƒ³ã‚¯</param>
         public static void WriteChunk(BinaryWriter bw, string type, byte[] chunk_data)
         {
             byte[] buf = BitConverter.GetBytes((UInt32)chunk_data.Length);
@@ -52,42 +52,42 @@ namespace TDCG
             Write(bw, crc_buf);
         }
         /// <summary>
-        /// w’èƒ‰ƒCƒ^‚ÉIHDRƒ`ƒƒƒ“ƒN‚ğ‘‚«o‚µ‚Ü‚·B
+        /// æŒ‡å®šãƒ©ã‚¤ã‚¿ã«IHDRãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="bw">ƒ‰ƒCƒ^</param>
-        /// <param name="chunk_data">ƒ`ƒƒƒ“ƒN</param>
+        /// <param name="bw">ãƒ©ã‚¤ã‚¿</param>
+        /// <param name="chunk_data">ãƒãƒ£ãƒ³ã‚¯</param>
         public static void WriteIHDR(BinaryWriter bw, byte[] chunk_data)
         {
             WriteChunk(bw, "IHDR", chunk_data);
         }
         /// <summary>
-        /// w’èƒ‰ƒCƒ^‚ÉIDATƒ`ƒƒƒ“ƒN‚ğ‘‚«o‚µ‚Ü‚·B
+        /// æŒ‡å®šãƒ©ã‚¤ã‚¿ã«IDATãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="bw">ƒ‰ƒCƒ^</param>
-        /// <param name="chunk_data">ƒ`ƒƒƒ“ƒN</param>
+        /// <param name="bw">ãƒ©ã‚¤ã‚¿</param>
+        /// <param name="chunk_data">ãƒãƒ£ãƒ³ã‚¯</param>
         public static void WriteIDAT(BinaryWriter bw, byte[] chunk_data)
         {
             WriteChunk(bw, "IDAT", chunk_data);
         }
         /// <summary>
-        /// w’èƒ‰ƒCƒ^‚ÉIENDƒ`ƒƒƒ“ƒN‚ğ‘‚«o‚µ‚Ü‚·B
+        /// æŒ‡å®šãƒ©ã‚¤ã‚¿ã«IENDãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="bw">ƒ‰ƒCƒ^</param>
+        /// <param name="bw">ãƒ©ã‚¤ã‚¿</param>
         public static void WriteIEND(BinaryWriter bw)
         {
             WriteChunk(bw, "IEND", new byte[] {});
         }
 
-        /// ‘‚«o‚µæ‚Æ‚È‚éƒ‰ƒCƒ^
+        /// æ›¸ãå‡ºã—å…ˆã¨ãªã‚‹ãƒ©ã‚¤ã‚¿
         protected BinaryWriter writer;
 
-        /// PNGWriter‚ğ¶¬‚µ‚Ü‚·B
+        /// PNGWriterã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         public PNGWriter(BinaryWriter bw)
         {
             this.writer = bw;
         }
 
-        /// TaObƒ`ƒƒƒ“ƒN‚ğ‘‚«‚İ‚Ü‚·B
+        /// TaObãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         protected void WriteTaOb(string type, uint opt0, uint opt1, byte[] data)
         {
             //Console.WriteLine("WriteTaOb {0}", type);
@@ -119,59 +119,59 @@ namespace TDCG
             PNGWriter.WriteChunk(writer, "taOb", chunk_data);
         }
 
-        /// TaObƒ`ƒƒƒ“ƒN‚ğ‘‚«‚İ‚Ü‚·B
+        /// TaObãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         protected void WriteTaOb(string type, byte[] data)
         {
             WriteTaOb(type, 0, 0, data);
         }
 
-        /// TDCGƒ`ƒƒƒ“ƒN‚ğ‘‚«‚İ‚Ü‚·B
+        /// TDCGãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         public void WriteTDCG()
         {
             byte[] data = System.Text.Encoding.ASCII.GetBytes("$XP$");
             WriteTaOb("TDCG", data);
         }
 
-        /// HSAVƒ`ƒƒƒ“ƒN‚ğ‘‚«‚İ‚Ü‚·B
+        /// HSAVãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         public void WriteHSAV()
         {
             byte[] data = System.Text.Encoding.ASCII.GetBytes("$XP$");
             WriteTaOb("HSAV", data);
         }
 
-        /// POSEƒ`ƒƒƒ“ƒN‚ğ‘‚«‚İ‚Ü‚·B
+        /// POSEãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         public void WritePOSE()
         {
             byte[] data = System.Text.Encoding.ASCII.GetBytes("$XP$");
             WriteTaOb("POSE", data);
         }
 
-        /// SCNEƒ`ƒƒƒ“ƒN‚ğ‘‚«‚İ‚Ü‚·B
+        /// SCNEãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         public void WriteSCNE(int figure_count)
         {
             byte[] data = System.Text.Encoding.ASCII.GetBytes("$XP$");
             WriteTaOb("SCNE", 0, (uint)figure_count, data);
         }
 
-        /// CAMIƒ`ƒƒƒ“ƒN‚ğ‘‚«‚İ‚Ü‚·B
+        /// CAMIãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         public void WriteCAMI(byte[] data)
         {
             WriteTaOb("CAMI", data);
         }
 
-        /// LGTAƒ`ƒƒƒ“ƒN‚ğ‘‚«‚İ‚Ü‚·B
+        /// LGTAãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         public void WriteLGTA(byte[] data)
         {
             WriteTaOb("LGTA", data);
         }
 
-        /// FIGUƒ`ƒƒƒ“ƒN‚ğ‘‚«‚İ‚Ü‚·B
+        /// FIGUãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         public void WriteFIGU(byte[] data)
         {
             WriteTaOb("FIGU", data);
         }
 
-        /// ƒtƒ@ƒCƒ‹‚ğ‘‚«‚İ‚Ü‚·B
+        /// ãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         protected void WriteFile(string type, uint opt0, uint opt1, Stream source)
         {
             //Console.WriteLine("taOb extract length {0}", source.Length);
@@ -207,7 +207,7 @@ namespace TDCG
             PNGWriter.WriteChunk(writer, "taOb", chunk_data);
         }
 
-        /// FTMOƒ`ƒƒƒ“ƒN‚ğ‘‚«‚İ‚Ü‚·B
+        /// FTMOãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         public void WriteFTMO(TMOFile tmo)
         {
             MemoryStream ms = new MemoryStream();
@@ -216,20 +216,20 @@ namespace TDCG
             WriteFTMO(ms);
         }
 
-        /// FTMOƒ`ƒƒƒ“ƒN‚ğ‘‚«‚İ‚Ü‚·B
+        /// FTMOãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         public void WriteFTMO(Stream stream)
         {
             WriteFile("FTMO", 0xADCFB72F, 0, stream);
         }
 
-        /// FTSOƒ`ƒƒƒ“ƒN‚ğ‘‚«‚İ‚Ü‚·B
+        /// FTSOãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         public void WriteFTSO(uint opt1, byte[] data)
         {
             MemoryStream ms = new MemoryStream(data);
             WriteFTSO(opt1, ms);
         }
 
-        /// FTSOƒ`ƒƒƒ“ƒN‚ğ‘‚«‚İ‚Ü‚·B
+        /// FTSOãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         public void WriteFTSO(uint opt1, Stream stream)
         {
             WriteFile("FTSO", 0x26F5B8FE, opt1, stream);

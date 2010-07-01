@@ -14,7 +14,7 @@ using Direct3D=Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
-    /// TSOFile‚ğDirect3Dã‚ÅƒŒƒ“ƒ_ƒŠƒ“ƒO‚µ‚Ü‚·B
+    /// TSOFileã‚’Direct3Dä¸Šã§ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã—ã¾ã™ã€‚
     /// </summary>
 public class Viewer : IDisposable
 {
@@ -40,7 +40,7 @@ public class Viewer : IDisposable
 
     bool shadow_map_enabled = false;
     /// <summary>
-    /// ƒVƒƒƒhƒEƒ}ƒbƒv‚ğì¬‚·‚é‚©
+    /// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ã‚’ä½œæˆã™ã‚‹ã‹
     /// </summary>
     public bool ShadowMapEnabled { get { return shadow_map_enabled; } }
 
@@ -60,20 +60,20 @@ public class Viewer : IDisposable
     internal Surface dev_zbuf = null;
 
     /// <summary>
-    /// viewer‚ª•Û‚µ‚Ä‚¢‚éƒtƒBƒMƒ…ƒAƒŠƒXƒg
+    /// viewerãŒä¿æŒã—ã¦ã„ã‚‹ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ãƒªã‚¹ãƒˆ
     /// </summary>
     public List<Figure> FigureList = new List<Figure>();
 
-    // ƒ‰ƒCƒg•ûŒü
+    // ãƒ©ã‚¤ãƒˆæ–¹å‘
     internal Vector3 lightDir = new Vector3(0.0f, 0.0f, -1.0f);
 
-    // ƒ}ƒEƒXƒ|ƒCƒ“ƒg‚µ‚Ä‚¢‚éƒXƒNƒŠ[ƒ“À•W
+    // ãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ãƒˆã—ã¦ã„ã‚‹ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™
     internal Point lastScreenPoint = Point.Empty;
 
     ProportionList pro_list = new ProportionList();
 
     /// <summary>
-    /// viewer‚ğ¶¬‚µ‚Ü‚·B
+    /// viewerã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     public Viewer()
     {
@@ -81,7 +81,7 @@ public class Viewer : IDisposable
         Figure.ProportionList = pro_list;
     }
 
-    /// ƒ}ƒEƒXƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚Æ‚«‚ÉÀs‚·‚éƒnƒ“ƒhƒ‰
+    /// ãƒã‚¦ã‚¹ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã¨ãã«å®Ÿè¡Œã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
     protected virtual void form_OnMouseDown(object sender, MouseEventArgs e)
     {
         switch (e.Button)
@@ -98,7 +98,7 @@ public class Viewer : IDisposable
         lastScreenPoint.Y = e.Y;
     }
 
-    /// ƒ}ƒEƒX‚ğˆÚ“®‚µ‚½‚Æ‚«‚ÉÀs‚·‚éƒnƒ“ƒhƒ‰
+    /// ãƒã‚¦ã‚¹ã‚’ç§»å‹•ã—ãŸã¨ãã«å®Ÿè¡Œã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
     protected virtual void form_OnMouseMove(object sender, MouseEventArgs e)
     {
         int dx = e.X - lastScreenPoint.X;
@@ -124,15 +124,15 @@ public class Viewer : IDisposable
         lastScreenPoint.Y = e.Y;
     }
 
-    // ‘I‘ğƒtƒBƒMƒ…ƒAindex
+    // é¸æŠãƒ•ã‚£ã‚®ãƒ¥ã‚¢index
     int fig_index = 0;
 
-    // ƒXƒNƒŠ[ƒ“‚Ì’†SÀ•W
+    // ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã®ä¸­å¿ƒåº§æ¨™
     private float screenCenterX = 800 / 2.0f;
     private float screenCenterY = 600 / 2.0f;
 
     /// <summary>
-    /// control‚ğ•Û‚µ‚Ü‚·BƒXƒNƒŠ[ƒ“‚Ì’†SÀ•W‚ğXV‚µ‚Ü‚·B
+    /// controlã‚’ä¿æŒã—ã¾ã™ã€‚ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ã®ä¸­å¿ƒåº§æ¨™ã‚’æ›´æ–°ã—ã¾ã™ã€‚
     /// </summary>
     /// <param name="control">control</param>
     protected void SetControl(Control control)
@@ -143,11 +143,11 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// w’èƒXƒNƒŠ[ƒ“À•W‚©‚çƒXƒNƒŠ[ƒ“’†S‚ÖŒü‚©‚¤ƒxƒNƒgƒ‹‚ğ“¾‚Ü‚·B
+    /// æŒ‡å®šã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã‹ã‚‰ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä¸­å¿ƒã¸å‘ã‹ã†ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¾—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="screenPointX">ƒXƒNƒŠ[ƒ“XÀ•W</param>
-    /// <param name="screenPointY">ƒXƒNƒŠ[ƒ“YÀ•W</param>
-    /// <returns>•ûŒüƒxƒNƒgƒ‹</returns>
+    /// <param name="screenPointX">ã‚¹ã‚¯ãƒªãƒ¼ãƒ³Xåº§æ¨™</param>
+    /// <param name="screenPointY">ã‚¹ã‚¯ãƒªãƒ¼ãƒ³Yåº§æ¨™</param>
+    /// <returns>æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«</returns>
     public Vector3 ScreenToOrientation(float screenPointX, float screenPointY)
     {
         float radius = 1.0f;
@@ -169,19 +169,19 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ”CˆÓ‚Ìƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İ‚Ü‚·B
+    /// ä»»æ„ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_file">”CˆÓ‚ÌƒpƒX</param>
+    /// <param name="source_file">ä»»æ„ã®ãƒ‘ã‚¹</param>
     public void LoadAnyFile(string source_file)
     {
         LoadAnyFile(source_file, false);
     }
 
     /// <summary>
-    /// ”CˆÓ‚Ìƒtƒ@ƒCƒ‹‚ğ“Ç‚İ‚İ‚Ü‚·B
+    /// ä»»æ„ã®ãƒ•ã‚¡ã‚¤ãƒ«ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_file">”CˆÓ‚ÌƒpƒX</param>
-    /// <param name="append">FigureList‚ğÁ‹‚¹‚¸‚É’Ç‰Á‚·‚é‚©</param>
+    /// <param name="source_file">ä»»æ„ã®ãƒ‘ã‚¹</param>
+    /// <param name="append">FigureListã‚’æ¶ˆå»ã›ãšã«è¿½åŠ ã™ã‚‹ã‹</param>
     public void LoadAnyFile(string source_file, bool append)
     {
         switch (Path.GetExtension(source_file).ToLower())
@@ -207,14 +207,14 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ƒtƒBƒMƒ…ƒA‘I‘ğ‚ÉŒÄ‚Ño‚³‚ê‚éƒnƒ“ƒhƒ‰
+    /// ãƒ•ã‚£ã‚®ãƒ¥ã‚¢é¸æŠæ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚‹ãƒãƒ³ãƒ‰ãƒ©
     /// </summary>
     public event EventHandler FigureEvent;
 
     /// <summary>
-    /// ƒtƒBƒMƒ…ƒA‚ğ‘I‘ğ‚µ‚Ü‚·B
+    /// ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’é¸æŠã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="fig_index">ƒtƒBƒMƒ…ƒA”Ô†</param>
+    /// <param name="fig_index">ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ç•ªå·</param>
     public void SetFigureIndex(int fig_index)
     {
         if (fig_index < 0)
@@ -227,9 +227,9 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// w’èƒfƒBƒŒƒNƒgƒŠ‚©‚çƒtƒBƒMƒ…ƒA‚ğì¬‚µ‚Ä’Ç‰Á‚µ‚Ü‚·B
+    /// æŒ‡å®šãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‹ã‚‰ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’ä½œæˆã—ã¦è¿½åŠ ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_file">TSOFile‚ğŠÜ‚ŞƒfƒBƒŒƒNƒgƒŠ</param>
+    /// <param name="source_file">TSOFileã‚’å«ã‚€ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒª</param>
     public void AddFigureFromTSODirectory(string source_file)
     {
         List<TSOFile> tso_list = new List<TSOFile>();
@@ -264,7 +264,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ‘I‘ğƒtƒBƒMƒ…ƒA‚ğ“¾‚Ü‚·B
+    /// é¸æŠãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’å¾—ã¾ã™ã€‚
     /// </summary>
     public Figure GetSelectedFigure()
     {
@@ -277,7 +277,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ‘I‘ğƒtƒBƒMƒ…ƒA‚ğ“¾‚Ü‚·B‚È‚¯‚ê‚Îì¬‚µ‚Ü‚·B
+    /// é¸æŠãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’å¾—ã¾ã™ã€‚ãªã‘ã‚Œã°ä½œæˆã—ã¾ã™ã€‚
     /// </summary>
     public Figure GetSelectedOrCreateFigure()
     {
@@ -296,9 +296,9 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// w’èƒpƒX‚©‚çTSOFile‚ğ“Ç‚İ‚İ‚Ü‚·B
+    /// æŒ‡å®šãƒ‘ã‚¹ã‹ã‚‰TSOFileã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_file">ƒpƒX</param>
+    /// <param name="source_file">ãƒ‘ã‚¹</param>
     public void LoadTSOFile(string source_file)
     {
         Debug.WriteLine("loading " + source_file);
@@ -307,9 +307,9 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// w’èƒXƒgƒŠ[ƒ€‚©‚çTSOFile‚ğ“Ç‚İ‚İ‚Ü‚·B
+    /// æŒ‡å®šã‚¹ãƒˆãƒªãƒ¼ãƒ ã‹ã‚‰TSOFileã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_stream">ƒXƒgƒŠ[ƒ€</param>
+    /// <param name="source_stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
     public void LoadTSOFile(Stream source_stream)
     {
         List<TSOFile> tso_list = new List<TSOFile>();
@@ -336,7 +336,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ‘I‘ğƒtƒBƒMƒ…ƒA‚ğ“¾‚Ü‚·B
+    /// é¸æŠãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’å¾—ã¾ã™ã€‚
     /// </summary>
     public bool TryGetFigure(out Figure fig)
     {
@@ -346,16 +346,16 @@ public class Viewer : IDisposable
         return fig != null;
     }
 
-    /// Ÿ‚ÌƒtƒBƒMƒ…ƒA‚ğ‘I‘ğ‚µ‚Ü‚·B
+    /// æ¬¡ã®ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’é¸æŠã—ã¾ã™ã€‚
     public void NextFigure()
     {
         SetFigureIndex(fig_index+1);
     }
 
     /// <summary>
-    /// w’èƒpƒX‚©‚çTMOFile‚ğ“Ç‚İ‚İ‚Ü‚·B
+    /// æŒ‡å®šãƒ‘ã‚¹ã‹ã‚‰TMOFileã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_file">ƒpƒX</param>
+    /// <param name="source_file">ãƒ‘ã‚¹</param>
     public void LoadTMOFile(string source_file)
     {
         using (Stream source_stream = File.OpenRead(source_file))
@@ -363,9 +363,9 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// w’èƒXƒgƒŠ[ƒ€‚©‚çTMOFile‚ğ“Ç‚İ‚İ‚Ü‚·B
+    /// æŒ‡å®šã‚¹ãƒˆãƒªãƒ¼ãƒ ã‹ã‚‰TMOFileã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_stream">ƒXƒgƒŠ[ƒ€</param>
+    /// <param name="source_stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
     public void LoadTMOFile(Stream source_stream)
     {
         Figure fig;
@@ -388,10 +388,10 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// w’èƒpƒX‚©‚çPNGFile‚ğ“Ç‚İ‚İƒtƒBƒMƒ…ƒA‚ğì¬‚µ‚Ä’Ç‰Á‚µ‚Ü‚·B
+    /// æŒ‡å®šãƒ‘ã‚¹ã‹ã‚‰PNGFileã‚’èª­ã¿è¾¼ã¿ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’ä½œæˆã—ã¦è¿½åŠ ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_file">PNGFile ‚ÌƒpƒX</param>
-    /// <param name="append">FigureList‚ğÁ‹‚¹‚¸‚É’Ç‰Á‚·‚é‚©</param>
+    /// <param name="source_file">PNGFile ã®ãƒ‘ã‚¹</param>
+    /// <param name="append">FigureListã‚’æ¶ˆå»ã›ãšã«è¿½åŠ ã™ã‚‹ã‹</param>
     public void AddFigureFromPNGFile(string source_file, bool append)
     {
         List<Figure> fig_list = LoadPNGFile(source_file);
@@ -429,7 +429,7 @@ public class Viewer : IDisposable
     private SimpleCamera camera = new SimpleCamera();
 
     /// <summary>
-    /// ƒJƒƒ‰
+    /// ã‚«ãƒ¡ãƒ©
     /// </summary>
     public SimpleCamera Camera
     {
@@ -448,21 +448,21 @@ public class Viewer : IDisposable
     internal Matrix Light_Projection = Matrix.Identity;
 
     /// <summary>
-    /// device‚ğì¬‚µ‚Ü‚·B
+    /// deviceã‚’ä½œæˆã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="control">ƒŒƒ“ƒ_ƒŠƒ“ƒOæ‚Æ‚È‚écontrol</param>
-    /// <returns>device‚Ìì¬‚É¬Œ÷‚µ‚½‚©</returns>
+    /// <param name="control">ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°å…ˆã¨ãªã‚‹control</param>
+    /// <returns>deviceã®ä½œæˆã«æˆåŠŸã—ãŸã‹</returns>
     public bool InitializeApplication(Control control)
     {
         return InitializeApplication(control, false);
     }
 
     /// <summary>
-    /// device‚ğì¬‚µ‚Ü‚·B
+    /// deviceã‚’ä½œæˆã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="control">ƒŒƒ“ƒ_ƒŠƒ“ƒOæ‚Æ‚È‚écontrol</param>
-    /// <param name="shadow_map_enabled">ƒVƒƒƒhƒEƒ}ƒbƒv‚ğì¬‚·‚é‚©</param>
-    /// <returns>device‚Ìì¬‚É¬Œ÷‚µ‚½‚©</returns>
+    /// <param name="control">ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°å…ˆã¨ãªã‚‹control</param>
+    /// <param name="shadow_map_enabled">ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ã‚’ä½œæˆã™ã‚‹ã‹</param>
+    /// <returns>deviceã®ä½œæˆã«æˆåŠŸã—ãŸã‹</returns>
     public bool InitializeApplication(Control control, bool shadow_map_enabled)
     {
         this.shadow_map_enabled = shadow_map_enabled;
@@ -642,7 +642,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ‘SƒtƒBƒMƒ…ƒA‚ğíœ‚µ‚Ü‚·B
+    /// å…¨ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’å‰Šé™¤ã—ã¾ã™ã€‚
     /// </summary>
     public void ClearFigureList()
     {
@@ -655,7 +655,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ‘I‘ğƒtƒBƒMƒ…ƒA‚ğíœ‚µ‚Ü‚·B
+    /// é¸æŠãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’å‰Šé™¤ã—ã¾ã™ã€‚
     /// </summary>
     public void RemoveSelectedFigure()
     {
@@ -676,7 +676,7 @@ public class Viewer : IDisposable
     internal bool SpriteShown = false;
 
     /// <summary>
-    /// ƒ‚[ƒVƒ‡ƒ“‚ª—LŒø‚Å‚ ‚é‚©B
+    /// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ãŒæœ‰åŠ¹ã§ã‚ã‚‹ã‹ã€‚
     /// </summary>
     public bool IsMotionEnabled()
     {
@@ -684,7 +684,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ƒ‚[ƒVƒ‡ƒ“‚Ì—L–³‚ğØ‚è‘Ö‚¦‚Ü‚·B
+    /// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ã®æœ‰ç„¡ã‚’åˆ‡ã‚Šæ›¿ãˆã¾ã™ã€‚
     /// </summary>
     public void SwitchMotionEnabled()
     {
@@ -700,7 +700,7 @@ public class Viewer : IDisposable
     int start_frame_index = 0;
 
     /// <summary>
-    /// ƒVƒƒƒhƒEƒ}ƒbƒv‚Ì—L–³‚ğØ‚è‘Ö‚¦‚Ü‚·B
+    /// ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ã®æœ‰ç„¡ã‚’åˆ‡ã‚Šæ›¿ãˆã¾ã™ã€‚
     /// </summary>
     public void SwitchShadowShown()
     {
@@ -708,7 +708,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ƒXƒvƒ‰ƒCƒg‚Ì—L–³‚ğØ‚è‘Ö‚¦‚Ü‚·B
+    /// ã‚¹ãƒ—ãƒ©ã‚¤ãƒˆã®æœ‰ç„¡ã‚’åˆ‡ã‚Šæ›¿ãˆã¾ã™ã€‚
     /// </summary>
     public void SwitchSpriteShown()
     {
@@ -716,7 +716,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// Ÿ‚ÌƒV[ƒ“ƒtƒŒ[ƒ€‚Éi‚İ‚Ü‚·B
+    /// æ¬¡ã®ã‚·ãƒ¼ãƒ³ãƒ•ãƒ¬ãƒ¼ãƒ ã«é€²ã¿ã¾ã™ã€‚
     /// </summary>
     public void FrameMove()
     {
@@ -732,16 +732,16 @@ public class Viewer : IDisposable
                 frame_index = new_frame_index;
             }
 
-            //ƒtƒŒ[ƒ€”Ô†‚ğ’Ê’m‚·‚éB
+            //ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·ã‚’é€šçŸ¥ã™ã‚‹ã€‚
             //camera.SetFrameIndex(frame_index);
         }
         FrameMove(frame_index);
     }
 
     /// <summary>
-    /// w’èƒV[ƒ“ƒtƒŒ[ƒ€‚Éi‚İ‚Ü‚·B
+    /// æŒ‡å®šã‚·ãƒ¼ãƒ³ãƒ•ãƒ¬ãƒ¼ãƒ ã«é€²ã¿ã¾ã™ã€‚
     /// </summary>
-    /// <param name="frame_index">ƒtƒŒ[ƒ€”Ô†</param>
+    /// <param name="frame_index">ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·</param>
     public void FrameMove(int frame_index)
     {
         if (camera.NeedUpdate)
@@ -770,7 +770,7 @@ public class Viewer : IDisposable
 
         if (motionEnabled)
         {
-            //ƒtƒŒ[ƒ€”Ô†‚ğ’Ê’m‚·‚éB
+            //ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·ã‚’é€šçŸ¥ã™ã‚‹ã€‚
             foreach (Figure fig in FigureList)
                 fig.SetFrameIndex(frame_index);
 
@@ -783,14 +783,14 @@ public class Viewer : IDisposable
 
     private int frame_index = 0;
     /// <summary>
-    /// ƒtƒŒ[ƒ€”Ô†
+    /// ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·
     /// </summary>
     public int FrameIndex { get { return frame_index; } set { frame_index = value; } }
 
     /// <summary>
-    /// tmo file’†‚ÅÅ‘å‚ÌƒtƒŒ[ƒ€’·‚³‚ğ“¾‚Ü‚·B
+    /// tmo fileä¸­ã§æœ€å¤§ã®ãƒ•ãƒ¬ãƒ¼ãƒ é•·ã•ã‚’å¾—ã¾ã™ã€‚
     /// </summary>
-    /// <returns>ƒtƒŒ[ƒ€’·‚³</returns>
+    /// <returns>ãƒ•ãƒ¬ãƒ¼ãƒ é•·ã•</returns>
     public int GetMaxFrameLength()
     {
         int max = 0;
@@ -801,17 +801,17 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ƒŒƒ“ƒ_ƒŠƒ“ƒO‚·‚é‚Ì‚É—p‚¢‚éƒfƒŠƒQ[ƒgŒ^
+    /// ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã™ã‚‹ã®ã«ç”¨ã„ã‚‹ãƒ‡ãƒªã‚²ãƒ¼ãƒˆå‹
     /// </summary>
     public delegate void RenderingHandler();
 
     /// <summary>
-    /// ƒŒƒ“ƒ_ƒŠƒ“ƒO‚·‚éƒnƒ“ƒhƒ‰
+    /// ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
     /// </summary>
     public RenderingHandler Rendering;
 
     /// <summary>
-    /// ƒV[ƒ“‚ğƒŒƒ“ƒ_ƒŠƒ“ƒO‚µ‚Ü‚·B
+    /// ã‚·ãƒ¼ãƒ³ã‚’ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã—ã¾ã™ã€‚
     /// </summary>
     public void Render()
     {
@@ -915,11 +915,11 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ƒXƒLƒ“•ÏŒ`s—ñ‚Ì”z—ñ‚ğ“¾‚Ü‚·B
+    /// ã‚¹ã‚­ãƒ³å¤‰å½¢è¡Œåˆ—ã®é…åˆ—ã‚’å¾—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="fig">ƒtƒBƒMƒ…ƒA</param>
-    /// <param name="sub_mesh">ƒTƒuƒƒbƒVƒ…</param>
-    /// <returns>ƒXƒLƒ“•ÏŒ`s—ñ‚Ì”z—ñ</returns>
+    /// <param name="fig">ãƒ•ã‚£ã‚®ãƒ¥ã‚¢</param>
+    /// <param name="sub_mesh">ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥</param>
+    /// <returns>ã‚¹ã‚­ãƒ³å¤‰å½¢è¡Œåˆ—ã®é…åˆ—</returns>
     public static Matrix[] ClipBoneMatrices(Figure fig, TSOSubMesh sub_mesh)
     {
         Matrix[] clipped_boneMatrices = new Matrix[sub_mesh.maxPalettes];
@@ -935,12 +935,12 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ƒ{[ƒ“‘I‘ğ‚Ì”z—ñ‚ğ“¾‚Ü‚·B
+    /// ãƒœãƒ¼ãƒ³é¸æŠã®é…åˆ—ã‚’å¾—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="fig">ƒtƒBƒMƒ…ƒA</param>
-    /// <param name="sub_mesh">ƒTƒuƒƒbƒVƒ…</param>
-    /// <param name="selected_node">‘I‘ğƒ{[ƒ“</param>
-    /// <returns>ƒ{[ƒ“‘I‘ğ‚Ì”z—ñ</returns>
+    /// <param name="fig">ãƒ•ã‚£ã‚®ãƒ¥ã‚¢</param>
+    /// <param name="sub_mesh">ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥</param>
+    /// <param name="selected_node">é¸æŠãƒœãƒ¼ãƒ³</param>
+    /// <returns>ãƒœãƒ¼ãƒ³é¸æŠã®é…åˆ—</returns>
     public static int[] ClipBoneSelections(Figure fig, TSOSubMesh sub_mesh, TSONode selected_node)
     {
         int[] clipped_boneSelections = new int[sub_mesh.maxPalettes];
@@ -954,7 +954,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ƒtƒBƒMƒ…ƒA‚ğ•`‰æ‚µ‚Ü‚·B
+    /// ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’æç”»ã—ã¾ã™ã€‚
     /// </summary>
     protected virtual void DrawFigure()
     {
@@ -1003,11 +1003,11 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// Direct3DƒƒbƒVƒ…‚ğ•`‰æ‚µ‚Ü‚·B
+    /// Direct3Dãƒ¡ãƒƒã‚·ãƒ¥ã‚’æç”»ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="mesh">ƒƒbƒVƒ…</param>
-    /// <param name="wld">ƒ[ƒ‹ƒh•ÏŠ·s—ñ</param>
-    /// <param name="color">•`‰æF</param>
+    /// <param name="mesh">ãƒ¡ãƒƒã‚·ãƒ¥</param>
+    /// <param name="wld">ãƒ¯ãƒ¼ãƒ«ãƒ‰å¤‰æ›è¡Œåˆ—</param>
+    /// <param name="color">æç”»è‰²</param>
     public void DrawMesh(Mesh mesh, Matrix wld, Vector4 color)
     {
         effect.Technique = "BONE";
@@ -1032,7 +1032,7 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// “à•”object‚ğ”jŠü‚µ‚Ü‚·B
+    /// å†…éƒ¨objectã‚’ç ´æ£„ã—ã¾ã™ã€‚
     /// </summary>
     public void Dispose()
     {
@@ -1057,9 +1057,9 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// w’èƒpƒX‚©‚çPNGFile‚ğ“Ç‚İ‚İƒtƒBƒMƒ…ƒA‚ğì¬‚µ‚Ü‚·B
+    /// æŒ‡å®šãƒ‘ã‚¹ã‹ã‚‰PNGFileã‚’èª­ã¿è¾¼ã¿ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’ä½œæˆã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_file">PNGFile‚ÌƒpƒX</param>
+    /// <param name="source_file">PNGFileã®ãƒ‘ã‚¹</param>
     public List<Figure> LoadPNGFile(string source_file)
     {
         List<Figure> fig_list = new List<Figure>();
@@ -1101,15 +1101,15 @@ public class Viewer : IDisposable
                     ratios.Add(flo);
                 }
                 /*
-                ŸFIGU
-                ƒXƒ‰ƒCƒ_‚ÌˆÊ’uB’l‚Í floatŒ^‚Å 0.0 .. 1.0
-                    0: o–…
-                    1: ‚¤‚Å
-                    2: ‚ ‚µ
-                    3: “·‚Ü‚í‚è
-                    4: ‚¨‚Á‚Ï‚¢
-                    5: ‚Â‚è–Ú‚½‚ê–Ú
-                    6: ‚â‚í‚ç‚©
+                â—†FIGU
+                ã‚¹ãƒ©ã‚¤ãƒ€ã®ä½ç½®ã€‚å€¤ã¯ floatå‹ã§ 0.0 .. 1.0
+                    0: å§‰å¦¹
+                    1: ã†ã§
+                    2: ã‚ã—
+                    3: èƒ´ã¾ã‚ã‚Š
+                    4: ãŠã£ã±ã„
+                    5: ã¤ã‚Šç›®ãŸã‚Œç›®
+                    6: ã‚„ã‚ã‚‰ã‹
                  */
                 fig.slide_matrices.TallRatio = ratios[0];
                 fig.slide_matrices.ArmRatio = ratios[1];
@@ -1154,9 +1154,9 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ƒoƒbƒNƒoƒbƒtƒ@‚ğBMPŒ`®‚Åƒtƒ@ƒCƒ‹‚É•Û‘¶‚µ‚Ü‚·B
+    /// ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã‚’BMPå½¢å¼ã§ãƒ•ã‚¡ã‚¤ãƒ«ã«ä¿å­˜ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="file">ƒtƒ@ƒCƒ‹–¼</param>
+    /// <param name="file">ãƒ•ã‚¡ã‚¤ãƒ«å</param>
     public void SaveToBitmap(string file)
     {
       using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))
@@ -1165,9 +1165,9 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ƒoƒbƒNƒoƒbƒtƒ@‚ğPNGŒ`®‚Åƒtƒ@ƒCƒ‹‚É•Û‘¶‚µ‚Ü‚·B
+    /// ãƒãƒƒã‚¯ãƒãƒƒãƒ•ã‚¡ã‚’PNGå½¢å¼ã§ãƒ•ã‚¡ã‚¤ãƒ«ã«ä¿å­˜ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="file">ƒtƒ@ƒCƒ‹–¼</param>
+    /// <param name="file">ãƒ•ã‚¡ã‚¤ãƒ«å</param>
     public void SaveToPng(string file)
     {
       using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))

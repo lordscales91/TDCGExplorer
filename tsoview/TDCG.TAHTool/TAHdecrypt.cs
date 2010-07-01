@@ -31,7 +31,7 @@ namespace TDCG.TAHTool
 
                 string file_name = entry.file_name;
 
-                //flag & 0x1 = 1Ç»ÇÁno path
+                //flag & 0x1 = 1„Å™„Çâno path
                 if (entry.flag % 2 == 1)
                 {
                     file_name += TAHFileUtils.GetExtensionFromMagic(data_output);

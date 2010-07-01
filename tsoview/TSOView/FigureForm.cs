@@ -11,12 +11,12 @@ using TDCG;
 namespace TSOView
 {
     /// <summary>
-    /// ƒtƒBƒMƒ…ƒAî•ñ‚ğˆµ‚¤ƒtƒH[ƒ€
+    /// ãƒ•ã‚£ã‚®ãƒ¥ã‚¢æƒ…å ±ã‚’æ‰±ã†ãƒ•ã‚©ãƒ¼ãƒ 
     /// </summary>
 public partial class FigureForm : Form
 {
     /// <summary>
-    /// ƒtƒBƒMƒ…ƒAî•ñƒtƒH[ƒ€‚ğ¶¬‚µ‚Ü‚·B
+    /// ãƒ•ã‚£ã‚®ãƒ¥ã‚¢æƒ…å ±ãƒ•ã‚©ãƒ¼ãƒ ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     public FigureForm()
     {
@@ -24,9 +24,9 @@ public partial class FigureForm : Form
     }
 
     /// <summary>
-    /// Esc‚ğ‰Ÿ‚·‚Æ”²‚¯‚Ü‚·B
+    /// Escã‚’æŠ¼ã™ã¨æŠœã‘ã¾ã™ã€‚
     /// </summary>
-    /// <param name="e">ƒCƒxƒ“ƒgˆø”</param>
+    /// <param name="e">ã‚¤ãƒ™ãƒ³ãƒˆå¼•æ•°</param>
     protected override void OnKeyPress(System.Windows.Forms.KeyPressEventArgs e)
     {
         if ((int)(byte)e.KeyChar == (int)System.Windows.Forms.Keys.Escape)
@@ -38,7 +38,7 @@ public partial class FigureForm : Form
     private Shader shader = null;
 
     /// <summary>
-    /// ƒtƒBƒMƒ…ƒAî•ñ‚ğíœ‚µ‚Ü‚·B
+    /// ãƒ•ã‚£ã‚®ãƒ¥ã‚¢æƒ…å ±ã‚’å‰Šé™¤ã—ã¾ã™ã€‚
     /// </summary>
     public void Clear()
     {
@@ -51,9 +51,9 @@ public partial class FigureForm : Form
     }
 
     /// <summary>
-    /// ƒtƒBƒMƒ…ƒA‚ğUI‚Éİ’è‚µ‚Ü‚·B
+    /// ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’UIã«è¨­å®šã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="fig">ƒtƒBƒMƒ…ƒA</param>
+    /// <param name="fig">ãƒ•ã‚£ã‚®ãƒ¥ã‚¢</param>
     public void SetFigure(Figure fig)
     {
         this.fig = fig;
@@ -77,7 +77,7 @@ public partial class FigureForm : Form
     }
 
     /// <summary>
-    /// tso‚ğUI‚Éİ’è‚µ‚Ü‚·B
+    /// tsoã‚’UIã«è¨­å®šã—ã¾ã™ã€‚
     /// </summary>
     /// <param name="tso">tso</param>
     public void SetTSOFile(TSOFile tso)
@@ -95,9 +95,9 @@ public partial class FigureForm : Form
     }
 
     /// <summary>
-    /// ƒVƒF[ƒ_İ’è‚ğUI‚Éİ’è‚µ‚Ü‚·B
+    /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šã‚’UIã«è¨­å®šã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="shader">ƒVƒF[ƒ_İ’è</param>
+    /// <param name="shader">ã‚·ã‚§ãƒ¼ãƒ€è¨­å®š</param>
     public void SetShader(Shader shader)
     {
         this.shader = shader;

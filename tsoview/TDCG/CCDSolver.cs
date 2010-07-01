@@ -11,18 +11,18 @@ using Direct3D = Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
-    /// ‹t‰^“®Šw‚Ì‰ğ–@
+    /// é€†é‹å‹•å­¦ã®è§£æ³•
     /// </summary>
     public class CCDSolver
     {
         Vector3 target;
         /// <summary>
-        /// ‹t‰^“®Šw‚É‚¨‚¯‚é–Ú•W
+        /// é€†é‹å‹•å­¦ã«ãŠã‘ã‚‹ç›®æ¨™
         /// </summary>
         public Vector3 Target { get { return target; } set { target = value; } }
 
         /// <summary>
-        /// ‹t‰^“®Šw‚É‚¨‚¯‚é–Ú•W‚ğˆÚ“®‚µ‚Ü‚·B
+        /// é€†é‹å‹•å­¦ã«ãŠã‘ã‚‹ç›®æ¨™ã‚’ç§»å‹•ã—ã¾ã™ã€‚
         /// </summary>
         public void MoveTarget(float dx, float dy, float dz)
         {
@@ -35,13 +35,13 @@ namespace TDCG
         }
 
         /// <summary>
-        /// Ú’n‚ª—LŒø‚Å‚ ‚é‚©B
+        /// æ¥åœ°ãŒæœ‰åŠ¹ã§ã‚ã‚‹ã‹ã€‚
         /// </summary>
         public bool FloorEnabled { get; set; }
 
         bool solved = true;
         /// <summary>
-        /// ‹t‰^“®Šw‚É‚æ‚é‰ğ‚ğ“¾‚ç‚ê‚½‚©B
+        /// é€†é‹å‹•å­¦ã«ã‚ˆã‚‹è§£ã‚’å¾—ã‚‰ã‚ŒãŸã‹ã€‚
         /// </summary>
         public bool Solved { get { return solved; } set { solved = value; } }
 
@@ -50,7 +50,7 @@ namespace TDCG
         Dictionary<string, Vector3> target_dictionary = new Dictionary<string, Vector3>();
 
         /// <summary>
-        /// ŠeƒGƒtƒFƒNƒ^‚Ì–¼Ì‚ğ•Ô‚µ‚Ü‚·B
+        /// å„ã‚¨ãƒ•ã‚§ã‚¯ã‚¿ã®åç§°ã‚’è¿”ã—ã¾ã™ã€‚
         /// </summary>
         public Dictionary<string, string[]>.KeyCollection EachEffecterNames
         {
@@ -58,13 +58,13 @@ namespace TDCG
         }
         
         /// <summary>
-        /// ‹t‰^“®Šw‚Ì‰ğ–@‚ğ¶¬‚µ‚Ü‚·B
+        /// é€†é‹å‹•å­¦ã®è§£æ³•ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
         public CCDSolver()
         {
             Target = new Vector3(5.0f, 10.0f, 0.0f);
 
-            //¶˜r
+            //å·¦è…•
             effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand"] =
                 new string[] {
                 "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm",
@@ -83,7 +83,7 @@ namespace TDCG
             effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder"] =
                 new string[] { };
 
-            //‰E˜r
+            //å³è…•
             effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm|W_RightForeArmRoll|W_RightHand"] =
                 new string[] {
                 "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm",
@@ -102,7 +102,7 @@ namespace TDCG
             effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder"] =
                 new string[] { };
 
-            //‰E‘«
+            //å³è¶³
             effector_dictionary["|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot|W_RightToeBase"] =
                 new string[] {
                 "|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot" };
@@ -119,7 +119,7 @@ namespace TDCG
             effector_dictionary["|W_Hips|W_RightHips_Dummy|W_RightUpLeg"] =
                 new string[] { };
 
-            //¶‘«
+            //å·¦è¶³
             effector_dictionary["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot|W_LeftToeBase"] =
                 new string[] {
                 "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot" };
@@ -136,11 +136,11 @@ namespace TDCG
             effector_dictionary["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg"] =
                 new string[] { };
 
-            //“ª
+            //é ­
             effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck|Head"] =
                 new string[] { };
 
-            //˜
+            //è…°
             effector_dictionary["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3"] =
                 new string[] { };
 
@@ -155,7 +155,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// Ú’n‚Ì–Ú•W‚ğİ’è‚µ‚Ü‚·B
+        /// æ¥åœ°ã®ç›®æ¨™ã‚’è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="tmo">tmo</param>
         public void SaveFloorTargets(TMOFile tmo)
@@ -174,10 +174,10 @@ namespace TDCG
         }
 
         /// <summary>
-        /// root node‚É‘Î‚·‚é‰ğ‚ğ“¾‚Ü‚·B
+        /// root nodeã«å¯¾ã™ã‚‹è§£ã‚’å¾—ã¾ã™ã€‚
         /// </summary>
         /// <param name="tmo">tmo</param>
-        /// <param name="effector_name">ƒGƒtƒFƒNƒ^node–¼Ì</param>
+        /// <param name="effector_name">ã‚¨ãƒ•ã‚§ã‚¯ã‚¿nodeåç§°</param>
         public void SolveRootNode(TMOFile tmo, string effector_name)
         {
             Debug.Assert(tmo.nodemap != null, "tso.nodemap should not be null");
@@ -194,22 +194,22 @@ namespace TDCG
         }
 
         /// <summary>
-        /// node‚ğˆµ‚¤ƒfƒŠƒQ[ƒgŒ^
+        /// nodeã‚’æ‰±ã†ãƒ‡ãƒªã‚²ãƒ¼ãƒˆå‹
         /// </summary>
         /// <param name="node"></param>
         public delegate void TMONodeHandler(TMONode node);
 
         /// <summary>
-        /// node‚ğ‰ñ“]‚µ‚½‚Æ‚«‚ÉŒÄ‚Ño‚·ƒnƒ“ƒhƒ‰
+        /// nodeã‚’å›è»¢ã—ãŸã¨ãã«å‘¼ã³å‡ºã™ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public TMONodeHandler TMONodeRotation;
 
         /// <summary>
-        /// ‹t‰^“®Šw‚É‚æ‚é‰ğ‚ğ“¾‚Ü‚·B
+        /// é€†é‹å‹•å­¦ã«ã‚ˆã‚‹è§£ã‚’å¾—ã¾ã™ã€‚
         /// </summary>
         /// <param name="tmo">tmo</param>
-        /// <param name="effector_name">ƒGƒtƒFƒNƒ^node–¼Ì</param>
-        /// <param name="target">–Ú•W</param>
+        /// <param name="effector_name">ã‚¨ãƒ•ã‚§ã‚¯ã‚¿nodeåç§°</param>
+        /// <param name="target">ç›®æ¨™</param>
         public void Solve(TMOFile tmo, string effector_name, Vector3 target)
         {
             Debug.Assert(tmo.nodemap != null, "tso.nodemap should not be null");
@@ -230,11 +230,11 @@ namespace TDCG
         }
 
         /// <summary>
-        /// Cyclic-Coordinate-Descent (CCD) –@‚É‚æ‚é‹t‰^“®Šw‚ÌÀ‘•‚Å‚·B
+        /// Cyclic-Coordinate-Descent (CCD) æ³•ã«ã‚ˆã‚‹é€†é‹å‹•å­¦ã®å®Ÿè£…ã§ã™ã€‚
         /// </summary>
-        /// <param name="effector">ƒGƒtƒFƒNƒ^node</param>
-        /// <param name="node">‘ÎÛnode</param>
-        /// <param name="target">–Ú•W</param>
+        /// <param name="effector">ã‚¨ãƒ•ã‚§ã‚¯ã‚¿node</param>
+        /// <param name="node">å¯¾è±¡node</param>
+        /// <param name="target">ç›®æ¨™</param>
         public void Solve(TMONode effector, TMONode node, Vector3 target)
         {
             Vector3 worldTargetP = target;
@@ -254,12 +254,12 @@ namespace TDCG
         }
 
         /// <summary>
-        /// v1‚ğv2‚É‡‚í‚¹‚é‰ñ“]‚ğ“¾‚Ü‚·B
+        /// v1ã‚’v2ã«åˆã‚ã›ã‚‹å›è»¢ã‚’å¾—ã¾ã™ã€‚
         /// </summary>
         /// <param name="v1">v1</param>
         /// <param name="v2">v2</param>
         /// <param name="q">q</param>
-        /// <returns>‰ñ“]‚ª•K—v‚Å‚ ‚é‚©</returns>
+        /// <returns>å›è»¢ãŒå¿…è¦ã§ã‚ã‚‹ã‹</returns>
         public bool RotationVectorToVector(Vector3 v1, Vector3 v2, out Quaternion q)
         {
             Vector3 n1 = Vector3.Normalize(v1);

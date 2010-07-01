@@ -12,7 +12,7 @@ using Direct3D = Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
-    /// TSOFile‚ğDirect3Dã‚ÅƒŒƒ“ƒ_ƒŠƒ“ƒO‚µ‚Ü‚·B
+    /// TSOFileã‚’Direct3Dä¸Šã§ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã—ã¾ã™ã€‚
     /// </summary>
 public class CCDViewer : Viewer
 {
@@ -20,12 +20,12 @@ public class CCDViewer : Viewer
 
     CCDSolver solver = new CCDSolver();
     /// <summary>
-    /// ‹t‰^“®Šw‚Ì‰ğ–@
+    /// é€†é‹å‹•å­¦ã®è§£æ³•
     /// </summary>
     public CCDSolver Solver { get { return solver; } }
 
     /// <summary>
-    /// viewer‚ğ¶¬‚µ‚Ü‚·B
+    /// viewerã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     public CCDViewer()
     {
@@ -41,7 +41,7 @@ public class CCDViewer : Viewer
         };
     }
 
-    /// ƒ}ƒEƒXƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚Æ‚«‚ÉÀs‚·‚éƒnƒ“ƒhƒ‰
+    /// ãƒã‚¦ã‚¹ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã¨ãã«å®Ÿè¡Œã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
     protected override void form_OnMouseDown(object sender, MouseEventArgs e)
     {
         switch (e.Button)
@@ -63,7 +63,7 @@ public class CCDViewer : Viewer
         lastScreenPoint.Y = e.Y;
     }
 
-    /// ƒ}ƒEƒX‚ğˆÚ“®‚µ‚½‚Æ‚«‚ÉÀs‚·‚éƒnƒ“ƒhƒ‰
+    /// ãƒã‚¦ã‚¹ã‚’ç§»å‹•ã—ãŸã¨ãã«å®Ÿè¡Œã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
     protected override void form_OnMouseMove(object sender, MouseEventArgs e)
     {
         int dx = e.X - lastScreenPoint.X;
@@ -101,7 +101,7 @@ public class CCDViewer : Viewer
     }
 
     /// <summary>
-    /// w’èƒV[ƒ“ƒtƒŒ[ƒ€‚Éi‚İ‚Ü‚·B
+    /// æŒ‡å®šã‚·ãƒ¼ãƒ³ãƒ•ãƒ¬ãƒ¼ãƒ ã«é€²ã¿ã¾ã™ã€‚
     /// </summary>
     public void FrameMoveDerived()
     {
@@ -123,7 +123,7 @@ public class CCDViewer : Viewer
     }
 
     /// <summary>
-    /// ƒV[ƒ“‚ğƒŒƒ“ƒ_ƒŠƒ“ƒO‚µ‚Ü‚·B
+    /// ã‚·ãƒ¼ãƒ³ã‚’ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã—ã¾ã™ã€‚
     /// </summary>
     public void RenderDerived()
     {
@@ -135,7 +135,7 @@ public class CCDViewer : Viewer
     }
 
     /// <summary>
-    /// ‹t‰^“®Šw‚É‚¨‚¯‚é–Ú•W‚ğƒXƒNƒŠ[ƒ“À•W‚Åw’è‚µ‚Ü‚·B
+    /// é€†é‹å‹•å­¦ã«ãŠã‘ã‚‹ç›®æ¨™ã‚’ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã§æŒ‡å®šã—ã¾ã™ã€‚
     /// </summary>
     private void SetTargetOnScreen(float x, float y)
     {
@@ -201,7 +201,7 @@ public class CCDViewer : Viewer
         }
     }
 
-    /// ‹…‚ÆƒŒƒC‚ÌÕ“Ë‚ğŒ©‚Â‚¯‚Ü‚·B
+    /// çƒã¨ãƒ¬ã‚¤ã®è¡çªã‚’è¦‹ã¤ã‘ã¾ã™ã€‚
     public bool DetectSphereRayCollision(float sphereRadius, ref Vector3 sphereCenter, ref Vector3 rayStart, ref Vector3 rayOrientation, out Vector3 collisionPoint, out float collisionTime)
     {
         collisionTime = 0.0f;
@@ -212,11 +212,11 @@ public class CCDViewer : Viewer
         float b = Vector3.Dot(rayOrientation, u);
         float c = Vector3.Dot(u, u) - sphereRadius*sphereRadius;
         if (a <= float.Epsilon)
-            //Œë·
+            //èª¤å·®
             return false;
         float d = b*b - a*c;
         if (d < 0.0f)
-            //Õ“Ë‚µ‚È‚¢
+            //è¡çªã—ãªã„
             return false;
         collisionTime = (-b - (float)Math.Sqrt(d))/a;
         collisionPoint = rayStart + rayOrientation*collisionTime;
@@ -224,10 +224,10 @@ public class CCDViewer : Viewer
     }
 
     /// <summary>
-    /// viewports—ñ‚ğì¬‚µ‚Ü‚·B
+    /// viewportè¡Œåˆ—ã‚’ä½œæˆã—ã¾ã™ã€‚
     /// </summary>
     /// <param name="viewport">viewport</param>
-    /// <returns>viewports—ñ</returns>
+    /// <returns>viewportè¡Œåˆ—</returns>
     public Matrix CreateViewportMatrix(Viewport viewport)
     {
         Matrix m = Matrix.Identity;
@@ -240,54 +240,54 @@ public class CCDViewer : Viewer
         return m;
     }
 
-    /// ƒXƒNƒŠ[ƒ“ˆÊ’u‚ğƒ[ƒ‹ƒhÀ•W‚Ö•ÏŠ·‚µ‚Ü‚·B
+    /// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä½ç½®ã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã¸å¤‰æ›ã—ã¾ã™ã€‚
     public Vector3 ScreenToWorld(float screenX, float screenY, float z, Viewport viewport, Matrix view, Matrix proj)
     {
-        //ƒXƒNƒŠ[ƒ“ˆÊ’u
+        //ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä½ç½®
         Vector3 v = new Vector3(screenX, screenY,  z);
 
         Matrix inv_m = Matrix.Invert(CreateViewportMatrix(viewport));
         Matrix inv_proj = Matrix.Invert(proj);
         Matrix inv_view = Matrix.Invert(view);
 
-        //ƒXƒNƒŠ[ƒ“ˆÊ’u‚ğƒ[ƒ‹ƒhÀ•W‚Ö•ÏŠ·
+        //ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä½ç½®ã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã¸å¤‰æ›
         return Vector3.TransformCoordinate(v, inv_m * inv_proj * inv_view);
     }
 
-    /// ƒXƒNƒŠ[ƒ“ˆÊ’u‚ğƒ[ƒ‹ƒhÀ•W‚Ö•ÏŠ·‚µ‚Ü‚·B
+    /// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä½ç½®ã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã¸å¤‰æ›ã—ã¾ã™ã€‚
     public Vector3 ScreenToWorld(float screenX, float screenY, float z)
     {
         return ScreenToWorld(screenX, screenY, z, device.Viewport, Transform_View, Transform_Projection);
     }
 
-    /// ƒ[ƒ‹ƒhÀ•W‚ğƒXƒNƒŠ[ƒ“ˆÊ’u‚Ö•ÏŠ·‚µ‚Ü‚·B
+    /// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä½ç½®ã¸å¤‰æ›ã—ã¾ã™ã€‚
     public Vector3 WorldToScreen(Vector3 v, Viewport viewport, Matrix view, Matrix proj)
     {
         return Vector3.TransformCoordinate(v, view * proj * CreateViewportMatrix(viewport));
     }
 
-    /// ƒ[ƒ‹ƒhÀ•W‚ğƒXƒNƒŠ[ƒ“ˆÊ’u‚Ö•ÏŠ·‚µ‚Ü‚·B
+    /// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä½ç½®ã¸å¤‰æ›ã—ã¾ã™ã€‚
     public Vector3 WorldToScreen(Vector3 v)
     {
         return WorldToScreen(v, device.Viewport, Transform_View, Transform_Projection);
     }
 
     /// <summary>
-    /// device‚ğì¬‚µ‚Ü‚·B
+    /// deviceã‚’ä½œæˆã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="control">ƒŒƒ“ƒ_ƒŠƒ“ƒOæ‚Æ‚È‚écontrol</param>
-    /// <returns>device‚Ìì¬‚É¬Œ÷‚µ‚½‚©</returns>
+    /// <param name="control">ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°å…ˆã¨ãªã‚‹control</param>
+    /// <returns>deviceã®ä½œæˆã«æˆåŠŸã—ãŸã‹</returns>
     public new bool InitializeApplication(Control control)
     {
         return InitializeApplication(control, false);
     }
 
     /// <summary>
-    /// device‚ğì¬‚µ‚Ü‚·B
+    /// deviceã‚’ä½œæˆã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="control">ƒŒƒ“ƒ_ƒŠƒ“ƒOæ‚Æ‚È‚écontrol</param>
-    /// <param name="shadowMapEnabled">ƒVƒƒƒhƒEƒ}ƒbƒv‚ğì¬‚·‚é‚©</param>
-    /// <returns>device‚Ìì¬‚É¬Œ÷‚µ‚½‚©</returns>
+    /// <param name="control">ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°å…ˆã¨ãªã‚‹control</param>
+    /// <param name="shadowMapEnabled">ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ã‚’ä½œæˆã™ã‚‹ã‹</param>
+    /// <returns>deviceã®ä½œæˆã«æˆåŠŸã—ãŸã‹</returns>
     public new bool InitializeApplication(Control control, bool shadowMapEnabled)
     {
         if (! base.InitializeApplication(control, shadowMapEnabled))
@@ -326,12 +326,12 @@ public class CCDViewer : Viewer
     TMOConstraint constraint_zxy = null;
     
     /// <summary>
-    /// ‰ñ“]Šp§ŒÀ‚ª—LŒø‚Å‚ ‚é‚©B
+    /// å›è»¢è§’åˆ¶é™ãŒæœ‰åŠ¹ã§ã‚ã‚‹ã‹ã€‚
     /// </summary>
     public bool LimitRotationEnabled { get; set; }
     
     /// <summary>
-    /// Ú’n‚ª—LŒø‚Å‚ ‚é‚©B
+    /// æ¥åœ°ãŒæœ‰åŠ¹ã§ã‚ã‚‹ã‹ã€‚
     /// </summary>
     public bool FloorEnabled { get { return solver.FloorEnabled; } set { solver.FloorEnabled = value; } }
 
@@ -371,8 +371,8 @@ public class CCDViewer : Viewer
         DrawMesh(sphere, Matrix.Translation(solver.Target), new Vector4(1, 1, 0, 0.5f));
     }
 
-    /// ƒXƒNƒŠ[ƒ“À•W‚©‚çƒGƒtƒFƒNƒ^‚ğŒ©‚Â‚¯‚Ü‚·B
-    /// Õ“Ë‚·‚éƒGƒtƒFƒNƒ^‚Ì’†‚ÅÅ‚à‹ß‚¢ˆÊ’u‚É‚ ‚éƒGƒtƒFƒNƒ^‚ğ•Ô‚µ‚Ü‚·B
+    /// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã‹ã‚‰ã‚¨ãƒ•ã‚§ã‚¯ã‚¿ã‚’è¦‹ã¤ã‘ã¾ã™ã€‚
+    /// è¡çªã™ã‚‹ã‚¨ãƒ•ã‚§ã‚¯ã‚¿ã®ä¸­ã§æœ€ã‚‚è¿‘ã„ä½ç½®ã«ã‚ã‚‹ã‚¨ãƒ•ã‚§ã‚¯ã‚¿ã‚’è¿”ã—ã¾ã™ã€‚
     private bool FindEffectorOnScreenPoint(float x, float y, out TMONode effector)
     {
         effector = null;
@@ -512,7 +512,7 @@ public class CCDViewer : Viewer
     }
 
     /// <summary>
-    /// “à•”object‚ğ”jŠü‚µ‚Ü‚·B
+    /// å†…éƒ¨objectã‚’ç ´æ£„ã—ã¾ã™ã€‚
     /// </summary>
     public new void Dispose()
     {

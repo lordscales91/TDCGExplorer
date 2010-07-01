@@ -43,36 +43,36 @@ namespace TDCG
     }
 
     /// <summary>
-    /// ƒTƒuƒƒbƒVƒ…
+    /// ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥
     /// </summary>
     public class TSOSubMesh : IDisposable
     {
         /// <summary>
-        /// ƒVƒF[ƒ_İ’è”Ô†
+        /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šç•ªå·
         /// </summary>
         public int spec;
         /// <summary>
-        /// ƒ{[ƒ“QÆƒŠƒXƒg
+        /// ãƒœãƒ¼ãƒ³å‚ç…§ãƒªã‚¹ãƒˆ
         /// </summary>
         public int[] bone_indices;
         /// <summary>
-        /// ƒ{[ƒ“QÆƒŠƒXƒg
+        /// ãƒœãƒ¼ãƒ³å‚ç…§ãƒªã‚¹ãƒˆ
         /// </summary>
         public List<TSONode> bones;
         /// <summary>
-        /// ’¸“_”z—ñ
+        /// é ‚ç‚¹é…åˆ—
         /// </summary>
         public Vertex[] vertices;
 
         internal Mesh dm = null;
 
         /// <summary>
-        /// ƒpƒŒƒbƒg’·‚³
+        /// ãƒ‘ãƒ¬ãƒƒãƒˆé•·ã•
         /// </summary>
         public int maxPalettes;
 
         /// <summary>
-        /// ƒ{[ƒ“”
+        /// ãƒœãƒ¼ãƒ³æ•°
         /// </summary>
         public int NumberBones
         {
@@ -80,17 +80,17 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èindex‚É‚ ‚éƒ{[ƒ“‚ğ“¾‚Ü‚·B
+        /// æŒ‡å®šindexã«ã‚ã‚‹ãƒœãƒ¼ãƒ³ã‚’å¾—ã¾ã™ã€‚
         /// </summary>
         /// <param name="i">index</param>
-        /// <returns>ƒ{[ƒ“</returns>
+        /// <returns>ãƒœãƒ¼ãƒ³</returns>
         public TSONode GetBone(int i)
         {
             return bones[i];
         }
 
         /// <summary>
-        /// ƒTƒuƒƒbƒVƒ…‚ğ“Ç‚İ‚İ‚Ü‚·B
+        /// ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
         public void Read(BinaryReader reader)
         {
@@ -117,7 +117,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒTƒuƒƒbƒVƒ…‚ğ‘‚«o‚µ‚Ü‚·B
+        /// ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -135,7 +135,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒ{[ƒ“QÆƒŠƒXƒg‚ğ¶¬‚µ‚Ü‚·B
+        /// ãƒœãƒ¼ãƒ³å‚ç…§ãƒªã‚¹ãƒˆã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
         public void LinkBones(TSONode[] nodes)
         {
@@ -145,7 +145,7 @@ namespace TDCG
                 this.bones.Add(nodes[bone_index]);
         }
 
-        /// ’¸“_”
+        /// é ‚ç‚¹æ•°
         public int VerticesCount
         {
             get { return vertices.Length; }
@@ -171,7 +171,7 @@ namespace TDCG
         */
 
         /// <summary>
-        /// ’¸“_‚ğDirect3Dƒoƒbƒtƒ@‚É‘‚«‚İ‚Ü‚·B
+        /// é ‚ç‚¹ã‚’Direct3Dãƒãƒƒãƒ•ã‚¡ã«æ›¸ãè¾¼ã¿ã¾ã™ã€‚
         /// </summary>
         /// <param name="device">device</param>
         public void WriteBuffer(Device device)
@@ -242,7 +242,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// Direct3DƒTƒuƒƒbƒVƒ…‚ğ”jŠü‚µ‚Ü‚·B
+        /// Direct3Dã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥ã‚’ç ´æ£„ã—ã¾ã™ã€‚
         /// </summary>
         public void Dispose()
         {
@@ -252,18 +252,18 @@ namespace TDCG
     }
 
     /// <summary>
-    /// ƒƒbƒVƒ…
+    /// ãƒ¡ãƒƒã‚·ãƒ¥
     /// </summary>
     public class TSOMesh : IDisposable
     {
         string name;
         /// <summary>
-        /// –¼Ì
+        /// åç§°
         /// </summary>
         public string Name { get { return name; } }
 
         /// <summary>
-        /// •ÏŒ`s—ñ
+        /// å¤‰å½¢è¡Œåˆ—
         /// </summary>
         public Matrix transform_matrix;
         /// <summary>
@@ -271,12 +271,12 @@ namespace TDCG
         /// </summary>
         public UInt32 unknown1;
         /// <summary>
-        /// ƒTƒuƒƒbƒVƒ…”z—ñ
+        /// ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥é…åˆ—
         /// </summary>
         public TSOSubMesh[] sub_meshes;
 
         /// <summary>
-        /// ƒƒbƒVƒ…‚ğ“Ç‚İ‚İ‚Ü‚·B
+        /// ãƒ¡ãƒƒã‚·ãƒ¥ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
         public void Read(BinaryReader reader)
         {
@@ -294,7 +294,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒƒbƒVƒ…‚ğ‘‚«o‚µ‚Ü‚·B
+        /// ãƒ¡ãƒƒã‚·ãƒ¥ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -309,7 +309,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒ{[ƒ“QÆƒŠƒXƒg‚ğ¶¬‚µ‚Ü‚·B
+        /// ãƒœãƒ¼ãƒ³å‚ç…§ãƒªã‚¹ãƒˆã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
         public void LinkBones(TSONode[] nodes)
         {
@@ -317,7 +317,7 @@ namespace TDCG
                 sub_mesh.LinkBones(nodes);
         }
 
-        /// ’¸“_”‚Ì‡Œv‚ğ“¾‚Ü‚·B
+        /// é ‚ç‚¹æ•°ã®åˆè¨ˆã‚’å¾—ã¾ã™ã€‚
         public int SumVerticesCount()
         {
             int sum = 0;
@@ -327,7 +327,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// “à•”object‚ğ”jŠü‚µ‚Ü‚·B
+        /// å†…éƒ¨objectã‚’ç ´æ£„ã—ã¾ã™ã€‚
         /// </summary>
         public void Dispose()
         {
@@ -338,37 +338,37 @@ namespace TDCG
     }
 
     /// <summary>
-    /// ’¸“_
+    /// é ‚ç‚¹
     /// </summary>
     public class Vertex
     {
         /// <summary>
-        /// ˆÊ’u
+        /// ä½ç½®
         /// </summary>
         public Vector3 position;
         /// <summary>
-        /// –@ü
+        /// æ³•ç·š
         /// </summary>
         public Vector3 normal;
         /// <summary>
-        /// ƒeƒNƒXƒ`ƒƒUÀ•W
+        /// ãƒ†ã‚¯ã‚¹ãƒãƒ£Uåº§æ¨™
         /// </summary>
         public Single u;
         /// <summary>
-        /// ƒeƒNƒXƒ`ƒƒVÀ•W
+        /// ãƒ†ã‚¯ã‚¹ãƒãƒ£Våº§æ¨™
         /// </summary>
         public Single v;
         /// <summary>
-        /// ƒXƒLƒ“ƒEƒFƒCƒg”z—ñ
+        /// ã‚¹ã‚­ãƒ³ã‚¦ã‚§ã‚¤ãƒˆé…åˆ—
         /// </summary>
         public SkinWeight[] skin_weights;
         /// <summary>
-        /// ƒ{[ƒ“ƒCƒ“ƒfƒbƒNƒX
+        /// ãƒœãƒ¼ãƒ³ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
         /// </summary>
         public UInt32 bone_indices;
 
         /// <summary>
-        /// ’¸“_‚ğ“Ç‚İ‚Æ‚è‚Ü‚·B
+        /// é ‚ç‚¹ã‚’èª­ã¿ã¨ã‚Šã¾ã™ã€‚
         /// </summary>
         public void Read(BinaryReader reader)
         {
@@ -390,7 +390,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒXƒLƒ“ƒEƒFƒCƒg”z—ñ‚ğ[“U‚µ‚Ü‚·B
+        /// ã‚¹ã‚­ãƒ³ã‚¦ã‚§ã‚¤ãƒˆé…åˆ—ã‚’å……å¡«ã—ã¾ã™ã€‚
         /// </summary>
         public void FillSkinWeights()
         {
@@ -402,7 +402,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒ{[ƒ“ƒCƒ“ƒfƒbƒNƒX‚ğ¶¬‚µ‚Ü‚·B
+        /// ãƒœãƒ¼ãƒ³ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
         public void GenerateBoneIndices()
         {
@@ -414,7 +414,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ’¸“_‚ğ‘‚«o‚µ‚Ü‚·B
+        /// é ‚ç‚¹ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -443,25 +443,25 @@ namespace TDCG
     }
 
     /// <summary>
-    /// ƒXƒLƒ“ƒEƒFƒCƒg
+    /// ã‚¹ã‚­ãƒ³ã‚¦ã‚§ã‚¤ãƒˆ
     /// </summary>
     public class SkinWeight : IComparable
     {
         /// <summary>
-        /// ƒ{[ƒ“ƒCƒ“ƒfƒbƒNƒX
+        /// ãƒœãƒ¼ãƒ³ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
         /// </summary>
         public int bone_index;
 
         /// <summary>
-        /// ƒEƒFƒCƒg
+        /// ã‚¦ã‚§ã‚¤ãƒˆ
         /// </summary>
         public float weight;
 
         /// <summary>
-        /// ƒXƒLƒ“ƒEƒFƒCƒg‚ğ¶¬‚µ‚Ü‚·B
+        /// ã‚¹ã‚­ãƒ³ã‚¦ã‚§ã‚¤ãƒˆã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="bone_index">ƒ{[ƒ“ƒCƒ“ƒfƒbƒNƒX</param>
-        /// <param name="weight">ƒEƒFƒCƒg</param>
+        /// <param name="bone_index">ãƒœãƒ¼ãƒ³ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹</param>
+        /// <param name="weight">ã‚¦ã‚§ã‚¤ãƒˆ</param>
         public SkinWeight(int bone_index, float weight)
         {
             this.bone_index = bone_index;
@@ -469,10 +469,10 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ”äŠrŠÖ”
+        /// æ¯”è¼ƒé–¢æ•°
         /// </summary>
-        /// <param name="obj">”äŠr‘ÎÛƒXƒLƒ“ƒEƒFƒCƒg</param>
-        /// <returns>”äŠrŒ‹‰Ê</returns>
+        /// <param name="obj">æ¯”è¼ƒå¯¾è±¡ã‚¹ã‚­ãƒ³ã‚¦ã‚§ã‚¤ãƒˆ</param>
+        /// <returns>æ¯”è¼ƒçµæœ</returns>
         public int CompareTo(object obj)
         {
             return -weight.CompareTo(((SkinWeight)obj).weight);
@@ -480,21 +480,21 @@ namespace TDCG
     }
 
     /// <summary>
-    /// ƒXƒNƒŠƒvƒg
+    /// ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
     /// </summary>
     public class TSOScript
     {
         /// <summary>
-        /// –¼Ì
+        /// åç§°
         /// </summary>
         public string name;
         /// <summary>
-        /// ƒeƒLƒXƒgs”z—ñ
+        /// ãƒ†ã‚­ã‚¹ãƒˆè¡Œé…åˆ—
         /// </summary>
         public string[] lines;
 
         /// <summary>
-        /// ƒXƒNƒŠƒvƒg‚ğ“Ç‚İ‚İ‚Ü‚·B
+        /// ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
         public void Read(BinaryReader reader)
         {
@@ -508,7 +508,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒXƒNƒŠƒvƒg‚ğ‘‚«o‚µ‚Ü‚·B
+        /// ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -521,7 +521,7 @@ namespace TDCG
     }
 
     /// <summary>
-    /// ƒTƒuƒXƒNƒŠƒvƒg
+    /// ã‚µãƒ–ã‚¹ã‚¯ãƒªãƒ—ãƒˆ
     /// </summary>
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class TSOSubScript
@@ -529,25 +529,25 @@ namespace TDCG
         internal string name;
         internal string file;
         /// <summary>
-        /// ƒeƒLƒXƒgs”z—ñ
+        /// ãƒ†ã‚­ã‚¹ãƒˆè¡Œé…åˆ—
         /// </summary>
         public string[] lines;
         /// <summary>
-        /// ƒVƒF[ƒ_İ’è
+        /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®š
         /// </summary>
         public Shader shader = null;
 
         /// <summary>
-        /// –¼Ì
+        /// åç§°
         /// </summary>
         public string Name { get { return name; } set { name = value; } }
         /// <summary>
-        /// ƒtƒ@ƒCƒ‹–¼
+        /// ãƒ•ã‚¡ã‚¤ãƒ«å
         /// </summary>
         public string FileName { get { return file; } set { file = value; } }
 
         /// <summary>
-        /// ƒTƒuƒXƒNƒŠƒvƒg‚ğ“Ç‚İ‚İ‚Ü‚·B
+        /// ã‚µãƒ–ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
         public void Load(string source_file)
         {
@@ -555,7 +555,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒTƒuƒXƒNƒŠƒvƒg‚ğ“Ç‚İ‚İ‚Ü‚·B
+        /// ã‚µãƒ–ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
         public void Read(BinaryReader reader)
         {
@@ -572,7 +572,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒTƒuƒXƒNƒŠƒvƒg‚ğ‘‚«o‚µ‚Ü‚·B
+        /// ã‚µãƒ–ã‚¹ã‚¯ãƒªãƒ—ãƒˆã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -585,7 +585,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒVƒF[ƒ_İ’è‚ğ¶¬‚µ‚Ü‚·B
+        /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
         public void GenerateShader()
         {
@@ -594,7 +594,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒVƒF[ƒ_İ’è‚ğ•Û‘¶‚µ‚Ü‚·B
+        /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šã‚’ä¿å­˜ã—ã¾ã™ã€‚
         /// </summary>
         public void SaveShader()
         {
@@ -603,48 +603,48 @@ namespace TDCG
     }
 
     /// <summary>
-    /// ƒeƒNƒXƒ`ƒƒ
+    /// ãƒ†ã‚¯ã‚¹ãƒãƒ£
     /// </summary>
     public class TSOTex : IDisposable
     {
         /// <summary>
-        /// –¼Ì
+        /// åç§°
         /// </summary>
         internal string name;
         /// <summary>
-        /// ƒtƒ@ƒCƒ‹–¼
+        /// ãƒ•ã‚¡ã‚¤ãƒ«å
         /// </summary>
         internal string file;
         /// <summary>
-        /// •
+        /// å¹…
         /// </summary>
         public int width;
         /// <summary>
-        /// ‚‚³
+        /// é«˜ã•
         /// </summary>
         public int height;
         /// <summary>
-        /// F[“x
+        /// è‰²æ·±åº¦
         /// </summary>
         public int depth;
         /// <summary>
-        /// ƒrƒbƒgƒ}ƒbƒv”z—ñ
+        /// ãƒ“ãƒƒãƒˆãƒãƒƒãƒ—é…åˆ—
         /// </summary>
         public byte[] data;
 
         internal Texture tex;
 
         /// <summary>
-        /// –¼Ì
+        /// åç§°
         /// </summary>
         public string Name { get { return name; } set { name = value; } }
         /// <summary>
-        /// ƒtƒ@ƒCƒ‹–¼
+        /// ãƒ•ã‚¡ã‚¤ãƒ«å
         /// </summary>
         public string FileName { get { return file; } set { file = value; } }
 
         /// <summary>
-        /// ƒeƒNƒXƒ`ƒƒ‚ğ“Ç‚İ‚İ‚Ü‚·B
+        /// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
         public void Load(string source_file)
         {
@@ -659,7 +659,7 @@ namespace TDCG
         static readonly int sizeof_bih = Marshal.SizeOf(typeof(BITMAPINFOHEADER));
 
         /// <summary>
-        /// ƒeƒNƒXƒ`ƒƒ‚ğ“Ç‚İ‚İ‚Ü‚·B
+        /// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
         public void Load(Stream stream)
         {
@@ -687,7 +687,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒeƒNƒXƒ`ƒƒ‚ğ“Ç‚İ‚İ‚Ü‚·B
+        /// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
         public void Read(BinaryReader reader)
         {
@@ -707,7 +707,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒeƒNƒXƒ`ƒƒ‚ğ‘‚«o‚µ‚Ü‚·B
+        /// ãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -730,7 +730,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èdevice‚ÅŠJ‚«‚Ü‚·B
+        /// æŒ‡å®šdeviceã§é–‹ãã¾ã™ã€‚
         /// </summary>
         /// <param name="device">device</param>
         public void Open(Device device)
@@ -774,7 +774,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// Direct3DƒeƒNƒXƒ`ƒƒ‚ğ”jŠü‚µ‚Ü‚·B
+        /// Direct3Dãƒ†ã‚¯ã‚¹ãƒãƒ£ã‚’ç ´æ£„ã—ã¾ã™ã€‚
         /// </summary>
         public void Dispose()
         {
@@ -799,7 +799,7 @@ namespace TDCG
         private bool need_update_transformation;
 
         /// <summary>
-        /// TSONode‚ğ¶¬‚µ‚Ü‚·B
+        /// TSONodeã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
         public TSONode(int id)
         {
@@ -807,7 +807,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// TSONode‚ğ“Ç‚İ‚İ‚Ü‚·B
+        /// TSONodeã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
         public void Read(BinaryReader reader)
         {
@@ -815,7 +815,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// TSONode‚ğ‘‚«o‚µ‚Ü‚·B
+        /// TSONodeã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -823,7 +823,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ‰ñ“]•ÏˆÊ
+        /// å›è»¢å¤‰ä½
         /// </summary>
         public Quaternion Rotation
         {
@@ -837,7 +837,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ˆÊ’u•ÏˆÊ
+        /// ä½ç½®å¤‰ä½
         /// </summary>
         public Vector3 Translation
         {
@@ -851,17 +851,17 @@ namespace TDCG
         }
 
         /// <summary>
-        /// qnodeƒŠƒXƒg
+        /// å­nodeãƒªã‚¹ãƒˆ
         /// </summary>
         public List<TSONode> children = new List<TSONode>();
 
         /// <summary>
-        /// enode
+        /// è¦ªnode
         /// </summary>
         public TSONode parent;
 
         /// <summary>
-        /// ƒIƒtƒZƒbƒgs—ñB‚±‚ê‚Íƒ[ƒ‹ƒhÀ•WŒn‚ğboneƒ[ƒJƒ‹À•WŒn‚É•ÏŠ·‚µ‚Ü‚·B
+        /// ã‚ªãƒ•ã‚»ãƒƒãƒˆè¡Œåˆ—ã€‚ã“ã‚Œã¯ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ã‚’boneãƒ­ãƒ¼ã‚«ãƒ«åº§æ¨™ç³»ã«å¤‰æ›ã—ã¾ã™ã€‚
         /// </summary>
         public Matrix offset_matrix;
 
@@ -871,7 +871,7 @@ namespace TDCG
         public int ID { get { return id; } }
         
         /// <summary>
-        /// –¼Ì
+        /// åç§°
         /// </summary>
         public string Path
         {
@@ -884,12 +884,12 @@ namespace TDCG
         }
 
         /// <summary>
-        /// –¼Ì‚Ì’Z‚¢Œ`®B‚±‚ê‚ÍTSOFile’†‚Åd•¡‚·‚é‰Â”\«‚ª‚ ‚è‚Ü‚·B
+        /// åç§°ã®çŸ­ã„å½¢å¼ã€‚ã“ã‚Œã¯TSOFileä¸­ã§é‡è¤‡ã™ã‚‹å¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™ã€‚
         /// </summary>
         public string Name { get { return name; } }
 
         /// <summary>
-        /// w’ènode‚É‘Î‚·‚éƒIƒtƒZƒbƒgs—ñ‚ğŒvZ‚µ‚Ü‚·B
+        /// æŒ‡å®šnodeã«å¯¾ã™ã‚‹ã‚ªãƒ•ã‚»ãƒƒãƒˆè¡Œåˆ—ã‚’è¨ˆç®—ã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="node">node</param>
         public static Matrix GetOffsetMatrix(TSONode node)
@@ -904,7 +904,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒIƒtƒZƒbƒgs—ñ‚ğŒvZ‚µ‚Ü‚·B
+        /// ã‚ªãƒ•ã‚»ãƒƒãƒˆè¡Œåˆ—ã‚’è¨ˆç®—ã—ã¾ã™ã€‚
         /// </summary>
         public void ComputeOffsetMatrix()
         {
@@ -912,7 +912,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒ[ƒ‹ƒhÀ•WŒn‚Å‚ÌˆÊ’u‚ğ“¾‚Ü‚·B
+        /// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ã§ã®ä½ç½®ã‚’å¾—ã¾ã™ã€‚
         /// </summary>
         /// <returns></returns>
         public Vector3 GetWorldPosition()
@@ -928,7 +928,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒ[ƒ‹ƒhÀ•WŒn‚Å‚ÌˆÊ’u‚ÆŒü‚«‚ğ“¾‚Ü‚·B
+        /// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ã§ã®ä½ç½®ã¨å‘ãã‚’å¾—ã¾ã™ã€‚
         /// </summary>
         /// <returns></returns>
         public Matrix GetWorldCoordinate()
@@ -944,7 +944,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ‰ñ“]s—ñ
+        /// å›è»¢è¡Œåˆ—
         /// </summary>
         public Matrix RotationMatrix
         {
@@ -954,7 +954,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ˆÊ’us—ñ
+        /// ä½ç½®è¡Œåˆ—
         /// </summary>
         public Matrix TranslationMatrix
         {
@@ -964,7 +964,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// •ÏŒ`s—ñB‚±‚ê‚Í ‰ñ“]s—ñ x ˆÊ’us—ñ ‚Å‚·B
+        /// å¤‰å½¢è¡Œåˆ—ã€‚ã“ã‚Œã¯ å›è»¢è¡Œåˆ— x ä½ç½®è¡Œåˆ— ã§ã™ã€‚
         /// </summary>
         public Matrix TransformationMatrix
         {
@@ -986,42 +986,42 @@ namespace TDCG
     }
 
     /// <summary>
-    /// TSOƒtƒ@ƒCƒ‹‚ğˆµ‚¢‚Ü‚·B
+    /// TSOãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ‰±ã„ã¾ã™ã€‚
     /// </summary>
     public class TSOFile : IDisposable
     {
         /// <summary>
-        /// ƒoƒCƒiƒŠ’l‚Æ‚µ‚Ä“Ç‚İæ‚è‚Ü‚·B
+        /// ãƒã‚¤ãƒŠãƒªå€¤ã¨ã—ã¦èª­ã¿å–ã‚Šã¾ã™ã€‚
         /// </summary>
         protected BinaryReader reader;
 
         /// <summary>
-        /// bone”z—ñ
+        /// boneé…åˆ—
         /// </summary>
         public TSONode[] nodes;
         /// <summary>
-        /// ƒeƒNƒXƒ`ƒƒ”z—ñ
+        /// ãƒ†ã‚¯ã‚¹ãƒãƒ£é…åˆ—
         /// </summary>
         public TSOTex[] textures;
         /// <summary>
-        /// ƒXƒNƒŠƒvƒg”z—ñ
+        /// ã‚¹ã‚¯ãƒªãƒ—ãƒˆé…åˆ—
         /// </summary>
         public TSOScript[] scripts;
         /// <summary>
-        /// ƒTƒuƒXƒNƒŠƒvƒg”z—ñ
+        /// ã‚µãƒ–ã‚¹ã‚¯ãƒªãƒ—ãƒˆé…åˆ—
         /// </summary>
         public TSOSubScript[] sub_scripts;
         /// <summary>
-        /// ƒƒbƒVƒ…”z—ñ
+        /// ãƒ¡ãƒƒã‚·ãƒ¥é…åˆ—
         /// </summary>
         public TSOMesh[] meshes;
 
         internal Dictionary<string, TSONode> nodemap;
 
         /// <summary>
-        /// w’èƒpƒX‚É•Û‘¶‚µ‚Ü‚·B
+        /// æŒ‡å®šãƒ‘ã‚¹ã«ä¿å­˜ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="dest_file">ƒpƒX</param>
+        /// <param name="dest_file">ãƒ‘ã‚¹</param>
         public void Save(string dest_file)
         {
             using (Stream dest_stream = File.Create(dest_file))
@@ -1029,9 +1029,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èƒXƒgƒŠ[ƒ€‚É•Û‘¶‚µ‚Ü‚·B
+        /// æŒ‡å®šã‚¹ãƒˆãƒªãƒ¼ãƒ ã«ä¿å­˜ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="dest_stream">ƒXƒgƒŠ[ƒ€</param>
+        /// <param name="dest_stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
         public void Save(Stream dest_stream)
         {
             BinaryWriter bw = new BinaryWriter(dest_stream);
@@ -1068,7 +1068,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 'TSO1' ‚ğ‘‚«o‚µ‚Ü‚·B
+        /// 'TSO1' ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         public static void WriteMagic(BinaryWriter bw)
         {
@@ -1076,9 +1076,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èƒpƒX‚©‚ç“Ç‚İ‚İ‚Ü‚·B
+        /// æŒ‡å®šãƒ‘ã‚¹ã‹ã‚‰èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
-        /// <param name="source_file">ƒpƒX</param>
+        /// <param name="source_file">ãƒ‘ã‚¹</param>
         public void Load(string source_file)
         {
             using (Stream source_stream = File.OpenRead(source_file))
@@ -1086,9 +1086,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èƒXƒgƒŠ[ƒ€‚©‚ç“Ç‚İ‚İ‚Ü‚·B
+        /// æŒ‡å®šã‚¹ãƒˆãƒªãƒ¼ãƒ ã‹ã‚‰èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
-        /// <param name="source_stream">ƒXƒgƒŠ[ƒ€</param>
+        /// <param name="source_stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
         public void Load(Stream source_stream)
         {
             reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
@@ -1181,7 +1181,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// tmo‚ğ¶¬‚µ‚Ü‚·B
+        /// tmoã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
         public TMOFile GenerateTMO()
         {
@@ -1223,7 +1223,7 @@ namespace TDCG
             return tmo;
         }
 
-        /// ’¸“_”‚Ì‡Œv‚ğ“¾‚Ü‚·B
+        /// é ‚ç‚¹æ•°ã®åˆè¨ˆã‚’å¾—ã¾ã™ã€‚
         public int SumVerticesCount()
         {
             int sum = 0;
@@ -1247,7 +1247,7 @@ namespace TDCG
         private EffectHandle handle_UVSCR;
 
         /// <summary>
-        /// w’èdeviceã‚ÅŠJ‚«‚Ü‚·B
+        /// æŒ‡å®šdeviceä¸Šã§é–‹ãã¾ã™ã€‚
         /// </summary>
         /// <param name="device">device</param>
         /// <param name="effect">effect</param>
@@ -1296,7 +1296,7 @@ namespace TDCG
         internal Vector3 lightDir = new Vector3(0.0f, 0.0f, -1.0f);
 
         /// <summary>
-        /// ŒõŒ¹•ûŒüƒxƒNƒgƒ‹‚ğ“¾‚Ü‚·B
+        /// å…‰æºæ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¾—ã¾ã™ã€‚
         /// </summary>
         /// <returns></returns>
         public Vector4 LightDirForced()
@@ -1305,7 +1305,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// UVSCR’l‚ğ“¾‚Ü‚·B
+        /// UVSCRå€¤ã‚’å¾—ã¾ã™ã€‚
         /// </summary>
         /// <returns></returns>
         public Vector4 UVSCR()
@@ -1315,7 +1315,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒŒƒ“ƒ_ƒŠƒ“ƒOŠJn‚ÉŒÄ‚Ñ‚Ü‚·B
+        /// ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°é–‹å§‹æ™‚ã«å‘¼ã³ã¾ã™ã€‚
         /// </summary>
         public void BeginRender()
         {
@@ -1323,9 +1323,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒVƒF[ƒ_İ’è‚ğØ‚è‘Ö‚¦‚Ü‚·B
+        /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šã‚’åˆ‡ã‚Šæ›¿ãˆã¾ã™ã€‚
         /// </summary>
-        /// <param name="shader">ƒVƒF[ƒ_İ’è</param>
+        /// <param name="shader">ã‚·ã‚§ãƒ¼ãƒ€è¨­å®š</param>
         public void SwitchShader(Shader shader)
         {
             if (shader == current_shader)
@@ -1377,9 +1377,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒVƒF[ƒ_İ’è‚ğØ‚è‘Ö‚¦‚Ü‚·B
+        /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šã‚’åˆ‡ã‚Šæ›¿ãˆã¾ã™ã€‚
         /// </summary>
-        /// <param name="sub_mesh">Ø‚è‘Ö‚¦‘ÎÛ‚Æ‚È‚éƒTƒuƒƒbƒVƒ…</param>
+        /// <param name="sub_mesh">åˆ‡ã‚Šæ›¿ãˆå¯¾è±¡ã¨ãªã‚‹ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥</param>
         public void SwitchShader(TSOSubMesh sub_mesh)
         {
             Debug.Assert(sub_mesh.spec >= 0 && sub_mesh.spec < sub_scripts.Length, string.Format("mesh.spec out of range: {0}", sub_mesh.spec));
@@ -1387,7 +1387,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒŒƒ“ƒ_ƒŠƒ“ƒOI—¹‚ÉŒÄ‚Ñ‚Ü‚·B
+        /// ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°çµ‚äº†æ™‚ã«å‘¼ã³ã¾ã™ã€‚
         /// </summary>
         public void EndRender()
         {
@@ -1395,7 +1395,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// “à•”object‚ğ”jŠü‚µ‚Ü‚·B
+        /// å†…éƒ¨objectã‚’ç ´æ£„ã—ã¾ã™ã€‚
         /// </summary>
         public void Dispose()
         {

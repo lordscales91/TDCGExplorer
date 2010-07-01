@@ -4,17 +4,17 @@ using System.Collections.Generic;
 namespace TDCG
 {
     /// <summary>
-    /// ‘ÌŒ^‚ğˆµ‚¢‚Ü‚·B
+    /// ä½“å‹ã‚’æ‰±ã„ã¾ã™ã€‚
     /// </summary>
     public interface IProportion
     {
         /// <summary>
-        /// ‘ÌŒ^node«‘
+        /// ä½“å‹nodeè¾æ›¸
         /// </summary>
         Dictionary<string, TPONode> Nodes { set; }
 
         /// <summary>
-        /// TPONode‚É•ÏŒ`ŒW”‚ğİ’è‚µ‚Ü‚·B
+        /// TPONodeã«å¤‰å½¢ä¿‚æ•°ã‚’è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
         void Execute();
     }

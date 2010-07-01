@@ -8,14 +8,14 @@ using Microsoft.DirectX.Direct3D;
 namespace TDCG.Extensions
 {
     /// <summary>
-    /// BinaryReader�̊g�����\�b�h���`���܂��B
+    /// BinaryReaderの拡張メソッドを定義します。
     /// </summary>
     public static class BinaryReaderMethods
     {
         /// <summary>
-        /// null�I�[�������ǂ݂Ƃ�܂��B
+        /// null終端文字列を読みとります。
         /// </summary>
-        /// <returns>������</returns>
+        /// <returns>文字列</returns>
         public static string ReadCString(this BinaryReader reader)
         {
             StringBuilder string_builder = new StringBuilder();
@@ -28,7 +28,7 @@ namespace TDCG.Extensions
         }
 
         /// <summary>
-        /// Matrix��ǂ݂Ƃ�܂��B
+        /// Matrixを読みとります。
         /// </summary>
         /// <param name="reader">BinaryReader</param>
         /// <param name="m">Matrix</param>
@@ -56,7 +56,7 @@ namespace TDCG.Extensions
         }
 
         /// <summary>
-        /// Vector3��ǂ݂Ƃ�܂��B
+        /// Vector3を読みとります。
         /// </summary>
         /// <param name="reader">BinaryReader</param>
         /// <param name="v">Vector3</param>

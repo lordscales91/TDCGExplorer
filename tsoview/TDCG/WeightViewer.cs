@@ -12,51 +12,51 @@ using Direct3D = Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
-    /// ƒXƒLƒ“ƒEƒFƒCƒg‘®«
+    /// ã‚¹ã‚­ãƒ³ã‚¦ã‚§ã‚¤ãƒˆå±æ€§
     public struct SkinWeightAttr
     {
-        /// ƒ{[ƒ“QÆƒCƒ“ƒfƒbƒNƒX
+        /// ãƒœãƒ¼ãƒ³å‚ç…§ã‚¤ãƒ³ãƒ‡ãƒƒã‚¯ã‚¹
         public int bone_index;
-        /// ƒEƒFƒCƒg’l
+        /// ã‚¦ã‚§ã‚¤ãƒˆå€¤
         public float weight;
     }
-    /// ƒXƒLƒ“ƒEƒFƒCƒg‘€ì
+    /// ã‚¹ã‚­ãƒ³ã‚¦ã‚§ã‚¤ãƒˆæ“ä½œ
     public class SkinWeightCommand
     {
-        /// ƒXƒLƒ“ƒEƒFƒCƒg
+        /// ã‚¹ã‚­ãƒ³ã‚¦ã‚§ã‚¤ãƒˆ
         public SkinWeight skin_weight = null;
-        /// •ÏX‘O‚Ì‘®«
+        /// å¤‰æ›´å‰ã®å±æ€§
         public SkinWeightAttr old_attr;
-        /// •ÏXŒã‚Ì‘®«
+        /// å¤‰æ›´å¾Œã®å±æ€§
         public SkinWeightAttr new_attr;
     }
-    /// ’¸“_‘€ì
+    /// é ‚ç‚¹æ“ä½œ
     public class VertexCommand
     {
-        /// ’¸“_
+        /// é ‚ç‚¹
         public Vertex vertex;
-        /// ƒXƒLƒ“ƒEƒFƒCƒg‘€ìƒŠƒXƒg
+        /// ã‚¹ã‚­ãƒ³ã‚¦ã‚§ã‚¤ãƒˆæ“ä½œãƒªã‚¹ãƒˆ
         public List<SkinWeightCommand> skin_weight_commands = new List<SkinWeightCommand>();
     }
-    /// ƒTƒuƒƒbƒVƒ…‘€ì
+    /// ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥æ“ä½œ
     public class SubMeshCommand
     {
-        /// ƒTƒuƒƒbƒVƒ…
+        /// ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥
         public TSOSubMesh sub_mesh = null;
-        /// ’¸“_‘€ìƒŠƒXƒg
+        /// é ‚ç‚¹æ“ä½œãƒªã‚¹ãƒˆ
         public List<VertexCommand> vertex_commands = new List<VertexCommand>();
     }
-    /// ƒƒbƒVƒ…‘€ì
+    /// ãƒ¡ãƒƒã‚·ãƒ¥æ“ä½œ
     public class MeshCommand
     {
-        /// ƒƒbƒVƒ…
+        /// ãƒ¡ãƒƒã‚·ãƒ¥
         public TSOMesh mesh = null;
-        /// ƒTƒuƒƒbƒVƒ…‘€ìƒŠƒXƒg
+        /// ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥æ“ä½œãƒªã‚¹ãƒˆ
         public List<SubMeshCommand> sub_mesh_commands = new List<SubMeshCommand>();
     }
 
     /// <summary>
-    /// TSOFile‚ğDirect3Dã‚ÅƒŒƒ“ƒ_ƒŠƒ“ƒO‚µ‚Ü‚·B
+    /// TSOFileã‚’Direct3Dä¸Šã§ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã—ã¾ã™ã€‚
     /// </summary>
 public class WeightViewer : Viewer
 {
@@ -64,7 +64,7 @@ public class WeightViewer : Viewer
     internal Texture dot_texture = null;
 
     /// <summary>
-    /// viewer‚ğ¶¬‚µ‚Ü‚·B
+    /// viewerã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     public WeightViewer()
     {
@@ -74,7 +74,7 @@ public class WeightViewer : Viewer
         };
     }
 
-    /// ‹…‚ÆƒŒƒC‚ÌÕ“Ë‚ğŒ©‚Â‚¯‚Ü‚·B
+    /// çƒã¨ãƒ¬ã‚¤ã®è¡çªã‚’è¦‹ã¤ã‘ã¾ã™ã€‚
     public bool DetectSphereRayCollision(float sphereRadius, ref Vector3 sphereCenter, ref Vector3 rayStart, ref Vector3 rayOrientation, out Vector3 collisionPoint, out float collisionTime)
     {
         collisionTime = 0.0f;
@@ -85,11 +85,11 @@ public class WeightViewer : Viewer
         float b = Vector3.Dot(rayOrientation, u);
         float c = Vector3.Dot(u, u) - sphereRadius*sphereRadius;
         if (a <= float.Epsilon)
-            //Œë·
+            //èª¤å·®
             return false;
         float d = b*b - a*c;
         if (d < 0.0f)
-            //Õ“Ë‚µ‚È‚¢
+            //è¡çªã—ãªã„
             return false;
         collisionTime = (-b - (float)Math.Sqrt(d))/a;
         collisionPoint = rayStart + rayOrientation*collisionTime;
@@ -97,10 +97,10 @@ public class WeightViewer : Viewer
     }
 
     /// <summary>
-    /// viewports—ñ‚ğì¬‚µ‚Ü‚·B
+    /// viewportè¡Œåˆ—ã‚’ä½œæˆã—ã¾ã™ã€‚
     /// </summary>
     /// <param name="viewport">viewport</param>
-    /// <returns>viewports—ñ</returns>
+    /// <returns>viewportè¡Œåˆ—</returns>
     public Matrix CreateViewportMatrix(Viewport viewport)
     {
         Matrix m = Matrix.Identity;
@@ -113,33 +113,33 @@ public class WeightViewer : Viewer
         return m;
     }
 
-    /// ƒXƒNƒŠ[ƒ“ˆÊ’u‚ğƒ[ƒ‹ƒhÀ•W‚Ö•ÏŠ·‚µ‚Ü‚·B
+    /// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä½ç½®ã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã¸å¤‰æ›ã—ã¾ã™ã€‚
     public Vector3 ScreenToWorld(float screenX, float screenY, float z, Viewport viewport, Matrix view, Matrix proj)
     {
-        //ƒXƒNƒŠ[ƒ“ˆÊ’u
+        //ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä½ç½®
         Vector3 v = new Vector3(screenX, screenY,  z);
 
         Matrix inv_m = Matrix.Invert(CreateViewportMatrix(viewport));
         Matrix inv_proj = Matrix.Invert(proj);
         Matrix inv_view = Matrix.Invert(view);
 
-        //ƒXƒNƒŠ[ƒ“ˆÊ’u‚ğƒ[ƒ‹ƒhÀ•W‚Ö•ÏŠ·
+        //ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä½ç½®ã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã¸å¤‰æ›
         return Vector3.TransformCoordinate(v, inv_m * inv_proj * inv_view);
     }
 
-    /// ƒXƒNƒŠ[ƒ“ˆÊ’u‚ğƒ[ƒ‹ƒhÀ•W‚Ö•ÏŠ·‚µ‚Ü‚·B
+    /// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä½ç½®ã‚’ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã¸å¤‰æ›ã—ã¾ã™ã€‚
     public Vector3 ScreenToWorld(float screenX, float screenY, float z)
     {
         return ScreenToWorld(screenX, screenY, z, device.Viewport, Transform_View, Transform_Projection);
     }
 
-    /// ƒ[ƒ‹ƒhÀ•W‚ğƒXƒNƒŠ[ƒ“ˆÊ’u‚Ö•ÏŠ·‚µ‚Ü‚·B
+    /// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä½ç½®ã¸å¤‰æ›ã—ã¾ã™ã€‚
     public Vector3 WorldToScreen(Vector3 v, Viewport viewport, Matrix view, Matrix proj)
     {
         return Vector3.TransformCoordinate(v, view * proj * CreateViewportMatrix(viewport));
     }
 
-    /// ƒ[ƒ‹ƒhÀ•W‚ğƒXƒNƒŠ[ƒ“ˆÊ’u‚Ö•ÏŠ·‚µ‚Ü‚·B
+    /// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ã‚’ã‚¹ã‚¯ãƒªãƒ¼ãƒ³ä½ç½®ã¸å¤‰æ›ã—ã¾ã™ã€‚
     public Vector3 WorldToScreen(Vector3 v)
     {
         return WorldToScreen(v, device.Viewport, Transform_View, Transform_Projection);
@@ -152,21 +152,21 @@ public class WeightViewer : Viewer
     }
 
     /// <summary>
-    /// device‚ğì¬‚µ‚Ü‚·B
+    /// deviceã‚’ä½œæˆã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="control">ƒŒƒ“ƒ_ƒŠƒ“ƒOæ‚Æ‚È‚écontrol</param>
-    /// <returns>device‚Ìì¬‚É¬Œ÷‚µ‚½‚©</returns>
+    /// <param name="control">ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°å…ˆã¨ãªã‚‹control</param>
+    /// <returns>deviceã®ä½œæˆã«æˆåŠŸã—ãŸã‹</returns>
     public new bool InitializeApplication(Control control)
     {
         return InitializeApplication(control, false);
     }
 
     /// <summary>
-    /// device‚ğì¬‚µ‚Ü‚·B
+    /// deviceã‚’ä½œæˆã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="control">ƒŒƒ“ƒ_ƒŠƒ“ƒOæ‚Æ‚È‚écontrol</param>
-    /// <param name="shadowMapEnabled">ƒVƒƒƒhƒEƒ}ƒbƒv‚ğì¬‚·‚é‚©</param>
-    /// <returns>device‚Ìì¬‚É¬Œ÷‚µ‚½‚©</returns>
+    /// <param name="control">ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°å…ˆã¨ãªã‚‹control</param>
+    /// <param name="shadowMapEnabled">ã‚·ãƒ£ãƒ‰ã‚¦ãƒãƒƒãƒ—ã‚’ä½œæˆã™ã‚‹ã‹</param>
+    /// <returns>deviceã®ä½œæˆã«æˆåŠŸã—ãŸã‹</returns>
     public new bool InitializeApplication(Control control, bool shadowMapEnabled)
     {
         if (! base.InitializeApplication(control, shadowMapEnabled))
@@ -179,72 +179,72 @@ public class WeightViewer : Viewer
     }
 
     /// <summary>
-    /// ƒƒbƒVƒ…•`‰æƒ‚[ƒh
+    /// ãƒ¡ãƒƒã‚·ãƒ¥æç”»ãƒ¢ãƒ¼ãƒ‰
     /// </summary>
     public enum MeshViewMode
     {
         /// <summary>
-        /// ƒgƒD[ƒ“•`‰æ
+        /// ãƒˆã‚¥ãƒ¼ãƒ³æç”»
         /// </summary>
         Toon,
         /// <summary>
-        /// ƒEƒFƒCƒg•`‰æ
+        /// ã‚¦ã‚§ã‚¤ãƒˆæç”»
         /// </summary>
         Weight,
         /// <summary>
-        /// ƒƒCƒ„[•`‰æ
+        /// ãƒ¯ã‚¤ãƒ¤ãƒ¼æç”»
         /// </summary>
         Wire
     };
     /// <summary>
-    /// ƒƒbƒVƒ…•`‰æƒ‚[ƒh
+    /// ãƒ¡ãƒƒã‚·ãƒ¥æç”»ãƒ¢ãƒ¼ãƒ‰
     /// </summary>
     public MeshViewMode mesh_view_mode = MeshViewMode.Toon;
 
     /// <summary>
-    /// •`‰æƒƒbƒVƒ…‘I‘ğƒ‚[ƒh
+    /// æç”»ãƒ¡ãƒƒã‚·ãƒ¥é¸æŠãƒ¢ãƒ¼ãƒ‰
     /// </summary>
     public enum MeshSelectionMode
     {
         /// <summary>
-        /// ‘S‚Ä‚ÌƒƒbƒVƒ…‚ğ•`‰æ
+        /// å…¨ã¦ã®ãƒ¡ãƒƒã‚·ãƒ¥ã‚’æç”»
         /// </summary>
         AllMeshes,
         /// <summary>
-        /// ‘I‘ğƒƒbƒVƒ…‚Ì‚İ•`‰æ
+        /// é¸æŠãƒ¡ãƒƒã‚·ãƒ¥ã®ã¿æç”»
         /// </summary>
         SelectedMesh
     }
     /// <summary>
-    /// •`‰æƒƒbƒVƒ…‘I‘ğƒ‚[ƒh
+    /// æç”»ãƒ¡ãƒƒã‚·ãƒ¥é¸æŠãƒ¢ãƒ¼ãƒ‰
     /// </summary>
     public MeshSelectionMode mesh_selection_mode = MeshSelectionMode.AllMeshes;
 
     /// <summary>
-    /// ’¸“_•`‰æƒ‚[ƒh
+    /// é ‚ç‚¹æç”»ãƒ¢ãƒ¼ãƒ‰
     /// </summary>
     public enum VertexSelectionMode
     {
         /// <summary>
-        /// ‘S‚Ä‚Ì’¸“_‚ğ•`‰æ
+        /// å…¨ã¦ã®é ‚ç‚¹ã‚’æç”»
         /// </summary>
         AllVertices,
         /// <summary>
-        /// •\–Ê’¸“_‚Ì‚İ•`‰æ
+        /// è¡¨é¢é ‚ç‚¹ã®ã¿æç”»
         /// </summary>
         CCWVertices,
         /// <summary>
-        /// ’¸“_‚ğ•`‰æ‚µ‚È‚¢
+        /// é ‚ç‚¹ã‚’æç”»ã—ãªã„
         /// </summary>
         None
     }
     /// <summary>
-    /// ’¸“_•`‰æƒ‚[ƒh
+    /// é ‚ç‚¹æç”»ãƒ¢ãƒ¼ãƒ‰
     /// </summary>
     public VertexSelectionMode vertex_selection_mode = VertexSelectionMode.CCWVertices;
 
     /// <summary>
-    /// ƒtƒBƒMƒ…ƒA‚ğ•`‰æ‚µ‚Ü‚·B
+    /// ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’æç”»ã—ã¾ã™ã€‚
     /// </summary>
     protected override void DrawFigure()
     {
@@ -405,7 +405,7 @@ public class WeightViewer : Viewer
     }
 
     /// <summary>
-    /// ƒV[ƒ“‚ğƒŒƒ“ƒ_ƒŠƒ“ƒO‚µ‚Ü‚·B
+    /// ã‚·ãƒ¼ãƒ³ã‚’ãƒ¬ãƒ³ãƒ€ãƒªãƒ³ã‚°ã—ã¾ã™ã€‚
     /// </summary>
     public void RenderDerived()
     {
@@ -415,7 +415,7 @@ public class WeightViewer : Viewer
         DrawFigureVertices();
     }
 
-    /// ’¸“_‚ğ•`‰æ‚·‚éB
+    /// é ‚ç‚¹ã‚’æç”»ã™ã‚‹ã€‚
     void DrawFigureVertices()
     {
         Figure fig;
@@ -432,10 +432,10 @@ public class WeightViewer : Viewer
         }
     }
 
-    /// ”¼Œa
+    /// åŠå¾„
     public static float radius = 0.5f;
 
-    /// ’¸“_‚ğ•`‰æ‚·‚éB
+    /// é ‚ç‚¹ã‚’æç”»ã™ã‚‹ã€‚
     void DrawVertices(Figure fig, TSOSubMesh sub_mesh)
     {
         Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
@@ -463,7 +463,7 @@ public class WeightViewer : Viewer
 
                         for (int i = 0; i < sub_mesh.vertices.Length; i++)
                         {
-                            //’¸“_ŠÔ‹——£‚ª”¼Œa–¢–‚È‚ç‰©F‚É‚·‚éB
+                            //é ‚ç‚¹é–“è·é›¢ãŒåŠå¾„æœªæº€ãªã‚‰é»„è‰²ã«ã™ã‚‹ã€‚
                             Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
                             float dx = p1.X - p0.X;
                             float dy = p1.Y - p0.Y;
@@ -531,7 +531,7 @@ public class WeightViewer : Viewer
                             if (!ccws[i])
                                 continue;
 
-                            //’¸“_ŠÔ‹——£‚ª”¼Œa–¢–‚È‚ç‰©F‚É‚·‚éB
+                            //é ‚ç‚¹é–“è·é›¢ãŒåŠå¾„æœªæº€ãªã‚‰é»„è‰²ã«ã™ã‚‹ã€‚
                             Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
                             float dx = p1.X - p0.X;
                             float dy = p1.Y - p0.Y;
@@ -580,7 +580,7 @@ public class WeightViewer : Viewer
         return IsCounterClockWise(p0.X, p0.Y, p1.X, p1.Y, p2.X, p2.Y);
     }
 
-    /// ‘I‘ğ’¸“_‚ğ•`‰æ‚·‚éB
+    /// é¸æŠé ‚ç‚¹ã‚’æç”»ã™ã‚‹ã€‚
     void DrawSelectedVertex(Figure fig)
     {
         if (selected_vertex == null)
@@ -611,7 +611,7 @@ public class WeightViewer : Viewer
         }
     }
 
-    /// ‘I‘ğƒ{[ƒ“‚É‘Î‰‚·‚éƒEƒFƒCƒg‚ğ‰ÁZ‚·‚éB
+    /// é¸æŠãƒœãƒ¼ãƒ³ã«å¯¾å¿œã™ã‚‹ã‚¦ã‚§ã‚¤ãƒˆã‚’åŠ ç®—ã™ã‚‹ã€‚
     public void GainSkinWeight(TSONode selected_node)
     {
         Figure fig;
@@ -639,12 +639,12 @@ public class WeightViewer : Viewer
         }
     }
 
-    /// ‘I‘ğƒ{[ƒ“‚É‘Î‰‚·‚éƒEƒFƒCƒg‚ğ‰ÁZ‚·‚éB
+    /// é¸æŠãƒœãƒ¼ãƒ³ã«å¯¾å¿œã™ã‚‹ã‚¦ã‚§ã‚¤ãƒˆã‚’åŠ ç®—ã™ã‚‹ã€‚
     public bool GainSkinWeight(Figure fig, TSOSubMesh sub_mesh, TSONode selected_node, MeshCommand mesh_command)
     {
         bool updated = false;
 
-        //‘€ì‚ğ¶¬‚·‚éB
+        //æ“ä½œã‚’ç”Ÿæˆã™ã‚‹ã€‚
         SubMeshCommand sub_mesh_command = new SubMeshCommand();
         sub_mesh_command.sub_mesh = sub_mesh;
 
@@ -658,7 +658,7 @@ public class WeightViewer : Viewer
             {
                 Vertex v = sub_mesh.vertices[i];
 
-                //’¸“_ŠÔ‹——£‚ª”¼Œa–¢–‚È‚çƒEƒFƒCƒg‚ğ‰ÁZ‚·‚éB
+                //é ‚ç‚¹é–“è·é›¢ãŒåŠå¾„æœªæº€ãªã‚‰ã‚¦ã‚§ã‚¤ãƒˆã‚’åŠ ç®—ã™ã‚‹ã€‚
                 Vector3 p1 = CalcSkindeformPosition(v, clipped_boneMatrices);
                 float dx = p1.X - p0.X;
                 float dy = p1.Y - p0.Y;
@@ -684,14 +684,14 @@ public class WeightViewer : Viewer
         return updated;
     }
 
-    /// ‰ÁZƒEƒFƒCƒg’l
+    /// åŠ ç®—ã‚¦ã‚§ã‚¤ãƒˆå€¤
     public static float weight = 0.2f;
-    /// ƒƒbƒVƒ…‘€ìƒŠƒXƒg
+    /// ãƒ¡ãƒƒã‚·ãƒ¥æ“ä½œãƒªã‚¹ãƒˆ
     public static List<MeshCommand> mesh_commands = new List<MeshCommand>();
     static int mesh_command_id = 0;
 
-    /// ‘I‘ğƒ{[ƒ“‚É‘Î‰‚·‚éƒEƒFƒCƒg‚ğ‰ÁZ‚·‚éB
-    /// returns: ƒEƒFƒCƒg‚ğ•ÏX‚µ‚½‚©
+    /// é¸æŠãƒœãƒ¼ãƒ³ã«å¯¾å¿œã™ã‚‹ã‚¦ã‚§ã‚¤ãƒˆã‚’åŠ ç®—ã™ã‚‹ã€‚
+    /// returns: ã‚¦ã‚§ã‚¤ãƒˆã‚’å¤‰æ›´ã—ãŸã‹
     public static bool GainSkinWeight(TSOSubMesh sub_mesh, TSONode selected_node, Vertex v, SubMeshCommand sub_mesh_command)
     {
         VertexCommand vertex_command = new VertexCommand();
@@ -703,7 +703,7 @@ public class WeightViewer : Viewer
             vertex_command.skin_weight_commands.Add(skin_weight_command);
         }
         sub_mesh_command.vertex_commands.Add(vertex_command);
-        //ˆ—‘O‚Ì’l‚ğ‹L‰¯‚·‚éB
+        //å‡¦ç†å‰ã®å€¤ã‚’è¨˜æ†¶ã™ã‚‹ã€‚
         {
             int nskin_weight = 0;
             foreach (SkinWeight skin_weight in v.skin_weights)
@@ -715,7 +715,7 @@ public class WeightViewer : Viewer
         }
         bool updated = false;
 
-        //‘I‘ğƒ{[ƒ“‚É‘Î‰‚·‚éƒEƒFƒCƒg‚ğŒŸõ‚·‚éB
+        //é¸æŠãƒœãƒ¼ãƒ³ã«å¯¾å¿œã™ã‚‹ã‚¦ã‚§ã‚¤ãƒˆã‚’æ¤œç´¢ã™ã‚‹ã€‚
         SkinWeight selected_skin_weight = null;
         foreach (SkinWeight skin_weight in v.skin_weights)
         {
@@ -726,10 +726,10 @@ public class WeightViewer : Viewer
                 break;
             }
         }
-        //‘I‘ğƒ{[ƒ“‚É‘Î‰‚·‚éƒEƒFƒCƒg‚ª‚È‚¯‚ê‚ÎAÅ¬’l‚ğ‚ÂƒEƒFƒCƒg‚ğ’u‚«Š·‚¦‚éB
+        //é¸æŠãƒœãƒ¼ãƒ³ã«å¯¾å¿œã™ã‚‹ã‚¦ã‚§ã‚¤ãƒˆãŒãªã‘ã‚Œã°ã€æœ€å°å€¤ã‚’æŒã¤ã‚¦ã‚§ã‚¤ãƒˆã‚’ç½®ãæ›ãˆã‚‹ã€‚
         if (selected_skin_weight == null)
         {
-            //ƒTƒuƒƒbƒVƒ…‚Ìƒ{[ƒ“QÆ‚Éw’èƒm[ƒh‚ªŠÜ‚Ü‚ê‚é‚©B
+            //ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥ã®ãƒœãƒ¼ãƒ³å‚ç…§ã«æŒ‡å®šãƒãƒ¼ãƒ‰ãŒå«ã¾ã‚Œã‚‹ã‹ã€‚
             bool found = false;
             int bone_index = 0;
             foreach (TSONode bone in sub_mesh.bones)
@@ -748,25 +748,25 @@ public class WeightViewer : Viewer
                 selected_skin_weight.weight = 0.0f;
             }
         }
-        //‘I‘ğƒ{[ƒ“‚É‘Î‰‚·‚éƒEƒFƒCƒg‚ğ‰ÁZ‚·‚éB
+        //é¸æŠãƒœãƒ¼ãƒ³ã«å¯¾å¿œã™ã‚‹ã‚¦ã‚§ã‚¤ãƒˆã‚’åŠ ç®—ã™ã‚‹ã€‚
         if (selected_skin_weight != null)
         {
             updated = true;
 
-            //•ÏX‘O‚Ì‘ÎÛƒEƒFƒCƒg’l
+            //å¤‰æ›´å‰ã®å¯¾è±¡ã‚¦ã‚§ã‚¤ãƒˆå€¤
             float prev_selected_weight = selected_skin_weight.weight;
-            //•ÏX‘O‚Ìc‚èƒEƒFƒCƒg’l
+            //å¤‰æ›´å‰ã®æ®‹ã‚Šã‚¦ã‚§ã‚¤ãƒˆå€¤
             float prev_rest_weight = 1.0f - prev_selected_weight;
-            //ƒEƒFƒCƒg‚ğ‰ÁZ‚·‚éB
+            //ã‚¦ã‚§ã‚¤ãƒˆã‚’åŠ ç®—ã™ã‚‹ã€‚
             selected_skin_weight.weight += weight;
             if (selected_skin_weight.weight > 1.0f)
                 selected_skin_weight.weight = 1.0f;
 
             if (prev_rest_weight != 0.0f)
             {
-                //ÀÛ‚Ì‰ÁZ’l
+                //å®Ÿéš›ã®åŠ ç®—å€¤
                 float gain_weight = selected_skin_weight.weight - prev_selected_weight;
-                //c‚èƒEƒFƒCƒg‚ğŒ¸Z‚·‚éB
+                //æ®‹ã‚Šã‚¦ã‚§ã‚¤ãƒˆã‚’æ¸›ç®—ã™ã‚‹ã€‚
                 foreach (SkinWeight skin_weight in v.skin_weights)
                 {
                     if (skin_weight == selected_skin_weight)
@@ -778,7 +778,7 @@ public class WeightViewer : Viewer
                 }
             }
         }
-        //ˆ—Œã‚Ì’l‚ğ‹L‰¯‚·‚éB
+        //å‡¦ç†å¾Œã®å€¤ã‚’è¨˜æ†¶ã™ã‚‹ã€‚
         {
             int nskin_weight = 0;
             foreach (SkinWeight skin_weight in v.skin_weights)
@@ -791,19 +791,19 @@ public class WeightViewer : Viewer
         return updated;
     }
 
-    /// ‘€ì‚ğÁ‹‚µ‚Ü‚·B
+    /// æ“ä½œã‚’æ¶ˆå»ã—ã¾ã™ã€‚
     public void ClearCommands()
     {
         mesh_commands.Clear();
         mesh_command_id = 0;
     }
 
-    /// ‚Ğ‚Æ‚Â‘O‚Ì‘€ì‚É‚æ‚é•ÏX‚ğŒ³‚É–ß‚¹‚é‚©B
+    /// ã²ã¨ã¤å‰ã®æ“ä½œã«ã‚ˆã‚‹å¤‰æ›´ã‚’å…ƒã«æˆ»ã›ã‚‹ã‹ã€‚
     public bool CanUndo()
     {
         return (mesh_command_id > 0);
     }
-    /// ‚Ğ‚Æ‚Â‘O‚Ì‘€ì‚É‚æ‚é•ÏX‚ğŒ³‚É–ß‚·B
+    /// ã²ã¨ã¤å‰ã®æ“ä½œã«ã‚ˆã‚‹å¤‰æ›´ã‚’å…ƒã«æˆ»ã™ã€‚
     public void Undo()
     {
         if (!CanUndo())
@@ -812,7 +812,7 @@ public class WeightViewer : Viewer
         mesh_command_id--;
         Undo(mesh_commands[mesh_command_id]);
     }
-    /// w’è‘€ì‚É‚æ‚é•ÏX‚ğŒ³‚É–ß‚·B
+    /// æŒ‡å®šæ“ä½œã«ã‚ˆã‚‹å¤‰æ›´ã‚’å…ƒã«æˆ»ã™ã€‚
     public void Undo(MeshCommand mesh_command)
     {
         foreach (SubMeshCommand sub_mesh_command in mesh_command.sub_mesh_commands)
@@ -834,12 +834,12 @@ public class WeightViewer : Viewer
         }
     }
 
-    /// ‚Ğ‚Æ‚Â‘O‚Ì‘€ì‚É‚æ‚é•ÏX‚ğ‚â‚è’¼‚¹‚é‚©B
+    /// ã²ã¨ã¤å‰ã®æ“ä½œã«ã‚ˆã‚‹å¤‰æ›´ã‚’ã‚„ã‚Šç›´ã›ã‚‹ã‹ã€‚
     public bool CanRedo()
     {
         return (mesh_command_id < mesh_commands.Count);
     }
-    /// ‚Ğ‚Æ‚Â‘O‚Ì‘€ì‚É‚æ‚é•ÏX‚ğ‚â‚è’¼‚·B
+    /// ã²ã¨ã¤å‰ã®æ“ä½œã«ã‚ˆã‚‹å¤‰æ›´ã‚’ã‚„ã‚Šç›´ã™ã€‚
     public void Redo()
     {
         if (!CanRedo())
@@ -848,7 +848,7 @@ public class WeightViewer : Viewer
         Redo(mesh_commands[mesh_command_id]);
         mesh_command_id++;
     }
-    /// w’è‘€ì‚É‚æ‚é•ÏX‚ğ‚â‚è’¼‚·B
+    /// æŒ‡å®šæ“ä½œã«ã‚ˆã‚‹å¤‰æ›´ã‚’ã‚„ã‚Šç›´ã™ã€‚
     public void Redo(MeshCommand mesh_command)
     {
         foreach (SubMeshCommand sub_mesh_command in mesh_command.sub_mesh_commands)
@@ -871,10 +871,10 @@ public class WeightViewer : Viewer
     }
 
     /// <summary>
-    /// ƒXƒLƒ“•ÏŒ`Œã‚Ìw’è’¸“_‚ÌˆÊ’u‚ğ“¾‚Ü‚·B
+    /// ã‚¹ã‚­ãƒ³å¤‰å½¢å¾Œã®æŒ‡å®šé ‚ç‚¹ã®ä½ç½®ã‚’å¾—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="v">’¸“_</param>
-    /// <param name="boneMatrices">ƒXƒLƒ“•ÏŒ`s—ñ‚Ì”z—ñ</param>
+    /// <param name="v">é ‚ç‚¹</param>
+    /// <param name="boneMatrices">ã‚¹ã‚­ãƒ³å¤‰å½¢è¡Œåˆ—ã®é…åˆ—</param>
     /// <returns></returns>
     public static Vector3 CalcSkindeformPosition(Vertex v, Matrix[] boneMatrices)
     {
@@ -888,7 +888,7 @@ public class WeightViewer : Viewer
         return pos;
     }
 
-    /// ƒ}ƒEƒXƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚½‚Æ‚«‚ÉÀs‚·‚éƒnƒ“ƒhƒ‰
+    /// ãƒã‚¦ã‚¹ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ãŸã¨ãã«å®Ÿè¡Œã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
     protected override void form_OnMouseDown(object sender, MouseEventArgs e)
     {
         switch (e.Button)
@@ -912,7 +912,7 @@ public class WeightViewer : Viewer
         lastScreenPoint.Y = e.Y;
     }
 
-    /// ƒ}ƒEƒX‚ğˆÚ“®‚µ‚½‚Æ‚«‚ÉÀs‚·‚éƒnƒ“ƒhƒ‰
+    /// ãƒã‚¦ã‚¹ã‚’ç§»å‹•ã—ãŸã¨ãã«å®Ÿè¡Œã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
     protected override void form_OnMouseMove(object sender, MouseEventArgs e)
     {
         int dx = e.X - lastScreenPoint.X;
@@ -942,7 +942,7 @@ public class WeightViewer : Viewer
     }
 
     TSOFile selected_tso_file = null;
-    /// ‘I‘ğTSOƒtƒ@ƒCƒ‹
+    /// é¸æŠTSOãƒ•ã‚¡ã‚¤ãƒ«
     public TSOFile SelectedTSOFile
     {
         get { return selected_tso_file; }
@@ -956,7 +956,7 @@ public class WeightViewer : Viewer
     }
 
     TSOMesh selected_mesh = null;
-    /// ‘I‘ğƒƒbƒVƒ…
+    /// é¸æŠãƒ¡ãƒƒã‚·ãƒ¥
     public TSOMesh SelectedMesh
     {
         get { return selected_mesh; }
@@ -969,7 +969,7 @@ public class WeightViewer : Viewer
     }
 
     TSOSubMesh selected_sub_mesh = null;
-    /// ‘I‘ğƒTƒuƒƒbƒVƒ…
+    /// é¸æŠã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥
     public TSOSubMesh SelectedSubMesh
     {
         get { return selected_sub_mesh; }
@@ -981,11 +981,11 @@ public class WeightViewer : Viewer
     }
 
     TSONode selected_node = null;
-    /// ‘I‘ğƒ{[ƒ“
+    /// é¸æŠãƒœãƒ¼ãƒ³
     public TSONode SelectedNode { get { return selected_node; } set { selected_node = value; } }
 
     Vertex selected_vertex = null;
-    /// ‘I‘ğ’¸“_id
+    /// é¸æŠé ‚ç‚¹id
     public Vertex SelectedVertex
     {
         get { return selected_vertex; }
@@ -996,12 +996,12 @@ public class WeightViewer : Viewer
     }
 
     /// <summary>
-    /// ƒTƒuƒƒbƒVƒ…‘I‘ğ‚ÉŒÄ‚Ño‚³‚ê‚éƒnƒ“ƒhƒ‰
+    /// ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥é¸æŠæ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚‹ãƒãƒ³ãƒ‰ãƒ©
     /// </summary>
     public event EventHandler SubMeshEvent;
 
     /// <summary>
-    /// ’¸“_‘I‘ğ‚ÉŒÄ‚Ño‚³‚ê‚éƒnƒ“ƒhƒ‰
+    /// é ‚ç‚¹é¸æŠæ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚‹ãƒãƒ³ãƒ‰ãƒ©
     /// </summary>
     public event EventHandler VertexEvent;
 
@@ -1030,8 +1030,8 @@ public class WeightViewer : Viewer
         }
     }
 
-    /// ƒXƒNƒŠ[ƒ“À•W‚©‚ç’¸“_‚ğŒ©‚Â‚¯‚Ü‚·B
-    /// Õ“Ë‚·‚é’¸“_‚Ì’†‚ÅÅ‚à‹ß‚¢ˆÊ’u‚É‚ ‚é’¸“_‚ğ•Ô‚µ‚Ü‚·B
+    /// ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™ã‹ã‚‰é ‚ç‚¹ã‚’è¦‹ã¤ã‘ã¾ã™ã€‚
+    /// è¡çªã™ã‚‹é ‚ç‚¹ã®ä¸­ã§æœ€ã‚‚è¿‘ã„ä½ç½®ã«ã‚ã‚‹é ‚ç‚¹ã‚’è¿”ã—ã¾ã™ã€‚
     private Vertex FindVertexOnScreenPoint(float x, float y, Figure fig, TSOSubMesh sub_mesh)
     {
         Vertex vertex = null;
@@ -1061,7 +1061,7 @@ public class WeightViewer : Viewer
     }
 
     /// <summary>
-    /// “à•”object‚ğ”jŠü‚µ‚Ü‚·B
+    /// å†…éƒ¨objectã‚’ç ´æ£„ã—ã¾ã™ã€‚
     /// </summary>
     public new void Dispose()
     {

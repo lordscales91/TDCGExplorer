@@ -8,16 +8,16 @@ using System.Xml.Serialization;
 
 namespace TDCG
 {
-/// ƒm[ƒh”ÍˆÍ
+/// ãƒãƒ¼ãƒ‰ç¯„å›²
 public class NodesRange
 {
     /// <summary>
-    /// ƒ‹[ƒgƒm[ƒh–¼
+    /// ãƒ«ãƒ¼ãƒˆãƒãƒ¼ãƒ‰å
     /// </summary>
     public List<string> root_names;
 
     /// <summary>
-    /// ƒm[ƒh”ÍˆÍ‚ğ¶¬‚µ‚Ü‚·B
+    /// ãƒãƒ¼ãƒ‰ç¯„å›²ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     public NodesRange()
     {
@@ -25,7 +25,7 @@ public class NodesRange
     }
 
     /// <summary>
-    /// ƒm[ƒh”ÍˆÍ‚ğ‘‚«o‚µ‚Ü‚·B
+    /// ãƒãƒ¼ãƒ‰ç¯„å›²ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
     /// </summary>
     public void Dump()
     {
@@ -39,9 +39,9 @@ public class NodesRange
     }
 
     /// <summary>
-    /// ƒm[ƒh”ÍˆÍ‚ğ•Û‘¶‚µ‚Ü‚·B
+    /// ãƒãƒ¼ãƒ‰ç¯„å›²ã‚’ä¿å­˜ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="dest_file">ƒtƒ@ƒCƒ‹–¼</param>
+    /// <param name="dest_file">ãƒ•ã‚¡ã‚¤ãƒ«å</param>
     public void Save(string dest_file)
     {
         XmlSerializer serializer = new XmlSerializer(typeof(NodesRange));
@@ -54,9 +54,9 @@ public class NodesRange
     }
 
     /// <summary>
-    /// ƒm[ƒh”ÍˆÍ‚ğ“Ç‚İ‚İ‚Ü‚·B
+    /// ãƒãƒ¼ãƒ‰ç¯„å›²ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_file">ƒtƒ@ƒCƒ‹–¼</param>
+    /// <param name="source_file">ãƒ•ã‚¡ã‚¤ãƒ«å</param>
     /// <returns></returns>
     public static NodesRange Load(string source_file)
     {

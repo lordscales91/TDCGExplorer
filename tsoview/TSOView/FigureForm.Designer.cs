@@ -4,14 +4,14 @@ namespace TSOView
     partial class FigureForm
     {
         /// <summary>
-        /// •K—v‚ÈƒfƒUƒCƒi•Ï”‚Å‚·B
+        /// å¿…è¦ãªãƒ‡ã‚¶ã‚¤ãƒŠå¤‰æ•°ã§ã™ã€‚
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
         /// <summary>
-        /// g—p’†‚ÌƒŠƒ\[ƒX‚ğ‚·‚×‚ÄƒNƒŠ[ƒ“ƒAƒbƒv‚µ‚Ü‚·B
+        /// ä½¿ç”¨ä¸­ã®ãƒªã‚½ãƒ¼ã‚¹ã‚’ã™ã¹ã¦ã‚¯ãƒªãƒ¼ãƒ³ã‚¢ãƒƒãƒ—ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="disposing">ƒ}ƒl[ƒW ƒŠƒ\[ƒX‚ª”jŠü‚³‚ê‚éê‡ trueA”jŠü‚³‚ê‚È‚¢ê‡‚Í false ‚Å‚·B</param>
+        /// <param name="disposing">ãƒãƒãƒ¼ã‚¸ ãƒªã‚½ãƒ¼ã‚¹ãŒç ´æ£„ã•ã‚Œã‚‹å ´åˆ trueã€ç ´æ£„ã•ã‚Œãªã„å ´åˆã¯ false ã§ã™ã€‚</param>
         protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
@@ -21,7 +21,7 @@ namespace TSOView
             base.Dispose(disposing);
         }
 
-        #region Windows ƒtƒH[ƒ€ ƒfƒUƒCƒi‚Å¶¬‚³‚ê‚½ƒR[ƒh
+        #region Windows ãƒ•ã‚©ãƒ¼ãƒ  ãƒ‡ã‚¶ã‚¤ãƒŠã§ç”Ÿæˆã•ã‚ŒãŸã‚³ãƒ¼ãƒ‰
 
         private void InitializeComponent()
         {

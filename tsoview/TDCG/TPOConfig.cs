@@ -8,31 +8,31 @@ using System.Xml.Serialization;
 namespace TDCG
 {
     /// <summary>
-    /// ‘ÌŒ^ƒŒƒVƒs—v‘f
+    /// ä½“å‹ãƒ¬ã‚·ãƒ”è¦ç´ 
     /// </summary>
 public class Proportion
 {
     /// <summary>
-    /// ‘ÌŒ^ƒXƒNƒŠƒvƒg–¼
+    /// ä½“å‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆå
     /// </summary>
     public string ClassName { get; set; }
     /// <summary>
-    /// •ÏŒ`”ä—¦
+    /// å¤‰å½¢æ¯”ç‡
     /// </summary>
     public float Ratio { get; set; }
 }
 /// <summary>
-/// ‘ÌŒ^ƒŒƒVƒs‚ğˆµ‚¢‚Ü‚·B
+/// ä½“å‹ãƒ¬ã‚·ãƒ”ã‚’æ‰±ã„ã¾ã™ã€‚
 /// </summary>
 public class TPOConfig
 {
     /// <summary>
-    /// ‘ÌŒ^ƒŒƒVƒs—v‘f‚Ì”z—ñ
+    /// ä½“å‹ãƒ¬ã‚·ãƒ”è¦ç´ ã®é…åˆ—
     /// </summary>
     public Proportion[] Proportions { get; set; }
 
     /// <summary>
-    /// ‘ÌŒ^ƒŒƒVƒs‚ğ¶¬‚µ‚Ü‚·B
+    /// ä½“å‹ãƒ¬ã‚·ãƒ”ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     public TPOConfig()
     {
@@ -40,7 +40,7 @@ public class TPOConfig
     }
 
     /// <summary>
-    /// ‘ÌŒ^ƒŒƒVƒs‚ğ‘‚«o‚µ‚Ü‚·B
+    /// ä½“å‹ãƒ¬ã‚·ãƒ”ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
     /// </summary>
     public void Dump()
     {
@@ -54,10 +54,10 @@ public class TPOConfig
     }
 
     /// <summary>
-    /// ‘ÌŒ^ƒŒƒVƒs‚ğ“Ç‚İ‚İ‚Ü‚·B
+    /// ä½“å‹ãƒ¬ã‚·ãƒ”ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_file">ƒtƒ@ƒCƒ‹–¼</param>
-    /// <returns>‘ÌŒ^ƒŒƒVƒs</returns>
+    /// <param name="source_file">ãƒ•ã‚¡ã‚¤ãƒ«å</param>
+    /// <returns>ä½“å‹ãƒ¬ã‚·ãƒ”</returns>
     public static TPOConfig Load(string source_file)
     {
         XmlReader reader = XmlReader.Create(source_file);
@@ -68,9 +68,9 @@ public class TPOConfig
     }
 
     /// <summary>
-    /// ‘ÌŒ^ƒŒƒVƒs‚ğ•Û‘¶‚µ‚Ü‚·B
+    /// ä½“å‹ãƒ¬ã‚·ãƒ”ã‚’ä¿å­˜ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="dest_file">•Û‘¶ƒtƒ@ƒCƒ‹–¼</param>
+    /// <param name="dest_file">ä¿å­˜ãƒ•ã‚¡ã‚¤ãƒ«å</param>
     public void Save(string dest_file)
     {
         XmlSerializer serializer = new XmlSerializer(typeof(TPOConfig));

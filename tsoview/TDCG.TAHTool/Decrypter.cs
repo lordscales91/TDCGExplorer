@@ -84,18 +84,18 @@ namespace TDCG.TAHTool
 
             UInt32 output_length = reader.ReadUInt32();
 
-            //entryî•ñ‚Ì“Ç‚İo‚µ’·‚³
+            //entryæƒ…å ±ã®èª­ã¿å‡ºã—é•·ã•
             UInt32 input_length = Entries[0].offset - /*sizeof(header)*/ 16 - index_buffer_size;
-            //entryî•ñ‚Ì“Ç‚İo‚µƒoƒbƒtƒ@
+            //entryæƒ…å ±ã®èª­ã¿å‡ºã—ãƒãƒƒãƒ•ã‚¡
             byte[] data_input = new byte[input_length];
 
             data_input = reader.ReadBytes((int)input_length);
-            //-- entryî•ñ‚Ì“Ç‚İ‚İŠ®—¹! --
+            //-- entryæƒ…å ±ã®èª­ã¿è¾¼ã¿å®Œäº†! --
 
             byte[] output_data = new byte[output_length];
 
             Decompression.decrypt(ref data_input, input_length, ref output_data, output_length);
-            //-- entryî•ñ‚Ì•œ†Š®—¹! --
+            //-- entryæƒ…å ±ã®å¾©å·å®Œäº†! --
 
             build_TAHEntries(output_data, arc_size);
         }
@@ -107,7 +107,7 @@ namespace TDCG.TAHTool
             while (str_file_path.Length > act_str_pos)
             {
                 int pos_local = 0;
-                //0x00‚©0x2F‚É’B‚·‚é‚Ü‚Å‰ñ‚·
+                //0x00ã‹0x2Fã«é”ã™ã‚‹ã¾ã§å›ã™
                 while (str_file_path[act_str_pos + pos_local] != 0x00)
                 {
                     if (str_file_path[act_str_pos + pos_local] == 0x2F) // '/'
@@ -119,10 +119,10 @@ namespace TDCG.TAHTool
                         pos_local++;
                     }
                 }
-                //0x00‚Å‚È‚¢i‚Â‚Ü‚è0x2F‚Å‚ ‚éjê‡ = ƒfƒBƒŒƒNƒgƒŠ–¼
+                //0x00ã§ãªã„ï¼ˆã¤ã¾ã‚Š0x2Fã§ã‚ã‚‹ï¼‰å ´åˆ = ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªå
                 if (str_file_path[act_str_pos + pos_local] != 0x00)
                 {
-                    //0x00‚É’B‚·‚é‚Ü‚Å‰ñ‚·
+                    //0x00ã«é”ã™ã‚‹ã¾ã§å›ã™
                     int i;
                     for (i = 0; str_file_path[act_str_pos + i] != 0x00; i++)
                     {
@@ -130,12 +130,12 @@ namespace TDCG.TAHTool
                     }
                     file_path[i] = 0x00;
                 }
-                //0x00‚Å‚ ‚éê‡ = ƒtƒ@ƒCƒ‹–¼
+                //0x00ã§ã‚ã‚‹å ´åˆ = ãƒ•ã‚¡ã‚¤ãƒ«å
                 else
                 {
                     byte[] str_path = new byte[MAX_PATH];
 
-                    //0x00‚ÌˆÊ’u‚Ü‚Åæ“ª‚©‚ç‰ñ‚· = ƒfƒBƒŒƒNƒgƒŠ–¼
+                    //0x00ã®ä½ç½®ã¾ã§å…ˆé ­ã‹ã‚‰å›ã™ = ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªå
                     int str_path_offset = 0;
                     while (file_path[str_path_offset] != 0x00)
                     {
@@ -143,7 +143,7 @@ namespace TDCG.TAHTool
                     }
                     file_path.CopyTo(str_path, 0);
 
-                    //act‚ª0x00‚É’B‚·‚é‚Ü‚Å‰ñ‚·
+                    //actãŒ0x00ã«é”ã™ã‚‹ã¾ã§å›ã™
                     int i;
                     for (i = 0; str_file_path[act_str_pos + i] != 0x00; i++)
                     {
@@ -151,20 +151,20 @@ namespace TDCG.TAHTool
                     }
                     str_path[i + str_path_offset] = 0x00;
 
-                    //str_path‚©‚çhash‚ğì‚é
+                    //str_pathã‹ã‚‰hashã‚’ä½œã‚‹
                     UInt32 hash_key = gen_hash_key_for_string(ref str_path);
 
-                    //index entry‚Åhash‚ğæ“ª‚©‚çŒŸõ
+                    //index entryã§hashã‚’å…ˆé ­ã‹ã‚‰æ¤œç´¢
                     UInt32 h;
                     for (h = 0; h < Entries.Length; h++)
                     {
-                        //–¼–³‚µ‚Å
+                        //åç„¡ã—ã§
                         if (Entries[h].file_name == null)
                         {
-                            //hash‚ªˆê’v‚·‚é
+                            //hashãŒä¸€è‡´ã™ã‚‹
                             if (hash_key == Entries[h].hash_name)
                             {
-                                //file_name‚Æ‚µ‚Äcopy
+                                //file_nameã¨ã—ã¦copy
                                 Entries[h].file_name = System.Text.Encoding.GetEncoding(932).GetString(str_path, 0, i + str_path_offset);
                                 break;
                             }
@@ -183,18 +183,18 @@ namespace TDCG.TAHTool
 
             for (UInt32 i = 0; i < Entries.Length; i++)
             {
-                //file_name‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½ê‡
+                //file_nameãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸå ´åˆ
                 if (Entries[i].file_name == null)
                 {
-                    //names.txt ‚ğŒŸõ
+                    //names.txt ã‚’æ¤œç´¢
                     int pos = -1;
                     if (external_files.files != null)
                         pos = Array.BinarySearch(external_files.hashkeys, Entries[i].hash_name);
                     if (pos < 0) // not found
                     {
-                        //ƒtƒ@ƒCƒ‹–¼‚Í <i>_<hash>‚É‚·‚é
+                        //ãƒ•ã‚¡ã‚¤ãƒ«åã¯ <i>_<hash>ã«ã™ã‚‹
                         Entries[i].file_name = i.ToString("00000000") + "_" + Entries[i].hash_name.ToString();
-                        //file_name‚ªŒ©‚Â‚©‚ç‚È‚©‚Á‚½flag on
+                        //file_nameãŒè¦‹ã¤ã‹ã‚‰ãªã‹ã£ãŸflag on
                         Entries[i].flag ^= 0x1;
                     }
                     else
@@ -202,17 +202,17 @@ namespace TDCG.TAHTool
                         Entries[i].file_name = external_files.files[pos];
                     }
                 }
-                //ƒIƒtƒZƒbƒg‚ğİ’è
+                //ã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’è¨­å®š
                 //Entries[i].offset = index_buffer[i].offset;
             }
 
             for (UInt32 i = 0; i < Entries.Length - 1; i++)
             {
-                //data“Ç‚İ‚İ’·‚³‚ğİ’è
-                //“Ç‚İ‚İ’·‚³‚ÍŒ»İentryƒIƒtƒZƒbƒg‚ÆŸ‚ÌentryƒIƒtƒZƒbƒg‚Æ‚Ì·‚Å‚ ‚é
+                //dataèª­ã¿è¾¼ã¿é•·ã•ã‚’è¨­å®š
+                //èª­ã¿è¾¼ã¿é•·ã•ã¯ç¾åœ¨entryã‚ªãƒ•ã‚»ãƒƒãƒˆã¨æ¬¡ã®entryã‚ªãƒ•ã‚»ãƒƒãƒˆã¨ã®å·®ã§ã‚ã‚‹
                 Entries[i].length = Entries[i + 1].offset - Entries[i].offset;
             }
-            //ÅIentry data“Ç‚İ‚İ’·‚³‚ğİ’è
+            //æœ€çµ‚entry dataèª­ã¿è¾¼ã¿é•·ã•ã‚’è¨­å®š
             Entries[Entries.Length - 1].length = arc_size - Entries[Entries.Length - 1].offset;
         }
 
@@ -249,10 +249,10 @@ namespace TDCG.TAHTool
 
         public int ExtractResource(TAHEntry entry, out byte[] data_output)
         {
-            //data“Ç‚İ‚İ’·‚³
-            //-4‚Ídata‘‚«o‚µ’·‚³Ši”[—Ìˆæ (UInt32) ‚ğŒ¸‚¶‚Ä‚¢‚é
+            //dataèª­ã¿è¾¼ã¿é•·ã•
+            //-4ã¯dataæ›¸ãå‡ºã—é•·ã•æ ¼ç´é ˜åŸŸ (UInt32) ã‚’æ¸›ã˜ã¦ã„ã‚‹
             UInt32 data_input_length = entry.length - 4;
-            //data“Ç‚İ‚İƒoƒbƒtƒ@
+            //dataèª­ã¿è¾¼ã¿ãƒãƒƒãƒ•ã‚¡
             byte[] data_input = new byte[data_input_length];
             UInt32 data_output_length;
 
@@ -260,7 +260,7 @@ namespace TDCG.TAHTool
 
             try
             {
-                //data‘‚«o‚µ’·‚³
+                //dataæ›¸ãå‡ºã—é•·ã•
                 data_output_length = reader.ReadUInt32();
                 data_input = reader.ReadBytes((int)data_input_length);
             }
@@ -270,9 +270,9 @@ namespace TDCG.TAHTool
                 data_output = new byte[0];
                 return -1;
             }
-            //-- data“Ç‚İ‚İi•œ†‘OjŠ®—¹! --
+            //-- dataèª­ã¿è¾¼ã¿ï¼ˆå¾©å·å‰ï¼‰å®Œäº†! --
 
-            //data‘‚«o‚µƒoƒbƒtƒ@
+            //dataæ›¸ãå‡ºã—ãƒãƒƒãƒ•ã‚¡
             data_output = new byte[data_output_length];
 
             try
@@ -284,7 +284,7 @@ namespace TDCG.TAHTool
                 System.Console.Out.WriteLine("Error: Failed to decrypt data. Possible error in archive.");
                 return -1;
             }
-            //-- data•œ†Š®—¹! --
+            //-- dataå¾©å·å®Œäº†! --
             return 0;
         }
 
