@@ -7,7 +7,7 @@ using Microsoft.DirectX.Direct3D;
 
 namespace mqoview
 {
-    public class MqoFile
+    public class MqoFile : IDisposable
     {
         private delegate bool SectionHandler(string[] tokens);
 
@@ -296,6 +296,12 @@ namespace mqoview
             current.faces = new List<MqoFace>(int.Parse(tokens[1]));
             DoRead(SectionFace);
         }
+
+        public void Dispose()
+        {
+            foreach (MqoObject obj in objects)
+                obj.Dispose();
+        }
     }
 
     public class MqoScene
@@ -365,7 +371,7 @@ namespace mqoview
         public List<UVertex> vertices;
         public List<MqoFace> faces;
 
-        Mesh dm = null;
+        public Mesh dm = null;
 
         public MqoObject() { }
         public MqoObject(string n) { name = n; }

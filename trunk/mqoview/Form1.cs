@@ -110,9 +110,16 @@ namespace mqoview
             }
         }
 
+        MqoFile mqo = null;
+
         public void LoadMqoFile(string source_file)
         {
-            MqoFile mqo = new MqoFile();
+            if (mqo != null)
+            {
+                mqo.Dispose();
+                mqo = null;
+            }
+            mqo = new MqoFile();
             mqo.Load(source_file);
             foreach (MqoObject obj in mqo.Objects)
             {
@@ -133,6 +140,21 @@ namespace mqoview
                 effect.SetValue("wld", world_matrix);
                 effect.SetValue("wv", world_view_matrix);
                 effect.SetValue("wvp", world_view_projection_matrix);
+            }
+
+            if (mqo != null)
+            {
+                foreach (MqoObject obj in mqo.Objects)
+                {
+                    int npass = effect.Begin(0);
+                    for (int ipass = 0; ipass < npass; ipass++)
+                    {
+                        effect.BeginPass(ipass);
+                        obj.dm.DrawSubset(0);
+                        effect.EndPass();
+                    }
+                    effect.End();
+                }
             }
 
             device.EndScene();
