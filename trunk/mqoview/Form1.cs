@@ -57,6 +57,17 @@ namespace mqoview
                     return false;
                 }
             }
+
+            Transform_Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4, Width / Height, 1.0f, 10000.0f);
+            // xxx: for w-buffering
+            device.Transform.Projection = Transform_Projection;
+            effect.SetValue("proj", Transform_Projection);
+            
+            Transform_View = Matrix.LookAtLH(new Vector3(0, -10.0f, 44.0f), new Vector3(0, 0, 0), new Vector3(0, 1, 0));
+            // xxx: for w-buffering
+            device.Transform.View = Transform_View;
+            effect.SetValue("view", Transform_View);
+
             timer1.Enabled = true;
             return true;
         }
