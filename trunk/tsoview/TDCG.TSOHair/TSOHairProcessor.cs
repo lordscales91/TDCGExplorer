@@ -23,8 +23,8 @@ namespace TDCG.TSOHair
             parts = new List<TSOHairPart>();
             TSOHairPart part;
 
-            // Housen ‚Í Kami ‚æ‚è—Dæ‚·‚éB
-            // ex. KamiHousen ‚Ìê‡‚Í Housen ‚Æ‚µ‚Äˆ—
+            // Housen ã¯ Kami ã‚ˆã‚Šå„ªå…ˆã™ã‚‹ã€‚
+            // ex. KamiHousen ã®å ´åˆã¯ Housen ã¨ã—ã¦å‡¦ç†
             part = new TSOHairPart();
             part.Name = "Housen";
             part.TextPattern = @"housen|w_facepartsa";

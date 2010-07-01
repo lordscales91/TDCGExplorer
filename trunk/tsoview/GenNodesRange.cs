@@ -13,7 +13,7 @@ public static class GenNodesRange
         range.root_names.Clear();
         range.root_names.Add("mayu_1_R");
         range.root_names.Add("mayu_1_L");
-        range.Save(@"Debug\•\î\‚Ü‚ä\NodesRange.xml");
+        range.Save(@"Debug\è¡¨æƒ…\ã¾ã‚†\NodesRange.xml");
 
         range.root_names.Clear();
         range.root_names.Add("sitakuti_oya");
@@ -21,14 +21,14 @@ public static class GenNodesRange
         range.root_names.Add("kutiyoko_r");
         range.root_names.Add("kutiyoko_l");
         range.root_names.Add("uekuti_oya");
-        range.Save(@"Debug\•\î\ƒŠƒbƒv\NodesRange.xml");
+        range.Save(@"Debug\è¡¨æƒ…\ãƒªãƒƒãƒ—\NodesRange.xml");
 
         range.root_names.Clear();
         range.root_names.Add("eyeline_sita_R");
         range.root_names.Add("eyeline_sita_L");
         range.root_names.Add("L_eyeline_oya_L");
         range.root_names.Add("R_eyeline_oya_R");
-        range.Save(@"Debug\•\î\–Ú\NodesRange.xml");
+        range.Save(@"Debug\è¡¨æƒ…\ç›®\NodesRange.xml");
 
         range.root_names.Clear();
         range.root_names.Add("sitakuti_oya");
@@ -44,6 +44,6 @@ public static class GenNodesRange
 
         range.root_names.Add("mayu_1_R");
         range.root_names.Add("mayu_1_L");
-        range.Save(@"Debug\•\î\‚»‚Ì‘¼\NodesRange.xml");
+        range.Save(@"Debug\è¡¨æƒ…\ãã®ä»–\NodesRange.xml");
     }
 }

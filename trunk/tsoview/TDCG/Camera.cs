@@ -9,60 +9,60 @@ using Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
-    /// ƒJƒƒ‰
+    /// ã‚«ãƒ¡ãƒ©
     /// </summary>
 public class Camera
 {
     private Vector3 center = Vector3.Empty;
     private Vector3 translation = Vector3.Empty;
     private Vector3 localP = new Vector3(0.0f, 0.0f, +10.0f);
-    private Vector3 dirD = Vector3.Empty; //ƒJƒƒ‰ˆÚ“®•ûŒüƒxƒNƒgƒ‹
-    private float zD = 0.0f;      //ƒJƒƒ‰‰œsƒIƒtƒZƒbƒg’l
+    private Vector3 dirD = Vector3.Empty; //ã‚«ãƒ¡ãƒ©ç§»å‹•æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
+    private float zD = 0.0f;      //ã‚«ãƒ¡ãƒ©å¥¥è¡Œã‚ªãƒ•ã‚»ãƒƒãƒˆå€¤
     private bool needUpdate = true;
-    private Matrix view = Matrix.Identity;  //ƒrƒ…[s—ñ
+    private Matrix view = Matrix.Identity;  //ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—
     private Matrix pose = Matrix.Identity;
-    private float rotZD = 0.0f;   //ƒJƒƒ‰ Z²‰ñ“]·•ª
-    private float angleU = 0.02f;        //ˆÚ“®‰ñ“]’PˆÊiƒ‰ƒWƒAƒ“j
+    private float rotZD = 0.0f;   //ã‚«ãƒ¡ãƒ© Zè»¸å›è»¢å·®åˆ†
+    private float angleU = 0.02f;        //ç§»å‹•æ™‚å›è»¢å˜ä½ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ï¼‰
 
     /// <summary>
-    /// ‰ñ“]’†S
+    /// å›è»¢ä¸­å¿ƒ
     /// </summary>
     public Vector3 Center { get { return center; } set { center = value; } }
 
     /// <summary>
-    /// viewÀ•Wã‚ÌƒJƒƒ‰‚ÌˆÊ’u
+    /// viewåº§æ¨™ä¸Šã®ã‚«ãƒ¡ãƒ©ã®ä½ç½®
     /// </summary>
     public Vector3 Translation { get { return translation; } set { translation = value; } }
 
     /// <summary>
-    /// ’‹“_‚ğŒ´“_‚Æ‚µ‚½À•Wã‚ÌƒJƒƒ‰‚ÌˆÊ’u
+    /// æ³¨è¦–ç‚¹ã‚’åŸç‚¹ã¨ã—ãŸåº§æ¨™ä¸Šã®ã‚«ãƒ¡ãƒ©ã®ä½ç½®
     /// </summary>
     public Vector3 LocalPosition { get { return localP; } set { localP = value; } }
     
     /// <summary>
-    ///XV‚·‚é•K—v‚ª‚ ‚é‚©
+    ///æ›´æ–°ã™ã‚‹å¿…è¦ãŒã‚ã‚‹ã‹
     /// </summary>
     public bool NeedUpdate { get { return needUpdate; }}
 
     /// <summary>
-    /// ƒrƒ…[s—ñ
+    /// ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—
     /// </summary>
     public Matrix ViewMatrix { get { return view; } }
 
     /// <summary>
-    /// ƒJƒƒ‰‚Ìp¨s—ñ
+    /// ã‚«ãƒ¡ãƒ©ã®å§¿å‹¢è¡Œåˆ—
     /// </summary>
     public Matrix PoseMatrix { get { return pose; } set { pose = value; } }
 
     /// <summary>
-    /// ƒJƒƒ‰‚ğ¶¬‚µ‚Ü‚·B
+    /// ã‚«ãƒ¡ãƒ©ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     public Camera()
     {
     }
 
     /// <summary>
-    /// ƒJƒƒ‰‚ÌˆÊ’u‚Æp¨‚ğ•W€o—Í‚Ö‘‚«o‚µ‚Ü‚·B
+    /// ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã¨å§¿å‹¢ã‚’æ¨™æº–å‡ºåŠ›ã¸æ›¸ãå‡ºã—ã¾ã™ã€‚
     /// </summary>
     public void Dump()
     {
@@ -76,9 +76,9 @@ public class Camera
     }
 
     /// <summary>
-    /// ƒJƒƒ‰‚ÌˆÊ’u‚Æp¨‚ğw’èƒpƒX‚Ö‘‚«o‚µ‚Ü‚·B
+    /// ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã¨å§¿å‹¢ã‚’æŒ‡å®šãƒ‘ã‚¹ã¸æ›¸ãå‡ºã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="dest_file">ƒpƒX</param>
+    /// <param name="dest_file">ãƒ‘ã‚¹</param>
     public void Save(string dest_file)
     {
         XmlSerializer serializer = new XmlSerializer(typeof(Camera));
@@ -91,10 +91,10 @@ public class Camera
     }
 
     /// <summary>
-    /// ƒJƒƒ‰‚ÌˆÊ’u‚Æp¨‚ğw’èƒpƒX‚©‚ç“Ç‚İ‚İ‚Ü‚·B
+    /// ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã¨å§¿å‹¢ã‚’æŒ‡å®šãƒ‘ã‚¹ã‹ã‚‰èª­ã¿è¾¼ã¿ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_file">ƒpƒX</param>
-    /// <returns>ƒJƒƒ‰</returns>
+    /// <param name="source_file">ãƒ‘ã‚¹</param>
+    /// <returns>ã‚«ãƒ¡ãƒ©</returns>
     public static Camera Load(string source_file)
     {
         XmlReader reader = XmlReader.Create(source_file);
@@ -105,7 +105,7 @@ public class Camera
     }
 
     /// <summary>
-    /// ƒJƒƒ‰‚ÌˆÊ’u‚Æp¨‚ğƒŠƒZƒbƒg‚µ‚Ü‚·B
+    /// ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã¨å§¿å‹¢ã‚’ãƒªã‚»ãƒƒãƒˆã—ã¾ã™ã€‚
     /// </summary>
     public void Reset()
     {
@@ -117,11 +117,11 @@ public class Camera
     }
 
     /// <summary>
-    /// ƒJƒƒ‰‚ÌˆÊ’u‚ğXV‚µ‚Ü‚·B
+    /// ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã‚’æ›´æ–°ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="dirX">ˆÚ“®•ûŒüiŒo“xj</param>
-    /// <param name="dirY">ˆÚ“®•ûŒüiˆÜ“xj</param>
-    /// <param name="dirZ">ˆÚ“®•ûŒüi‰œsj</param>
+    /// <param name="dirX">ç§»å‹•æ–¹å‘ï¼ˆçµŒåº¦ï¼‰</param>
+    /// <param name="dirY">ç§»å‹•æ–¹å‘ï¼ˆç·¯åº¦ï¼‰</param>
+    /// <param name="dirZ">ç§»å‹•æ–¹å‘ï¼ˆå¥¥è¡Œï¼‰</param>
     public void Move(float dirX, float dirY, float dirZ)
     {
         if (dirX == 0.0f && dirY == 0.0f && dirZ == 0.0f)
@@ -134,9 +134,9 @@ public class Camera
     }
 
     /// <summary>
-    /// ƒJƒƒ‰‚ğZ²‰ñ“]‚µ‚Ü‚·B
+    /// ã‚«ãƒ¡ãƒ©ã‚’Zè»¸å›è»¢ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="angle">‰ñ“]Šp“xiƒ‰ƒWƒAƒ“j</param>
+    /// <param name="angle">å›è»¢è§’åº¦ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ï¼‰</param>
     public void RotZ(float angle)
     {
         if (angle == 0.0f)
@@ -147,18 +147,18 @@ public class Camera
     }
 
     /// <summary>
-    /// ƒJƒƒ‰‚ÌˆÊ’u‚Æp¨‚ğXV‚µ‚Ü‚·B
-    /// ƒ}ƒEƒX‚Ì‰ñ“]’†S‚ÍŒ´“_‚ÉƒŠƒZƒbƒg‚µ‚Ü‚·B
-    /// ’ˆÓF‚±‚Ì‘€ì‚Í Move() RotZ() Update() ‚Æ‚ÍˆÙ‚È‚éŒn“‚Å‚·B
+    /// ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã¨å§¿å‹¢ã‚’æ›´æ–°ã—ã¾ã™ã€‚
+    /// ãƒã‚¦ã‚¹ã®å›è»¢ä¸­å¿ƒã¯åŸç‚¹ã«ãƒªã‚»ãƒƒãƒˆã—ã¾ã™ã€‚
+    /// æ³¨æ„ï¼šã“ã®æ“ä½œã¯ Move() RotZ() Update() ã¨ã¯ç•°ãªã‚‹ç³»çµ±ã§ã™ã€‚
     /// </summary>
-    /// <param name="eye">’‹“_</param>
-    /// <param name="center">viewÀ•Wã‚ÌƒJƒƒ‰‚ÌˆÊ’u</param>
-    /// <param name="up">ã•ûƒxƒNƒgƒ‹</param>
+    /// <param name="eye">æ³¨è¦–ç‚¹</param>
+    /// <param name="center">viewåº§æ¨™ä¸Šã®ã‚«ãƒ¡ãƒ©ã®ä½ç½®</param>
+    /// <param name="up">ä¸Šæ–¹ãƒ™ã‚¯ãƒˆãƒ«</param>
     public void LookAt(Vector3 eye, Vector3 center, Vector3 up)
     {
         this.localP = center - eye;
         {
-            // ƒJƒƒ‰p¨‚ğXV
+            // ã‚«ãƒ¡ãƒ©å§¿å‹¢ã‚’æ›´æ–°
             Vector3 z = Vector3.Normalize(-localP);
             Vector3 y = up;
             Vector3 x = Vector3.Normalize(Vector3.Cross(y, z));
@@ -180,7 +180,7 @@ public class Camera
         this.center = Vector3.Empty;
         this.translation = eye;
 
-        //views—ñXV
+        //viewè¡Œåˆ—æ›´æ–°
         Vector3 posW = localP + this.center;
         {
             Matrix m = pose;
@@ -191,64 +191,64 @@ public class Camera
             view = Matrix.Invert(m) * Matrix.Translation(-translation);
         }
 
-        //·•ª‚ğƒŠƒZƒbƒg
+        //å·®åˆ†ã‚’ãƒªã‚»ãƒƒãƒˆ
         ResetDefValue();
         needUpdate = false;
     }
 
     /// <summary>
-    /// ƒJƒƒ‰‚ÌˆÊ’u‚Æp¨‚ğXV‚µ‚Ü‚·B
-    /// ƒ}ƒEƒX‚Ì‰ñ“]’†S‚ÍŒ´“_‚ÉƒŠƒZƒbƒg‚µ‚Ü‚·B
-    /// ’ˆÓF‚±‚Ì‘€ì‚Í Move() RotZ() Update() ‚Æ‚ÍˆÙ‚È‚éŒn“‚Å‚·B
+    /// ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã¨å§¿å‹¢ã‚’æ›´æ–°ã—ã¾ã™ã€‚
+    /// ãƒã‚¦ã‚¹ã®å›è»¢ä¸­å¿ƒã¯åŸç‚¹ã«ãƒªã‚»ãƒƒãƒˆã—ã¾ã™ã€‚
+    /// æ³¨æ„ï¼šã“ã®æ“ä½œã¯ Move() RotZ() Update() ã¨ã¯ç•°ãªã‚‹ç³»çµ±ã§ã™ã€‚
     /// </summary>
-    /// <param name="eye">’‹“_</param>
-    /// <param name="center">viewÀ•Wã‚ÌƒJƒƒ‰‚ÌˆÊ’u</param>
+    /// <param name="eye">æ³¨è¦–ç‚¹</param>
+    /// <param name="center">viewåº§æ¨™ä¸Šã®ã‚«ãƒ¡ãƒ©ã®ä½ç½®</param>
     public void LookAt(Vector3 eye, Vector3 center)
     {
         LookAt(eye, center, new Vector3(0.0f, 1.0f, 0.0f));
     }
 
     /// <summary>
-    /// ƒJƒƒ‰‚ÌZ²•ûŒü‚ğ“¾‚Ü‚·B
+    /// ã‚«ãƒ¡ãƒ©ã®Zè»¸æ–¹å‘ã‚’å¾—ã¾ã™ã€‚
     /// </summary>
-    /// <returns>Z²•ûŒü</returns>
+    /// <returns>Zè»¸æ–¹å‘</returns>
     public Vector3 GetZAxis()
     {
         return new Vector3(pose.M31, pose.M32, pose.M33);
     }
 
     /// <summary>
-    /// ƒJƒƒ‰‚ÌY²•ûŒü‚ğ“¾‚Ü‚·B
+    /// ã‚«ãƒ¡ãƒ©ã®Yè»¸æ–¹å‘ã‚’å¾—ã¾ã™ã€‚
     /// </summary>
-    /// <returns>Y²•ûŒü</returns>
+    /// <returns>Yè»¸æ–¹å‘</returns>
     public Vector3 GetYAxis()
     {
         return new Vector3(pose.M21, pose.M22, pose.M23);
     }
 
     /// <summary>
-    /// ƒJƒƒ‰‚ÌˆÊ’u‚Æp¨‚ğXV‚µ‚Ü‚·B
+    /// ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã¨å§¿å‹¢ã‚’æ›´æ–°ã—ã¾ã™ã€‚
     /// </summary>
     public void Update()
     {
         if (! needUpdate)
             return;
 
-        //ƒJƒƒ‰ Z²‰ñ“]‚Åp¨‚ğ‰¼XV
+        //ã‚«ãƒ¡ãƒ© Zè»¸å›è»¢ã§å§¿å‹¢ã‚’ä»®æ›´æ–°
         pose = Matrix.RotationZ(rotZD) * pose;
 
-        //ˆÜ“xŒo“x‚Ì·•ªˆÚ“®
+        //ç·¯åº¦çµŒåº¦ã®å·®åˆ†ç§»å‹•
         Vector3 localD = Vector3.TransformCoordinate(dirD, pose);
         if (localD.X != 0.0f || localD.Y != 0.0f || localD.Z != 0.0f)
         {
-            //ƒJƒƒ‰ˆÊ’u‚ğXV
+            //ã‚«ãƒ¡ãƒ©ä½ç½®ã‚’æ›´æ–°
             Vector3 zAxis = GetZAxis();
             Vector3 rotAxis = Vector3.Cross(localD, zAxis);
             Quaternion q = Quaternion.RotationAxis(rotAxis, angleU * dirD.Length());
             Matrix rotation = Matrix.RotationQuaternion(q);
             localP = Vector3.TransformCoordinate(localP, rotation);
 
-            //ƒJƒƒ‰p¨‚ğXV
+            //ã‚«ãƒ¡ãƒ©å§¿å‹¢ã‚’æ›´æ–°
             Vector3 z = Vector3.Normalize(-localP);
             Vector3 y = GetYAxis();
             Vector3 x = Vector3.Normalize(Vector3.Cross(y, z));
@@ -268,14 +268,14 @@ public class Camera
             }
         }
 
-        //‰œsƒIƒtƒZƒbƒg‚ğXV
+        //å¥¥è¡Œã‚ªãƒ•ã‚»ãƒƒãƒˆã‚’æ›´æ–°
         if (zD != 0.0f && localP.Length() - zD > 0)
         {
             Vector3 z = Vector3.Normalize(-localP);
             localP += zD * z;
         }
 
-        //views—ñXV
+        //viewè¡Œåˆ—æ›´æ–°
         Vector3 worldP = localP + center;
         {
             Matrix m = pose;
@@ -286,56 +286,56 @@ public class Camera
             view = Matrix.Invert(m) * Matrix.Translation(-translation);
         }
 
-        //·•ª‚ğƒŠƒZƒbƒg
+        //å·®åˆ†ã‚’ãƒªã‚»ãƒƒãƒˆ
         ResetDefValue();
         needUpdate = false;
     }
 
     /// <summary>
-    /// ‰ñ“]’†S‚ğİ’è‚µ‚Ü‚·B
+    /// å›è»¢ä¸­å¿ƒã‚’è¨­å®šã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="center">‰ñ“]’†S</param>
+    /// <param name="center">å›è»¢ä¸­å¿ƒ</param>
     public void SetCenter(Vector3 center)
     {
         this.center = center;
         needUpdate = true;
     }
     /// <summary>
-    /// ‰ñ“]’†S‚ğİ’è‚µ‚Ü‚·B
+    /// å›è»¢ä¸­å¿ƒã‚’è¨­å®šã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="x">‰ñ“]’†SxÀ•W</param>
-    /// <param name="y">‰ñ“]’†SyÀ•W</param>
-    /// <param name="z">‰ñ“]’†SzÀ•W</param>
+    /// <param name="x">å›è»¢ä¸­å¿ƒxåº§æ¨™</param>
+    /// <param name="y">å›è»¢ä¸­å¿ƒyåº§æ¨™</param>
+    /// <param name="z">å›è»¢ä¸­å¿ƒzåº§æ¨™</param>
     public void SetCenter(float x, float y, float z)
     {
         SetCenter(new Vector3(x, y, z));
     }
 
     /// <summary>
-    /// viewÀ•Wã‚ÌˆÊ’u‚ğİ’è‚µ‚Ü‚·B
+    /// viewåº§æ¨™ä¸Šã®ä½ç½®ã‚’è¨­å®šã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="translation">viewÀ•Wã‚ÌˆÊ’u</param>
+    /// <param name="translation">viewåº§æ¨™ä¸Šã®ä½ç½®</param>
     public void SetTranslation(Vector3 translation)
     {
         this.translation = translation;
         needUpdate = true;
     }
     /// <summary>
-    /// viewÀ•Wã‚ÌˆÊ’u‚ğİ’è‚µ‚Ü‚·B
+    /// viewåº§æ¨™ä¸Šã®ä½ç½®ã‚’è¨­å®šã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="x">viewÀ•Wã‚ÌˆÊ’uxÀ•W</param>
-    /// <param name="y">viewÀ•Wã‚ÌˆÊ’uyÀ•W</param>
-    /// <param name="z">viewÀ•Wã‚ÌˆÊ’uzÀ•W</param>
+    /// <param name="x">viewåº§æ¨™ä¸Šã®ä½ç½®xåº§æ¨™</param>
+    /// <param name="y">viewåº§æ¨™ä¸Šã®ä½ç½®yåº§æ¨™</param>
+    /// <param name="z">viewåº§æ¨™ä¸Šã®ä½ç½®zåº§æ¨™</param>
     public void SetTranslation(float x, float y, float z)
     {
         SetTranslation(new Vector3(x, y, z));
     }
 
     /// <summary>
-    /// viewÀ•Wã‚ÅˆÚ“®‚µ‚Ü‚·B
+    /// viewåº§æ¨™ä¸Šã§ç§»å‹•ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="dx">X²ˆÚ“®‹——£</param>
-    /// <param name="dy">Y²ˆÚ“®‹——£</param>
+    /// <param name="dx">Xè»¸ç§»å‹•è·é›¢</param>
+    /// <param name="dy">Yè»¸ç§»å‹•è·é›¢</param>
     public void MoveView(float dx, float dy)
     {
         this.translation.X += dx;
@@ -344,7 +344,7 @@ public class Camera
     }
 
     /// <summary>
-    /// ·•ª‚ğƒŠƒZƒbƒg‚µ‚Ü‚·B
+    /// å·®åˆ†ã‚’ãƒªã‚»ãƒƒãƒˆã—ã¾ã™ã€‚
     /// </summary>
     protected void ResetDefValue()
     {

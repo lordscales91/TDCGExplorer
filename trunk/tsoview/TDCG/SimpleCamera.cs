@@ -9,42 +9,42 @@ using Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
-    /// ƒJƒƒ‰
+    /// ã‚«ãƒ¡ãƒ©
     /// </summary>
     public class SimpleCamera
     {
         private Vector3 center = Vector3.Empty;
         private Vector3 translation = new Vector3(0.0f, 0.0f, +10.0f);
-        private Vector3 dirD = Vector3.Empty; //ƒJƒƒ‰ˆÚ“®•ûŒüƒxƒNƒgƒ‹
-        private float zD = 0.0f;      //ƒJƒƒ‰‰œsƒIƒtƒZƒbƒg’l
+        private Vector3 dirD = Vector3.Empty; //ã‚«ãƒ¡ãƒ©ç§»å‹•æ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
+        private float zD = 0.0f;      //ã‚«ãƒ¡ãƒ©å¥¥è¡Œã‚ªãƒ•ã‚»ãƒƒãƒˆå€¤
         private bool needUpdate = true;
         private Matrix view = Matrix.Identity;
         private Vector3 angle = Vector3.Empty;
-        private float rotZD = 0.0f;   //ƒJƒƒ‰ Z²‰ñ“]·•ª
-        private float angleU = 0.01f;        //ˆÚ“®‰ñ“]’PˆÊiƒ‰ƒWƒAƒ“j
+        private float rotZD = 0.0f;   //ã‚«ãƒ¡ãƒ© Zè»¸å›è»¢å·®åˆ†
+        private float angleU = 0.01f;        //ç§»å‹•æ™‚å›è»¢å˜ä½ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ï¼‰
 
         /// <summary>
-        /// ‰ñ“]’†S
+        /// å›è»¢ä¸­å¿ƒ
         /// </summary>
         public Vector3 Center { get { return center; } set { center = value; } }
 
         /// <summary>
-        /// viewÀ•Wã‚ÌƒJƒƒ‰‚ÌˆÊ’u
+        /// viewåº§æ¨™ä¸Šã®ã‚«ãƒ¡ãƒ©ã®ä½ç½®
         /// </summary>
         public Vector3 Translation { get { return translation; } set { translation = value; } }
     
         /// <summary>
-        ///XV‚·‚é•K—v‚ª‚ ‚é‚©
+        ///æ›´æ–°ã™ã‚‹å¿…è¦ãŒã‚ã‚‹ã‹
         /// </summary>
         public bool NeedUpdate { get { return needUpdate; }}
 
         /// <summary>
-        /// ƒrƒ…[s—ñ
+        /// ãƒ“ãƒ¥ãƒ¼è¡Œåˆ—
         /// </summary>
         public Matrix ViewMatrix { get { return view; } }
 
         /// <summary>
-        /// ƒJƒƒ‰‚ÌˆÊ’u‚Æp¨‚ğƒŠƒZƒbƒg‚µ‚Ü‚·B
+        /// ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã¨å§¿å‹¢ã‚’ãƒªã‚»ãƒƒãƒˆã—ã¾ã™ã€‚
         /// </summary>
         public void Reset()
         {
@@ -55,7 +55,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// viewÀ•Wã‚ÌƒJƒƒ‰‚ÌˆÊ’u‚ğƒŠƒZƒbƒg‚µ‚Ü‚·B
+        /// viewåº§æ¨™ä¸Šã®ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã‚’ãƒªã‚»ãƒƒãƒˆã—ã¾ã™ã€‚
         /// </summary>
         public void ResetTranslation()
         {
@@ -64,11 +64,11 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒJƒƒ‰‚ÌˆÊ’u‚ğXV‚µ‚Ü‚·B
+        /// ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã‚’æ›´æ–°ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="dirX">ˆÚ“®•ûŒüiŒo“xj</param>
-        /// <param name="dirY">ˆÚ“®•ûŒüiˆÜ“xj</param>
-        /// <param name="dirZ">ˆÚ“®•ûŒüi‰œsj</param>
+        /// <param name="dirX">ç§»å‹•æ–¹å‘ï¼ˆçµŒåº¦ï¼‰</param>
+        /// <param name="dirY">ç§»å‹•æ–¹å‘ï¼ˆç·¯åº¦ï¼‰</param>
+        /// <param name="dirZ">ç§»å‹•æ–¹å‘ï¼ˆå¥¥è¡Œï¼‰</param>
         public void Move(float dirX, float dirY, float dirZ)
         {
             if (dirX == 0.0f && dirY == 0.0f && dirZ == 0.0f)
@@ -81,9 +81,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒJƒƒ‰‚ğZ²‰ñ“]‚µ‚Ü‚·B
+        /// ã‚«ãƒ¡ãƒ©ã‚’Zè»¸å›è»¢ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="angle">‰ñ“]Šp“xiƒ‰ƒWƒAƒ“j</param>
+        /// <param name="angle">å›è»¢è§’åº¦ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ï¼‰</param>
         public void RotZ(float angle)
         {
             if (angle == 0.0f)
@@ -94,7 +94,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒJƒƒ‰‚ÌˆÊ’u‚Æp¨‚ğXV‚µ‚Ü‚·B
+        /// ã‚«ãƒ¡ãƒ©ã®ä½ç½®ã¨å§¿å‹¢ã‚’æ›´æ–°ã—ã¾ã™ã€‚
         /// </summary>
         public void Update()
         {
@@ -114,13 +114,13 @@ namespace TDCG
 
             view = Matrix.Invert(m) * Matrix.Translation(-translation);
 
-            //·•ª‚ğƒŠƒZƒbƒg
+            //å·®åˆ†ã‚’ãƒªã‚»ãƒƒãƒˆ
             ResetDefValue();
             needUpdate = false;
         }
 
         /// <summary>
-        /// views—ñ‚ğæ“¾‚µ‚Ü‚·B
+        /// viewè¡Œåˆ—ã‚’å–å¾—ã—ã¾ã™ã€‚
         /// </summary>
         public Matrix GetViewMatrix()
         {
@@ -128,50 +128,50 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ‰ñ“]’†S‚ğİ’è‚µ‚Ü‚·B
+        /// å›è»¢ä¸­å¿ƒã‚’è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="center">‰ñ“]’†S</param>
+        /// <param name="center">å›è»¢ä¸­å¿ƒ</param>
         public void SetCenter(Vector3 center)
         {
             this.center = center;
             needUpdate = true;
         }
         /// <summary>
-        /// ‰ñ“]’†S‚ğİ’è‚µ‚Ü‚·B
+        /// å›è»¢ä¸­å¿ƒã‚’è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="x">‰ñ“]’†SxÀ•W</param>
-        /// <param name="y">‰ñ“]’†SyÀ•W</param>
-        /// <param name="z">‰ñ“]’†SzÀ•W</param>
+        /// <param name="x">å›è»¢ä¸­å¿ƒxåº§æ¨™</param>
+        /// <param name="y">å›è»¢ä¸­å¿ƒyåº§æ¨™</param>
+        /// <param name="z">å›è»¢ä¸­å¿ƒzåº§æ¨™</param>
         public void SetCenter(float x, float y, float z)
         {
             SetCenter(new Vector3(x, y, z));
         }
 
         /// <summary>
-        /// viewÀ•Wã‚ÌˆÊ’u‚ğİ’è‚µ‚Ü‚·B
+        /// viewåº§æ¨™ä¸Šã®ä½ç½®ã‚’è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="translation">viewÀ•Wã‚ÌˆÊ’u</param>
+        /// <param name="translation">viewåº§æ¨™ä¸Šã®ä½ç½®</param>
         public void SetTranslation(Vector3 translation)
         {
             this.translation = translation;
             needUpdate = true;
         }
         /// <summary>
-        /// viewÀ•Wã‚ÌˆÊ’u‚ğİ’è‚µ‚Ü‚·B
+        /// viewåº§æ¨™ä¸Šã®ä½ç½®ã‚’è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="x">viewÀ•Wã‚ÌˆÊ’uxÀ•W</param>
-        /// <param name="y">viewÀ•Wã‚ÌˆÊ’uyÀ•W</param>
-        /// <param name="z">viewÀ•Wã‚ÌˆÊ’uzÀ•W</param>
+        /// <param name="x">viewåº§æ¨™ä¸Šã®ä½ç½®xåº§æ¨™</param>
+        /// <param name="y">viewåº§æ¨™ä¸Šã®ä½ç½®yåº§æ¨™</param>
+        /// <param name="z">viewåº§æ¨™ä¸Šã®ä½ç½®zåº§æ¨™</param>
         public void SetTranslation(float x, float y, float z)
         {
             SetTranslation(new Vector3(x, y, z));
         }
 
         /// <summary>
-        /// viewÀ•Wã‚ÅˆÚ“®‚µ‚Ü‚·B
+        /// viewåº§æ¨™ä¸Šã§ç§»å‹•ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="dx">X²ˆÚ“®‹——£</param>
-        /// <param name="dy">Y²ˆÚ“®‹——£</param>
+        /// <param name="dx">Xè»¸ç§»å‹•è·é›¢</param>
+        /// <param name="dy">Yè»¸ç§»å‹•è·é›¢</param>
         public void MoveView(float dx, float dy)
         {
             this.translation.X += dx;
@@ -180,7 +180,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ·•ª‚ğƒŠƒZƒbƒg‚µ‚Ü‚·B
+        /// å·®åˆ†ã‚’ãƒªã‚»ãƒƒãƒˆã—ã¾ã™ã€‚
         /// </summary>
         protected void ResetDefValue()
         {

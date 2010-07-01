@@ -11,132 +11,132 @@ using Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
-    /// ƒXƒ‰ƒCƒ_•ÏŒ`s—ñ
+    /// ã‚¹ãƒ©ã‚¤ãƒ€å¤‰å½¢è¡Œåˆ—
 public class SlideMatrices
 {
-    /// o–…ƒXƒ‰ƒCƒ_0.0‚Å‚Ìlocal scaling factor
+    /// å§‰å¦¹ã‚¹ãƒ©ã‚¤ãƒ€0.0ã§ã®local scaling factor
     public static Vector3 GetMinLocal()
     {
         float scale = 0.9520f;
         return new Vector3(scale, scale, scale);
     }
 
-    /// o–…ƒXƒ‰ƒCƒ_1.0‚Å‚Ìlocal scaling factor
+    /// å§‰å¦¹ã‚¹ãƒ©ã‚¤ãƒ€1.0ã§ã®local scaling factor
     public static Vector3 GetMaxLocal()
     {
         float scale = 1.05f;
         return new Vector3(scale, scale, scale);
     }
 
-    /// o–…ƒXƒ‰ƒCƒ_0.0‚Å‚Ìface_oya scaling factor
+    /// å§‰å¦¹ã‚¹ãƒ©ã‚¤ãƒ€0.0ã§ã®face_oya scaling factor
     public static Vector3 GetMinFaceOya()
     {
         return new Vector3(1.224272f, 1.066630f, 1.224272f);
     }
 
-    /// o–…ƒXƒ‰ƒCƒ_1.0‚Å‚Ìface_oya scaling factor
+    /// å§‰å¦¹ã‚¹ãƒ©ã‚¤ãƒ€1.0ã§ã®face_oya scaling factor
     public static Vector3 GetMaxFaceOya()
     {
         return new Vector3(0.967304f, 1.025342f, 0.967304f);
     }
 
-    /// “·‚Ü‚í‚èƒXƒ‰ƒCƒ_0.0‚Å‚ÌW_Spine_Dummy scaling factor
+    /// èƒ´ã¾ã‚ã‚Šã‚¹ãƒ©ã‚¤ãƒ€0.0ã§ã®W_Spine_Dummy scaling factor
     public static Vector3 GetMinSpineDummy()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
     }
 
-    /// “·‚Ü‚í‚èƒXƒ‰ƒCƒ_1.0‚Å‚ÌW_Spine_Dummy scaling factor
+    /// èƒ´ã¾ã‚ã‚Šã‚¹ãƒ©ã‚¤ãƒ€1.0ã§ã®W_Spine_Dummy scaling factor
     public static Vector3 GetMaxSpineDummy()
     {
         return new Vector3(1.0890f, 1.0f, 0.9235f);
     }
 
-    /// “·‚Ü‚í‚èƒXƒ‰ƒCƒ_0.0‚Å‚ÌW_Spine1 scaling factor
+    /// èƒ´ã¾ã‚ã‚Šã‚¹ãƒ©ã‚¤ãƒ€0.0ã§ã®W_Spine1 scaling factor
     public static Vector3 GetMinSpine1()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
     }
 
-    /// “·‚Ü‚í‚èƒXƒ‰ƒCƒ_1.0‚Å‚ÌW_Spine1 scaling factor
+    /// èƒ´ã¾ã‚ã‚Šã‚¹ãƒ©ã‚¤ãƒ€1.0ã§ã®W_Spine1 scaling factor
     public static Vector3 GetMaxSpine1()
     {
         return new Vector3(1.1800f, 1.0f, 1.0f);
     }
 
-    /// ‚ ‚µƒXƒ‰ƒCƒ_0.0‚Å‚ÌW_(LR)Hips_Dummy scaling factor
+    /// ã‚ã—ã‚¹ãƒ©ã‚¤ãƒ€0.0ã§ã®W_(LR)Hips_Dummy scaling factor
     public static Vector3 GetMinHipsDummy()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
     }
 
-    /// ‚ ‚µƒXƒ‰ƒCƒ_1.0‚Å‚ÌW_(LR)Hips_Dummy scaling factor
+    /// ã‚ã—ã‚¹ãƒ©ã‚¤ãƒ€1.0ã§ã®W_(LR)Hips_Dummy scaling factor
     public static Vector3 GetMaxHipsDummy()
     {
         return new Vector3(1.2001f, 1.0f, 1.0f);
     }
 
-    /// ‚ ‚µƒXƒ‰ƒCƒ_0.0‚Å‚ÌW_(LR)UpLeg scaling factor
+    /// ã‚ã—ã‚¹ãƒ©ã‚¤ãƒ€0.0ã§ã®W_(LR)UpLeg scaling factor
     public static Vector3 GetMinUpLeg()
     {
         return new Vector3(0.8091f, 1.0f, 0.8190f);
     }
 
-    /// ‚ ‚µƒXƒ‰ƒCƒ_1.0‚Å‚ÌW_(LR)UpLeg scaling factor
+    /// ã‚ã—ã‚¹ãƒ©ã‚¤ãƒ€1.0ã§ã®W_(LR)UpLeg scaling factor
     public static Vector3 GetMaxUpLeg()
     {
         return new Vector3(1.2001f, 1.0f, 1.0f);
     }
 
-    /// ‚ ‚µƒXƒ‰ƒCƒ_0.0‚Å‚ÌW_(LR)UpLegRoll scaling factor
+    /// ã‚ã—ã‚¹ãƒ©ã‚¤ãƒ€0.0ã§ã®W_(LR)UpLegRoll scaling factor
     public static Vector3 GetMinUpLegRoll()
     {
         return new Vector3(0.8091f, 1.0f, 0.8190f);
     }
 
-    /// ‚ ‚µƒXƒ‰ƒCƒ_1.0‚Å‚ÌW_(LR)UpLegRoll scaling factor
+    /// ã‚ã—ã‚¹ãƒ©ã‚¤ãƒ€1.0ã§ã®W_(LR)UpLegRoll scaling factor
     public static Vector3 GetMaxUpLegRoll()
     {
         return new Vector3(1.2012f, 1.0f, 1.0f);
     }
 
-    /// ‚ ‚µƒXƒ‰ƒCƒ_0.0‚Å‚ÌW_(LR)LegRoll scaling factor
+    /// ã‚ã—ã‚¹ãƒ©ã‚¤ãƒ€0.0ã§ã®W_(LR)LegRoll scaling factor
     public static Vector3 GetMinLegRoll()
     {
         return new Vector3(0.8091f, 1.0f, 0.8190f);
     }
 
-    /// ‚ ‚µƒXƒ‰ƒCƒ_1.0‚Å‚ÌW_(LR)LegRoll scaling factor
+    /// ã‚ã—ã‚¹ãƒ©ã‚¤ãƒ€1.0ã§ã®W_(LR)LegRoll scaling factor
     public static Vector3 GetMaxLegRoll()
     {
         return new Vector3(0.9878f, 1.0f, 1.0f);
     }
 
-    /// ‚¤‚ÅƒXƒ‰ƒCƒ_0.0‚Å‚ÌW_(LR)Arm_Dummy scaling factor
+    /// ã†ã§ã‚¹ãƒ©ã‚¤ãƒ€0.0ã§ã®W_(LR)Arm_Dummy scaling factor
     public static Vector3 GetMinArmDummy()
     {
         return new Vector3(1.0f, 1.0f, 1.0f);
     }
 
-    /// ‚¤‚ÅƒXƒ‰ƒCƒ_1.0‚Å‚ÌW_(LR)Arm_Dummy scaling factor
+    /// ã†ã§ã‚¹ãƒ©ã‚¤ãƒ€1.0ã§ã®W_(LR)Arm_Dummy scaling factor
     public static Vector3 GetMaxArmDummy()
     {
         return new Vector3(1.0f, 1.1760f, 1.0f);
     }
 
-    /// ‚¤‚ÅƒXƒ‰ƒCƒ_0.0‚Å‚ÌW_(LR)Arm scaling factor
+    /// ã†ã§ã‚¹ãƒ©ã‚¤ãƒ€0.0ã§ã®W_(LR)Arm scaling factor
     public static Vector3 GetMinArm()
     {
         return new Vector3(1.0f, 0.7350f, 1.0f);
     }
 
-    /// ‚¤‚ÅƒXƒ‰ƒCƒ_1.0‚Å‚ÌW_(LR)Arm scaling factor
+    /// ã†ã§ã‚¹ãƒ©ã‚¤ãƒ€1.0ã§ã®W_(LR)Arm scaling factor
     public static Vector3 GetMaxArm()
     {
         return new Vector3(1.0f, 1.1760f, 1.0f);
     }
 
-    /// •ÏŒ`s—ñ ChichiR1 0.0
+    /// å¤‰å½¢è¡Œåˆ— ChichiR1 0.0
     public static Matrix GetMinChichiR1()
     {
         Matrix m = Matrix.Identity;
@@ -159,7 +159,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// •ÏŒ`s—ñ ChichiR2 0.0
+    /// å¤‰å½¢è¡Œåˆ— ChichiR2 0.0
     public static Matrix GetMinChichiR2()
     {
         Matrix m = Matrix.Identity;
@@ -182,7 +182,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// •ÏŒ`s—ñ ChichiR3 0.0
+    /// å¤‰å½¢è¡Œåˆ— ChichiR3 0.0
     public static Matrix GetMinChichiR3()
     {
         Matrix m = Matrix.Identity;
@@ -205,7 +205,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// •ÏŒ`s—ñ ChichiR4 0.0
+    /// å¤‰å½¢è¡Œåˆ— ChichiR4 0.0
     public static Matrix GetMinChichiR4()
     {
         Matrix m = Matrix.Identity;
@@ -228,7 +228,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// •ÏŒ`s—ñ ChichiR5 0.0
+    /// å¤‰å½¢è¡Œåˆ— ChichiR5 0.0
     public static Matrix GetMinChichiR5()
     {
         Matrix m = Matrix.Identity;
@@ -251,7 +251,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// •ÏŒ`s—ñ ChichiR5_end 0.0
+    /// å¤‰å½¢è¡Œåˆ— ChichiR5_end 0.0
     public static Matrix GetMinChichiR5E()
     {
         Matrix m = Matrix.Identity;
@@ -274,7 +274,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// •ÏŒ`s—ñ ChichiL1 0.0
+    /// å¤‰å½¢è¡Œåˆ— ChichiL1 0.0
     public static Matrix GetMinChichiL1()
     {
         Matrix m = Matrix.Identity;
@@ -298,7 +298,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// •ÏŒ`s—ñ ChichiL2 0.0
+    /// å¤‰å½¢è¡Œåˆ— ChichiL2 0.0
     public static Matrix GetMinChichiL2()
     {
         Matrix m = Matrix.Identity;
@@ -321,7 +321,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// •ÏŒ`s—ñ ChichiL3 0.0
+    /// å¤‰å½¢è¡Œåˆ— ChichiL3 0.0
     public static Matrix GetMinChichiL3()
     {
         Matrix m = Matrix.Identity;
@@ -344,7 +344,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// •ÏŒ`s—ñ ChichiL4 0.0
+    /// å¤‰å½¢è¡Œåˆ— ChichiL4 0.0
     public static Matrix GetMinChichiL4()
     {
         Matrix m = Matrix.Identity;
@@ -367,7 +367,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// •ÏŒ`s—ñ ChichiL5 0.0
+    /// å¤‰å½¢è¡Œåˆ— ChichiL5 0.0
     public static Matrix GetMinChichiL5()
     {
         Matrix m = Matrix.Identity;
@@ -390,7 +390,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// •ÏŒ`s—ñ ChichiL5_End 0.0
+    /// å¤‰å½¢è¡Œåˆ— ChichiL5_End 0.0
     public static Matrix GetMinChichiL5E()
     {
         Matrix m = Matrix.Identity;
@@ -413,19 +413,19 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// ‚¨‚Á‚Ï‚¢ƒXƒ‰ƒCƒ_0.225‚Å‚Ìscaling factor
+    /// ãŠã£ã±ã„ã‚¹ãƒ©ã‚¤ãƒ€0.225ã§ã®scaling factor
     public static Vector3 GetMinChichi()
     {
         return new Vector3(0.8350f, 0.8240f, 0.7800f);
     }
 
-    /// ‚¨‚Á‚Ï‚¢ƒXƒ‰ƒCƒ_1.0‚Å‚Ìscaling factor
+    /// ãŠã£ã±ã„ã‚¹ãƒ©ã‚¤ãƒ€1.0ã§ã®scaling factor
     public static Vector3 GetMaxChichi()
     {
         return new Vector3(1.2500f, 1.3000f, 1.1800f);
     }
 
-    /// ‚½‚ê–Ú‚Â‚è–ÚƒXƒ‰ƒCƒ_0.0‚Å‚Ì•ÏŒ`
+    /// ãŸã‚Œç›®ã¤ã‚Šç›®ã‚¹ãƒ©ã‚¤ãƒ€0.0ã§ã®å¤‰å½¢
     public static Matrix GetMinEyeR()
     {
         Matrix m = Matrix.Identity;
@@ -436,7 +436,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// ‚½‚ê–Ú‚Â‚è–ÚƒXƒ‰ƒCƒ_1.0‚Å‚Ì•ÏŒ`
+    /// ãŸã‚Œç›®ã¤ã‚Šç›®ã‚¹ãƒ©ã‚¤ãƒ€1.0ã§ã®å¤‰å½¢
     public static Matrix GetMaxEyeR()
     {
         Matrix m = Matrix.Identity;
@@ -447,7 +447,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// ‚½‚ê–Ú‚Â‚è–ÚƒXƒ‰ƒCƒ_0.0‚Å‚Ì•ÏŒ`
+    /// ãŸã‚Œç›®ã¤ã‚Šç›®ã‚¹ãƒ©ã‚¤ãƒ€0.0ã§ã®å¤‰å½¢
     public static Matrix GetMinEyeL()
     {
         Matrix m = Matrix.Identity;
@@ -458,7 +458,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// ‚½‚ê–Ú‚Â‚è–ÚƒXƒ‰ƒCƒ_1.0‚Å‚Ì•ÏŒ`
+    /// ãŸã‚Œç›®ã¤ã‚Šç›®ã‚¹ãƒ©ã‚¤ãƒ€1.0ã§ã®å¤‰å½¢
     public static Matrix GetMaxEyeL()
     {
         Matrix m = Matrix.Identity;
@@ -469,7 +469,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// w’è”ä—¦‚É”ä—á‚·‚éscaling factor‚ğ“¾‚Ü‚·B
+    /// æŒ‡å®šæ¯”ç‡ã«æ¯”ä¾‹ã™ã‚‹scaling factorã‚’å¾—ã¾ã™ã€‚
     public static Vector3 GetVector3Ratio(Vector3 min, Vector3 max, float ratio)
     {
         Vector3 v = Vector3.Empty;
@@ -481,13 +481,13 @@ m.M44 = 1.000000F;
         return v;
     }
 
-    /// w’è”ä—¦‚É”ä—á‚·‚é•ÏŒ`s—ñ‚ğ“¾‚Ü‚·B
+    /// æŒ‡å®šæ¯”ç‡ã«æ¯”ä¾‹ã™ã‚‹å¤‰å½¢è¡Œåˆ—ã‚’å¾—ã¾ã™ã€‚
     public static Matrix GetMatrixRatio(Vector3 min, Vector3 max, float ratio)
     {
         return Matrix.Scaling(GetVector3Ratio(min, max, ratio));
     }
 
-    /// w’è”ä—¦‚É”ä—á‚·‚é•ÏŒ`s—ñ‚ğ“¾‚Ü‚·B
+    /// æŒ‡å®šæ¯”ç‡ã«æ¯”ä¾‹ã™ã‚‹å¤‰å½¢è¡Œåˆ—ã‚’å¾—ã¾ã™ã€‚
     public static Matrix GetMatrixRatio(Matrix min, Matrix max, float ratio)
     {
         Matrix m = Matrix.Identity;
@@ -515,7 +515,7 @@ m.M44 = 1.000000F;
         return m;
     }
 
-    /// face_oya‚Ì•ÏŒ`s—ñ
+    /// face_oyaã®å¤‰å½¢è¡Œåˆ—
     public static Matrix FaceOyaDefault;
 
     static SlideMatrices()
@@ -523,77 +523,77 @@ m.M44 = 1.000000F;
         FaceOyaDefault = Matrix.Scaling(1.1045F, 1.064401F, 1.1045F);
     }
 
-    /// Šg‘å•ÏˆÊ
+    /// æ‹¡å¤§å¤‰ä½
     public Vector3 Local;
-    /// Šg‘å•ÏˆÊ
+    /// æ‹¡å¤§å¤‰ä½
     public Vector3 FaceOya;
 
-    /// Šg‘å•ÏˆÊ
+    /// æ‹¡å¤§å¤‰ä½
     public Vector3 SpineDummy;
-    /// Šg‘å•ÏˆÊ
+    /// æ‹¡å¤§å¤‰ä½
     public Vector3 Spine1;
 
-    /// Šg‘å•ÏˆÊ
+    /// æ‹¡å¤§å¤‰ä½
     public Vector3 HipsDummy;
-    /// Šg‘å•ÏˆÊ
+    /// æ‹¡å¤§å¤‰ä½
     public Vector3 UpLeg;
-    /// Šg‘å•ÏˆÊ
+    /// æ‹¡å¤§å¤‰ä½
     public Vector3 UpLegRoll;
-    /// Šg‘å•ÏˆÊ
+    /// æ‹¡å¤§å¤‰ä½
     public Vector3 LegRoll;
 
-    /// Šg‘å•ÏˆÊ
+    /// æ‹¡å¤§å¤‰ä½
     public Vector3 ArmDummy;
-    /// Šg‘å•ÏˆÊ
+    /// æ‹¡å¤§å¤‰ä½
     public Vector3 Arm;
 
-    /// •ÏŒ`s—ñ
+    /// å¤‰å½¢è¡Œåˆ—
     public Matrix ChichiR1;
-    /// •ÏŒ`s—ñ
+    /// å¤‰å½¢è¡Œåˆ—
     public Matrix ChichiR2;
-    /// •ÏŒ`s—ñ
+    /// å¤‰å½¢è¡Œåˆ—
     public Matrix ChichiR3;
-    /// •ÏŒ`s—ñ
+    /// å¤‰å½¢è¡Œåˆ—
     public Matrix ChichiR4;
-    /// •ÏŒ`s—ñ
+    /// å¤‰å½¢è¡Œåˆ—
     public Matrix ChichiR5;
-    /// •ÏŒ`s—ñ
+    /// å¤‰å½¢è¡Œåˆ—
     public Matrix ChichiR5E;
 
-    /// •ÏŒ`s—ñ
+    /// å¤‰å½¢è¡Œåˆ—
     public Matrix ChichiL1;
-    /// •ÏŒ`s—ñ
+    /// å¤‰å½¢è¡Œåˆ—
     public Matrix ChichiL2;
-    /// •ÏŒ`s—ñ
+    /// å¤‰å½¢è¡Œåˆ—
     public Matrix ChichiL3;
-    /// •ÏŒ`s—ñ
+    /// å¤‰å½¢è¡Œåˆ—
     public Matrix ChichiL4;
-    /// •ÏŒ`s—ñ
+    /// å¤‰å½¢è¡Œåˆ—
     public Matrix ChichiL5;
-    /// •ÏŒ`s—ñ
+    /// å¤‰å½¢è¡Œåˆ—
     public Matrix ChichiL5E;
 
-    /// Šg‘å•ÏˆÊ
+    /// æ‹¡å¤§å¤‰ä½
     public Vector3 Chichi;
 
-    /// •ÏŒ`s—ñ
+    /// å¤‰å½¢è¡Œåˆ—
     public Matrix EyeR;
-    /// •ÏŒ`s—ñ
+    /// å¤‰å½¢è¡Œåˆ—
     public Matrix EyeL;
 
-    /// ƒXƒ‰ƒCƒ_•ÏŒ`s—ñ‚ğ¶¬‚µ‚Ü‚·B
+    /// ã‚¹ãƒ©ã‚¤ãƒ€å¤‰å½¢è¡Œåˆ—ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     public SlideMatrices()
     {
         ArmRatio = 0.5f;
         LegRatio = 0.5f;
-        WaistRatio = 0.0f; //scaling factor‚©‚çŒ©‚Ä“·‚Ü‚í‚è‚ÌŠî€‚Í0.0‚Å‚ ‚é
+        WaistRatio = 0.0f; //scaling factorã‹ã‚‰è¦‹ã¦èƒ´ã¾ã‚ã‚Šã®åŸºæº–ã¯0.0ã§ã‚ã‚‹
         BustRatio = 0.5f;
         TallRatio = 0.5f;
         EyeRatio = 0.5f;
     }
 
     float arm_ratio;
-    /// ‚¤‚ÅƒXƒ‰ƒCƒ_”ä—¦
+    /// ã†ã§ã‚¹ãƒ©ã‚¤ãƒ€æ¯”ç‡
     public float ArmRatio
     {
         get { return arm_ratio; }
@@ -605,7 +605,7 @@ m.M44 = 1.000000F;
     }
 
     float leg_ratio;
-    /// ‚ ‚µƒXƒ‰ƒCƒ_”ä—¦
+    /// ã‚ã—ã‚¹ãƒ©ã‚¤ãƒ€æ¯”ç‡
     public float LegRatio
     {
         get { return leg_ratio; }
@@ -620,7 +620,7 @@ m.M44 = 1.000000F;
     }
 
     float waist_ratio;
-    /// “·‚Ü‚í‚èƒXƒ‰ƒCƒ_”ä—¦
+    /// èƒ´ã¾ã‚ã‚Šã‚¹ãƒ©ã‚¤ãƒ€æ¯”ç‡
     public float WaistRatio
     {
         get { return waist_ratio; }
@@ -633,7 +633,7 @@ m.M44 = 1.000000F;
     }
 
     float bust_ratio;
-    /// ‚¨‚Á‚Ï‚¢ƒXƒ‰ƒCƒ_”ä—¦
+    /// ãŠã£ã±ã„ã‚¹ãƒ©ã‚¤ãƒ€æ¯”ç‡
     public float BustRatio
     {
         get { return bust_ratio; }
@@ -666,17 +666,17 @@ m.M44 = 1.000000F;
         }
     }
 
-    /// •n“û‚Å‚ ‚é‚©
+    /// è²§ä¹³ã§ã‚ã‚‹ã‹
     public bool Flat()
     {
         return bust_ratio < FlatRatio;
     }
 
-    /// •n“û‹«ŠE”ä—¦
+    /// è²§ä¹³å¢ƒç•Œæ¯”ç‡
     public static float FlatRatio = 0.2250F;
 
     float tall_ratio;
-    /// o–…ƒXƒ‰ƒCƒ_”ä—¦
+    /// å§‰å¦¹ã‚¹ãƒ©ã‚¤ãƒ€æ¯”ç‡
     public float TallRatio
     {
         get { return tall_ratio; }
@@ -689,7 +689,7 @@ m.M44 = 1.000000F;
     }
 
     float eye_ratio;
-    /// ‚½‚ê–Ú‚Â‚è–ÚƒXƒ‰ƒCƒ_”ä—¦
+    /// ãŸã‚Œç›®ã¤ã‚Šç›®ã‚¹ãƒ©ã‚¤ãƒ€æ¯”ç‡
     public float EyeRatio
     {
         get { return eye_ratio; }

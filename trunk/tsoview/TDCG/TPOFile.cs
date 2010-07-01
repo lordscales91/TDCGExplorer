@@ -9,7 +9,7 @@ using Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
-    /// TPOƒtƒ@ƒCƒ‹‚ğˆµ‚¢‚Ü‚·B
+    /// TPOãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ‰±ã„ã¾ã™ã€‚
     /// </summary>
 public class TPOFile
 {
@@ -18,14 +18,14 @@ public class TPOFile
     private IProportion proportion = null;
 
     /// <summary>
-    /// bone”z—ñ
+    /// boneé…åˆ—
     /// </summary>
     public TPONode[] nodes;
 
     private Dictionary<string, TPONode> nodemap;
 
     /// <summary>
-    /// TPONode‚Ì•ÏŒ`ŒW”‚Éæ‚¸‚é•ÏŒ`”ä—¦
+    /// TPONodeã®å¤‰å½¢ä¿‚æ•°ã«ä¹—ãšã‚‹å¤‰å½¢æ¯”ç‡
     /// </summary>
     public float Ratio
     {
@@ -90,19 +90,19 @@ public class TPOFile
     }
 
     /// <summary>
-    /// tpo‚ğ¶¬‚µ‚Ü‚·B
+    /// tpoã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     public TPOFile()
     {
     }
 
     /// <summary>
-    /// ‘ÌŒ^
+    /// ä½“å‹
     /// </summary>
     public IProportion Proportion { get { return proportion; } set { proportion = value; }}
 
     /// <summary>
-    /// ‘ÌŒ^‚Ì–¼‘O‚ğ“¾‚Ü‚·B
+    /// ä½“å‹ã®åå‰ã‚’å¾—ã¾ã™ã€‚
     /// </summary>
     public string ProportionName
     {
@@ -110,7 +110,7 @@ public class TPOFile
     }
 
     /// <summary>
-    /// TPONode‚É•ÏŒ`ŒW”‚ğİ’è‚µ‚Ü‚·B
+    /// TPONodeã«å¤‰å½¢ä¿‚æ•°ã‚’è¨­å®šã—ã¾ã™ã€‚
     /// </summary>
     public void ExecuteProportion()
     {
@@ -122,7 +122,7 @@ public class TPOFile
             nodemap[node.Name] = node;
 
         proportion.Nodes = nodemap;
-        //TPONode‚É•ÏŒ`ŒW”‚ğİ’è‚·‚éB
+        //TPONodeã«å¤‰å½¢ä¿‚æ•°ã‚’è¨­å®šã™ã‚‹ã€‚
         try
         {
             proportion.Execute();
@@ -134,7 +134,7 @@ public class TPOFile
     }
 
     /// <summary>
-    /// ‘S‚Ä‚ÌƒtƒŒ[ƒ€‚ÉŠÜ‚Ü‚ê‚éƒ‚[ƒVƒ‡ƒ“s—ñ’l‚ğ•ÏŒ`‚µ‚Ü‚·B
+    /// å…¨ã¦ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã«å«ã¾ã‚Œã‚‹ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³è¡Œåˆ—å€¤ã‚’å¤‰å½¢ã—ã¾ã™ã€‚
     /// </summary>
     public void Transform()
     {
@@ -152,9 +152,9 @@ public class TPOFile
     }
 
     /// <summary>
-    /// w’è”Ô†‚ÌƒtƒŒ[ƒ€‚ÉŠÜ‚Ü‚ê‚éƒ‚[ƒVƒ‡ƒ“s—ñ’l‚ğ•ÏŒ`‚µ‚Ü‚·B
+    /// æŒ‡å®šç•ªå·ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã«å«ã¾ã‚Œã‚‹ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³è¡Œåˆ—å€¤ã‚’å¤‰å½¢ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="frame_index">ƒtƒŒ[ƒ€”Ô†</param>
+    /// <param name="frame_index">ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·</param>
     public void Transform(int frame_index)
     {
         if (ratio == 0)
@@ -175,34 +175,34 @@ public class TPOFile
 }
 
 /// <summary>
-/// ‘€ìƒ^ƒCƒv
+/// æ“ä½œã‚¿ã‚¤ãƒ—
 /// </summary>
 public enum TPOCommandType
 {
     /// <summary>
-    /// Šg‘å
+    /// æ‹¡å¤§
     /// </summary>
     Scale,
     /// <summary>
-    /// Šg‘åiqbone‚Í‚»‚ê‚¼‚êk¬j
+    /// æ‹¡å¤§ï¼ˆå­boneã¯ãã‚Œãã‚Œç¸®å°ï¼‰
     /// </summary>
     Scale1,
     /// <summary>
-    /// k¬
+    /// ç¸®å°
     /// </summary>
     Scale0,
     /// <summary>
-    /// ‰ñ“]
+    /// å›è»¢
     /// </summary>
     Rotate,
     /// <summary>
-    /// ˆÚ“®
+    /// ç§»å‹•
     /// </summary>
     Move
 };
 
 /// <summary>
-/// ‘ÌŒ^•ÏX‘€ì
+/// ä½“å‹å¤‰æ›´æ“ä½œ
 /// </summary>
 public class TPOCommand
 {
@@ -211,16 +211,16 @@ public class TPOCommand
     internal float y;
     internal float z;
 
-    /// ‘€ìƒ^ƒCƒv
+    /// æ“ä½œã‚¿ã‚¤ãƒ—
     public TPOCommandType Type { get { return type; } }
-    /// XÀ•W•ÏˆÊ
+    /// Xåº§æ¨™å¤‰ä½
     public float X { get { return x; } }
-    /// YÀ•W•ÏˆÊ
+    /// Yåº§æ¨™å¤‰ä½
     public float Y { get { return y; } }
-    /// ZÀ•W•ÏˆÊ
+    /// Zåº§æ¨™å¤‰ä½
     public float Z { get { return z; } }
 
-    /// •ÏˆÊƒxƒNƒgƒ‹‚ğ“¾‚Ü‚·B
+    /// å¤‰ä½ãƒ™ã‚¯ãƒˆãƒ«ã‚’å¾—ã¾ã™ã€‚
     public Vector3 GetVector3()
     {
         return new Vector3(x, y, z);
@@ -228,7 +228,7 @@ public class TPOCommand
 }
 
     /// <summary>
-    /// bone‚ğˆµ‚¢‚Ü‚·B
+    /// boneã‚’æ‰±ã„ã¾ã™ã€‚
     /// </summary>
 public class TPONode
 {
@@ -244,19 +244,19 @@ public class TPONode
     /// </summary>
     public int ID { get { return id; } }
     /// <summary>
-    /// –¼Ì
+    /// åç§°
     /// </summary>
     public string Path { get { return path; } }
     /// <summary>
-    /// –¼Ìi’Z‚¢Œ`®j
+    /// åç§°ï¼ˆçŸ­ã„å½¢å¼ï¼‰
     /// </summary>
     public string Name { get { return name; } }
 
-    /// •ÏŒ`‘€ìƒŠƒXƒg
+    /// å¤‰å½¢æ“ä½œãƒªã‚¹ãƒˆ
     public List<TPOCommand> commands = new List<TPOCommand>();
 
     /// <summary>
-    /// •ÏŒ`‘€ì‚ğ’Ç‰Á‚µ‚Ü‚·B
+    /// å¤‰å½¢æ“ä½œã‚’è¿½åŠ ã—ã¾ã™ã€‚
     /// </summary>
     /// <param name="command"></param>
     public void AddCommand(TPOCommand command)
@@ -265,7 +265,7 @@ public class TPONode
     }
     
     /// <summary>
-    /// •ÏŒ`‘€ì‚ğ’Ç‰Á‚µ‚Ü‚·B
+    /// å¤‰å½¢æ“ä½œã‚’è¿½åŠ ã—ã¾ã™ã€‚
     /// </summary>
     /// <param name="type"></param>
     /// <param name="x"></param>
@@ -282,7 +282,7 @@ public class TPONode
     }
     
     /// <summary>
-    /// TPONode‚ğ¶¬‚µ‚Ü‚·B
+    /// TPONodeã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     /// <param name="id"></param>
     /// <param name="name"></param>
@@ -294,10 +294,10 @@ public class TPONode
     }
 
     /// <summary>
-    /// ƒ‚[ƒVƒ‡ƒ“s—ñ‚ğw’è”ä—¦‚Å•ÏŒ`‚µ‚Ü‚·B
+    /// ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³è¡Œåˆ—ã‚’æŒ‡å®šæ¯”ç‡ã§å¤‰å½¢ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="mat">ƒ‚[ƒVƒ‡ƒ“s—ñ</param>
-    /// <param name="ratio">”ä—¦</param>
+    /// <param name="mat">ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³è¡Œåˆ—</param>
+    /// <param name="ratio">æ¯”ç‡</param>
     public void Transform(TMOMat mat, float ratio)
     {
         foreach (TPOCommand command in commands)
@@ -339,7 +339,7 @@ public class TPONode
     }
 
     /// <summary>
-    /// Šg‘å‚µ‚Ü‚·B
+    /// æ‹¡å¤§ã—ã¾ã™ã€‚
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
@@ -350,7 +350,7 @@ public class TPONode
     }
 
     /// <summary>
-    /// Šg‘å‚µ‚Ü‚·B“¯‚Éqbone‚Í‚»‚ê‚¼‚êk¬‚µ‚Ü‚·B
+    /// æ‹¡å¤§ã—ã¾ã™ã€‚åŒæ™‚ã«å­boneã¯ãã‚Œãã‚Œç¸®å°ã—ã¾ã™ã€‚
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
@@ -364,7 +364,7 @@ public class TPONode
     }
 
     /// <summary>
-    /// k¬‚µ‚Ü‚·B
+    /// ç¸®å°ã—ã¾ã™ã€‚
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
@@ -375,7 +375,7 @@ public class TPONode
     }
 
     /// <summary>
-    /// X²‰ñ“]‚ğs‚¢‚Ü‚·B
+    /// Xè»¸å›è»¢ã‚’è¡Œã„ã¾ã™ã€‚
     /// </summary>
     /// <param name="angle"></param>
     public void RotateX(float angle)
@@ -388,7 +388,7 @@ public class TPONode
     }
 
     /// <summary>
-    /// Y²‰ñ“]‚ğs‚¢‚Ü‚·B
+    /// Yè»¸å›è»¢ã‚’è¡Œã„ã¾ã™ã€‚
     /// </summary>
     /// <param name="angle"></param>
     public void RotateY(float angle)
@@ -401,7 +401,7 @@ public class TPONode
     }
 
     /// <summary>
-    /// Z²‰ñ“]‚ğs‚¢‚Ü‚·B
+    /// Zè»¸å›è»¢ã‚’è¡Œã„ã¾ã™ã€‚
     /// </summary>
     /// <param name="angle"></param>
     public void RotateZ(float angle)
@@ -414,7 +414,7 @@ public class TPONode
     }
 
     /// <summary>
-    /// ˆÚ“®‚µ‚Ü‚·B
+    /// ç§»å‹•ã—ã¾ã™ã€‚
     /// </summary>
     /// <param name="x"></param>
     /// <param name="y"></param>
@@ -424,7 +424,7 @@ public class TPONode
         AddCommand(TPOCommandType.Move, x, y, z);
     }
 
-    /// Šg‘å‘€ì‚ğ“¾‚Ü‚·B
+    /// æ‹¡å¤§æ“ä½œã‚’å¾—ã¾ã™ã€‚
     public TPOCommand FindScalingCommand()
     {
         TPOCommand scaling_command = null;
@@ -441,7 +441,7 @@ public class TPONode
         return scaling_command;
     }
 
-    /// k¬‘€ì‚ğ“¾‚Ü‚·B
+    /// ç¸®å°æ“ä½œã‚’å¾—ã¾ã™ã€‚
     private TPOCommand FindInverseScalingCommand()
     {
         TPOCommand scaling_command = null;
@@ -457,7 +457,7 @@ public class TPONode
         return scaling_command;
     }
 
-    /// Šg‘å‘€ì‚Ü‚½‚Ík¬‘€ì‚ğ“¾‚Ü‚·B
+    /// æ‹¡å¤§æ“ä½œã¾ãŸã¯ç¸®å°æ“ä½œã‚’å¾—ã¾ã™ã€‚
     public TPOCommand LastScalingOrInverseScalingCommand()
     {
         TPOCommand scaling_command = null;
@@ -475,7 +475,7 @@ public class TPONode
         return scaling_command;
     }
 
-    /// ‰ñ“]‘€ì‚ğ“¾‚Ü‚·B
+    /// å›è»¢æ“ä½œã‚’å¾—ã¾ã™ã€‚
     public TPOCommand FindRotationCommand()
     {
         TPOCommand rotation_command = null;
@@ -491,7 +491,7 @@ public class TPONode
         return rotation_command;
     }
 
-    /// Šg‘å‘€ì‚Ü‚½‚Ík¬‘€ì‚Ü‚½‚Í‰ñ“]‘€ì‚ğ“¾‚Ü‚·B
+    /// æ‹¡å¤§æ“ä½œã¾ãŸã¯ç¸®å°æ“ä½œã¾ãŸã¯å›è»¢æ“ä½œã‚’å¾—ã¾ã™ã€‚
     public TPOCommand LastScalingOrInverseScalingOrRotationCommand()
     {
         TPOCommand scaling_or_rotation_command = null;
@@ -510,7 +510,7 @@ public class TPONode
         return scaling_or_rotation_command;
     }
 
-    /// ˆÚ“®‘€ì‚ğ“¾‚Ü‚·B
+    /// ç§»å‹•æ“ä½œã‚’å¾—ã¾ã™ã€‚
     public TPOCommand FindTranslationCommand()
     {
         TPOCommand translation_command = null;
@@ -526,7 +526,7 @@ public class TPONode
         return translation_command;
     }
 
-    /// Šg‘å•ÏˆÊ‚ğ“¾‚Ü‚·B
+    /// æ‹¡å¤§å¤‰ä½ã‚’å¾—ã¾ã™ã€‚
     public Vector3 GetScaling(out bool inv_scale_on_children)
     {
         inv_scale_on_children = false;
@@ -541,7 +541,7 @@ public class TPONode
             return new Vector3(1, 1, 1);
     }
 
-    /// ‰ñ“]Šp‚ğ“¾‚Ü‚·B
+    /// å›è»¢è§’ã‚’å¾—ã¾ã™ã€‚
     public Vector3 GetAngle()
     {
         TPOCommand rotation_command = FindRotationCommand();
@@ -557,7 +557,7 @@ public class TPONode
             return new Vector3(0, 0, 0);
     }
 
-    /// ˆÚ“®•ÏˆÊ‚ğ“¾‚Ü‚·B
+    /// ç§»å‹•å¤‰ä½ã‚’å¾—ã¾ã™ã€‚
     public Vector3 GetTranslation()
     {
         TPOCommand translation_command = FindTranslationCommand();
@@ -567,7 +567,7 @@ public class TPONode
             return new Vector3(0, 0, 0);
     }
 
-    /// Šg‘å•ÏˆÊ‚ğİ’è‚µ‚Ü‚·B
+    /// æ‹¡å¤§å¤‰ä½ã‚’è¨­å®šã—ã¾ã™ã€‚
     public void SetScaling(Vector3 scaling, bool inv_scale_on_children)
     {
         if (scaling == new Vector3(1, 1, 1))
@@ -603,7 +603,7 @@ public class TPONode
         }
     }
 
-    /// k¬•ÏˆÊ‚ğİ’è‚µ‚Ü‚·B
+    /// ç¸®å°å¤‰ä½ã‚’è¨­å®šã—ã¾ã™ã€‚
     public void SetInverseScaling(Vector3 scaling)
     {
         TPOCommand scaling_command = FindInverseScalingCommand();
@@ -618,7 +618,7 @@ public class TPONode
         scaling_command.z = scaling.Z;
     }
 
-    /// ‰ñ“]Šp‚ğİ’è‚µ‚Ü‚·B
+    /// å›è»¢è§’ã‚’è¨­å®šã—ã¾ã™ã€‚
     public void SetAngle(Vector3 angle)
     {
         if (angle == new Vector3(0, 0, 0))
@@ -644,7 +644,7 @@ public class TPONode
         rotation_command.z = Geometry.DegreeToRadian(angle.Z);
     }
 
-    /// ˆÚ“®•ÏˆÊ‚ğİ’è‚µ‚Ü‚·B
+    /// ç§»å‹•å¤‰ä½ã‚’è¨­å®šã—ã¾ã™ã€‚
     public void SetTranslation(Vector3 translation)
     {
         if (translation == new Vector3(0, 0, 0))
@@ -670,7 +670,7 @@ public class TPONode
         translation_command.z = translation.Z;
     }
 
-    /// Šg‘å‘€ì‚ğíœ‚µ‚Ü‚·B
+    /// æ‹¡å¤§æ“ä½œã‚’å‰Šé™¤ã—ã¾ã™ã€‚
     public void RemoveScaling()
     {
         TPOCommand scaling_command = FindScalingCommand();
@@ -686,7 +686,7 @@ public class TPONode
         }
     }
 
-    /// k¬‘€ì‚ğíœ‚µ‚Ü‚·B
+    /// ç¸®å°æ“ä½œã‚’å‰Šé™¤ã—ã¾ã™ã€‚
     public void RemoveInverseScaling()
     {
         TPOCommand scaling_command = FindInverseScalingCommand();
@@ -694,7 +694,7 @@ public class TPONode
             commands.Remove(scaling_command);
     }
 
-    /// ‰ñ“]‘€ì‚ğíœ‚µ‚Ü‚·B
+    /// å›è»¢æ“ä½œã‚’å‰Šé™¤ã—ã¾ã™ã€‚
     public void RemoveAngle()
     {
         TPOCommand rotation_command = FindRotationCommand();
@@ -702,7 +702,7 @@ public class TPONode
             commands.Remove(rotation_command);
     }
 
-    /// ˆÚ“®‘€ì‚ğíœ‚µ‚Ü‚·B
+    /// ç§»å‹•æ“ä½œã‚’å‰Šé™¤ã—ã¾ã™ã€‚
     public void RemoveTranslation()
     {
         TPOCommand translation_command = FindTranslationCommand();

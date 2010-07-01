@@ -300,14 +300,14 @@ namespace TSOWeight
             }
         }
 
-        private void ���ɖ߂�UToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 元に戻すUToolStripMenuItem_Click(object sender, EventArgs e)
         {
             viewer.Undo();
             AssignSkinWeights(viewer.SelectedVertex);
             Invalidate(false);
         }
 
-        private void ��蒼��RToolStripMenuItem_Click(object sender, EventArgs e)
+        private void やり直しRToolStripMenuItem_Click(object sender, EventArgs e)
         {
             viewer.Redo();
             AssignSkinWeights(viewer.SelectedVertex);
@@ -332,23 +332,23 @@ namespace TSOWeight
             Invalidate(false);
         }
 
-        private void ���O��t���ĕۑ�AToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 名前を付けて保存AToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFigure();
         }
 
-        private void �I��XToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 終了XToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Close();
         }
 
-        private void �V�K�쐬NToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 新規作成NToolStripMenuItem_Click(object sender, EventArgs e)
         {
             viewer.ClearFigureList();
             Invalidate(false);
         }
 
-        private void �J��OToolStripMenuItem_Click(object sender, EventArgs e)
+        private void 開くOToolStripMenuItem_Click(object sender, EventArgs e)
         {
             LoadFigure();
             Invalidate(false);

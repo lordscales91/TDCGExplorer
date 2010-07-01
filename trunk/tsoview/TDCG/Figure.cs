@@ -13,23 +13,23 @@ using Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
-    /// ƒtƒBƒMƒ…ƒA
+    /// ãƒ•ã‚£ã‚®ãƒ¥ã‚¢
     /// </summary>
 public class Figure : IDisposable
 {
     /// <summary>
-    /// ƒtƒBƒMƒ…ƒA‚ª•Û‚µ‚Ä‚¢‚étsoƒŠƒXƒg
+    /// ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ãŒä¿æŒã—ã¦ã„ã‚‹tsoãƒªã‚¹ãƒˆ
     /// </summary>
     public List<TSOFile> TSOList = new List<TSOFile>();
 
     /// <summary>
-    /// ƒXƒ‰ƒCƒ_•ÏŒ`s—ñ
+    /// ã‚¹ãƒ©ã‚¤ãƒ€å¤‰å½¢è¡Œåˆ—
     /// </summary>
     public SlideMatrices slide_matrices = new SlideMatrices();
 
     Vector3 center = Vector3.Empty;
     /// <summary>
-    /// ’†SÀ•W
+    /// ä¸­å¿ƒåº§æ¨™
     /// </summary>
     public Vector3 Center
     {
@@ -38,7 +38,7 @@ public class Figure : IDisposable
 
     Vector3 translation = Vector3.Empty;
     /// <summary>
-    /// ˆÚ“®•ÏˆÊ
+    /// ç§»å‹•å¤‰ä½
     /// </summary>
     public Vector3 Translation
     {
@@ -61,7 +61,7 @@ public class Figure : IDisposable
         }
     }
 
-    /// tso node‚©‚çtmo node‚ğ“±o‚·‚é«‘
+    /// tso nodeã‹ã‚‰tmo nodeã‚’å°å‡ºã™ã‚‹è¾æ›¸
     public Dictionary<TSONode, TMONode> nodemap;
 
     private MatrixStack matrixStack = null;
@@ -69,18 +69,18 @@ public class Figure : IDisposable
     private int current_frame_index = 0;
 
     /// <summary>
-    /// ‘ÌŒ^ƒXƒNƒŠƒvƒg‚ÌƒŠƒXƒg
+    /// ä½“å‹ã‚¹ã‚¯ãƒªãƒ—ãƒˆã®ãƒªã‚¹ãƒˆ
     /// </summary>
     public static ProportionList ProportionList { get; set; }
 
     TPOFileList tpo_list = new TPOFileList();
     /// <summary>
-    /// TPOƒtƒ@ƒCƒ‹‚ÌƒŠƒXƒg
+    /// TPOãƒ•ã‚¡ã‚¤ãƒ«ã®ãƒªã‚¹ãƒˆ
     /// </summary>
     public TPOFileList TPOList { get { return tpo_list; } }
 
     /// <summary>
-    /// ‘ÌŒ^ƒŒƒVƒs‚Ìƒtƒ@ƒCƒ‹–¼
+    /// ä½“å‹ãƒ¬ã‚·ãƒ”ã®ãƒ•ã‚¡ã‚¤ãƒ«å
     /// </summary>
     /// <returns></returns>
     public static string GetTPOConfigPath()
@@ -89,7 +89,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// ƒtƒBƒMƒ…ƒA‚ğ¶¬‚µ‚Ü‚·B
+    /// ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     public Figure()
     {
@@ -108,7 +108,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// ‘ÌŒ^•ÏŒ`‚ğs‚¢‚Ü‚·B
+    /// ä½“å‹å¤‰å½¢ã‚’è¡Œã„ã¾ã™ã€‚
     /// </summary>
     public void TransformTpo()
     {
@@ -119,9 +119,9 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// ‘ÌŒ^•ÏŒ`‚ğs‚¢‚Ü‚·B
+    /// ä½“å‹å¤‰å½¢ã‚’è¡Œã„ã¾ã™ã€‚
     /// </summary>
-    /// <param name="frame_index">ƒtƒŒ[ƒ€”Ô†</param>
+    /// <param name="frame_index">ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·</param>
     public void TransformTpo(int frame_index)
     {
         if (tmo.frames == null)
@@ -131,20 +131,20 @@ public class Figure : IDisposable
     }
     
     /// <summary>
-    /// ƒtƒBƒMƒ…ƒA‚ğˆÚ“®‚µ‚Ü‚·i‘Š‘ÎÀ•WjB
+    /// ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’ç§»å‹•ã—ã¾ã™ï¼ˆç›¸å¯¾åº§æ¨™ï¼‰ã€‚
     /// </summary>
-    /// <param name="dx">X²•ÏˆÊ</param>
-    /// <param name="dy">Y²•ÏˆÊ</param>
-    /// <param name="dz">Z²•ÏˆÊ</param>
+    /// <param name="dx">Xè»¸å¤‰ä½</param>
+    /// <param name="dy">Yè»¸å¤‰ä½</param>
+    /// <param name="dz">Zè»¸å¤‰ä½</param>
     public void Move(float dx, float dy, float dz)
     {
         Move(new Vector3(dx, dy, dz));
     }
 
     /// <summary>
-    /// ƒtƒBƒMƒ…ƒA‚ğˆÚ“®‚µ‚Ü‚·i‘Š‘ÎÀ•WjB
+    /// ãƒ•ã‚£ã‚®ãƒ¥ã‚¢ã‚’ç§»å‹•ã—ã¾ã™ï¼ˆç›¸å¯¾åº§æ¨™ï¼‰ã€‚
     /// </summary>
-    /// <param name="delta">•ÏˆÊ</param>
+    /// <param name="delta">å¤‰ä½</param>
     public void Move(Vector3 delta)
     {
         center += delta;
@@ -153,10 +153,10 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// w’èˆÊ’u‚É‚ ‚étso‚ÌˆÊ’u‚ğ“ü‚ê‘Ö‚¦‚Ü‚·B•`‰æ‡‚ğ•ÏX‚µ‚Ü‚·B
+    /// æŒ‡å®šä½ç½®ã«ã‚ã‚‹tsoã®ä½ç½®ã‚’å…¥ã‚Œæ›¿ãˆã¾ã™ã€‚æç”»é †ã‚’å¤‰æ›´ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="aidx">ƒŠƒXƒgã‚ÌˆÊ’ua</param>
-    /// <param name="bidx">ƒŠƒXƒgã‚ÌˆÊ’ub</param>
+    /// <param name="aidx">ãƒªã‚¹ãƒˆä¸Šã®ä½ç½®a</param>
+    /// <param name="bidx">ãƒªã‚¹ãƒˆä¸Šã®ä½ç½®b</param>
     public void SwapAt(int aidx, int bidx)
     {
         Debug.Assert(aidx < bidx);
@@ -169,8 +169,8 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// nodemap‚Æbones—ñ‚ğXV‚µ‚Ü‚·B
-    /// tmo‚ª“Ç‚İ‚Ü‚ê‚Ä‚¢‚È‚¢ê‡‚Íæ“ª‚Ìtso‚©‚çtmo‚ğ¶¬‚µ‚Ü‚·B
+    /// nodemapã¨boneè¡Œåˆ—ã‚’æ›´æ–°ã—ã¾ã™ã€‚
+    /// tmoãŒèª­ã¿è¾¼ã¾ã‚Œã¦ã„ãªã„å ´åˆã¯å…ˆé ­ã®tsoã‹ã‚‰tmoã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     public void UpdateNodeMapAndBoneMatrices()
     {
@@ -186,7 +186,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// æ“ª‚Ìtso‚©‚çtmo‚ğ¶¬‚µ‚Ü‚·B
+    /// å…ˆé ­ã®tsoã‹ã‚‰tmoã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     public void RegenerateTMO()
     {
@@ -198,7 +198,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// tso‚É‘Î‚·‚énodemap‚ğ’Ç‰Á‚µ‚Ü‚·B
+    /// tsoã«å¯¾ã™ã‚‹nodemapã‚’è¿½åŠ ã—ã¾ã™ã€‚
     /// </summary>
     /// <param name="tso">tso</param>
     protected void AddNodeMap(TSOFile tso)
@@ -212,7 +212,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// ƒtƒŒ[ƒ€”Ô†‚ğ0‚Éİ’è‚µ‚Ü‚·B
+    /// ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·ã‚’0ã«è¨­å®šã—ã¾ã™ã€‚
     /// </summary>
     protected void ResetFrameIndex()
     {
@@ -221,7 +221,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// ’†S“_‚ğ˜bone‚ÌˆÊ’u‚Éİ’è‚µ‚Ü‚·B
+    /// ä¸­å¿ƒç‚¹ã‚’è…°boneã®ä½ç½®ã«è¨­å®šã—ã¾ã™ã€‚
     /// </summary>
     protected void SetCenterToHips()
     {
@@ -238,7 +238,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// Ÿ‚ÌƒtƒŒ[ƒ€‚Éi‚İ‚Ü‚·B
+    /// æ¬¡ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã«é€²ã¿ã¾ã™ã€‚
     /// </summary>
     public void NextTMOFrame()
     {
@@ -251,9 +251,9 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// Œ»İ‚ÌƒtƒŒ[ƒ€‚ğ“¾‚Ü‚·B
+    /// ç¾åœ¨ã®ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’å¾—ã¾ã™ã€‚
     /// </summary>
-    /// <returns>Œ»İ‚Ìtmo frame</returns>
+    /// <returns>ç¾åœ¨ã®tmo frame</returns>
     protected TMOFrame GetTMOFrame()
     {
         if (tmo.frames != null)
@@ -265,7 +265,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// Œ»İ‚ÌƒtƒŒ[ƒ€”Ô†‚ğ“¾‚Ü‚·B
+    /// ç¾åœ¨ã®ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·ã‚’å¾—ã¾ã™ã€‚
     /// </summary>
     /// <returns></returns>
     public int GetFrameIndex()
@@ -274,7 +274,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// tso‚ğTSOList‚É’Ç‰Á‚µ‚Ü‚·B
+    /// tsoã‚’TSOListã«è¿½åŠ ã—ã¾ã™ã€‚
     /// </summary>
     /// <param name="tso">tso</param>
     public void AddTSO(TSOFile tso)
@@ -286,8 +286,8 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// bones—ñ‚ğXV‚µ‚Ü‚·B
-    /// ‚½‚¾‚µtmo frame‚ğ–³‹‚µ‚Ü‚·B
+    /// boneè¡Œåˆ—ã‚’æ›´æ–°ã—ã¾ã™ã€‚
+    /// ãŸã ã—tmo frameã‚’ç„¡è¦–ã—ã¾ã™ã€‚
     /// </summary>
     public void UpdateBoneMatricesWithoutTMOFrame()
     {
@@ -295,7 +295,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// bones—ñ‚ğXV‚µ‚Ü‚·B
+    /// boneè¡Œåˆ—ã‚’æ›´æ–°ã—ã¾ã™ã€‚
     /// </summary>
     public void UpdateBoneMatrices()
     {
@@ -303,9 +303,9 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// bones—ñ‚ğXV‚µ‚Ü‚·B
+    /// boneè¡Œåˆ—ã‚’æ›´æ–°ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="forced">false‚Ìê‡frame index‚É•ÏX‚È‚¯‚ê‚ÎXV‚µ‚Ü‚¹‚ñB</param>
+    /// <param name="forced">falseã®å ´åˆframe indexã«å¤‰æ›´ãªã‘ã‚Œã°æ›´æ–°ã—ã¾ã›ã‚“ã€‚</param>
     public void UpdateBoneMatrices(bool forced)
     {
         if (!forced && frame_index == current_frame_index)
@@ -318,20 +318,20 @@ public class Figure : IDisposable
     }
     
     /// <summary>
-    /// bones—ñ‚ğXV‚µ‚Ü‚·B
+    /// boneè¡Œåˆ—ã‚’æ›´æ–°ã—ã¾ã™ã€‚
     /// </summary>
     protected void UpdateBoneMatrices(TMOFile tmo, TMOFrame tmo_frame)
     {
         if (tmo.nodes == null)
             return;
 
-        //æ“ªnode‚ğroot‚Æ‚İ‚È‚·
+        //å…ˆé ­nodeã‚’rootã¨ã¿ãªã™
         TMONode tmo_node = tmo.nodes[0];
 
-        //o–…ƒXƒ‰ƒCƒ_‚É‚æ‚é•ÏŒ`
+        //å§‰å¦¹ã‚¹ãƒ©ã‚¤ãƒ€ã«ã‚ˆã‚‹å¤‰å½¢
         Matrix local = Matrix.Scaling(slide_matrices.Local);
 
-        //ˆÚ“®•ÏˆÊ‚ğİ’è
+        //ç§»å‹•å¤‰ä½ã‚’è¨­å®š
         local.M41 = translation.X;
         local.M42 = translation.Y;
         local.M43 = translation.Z;
@@ -388,7 +388,7 @@ public class Figure : IDisposable
     static Regex re_chichi = new Regex(@"\AChichi");
 
     /// <summary>
-    /// bones—ñ‚ğXV‚µ‚Ü‚·B
+    /// boneè¡Œåˆ—ã‚’æ›´æ–°ã—ã¾ã™ã€‚
     /// </summary>
     protected void UpdateBoneMatrices(TMONode tmo_node, TMOFrame tmo_frame)
     {
@@ -445,8 +445,8 @@ public class Figure : IDisposable
                 break;
             }
 
-            // translation‚ğˆÛ‚·‚é•K—v‚ª‚ ‚é‚½‚ß
-            // translation‚É‘Î‚µ‚Äscaling‚ğ‘Å‚¿Á‚·‰‰Z‚ğs‚¤B
+            // translationã‚’ç¶­æŒã™ã‚‹å¿…è¦ãŒã‚ã‚‹ãŸã‚
+            // translationã«å¯¾ã—ã¦scalingã‚’æ‰“ã¡æ¶ˆã™æ¼”ç®—ã‚’è¡Œã†ã€‚
             Vector3 scaling = slide_matrices.Chichi;
 
             m.M41 /= scaling.X;
@@ -483,9 +483,9 @@ public class Figure : IDisposable
         matrixStack.MultiplyMatrixLocal(m);
         m = matrixStack.Top;
 
-        // ƒXƒ‰ƒCƒ_‚É‚æ‚é‘ÌŒ^•ÏX
-        // translation‚ğˆÛ‚·‚é•K—v‚ª‚ ‚é‚½‚ß
-        // ‚±‚Ìscaling‚ÍmatrixStack‚É“K—p‚µ‚È‚¢B
+        // ã‚¹ãƒ©ã‚¤ãƒ€ã«ã‚ˆã‚‹ä½“å‹å¤‰æ›´
+        // translationã‚’ç¶­æŒã™ã‚‹å¿…è¦ãŒã‚ã‚‹ãŸã‚
+        // ã“ã®scalingã¯matrixStackã«é©ç”¨ã—ãªã„ã€‚
         switch (tmo_node.Name)
         {
             case "W_Spine_Dummy":
@@ -550,7 +550,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// TSOFile‚ğw’èdeviceã‚ÅŠJ‚«‚Ü‚·B
+    /// TSOFileã‚’æŒ‡å®šdeviceä¸Šã§é–‹ãã¾ã™ã€‚
     /// </summary>
     /// <param name="device">device</param>
     /// <param name="effect">effect</param>
@@ -561,7 +561,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// w’èƒ‚[ƒVƒ‡ƒ“ƒtƒŒ[ƒ€‚Éi‚İ‚Ü‚·B
+    /// æŒ‡å®šãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ãƒ¬ãƒ¼ãƒ ã«é€²ã¿ã¾ã™ã€‚
     /// </summary>
     public void SetFrameIndex(int frame_index)
     {
@@ -576,7 +576,7 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// “à•”object‚ğ”jŠü‚µ‚Ü‚·B
+    /// å†…éƒ¨objectã‚’ç ´æ£„ã—ã¾ã™ã€‚
     /// </summary>
     public void Dispose()
     {

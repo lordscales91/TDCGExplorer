@@ -7,11 +7,11 @@ using Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
-/// ƒ‚[ƒt
+/// ãƒ¢ãƒ¼ãƒ•
 public class Morph
 {
     string name;
-    /// –¼‘O
+    /// åå‰
     public string Name { get { return name; }}
 
     TMOFile tmo;
@@ -19,7 +19,7 @@ public class Morph
     public TMOFile Tmo { get { return tmo; }}
 
     float ratio;
-    /// •ÏŒ`Š„‡
+    /// å¤‰å½¢å‰²åˆ
     public float Ratio
     {
         get
@@ -33,7 +33,7 @@ public class Morph
     }
 
     /// <summary>
-    /// ƒ‚[ƒt‚ğ¶¬‚µ‚Ü‚·B
+    /// ãƒ¢ãƒ¼ãƒ•ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     public Morph(string name, TMOFile tmo)
     {
@@ -43,21 +43,21 @@ public class Morph
     }
 }
 
-/// ƒ‚[ƒtƒOƒ‹[ƒv
+/// ãƒ¢ãƒ¼ãƒ•ã‚°ãƒ«ãƒ¼ãƒ—
 public class MorphGroup
 {
     string name;
-    /// –¼‘O
+    /// åå‰
     public string Name { get { return name; }}
 
     NodesRange nodes_range;
 
     List<Morph> items;
-    /// ƒ‚[ƒtƒŠƒXƒg
+    /// ãƒ¢ãƒ¼ãƒ•ãƒªã‚¹ãƒˆ
     public List<Morph> Items { get { return items; }}
 
     /// <summary>
-    /// ƒ‚[ƒtƒOƒ‹[ƒv‚ğ¶¬‚µ‚Ü‚·B
+    /// ãƒ¢ãƒ¼ãƒ•ã‚°ãƒ«ãƒ¼ãƒ—ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     public MorphGroup(string name, NodesRange nodes_range)
     {
@@ -66,14 +66,14 @@ public class MorphGroup
         items = new List<Morph>();
     }
 
-    /// •ÏŒ`Š„‡‚ğÁ‹‚µ‚Ü‚·B
+    /// å¤‰å½¢å‰²åˆã‚’æ¶ˆå»ã—ã¾ã™ã€‚
     public void ClearRatios()
     {
         foreach (Morph morph in items)
             morph.Ratio = 0.0f;
     }
 
-    /// w’è‚µ‚½–¼‘O‚ğ‚Âƒ‚[ƒt‚ğŒŸõ‚µ‚Ü‚·B
+    /// æŒ‡å®šã—ãŸåå‰ã‚’æŒã¤ãƒ¢ãƒ¼ãƒ•ã‚’æ¤œç´¢ã—ã¾ã™ã€‚
     public Morph FindItemByName(string name)
     {
         Morph found = null;
@@ -96,10 +96,10 @@ public class MorphGroup
     }
 
     /// <summary>
-    /// ƒ‚[ƒt•ÏŒ`‚Ì‘ÎÛ‚Æ‚È‚éƒm[ƒh‚ğ‘I‘ğ‚µ‚Ü‚·B
+    /// ãƒ¢ãƒ¼ãƒ•å¤‰å½¢ã®å¯¾è±¡ã¨ãªã‚‹ãƒãƒ¼ãƒ‰ã‚’é¸æŠã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="tmo">‘ÎÛtmo</param>
-    /// <returns>ƒm[ƒhƒŠƒXƒg</returns>
+    /// <param name="tmo">å¯¾è±¡tmo</param>
+    /// <returns>ãƒãƒ¼ãƒ‰ãƒªã‚¹ãƒˆ</returns>
     public List<TMONode> SelectNodes(TMOFile tmo)
     {
         List<TMONode> select_nodes = new List<TMONode>();
@@ -113,15 +113,15 @@ public class MorphGroup
     }
 }
 
-/// ƒ‚[ƒtƒBƒ“ƒO
+/// ãƒ¢ãƒ¼ãƒ•ã‚£ãƒ³ã‚°
 public class Morphing
 {
     List<MorphGroup> groups;
-    /// ƒ‚[ƒtƒOƒ‹[ƒvƒŠƒXƒg
+    /// ãƒ¢ãƒ¼ãƒ•ã‚°ãƒ«ãƒ¼ãƒ—ãƒªã‚¹ãƒˆ
     public List<MorphGroup> Groups { get { return groups; }}
 
     /// <summary>
-    /// ƒ‚[ƒtƒBƒ“ƒO‚ğ¶¬‚µ‚Ü‚·B
+    /// ãƒ¢ãƒ¼ãƒ•ã‚£ãƒ³ã‚°ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
     public Morphing()
     {
@@ -129,9 +129,9 @@ public class Morphing
     }
 
     /// <summary>
-    /// ƒ‚[ƒtƒ‰ƒCƒuƒ‰ƒŠ‚ğ“Ç‚İ‚İ‚Ü‚·B
+    /// ãƒ¢ãƒ¼ãƒ•ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_path">ƒtƒHƒ‹ƒ_–¼</param>
+    /// <param name="source_path">ãƒ•ã‚©ãƒ«ãƒ€å</param>
     public void Load(string source_path)
     {
         foreach (string group_path in Directory.GetDirectories(source_path))
@@ -161,9 +161,9 @@ public class Morphing
     }
 
     /// <summary>
-    /// ƒ‚[ƒt•ÏŒ`‚ğÀs‚µ‚Ü‚·B
+    /// ãƒ¢ãƒ¼ãƒ•å¤‰å½¢ã‚’å®Ÿè¡Œã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="tmo">‘ÎÛtmo</param>
+    /// <param name="tmo">å¯¾è±¡tmo</param>
     public void Morph(TMOFile tmo)
     {
         tmo.LoadTransformationMatrixFromFrame(0);

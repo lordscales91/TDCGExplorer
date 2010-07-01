@@ -14,7 +14,7 @@ namespace TSOView
 
 public class TSOForm : Form
 {
-    // ƒL[“ü—Í‚ğ•Û
+    // ã‚­ãƒ¼å…¥åŠ›ã‚’ä¿æŒ
     internal bool[] keys = new bool[256];
     internal bool[] keysEnabled = new bool[256];
 

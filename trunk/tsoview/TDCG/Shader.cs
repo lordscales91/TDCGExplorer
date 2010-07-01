@@ -9,18 +9,18 @@ using Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
-    /// ƒVƒF[ƒ_İ’èƒpƒ‰ƒ[ƒ^
+    /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿
     /// </summary>
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class ShaderParameter
     {
         /// <summary>
-        /// ƒVƒF[ƒ_İ’è‚ÌŒ^–¼
+        /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šã®å‹å
         /// </summary>
         public enum Type
         {
             /// <summary>
-            /// ‚í‚©‚ç‚È‚¢
+            /// ã‚ã‹ã‚‰ãªã„
             /// </summary>
             Unknown,
             /// <summary>
@@ -40,7 +40,7 @@ namespace TDCG
             /// </summary>
             Float4,
             /// <summary>
-            /// ƒeƒNƒXƒ`ƒƒ
+            /// ãƒ†ã‚¯ã‚¹ãƒãƒ£
             /// </summary>
             Texture
         };
@@ -58,35 +58,35 @@ namespace TDCG
         internal bool system_p = false;
 
         /// <summary>
-        /// ƒpƒ‰ƒ[ƒ^‚Ì–¼Ì
+        /// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®åç§°
         /// </summary>
         public string Name { get { return name; } set { name = value; } }
         /// <summary>
-        /// float’l1
+        /// floatå€¤1
         /// </summary>
         public float F1 { get { return f1; } set { f1 = value; } }
         /// <summary>
-        /// float’l2
+        /// floatå€¤2
         /// </summary>
         public float F2 { get { return f2; } set { f2 = value; } }
         /// <summary>
-        /// float’l3
+        /// floatå€¤3
         /// </summary>
         public float F3 { get { return f3; } set { f3 = value; } }
         /// <summary>
-        /// float’l4
+        /// floatå€¤4
         /// </summary>
         public float F4 { get { return f4; } set { f4 = value; } }
         /// <summary>
-        /// floatŸŒ³”
+        /// floatæ¬¡å…ƒæ•°
         /// </summary>
         public int Dimension { get { return dim; } }
 
         /// <summary>
-        /// ƒVƒF[ƒ_İ’èƒtƒ@ƒCƒ‹‚Ìs‚ğ‰ğÍ‚µ‚ÄƒVƒF[ƒ_İ’èƒpƒ‰ƒ[ƒ^‚ğ¶¬‚µ‚Ü‚·B
+        /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®è¡Œã‚’è§£æã—ã¦ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="line">ƒVƒF[ƒ_İ’èƒtƒ@ƒCƒ‹‚Ìs</param>
-        /// <returns>ƒVƒF[ƒ_İ’èƒpƒ‰ƒ[ƒ^</returns>
+        /// <param name="line">ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«ã®è¡Œ</param>
+        /// <returns>ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿</returns>
         public static ShaderParameter Parse(string line)
         {
             int m = line.IndexOf('='); if (m < 0) throw new ArgumentException();
@@ -100,18 +100,18 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒVƒF[ƒ_İ’èƒpƒ‰ƒ[ƒ^‚ğ¶¬‚µ‚Ü‚·B
+        /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
         public ShaderParameter()
         {
         }
 
         /// <summary>
-        /// ƒVƒF[ƒ_İ’èƒpƒ‰ƒ[ƒ^‚ğ¶¬‚µ‚Ü‚·B
+        /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="type_string">Œ^–¼</param>
-        /// <param name="name">–¼Ì</param>
-        /// <param name="value">’l</param>
+        /// <param name="type_string">å‹å</param>
+        /// <param name="name">åç§°</param>
+        /// <param name="value">å€¤</param>
         public ShaderParameter(string type_string, string name, string value)
         {
             this.name = name;
@@ -144,13 +144,13 @@ namespace TDCG
             }
         }
 
-        /// •¶š—ñ‚Æ‚µ‚Ä•\Œ»‚µ‚Ü‚·B
+        /// æ–‡å­—åˆ—ã¨ã—ã¦è¡¨ç¾ã—ã¾ã™ã€‚
         public override string ToString()
         {
             return GetTypeName() + " " + name + " = " + GetValueString();
         }
 
-        /// Œ^–¼‚ğ•¶š—ñ‚Æ‚µ‚Ä“¾‚Ü‚·B
+        /// å‹åã‚’æ–‡å­—åˆ—ã¨ã—ã¦å¾—ã¾ã™ã€‚
         public string GetTypeName()
         {
             switch (type)
@@ -170,7 +170,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ’l‚ğ•¶š—ñ‚Æ‚µ‚Ä“¾‚Ü‚·B
+        /// å€¤ã‚’æ–‡å­—åˆ—ã¨ã—ã¦å¾—ã¾ã™ã€‚
         /// </summary>
         public string GetValueString()
         {
@@ -191,18 +191,18 @@ namespace TDCG
         }
 
         /// <summary>
-        /// •¶š—ñ‚ğæ“¾‚µ‚Ü‚·B
+        /// æ–‡å­—åˆ—ã‚’å–å¾—ã—ã¾ã™ã€‚
         /// </summary>
-        /// <returns>•¶š—ñ</returns>
+        /// <returns>æ–‡å­—åˆ—</returns>
         public string GetString()
         {
             return str;
         }
 
         /// <summary>
-        /// •¶š—ñ‚ğİ’è‚µ‚Ü‚·B
+        /// æ–‡å­—åˆ—ã‚’è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="value">•¶š—ñ•\Œ»</param>
+        /// <param name="value">æ–‡å­—åˆ—è¡¨ç¾</param>
         public void SetString(string value)
         {
             str = value.Trim('"', ' ', '\t');
@@ -211,10 +211,10 @@ namespace TDCG
         static Regex re_float_array = new Regex(@"\s*,\s*|\s+");
 
         /// <summary>
-        /// float’l‚Ì”z—ñ‚ğİ’è‚µ‚Ü‚·B
+        /// floatå€¤ã®é…åˆ—ã‚’è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="value">float”z—ñ’l‚Ì•¶š—ñ•\Œ»</param>
-        /// <param name="dim">ŸŒ³”</param>
+        /// <param name="value">floaté…åˆ—å€¤ã®æ–‡å­—åˆ—è¡¨ç¾</param>
+        /// <param name="dim">æ¬¡å…ƒæ•°</param>
         public void SetFloatDim(string value, int dim)
         {
             string[] token = re_float_array.Split(value.Trim('[', ']', ' ', '\t'));
@@ -230,17 +230,17 @@ namespace TDCG
         }
 
         /// <summary>
-        /// float’l‚ğæ“¾‚µ‚Ü‚·B
+        /// floatå€¤ã‚’å–å¾—ã—ã¾ã™ã€‚
         /// </summary>
-        /// <returns>float’l</returns>
+        /// <returns>floatå€¤</returns>
         public float GetFloat()
         {
             return f1;
         }
         /// <summary>
-        /// float’l‚ğİ’è‚µ‚Ü‚·B
+        /// floatå€¤ã‚’è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="value">float’l‚Ì•¶š—ñ•\Œ»</param>
+        /// <param name="value">floatå€¤ã®æ–‡å­—åˆ—è¡¨ç¾</param>
         public void SetFloat(string value)
         {
             try
@@ -254,17 +254,17 @@ namespace TDCG
         }
 
         /// <summary>
-        /// float3’l‚ğæ“¾‚µ‚Ü‚·B
+        /// float3å€¤ã‚’å–å¾—ã—ã¾ã™ã€‚
         /// </summary>
-        /// <returns>float3’l</returns>
+        /// <returns>float3å€¤</returns>
         public Vector3 GetFloat3()
         {
             return new Vector3(f1, f2, f3);
         }
         /// <summary>
-        /// float3’l‚ğİ’è‚µ‚Ü‚·B
+        /// float3å€¤ã‚’è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="value">float3’l‚Ì•¶š—ñ•\Œ»</param>
+        /// <param name="value">float3å€¤ã®æ–‡å­—åˆ—è¡¨ç¾</param>
         public void SetFloat3(string value)
         {
             try
@@ -278,17 +278,17 @@ namespace TDCG
         }
 
         /// <summary>
-        /// float4’l‚ğæ“¾‚µ‚Ü‚·B
+        /// float4å€¤ã‚’å–å¾—ã—ã¾ã™ã€‚
         /// </summary>
-        /// <returns>float4’l</returns>
+        /// <returns>float4å€¤</returns>
         public Vector4 GetFloat4()
         {
             return new Vector4(f1, f2, f3, f4);
         }
         /// <summary>
-        /// float4’l‚ğİ’è‚µ‚Ü‚·B
+        /// float4å€¤ã‚’è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="value">float4’l‚Ì•¶š—ñ•\Œ»</param>
+        /// <param name="value">float4å€¤ã®æ–‡å­—åˆ—è¡¨ç¾</param>
         public void SetFloat4(string value)
         {
             try
@@ -302,17 +302,17 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒeƒNƒXƒ`ƒƒ–¼‚ğæ“¾‚µ‚Ü‚·B
+        /// ãƒ†ã‚¯ã‚¹ãƒãƒ£åã‚’å–å¾—ã—ã¾ã™ã€‚
         /// </summary>
-        /// <returns>ƒeƒNƒXƒ`ƒƒ–¼</returns>
+        /// <returns>ãƒ†ã‚¯ã‚¹ãƒãƒ£å</returns>
         public string GetTexture()
         {
             return str;
         }
         /// <summary>
-        /// ƒeƒNƒXƒ`ƒƒ–¼‚ğİ’è‚µ‚Ü‚·B
+        /// ãƒ†ã‚¯ã‚¹ãƒãƒ£åã‚’è¨­å®šã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="value">ƒeƒNƒXƒ`ƒƒ–¼</param>
+        /// <param name="value">ãƒ†ã‚¯ã‚¹ãƒãƒ£å</param>
         public void SetTexture(string value)
         {
             str = value;
@@ -320,12 +320,12 @@ namespace TDCG
     }
 
     /// <summary>
-    /// ƒVƒF[ƒ_İ’è
+    /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®š
     /// </summary>
     public class Shader
     {
         /// <summary>
-        /// ƒVƒF[ƒ_İ’èƒpƒ‰ƒ[ƒ^‚Ì”z—ñ
+        /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®é…åˆ—
         /// </summary>
         public ShaderParameter[] shader_parameters;
 
@@ -349,7 +349,7 @@ namespace TDCG
         //internal float      highLightPower;  // = [100]
 
         /// <summary>
-        /// ŒõŒ¹•ûŒüƒxƒNƒgƒ‹
+        /// å…‰æºæ–¹å‘ãƒ™ã‚¯ãƒˆãƒ«
         /// </summary>
         public Vector4 LightDir
         {
@@ -357,7 +357,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ‰AƒeƒNƒXƒ`ƒƒ‚Ìƒtƒ@ƒCƒ‹–¼
+        /// é™°ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒ•ã‚¡ã‚¤ãƒ«å
         /// </summary>
         public string ShadeTexName
         {
@@ -371,7 +371,7 @@ namespace TDCG
             }
         }
         /// <summary>
-        /// FƒeƒNƒXƒ`ƒƒ‚Ìƒtƒ@ƒCƒ‹–¼
+        /// è‰²ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ãƒ•ã‚¡ã‚¤ãƒ«å
         /// </summary>
         public string ColorTexName
         {
@@ -386,9 +386,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒVƒF[ƒ_İ’è‚ğ“Ç‚İ‚İ‚Ü‚·B
+        /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
-        /// <param name="lines">ƒeƒLƒXƒgs”z—ñ</param>
+        /// <param name="lines">ãƒ†ã‚­ã‚¹ãƒˆè¡Œé…åˆ—</param>
         public void Load(string[] lines)
         {
             shader_parameters = new ShaderParameter[lines.Length];
@@ -448,7 +448,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒVƒF[ƒ_İ’è‚ğ•¶š—ñ‚Ì”z—ñ‚Æ‚µ‚Ä“¾‚Ü‚·B
+        /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šã‚’æ–‡å­—åˆ—ã®é…åˆ—ã¨ã—ã¦å¾—ã¾ã™ã€‚
         /// </summary>
         public string[] GetLines()
         {

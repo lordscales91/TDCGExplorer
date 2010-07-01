@@ -46,7 +46,7 @@ namespace TDCG.TAHTool
                 dir_entries[dirname].Add(basename);
             }
 
-            //‘SƒfƒBƒŒƒNƒgƒŠ–¼
+            //å…¨ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªå
             List<string> directories = new List<string>();
 
             foreach (string dirname in dir_entries.Keys)
@@ -56,15 +56,15 @@ namespace TDCG.TAHTool
             if (directories.Contains(source_path))
                 directories.Remove(source_path);
 
-            //‘Sƒtƒ@ƒCƒ‹”
+            //å…¨ãƒ•ã‚¡ã‚¤ãƒ«æ•°
             all_compressed_files = new file_entry[file_names.Count];
 
-            //file entry‚ğ—pˆÓ‚·‚é
+            //file entryã‚’ç”¨æ„ã™ã‚‹
             UInt32 act_file = 0;
-            //‘Sƒtƒ@ƒCƒ‹” + ‘SƒfƒBƒŒƒNƒgƒŠ”isource_path ‚Íœ‚­j
+            //å…¨ãƒ•ã‚¡ã‚¤ãƒ«æ•° + å…¨ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªæ•°ï¼ˆsource_path ã¯é™¤ãï¼‰
             file_index = new string[file_names.Count + dir_entries.Count];
 
-            //Œ»İ‚Ìfile index‚ğw‚· idx
+            //ç¾åœ¨ã®file indexã‚’æŒ‡ã™ idx
             UInt32 index_pos = 0;
 
             if (dir_entries.ContainsKey(source_path))
@@ -73,32 +73,32 @@ namespace TDCG.TAHTool
 
                 string act_file_index_path = "";
 
-                //Œ»İ‚ÌƒfƒBƒŒƒNƒgƒŠã‚É‚ ‚é‘Sƒtƒ@ƒCƒ‹–¼iƒfƒBƒŒƒNƒgƒŠ‚ÍŠÜ‚Ü‚È‚¢j‚É‚Â‚¢‚ÄŒJ‚è•Ô‚·
+                //ç¾åœ¨ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªä¸Šã«ã‚ã‚‹å…¨ãƒ•ã‚¡ã‚¤ãƒ«åï¼ˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã¯å«ã¾ãªã„ï¼‰ã«ã¤ã„ã¦ç¹°ã‚Šè¿”ã™
                 foreach (string file in dir_entries[source_path])
                 {
-                    //–¼–³‚µ‘Î‰
+                    //åç„¡ã—å¯¾å¿œ
                     try
                     {
-                        //–¼–³‚µ‚È‚Ì‚Åƒtƒ@ƒCƒ‹–¼‚Í‚È‚¢
+                        //åç„¡ã—ãªã®ã§ãƒ•ã‚¡ã‚¤ãƒ«åã¯ãªã„
                         //<idx>_<hash>.<ext>
                         string fparts0 = file;
                         string[] ary_1 = fparts0.Split(new string[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
                         string fparts1 = ary_1[ary_1.Length - 1];//= <hash>.<ext>
                         string fparts2 = fparts1.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries)[0];//<hash> before dot
                         //this should be the string of the hash value
-                        //hash’l‚ğT‚¦‚é
+                        //hashå€¤ã‚’æ§ãˆã‚‹
                         all_compressed_files[act_file].hash_value = System.UInt32.Parse(fparts2);
                     }
-                    //–¼–³‚µ‚Å‚È‚©‚Á‚½
+                    //åç„¡ã—ã§ãªã‹ã£ãŸ
                     catch (Exception)
                     {
                         file_index[index_pos] = file;
-                        //entry ƒtƒ@ƒCƒ‹–¼‚ğT‚¦‚é
+                        //entry ãƒ•ã‚¡ã‚¤ãƒ«åã‚’æ§ãˆã‚‹
                         all_compressed_files[act_file].file_name = act_file_index_path + file;
                         index_pos++;
                     }
 
-                    //Àƒtƒ@ƒCƒ‹–¼‚ğT‚¦‚é
+                    //å®Ÿãƒ•ã‚¡ã‚¤ãƒ«åã‚’æ§ãˆã‚‹
                     all_compressed_files[act_file].true_file_name = source_path + "/" + file;
                     act_file++;
                 }
@@ -108,22 +108,22 @@ namespace TDCG.TAHTool
             {
                 string act_file_index_path = "";
                 {
-                    //ƒfƒBƒŒƒNƒgƒŠ–¼‚ğT‚¦‚é
-                    //‚½‚¾‚µ source_path + 1 •¶š”ò‚Î‚·
-                    //‚¢‚Â‚à '/' ‚ÅI‚í‚é
+                    //ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªåã‚’æ§ãˆã‚‹
+                    //ãŸã ã— source_path + 1 æ–‡å­—é£›ã°ã™
+                    //ã„ã¤ã‚‚ '/' ã§çµ‚ã‚ã‚‹
                     file_index[index_pos] = directories[i].Substring(source_path.Length + 1) + @"/";
                     act_file_index_path = file_index[index_pos];
                     index_pos++;
                 }
-                //Œ»İ‚ÌƒfƒBƒŒƒNƒgƒŠã‚É‚ ‚é‘Sƒtƒ@ƒCƒ‹–¼iƒfƒBƒŒƒNƒgƒŠ‚ÍŠÜ‚Ü‚È‚¢j‚É‚Â‚¢‚ÄŒJ‚è•Ô‚·
+                //ç¾åœ¨ã®ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªä¸Šã«ã‚ã‚‹å…¨ãƒ•ã‚¡ã‚¤ãƒ«åï¼ˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã¯å«ã¾ãªã„ï¼‰ã«ã¤ã„ã¦ç¹°ã‚Šè¿”ã™
                 foreach (string file in dir_entries[directories[i]])
                 {
                     file_index[index_pos] = file;
-                    //entry ƒtƒ@ƒCƒ‹–¼‚ğT‚¦‚é
+                    //entry ãƒ•ã‚¡ã‚¤ãƒ«åã‚’æ§ãˆã‚‹
                     all_compressed_files[act_file].file_name = act_file_index_path + file;
                     index_pos++;
 
-                    //Àƒtƒ@ƒCƒ‹–¼‚ğT‚¦‚é
+                    //å®Ÿãƒ•ã‚¡ã‚¤ãƒ«åã‚’æ§ãˆã‚‹
                     all_compressed_files[act_file].true_file_name = directories[i] + "/" + file;
                     act_file++;
                 }
@@ -137,10 +137,10 @@ namespace TDCG.TAHTool
         int version = 0x10;
         public int Version { get { return version; } set { version = value; } }
 
-        //entryî•ñ
+        //entryæƒ…å ±
         byte[] b_file_index = null;
         UInt32 b_file_index_count = 0;
-        //entryî•ñiˆ³kŒãj
+        //entryæƒ…å ±ï¼ˆåœ§ç¸®å¾Œï¼‰
         byte[] compressed_file_index = null;
         UInt32 compressed_file_index_length = 0;
 
@@ -148,20 +148,20 @@ namespace TDCG.TAHTool
 
         int build_compressed_file_indices(string[] file_index)
         {
-            //entryî•ñ
+            //entryæƒ…å ±
 
-            //‘Sentryî•ñ’·‚³
+            //å…¨entryæƒ…å ±é•·ã•
             b_file_index_count = 0;
             for (int i = 0; i < file_index.Length; i++)
             {
                 if (file_index[i] != null)
                 {
-                    //+1‚ÍnullI’[
+                    //+1ã¯nullçµ‚ç«¯
                     b_file_index_count += (UInt32)(file_index[i].Length + 1);
                 }
             }
 
-            //ƒfƒBƒŒƒNƒgƒŠ–¼ ('/' I’[) + ƒtƒ@ƒCƒ‹–¼ (basename) ‚ğnullI’[‚Å1—ñ‚ÉŠi”[‚·‚é
+            //ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªå ('/' çµ‚ç«¯) + ãƒ•ã‚¡ã‚¤ãƒ«å (basename) ã‚’nullçµ‚ç«¯ã§1åˆ—ã«æ ¼ç´ã™ã‚‹
             b_file_index = new byte[b_file_index_count + 3];//savety margin for encryption...
             b_file_index.Initialize();
 
@@ -172,16 +172,16 @@ namespace TDCG.TAHTool
                 {
                     byte[] partial_index = System.Text.Encoding.ASCII.GetBytes(file_index[i]);
                     Array.Copy(partial_index, 0, b_file_index, (int)b_file_index_pos, partial_index.Length);
-                    //+1‚ÍnullI’[
+                    //+1ã¯nullçµ‚ç«¯
                     b_file_index_pos += (UInt32)(partial_index.Length + 1);
                 }
             }
-            //-- entryî•ñŠi”[Š®—¹! --
+            //-- entryæƒ…å ±æ ¼ç´å®Œäº†! --
 
             Compression.encrypt(ref b_file_index, b_file_index_count, ref compressed_file_index, ref compressed_file_index_length);
-            //-- entryî•ñˆ³kŠ®—¹! --
+            //-- entryæƒ…å ±åœ§ç¸®å®Œäº†! --
 
-            //xxx: copy‚·‚é•K—v‚Í‚ ‚é‚©???
+            //xxx: copyã™ã‚‹å¿…è¦ã¯ã‚ã‚‹ã‹???
             compressed_file_index_s = new byte[compressed_file_index_length];
             Array.Copy(compressed_file_index, 0, compressed_file_index_s, 0, compressed_file_index_length);
 
@@ -205,46 +205,46 @@ namespace TDCG.TAHTool
             writer.Write(((UInt32)version));
             writer.Write(((UInt32)0));
 
-            //+4‚Í b_file_index_count (Uint32) Ši”[—Ìˆæ
+            //+4ã¯ b_file_index_count (Uint32) æ ¼ç´é ˜åŸŸ
             UInt32 offset = 16 + 8 * all_files_count + compressed_file_index_length + 4;
             //writer needs this defined offset for adding length lists of the compressed data later on
             writer.BaseStream.Seek(offset, SeekOrigin.Begin);
-            //‘Sƒtƒ@ƒCƒ‹‚É‚Â‚¢‚ÄŒJ‚è•Ô‚µiƒfƒBƒŒƒNƒgƒŠ‚ÍŠÜ‚Ü‚È‚¢j
+            //å…¨ãƒ•ã‚¡ã‚¤ãƒ«ã«ã¤ã„ã¦ç¹°ã‚Šè¿”ã—ï¼ˆãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã¯å«ã¾ãªã„ï¼‰
             for (int i = 0; i < all_compressed_files.Length; i++)
             {
                 try
                 {
-                    //data‚ğƒtƒ@ƒCƒ‹‚©‚ç“Ç‚Ş
+                    //dataã‚’ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰èª­ã‚€
                     Stream input_stream = GetFileEntryStream(all_compressed_files[i].true_file_name);
                     BinaryReader reader = new BinaryReader(input_stream);
                     byte[] data_input = reader.ReadBytes((int)reader.BaseStream.Length);
-                    //ˆ³k‘O’·‚³‚ğT‚¦‚é
+                    //åœ§ç¸®å‰é•·ã•ã‚’æ§ãˆã‚‹
                     all_compressed_files[i].uncompressed_length = (UInt32)reader.BaseStream.Length;
                     reader.Close();
-                    //-- data“Ç‚İ‚İŠ®—¹! --
+                    //-- dataèª­ã¿è¾¼ã¿å®Œäº†! --
 
-                    ////xxx: copy‚·‚é•K—v‚Í‚ ‚é‚©???
+                    ////xxx: copyã™ã‚‹å¿…è¦ã¯ã‚ã‚‹ã‹???
                     byte[] encrypt_data_input = new byte[data_input.Length + 3]; //with safety margin for encryption
                     Array.Copy(data_input, 0, encrypt_data_input, 0, (int)data_input.Length);
                     byte[] compressed_data = null;
                     UInt32 compressed_length = 0;
                     Compression.encrypt(ref encrypt_data_input, (UInt32)data_input.Length, ref compressed_data, ref compressed_length);
-                    //-- dataˆ³kŠ®—¹! --
+                    //-- dataåœ§ç¸®å®Œäº†! --
 
-                    //ˆ³kŒã’·‚³‚ğT‚¦‚é
+                    //åœ§ç¸®å¾Œé•·ã•ã‚’æ§ãˆã‚‹
                     all_compressed_files[i].compressed_length = compressed_length;
-                    ////xxx: copy‚·‚é•K—v‚Í‚ ‚é‚©???
+                    ////xxx: copyã™ã‚‹å¿…è¦ã¯ã‚ã‚‹ã‹???
                     all_compressed_files[i].compressed_data = new byte[compressed_length];
                     Array.Copy(compressed_data, 0, all_compressed_files[i].compressed_data, 0, (int)compressed_length);
 
                     writer.Write(all_compressed_files[i].uncompressed_length);
                     writer.Write(all_compressed_files[i].compressed_data);
                     writer.Flush();
-                    //-- data‘‚«o‚µŠ®—¹! --
+                    //-- dataæ›¸ãå‡ºã—å®Œäº†! --
 
                     if (i > 0)
                     {
-                        //data‚Í‚à‚¤•s—v‚È‚Ì‚Åíœ
+                        //dataã¯ã‚‚ã†ä¸è¦ãªã®ã§å‰Šé™¤
                         all_compressed_files[i - 1].compressed_data = new byte[] { };
                     }
                 }

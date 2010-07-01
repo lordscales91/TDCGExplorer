@@ -8,12 +8,12 @@ using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 namespace TDCG
 {
     /// <summary>
-    /// PNGƒtƒ@ƒCƒ‹‚ğˆµ‚¢‚Ü‚·B
+    /// PNGãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ‰±ã„ã¾ã™ã€‚
     /// </summary>
     public class PNGFile
     {
         /// <summary>
-        /// ƒoƒCƒiƒŠ’l‚Æ‚µ‚Ä“Ç‚İæ‚è‚Ü‚·B
+        /// ãƒã‚¤ãƒŠãƒªå€¤ã¨ã—ã¦èª­ã¿å–ã‚Šã¾ã™ã€‚
         /// </summary>
         protected BinaryReader reader;
 
@@ -21,34 +21,34 @@ namespace TDCG
         internal byte[] ihdr;
         internal List<byte[]> IdatList = new List<byte[]>();
         /// <summary>
-        /// CSCƒ`ƒFƒbƒN‚ğs‚¤ƒIƒuƒWƒFƒNƒg
+        /// CSCãƒã‚§ãƒƒã‚¯ã‚’è¡Œã†ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
         /// </summary>
         protected Crc32 crc = new Crc32();
 
         /// <summary>
-        /// ƒoƒCƒiƒŠ‘‚«‚İ‚É—p‚¢‚éƒfƒŠƒQ[ƒgŒ^
+        /// ãƒã‚¤ãƒŠãƒªæ›¸ãè¾¼ã¿ã«ç”¨ã„ã‚‹ãƒ‡ãƒªã‚²ãƒ¼ãƒˆå‹
         /// </summary>
         /// <param name="bw"></param>
         public delegate void BinaryWriterHandler(BinaryWriter bw);
 
         /// <summary>
-        /// TaObƒ`ƒƒƒ“ƒN‚ğ‘‚«o‚·ƒnƒ“ƒhƒ‰
+        /// TaObãƒãƒ£ãƒ³ã‚¯ã‚’æ›¸ãå‡ºã™ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public BinaryWriterHandler WriteTaOb;
 
         /// <summary>
-        /// w’èƒpƒX‚É•Û‘¶‚µ‚Ü‚·B
+        /// æŒ‡å®šãƒ‘ã‚¹ã«ä¿å­˜ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="dest_file">ƒpƒX</param>
+        /// <param name="dest_file">ãƒ‘ã‚¹</param>
         public void Save(string dest_file)
         {
             using (Stream dest_stream = File.Create(dest_file))
                 Save(dest_stream);
         }
         /// <summary>
-        /// w’èƒXƒgƒŠ[ƒ€‚É•Û‘¶‚µ‚Ü‚·B
+        /// æŒ‡å®šã‚¹ãƒˆãƒªãƒ¼ãƒ ã«ä¿å­˜ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="dest_stream">ƒXƒgƒŠ[ƒ€</param>
+        /// <param name="dest_stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
         public void Save(Stream dest_stream)
         {
             BinaryWriter bw = new BinaryWriter(dest_stream, System.Text.Encoding.Default);
@@ -65,46 +65,46 @@ namespace TDCG
         }
 
         /// <summary>
-        /// pngƒwƒbƒ_‚ğˆ—‚·‚é‚Ì‚É—p‚¢‚éƒfƒŠƒQ[ƒgŒ^
+        /// pngãƒ˜ãƒƒãƒ€ã‚’å‡¦ç†ã™ã‚‹ã®ã«ç”¨ã„ã‚‹ãƒ‡ãƒªã‚²ãƒ¼ãƒˆå‹
         /// </summary>
-        /// <param name="header">ƒwƒbƒ_</param>
+        /// <param name="header">ãƒ˜ãƒƒãƒ€</param>
         public delegate void PngHeaderHandler(byte[] header);
         /// <summary>
-        /// pngƒf[ƒ^‚ğˆ—‚·‚é‚Ì‚É—p‚¢‚éƒfƒŠƒQ[ƒgŒ^
+        /// pngãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†ã™ã‚‹ã®ã«ç”¨ã„ã‚‹ãƒ‡ãƒªã‚²ãƒ¼ãƒˆå‹
         /// </summary>
-        /// <param name="data">ƒf[ƒ^</param>
+        /// <param name="data">ãƒ‡ãƒ¼ã‚¿</param>
         public delegate void PngDataHandler(byte[] data);
 
         /// <summary>
-        /// pngƒwƒbƒ_‚ğˆ—‚·‚éƒnƒ“ƒhƒ‰
+        /// pngãƒ˜ãƒƒãƒ€ã‚’å‡¦ç†ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public PngHeaderHandler Header;
         /// <summary>
-        /// IHDRƒ`ƒƒƒ“ƒN‚Ìƒf[ƒ^‚ğˆ—‚·‚éƒnƒ“ƒhƒ‰
+        /// IHDRãƒãƒ£ãƒ³ã‚¯ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public PngDataHandler Ihdr;
         /// <summary>
-        /// IDATƒ`ƒƒƒ“ƒN‚Ìƒf[ƒ^‚ğˆ—‚·‚éƒnƒ“ƒhƒ‰
+        /// IDATãƒãƒ£ãƒ³ã‚¯ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public PngDataHandler Idat;
         /// <summary>
-        /// IENDƒ`ƒƒƒ“ƒN‚Ìƒf[ƒ^‚ğˆ—‚·‚éƒnƒ“ƒhƒ‰
+        /// IENDãƒãƒ£ãƒ³ã‚¯ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public PngDataHandler Iend;
 
         /// <summary>
-        /// w’èƒpƒX‚©‚ç“Ç‚İ‚İ‚Ü‚·B
+        /// æŒ‡å®šãƒ‘ã‚¹ã‹ã‚‰èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
-        /// <param name="source_file">ƒpƒX</param>
+        /// <param name="source_file">ãƒ‘ã‚¹</param>
         public void Load(string source_file)
         {
             using (Stream source_stream = File.OpenRead(source_file))
                 Load(source_stream);
         }
         /// <summary>
-        /// w’èƒXƒgƒŠ[ƒ€‚©‚ç“Ç‚İ‚İ‚Ü‚·B
+        /// æŒ‡å®šã‚¹ãƒˆãƒªãƒ¼ãƒ ã‹ã‚‰èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
-        /// <param name="source_stream">ƒXƒgƒŠ[ƒ€</param>
+        /// <param name="source_stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
         public void Load(Stream source_stream)
         {
             this.reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
@@ -165,79 +165,79 @@ namespace TDCG
         }
 
         /// <summary>
-        /// Typeƒ`ƒƒƒ“ƒN‚ğ“Ç‚İ‚Ş‚Ì‚É—p‚¢‚éƒfƒŠƒQ[ƒgŒ^
+        /// Typeãƒãƒ£ãƒ³ã‚¯ã‚’èª­ã¿è¾¼ã‚€ã®ã«ç”¨ã„ã‚‹ãƒ‡ãƒªã‚²ãƒ¼ãƒˆå‹
         /// </summary>
         /// <param name="type">type</param>
         public delegate void TaobTypeHandler(string type);
         /// <summary>
-        /// Camiƒ`ƒƒƒ“ƒN‚ğ“Ç‚İ‚Ş‚Ì‚É—p‚¢‚éƒfƒŠƒQ[ƒgŒ^
+        /// Camiãƒãƒ£ãƒ³ã‚¯ã‚’èª­ã¿è¾¼ã‚€ã®ã«ç”¨ã„ã‚‹ãƒ‡ãƒªã‚²ãƒ¼ãƒˆå‹
         /// </summary>
-        /// <param name="stream">ƒXƒgƒŠ[ƒ€</param>
-        /// <param name="length">ƒf[ƒ^’·‚³</param>
+        /// <param name="stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
+        /// <param name="length">ãƒ‡ãƒ¼ã‚¿é•·ã•</param>
         public delegate void TaobCamiHandler(Stream stream, int length);
         /// <summary>
-        /// Lgtaƒ`ƒƒƒ“ƒN‚ğ“Ç‚İ‚Ş‚Ì‚É—p‚¢‚éƒfƒŠƒQ[ƒgŒ^
+        /// Lgtaãƒãƒ£ãƒ³ã‚¯ã‚’èª­ã¿è¾¼ã‚€ã®ã«ç”¨ã„ã‚‹ãƒ‡ãƒªã‚²ãƒ¼ãƒˆå‹
         /// </summary>
-        /// <param name="stream">ƒXƒgƒŠ[ƒ€</param>
-        /// <param name="length">ƒf[ƒ^’·‚³</param>
+        /// <param name="stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
+        /// <param name="length">ãƒ‡ãƒ¼ã‚¿é•·ã•</param>
         public delegate void TaobLgtaHandler(Stream stream, int length);
         /// <summary>
-        /// Figuƒ`ƒƒƒ“ƒN‚ğ“Ç‚İ‚Ş‚Ì‚É—p‚¢‚éƒfƒŠƒQ[ƒgŒ^
+        /// Figuãƒãƒ£ãƒ³ã‚¯ã‚’èª­ã¿è¾¼ã‚€ã®ã«ç”¨ã„ã‚‹ãƒ‡ãƒªã‚²ãƒ¼ãƒˆå‹
         /// </summary>
-        /// <param name="stream">ƒXƒgƒŠ[ƒ€</param>
-        /// <param name="length">ƒf[ƒ^’·‚³</param>
+        /// <param name="stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
+        /// <param name="length">ãƒ‡ãƒ¼ã‚¿é•·ã•</param>
         public delegate void TaobFiguHandler(Stream stream, int length);
         /// <summary>
-        /// Ftmoƒ`ƒƒƒ“ƒN‚ğ“Ç‚İ‚Ş‚Ì‚É—p‚¢‚éƒfƒŠƒQ[ƒgŒ^
+        /// Ftmoãƒãƒ£ãƒ³ã‚¯ã‚’èª­ã¿è¾¼ã‚€ã®ã«ç”¨ã„ã‚‹ãƒ‡ãƒªã‚²ãƒ¼ãƒˆå‹
         /// </summary>
-        /// <param name="stream">ƒXƒgƒŠ[ƒ€</param>
-        /// <param name="length">ƒf[ƒ^’·‚³</param>
+        /// <param name="stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
+        /// <param name="length">ãƒ‡ãƒ¼ã‚¿é•·ã•</param>
         public delegate void TaobFtmoHandler(Stream stream, int length);
         /// <summary>
-        /// Ftsoƒ`ƒƒƒ“ƒN‚ğ“Ç‚İ‚Ş‚Ì‚É—p‚¢‚éƒfƒŠƒQ[ƒgŒ^
+        /// Ftsoãƒãƒ£ãƒ³ã‚¯ã‚’èª­ã¿è¾¼ã‚€ã®ã«ç”¨ã„ã‚‹ãƒ‡ãƒªã‚²ãƒ¼ãƒˆå‹
         /// </summary>
-        /// <param name="stream">ƒXƒgƒŠ[ƒ€</param>
-        /// <param name="length">ƒf[ƒ^’·‚³</param>
+        /// <param name="stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
+        /// <param name="length">ãƒ‡ãƒ¼ã‚¿é•·ã•</param>
         /// <param name="opt1">opt1</param>
         public delegate void TaobFtsoHandler(Stream stream, int length, byte[] opt1);
 
         /// <summary>
-        /// Hsavƒ`ƒƒƒ“ƒN‚Ìƒf[ƒ^‚ğˆ—‚·‚éƒnƒ“ƒhƒ‰
+        /// Hsavãƒãƒ£ãƒ³ã‚¯ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public TaobTypeHandler Hsav;
         /// <summary>
-        /// Poseƒ`ƒƒƒ“ƒN‚Ìƒf[ƒ^‚ğˆ—‚·‚éƒnƒ“ƒhƒ‰
+        /// Poseãƒãƒ£ãƒ³ã‚¯ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public TaobTypeHandler Pose;
         /// <summary>
-        /// Scneƒ`ƒƒƒ“ƒN‚Ìƒf[ƒ^‚ğˆ—‚·‚éƒnƒ“ƒhƒ‰
+        /// Scneãƒãƒ£ãƒ³ã‚¯ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public TaobTypeHandler Scne;
         /// <summary>
-        /// Camiƒ`ƒƒƒ“ƒN‚Ìƒf[ƒ^‚ğˆ—‚·‚éƒnƒ“ƒhƒ‰
+        /// Camiãƒãƒ£ãƒ³ã‚¯ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public TaobCamiHandler Cami;
         /// <summary>
-        /// Lgtaƒ`ƒƒƒ“ƒN‚Ìƒf[ƒ^‚ğˆ—‚·‚éƒnƒ“ƒhƒ‰
+        /// Lgtaãƒãƒ£ãƒ³ã‚¯ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public TaobLgtaHandler Lgta;
         /// <summary>
-        /// Figuƒ`ƒƒƒ“ƒN‚Ìƒf[ƒ^‚ğˆ—‚·‚éƒnƒ“ƒhƒ‰
+        /// Figuãƒãƒ£ãƒ³ã‚¯ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public TaobFiguHandler Figu;
         /// <summary>
-        /// Ftmoƒ`ƒƒƒ“ƒN‚Ìƒf[ƒ^‚ğˆ—‚·‚éƒnƒ“ƒhƒ‰
+        /// Ftmoãƒãƒ£ãƒ³ã‚¯ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public TaobFtmoHandler Ftmo;
         /// <summary>
-        /// Ftsoƒ`ƒƒƒ“ƒN‚Ìƒf[ƒ^‚ğˆ—‚·‚éƒnƒ“ƒhƒ‰
+        /// Ftsoãƒãƒ£ãƒ³ã‚¯ã®ãƒ‡ãƒ¼ã‚¿ã‚’å‡¦ç†ã™ã‚‹ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public TaobFtsoHandler Ftso;
 
         /// <summary>
-        /// TaObƒ`ƒƒƒ“ƒN‚ğ“Ç‚İ‚Æ‚è‚Ü‚·B
+        /// TaObãƒãƒ£ãƒ³ã‚¯ã‚’èª­ã¿ã¨ã‚Šã¾ã™ã€‚
         /// </summary>
-        /// <param name="chunk_data">ƒ`ƒƒƒ“ƒN</param>
+        /// <param name="chunk_data">ãƒãƒ£ãƒ³ã‚¯</param>
         protected void ReadTaOb(byte[] chunk_data)
         {
             String type = System.Text.Encoding.ASCII.GetString(chunk_data, 0, 4);

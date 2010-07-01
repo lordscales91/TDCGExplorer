@@ -9,46 +9,46 @@ using TDCG.Extensions;
 namespace TDCG
 {
     /// <summary>
-    /// TMOƒtƒ@ƒCƒ‹‚ğˆµ‚¢‚Ü‚·B
+    /// TMOãƒ•ã‚¡ã‚¤ãƒ«ã‚’æ‰±ã„ã¾ã™ã€‚
     /// </summary>
     public class TMOFile
     {
         /// <summary>
-        /// ƒoƒCƒiƒŠ’l‚Æ‚µ‚Ä“Ç‚İæ‚è‚Ü‚·B
+        /// ãƒã‚¤ãƒŠãƒªå€¤ã¨ã—ã¦èª­ã¿å–ã‚Šã¾ã™ã€‚
         /// </summary>
         protected BinaryReader reader;
 
         /// <summary>
-        /// ƒwƒbƒ_
+        /// ãƒ˜ãƒƒãƒ€
         /// </summary>
         public byte[] header;
         /// <summary>
-        /// ƒIƒvƒVƒ‡ƒ“’l0
+        /// ã‚ªãƒ—ã‚·ãƒ§ãƒ³å€¤0
         /// </summary>
         public int opt0;
         /// <summary>
-        /// ƒIƒvƒVƒ‡ƒ“’l1
+        /// ã‚ªãƒ—ã‚·ãƒ§ãƒ³å€¤1
         /// </summary>
         public int opt1;
         /// <summary>
-        /// bone”z—ñ
+        /// boneé…åˆ—
         /// </summary>
         public TMONode[] nodes;
         /// <summary>
-        /// ƒtƒŒ[ƒ€”z—ñ
+        /// ãƒ•ãƒ¬ãƒ¼ãƒ é…åˆ—
         /// </summary>
         public TMOFrame[] frames;
         /// <summary>
-        /// ƒtƒbƒ^
+        /// ãƒ•ãƒƒã‚¿
         /// </summary>
         public byte[] footer;
 
         internal Dictionary<string, TMONode> nodemap;
 
         /// <summary>
-        /// w’èƒpƒX‚É•Û‘¶‚µ‚Ü‚·B
+        /// æŒ‡å®šãƒ‘ã‚¹ã«ä¿å­˜ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="dest_file">ƒpƒX</param>
+        /// <param name="dest_file">ãƒ‘ã‚¹</param>
         public void Save(string dest_file)
         {
             using (Stream dest_stream = File.Create(dest_file))
@@ -56,9 +56,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èƒXƒgƒŠ[ƒ€‚É•Û‘¶‚µ‚Ü‚·B
+        /// æŒ‡å®šã‚¹ãƒˆãƒªãƒ¼ãƒ ã«ä¿å­˜ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="dest_stream">ƒXƒgƒŠ[ƒ€</param>
+        /// <param name="dest_stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
         public void Save(Stream dest_stream)
         {
             BinaryWriter bw = new BinaryWriter(dest_stream);
@@ -80,7 +80,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 'TMO1' ‚ğ‘‚«o‚µ‚Ü‚·B
+        /// 'TMO1' ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         public static void WriteMagic(BinaryWriter bw)
         {
@@ -88,9 +88,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èƒpƒX‚©‚ç“Ç‚İ‚İ‚Ü‚·B
+        /// æŒ‡å®šãƒ‘ã‚¹ã‹ã‚‰èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
-        /// <param name="source_file">ƒpƒX</param>
+        /// <param name="source_file">ãƒ‘ã‚¹</param>
         public void Load(string source_file)
         {
             using (Stream source_stream = File.OpenRead(source_file))
@@ -98,9 +98,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èƒXƒgƒŠ[ƒ€‚©‚ç“Ç‚İ‚İ‚Ü‚·B
+        /// æŒ‡å®šã‚¹ãƒˆãƒªãƒ¼ãƒ ã‹ã‚‰èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
-        /// <param name="source_stream">ƒXƒgƒŠ[ƒ€</param>
+        /// <param name="source_stream">ã‚¹ãƒˆãƒªãƒ¼ãƒ </param>
         public void Load(Stream source_stream)
         {
             this.reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
@@ -163,10 +163,10 @@ namespace TDCG
         }
 
         /// <summary>
-        /// s—ñ‚ğ“¾‚Ü‚·B
+        /// è¡Œåˆ—ã‚’å¾—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="name">bone–¼Ì</param>
-        /// <param name="frame_index">ƒtƒŒ[ƒ€”Ô†</param>
+        /// <param name="name">boneåç§°</param>
+        /// <param name="frame_index">ãƒ•ãƒ¬ãƒ¼ãƒ ç•ªå·</param>
         /// <returns></returns>
         public TMOMat GetTMOMat(string name, int frame_index)
         {
@@ -174,12 +174,12 @@ namespace TDCG
         }
 
         /// <summary>
-        /// node id‚ÌƒyƒA‚ğì¬‚µ‚Ü‚·B
-        /// ƒyƒA‚ÌƒL[‚Ínode id
-        /// ƒyƒA‚Ì’l‚Í‚à‚¤‚Ğ‚Æ‚Â‚Ìtmo‚É‚¨‚¢‚Ä–¼Ìi’Z‚¢Œ`®j‚ªˆê’v‚·‚énode id‚É‚È‚è‚Ü‚·B
+        /// node idã®ãƒšã‚¢ã‚’ä½œæˆã—ã¾ã™ã€‚
+        /// ãƒšã‚¢ã®ã‚­ãƒ¼ã¯node id
+        /// ãƒšã‚¢ã®å€¤ã¯ã‚‚ã†ã²ã¨ã¤ã®tmoã«ãŠã„ã¦åç§°ï¼ˆçŸ­ã„å½¢å¼ï¼‰ãŒä¸€è‡´ã™ã‚‹node idã«ãªã‚Šã¾ã™ã€‚
         /// </summary>
-        /// <param name="motion">‚à‚¤‚Ğ‚Æ‚Â‚Ìtmo</param>
-        /// <returns>tmo frame index‚ÌƒyƒA</returns>
+        /// <param name="motion">ã‚‚ã†ã²ã¨ã¤ã®tmo</param>
+        /// <returns>tmo frame indexã®ãƒšã‚¢</returns>
         public int[] CreateNodeIdPair(TMOFile motion)
         {
             Dictionary<string, TMONode> source_nodes = new Dictionary<string, TMONode>();
@@ -214,7 +214,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’ètmo‚©‚çƒtƒŒ[ƒ€‚ğ’Ç‰Á‚µ‚Ü‚·B
+        /// æŒ‡å®štmoã‹ã‚‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è¿½åŠ ã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="motion">tmo</param>
         public void AppendFrameFrom(TMOFile motion)
@@ -234,11 +234,11 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’ètmo‚ÖƒtƒŒ[ƒ€‚ğ•âŠÔ‚µ‚Ü‚·B
+        /// æŒ‡å®štmoã¸ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è£œé–“ã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="motion">tmo</param>
-        /// <param name="append_length">•âŠÔ‚·‚éƒtƒŒ[ƒ€’·‚³</param>
-        /// <param name="p1">•âŠÔ‘¬“xŒW”</param>
+        /// <param name="append_length">è£œé–“ã™ã‚‹ãƒ•ãƒ¬ãƒ¼ãƒ é•·ã•</param>
+        /// <param name="p1">è£œé–“é€Ÿåº¦ä¿‚æ•°</param>
         public void SlerpFrameEndTo(TMOFile motion, int append_length, float p1)
         {
             int[] id_pair = CreateNodeIdPair(motion);
@@ -261,17 +261,17 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’ètmo‚ÖƒtƒŒ[ƒ€‚ğ•âŠÔ‚µ‚Ü‚·B
+        /// æŒ‡å®štmoã¸ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è£œé–“ã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="motion">tmo</param>
-        /// <param name="append_length">•âŠÔ‚·‚éƒtƒŒ[ƒ€’·‚³</param>
+        /// <param name="append_length">è£œé–“ã™ã‚‹ãƒ•ãƒ¬ãƒ¼ãƒ é•·ã•</param>
         public void SlerpFrameEndTo(TMOFile motion, int append_length)
         {
             SlerpFrameEndTo(motion, append_length, 0.5f);
         }
 
         /// <summary>
-        /// w’ètmo‚ÖƒtƒŒ[ƒ€‚ğ•âŠÔ‚µ‚Ü‚·B
+        /// æŒ‡å®štmoã¸ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è£œé–“ã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="motion">tmo</param>
         public void SlerpFrameEndTo(TMOFile motion)
@@ -280,7 +280,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒtƒŒ[ƒ€‚ğw’èindex‚Ì‚İ‚ÉØ‚è‹l‚ß‚Ü‚·B
+        /// ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’æŒ‡å®šindexã®ã¿ã«åˆ‡ã‚Šè©°ã‚ã¾ã™ã€‚
         /// </summary>
         /// <param name="frame_index">index</param>
         public void TruncateFrame(int frame_index)
@@ -298,7 +298,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// Œ»İ‚Ìs—ñ‚ğw’èƒtƒŒ[ƒ€‚É•Û‘¶‚µ‚Ü‚·B
+        /// ç¾åœ¨ã®è¡Œåˆ—ã‚’æŒ‡å®šãƒ•ãƒ¬ãƒ¼ãƒ ã«ä¿å­˜ã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="frame_index">index</param>
         public void SaveTransformationMatrixToFrame(int frame_index)
@@ -311,7 +311,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èƒtƒŒ[ƒ€‚Ìs—ñ‚ğ•Û‚µ‚Ü‚·B
+        /// æŒ‡å®šãƒ•ãƒ¬ãƒ¼ãƒ ã®è¡Œåˆ—ã‚’ä¿æŒã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="frame_index">index</param>
         public void LoadTransformationMatrixFromFrame(int frame_index)
@@ -324,9 +324,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’è–¼Ìi’Z‚¢Œ`®j‚ğ‚Ânode‚ğŒŸõ‚µ‚Ü‚·B
+        /// æŒ‡å®šåç§°ï¼ˆçŸ­ã„å½¢å¼ï¼‰ã‚’æŒã¤nodeã‚’æ¤œç´¢ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="name">node–¼Ìi’Z‚¢Œ`®j</param>
+        /// <param name="name">nodeåç§°ï¼ˆçŸ­ã„å½¢å¼ï¼‰</param>
         /// <returns></returns>
         public TMONode FindNodeByName(string name)
         {
@@ -337,7 +337,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’ètmo‚Ìƒ‚[ƒVƒ‡ƒ“iŠJnƒtƒŒ[ƒ€‚©‚ç‚Ì•ÏˆÊj‚ğ•¡Ê‚µ‚Ü‚·B
+        /// æŒ‡å®štmoã®ãƒ¢ãƒ¼ã‚·ãƒ§ãƒ³ï¼ˆé–‹å§‹ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®å¤‰ä½ï¼‰ã‚’è¤‡å†™ã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="motion">tmo</param>
         public void CopyMotionFrom(TMOFile motion)
@@ -358,13 +358,13 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’ètmo‚É‚ ‚éw’è–¼Ìi’Z‚¢Œ`®j‚Ìnode‚ğ“¯‚¶–¼Ì‚Ìnode‚É•¡Ê‚µ‚Ü‚·B
-        /// ‚½‚¾‚µ•¡Ê‚Ì‘ÎÛ‚ÍqnodeˆÈ~‚Å‚·Bw’ènode‚Í•¡Ê‚µ‚Ü‚¹‚ñB
-        /// ‚Ü‚½AœŠOnodeˆÈ~‚Ìnode‚Í•¡Ê‚µ‚Ü‚¹‚ñB
+        /// æŒ‡å®štmoã«ã‚ã‚‹æŒ‡å®šåç§°ï¼ˆçŸ­ã„å½¢å¼ï¼‰ã®nodeã‚’åŒã˜åç§°ã®nodeã«è¤‡å†™ã—ã¾ã™ã€‚
+        /// ãŸã ã—è¤‡å†™ã®å¯¾è±¡ã¯å­nodeä»¥é™ã§ã™ã€‚æŒ‡å®šnodeã¯è¤‡å†™ã—ã¾ã›ã‚“ã€‚
+        /// ã¾ãŸã€é™¤å¤–nodeä»¥é™ã®nodeã¯è¤‡å†™ã—ã¾ã›ã‚“ã€‚
         /// </summary>
         /// <param name="motion">tmo</param>
-        /// <param name="name">node–¼Ìi’Z‚¢Œ`®j</param>
-        /// <param name="except_names">œŠOnode–¼Ìi’Z‚¢Œ`®jƒŠƒXƒg</param>
+        /// <param name="name">nodeåç§°ï¼ˆçŸ­ã„å½¢å¼ï¼‰</param>
+        /// <param name="except_names">é™¤å¤–nodeåç§°ï¼ˆçŸ­ã„å½¢å¼ï¼‰ãƒªã‚¹ãƒˆ</param>
         public void CopyChildrenNodeFrom(TMOFile motion, string name, List<string> except_names)
         {
             TMONode node = this.FindNodeByName(name);
@@ -377,10 +377,10 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’ètmo‚É‚ ‚éw’è–¼Ìi’Z‚¢Œ`®j‚Ìnode‚ğ“¯‚¶–¼Ì‚Ìnode‚É•¡Ê‚µ‚Ü‚·B
+        /// æŒ‡å®štmoã«ã‚ã‚‹æŒ‡å®šåç§°ï¼ˆçŸ­ã„å½¢å¼ï¼‰ã®nodeã‚’åŒã˜åç§°ã®nodeã«è¤‡å†™ã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="motion">tmo</param>
-        /// <param name="name">node–¼Ìi’Z‚¢Œ`®j</param>
+        /// <param name="name">nodeåç§°ï¼ˆçŸ­ã„å½¢å¼ï¼‰</param>
         public void CopyNodeFrom(TMOFile motion, string name)
         {
             TMONode node = this.FindNodeByName(name);
@@ -393,7 +393,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’ètmo‚Æ“¯‚¶node tree‚ğ‚Â‚©B
+        /// æŒ‡å®štmoã¨åŒã˜node treeã‚’æŒã¤ã‹ã€‚
         /// </summary>
         /// <param name="motion">tmo</param>
         /// <returns></returns>
@@ -417,7 +417,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// tmo‚©‚çtmo‚ğ¶¬‚µ‚Ü‚·B
+        /// tmoã‹ã‚‰tmoã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
         public TMOFile Dup()
         {
@@ -460,7 +460,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// tmo‚©‚çtmo‚ğ¶¬‚µ‚Ü‚·B
+        /// tmoã‹ã‚‰tmoã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
         public TMOFile GenerateTMOFromTransformationMatrix()
         {
@@ -506,7 +506,7 @@ namespace TDCG
     }
 
     /// <summary>
-    /// Direct3D Matrix‚Ìƒ‰ƒbƒp
+    /// Direct3D Matrixã®ãƒ©ãƒƒãƒ‘
     /// </summary>
     public class TMOMat
     {
@@ -514,14 +514,14 @@ namespace TDCG
         public Matrix m;
 
         /// <summary>
-        /// TMOMat‚ğì¬‚µ‚Ü‚·B
+        /// TMOMatã‚’ä½œæˆã—ã¾ã™ã€‚
         /// </summary>
         public TMOMat()
         {
         }
 
         /// <summary>
-        /// s—ñ‚ğ“Ç‚İ‚İ‚Ü‚·B
+        /// è¡Œåˆ—ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
         public void Read(BinaryReader reader)
         {
@@ -529,7 +529,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// s—ñ‚ğ‘‚«o‚µ‚Ü‚·B
+        /// è¡Œåˆ—ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -537,7 +537,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// TMOMat‚ğì¬‚µ‚Ü‚·B
+        /// TMOMatã‚’ä½œæˆã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="m">matrix</param>
         public TMOMat(ref Matrix m)
@@ -546,11 +546,11 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’è”ä—¦‚ÅŠg‘å‚µ‚Ü‚·B
+        /// æŒ‡å®šæ¯”ç‡ã§æ‹¡å¤§ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="x">X²Šg‘å”ä—¦</param>
-        /// <param name="y">Y²Šg‘å”ä—¦</param>
-        /// <param name="z">Z²Šg‘å”ä—¦</param>
+        /// <param name="x">Xè»¸æ‹¡å¤§æ¯”ç‡</param>
+        /// <param name="y">Yè»¸æ‹¡å¤§æ¯”ç‡</param>
+        /// <param name="z">Zè»¸æ‹¡å¤§æ¯”ç‡</param>
         public void Scale(float x, float y, float z)
         {
             /*
@@ -565,7 +565,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’ès—ñ‚ÅŠg‘å‚µ‚Ü‚·B
+        /// æŒ‡å®šè¡Œåˆ—ã§æ‹¡å¤§ã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="scaling">scaling matrix</param>
         public void Scale(Matrix scaling)
@@ -582,7 +582,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’ès—ñ‚Åk¬‚µ‚Ü‚·BˆÊ’u‚Í•ÏX‚µ‚Ü‚¹‚ñB
+        /// æŒ‡å®šè¡Œåˆ—ã§ç¸®å°ã—ã¾ã™ã€‚ä½ç½®ã¯å¤‰æ›´ã—ã¾ã›ã‚“ã€‚
         /// </summary>
         /// <param name="scaling">scaling matrix</param>
         public void Scale0(Matrix scaling)
@@ -599,7 +599,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’ès—ñ‚ÅŠg‘å‚µ‚Ü‚·BˆÊ’u‚Í•ÏX‚µ‚Ü‚¹‚ñB
+        /// æŒ‡å®šè¡Œåˆ—ã§æ‹¡å¤§ã—ã¾ã™ã€‚ä½ç½®ã¯å¤‰æ›´ã—ã¾ã›ã‚“ã€‚
         /// </summary>
         /// <param name="scaling">scaling matrix</param>
         public void Scale1(Matrix scaling)
@@ -616,9 +616,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èŠp“x‚ÅX²‰ñ“]‚µ‚Ü‚·B
+        /// æŒ‡å®šè§’åº¦ã§Xè»¸å›è»¢ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="angle">Šp“xiƒ‰ƒWƒAƒ“j</param>
+        /// <param name="angle">è§’åº¦ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ï¼‰</param>
         public void RotateX(float angle)
         {
             if (angle == 0.0f)
@@ -630,9 +630,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èŠp“x‚ÅY²‰ñ“]‚µ‚Ü‚·B
+        /// æŒ‡å®šè§’åº¦ã§Yè»¸å›è»¢ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="angle">Šp“xiƒ‰ƒWƒAƒ“j</param>
+        /// <param name="angle">è§’åº¦ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ï¼‰</param>
         public void RotateY(float angle)
         {
             if (angle == 0.0f)
@@ -644,9 +644,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èŠp“x‚ÅZ²‰ñ“]‚µ‚Ü‚·B
+        /// æŒ‡å®šè§’åº¦ã§Zè»¸å›è»¢ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="angle">Šp“xiƒ‰ƒWƒAƒ“j</param>
+        /// <param name="angle">è§’åº¦ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ï¼‰</param>
         public void RotateZ(float angle)
         {
             if (angle == 0.0f)
@@ -658,9 +658,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒ[ƒ‹ƒhÀ•WŒn‚É‚¨‚¢‚Äw’èŠp“x‚ÅY²‰ñ“]‚µ‚Ü‚·B
+        /// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ã«ãŠã„ã¦æŒ‡å®šè§’åº¦ã§Yè»¸å›è»¢ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="angle">Šp“xiƒ‰ƒWƒAƒ“j</param>
+        /// <param name="angle">è§’åº¦ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ï¼‰</param>
         public void RotateWorldY(float angle)
         {
             Vector3 v = new Vector3(0.0f, 1.0f, 0.0f);
@@ -669,9 +669,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’è•ÏˆÊ‚¾‚¯ˆÚ“®‚µ‚Ü‚·B
+        /// æŒ‡å®šå¤‰ä½ã ã‘ç§»å‹•ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="translation">•ÏˆÊ</param>
+        /// <param name="translation">å¤‰ä½</param>
         public void Move(Vector3 translation)
         {
             m.M41 += translation.X;
@@ -680,29 +680,29 @@ namespace TDCG
         }
 
         /// <summary>
-        /// •âŠÔ‚ğs‚¢‚Ü‚·B
+        /// è£œé–“ã‚’è¡Œã„ã¾ã™ã€‚
         /// </summary>
-        /// <param name="mat0">s—ñ0</param>
-        /// <param name="mat1">s—ñ1</param>
-        /// <param name="mat2">s—ñ2</param>
-        /// <param name="mat3">s—ñ3</param>
-        /// <param name="length">•ªŠ„”</param>
-        /// <returns>•ªŠ„”‚¾‚¯TMOMat‚ğ‚Â”z—ñ</returns>
+        /// <param name="mat0">è¡Œåˆ—0</param>
+        /// <param name="mat1">è¡Œåˆ—1</param>
+        /// <param name="mat2">è¡Œåˆ—2</param>
+        /// <param name="mat3">è¡Œåˆ—3</param>
+        /// <param name="length">åˆ†å‰²æ•°</param>
+        /// <returns>åˆ†å‰²æ•°ã ã‘TMOMatã‚’æŒã¤é…åˆ—</returns>
         public static TMOMat[] Slerp(TMOMat mat0, TMOMat mat1, TMOMat mat2, TMOMat mat3, int length)
         {
             return Slerp(mat0, mat1, mat2, mat3, length, 0.5f);
         }
 
         /// <summary>
-        /// •âŠÔ‚ğs‚¢‚Ü‚·B
+        /// è£œé–“ã‚’è¡Œã„ã¾ã™ã€‚
         /// </summary>
-        /// <param name="mat0">s—ñ0</param>
-        /// <param name="mat1">s—ñ1</param>
-        /// <param name="mat2">s—ñ2</param>
-        /// <param name="mat3">s—ñ3</param>
-        /// <param name="length">•ªŠ„”</param>
-        /// <param name="p1">•âŠÔ‘¬“xŒW”</param>
-        /// <returns>•ªŠ„”‚¾‚¯TMOMat‚ğ‚Â”z—ñ</returns>
+        /// <param name="mat0">è¡Œåˆ—0</param>
+        /// <param name="mat1">è¡Œåˆ—1</param>
+        /// <param name="mat2">è¡Œåˆ—2</param>
+        /// <param name="mat3">è¡Œåˆ—3</param>
+        /// <param name="length">åˆ†å‰²æ•°</param>
+        /// <param name="p1">è£œé–“é€Ÿåº¦ä¿‚æ•°</param>
+        /// <returns>åˆ†å‰²æ•°ã ã‘TMOMatã‚’æŒã¤é…åˆ—</returns>
         public static TMOMat[] Slerp(TMOMat mat0, TMOMat mat1, TMOMat mat2, TMOMat mat3, int length, float p1)
         {
             TMOMat[] ret = new TMOMat[length];
@@ -729,10 +729,10 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ‰ñ“]s—ñ‚ÆˆÊ’uƒxƒNƒgƒ‹‚É•ªŠ„‚µ‚Ü‚·B
+        /// å›è»¢è¡Œåˆ—ã¨ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«ã«åˆ†å‰²ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="m">Œ³‚Ìs—ñi–ß‚è’l‚Í‰ñ“]s—ñj</param>
-        /// <returns>ˆÊ’uƒxƒNƒgƒ‹</returns>
+        /// <param name="m">å…ƒã®è¡Œåˆ—ï¼ˆæˆ»ã‚Šå€¤ã¯å›è»¢è¡Œåˆ—ï¼‰</param>
+        /// <returns>ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«</returns>
         public static Vector3 DecomposeMatrix(ref Matrix m)
         {
             Vector3 t = new Vector3(m.M41, m.M42, m.M43);
@@ -743,11 +743,11 @@ namespace TDCG
         }
 
         /// <summary>
-        /// Šg‘åk¬ƒxƒNƒgƒ‹‚Æ‰ñ“]s—ñ‚ÆˆÊ’uƒxƒNƒgƒ‹‚É•ªŠ„‚µ‚Ü‚·B
+        /// æ‹¡å¤§ç¸®å°ãƒ™ã‚¯ãƒˆãƒ«ã¨å›è»¢è¡Œåˆ—ã¨ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«ã«åˆ†å‰²ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="m">Œ³‚Ìs—ñi–ß‚è’l‚Í‰ñ“]s—ñj</param>
-        /// <param name="scaling">Šg‘åk¬ƒxƒNƒgƒ‹</param>
-        /// <returns>ˆÊ’uƒxƒNƒgƒ‹</returns>
+        /// <param name="m">å…ƒã®è¡Œåˆ—ï¼ˆæˆ»ã‚Šå€¤ã¯å›è»¢è¡Œåˆ—ï¼‰</param>
+        /// <param name="scaling">æ‹¡å¤§ç¸®å°ãƒ™ã‚¯ãƒˆãƒ«</param>
+        /// <returns>ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«</returns>
         public static Vector3 DecomposeMatrix(ref Matrix m, out Vector3 scaling)
         {
             Vector3 vx = new Vector3(m.M11, m.M12, m.M13);
@@ -777,12 +777,12 @@ namespace TDCG
         }
 
         /// <summary>
-        /// Šg‘åk¬ƒxƒNƒgƒ‹‚Æ‰ñ“]quaternion‚ÆˆÊ’uƒxƒNƒgƒ‹‚É•ªŠ„‚µ‚Ü‚·B
+        /// æ‹¡å¤§ç¸®å°ãƒ™ã‚¯ãƒˆãƒ«ã¨å›è»¢quaternionã¨ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«ã«åˆ†å‰²ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="m">Œ³‚Ìs—ñi–ß‚è’l‚Í‰ñ“]s—ñj</param>
-        /// <param name="scaling">Šg‘åk¬ƒxƒNƒgƒ‹</param>
-        /// <param name="rotation">‰ñ“]quaternion</param>
-        /// <returns>ˆÊ’uƒxƒNƒgƒ‹</returns>
+        /// <param name="m">å…ƒã®è¡Œåˆ—ï¼ˆæˆ»ã‚Šå€¤ã¯å›è»¢è¡Œåˆ—ï¼‰</param>
+        /// <param name="scaling">æ‹¡å¤§ç¸®å°ãƒ™ã‚¯ãƒˆãƒ«</param>
+        /// <param name="rotation">å›è»¢quaternion</param>
+        /// <returns>ä½ç½®ãƒ™ã‚¯ãƒˆãƒ«</returns>
         public static Vector3 DecomposeMatrix(ref Matrix m, out Vector3 scaling, out Quaternion rotation)
         {
             Vector3 translation = DecomposeMatrix(ref m, out scaling);
@@ -791,12 +791,12 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ‰ÁŒ¸Z‚ğs‚¢‚Ü‚·B
+        /// åŠ æ¸›ç®—ã‚’è¡Œã„ã¾ã™ã€‚
         /// </summary>
-        /// <param name="mat0">s—ñ0</param>
-        /// <param name="mat1">s—ñ1</param>
-        /// <param name="mat2">s—ñ2</param>
-        /// <returns>s—ñ1 - s—ñ2 + s—ñ0</returns>
+        /// <param name="mat0">è¡Œåˆ—0</param>
+        /// <param name="mat1">è¡Œåˆ—1</param>
+        /// <param name="mat2">è¡Œåˆ—2</param>
+        /// <returns>è¡Œåˆ—1 - è¡Œåˆ—2 + è¡Œåˆ—0</returns>
         public static TMOMat AddSub(TMOMat mat0, TMOMat mat1, TMOMat mat2)
         {
             Matrix m0 = mat0.m;
@@ -809,7 +809,7 @@ namespace TDCG
             return new TMOMat(ref m);
         }
 
-        /// eulerŠp (zxy‰ñ“]) ‚ğquaternion‚É•ÏŠ·
+        /// eulerè§’ (zxyå›è»¢) ã‚’quaternionã«å¤‰æ›
         public static Quaternion ToQuaternionZXY(Vector3 angle)
         {
             Quaternion qx, qy, qz;
@@ -819,7 +819,7 @@ namespace TDCG
             return qy * qx * qz;
         }
 
-        /// ‰ñ“]s—ñ‚ğeulerŠp (zxy‰ñ“]) ‚É•ÏŠ·
+        /// å›è»¢è¡Œåˆ—ã‚’eulerè§’ (zxyå›è»¢) ã«å¤‰æ›
         public static Vector3 ToAngleZXY(Matrix m)
         {
             Vector3 angle;
@@ -847,13 +847,13 @@ namespace TDCG
             return angle;
         }
 
-        /// quaternion‚ğeulerŠp (zxy‰ñ“]) ‚É•ÏŠ·
+        /// quaternionã‚’eulerè§’ (zxyå›è»¢) ã«å¤‰æ›
         public static Vector3 ToAngleZXY(Quaternion q)
         {
             return ToAngleZXY(Matrix.RotationQuaternion(q));
         }
 
-        /// eulerŠp (xyz‰ñ“]) ‚ğquaternion‚É•ÏŠ·
+        /// eulerè§’ (xyzå›è»¢) ã‚’quaternionã«å¤‰æ›
         public static Quaternion ToQuaternionXYZ(Vector3 angle)
         {
             Quaternion qx, qy, qz;
@@ -863,7 +863,7 @@ namespace TDCG
             return qz * qy * qx;
         }
 
-        /// ‰ñ“]s—ñ‚ğeulerŠp (xyz‰ñ“]) ‚É•ÏŠ·
+        /// å›è»¢è¡Œåˆ—ã‚’eulerè§’ (xyzå›è»¢) ã«å¤‰æ›
         public static Vector3 ToAngleXYZ(Matrix m)
         {
             Vector3 angle;
@@ -891,7 +891,7 @@ namespace TDCG
             return angle;
         }
 
-        /// quaternion‚ğeulerŠp (xyz‰ñ“]) ‚É•ÏŠ·
+        /// quaternionã‚’eulerè§’ (xyzå›è»¢) ã«å¤‰æ›
         public static Vector3 ToAngleXYZ(Quaternion q)
         {
             return ToAngleXYZ(Matrix.RotationQuaternion(q));
@@ -899,7 +899,7 @@ namespace TDCG
     }
 
     /// <summary>
-    /// ƒtƒŒ[ƒ€‚ğˆµ‚¢‚Ü‚·B
+    /// ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’æ‰±ã„ã¾ã™ã€‚
     /// </summary>
     public class TMOFrame
     {
@@ -907,7 +907,7 @@ namespace TDCG
         internal TMOMat[] matrices;
 
         /// <summary>
-        /// ƒtƒŒ[ƒ€‚ğ¶¬‚µ‚Ü‚·B
+        /// ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
         public TMOFrame(int id)
         {
@@ -915,7 +915,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒtƒŒ[ƒ€‚ğ“Ç‚İ‚İ‚Ü‚·B
+        /// ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
         public void Read(BinaryReader reader)
         {
@@ -929,7 +929,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒtƒŒ[ƒ€‚ğ‘‚«o‚µ‚Ü‚·B
+        /// ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -939,15 +939,15 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒtƒŒ[ƒ€‚ğ•âŠÔ‚µ‚Ü‚·B
+        /// ãƒ•ãƒ¬ãƒ¼ãƒ ã‚’è£œé–“ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="frame0">ƒtƒŒ[ƒ€0</param>
-        /// <param name="frame1">ƒtƒŒ[ƒ€1</param>
-        /// <param name="frame2">ƒtƒŒ[ƒ€2</param>
-        /// <param name="frame3">ƒtƒŒ[ƒ€3</param>
-        /// <param name="length">•ªŠ„”</param>
-        /// <param name="p1">•âŠÔ‘¬“xŒW”</param>
-        /// <param name="id_pair">node id‚ÌƒyƒA</param>
+        /// <param name="frame0">ãƒ•ãƒ¬ãƒ¼ãƒ 0</param>
+        /// <param name="frame1">ãƒ•ãƒ¬ãƒ¼ãƒ 1</param>
+        /// <param name="frame2">ãƒ•ãƒ¬ãƒ¼ãƒ 2</param>
+        /// <param name="frame3">ãƒ•ãƒ¬ãƒ¼ãƒ 3</param>
+        /// <param name="length">åˆ†å‰²æ•°</param>
+        /// <param name="p1">è£œé–“é€Ÿåº¦ä¿‚æ•°</param>
+        /// <param name="id_pair">node idã®ãƒšã‚¢</param>
         /// <returns></returns>
         public static TMOFrame[] Slerp(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, TMOFrame frame3, int length, float p1, int[] id_pair)
         {
@@ -976,13 +976,13 @@ namespace TDCG
         }
 
         /// <summary>
-        /// frame1‚Ìs—ñ‚Å\¬‚³‚ê‚½V‚½‚Èframe‚ğ“¾‚Ü‚·B
-        /// V‚½‚Èframe‚Íframe0‚Æ“¯‚¶node•À‚Ñ‚Æ‚È‚è‚Ü‚·B
+        /// frame1ã®è¡Œåˆ—ã§æ§‹æˆã•ã‚ŒãŸæ–°ãŸãªframeã‚’å¾—ã¾ã™ã€‚
+        /// æ–°ãŸãªframeã¯frame0ã¨åŒã˜nodeä¸¦ã³ã¨ãªã‚Šã¾ã™ã€‚
         /// </summary>
         /// <param name="frame0"></param>
         /// <param name="frame1"></param>
-        /// <param name="id_pair">node id‚ÌƒyƒA</param>
-        /// <returns>V‚½‚Èframe</returns>
+        /// <param name="id_pair">node idã®ãƒšã‚¢</param>
+        /// <returns>æ–°ãŸãªframe</returns>
         public static TMOFrame Select(TMOFrame frame0, TMOFrame frame1, int[] id_pair)
         {
             TMOFrame ret = new TMOFrame(0);
@@ -995,14 +995,14 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ‰ÁŒ¸Z‚ÌŒ‹‰Ê‚Æ‚µ‚ÄV‚½‚Èframe‚ğ“¾‚Ü‚·B
-        /// V‚½‚Èframe‚Íframe0‚Æ“¯‚¶node•À‚Ñ‚Æ‚È‚è‚Ü‚·B
+        /// åŠ æ¸›ç®—ã®çµæœã¨ã—ã¦æ–°ãŸãªframeã‚’å¾—ã¾ã™ã€‚
+        /// æ–°ãŸãªframeã¯frame0ã¨åŒã˜nodeä¸¦ã³ã¨ãªã‚Šã¾ã™ã€‚
         /// </summary>
         /// <param name="frame0">frame0</param>
         /// <param name="frame1">frame1</param>
         /// <param name="frame2">frame2</param>
-        /// <param name="id_pair">node id‚ÌƒyƒA</param>
-        /// <returns>V‚½‚Èframe</returns>
+        /// <param name="id_pair">node idã®ãƒšã‚¢</param>
+        /// <returns>æ–°ãŸãªframe</returns>
         public static TMOFrame AddSub(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, int[] id_pair)
         {
             TMOFrame ret = new TMOFrame(0);
@@ -1016,7 +1016,7 @@ namespace TDCG
     }
 
     /// <summary>
-    /// bone‚ğˆµ‚¢‚Ü‚·B
+    /// boneã‚’æ‰±ã„ã¾ã™ã€‚
     /// </summary>
     public class TMONode
     {
@@ -1031,7 +1031,7 @@ namespace TDCG
         private bool need_update_transformation;
 
         /// <summary>
-        /// TMONode‚ğ¶¬‚µ‚Ü‚·B
+        /// TMONodeã‚’ç”Ÿæˆã—ã¾ã™ã€‚
         /// </summary>
         public TMONode(int id)
         {
@@ -1039,7 +1039,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// TMONode‚ğ“Ç‚İ‚İ‚Ü‚·B
+        /// TMONodeã‚’èª­ã¿è¾¼ã¿ã¾ã™ã€‚
         /// </summary>
         public void Read(BinaryReader reader)
         {
@@ -1047,7 +1047,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// TMONode‚ğ‘‚«o‚µ‚Ü‚·B
+        /// TMONodeã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         public void Write(BinaryWriter bw)
         {
@@ -1055,7 +1055,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// s—ñ‚ğƒŠƒ“ƒN‚µ‚Ü‚·B
+        /// è¡Œåˆ—ã‚’ãƒªãƒ³ã‚¯ã—ã¾ã™ã€‚
         /// </summary>
         public void LinkMatrices(TMOFrame[] frames)
         {
@@ -1064,7 +1064,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ‰ñ“]•ÏˆÊ
+        /// å›è»¢å¤‰ä½
         /// </summary>
         public Quaternion Rotation
         {
@@ -1078,7 +1078,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ˆÊ’u•ÏˆÊ
+        /// ä½ç½®å¤‰ä½
         /// </summary>
         public Vector3 Translation
         {
@@ -1092,22 +1092,22 @@ namespace TDCG
         }
 
         /// <summary>
-        /// qnodeƒŠƒXƒg
+        /// å­nodeãƒªã‚¹ãƒˆ
         /// </summary>
         public List<TMONode> children = new List<TMONode>();
 
         /// <summary>
-        /// enode
+        /// è¦ªnode
         /// </summary>
         public TMONode parent;
 
         /// <summary>
-        /// s—ñƒŠƒXƒg
+        /// è¡Œåˆ—ãƒªã‚¹ãƒˆ
         /// </summary>
         public List<TMOMat> matrices = new List<TMOMat>();
 
         /// <summary>
-        /// ƒ[ƒ‹ƒhÀ•WŒn‚Å‚ÌˆÊ’u‚ÆŒü‚«‚ğ•\‚µ‚Ü‚·B‚±‚ê‚Íviewer‚©‚çXV‚³‚ê‚Ü‚·B
+        /// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ã§ã®ä½ç½®ã¨å‘ãã‚’è¡¨ã—ã¾ã™ã€‚ã“ã‚Œã¯viewerã‹ã‚‰æ›´æ–°ã•ã‚Œã¾ã™ã€‚
         /// </summary>
         public Matrix combined_matrix;
 
@@ -1116,7 +1116,7 @@ namespace TDCG
         /// </summary>
         public int ID { get { return id; } }
         /// <summary>
-        /// –¼Ì
+        /// åç§°
         /// </summary>
         public string Path
         {
@@ -1128,14 +1128,14 @@ namespace TDCG
             }
         }
         /// <summary>
-        /// –¼Ì‚Ì’Z‚¢Œ`®B‚±‚ê‚ÍTMOFile’†‚Åd•¡‚·‚é‰Â”\«‚ª‚ ‚è‚Ü‚·B
+        /// åç§°ã®çŸ­ã„å½¢å¼ã€‚ã“ã‚Œã¯TMOFileä¸­ã§é‡è¤‡ã™ã‚‹å¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™ã€‚
         /// </summary>
         public string Name { get { return name; } }
 
         /// <summary>
-        /// w’è–¼Ìi’Z‚¢Œ`®j‚ğ‚Âqnode‚ğŒŸõ‚µ‚Ü‚·B
+        /// æŒ‡å®šåç§°ï¼ˆçŸ­ã„å½¢å¼ï¼‰ã‚’æŒã¤å­nodeã‚’æ¤œç´¢ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="name">–¼Ìi’Z‚¢Œ`®j</param>
+        /// <param name="name">åç§°ï¼ˆçŸ­ã„å½¢å¼ï¼‰</param>
         /// <returns></returns>
         public TMONode FindChildByName(string name)
         {
@@ -1146,7 +1146,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’ènode‚©‚çs—ñ‚ğ•¡Ê‚µ‚Ü‚·B
+        /// æŒ‡å®šnodeã‹ã‚‰è¡Œåˆ—ã‚’è¤‡å†™ã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="motion">node</param>
         public void CopyThisMatFrom(TMONode motion)
@@ -1188,12 +1188,12 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’ènode‚©‚çs—ñ‚ğ•¡Ê‚µ‚Ü‚·B
-        /// ‚½‚¾‚µ•¡Ê‚Ì‘ÎÛ‚ÍqnodeˆÈ~‚Å‚·Bw’ènode‚Í•¡Ê‚µ‚Ü‚¹‚ñB
-        /// ‚Ü‚½AœŠOnodeˆÈ~‚Ìnode‚Í•¡Ê‚µ‚Ü‚¹‚ñB
+        /// æŒ‡å®šnodeã‹ã‚‰è¡Œåˆ—ã‚’è¤‡å†™ã—ã¾ã™ã€‚
+        /// ãŸã ã—è¤‡å†™ã®å¯¾è±¡ã¯å­nodeä»¥é™ã§ã™ã€‚æŒ‡å®šnodeã¯è¤‡å†™ã—ã¾ã›ã‚“ã€‚
+        /// ã¾ãŸã€é™¤å¤–nodeä»¥é™ã®nodeã¯è¤‡å†™ã—ã¾ã›ã‚“ã€‚
         /// </summary>
         /// <param name="motion">node</param>
-        /// <param name="except_names">œŠOnode–¼Ìi’Z‚¢Œ`®jƒŠƒXƒg</param>
+        /// <param name="except_names">é™¤å¤–nodeåç§°ï¼ˆçŸ­ã„å½¢å¼ï¼‰ãƒªã‚¹ãƒˆ</param>
         public void CopyChildrenMatFrom(TMONode motion, List<string> except_names)
         {
             List<string> dup_except_names = new List<string>();
@@ -1205,7 +1205,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’ènode‚©‚çs—ñ‚ğ•¡Ê‚µ‚Ü‚·B
+        /// æŒ‡å®šnodeã‹ã‚‰è¡Œåˆ—ã‚’è¤‡å†™ã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="motion">node</param>
         public void CopyMatFrom(TMONode motion)
@@ -1218,11 +1218,11 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’è•ÏˆÊ‚¾‚¯Šg‘å‚µ‚Ü‚·B
+        /// æŒ‡å®šå¤‰ä½ã ã‘æ‹¡å¤§ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="x">X²•ÏˆÊ</param>
-        /// <param name="y">Y²•ÏˆÊ</param>
-        /// <param name="z">Z²•ÏˆÊ</param>
+        /// <param name="x">Xè»¸å¤‰ä½</param>
+        /// <param name="y">Yè»¸å¤‰ä½</param>
+        /// <param name="z">Zè»¸å¤‰ä½</param>
         public void Scale(float x, float y, float z)
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
@@ -1232,11 +1232,11 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’è•ÏˆÊ‚¾‚¯k¬‚µ‚Ü‚·B
+        /// æŒ‡å®šå¤‰ä½ã ã‘ç¸®å°ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="x">X²•ÏˆÊ</param>
-        /// <param name="y">Y²•ÏˆÊ</param>
-        /// <param name="z">Z²•ÏˆÊ</param>
+        /// <param name="x">Xè»¸å¤‰ä½</param>
+        /// <param name="y">Yè»¸å¤‰ä½</param>
+        /// <param name="z">Zè»¸å¤‰ä½</param>
         public void Scale0(float x, float y, float z)
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
@@ -1246,11 +1246,11 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’è•ÏˆÊ‚¾‚¯Šg‘å‚µ‚Ü‚·B‚³‚ç‚ÉŠeqnode‚ğk¬‚µ‚Ü‚·B
+        /// æŒ‡å®šå¤‰ä½ã ã‘æ‹¡å¤§ã—ã¾ã™ã€‚ã•ã‚‰ã«å„å­nodeã‚’ç¸®å°ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="x">X²•ÏˆÊ</param>
-        /// <param name="y">Y²•ÏˆÊ</param>
-        /// <param name="z">Z²•ÏˆÊ</param>
+        /// <param name="x">Xè»¸å¤‰ä½</param>
+        /// <param name="y">Yè»¸å¤‰ä½</param>
+        /// <param name="z">Zè»¸å¤‰ä½</param>
         public void Scale1(float x, float y, float z)
         {
             Matrix scaling = Matrix.Scaling(x, y, z);
@@ -1263,9 +1263,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èŠp“x‚ÅX²‰ñ“]‚µ‚Ü‚·B
+        /// æŒ‡å®šè§’åº¦ã§Xè»¸å›è»¢ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="angle">Šp“xiƒ‰ƒWƒAƒ“j</param>
+        /// <param name="angle">è§’åº¦ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ï¼‰</param>
         public void RotateX(float angle)
         {
             foreach (TMOMat i in matrices)
@@ -1273,9 +1273,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èŠp“x‚ÅY²‰ñ“]‚µ‚Ü‚·B
+        /// æŒ‡å®šè§’åº¦ã§Yè»¸å›è»¢ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="angle">Šp“xiƒ‰ƒWƒAƒ“j</param>
+        /// <param name="angle">è§’åº¦ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ï¼‰</param>
         public void RotateY(float angle)
         {
             foreach (TMOMat i in matrices)
@@ -1283,9 +1283,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’èŠp“x‚ÅZ²‰ñ“]‚µ‚Ü‚·B
+        /// æŒ‡å®šè§’åº¦ã§Zè»¸å›è»¢ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="angle">Šp“xiƒ‰ƒWƒAƒ“j</param>
+        /// <param name="angle">è§’åº¦ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ï¼‰</param>
         public void RotateZ(float angle)
         {
             foreach (TMOMat i in matrices)
@@ -1293,9 +1293,9 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒ[ƒ‹ƒhÀ•WŒn‚É‚¨‚¢‚Äw’èŠp“x‚ÅY²‰ñ“]‚µ‚Ü‚·B
+        /// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ã«ãŠã„ã¦æŒ‡å®šè§’åº¦ã§Yè»¸å›è»¢ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="angle">Šp“xiƒ‰ƒWƒAƒ“j</param>
+        /// <param name="angle">è§’åº¦ï¼ˆãƒ©ã‚¸ã‚¢ãƒ³ï¼‰</param>
         public void RotateWorldY(float angle)
         {
             foreach (TMOMat i in matrices)
@@ -1303,11 +1303,11 @@ namespace TDCG
         }
 
         /// <summary>
-        /// w’è•ÏˆÊ‚¾‚¯ˆÚ“®‚µ‚Ü‚·B
+        /// æŒ‡å®šå¤‰ä½ã ã‘ç§»å‹•ã—ã¾ã™ã€‚
         /// </summary>
-        /// <param name="x">X²•ÏˆÊ</param>
-        /// <param name="y">Y²•ÏˆÊ</param>
-        /// <param name="z">Z²•ÏˆÊ</param>
+        /// <param name="x">Xè»¸å¤‰ä½</param>
+        /// <param name="y">Yè»¸å¤‰ä½</param>
+        /// <param name="z">Zè»¸å¤‰ä½</param>
         public void Move(float x, float y, float z)
         {
             Vector3 translation = new Vector3(x, y, z);
@@ -1317,7 +1317,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒ[ƒ‹ƒhÀ•WŒn‚Å‚ÌˆÊ’u‚ğ“¾‚Ü‚·B
+        /// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ã§ã®ä½ç½®ã‚’å¾—ã¾ã™ã€‚
         /// </summary>
         /// <returns></returns>
         public Vector3 GetWorldPosition()
@@ -1333,7 +1333,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ƒ[ƒ‹ƒhÀ•WŒn‚Å‚ÌˆÊ’u‚ÆŒü‚«‚ğ“¾‚Ü‚·B
+        /// ãƒ¯ãƒ¼ãƒ«ãƒ‰åº§æ¨™ç³»ã§ã®ä½ç½®ã¨å‘ãã‚’å¾—ã¾ã™ã€‚
         /// </summary>
         /// <returns></returns>
         public Matrix GetWorldCoordinate()
@@ -1349,7 +1349,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ‰ñ“]s—ñ
+        /// å›è»¢è¡Œåˆ—
         /// </summary>
         public Matrix RotationMatrix
         {
@@ -1359,7 +1359,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// ˆÊ’us—ñ
+        /// ä½ç½®è¡Œåˆ—
         /// </summary>
         public Matrix TranslationMatrix
         {
@@ -1369,7 +1369,7 @@ namespace TDCG
         }
 
         /// <summary>
-        /// •ÏŒ`s—ñB‚±‚ê‚Í ‰ñ“]s—ñ x ˆÊ’us—ñ ‚Å‚·B
+        /// å¤‰å½¢è¡Œåˆ—ã€‚ã“ã‚Œã¯ å›è»¢è¡Œåˆ— x ä½ç½®è¡Œåˆ— ã§ã™ã€‚
         /// </summary>
         public Matrix TransformationMatrix
         {

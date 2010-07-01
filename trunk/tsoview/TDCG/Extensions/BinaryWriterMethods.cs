@@ -8,15 +8,15 @@ using Microsoft.DirectX.Direct3D;
 namespace TDCG.Extensions
 {
     /// <summary>
-    /// BinaryWriter‚ÌŠg’£ƒƒ\ƒbƒh‚ð’è‹`‚µ‚Ü‚·B
+    /// BinaryWriterã®æ‹¡å¼µãƒ¡ã‚½ãƒƒãƒ‰ã‚’å®šç¾©ã—ã¾ã™ã€‚
     /// </summary>
     public static class BinaryWriterMethods
     {
         /// <summary>
-        /// Žw’èƒ‰ƒCƒ^‚ÉnullI’[•¶Žš—ñ‚ð‘‚«o‚µ‚Ü‚·B
+        /// æŒ‡å®šãƒ©ã‚¤ã‚¿ã«nullçµ‚ç«¯æ–‡å­—åˆ—ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="bw">BinaryWriter</param>
-        /// <param name="s">nullI’[•¶Žš—ñ</param>
+        /// <param name="s">nullçµ‚ç«¯æ–‡å­—åˆ—</param>
         public static void WriteCString(this BinaryWriter bw, string s)
         {
             foreach(byte i in Encoding.Default.GetBytes(s))
@@ -26,10 +26,10 @@ namespace TDCG.Extensions
         }
 
         /// <summary>
-        /// Žw’èƒ‰ƒCƒ^‚ÉƒxƒNƒgƒ‹‚ð‘‚«o‚µ‚Ü‚·B
+        /// æŒ‡å®šãƒ©ã‚¤ã‚¿ã«ãƒ™ã‚¯ãƒˆãƒ«ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="bw">BinaryWriter</param>
-        /// <param name="v">ƒxƒNƒgƒ‹</param>
+        /// <param name="v">ãƒ™ã‚¯ãƒˆãƒ«</param>
         public static void Write(this BinaryWriter bw, ref Vector3 v)
         {
             bw.Write(v.X);
@@ -38,10 +38,10 @@ namespace TDCG.Extensions
         }
 
         /// <summary>
-        /// Žw’èƒ‰ƒCƒ^‚És—ñ‚ð‘‚«o‚µ‚Ü‚·B
+        /// æŒ‡å®šãƒ©ã‚¤ã‚¿ã«è¡Œåˆ—ã‚’æ›¸ãå‡ºã—ã¾ã™ã€‚
         /// </summary>
         /// <param name="bw">BinaryWriter</param>
-        /// <param name="m">s—ñ</param>
+        /// <param name="m">è¡Œåˆ—</param>
         public static void Write(this BinaryWriter bw, ref Matrix m)
         {
             bw.Write(m.M11); bw.Write(m.M12); bw.Write(m.M13); bw.Write(m.M14);

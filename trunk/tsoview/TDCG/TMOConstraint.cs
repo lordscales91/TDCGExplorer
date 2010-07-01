@@ -11,30 +11,30 @@ using System.Xml.Serialization;
 namespace TDCG
 {
 /// <summary>
-/// node‚Ì‰ñ“]Šp“x§ŒÀ—v‘f
+/// nodeã®å›è»¢è§’åº¦åˆ¶é™è¦ç´ 
 /// </summary>
 public class TMOConstraintItem
 {
     /// <summary>
-    /// node–¼i’Z‚¢Œ`®j
+    /// nodeåï¼ˆçŸ­ã„å½¢å¼ï¼‰
     /// </summary>
     public string Name { get; set; }
     /// <summary>
-    /// Šp“x‚ÌÅ¬’l
+    /// è§’åº¦ã®æœ€å°å€¤
     /// </summary>
     public Vector3 Min { get; set; }
     /// <summary>
-    /// Šp“x‚ÌÅ‘å’l
+    /// è§’åº¦ã®æœ€å¤§å€¤
     /// </summary>
     public Vector3 Max { get; set; }
-    /// ÛŒÀX
+    /// è±¡é™X
     public int SectorX { get; set; }
-    /// ÛŒÀY
+    /// è±¡é™Y
     public int SectorY { get; set; }
-    /// ÛŒÀZ
+    /// è±¡é™Z
     public int SectorZ { get; set; }
 
-    /// eulerŠp‚Ì”ÍˆÍ‚ğ§ŒÀ‚µ‚Ü‚·B
+    /// eulerè§’ã®ç¯„å›²ã‚’åˆ¶é™ã—ã¾ã™ã€‚
     public Vector3 Limit(Vector3 angle1)
     {
         Vector3 angle0 = Vector3.Empty;
@@ -91,15 +91,15 @@ public class TMOConstraintItem
 }
 
 /// <summary>
-/// node‚Ì‰ñ“]Šp“x§ŒÀ
+/// nodeã®å›è»¢è§’åº¦åˆ¶é™
 /// </summary>
 public class TMOConstraint
 {
-    /// —v‘f‚Ì”z—ñ
+    /// è¦ç´ ã®é…åˆ—
     public List<TMOConstraintItem> items = new List<TMOConstraintItem>();
 
     /// <summary>
-    /// xmlŒ`®‚Åo—Í‚µ‚Ü‚·B
+    /// xmlå½¢å¼ã§å‡ºåŠ›ã—ã¾ã™ã€‚
     /// </summary>
     public void Dump()
     {
@@ -113,9 +113,9 @@ public class TMOConstraint
     }
 
     /// <summary>
-    /// xmlŒ`®ƒtƒ@ƒCƒ‹‚©‚ç¶¬‚µ‚Ü‚·B
+    /// xmlå½¢å¼ãƒ•ã‚¡ã‚¤ãƒ«ã‹ã‚‰ç”Ÿæˆã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_file">xmlƒtƒ@ƒCƒ‹–¼</param>
+    /// <param name="source_file">xmlãƒ•ã‚¡ã‚¤ãƒ«å</param>
     public static TMOConstraint Load(string source_file)
     {
         XmlReader reader = XmlReader.Create(source_file);
@@ -126,9 +126,9 @@ public class TMOConstraint
     }
 
     /// <summary>
-    /// tmoƒtƒ@ƒCƒ‹‚ğŠÜ‚ŞƒfƒBƒŒƒNƒgƒŠ‚©‚ç—v‘f‚ğ’Ç‰Á‚µ‚Ü‚·B
+    /// tmoãƒ•ã‚¡ã‚¤ãƒ«ã‚’å«ã‚€ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‹ã‚‰è¦ç´ ã‚’è¿½åŠ ã—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="source_file">tmoƒtƒ@ƒCƒ‹‚ğŠÜ‚ŞƒfƒBƒŒƒNƒgƒŠ–¼</param>
+    /// <param name="source_file">tmoãƒ•ã‚¡ã‚¤ãƒ«ã‚’å«ã‚€ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªå</param>
     public void AddItemFromTMODirectory(string source_file)
     {
         TMOFile tmo = new TMOFile();
@@ -260,9 +260,9 @@ public class TMOConstraint
     }
 
     /// <summary>
-    /// node–¼i’Z‚¢Œ`®j‚É‘Î‰‚·‚é—v‘f‚ğ“¾‚Ü‚·B
+    /// nodeåï¼ˆçŸ­ã„å½¢å¼ï¼‰ã«å¯¾å¿œã™ã‚‹è¦ç´ ã‚’å¾—ã¾ã™ã€‚
     /// </summary>
-    /// <param name="name">node–¼i’Z‚¢Œ`®j</param>
+    /// <param name="name">nodeåï¼ˆçŸ­ã„å½¢å¼ï¼‰</param>
     public TMOConstraintItem GetItem(string name)
     {
         foreach (TMOConstraintItem item in items)

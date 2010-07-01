@@ -38,7 +38,7 @@ namespace TDCG.TAHTool
             Encrypter encrypter = new Encrypter();
 
             //read in files from source path, do not compress them now.
-            //‘SƒfƒBƒŒƒNƒgƒŠ–¼
+            //å…¨ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªå
             string[] directories = Directory.GetDirectories(source_path, "*", SearchOption.AllDirectories);
 
             {

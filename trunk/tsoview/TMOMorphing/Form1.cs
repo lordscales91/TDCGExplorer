@@ -15,7 +15,7 @@ namespace TMOMorphing
     {
         internal Viewer viewer = null;
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
-        string morphing_path = Path.Combine(Application.StartupPath, @"ï\èÓ");
+        string morphing_path = Path.Combine(Application.StartupPath, @"Ë°®ÊÉÖ");
 
         Morphing morphing;
 
