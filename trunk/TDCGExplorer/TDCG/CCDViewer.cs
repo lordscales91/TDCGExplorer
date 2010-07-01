@@ -168,7 +168,8 @@ public class CCDViewer : Viewer
             if (FindEffectorOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, out effector))
             {
                 current_effector_path = effector.Path;
-                solver.Target = effector.GetWorldPosition();
+                Matrix m = effector.combined_matrix;
+                solver.Target = new Vector3(m.M41, m.M42, m.M43);
                 solver.Solved = true;
             }
         }
@@ -222,23 +223,30 @@ public class CCDViewer : Viewer
         return true;
     }
 
-    /// スクリーン位置をワールド座標へ変換します。
-    public Vector3 ScreenToWorld(float screenX, float screenY, float z, ref Matrix view, ref Matrix proj)
+    /// <summary>
+    /// viewport行列を作成します。
+    /// </summary>
+    /// <param name="viewport">viewport</param>
+    /// <returns>viewport行列</returns>
+    public Matrix CreateViewportMatrix(Viewport viewport)
     {
-        //viewport行列を作成
         Matrix m = Matrix.Identity;
-        Viewport vp = device.Viewport;
-        m.M11 = (float)vp.Width/2;
-        m.M22 = -1.0f*(float)vp.Height/2;
-        m.M33 = (float)vp.MaxZ - (float)vp.MinZ;
-        m.M41 = (float)(vp.X + vp.Width/2);
-        m.M42 = (float)(vp.Y + vp.Height/2);
-        m.M43 = vp.MinZ;
+        m.M11 = (float)viewport.Width / 2;
+        m.M22 = -1.0f * (float)viewport.Height / 2;
+        m.M33 = (float)viewport.MaxZ - (float)viewport.MinZ;
+        m.M41 = (float)(viewport.X + viewport.Width / 2);
+        m.M42 = (float)(viewport.Y + viewport.Height / 2);
+        m.M43 = viewport.MinZ;
+        return m;
+    }
 
+    /// スクリーン位置をワールド座標へ変換します。
+    public Vector3 ScreenToWorld(float screenX, float screenY, float z, Viewport viewport, Matrix view, Matrix proj)
+    {
         //スクリーン位置
         Vector3 v = new Vector3(screenX, screenY,  z);
 
-        Matrix inv_m = Matrix.Invert(m);
+        Matrix inv_m = Matrix.Invert(CreateViewportMatrix(viewport));
         Matrix inv_proj = Matrix.Invert(proj);
         Matrix inv_view = Matrix.Invert(view);
 
@@ -249,7 +257,19 @@ public class CCDViewer : Viewer
     /// スクリーン位置をワールド座標へ変換します。
     public Vector3 ScreenToWorld(float screenX, float screenY, float z)
     {
-        return ScreenToWorld(screenX, screenY, z, ref Transform_View, ref Transform_Projection);
+        return ScreenToWorld(screenX, screenY, z, device.Viewport, Transform_View, Transform_Projection);
+    }
+
+    /// ワールド座標をスクリーン位置へ変換します。
+    public Vector3 WorldToScreen(Vector3 v, Viewport viewport, Matrix view, Matrix proj)
+    {
+        return Vector3.TransformCoordinate(v, view * proj * CreateViewportMatrix(viewport));
+    }
+
+    /// ワールド座標をスクリーン位置へ変換します。
+    public Vector3 WorldToScreen(Vector3 v)
+    {
+        return WorldToScreen(v, device.Viewport, Transform_View, Transform_Projection);
     }
 
     /// <summary>
@@ -290,7 +310,8 @@ public class CCDViewer : Viewer
                 TMONode bone;
                 if (fig.Tmo.nodemap.TryGetValue(current_effector_path, out bone))
                 {
-                    solver.Target = bone.GetWorldPosition();
+                    Matrix m = bone.combined_matrix;
+                    solver.Target = new Vector3(m.M41, m.M42, m.M43);
                     solver.Solved = true;
                 }
             }
@@ -326,7 +347,8 @@ public class CCDViewer : Viewer
                 if (fig.Tmo.nodemap.TryGetValue(effector_path, out bone))
                 {
                     Vector4 color = (bone.Path == current_effector_path) ? new Vector4(1, 1, 1, 0.5f) : new Vector4(0.5f, 0.5f, 0.5f, 0.5f);
-                    Vector3 pos = bone.GetWorldPosition();
+                    Matrix m = bone.combined_matrix;
+                    Vector3 pos = new Vector3(m.M41, m.M42, m.M43);
                     DrawMesh(sphere, Matrix.Translation(pos), color);
                 }
             }
@@ -335,7 +357,7 @@ public class CCDViewer : Viewer
                 TMONode bone;
                 if (fig.Tmo.nodemap.TryGetValue(current_effector_path, out bone))
                 {
-                    Matrix m = bone.GetWorldCoordinate();
+                    Matrix m = bone.combined_matrix;
                     DrawMesh(sphere, Matrix.Translation(new Vector3(1, 0, 0)) * m, new Vector4(1, 0, 0, 0.5f));
                     DrawMesh(sphere, Matrix.Translation(new Vector3(0, 1, 0)) * m, new Vector4(0, 1, 0, 0.5f));
                     DrawMesh(sphere, Matrix.Translation(new Vector3(0, 0, 1)) * m, new Vector4(0, 0, 1, 0.5f));
@@ -399,7 +421,7 @@ public class CCDViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            Matrix m = bone.combined_matrix * world_matrix;
+            Matrix m = bone.combined_matrix;
 
             float sphereRadius = 0.25f;
             Vector3 sphereCenter = new Vector3(m.M41, m.M42, m.M43);
@@ -444,7 +466,7 @@ public class CCDViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            Matrix m = Matrix.Translation(dir) * bone.combined_matrix * world_matrix;
+            Matrix m = Matrix.Translation(dir) * bone.combined_matrix;
 
             float sphereRadius = 0.25f;
             Vector3 sphereCenter = new Vector3(m.M41, m.M42, m.M43);
@@ -460,7 +482,7 @@ public class CCDViewer : Viewer
         return false;
     }
 
-    static Regex re_legnode = new Regex(@"Leg");
+    static Regex re_legnode = new Regex(@"Leg|Foot|Toe");
 
     private void LimitRotation(TMONode node)
     {

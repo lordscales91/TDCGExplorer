@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDCGExplorer", "TDCGExplore
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDCG", "TDCG\TDCG.csproj", "{30D26679-E876-46FC-B8C0-E55146316C8C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDCGExplorer-en", "TDCGExplorer\TDCGExplorer-en.csproj", "{AEF438ED-EF00-4BFF-88A5-63B6B049BAC4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,14 @@ Global
 		{30D26679-E876-46FC-B8C0-E55146316C8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30D26679-E876-46FC-B8C0-E55146316C8C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{30D26679-E876-46FC-B8C0-E55146316C8C}.Release|x86.ActiveCfg = Release|Any CPU
+		{AEF438ED-EF00-4BFF-88A5-63B6B049BAC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AEF438ED-EF00-4BFF-88A5-63B6B049BAC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AEF438ED-EF00-4BFF-88A5-63B6B049BAC4}.Debug|x86.ActiveCfg = Debug|x86
+		{AEF438ED-EF00-4BFF-88A5-63B6B049BAC4}.Debug|x86.Build.0 = Debug|x86
+		{AEF438ED-EF00-4BFF-88A5-63B6B049BAC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AEF438ED-EF00-4BFF-88A5-63B6B049BAC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AEF438ED-EF00-4BFF-88A5-63B6B049BAC4}.Release|x86.ActiveCfg = Release|x86
+		{AEF438ED-EF00-4BFF-88A5-63B6B049BAC4}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

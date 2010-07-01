@@ -55,6 +55,8 @@ namespace TDCG
         private float f4;
         private int dim = 0;
 
+        internal bool system_p = false;
+
         /// <summary>
         /// パラメータの名称
         /// </summary>
@@ -142,6 +144,52 @@ namespace TDCG
             }
         }
 
+        /// 文字列として表現します。
+        public override string ToString()
+        {
+            return GetTypeName() + " " + name + " = " + GetValueString();
+        }
+
+        /// 型名を文字列として得ます。
+        public string GetTypeName()
+        {
+            switch (type)
+            {
+                case Type.String:
+                    return "string";
+                case Type.Float:
+                    return "float";
+                case Type.Float3:
+                    return "float3";
+                case Type.Float4:
+                    return "float4";
+                case Type.Texture:
+                    return "texture";
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// 値を文字列として得ます。
+        /// </summary>
+        public string GetValueString()
+        {
+            switch (type)
+            {
+                case Type.String:
+                    return "\"" + str + "\"";
+                case Type.Float:
+                    return string.Format("[{0}]", f1);
+                case Type.Float3:
+                    return string.Format("[{0}, {1}, {2}]", f1, f2, f3);
+                case Type.Float4:
+                    return string.Format("[{0}, {1}, {2}, {3}]", f1, f2, f3, f4);
+                case Type.Texture:
+                    return str;
+            }
+            return str;
+        }
+
         /// <summary>
         /// 文字列を取得します。
         /// </summary>
@@ -150,6 +198,7 @@ namespace TDCG
         {
             return str;
         }
+
         /// <summary>
         /// 文字列を設定します。
         /// </summary>
@@ -159,7 +208,7 @@ namespace TDCG
             str = value.Trim('"', ' ', '\t');
         }
 
-        static Regex re_float_array = new Regex(@"\s+|\s*,\s*");
+        static Regex re_float_array = new Regex(@"\s*,\s*|\s+");
 
         /// <summary>
         /// float値の配列を設定します。
@@ -170,13 +219,13 @@ namespace TDCG
         {
             string[] token = re_float_array.Split(value.Trim('[', ']', ' ', '\t'));
             this.dim = dim;
-            if (dim > 0)
+            if (token.Length > 0)
                 f1 = float.Parse(token[0].Trim());
-            if (dim > 1)
+            if (token.Length > 1)
                 f2 = float.Parse(token[1].Trim());
-            if (dim > 2)
+            if (token.Length > 2)
                 f3 = float.Parse(token[2].Trim());
-            if (dim > 3)
+            if (token.Length > 3)
                 f4 = float.Parse(token[3].Trim());
         }
 
@@ -194,7 +243,14 @@ namespace TDCG
         /// <param name="value">float値の文字列表現</param>
         public void SetFloat(string value)
         {
-            SetFloatDim(value, 1);
+            try
+            {
+                SetFloatDim(value, 1);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("shader format error (type float): " + value);
+            }
         }
 
         /// <summary>
@@ -211,7 +267,14 @@ namespace TDCG
         /// <param name="value">float3値の文字列表現</param>
         public void SetFloat3(string value)
         {
-            SetFloatDim(value, 3);
+            try
+            {
+                SetFloatDim(value, 3);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("shader format error (type float3): " + value);
+            }
         }
 
         /// <summary>
@@ -228,7 +291,14 @@ namespace TDCG
         /// <param name="value">float4値の文字列表現</param>
         public void SetFloat4(string value)
         {
-            SetFloatDim(value, 4);
+            try
+            {
+                SetFloatDim(value, 4);
+            }
+            catch (FormatException)
+            {
+                Console.WriteLine("shader format error (type float4): " + value);
+            }
         }
 
         /// <summary>
@@ -254,7 +324,10 @@ namespace TDCG
     /// </summary>
     public class Shader
     {
-        internal ShaderParameter[] shader_parameters;
+        /// <summary>
+        /// シェーダ設定パラメータの配列
+        /// </summary>
+        public ShaderParameter[] shader_parameters;
 
         //internal string     description;     // = "TA ToonShader v0.50"
         //internal string     shader;          // = "TAToonshade_050.cgfx"
@@ -264,13 +337,13 @@ namespace TDCG
         internal float      lightDirZ;       // = [-0.998302]
         internal float      lightDirW;       // = [0]
         //internal Vector4    shadowColor;     // = [0, 0, 0, 1]
-        internal string     shadeTex;        // = Ninjya_Ribbon_Toon_Tex
+        internal ShaderParameter shadeTex;        // = Ninjya_Ribbon_Toon_Tex
         //internal float      highLight;       // = [0]
         //internal float      colorBlend;      // = [10]
         //internal float      highLightBlend;  // = [10]
         //internal Vector4    penColor;        // = [0.166, 0.166, 0.166, 1]
         //internal float      ambient;         // = [38]
-        internal string     colorTex;        // = file24
+        internal ShaderParameter colorTex;        // = file24
         //internal float      thickness;       // = [0.018]
         //internal float      shadeBlend;      // = [10]
         //internal float      highLightPower;  // = [100]
@@ -281,6 +354,35 @@ namespace TDCG
         public Vector4 LightDir
         {
             get { return new Vector4(lightDirX, lightDirY, lightDirZ, lightDirW); }
+        }
+
+        /// <summary>
+        /// 陰テクスチャのファイル名
+        /// </summary>
+        public string ShadeTexName
+        {
+            get
+            {
+                return shadeTex.GetTexture();
+            }
+            set
+            {
+                shadeTex.SetTexture(value);
+            }
+        }
+        /// <summary>
+        /// 色テクスチャのファイル名
+        /// </summary>
+        public string ColorTexName
+        {
+            get
+            {
+                return colorTex.GetTexture();
+            }
+            set
+            {
+                colorTex.SetTexture(value);
+            }
         }
 
         /// <summary>
@@ -297,25 +399,33 @@ namespace TDCG
                 switch(p.name)
                 {
                     case "description":
+                        p.system_p = true;
                         break;
                     case "shader":
+                        p.system_p = true;
                         break;
                     case "technique":
+                        p.system_p = true;
                         technique = p.GetString();
                         break;
                     case "LightDirX":
+                        p.system_p = true;
                         lightDirX = p.GetFloat();
                         break;
                     case "LightDirY":
+                        p.system_p = true;
                         lightDirY = p.GetFloat();
                         break;
                     case "LightDirZ":
+                        p.system_p = true;
                         lightDirZ = p.GetFloat();
                         break;
                     case "LightDirW":
+                        p.system_p = true;
                         lightDirW = p.GetFloat();
                         break;
                     case "LightDir":
+                        p.system_p = true;
                     {
                         Vector3 v = p.GetFloat3();
                         lightDirX = v.X;
@@ -324,18 +434,32 @@ namespace TDCG
                     }
                         break;
                     case "ShadeTex":
-                        shadeTex = p.GetTexture();
+                        p.system_p = true;
+                        shadeTex = p;
                         break;
                     case "ColorTex":
-                        colorTex = p.GetTexture();
-                        break;
-                    default:
-                        shader_parameters[i++] = p;
+                        p.system_p = true;
+                        colorTex = p;
                         break;
                 }
-
+                shader_parameters[i++] = p;
             }
             Array.Resize(ref shader_parameters, i);
+        }
+
+        /// <summary>
+        /// シェーダ設定を文字列の配列として得ます。
+        /// </summary>
+        public string[] GetLines()
+        {
+            string[] lines = new string[shader_parameters.Length];
+            int i = 0;
+            foreach (ShaderParameter p in shader_parameters)
+            {
+                lines[i++] = p.ToString();
+            }
+            Array.Resize(ref lines, i);
+            return lines;
         }
     }
 }

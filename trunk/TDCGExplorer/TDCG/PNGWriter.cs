@@ -235,4 +235,17 @@ namespace TDCG
             WriteFile("FTSO", 0x26F5B8FE, opt1, stream);
         }
     }
+
+    class StreamUtils
+    {
+        public static void Copy(Stream input, Stream output, byte[] buf)
+        {
+            input.Seek(0, SeekOrigin.Begin);
+            int len;
+            while ((len = input.Read(buf, 0, buf.Length)) > 0)
+            {
+                output.Write(buf, 0, len);
+            }
+        }
+    }
 }
