@@ -917,15 +917,6 @@ namespace TDCG
         }
 
         /// <summary>
-        /// オフセット行列を得ます。
-        /// </summary>
-        /// <returns></returns>
-        public Matrix OffsetMatrix
-        {
-            get { return offset_matrix; }
-        }
-
-        /// <summary>
         /// ワールド座標系での位置を得ます。
         /// </summary>
         /// <returns></returns>
