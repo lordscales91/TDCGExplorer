@@ -21,6 +21,7 @@ namespace mqoview
         public Form1()
         {
             InitializeComponent();
+            this.ClientSize = new Size(640, 480);
         }
 
         public bool InitializeGraphics()
@@ -56,6 +57,7 @@ namespace mqoview
                     return false;
                 }
             }
+            timer1.Enabled = true;
             return true;
         }
 
@@ -146,9 +148,13 @@ namespace mqoview
             {
                 foreach (MqoObject obj in mqo.Objects)
                 {
+                    if (obj.dm == null)
+                        continue;
+
                     int npass = effect.Begin(0);
                     for (int ipass = 0; ipass < npass; ipass++)
                     {
+                        Console.WriteLine("render {0} {1}", obj, ipass);
                         effect.BeginPass(ipass);
                         obj.dm.DrawSubset(0);
                         effect.EndPass();
@@ -179,6 +185,11 @@ namespace mqoview
 
             device.Present();
             Thread.Sleep(30);
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            Render();
         }
 
     }
