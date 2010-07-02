@@ -394,8 +394,8 @@ namespace mqoview
         static VertexElement[] ve = new VertexElement[]
         {
             new VertexElement(0,  0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
-            //new VertexElement(0, 12, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 3),
-            //new VertexElement(0, 28, DeclarationType.Ubyte4, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 4),
+            new VertexElement(0, 12, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 3),
+            new VertexElement(0, 28, DeclarationType.Ubyte4, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 4),
             new VertexElement(0, 32, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0),
             new VertexElement(0, 44, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
                 VertexElement.VertexDeclarationEnd
@@ -417,7 +417,16 @@ namespace mqoview
         public void WriteBuffer(Device device)
         {
             int numVertices = vertices.Count;
-            int numFaces = numVertices - 2;
+            int numFaces = faces.Count;
+
+            List<ushort> indices = new List<ushort>(numFaces * 3);
+            foreach (MqoFace face in faces)
+            {
+                indices.Add(face.a);
+                indices.Add(face.c);
+                indices.Add(face.b);
+            }
+            ushort[] optimized_indices = NvTriStrip.Optimize(indices.ToArray());
 
             if (dm != null)
             {
@@ -440,6 +449,9 @@ namespace mqoview
                         //for (int j = 0; j < 4; j++)
                         //    gs.Write(v.skin_weights[j].weight);
                         //gs.Write(v.bone_indices);
+                        for (int j = 0; j < 4; j++)
+                            gs.Write(0.0f);
+                        gs.Write(0);
                         gs.Write(v.normal);
                         gs.Write(v.u);
                         gs.Write(v.v);
@@ -454,11 +466,9 @@ namespace mqoview
             {
                 GraphicsStream gs = dm.LockIndexBuffer(LockFlags.None);
                 {
-                    foreach (MqoFace face in faces)
+                    foreach (ushort idx in optimized_indices)
                     {
-                        gs.Write(face.a);
-                        gs.Write(face.b);
-                        gs.Write(face.c);
+                        gs.Write(idx);
                     }
                 }
                 dm.UnlockIndexBuffer();
