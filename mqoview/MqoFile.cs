@@ -657,6 +657,31 @@ namespace mqoview
             int numVertices = vertices.Count;
             int numFaces = faces.Count;
 
+            Vector3[] normals = new Vector3[vertices.Count];
+            Vector2[] tex_coords = new Vector2[vertices.Count];
+            foreach (MqoFace face in faces)
+            {
+                Vector3 v1 = Vector3.Normalize(vertices[face.a].position - vertices[face.b].position);
+                Vector3 v2 = Vector3.Normalize(vertices[face.c].position - vertices[face.b].position);
+                Vector3 n = Vector3.Cross(v1, v2);
+                normals[face.a] += n;
+                normals[face.b] += n;
+                normals[face.c] += n;
+                tex_coords[face.a] = face.ta;
+                tex_coords[face.b] = face.tb;
+                tex_coords[face.c] = face.tc;
+            }
+            {
+                int i = 0;
+                foreach (UVertex v in vertices)
+                {
+                    v.normal = Vector3.Normalize(normals[i]);
+                    v.u = tex_coords[i].X;
+                    v.v = 1 - tex_coords[i].Y;
+                    i++;
+                }
+            }
+
             List<ushort> indices = new List<ushort>(numFaces * 3);
             foreach (MqoFace face in faces)
             {
