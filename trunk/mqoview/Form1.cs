@@ -141,6 +141,12 @@ namespace mqoview
             {
                 obj.WriteBuffer(device);
             }
+            string dir = Path.GetDirectoryName(source_file);
+            foreach (MqoMaterial mtl in mqo.Materials)
+            {
+                string sub_script_path = Path.Combine(dir, mtl.name);
+                mtl.Load(sub_script_path);
+            }
         }
 
         /// <summary>

@@ -161,7 +161,7 @@ namespace mqoview
 
                 switch (tokens[i].ToLower())
                 {
-                    case "shader": m.shader = int.Parse(tokens[++i]); break;
+                    case "shader": m.shader_id = int.Parse(tokens[++i]); break;
                     case "col": m.col = ParseColor3(tokens, i + 1); i += 4; break;
                     case "dif": m.dif = float.Parse(tokens[++i]); break;
                     case "amb": m.amb = float.Parse(tokens[++i]); break;
@@ -331,7 +331,7 @@ namespace mqoview
     public class MqoMaterial
     {
         public string name;
-        public int shader;
+        public int shader_id;
         public Vector3 col;
         public float dif;
         public float amb;
@@ -339,6 +339,14 @@ namespace mqoview
         public float spc;
         public float power;
         public string tex;
+        /// <summary>
+        /// テキスト行配列
+        /// </summary>
+        public string[] lines;
+        /// <summary>
+        /// シェーダ設定
+        /// </summary>
+        public Shader shader = null;
 
         public MqoMaterial() { }
         public MqoMaterial(string n) { name = n; }
@@ -346,7 +354,7 @@ namespace mqoview
         public override string ToString()
         {
             return (new StringBuilder(256))
-                .Append(" shader: ").Append(shader)
+                .Append(" shader: ").Append(shader_id)
                 .Append(" col: ").Append(col)
                 .Append(" dif: ").Append(dif)
                 .Append(" amb: ").Append(amb)
@@ -356,6 +364,23 @@ namespace mqoview
                 .Append(" tex: ").Append(tex)
                 .Append(" name: ").Append(name)
                 .ToString();
+        }
+
+        /// <summary>
+        /// サブスクリプトを読み込みます。
+        /// </summary>
+        public void Load(string source_file)
+        {
+            this.lines = File.ReadAllLines(source_file);
+        }
+
+        /// <summary>
+        /// シェーダ設定を生成します。
+        /// </summary>
+        public void GenerateShader()
+        {
+            this.shader = new Shader();
+            this.shader.Load(this.lines);
         }
     }
 
@@ -411,7 +436,7 @@ namespace mqoview
         */
 
         /// <summary>
-        /// ���_��Direct3D�o�b�t�@�ɏ������݂܂��B
+        /// 頂点をDirect3Dバッファに書き込みます。
         /// </summary>
         /// <param name="device">device</param>
         public void WriteBuffer(Device device)
