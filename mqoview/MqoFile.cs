@@ -1,12 +1,46 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.ComponentModel;
 using System.Text;
+using System.Runtime.InteropServices;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
+using mqoview.Extensions;
 
 namespace mqoview
 {
+    using BYTE  = Byte;
+    using WORD  = UInt16;
+    using DWORD = UInt32;
+    using LONG  = Int32;
+
+    [StructLayout(LayoutKind.Sequential, Pack=1)]
+    struct BITMAPFILEHEADER
+    {
+        public WORD    bfType;
+        public DWORD   bfSize;
+        public WORD    bfReserved1;
+        public WORD    bfReserved2;
+        public DWORD   bfOffBits;
+    }
+
+    [StructLayout(LayoutKind.Sequential, Pack=1)]
+    struct BITMAPINFOHEADER
+    {
+        public DWORD      biSize;
+        public LONG       biWidth;
+        public LONG       biHeight;
+        public WORD       biPlanes;
+        public WORD       biBitCount;
+        public DWORD      biCompression;
+        public DWORD      biSizeImage;
+        public LONG       biXPelsPerMeter;
+        public LONG       biYPelsPerMeter;
+        public DWORD      biClrUsed;
+        public DWORD      biClrImportant;
+    }
+
     public class MqoFile : IDisposable
     {
         private delegate bool SectionHandler(string[] tokens);
@@ -19,11 +53,13 @@ namespace mqoview
         private MqoScene scene;
         private List<MqoMaterial> materials;
         private List<MqoObject> objects = new List<MqoObject>();
+        private List<MqoTexture> textures = new List<MqoTexture>();
         private MqoObject current;
 
         public MqoScene Scene { get { return scene; } }
         public List<MqoMaterial> Materials { get { return materials; } }
         public List<MqoObject> Objects { get { return objects; } }
+        public List<MqoTexture> Textures { get { return textures; } }
 
         public void Load(string file)
         {
@@ -297,10 +333,177 @@ namespace mqoview
             DoRead(SectionFace);
         }
 
+        internal Device device;
+        internal Effect effect;
+
+        EffectHandle[] techniques;
+        internal Dictionary<string, EffectHandle> techmap;
+
+        private EffectHandle handle_ShadeTex_texture;
+        private EffectHandle handle_ColorTex_texture;
+        internal Dictionary<string, MqoTexture> texmap;
+
+        private EffectHandle handle_LightDir;
+        private EffectHandle handle_LightDirForced;
+        private EffectHandle handle_UVSCR;
+
+        /// <summary>
+        /// 指定device上で開きます。
+        /// </summary>
+        /// <param name="device">device</param>
+        /// <param name="effect">effect</param>
+        public void Open(Device device, Effect effect)
+        {
+            this.device = device;
+            this.effect = effect;
+
+            string dir = Path.GetDirectoryName(this.file);
+            foreach (MqoMaterial mtl in Materials)
+            {
+                string sub_script_path = Path.Combine(dir, mtl.name);
+                mtl.Load(sub_script_path);
+                mtl.GenerateShader();
+                mtl.ColorTexture.Name = mtl.shader.ColorTexName;
+                mtl.ShadeTexture.Name = mtl.shader.ShadeTexName;
+                textures.Add(mtl.ColorTexture);
+                textures.Add(mtl.ShadeTexture);
+            }
+
+            texmap = new Dictionary<string, MqoTexture>();
+
+            foreach (MqoTexture tex in textures)
+            {
+                tex.Open(device);
+                texmap[tex.name] = tex;
+            }
+
+            handle_ShadeTex_texture = effect.GetParameter(null, "ShadeTex_texture");
+            handle_ColorTex_texture = effect.GetParameter(null, "ColorTex_texture");
+
+            handle_LightDir = effect.GetParameter(null, "LightDir");
+            handle_LightDirForced = effect.GetParameter(null, "LightDirForced");
+            handle_UVSCR = effect.GetParameter(null, "UVSCR");
+
+            techmap = new Dictionary<string, EffectHandle>();
+
+            int ntech = effect.Description.Techniques;
+            techniques = new EffectHandle[ntech];
+
+            //Console.WriteLine("Techniques:");
+
+            for (int i = 0; i < ntech; i++)
+            {
+                techniques[i] = effect.GetTechnique(i);
+                string tech_name = effect.GetTechniqueDescription(techniques[i]).Name;
+                techmap[tech_name] = techniques[i];
+
+                //Console.WriteLine(i + " " + tech_name);
+            }
+
+            foreach (MqoObject obj in Objects)
+            {
+                obj.WriteBuffer(device);
+            }
+        }
+
+        internal Shader current_shader = null;
+        internal Vector3 lightDir = new Vector3(0.0f, 0.0f, -1.0f);
+
+        /// <summary>
+        /// 光源方向ベクトルを得ます。
+        /// </summary>
+        /// <returns></returns>
+        public Vector4 LightDirForced()
+        {
+            return new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 0.0f);
+        }
+
+        /// <summary>
+        /// UVSCR値を得ます。
+        /// </summary>
+        /// <returns></returns>
+        public Vector4 UVSCR()
+        {
+            float x = Environment.TickCount * 0.000002f;
+            return new Vector4(x, 0.0f, 0.0f, 0.0f);
+        }
+
+        /// <summary>
+        /// レンダリング開始時に呼びます。
+        /// </summary>
+        public void BeginRender()
+        {
+            current_shader = null;
+        }
+
+        /// <summary>
+        /// シェーダ設定を切り替えます。
+        /// </summary>
+        /// <param name="shader">シェーダ設定</param>
+        public void SwitchShader(Shader shader)
+        {
+            if (shader == current_shader)
+                return;
+            current_shader = shader;
+
+            if (! techmap.ContainsKey(shader.technique))
+            {
+                Console.WriteLine("Error: shader technique not found. " + shader.technique);
+                return;
+            }
+
+            foreach (ShaderParameter p in shader.shader_parameters)
+            {
+                if (p.system_p)
+                    continue;
+
+                switch (p.type)
+                {
+                case ShaderParameter.Type.String:
+                    effect.SetValue(p.name, p.GetString());
+                    break;
+                case ShaderParameter.Type.Float:
+                case ShaderParameter.Type.Float3:
+                case ShaderParameter.Type.Float4:
+                    effect.SetValue(p.name, new float[]{ p.F1, p.F2, p.F3, p.F4 });
+                    break;
+                    /*
+                case ShaderParameter.Type.Texture:
+                    effect.SetValue(p.name, p.GetTexture());
+                    break;
+                    */
+                }
+            }
+            effect.SetValue(handle_LightDir, shader.LightDir);
+            effect.SetValue(handle_LightDirForced, LightDirForced());
+            //effect.SetValue(handle_UVSCR, UVSCR());
+
+            MqoTexture shadeTex;
+            if (shader.shadeTex != null && texmap.TryGetValue(shader.ShadeTexName, out shadeTex))
+                effect.SetValue(handle_ShadeTex_texture, shadeTex.tex);
+
+            MqoTexture colorTex;
+            if (shader.colorTex != null && texmap.TryGetValue(shader.ColorTexName, out colorTex))
+                effect.SetValue(handle_ColorTex_texture, colorTex.tex);
+
+            effect.Technique = techmap[shader.technique];
+            effect.ValidateTechnique(effect.Technique);
+        }
+
+        /// <summary>
+        /// レンダリング終了時に呼びます。
+        /// </summary>
+        public void EndRender()
+        {
+            current_shader = null;
+        }
+
         public void Dispose()
         {
             foreach (MqoObject obj in objects)
                 obj.Dispose();
+            foreach (MqoTexture tex in textures)
+                tex.Dispose();
         }
     }
 
@@ -351,6 +554,12 @@ namespace mqoview
         public MqoMaterial() { }
         public MqoMaterial(string n) { name = n; }
 
+        MqoTexture color_tex = null;
+        MqoTexture shade_tex = null;
+
+        public MqoTexture ColorTexture { get { return color_tex; } }
+        public MqoTexture ShadeTexture { get { return shade_tex; } }
+
         public override string ToString()
         {
             return (new StringBuilder(256))
@@ -372,6 +581,10 @@ namespace mqoview
         public void Load(string source_file)
         {
             this.lines = File.ReadAllLines(source_file);
+            color_tex = new MqoTexture();
+            color_tex.Load(tex);
+            shade_tex = new MqoTexture();
+            shade_tex.Load(@"D:\TechArts3D\wc\1\NO_COL.bmp");
         }
 
         /// <summary>
@@ -572,6 +785,164 @@ namespace mqoview
             this.u = u;
             this.v = v;
             this.mtl = mtl;
+        }
+    }
+
+    /// <summary>
+    /// テクスチャ
+    /// </summary>
+    public class MqoTexture : IDisposable
+    {
+        /// <summary>
+        /// 名称
+        /// </summary>
+        internal string name;
+        /// <summary>
+        /// ファイル名
+        /// </summary>
+        internal string file;
+        /// <summary>
+        /// 幅
+        /// </summary>
+        public int width;
+        /// <summary>
+        /// 高さ
+        /// </summary>
+        public int height;
+        /// <summary>
+        /// 色深度
+        /// </summary>
+        public int depth;
+        /// <summary>
+        /// ビットマップ配列
+        /// </summary>
+        public byte[] data;
+
+        internal Texture tex;
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public string Name { get { return name; } set { name = value; } }
+        /// <summary>
+        /// ファイル名
+        /// </summary>
+        public string FileName { get { return file; } set { file = value; } }
+
+        /// <summary>
+        /// テクスチャを読み込みます。
+        /// </summary>
+        public void Load(string source_file)
+        {
+            using (FileStream stream = File.OpenRead(source_file))
+            {
+                this.file = "\"" + Path.GetFileName(source_file) + "\"";
+                Load(stream);
+            }
+        }
+
+        static readonly int sizeof_bfh = Marshal.SizeOf(typeof(BITMAPFILEHEADER));
+        static readonly int sizeof_bih = Marshal.SizeOf(typeof(BITMAPINFOHEADER));
+
+        /// <summary>
+        /// テクスチャを読み込みます。
+        /// </summary>
+        public void Load(Stream stream)
+        {
+            BinaryReader br = new BinaryReader(stream);
+            BITMAPFILEHEADER bfh;
+            BITMAPINFOHEADER bih;
+
+            IntPtr bfh_ptr = Marshal.AllocHGlobal(sizeof_bfh);
+            Marshal.Copy(br.ReadBytes(sizeof_bfh), 0, bfh_ptr, sizeof_bfh);
+            bfh = (BITMAPFILEHEADER)Marshal.PtrToStructure(bfh_ptr, typeof(BITMAPFILEHEADER));
+
+            IntPtr bih_ptr = Marshal.AllocHGlobal(sizeof_bih);
+            Marshal.Copy(br.ReadBytes(sizeof_bih), 0, bih_ptr, sizeof_bih);
+            bih = (BITMAPINFOHEADER)Marshal.PtrToStructure(bih_ptr, typeof(BITMAPINFOHEADER));
+
+            if (bfh.bfType != 0x4D42)
+                throw new Exception("Invalid imagetype: " + file);
+            if (bih.biBitCount != 24 && bih.biBitCount != 32)
+                throw new Exception("Invalid depth: " + file);
+
+            this.width = bih.biWidth;
+            this.height = bih.biHeight;
+            this.depth = bih.biBitCount / 8;
+            this.data = br.ReadBytes( this.width * this.height * this.depth );
+        }
+
+        /// <summary>
+        /// テクスチャを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            this.name = reader.ReadCString();
+            this.file = reader.ReadCString();
+            this.width = reader.ReadInt32();
+            this.height = reader.ReadInt32();
+            this.depth = reader.ReadInt32();
+            this.data = reader.ReadBytes( this.width * this.height * this.depth );
+
+            for(int j = 0; j < this.data.Length; j += 4)
+            {
+                byte tmp = this.data[j+2];
+                this.data[j+2] = this.data[j+0];
+                this.data[j+0] = tmp;
+            }
+        }
+
+        /// <summary>
+        /// 指定deviceで開きます。
+        /// </summary>
+        /// <param name="device">device</param>
+        public void Open(Device device)
+        {
+            if (file.Trim('"') == "")
+                return;
+            MemoryStream ms = new MemoryStream();
+            using (BinaryWriter bw = new BinaryWriter(ms))
+            {
+                {
+                    bw.Write((byte)'B');
+                    bw.Write((byte)'M');
+                    bw.Write((int)(54 + data.Length));
+                    bw.Write((int)0);
+                    bw.Write((int)54);
+                    bw.Write((int)40);
+                    bw.Write((int)width);
+                    bw.Write((int)height);
+                    bw.Write((short)1);
+                    bw.Write((short)(depth*8));
+                    bw.Write((int)0);
+                    bw.Write((int)data.Length);
+                    bw.Write((int)0);
+                    bw.Write((int)0);
+                    bw.Write((int)0);
+                    bw.Write((int)0);
+                }
+
+                int count = width * depth;
+                int index = width * height * depth - count;
+                for (int y = 0; y < height; y++)
+                {
+                    bw.Write(data, index, count);
+                    index -= count;
+                }
+                bw.Flush();
+
+                ms.Seek(0, SeekOrigin.Begin);
+                tex = TextureLoader.FromStream(device, ms);
+            }
+        }
+
+        /// <summary>
+        /// Direct3Dテクスチャを破棄します。
+        /// </summary>
+        public void Dispose()
+        {
+            if (tex != null)
+                tex.Dispose();
         }
     }
 }

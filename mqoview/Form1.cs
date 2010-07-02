@@ -126,27 +126,19 @@ namespace mqoview
             }
         }
 
-        MqoFile mqo = null;
+        MqoFile current_mqo = null;
 
         public void LoadMqoFile(string source_file)
         {
-            if (mqo != null)
+            if (current_mqo != null)
             {
-                mqo.Dispose();
-                mqo = null;
+                current_mqo.Dispose();
+                current_mqo = null;
             }
-            mqo = new MqoFile();
+            MqoFile mqo = new MqoFile();
             mqo.Load(source_file);
-            foreach (MqoObject obj in mqo.Objects)
-            {
-                obj.WriteBuffer(device);
-            }
-            string dir = Path.GetDirectoryName(source_file);
-            foreach (MqoMaterial mtl in mqo.Materials)
-            {
-                string sub_script_path = Path.Combine(dir, mtl.name);
-                mtl.Load(sub_script_path);
-            }
+            mqo.Open(device, effect);
+            current_mqo = mqo;
         }
 
         /// <summary>
@@ -166,12 +158,15 @@ namespace mqoview
 
             device.Clear(ClearFlags.Target, Color.CornflowerBlue, 1.0f, 0);
 
-            if (mqo != null)
+            if (current_mqo != null)
             {
-                foreach (MqoObject obj in mqo.Objects)
+                current_mqo.BeginRender();
+                foreach (MqoObject obj in current_mqo.Objects)
                 {
                     if (obj.dm == null)
                         continue;
+
+                    current_mqo.SwitchShader(current_mqo.Materials[obj.faces[0].mtl].shader);
 
                     int npass = effect.Begin(0);
                     for (int ipass = 0; ipass < npass; ipass++)
@@ -182,6 +177,7 @@ namespace mqoview
                     }
                     effect.End();
                 }
+                current_mqo.EndRender();
             }
 
             device.EndScene();
