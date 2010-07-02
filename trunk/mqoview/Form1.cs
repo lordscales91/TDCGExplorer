@@ -21,7 +21,7 @@ namespace mqoview
         public Form1()
         {
             InitializeComponent();
-            this.ClientSize = new Size(640, 480);
+            this.ClientSize = new Size(800, 600);
         }
 
         public bool InitializeGraphics()
@@ -41,7 +41,7 @@ namespace mqoview
                 flags |= CreateFlags.PureDevice;
             device = new Device(adapter_ordinal, DeviceType.Hardware, this, flags, pp);
 
-            string effect_file = Path.Combine(Application.StartupPath, @"default.cgfx");
+            string effect_file = Path.Combine(Application.StartupPath, @"toonshader.cgfx");
             if (!File.Exists(effect_file))
             {
                 Console.WriteLine("File not found: " + effect_file);
@@ -63,7 +63,7 @@ namespace mqoview
             device.Transform.Projection = Transform_Projection;
             effect.SetValue("proj", Transform_Projection);
             
-            Transform_View = Matrix.LookAtLH(new Vector3(0, -10.0f, 44.0f), new Vector3(0, 0, 0), new Vector3(0, 1, 0));
+            Transform_View = Matrix.LookAtLH(new Vector3(0, +10.0f, 44.0f), new Vector3(0, +10.0f, 0), new Vector3(0, 1, 0));
             // xxx: for w-buffering
             device.Transform.View = Transform_View;
             effect.SetValue("view", Transform_View);
