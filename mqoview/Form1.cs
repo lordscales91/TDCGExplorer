@@ -30,8 +30,28 @@ namespace mqoview
 
             pp.Windowed = true;
             pp.SwapEffect = SwapEffect.Discard;
+            pp.BackBufferFormat = Format.X8R8G8B8;
+            pp.BackBufferCount = 1;
+            pp.EnableAutoDepthStencil = true;
 
             int adapter_ordinal = Manager.Adapters.Default.Adapter;
+            DisplayMode display_mode = Manager.Adapters.Default.CurrentDisplayMode;
+
+            int ret;
+            if (Manager.CheckDepthStencilMatch(adapter_ordinal, DeviceType.Hardware, display_mode.Format, pp.BackBufferFormat, DepthFormat.D24S8, out ret))
+                pp.AutoDepthStencilFormat = DepthFormat.D24S8;
+            else
+            if (Manager.CheckDepthStencilMatch(adapter_ordinal, DeviceType.Hardware, display_mode.Format, pp.BackBufferFormat, DepthFormat.D24X8, out ret))
+                pp.AutoDepthStencilFormat = DepthFormat.D24X8;
+            else
+                pp.AutoDepthStencilFormat = DepthFormat.D16;
+
+            int quality;
+            if (Manager.CheckDeviceMultiSampleType(adapter_ordinal, DeviceType.Hardware, pp.BackBufferFormat, pp.Windowed, MultiSampleType.FourSamples, out ret, out quality))
+            {
+                pp.MultiSample = MultiSampleType.FourSamples;
+                pp.MultiSampleQuality = quality - 1;
+            }
 
             CreateFlags flags = CreateFlags.SoftwareVertexProcessing;
             Caps caps = Manager.GetDeviceCaps(adapter_ordinal, DeviceType.Hardware);
@@ -58,7 +78,11 @@ namespace mqoview
                 }
             }
 
-            Transform_Projection = Matrix.PerspectiveFovLH((float)Math.PI / 4, Width / Height, 1.0f, 10000.0f);
+            Transform_Projection = Matrix.PerspectiveFovLH(
+                    Geometry.DegreeToRadian(30.0f),
+                    (float)device.Viewport.Width / (float)device.Viewport.Height,
+                    1.0f,
+                    1000.0f );
             // xxx: for w-buffering
             device.Transform.Projection = Transform_Projection;
             effect.SetValue("proj", Transform_Projection);
@@ -155,8 +179,9 @@ namespace mqoview
                 effect.SetValue("wv", world_view_matrix);
                 effect.SetValue("wvp", world_view_projection_matrix);
             }
+            device.RenderState.AlphaBlendEnable = true;
 
-            device.Clear(ClearFlags.Target, Color.CornflowerBlue, 1.0f, 0);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.CornflowerBlue, 1.0f, 0);
 
             if (current_mqo != null)
             {
