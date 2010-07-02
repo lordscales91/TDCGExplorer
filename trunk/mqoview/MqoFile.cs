@@ -423,10 +423,11 @@ namespace mqoview
             foreach (MqoFace face in faces)
             {
                 indices.Add(face.a);
-                indices.Add(face.c);
                 indices.Add(face.b);
+                indices.Add(face.c);
             }
             ushort[] optimized_indices = NvTriStrip.Optimize(indices.ToArray());
+            numFaces = optimized_indices.Length - 2;
 
             if (dm != null)
             {
@@ -441,10 +442,8 @@ namespace mqoview
             {
                 GraphicsStream gs = dm.LockVertexBuffer(LockFlags.None);
                 {
-                    for (int i = 0; i < vertices.Count; i++)
+                    foreach (UVertex v in vertices)
                     {
-                        UVertex v = vertices[i];
-
                         gs.Write(v.position);
                         //for (int j = 0; j < 4; j++)
                         //    gs.Write(v.skin_weights[j].weight);
@@ -466,9 +465,20 @@ namespace mqoview
             {
                 GraphicsStream gs = dm.LockIndexBuffer(LockFlags.None);
                 {
-                    foreach (ushort idx in optimized_indices)
+                    for (int i = 2; i < optimized_indices.Length; i++)
                     {
-                        gs.Write(idx);
+                        if (i % 2 != 0)
+                        {
+                            gs.Write(optimized_indices[i - 0]);
+                            gs.Write(optimized_indices[i - 1]);
+                            gs.Write(optimized_indices[i - 2]);
+                        }
+                        else
+                        {
+                            gs.Write(optimized_indices[i - 2]);
+                            gs.Write(optimized_indices[i - 1]);
+                            gs.Write(optimized_indices[i - 0]);
+                        }
                     }
                 }
                 dm.UnlockIndexBuffer();

@@ -68,6 +68,11 @@ namespace mqoview
             device.Transform.View = Transform_View;
             effect.SetValue("view", Transform_View);
 
+            device.RenderState.Lighting = false;
+            device.RenderState.CullMode = Cull.CounterClockwise;
+
+            device.RenderState.IndexedVertexBlendEnable = true;
+
             timer1.Enabled = true;
             return true;
         }
@@ -75,8 +80,6 @@ namespace mqoview
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            device.Clear(ClearFlags.Target, Color.CornflowerBlue, 1.0f, 0);
-            device.Present();
         }
 
         private void Form1_DragDrop(object sender, DragEventArgs e)
@@ -155,6 +158,8 @@ namespace mqoview
                 effect.SetValue("wvp", world_view_projection_matrix);
             }
 
+            device.Clear(ClearFlags.Target, Color.CornflowerBlue, 1.0f, 0);
+
             if (mqo != null)
             {
                 foreach (MqoObject obj in mqo.Objects)
@@ -165,7 +170,6 @@ namespace mqoview
                     int npass = effect.Begin(0);
                     for (int ipass = 0; ipass < npass; ipass++)
                     {
-                        Console.WriteLine("render {0} {1}", obj, ipass);
                         effect.BeginPass(ipass);
                         obj.dm.DrawSubset(0);
                         effect.EndPass();
