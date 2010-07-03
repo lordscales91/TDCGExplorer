@@ -696,7 +696,14 @@ namespace TDCG
             this.width = reader.ReadInt32();
             this.height = reader.ReadInt32();
             this.depth = reader.ReadInt32();
-            this.data = reader.ReadBytes( this.width * this.height * this.depth );
+            try
+            {
+                this.data = reader.ReadBytes(this.width * this.height * this.depth);
+            }
+            catch (Exception)
+            {
+                this.data = new byte[0];
+            }
 
             for(int j = 0; j < this.data.Length; j += 4)
             {
