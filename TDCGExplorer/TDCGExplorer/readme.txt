@@ -375,8 +375,7 @@ DLL が必須な) ものについては，以下の条件を付けさせて頂いていますので遵守
      ポーズファイルで時々表示されないバグを修正。
 1.09.3
      Windows7/x64対応しました。tahファイルが削除されずに例外で落ちる不具合修正しました。
-　　 スプラッシュスクリーンのななみちゃんは、hissaさんのななみちゃんをお借りしました。
-1.09.4
+　　 スプラッシュスクリーンのななみちゃんは、hissaさんのななみちゃんをお借りしました。1.09.4
      検索を高速化。スプラッシュスクリーンのサイズがいつの間にかに変わっていたので修正。
 1.09.5
      連続して同じファイルのサムネイルを作成すると、作成したポーズファイルが壊れるバグを修正。
@@ -387,7 +386,8 @@ DLL が必須な) ものについては，以下の条件を付けさせて頂いていますので遵守
 1.10.1
      Vista英語版+日本語ランゲージパックで動作しない不具合を修正。
      英語版とソースコードを統合。HongfireのClawさんありがとう。
-
+1.10.3.3 いくつかのバグを修正。ソースコードは以下のリポジトリに収録するように変更。
+         http://sourceforge.jp/projects/tdcgexplorer/svn/view/trunk/TDCGExplorer/?root=tdcgexplorer
 
 Please read TDCGExplorer. 
 
@@ -600,4 +600,9 @@ The participation hope is welcomed in the development project aiming at the upco
    The trouble that doesn't operate by Vista English version + Japanese language packing is corrected. 
    An English version and the source code are integrated. Thank you for Mr. Claw about Hongfire. 
 
+1.10.3.3
+   Some bug fix. Source code management with svn repositry. see also.
+   http://sourceforge.jp/projects/tdcgexplorer/svn/view/trunk/TDCGExplorer/?root=tdcgexplorer
+
 Konoa/N765
+
