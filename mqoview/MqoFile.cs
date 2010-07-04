@@ -360,29 +360,28 @@ namespace mqoview
             ImportInfo info = ImportInfo.Load(Path.ChangeExtension(this.file, ".xml"));
 
             string dir = Path.GetDirectoryName(this.file);
+            foreach (ImportTextureInfo tex_info in info.textures)
+            {
+                MqoTexture tex = new MqoTexture();
+                tex.Name = tex_info.Name;
+                string tex_path = Path.Combine(dir, tex_info.File);
+                tex.Load(tex_path);
+                tex.Open(device);
+
+                textures.Add(tex);
+            }
+
+            texmap = new Dictionary<string, MqoTexture>();
+            foreach (MqoTexture tex in textures)
+            {
+                texmap[tex.name] = tex;
+            }
+
             foreach (MqoMaterial mtl in Materials)
             {
                 string sub_script_path = Path.Combine(dir, mtl.name);
                 mtl.Load(sub_script_path);
                 mtl.GenerateShader();
-                string color_file = info.GetTexture(mtl.shader.ColorTexName).File;
-                string color_path = Path.Combine(dir, color_file);
-                mtl.ColorTexture.Load(color_path);
-                string shade_file = info.GetTexture(mtl.shader.ShadeTexName).File;
-                string shade_path = Path.Combine(dir, shade_file);
-                mtl.ShadeTexture.Load(shade_path);
-                mtl.ColorTexture.Name = mtl.shader.ColorTexName;
-                mtl.ShadeTexture.Name = mtl.shader.ShadeTexName;
-                textures.Add(mtl.ColorTexture);
-                textures.Add(mtl.ShadeTexture);
-            }
-
-            texmap = new Dictionary<string, MqoTexture>();
-
-            foreach (MqoTexture tex in textures)
-            {
-                tex.Open(device);
-                texmap[tex.name] = tex;
             }
 
             handle_ShadeTex_texture = effect.GetParameter(null, "ShadeTex_texture");
@@ -560,13 +559,7 @@ namespace mqoview
         public Shader shader = null;
 
         public MqoMaterial() { }
-        public MqoMaterial(string n) { name = n; }
-
-        MqoTexture color_tex = null;
-        MqoTexture shade_tex = null;
-
-        public MqoTexture ColorTexture { get { return color_tex; } }
-        public MqoTexture ShadeTexture { get { return shade_tex; } }
+        public MqoMaterial(string name) { this.name = name; }
 
         public override string ToString()
         {
@@ -589,8 +582,6 @@ namespace mqoview
         public void Load(string source_file)
         {
             this.lines = File.ReadAllLines(source_file);
-            color_tex = new MqoTexture();
-            shade_tex = new MqoTexture();
         }
 
         /// <summary>
