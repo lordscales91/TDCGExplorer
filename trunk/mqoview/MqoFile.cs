@@ -357,12 +357,20 @@ namespace mqoview
             this.device = device;
             this.effect = effect;
 
+            ImportInfo info = ImportInfo.Load(Path.ChangeExtension(this.file, ".xml"));
+
             string dir = Path.GetDirectoryName(this.file);
             foreach (MqoMaterial mtl in Materials)
             {
                 string sub_script_path = Path.Combine(dir, mtl.name);
                 mtl.Load(sub_script_path);
                 mtl.GenerateShader();
+                string color_file = info.GetTexture(mtl.shader.ColorTexName).File;
+                string color_path = Path.Combine(dir, color_file);
+                mtl.ColorTexture.Load(color_path);
+                string shade_file = info.GetTexture(mtl.shader.ShadeTexName).File;
+                string shade_path = Path.Combine(dir, shade_file);
+                mtl.ShadeTexture.Load(shade_path);
                 mtl.ColorTexture.Name = mtl.shader.ColorTexName;
                 mtl.ShadeTexture.Name = mtl.shader.ShadeTexName;
                 textures.Add(mtl.ColorTexture);
@@ -582,9 +590,7 @@ namespace mqoview
         {
             this.lines = File.ReadAllLines(source_file);
             color_tex = new MqoTexture();
-            color_tex.Load(tex);
             shade_tex = new MqoTexture();
-            shade_tex.Load(@"D:\TechArts3D\wc\1\NO_COL.bmp");
         }
 
         /// <summary>
