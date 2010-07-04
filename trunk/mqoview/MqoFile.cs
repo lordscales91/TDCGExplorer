@@ -605,6 +605,7 @@ namespace mqoview
         public int color_type;
         public List<UVertex> vertices;
         public List<MqoFace> faces;
+        public MqoAttributeTable at = new MqoAttributeTable();
 
         public Mesh dm = null;
 
@@ -635,15 +636,6 @@ namespace mqoview
             new VertexElement(0, 44, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
                 VertexElement.VertexDeclarationEnd
         };
-
-        static AttributeRange ar = new AttributeRange();
-        /*
-        ar.AttributeId = 0;
-        ar.FaceStart = 0;
-        ar.FaceCount = 0;
-        ar.VertexStart = 0;
-        ar.VertexCount = 0;
-        */
 
         /// <summary>
         /// 頂点をDirect3Dバッファに書き込みます。
@@ -679,22 +671,39 @@ namespace mqoview
                 }
             }
 
-            List<ushort> indices = new List<ushort>(numFaces * 3);
+            int face_len = 0;
+            MqoAttributeRange ar = at.Start(face_len, faces[0].mtl);
+            List<ushort> indices = new List<ushort>();
+            List<ushort[]> optimized_indices_table = new List<ushort[]>();
             foreach (MqoFace face in faces)
             {
+                if (face.mtl != ar.mtl)
+                {
+                    ushort[] optimized_indices = NvTriStrip.Optimize(indices.ToArray());
+                    optimized_indices_table.Add(optimized_indices);
+                    indices.Clear();
+                    face_len += optimized_indices.Length - 2;
+                    ar = at.Next(face_len, face.mtl);
+                }
                 indices.Add(face.a);
                 indices.Add(face.b);
                 indices.Add(face.c);
             }
-            ushort[] optimized_indices = NvTriStrip.Optimize(indices.ToArray());
-            numFaces = optimized_indices.Length - 2;
+                {
+                    ushort[] optimized_indices = NvTriStrip.Optimize(indices.ToArray());
+                    optimized_indices_table.Add(optimized_indices);
+                    indices.Clear();
+                    face_len += optimized_indices.Length - 2;
+                    at.Finish(face_len);
+                    ar = null;
+                }
 
             if (dm != null)
             {
                 dm.Dispose();
                 dm = null;
             }
-            dm = new Mesh(numFaces, numVertices, MeshFlags.Managed | MeshFlags.WriteOnly, ve, device);
+            dm = new Mesh(at.FaceCount, numVertices, MeshFlags.Managed | MeshFlags.WriteOnly, ve, device);
 
             //
             // rewrite vertex buffer
@@ -725,6 +734,7 @@ namespace mqoview
             {
                 GraphicsStream gs = dm.LockIndexBuffer(LockFlags.None);
                 {
+                    foreach (ushort[] optimized_indices in optimized_indices_table)
                     for (int i = 2; i < optimized_indices.Length; i++)
                     {
                         if (i % 2 != 0)
@@ -748,7 +758,7 @@ namespace mqoview
             // rewrite attribute buffer
             //
             {
-                dm.SetAttributeTable(new AttributeRange[] { ar }); 
+                dm.SetAttributeTable(at.GenerateAttributeTable(0, numVertices)); 
             }
         }
 
@@ -756,6 +766,66 @@ namespace mqoview
         {
             if (dm != null)
                 dm.Dispose();
+        }
+    }
+
+    public class MqoAttributeRange
+    {
+        public ushort mtl;
+        public int AttributeId;
+        public int FaceStart;
+        public int FaceCount;
+    }
+
+    public class MqoAttributeTable
+    {
+        MqoAttributeRange ar = null;
+        List<MqoAttributeRange> at = new List<MqoAttributeRange>();
+        public List<MqoAttributeRange> Ranges { get { return at; } }
+        public int FaceCount;
+
+        public MqoAttributeRange Start(int len, ushort mtl)
+        {
+            ar = new MqoAttributeRange();
+            ar.mtl = mtl;
+            ar.AttributeId = at.Count;
+            ar.FaceStart = len;
+            at.Add(ar);
+            return ar;
+        }
+
+        public MqoAttributeRange Next(int len, ushort mtl)
+        {
+            ar.FaceCount = len - ar.FaceStart;
+            FaceCount += ar.FaceCount;
+            ar = new MqoAttributeRange();
+            ar.mtl = mtl;
+            ar.AttributeId = at.Count;
+            ar.FaceStart = len;
+            at.Add(ar);
+            return ar;
+        }
+
+        public void Finish(int len)
+        {
+            ar.FaceCount = len - ar.FaceStart;
+            FaceCount += ar.FaceCount;
+            ar = null;
+        }
+
+        public AttributeRange[] GenerateAttributeTable(int vertex_start, int vertex_count)
+        {
+            AttributeRange[] da = new AttributeRange[at.Count];
+            for (int i = 0; i < at.Count; i++)
+            {
+                MqoAttributeRange ar = at[i];
+                da[i].AttributeId = ar.AttributeId;
+                da[i].FaceStart = ar.FaceStart;
+                da[i].FaceCount = ar.FaceCount;
+                da[i].VertexStart = vertex_start;
+                da[i].VertexCount = vertex_count;
+            }
+            return da;
         }
     }
 
