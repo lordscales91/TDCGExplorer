@@ -23,28 +23,32 @@ namespace mqoview
     {
         public static ushort[] Optimize(ushort[] triangles)
         {
-            fixed(ushort* p= &triangles[0])
+            fixed (ushort* p = &triangles[0])
             {
-	            SetStitchStrips(true);
+                SetStitchStrips(true);
 
-                PrimitiveGroup* pg  = null;
-                ushort          num = 0;
-                bool            rc  = GenerateStrips(p, (uint)triangles.Length, &pg, &num, false);
-
-                if(!rc)                                 throw new Exception();
+                PrimitiveGroup* pg = null;
+                ushort num = 0;
+                bool rc = GenerateStrips(p, (uint)triangles.Length, &pg, &num, false);
+                if (!rc)
+                    throw new Exception();
 
                 try
                 {
-                    if(num != 1)                        throw new Exception();
-                    if(pg[0].type != PrimType.PT_STRIP) throw new Exception();
+                    if (num != 1)
+                        throw new Exception();
 
-                    ushort[]    nidx= new ushort[pg[0].numIndices];
+                    if (pg[0].type != PrimType.PT_STRIP)
+                        throw new Exception();
 
-                    for(int i= 0; i < nidx.Length; ++i)
-                        nidx[i] = pg[0].indices[i];
+                    ushort[] indices = new ushort[pg[0].numIndices];
 
-                    return nidx;
-                } finally
+                    for (int i = 0; i < indices.Length; ++i)
+                        indices[i] = pg[0].indices[i];
+
+                    return indices;
+                }
+                finally
                 {
                     DeletePrimitiveGroup(pg);
                 }

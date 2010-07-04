@@ -191,16 +191,19 @@ namespace mqoview
                     if (obj.dm == null)
                         continue;
 
-                    current_mqo.SwitchShader(current_mqo.Materials[obj.faces[0].mtl].shader);
-
-                    int npass = effect.Begin(0);
-                    for (int ipass = 0; ipass < npass; ipass++)
+                    foreach (MqoAttributeRange ar in obj.at.Ranges)
                     {
-                        effect.BeginPass(ipass);
-                        obj.dm.DrawSubset(0);
-                        effect.EndPass();
+                        current_mqo.SwitchShader(current_mqo.Materials[ar.mtl].shader);
+
+                        int npass = effect.Begin(0);
+                        for (int ipass = 0; ipass < npass; ipass++)
+                        {
+                            effect.BeginPass(ipass);
+                            obj.dm.DrawSubset(ar.AttributeId);
+                            effect.EndPass();
+                        }
+                        effect.End();
                     }
-                    effect.End();
                 }
                 current_mqo.EndRender();
             }
