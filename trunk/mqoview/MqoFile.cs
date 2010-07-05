@@ -16,6 +16,25 @@ namespace mqoview
     using LONG  = Int32;
 
     [StructLayout(LayoutKind.Sequential, Pack=1)]
+    public struct TARGA_HEADER
+    {
+	    public BYTE     id;
+	    public BYTE		colormap;
+	    public BYTE		imagetype;
+	    public BYTE		unknown0;
+	    public BYTE		unknown1;
+	    public BYTE		unknown2;
+	    public BYTE		unknown3;
+	    public BYTE		unknown4;
+	    public WORD		x;
+	    public WORD		y;
+	    public WORD		width;
+	    public WORD		height;
+	    public BYTE		depth;
+	    public BYTE		type;
+    };
+
+    [StructLayout(LayoutKind.Sequential, Pack=1)]
     struct BITMAPFILEHEADER
     {
         public WORD    bfType;
@@ -920,8 +939,42 @@ namespace mqoview
             using (FileStream stream = File.OpenRead(source_file))
             {
                 this.file = "\"" + Path.GetFileName(source_file) + "\"";
-                Load(stream);
+                string ext = Path.GetExtension(source_file).ToLower();
+                switch (ext)
+                {
+                    case ".tga":
+                        LoadFromTga(stream);
+                        break;
+                    case ".bmp":
+                        LoadFromBmp(stream);
+                        break;
+                }
             }
+        }
+
+        static readonly int sizeof_tga_header = Marshal.SizeOf(typeof(TARGA_HEADER));
+
+        /// <summary>
+        /// テクスチャを読み込みます。
+        /// </summary>
+        public void LoadFromTga(Stream stream)
+        {
+            BinaryReader br = new BinaryReader(stream);
+            TARGA_HEADER header;
+
+            IntPtr header_ptr = Marshal.AllocHGlobal(sizeof_tga_header);
+            Marshal.Copy(br.ReadBytes(sizeof_tga_header), 0, header_ptr, sizeof_tga_header);
+            header = (TARGA_HEADER)Marshal.PtrToStructure(header_ptr, typeof(TARGA_HEADER));
+
+            if (header.imagetype != 0x02)
+                throw new Exception("Invalid imagetype: " + file);
+            if (header.depth != 24 && header.depth != 32)
+                throw new Exception("Invalid depth: " + file);
+
+            this.width = header.width;
+            this.height = header.height;
+            this.depth = header.depth / 8;
+            this.data = br.ReadBytes( this.width * this.height * this.depth );
         }
 
         static readonly int sizeof_bfh = Marshal.SizeOf(typeof(BITMAPFILEHEADER));
@@ -930,7 +983,7 @@ namespace mqoview
         /// <summary>
         /// テクスチャを読み込みます。
         /// </summary>
-        public void Load(Stream stream)
+        public void LoadFromBmp(Stream stream)
         {
             BinaryReader br = new BinaryReader(stream);
             BITMAPFILEHEADER bfh;
