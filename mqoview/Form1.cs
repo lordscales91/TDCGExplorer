@@ -78,7 +78,7 @@ namespace mqoview
                 }
             }
 
-            Transform_Projection = Matrix.PerspectiveFovLH(
+            Transform_Projection = Matrix.PerspectiveFovRH(
                     Geometry.DegreeToRadian(30.0f),
                     (float)device.Viewport.Width / (float)device.Viewport.Height,
                     1.0f,
@@ -87,11 +87,6 @@ namespace mqoview
             device.Transform.Projection = Transform_Projection;
             effect.SetValue("proj", Transform_Projection);
             
-            Transform_View = Matrix.LookAtLH(new Vector3(0, +10.0f, 44.0f), new Vector3(0, +10.0f, 0), new Vector3(0, 1, 0));
-            // xxx: for w-buffering
-            device.Transform.View = Transform_View;
-            effect.SetValue("view", Transform_View);
-
             device.RenderState.Lighting = false;
             device.RenderState.CullMode = Cull.CounterClockwise;
 
@@ -166,6 +161,21 @@ namespace mqoview
         }
 
         /// <summary>
+        /// 次のシーンフレームに進みます。
+        /// </summary>
+        public void FrameMove()
+        {
+            if (camera.NeedUpdate)
+            {
+                camera.Update();
+                Transform_View = camera.ViewMatrix;
+                // xxx: for w-buffering
+                device.Transform.View = Transform_View;
+                effect.SetValue("view", Transform_View);
+            }
+        }
+
+        /// <summary>
         /// シーンをレンダリングします。
         /// </summary>
         public void Render()
@@ -234,7 +244,54 @@ namespace mqoview
 
         private void timer1_Tick(object sender, EventArgs e)
         {
+            FrameMove();
             Render();
+        }
+
+        private SimpleCamera camera = new SimpleCamera();
+
+        /// <summary>
+        /// カメラ
+        /// </summary>
+        public SimpleCamera Camera
+        {
+            get {
+                return camera;
+            }
+            set {
+                camera = value;
+            }
+        }
+
+        // マウスポイントしているスクリーン座標
+        internal Point lastScreenPoint = Point.Empty;
+
+        private void Form1_MouseDown(object sender, MouseEventArgs e)
+        {
+            lastScreenPoint.X = e.X;
+            lastScreenPoint.Y = e.Y;
+        }
+
+        private void Form1_MouseMove(object sender, MouseEventArgs e)
+        {
+            int dx = e.X - lastScreenPoint.X;
+            int dy = e.Y - lastScreenPoint.Y;
+
+            switch (e.Button)
+            {
+            case MouseButtons.Left:
+                Camera.Move(dx, -dy, 0.0f);
+                break;
+            case MouseButtons.Middle:
+                Camera.MoveView(-dx*0.125f, dy*0.125f);
+                break;
+            case MouseButtons.Right:
+                Camera.Move(0.0f, 0.0f, -dy*0.125f);
+                break;
+            }
+
+            lastScreenPoint.X = e.X;
+            lastScreenPoint.Y = e.Y;
         }
 
     }
