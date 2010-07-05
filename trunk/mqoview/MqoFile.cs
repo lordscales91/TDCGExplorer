@@ -702,8 +702,8 @@ namespace mqoview
                         ar = at.Next(face_len, face.mtl);
                     }
                     indices.Add(face.a);
-                    indices.Add(face.b);
                     indices.Add(face.c);
+                    indices.Add(face.b);
                 }
                 {
                     face_len += indices.Count / 3;

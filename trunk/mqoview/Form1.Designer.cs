@@ -34,7 +34,7 @@
             // 
             // timer1
             // 
-            this.timer1.Interval = 160;
+            this.timer1.Interval = 16;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // Form1
@@ -46,6 +46,8 @@
             this.Name = "Form1";
             this.Text = "Form1";
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);
             this.DragOver += new System.Windows.Forms.DragEventHandler(this.Form1_DragOver);
             this.ResumeLayout(false);
 
