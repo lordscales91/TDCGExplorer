@@ -97,6 +97,16 @@ namespace mqoview
             device.RenderState.Lighting = false;
             device.RenderState.CullMode = Cull.CounterClockwise;
 
+            device.TextureState[0].AlphaOperation = TextureOperation.Modulate;
+            device.TextureState[0].AlphaArgument1 = TextureArgument.TextureColor;
+            device.TextureState[0].AlphaArgument2 = TextureArgument.Current;
+
+            device.RenderState.SourceBlend = Blend.SourceAlpha; 
+            device.RenderState.DestinationBlend = Blend.InvSourceAlpha;
+            device.RenderState.AlphaTestEnable = true;
+            device.RenderState.ReferenceAlpha = 0x08;
+            device.RenderState.AlphaFunction = Compare.GreaterEqual;
+
             device.RenderState.IndexedVertexBlendEnable = true;
 
             timer1.Enabled = true;
