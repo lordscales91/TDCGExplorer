@@ -665,9 +665,9 @@ namespace mqoview
             Vector3[] normals = new Vector3[vertices.Count];
             foreach (MqoFace face in faces)
             {
-                Vector3 v1 = Vector3.Normalize(vertices[face.a].position - vertices[face.b].position);
-                Vector3 v2 = Vector3.Normalize(vertices[face.c].position - vertices[face.b].position);
-                Vector3 n = Vector3.Cross(v1, v2);
+                Vector3 v1 = vertices[face.a].position - vertices[face.c].position;
+                Vector3 v2 = vertices[face.b].position - vertices[face.c].position;
+                Vector3 n = Vector3.Normalize(Vector3.Cross(v2, v1));
                 normals[face.a] += n;
                 normals[face.b] += n;
                 normals[face.c] += n;
