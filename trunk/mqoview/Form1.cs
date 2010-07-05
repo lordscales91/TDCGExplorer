@@ -14,6 +14,12 @@ namespace mqoview
     {
         Device device = null;
         Effect effect = null;
+
+        /// <summary>
+        /// effect handle for LocalBoneMats
+        /// </summary>
+        protected EffectHandle handle_LocalBoneMats;
+
         Matrix world_matrix = Matrix.Identity;
         Matrix Transform_View = Matrix.Identity;
         Matrix Transform_Projection = Matrix.Identity;
@@ -77,6 +83,7 @@ namespace mqoview
                     return false;
                 }
             }
+            handle_LocalBoneMats = effect.GetParameter(null, "LocalBoneMats");
 
             Transform_Projection = Matrix.PerspectiveFovRH(
                     Geometry.DegreeToRadian(30.0f),
@@ -204,6 +211,7 @@ namespace mqoview
                     foreach (MqoAttributeRange ar in obj.at.Ranges)
                     {
                         current_mqo.SwitchShader(current_mqo.Materials[ar.mtl].shader);
+                        effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices());
 
                         int npass = effect.Begin(0);
                         for (int ipass = 0; ipass < npass; ipass++)
@@ -240,6 +248,15 @@ namespace mqoview
 
             device.Present();
             Thread.Sleep(30);
+        }
+
+        public static Matrix[] ClipBoneMatrices()
+        {
+            Matrix[] clipped_boneMatrices = new Matrix[16];
+
+            clipped_boneMatrices[0] = Matrix.Identity;
+
+            return clipped_boneMatrices;
         }
 
         private void timer1_Tick(object sender, EventArgs e)
