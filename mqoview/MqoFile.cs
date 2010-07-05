@@ -662,11 +662,7 @@ namespace mqoview
         /// <param name="device">device</param>
         public void WriteBuffer(Device device)
         {
-            int numVertices = vertices.Count;
-            int numFaces = faces.Count;
-
             Vector3[] normals = new Vector3[vertices.Count];
-            Vector2[] tex_coords = new Vector2[vertices.Count];
             foreach (MqoFace face in faces)
             {
                 Vector3 v1 = Vector3.Normalize(vertices[face.a].position - vertices[face.b].position);
@@ -675,22 +671,18 @@ namespace mqoview
                 normals[face.a] += n;
                 normals[face.b] += n;
                 normals[face.c] += n;
-                tex_coords[face.a] = face.ta;
-                tex_coords[face.b] = face.tb;
-                tex_coords[face.c] = face.tc;
             }
             {
                 int i = 0;
                 foreach (UVertex v in vertices)
                 {
                     v.normal = Vector3.Normalize(normals[i]);
-                    v.u = tex_coords[i].X;
-                    v.v = 1 - tex_coords[i].Y;
                     i++;
                 }
             }
 
-            List<ushort> indices = new List<ushort>(numFaces * 3);
+            UVertexHeap heap = new UVertexHeap();
+            List<ushort> indices = new List<ushort>(faces.Count * 3);
             {
                 int face_len = 0;
                 MqoAttributeRange ar = at.Start(face_len, faces[0].mtl);
@@ -701,9 +693,12 @@ namespace mqoview
                         face_len += indices.Count / 3;
                         ar = at.Next(face_len, face.mtl);
                     }
-                    indices.Add(face.a);
-                    indices.Add(face.c);
-                    indices.Add(face.b);
+                    UVertex a = new UVertex(vertices[face.a].position, vertices[face.a].normal, face.ta.X, 1 - face.ta.Y, face.mtl);
+                    UVertex b = new UVertex(vertices[face.b].position, vertices[face.b].normal, face.tb.X, 1 - face.tb.Y, face.mtl);
+                    UVertex c = new UVertex(vertices[face.c].position, vertices[face.c].normal, face.tc.X, 1 - face.tc.Y, face.mtl);
+                    indices.Add(heap.Add(a));
+                    indices.Add(heap.Add(c));
+                    indices.Add(heap.Add(b));
                 }
                 {
                     face_len += indices.Count / 3;
@@ -717,7 +712,7 @@ namespace mqoview
                 dm.Dispose();
                 dm = null;
             }
-            dm = new Mesh(at.FaceCount, numVertices, MeshFlags.Managed | MeshFlags.WriteOnly, ve, device);
+            dm = new Mesh(at.FaceCount, heap.Count, MeshFlags.Managed | MeshFlags.WriteOnly, ve, device);
 
             //
             // rewrite vertex buffer
@@ -725,7 +720,7 @@ namespace mqoview
             {
                 GraphicsStream gs = dm.LockVertexBuffer(LockFlags.None);
                 {
-                    foreach (UVertex v in vertices)
+                    foreach (UVertex v in heap.ary)
                     {
                         gs.Write(v.position);
                         //for (int j = 0; j < 4; j++)
@@ -768,7 +763,7 @@ namespace mqoview
                 }
                 dm.UnlockAttributeBuffer(attribBuffer);
 
-                dm.SetAttributeTable(at.GenerateAttributeTable(0, numVertices));
+                dm.SetAttributeTable(at.GenerateAttributeTable(0, heap.Count));
             }
         }
 
@@ -869,7 +864,36 @@ namespace mqoview
         }
     }
 
-    public class UVertex
+    public class UVertexHeap
+    {
+        public Dictionary<UVertex, ushort> map = new Dictionary<UVertex, ushort>();
+        public List<UVertex> ary = new List<UVertex>();
+
+        public void Clear()
+        {
+            map.Clear();
+            ary.Clear();
+        }
+
+        public ushort Add(UVertex v)
+        {
+            ushort n;
+
+            if (map.TryGetValue(v, out n))
+                return n;
+
+            n = (ushort)ary.Count;
+            map.Add(v, n);
+            ary.Add(v);
+            return n;
+        }
+
+        public int Count { get { return ary.Count; } }
+        public ushort this[UVertex index] { get { return map[index]; } }
+        public UVertex this[int index] { get { return ary[index]; } }
+    }
+
+    public class UVertex : IEquatable<UVertex>
     {
         public Vector3 position;
         public Vector3 normal;
@@ -887,6 +911,19 @@ namespace mqoview
             this.u = u;
             this.v = v;
             this.mtl = mtl;
+        }
+
+        public bool Equals(UVertex other)
+        {
+            if (other == null)
+                return base.Equals(other);
+
+            return position == other.position && normal == other.normal && u == other.u && v == other.v && mtl == other.mtl;
+        }
+
+        public override int GetHashCode()
+        {
+            return position.GetHashCode() ^ normal.GetHashCode() ^ u.GetHashCode() ^ v.GetHashCode() ^ mtl.GetHashCode();
         }
     }
 
