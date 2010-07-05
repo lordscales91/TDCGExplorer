@@ -56,7 +56,6 @@
     </Compile>
     <Compile Include="ImportInfo.cs" />
     <Compile Include="MqoFile.cs" />
-    <Compile Include="NvTriStrip.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

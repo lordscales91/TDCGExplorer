@@ -671,19 +671,15 @@ namespace mqoview
                 }
             }
 
-            List<ushort[]> optimized_indices_table = new List<ushort[]>();
+            List<ushort> indices = new List<ushort>(numFaces * 3);
             {
                 int face_len = 0;
                 MqoAttributeRange ar = at.Start(face_len, faces[0].mtl);
-                List<ushort> indices = new List<ushort>();
                 foreach (MqoFace face in faces)
                 {
                     if (face.mtl != ar.mtl)
                     {
-                        ushort[] optimized_indices = NvTriStrip.Optimize(indices.ToArray());
-                        optimized_indices_table.Add(optimized_indices);
-                        indices.Clear();
-                        face_len += optimized_indices.Length - 2;
+                        face_len += indices.Count / 3;
                         ar = at.Next(face_len, face.mtl);
                     }
                     indices.Add(face.a);
@@ -691,10 +687,7 @@ namespace mqoview
                     indices.Add(face.c);
                 }
                 {
-                    ushort[] optimized_indices = NvTriStrip.Optimize(indices.ToArray());
-                    optimized_indices_table.Add(optimized_indices);
-                    indices.Clear();
-                    face_len += optimized_indices.Length - 2;
+                    face_len += indices.Count / 3;
                     at.Finish(face_len);
                     ar = null;
                 }
@@ -736,22 +729,10 @@ namespace mqoview
             {
                 GraphicsStream gs = dm.LockIndexBuffer(LockFlags.None);
                 {
-                    foreach (ushort[] optimized_indices in optimized_indices_table)
-                        for (int i = 2; i < optimized_indices.Length; i++)
-                        {
-                            if (i % 2 != 0)
-                            {
-                                gs.Write(optimized_indices[i - 0]);
-                                gs.Write(optimized_indices[i - 1]);
-                                gs.Write(optimized_indices[i - 2]);
-                            }
-                            else
-                            {
-                                gs.Write(optimized_indices[i - 2]);
-                                gs.Write(optimized_indices[i - 1]);
-                                gs.Write(optimized_indices[i - 0]);
-                            }
-                        }
+                    foreach (ushort idx in indices)
+                    {
+                        gs.Write(idx);
+                    }
                 }
                 dm.UnlockIndexBuffer();
             }
@@ -806,7 +787,7 @@ namespace mqoview
 
         public MqoAttributeRange Next(int len, ushort mtl)
         {
-            ar.FaceCount = len - ar.FaceStart;
+            ar.FaceCount = len - FaceCount;
             FaceCount += ar.FaceCount;
             ar = new MqoAttributeRange();
             ar.mtl = mtl;
@@ -818,7 +799,7 @@ namespace mqoview
 
         public void Finish(int len)
         {
-            ar.FaceCount = len - ar.FaceStart;
+            ar.FaceCount = len - FaceCount;
             FaceCount += ar.FaceCount;
             ar = null;
         }
