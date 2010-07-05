@@ -30,7 +30,7 @@ namespace mqoview
             this.ClientSize = new Size(800, 600);
         }
 
-        public bool InitializeGraphics()
+        public bool InitializeGraphics(string[] args)
         {
             PresentParameters pp = new PresentParameters();
 
@@ -108,6 +108,9 @@ namespace mqoview
             device.RenderState.AlphaFunction = Compare.GreaterEqual;
 
             device.RenderState.IndexedVertexBlendEnable = true;
+
+            foreach (string arg in args)
+                LoadAnyFile(arg, true);
 
             timer1.Enabled = true;
             return true;
