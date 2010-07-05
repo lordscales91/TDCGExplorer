@@ -671,24 +671,25 @@ namespace mqoview
                 }
             }
 
-            int face_len = 0;
-            MqoAttributeRange ar = at.Start(face_len, faces[0].mtl);
-            List<ushort> indices = new List<ushort>();
             List<ushort[]> optimized_indices_table = new List<ushort[]>();
-            foreach (MqoFace face in faces)
             {
-                if (face.mtl != ar.mtl)
+                int face_len = 0;
+                MqoAttributeRange ar = at.Start(face_len, faces[0].mtl);
+                List<ushort> indices = new List<ushort>();
+                foreach (MqoFace face in faces)
                 {
-                    ushort[] optimized_indices = NvTriStrip.Optimize(indices.ToArray());
-                    optimized_indices_table.Add(optimized_indices);
-                    indices.Clear();
-                    face_len += optimized_indices.Length - 2;
-                    ar = at.Next(face_len, face.mtl);
+                    if (face.mtl != ar.mtl)
+                    {
+                        ushort[] optimized_indices = NvTriStrip.Optimize(indices.ToArray());
+                        optimized_indices_table.Add(optimized_indices);
+                        indices.Clear();
+                        face_len += optimized_indices.Length - 2;
+                        ar = at.Next(face_len, face.mtl);
+                    }
+                    indices.Add(face.a);
+                    indices.Add(face.b);
+                    indices.Add(face.c);
                 }
-                indices.Add(face.a);
-                indices.Add(face.b);
-                indices.Add(face.c);
-            }
                 {
                     ushort[] optimized_indices = NvTriStrip.Optimize(indices.ToArray());
                     optimized_indices_table.Add(optimized_indices);
@@ -697,6 +698,7 @@ namespace mqoview
                     at.Finish(face_len);
                     ar = null;
                 }
+            }
 
             if (dm != null)
             {
@@ -735,21 +737,21 @@ namespace mqoview
                 GraphicsStream gs = dm.LockIndexBuffer(LockFlags.None);
                 {
                     foreach (ushort[] optimized_indices in optimized_indices_table)
-                    for (int i = 2; i < optimized_indices.Length; i++)
-                    {
-                        if (i % 2 != 0)
+                        for (int i = 2; i < optimized_indices.Length; i++)
                         {
-                            gs.Write(optimized_indices[i - 0]);
-                            gs.Write(optimized_indices[i - 1]);
-                            gs.Write(optimized_indices[i - 2]);
+                            if (i % 2 != 0)
+                            {
+                                gs.Write(optimized_indices[i - 0]);
+                                gs.Write(optimized_indices[i - 1]);
+                                gs.Write(optimized_indices[i - 2]);
+                            }
+                            else
+                            {
+                                gs.Write(optimized_indices[i - 2]);
+                                gs.Write(optimized_indices[i - 1]);
+                                gs.Write(optimized_indices[i - 0]);
+                            }
                         }
-                        else
-                        {
-                            gs.Write(optimized_indices[i - 2]);
-                            gs.Write(optimized_indices[i - 1]);
-                            gs.Write(optimized_indices[i - 0]);
-                        }
-                    }
                 }
                 dm.UnlockIndexBuffer();
             }
@@ -758,7 +760,15 @@ namespace mqoview
             // rewrite attribute buffer
             //
             {
-                dm.SetAttributeTable(at.GenerateAttributeTable(0, numVertices)); 
+                int[] attribBuffer = dm.LockAttributeBufferArray(LockFlags.None);
+                foreach (MqoAttributeRange ar in at.Ranges)
+                {
+                    for (int i = 0; i < ar.FaceCount; i++)
+                        attribBuffer[ar.FaceStart + i] = ar.AttributeId;
+                }
+                dm.UnlockAttributeBuffer(attribBuffer);
+
+                dm.SetAttributeTable(at.GenerateAttributeTable(0, numVertices));
             }
         }
 
