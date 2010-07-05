@@ -723,11 +723,10 @@ namespace mqoview
                     foreach (UVertex v in heap.ary)
                     {
                         gs.Write(v.position);
-                        //for (int j = 0; j < 4; j++)
-                        //    gs.Write(v.skin_weights[j].weight);
-                        //gs.Write(v.bone_indices);
-                        for (int j = 0; j < 4; j++)
-                            gs.Write(0.0f);
+                        gs.Write(1.0f);
+                        gs.Write(0.0f);
+                        gs.Write(0.0f);
+                        gs.Write(0.0f);
                         gs.Write(0);
                         gs.Write(v.normal);
                         gs.Write(v.u);
