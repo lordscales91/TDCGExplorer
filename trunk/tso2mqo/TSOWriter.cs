@@ -15,14 +15,6 @@ namespace tso2mqo
             bw.Write(0x314F5354);
         }
 
-        public static void Write(BinaryWriter bw, string s)
-        {
-            foreach(byte i in Encoding.Default.GetBytes(s))
-                bw.Write(i);
-
-            bw.Write((byte)0);
-        }
-
         public static void Write(BinaryWriter bw, string[] s)
         {
             int n   = s[s.Length-1] == "" ? s.Length-1 : s.Length;
@@ -30,7 +22,7 @@ namespace tso2mqo
             bw.Write(n);
 
             for(int i= 0; i < n; ++i)
-                Write(bw, s[i]);
+                bw.WriteCString(s[i]);
         }
 
         public static void Write(BinaryWriter bw, TSONode[] items)
@@ -51,7 +43,7 @@ namespace tso2mqo
 
         public static void Write(BinaryWriter bw, TSONode item)
         {
-            Write(bw, item.Name);
+            bw.WriteCString(item.Name);
         }
 
         public static void Write(BinaryWriter bw, TSOTex[] items)
@@ -64,8 +56,8 @@ namespace tso2mqo
 
         public static void Write(BinaryWriter bw, TSOTex item)
         {
-            Write(bw, item.name);
-            Write(bw, item.file);
+            bw.WriteCString(item.name);
+            bw.WriteCString(item.file);
             bw.Write(item.Width);
             bw.Write(item.Height);
             bw.Write(item.Depth);
@@ -82,7 +74,7 @@ namespace tso2mqo
 
         public static void Write(BinaryWriter bw, TSOEffect item)
         {
-            Write(bw, item.Name);
+            bw.WriteCString(item.Name);
             Write(bw, item.Code.Split('\n'));
         }
 
@@ -96,8 +88,8 @@ namespace tso2mqo
 
         public static void Write(BinaryWriter bw, TSOMaterial item)
         {
-            Write(bw, item.Name);
-            Write(bw, item.File);
+            bw.WriteCString(item.Name);
+            bw.WriteCString(item.File);
             Write(bw, item.Code.Split('\n'));
         }
 
@@ -111,7 +103,7 @@ namespace tso2mqo
 
         public static void Write(BinaryWriter bw, TSOMesh item)
         {
-            Write(bw, item.Name);
+            bw.WriteCString(item.Name);
             Matrix m = item.Matrix;
             bw.Write(ref m);
             bw.Write(1);
