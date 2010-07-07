@@ -285,7 +285,7 @@ namespace Tso2MqoGui
         public float            pich;
         public float            ortho;
         public float            zoom2;
-        public Color3           amb;
+        public Vector3 amb;
 
         public override string ToString()
         {
@@ -305,7 +305,7 @@ namespace Tso2MqoGui
     {
         public string           name;
         public int              shader;
-        public Color3           col;
+        public Vector3 col;
         public float            dif;
         public float            amb;
         public float            emi;
@@ -339,7 +339,7 @@ namespace Tso2MqoGui
 	    public int              locking;
 	    public int              shading;
 	    public float            facet;
-	    public Color3           color;
+        public Vector3 color;
 	    public int              color_type;
         public List<Vector3> vertices;
         public List<MqoFace>    faces;

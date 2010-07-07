@@ -121,9 +121,9 @@ namespace Tso2MqoGui
 
     public partial struct Color3
     {
-        public static Color3    Parse(string[] t, int  begin)
+        public static Vector3 Parse(string[] t, int begin)
         {
-            return new Color3(
+            return new Vector3(
                 float.Parse(t[begin+0]),
                 float.Parse(t[begin+1]),
                 float.Parse(t[begin+2]));
