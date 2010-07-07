@@ -1,4 +1,4 @@
-﻿namespace Tso2MqoGui
+﻿namespace tso2mqo
 {
     partial class Form1
     {

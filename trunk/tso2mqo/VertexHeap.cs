@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Tso2MqoGui
+namespace tso2mqo
 {
     public class VertexHeap
     {

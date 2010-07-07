@@ -10,7 +10,7 @@ using System.Windows.Forms.Design;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
-namespace Tso2MqoGui
+namespace tso2mqo
 {
     public unsafe class TsoGenerator
     {

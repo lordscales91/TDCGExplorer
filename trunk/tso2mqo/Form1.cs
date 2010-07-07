@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
 
-namespace Tso2MqoGui
+namespace tso2mqo
 {
     public partial class Form1 : Form
     {
