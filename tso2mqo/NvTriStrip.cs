@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace Tso2MqoGui
+namespace tso2mqo
 {
     public enum PrimType
     {

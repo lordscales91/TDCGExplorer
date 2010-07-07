@@ -6,7 +6,7 @@ using System.ComponentModel;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
-namespace Tso2MqoGui
+namespace tso2mqo
 {
     public class TSOFile : TDCGFile
     {

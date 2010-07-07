@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Tso2MqoGui
+namespace tso2mqo
 {
     public partial class FormMaterial : Form
     {

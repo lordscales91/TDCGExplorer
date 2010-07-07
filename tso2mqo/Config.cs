@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace Tso2MqoGui
+namespace tso2mqo
 {
     [XmlRoot("TsoMqoConfig")]
     [Serializable]
