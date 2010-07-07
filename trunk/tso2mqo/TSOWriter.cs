@@ -152,8 +152,8 @@ namespace tso2mqo
             if(v.Wgt.Z > 0) { idxs.Add(idx[2]); wgts.Add(v.Wgt.Z); }
             if(v.Wgt.W > 0) { idxs.Add(idx[3]); wgts.Add(v.Wgt.W); }
 
-            bw.Write(v.Pos.X); bw.Write(v.Pos.Y); bw.Write(v.Pos.Z);
-            bw.Write(v.Nrm.X); bw.Write(v.Nrm.Y); bw.Write(v.Nrm.Z);
+            bw.Write(ref v.Pos);
+            bw.Write(ref v.Nrm);
             bw.Write(v.Tex.X); bw.Write(v.Tex.Y);
 
             bw.Write(wgts.Count);
