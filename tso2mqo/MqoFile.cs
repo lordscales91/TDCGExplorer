@@ -275,6 +275,38 @@ namespace Tso2MqoGui
             current.faces       = new List<MqoFace>(int.Parse(tokens[1]));
             DoRead(SectionFace);
         }
+
+        public partial struct Color3
+        {
+            public static Vector3 Parse(string[] t, int begin)
+            {
+                return new Vector3(
+                    float.Parse(t[begin + 0]),
+                    float.Parse(t[begin + 1]),
+                    float.Parse(t[begin + 2]));
+            }
+        }
+
+        public partial struct Point2
+        {
+            public static Vector2 Parse(string[] t, int begin)
+            {
+                return new Vector2(
+                    float.Parse(t[begin + 0]),
+                    float.Parse(t[begin + 1]));
+            }
+        }
+
+        public partial struct Point3
+        {
+            public static Vector3 Parse(string[] t, int begin)
+            {
+                return new Vector3(
+                    float.Parse(t[begin + 0]),
+                    float.Parse(t[begin + 1]),
+                    float.Parse(t[begin + 2]));
+            }
+        }
     }
 
     public class MqoScene
