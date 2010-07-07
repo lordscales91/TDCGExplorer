@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.ComponentModel;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 
 namespace Tso2MqoGui
 {
@@ -632,15 +634,15 @@ namespace Tso2MqoGui
 
     public partial struct Vertex : IComparable<Vertex>
     {
-        public Point3       Pos;
+        public Vector3 Pos;
         public Point4       Wgt;
         public UInt32       Idx;
-        public Point3       Nrm;
+        public Vector3 Nrm;
         public Point2       Tex;
       //public int          Count;
       //public Weights[]    Weights;
 
-        public Vertex(Point3 pos, Point4 wgt, UInt32 idx, Point3 nrm, Point2 tex)
+        public Vertex(Vector3 pos, Point4 wgt, UInt32 idx, Vector3 nrm, Point2 tex)
         {
             Pos = pos;
             Wgt = wgt;
@@ -651,12 +653,12 @@ namespace Tso2MqoGui
 
         public int CompareTo(Vertex o)
         {
-            if(Pos.x < o.Pos.x) return -1; if(Pos.x > o.Pos.x) return 1;
-            if(Pos.y < o.Pos.y) return -1; if(Pos.y > o.Pos.y) return 1;
-            if(Pos.z < o.Pos.z) return -1; if(Pos.z > o.Pos.z) return 1;
-            if(Nrm.x < o.Nrm.x) return -1; if(Nrm.x > o.Nrm.x) return 1;
-            if(Nrm.y < o.Nrm.y) return -1; if(Nrm.y > o.Nrm.y) return 1;
-            if(Nrm.z < o.Nrm.z) return -1; if(Nrm.z > o.Nrm.z) return 1;
+            if(Pos.X < o.Pos.X) return -1; if(Pos.X > o.Pos.X) return 1;
+            if(Pos.Y < o.Pos.Y) return -1; if(Pos.Y > o.Pos.Y) return 1;
+            if(Pos.Z < o.Pos.Z) return -1; if(Pos.Z > o.Pos.Z) return 1;
+            if(Nrm.X < o.Nrm.X) return -1; if(Nrm.X > o.Nrm.X) return 1;
+            if(Nrm.Y < o.Nrm.Y) return -1; if(Nrm.Y > o.Nrm.Y) return 1;
+            if(Nrm.Z < o.Nrm.Z) return -1; if(Nrm.Z > o.Nrm.Z) return 1;
             if(Tex.x < o.Tex.x) return -1; if(Tex.x > o.Tex.x) return 1;
             if(Tex.y < o.Tex.y) return -1; if(Tex.y > o.Tex.y) return 1;
             if(Wgt.x < o.Wgt.x) return -1; if(Wgt.x > o.Wgt.x) return 1;
@@ -669,8 +671,8 @@ namespace Tso2MqoGui
 
         public override int GetHashCode()
         {
-            return Pos.x.GetHashCode() ^ Pos.y.GetHashCode() ^ Pos.z.GetHashCode()
-                 ^ Nrm.x.GetHashCode() ^ Nrm.y.GetHashCode() ^ Nrm.z.GetHashCode()
+            return Pos.X.GetHashCode() ^ Pos.Y.GetHashCode() ^ Pos.Z.GetHashCode()
+                 ^ Nrm.X.GetHashCode() ^ Nrm.Y.GetHashCode() ^ Nrm.Z.GetHashCode()
                  ^ Tex.x.GetHashCode() ^ Tex.y.GetHashCode() ^ Wgt.w.GetHashCode()
                  ^ Wgt.x.GetHashCode() ^ Wgt.y.GetHashCode() ^ Wgt.z.GetHashCode()
                  - Idx.GetHashCode();
@@ -680,8 +682,8 @@ namespace Tso2MqoGui
         {
             Vertex  o   = (Vertex)obj;
 
-            return Pos.x==o.Pos.x && Pos.y==o.Pos.y && Pos.z==o.Pos.z
-                && Nrm.x==o.Nrm.x && Nrm.y==o.Nrm.y && Nrm.z==o.Nrm.z
+            return Pos.X==o.Pos.X && Pos.Y==o.Pos.Y && Pos.Z==o.Pos.Z
+                && Nrm.X==o.Nrm.X && Nrm.Y==o.Nrm.Y && Nrm.Z==o.Nrm.Z
                 && Tex.x==o.Tex.x && Tex.y==o.Tex.y && Wgt.w==o.Wgt.w
                 && Wgt.x==o.Wgt.x && Wgt.y==o.Wgt.y && Wgt.z==o.Wgt.z
                 && Idx  ==o.Idx;

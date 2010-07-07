@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 
 namespace Tso2MqoGui
 {
@@ -140,9 +142,9 @@ namespace Tso2MqoGui
 
     public partial struct Point3
     {
-        public static Point3    Parse(string[] t, int  begin)
+        public static Vector3 Parse(string[] t, int begin)
         {
-            return new Point3(
+            return new Vector3(
                 float.Parse(t[begin+0]),
                 float.Parse(t[begin+1]),
                 float.Parse(t[begin+2]));

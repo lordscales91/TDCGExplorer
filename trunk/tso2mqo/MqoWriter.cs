@@ -173,7 +173,7 @@ namespace Tso2MqoGui
                         ++cnt;
                         va= vb; a= b;
                         vb= vc; b= c;
-                        vc= k;  c= vh.Add(new UVertex(k.Pos.x, k.Pos.y, k.Pos.z, k.Nrm.x, k.Nrm.y, k.Nrm.z, k.Tex.x, k.Tex.y, j.spec));
+                        vc= k;  c= vh.Add(new UVertex(k.Pos.X, k.Pos.Y, k.Pos.Z, k.Nrm.X, k.Nrm.Y, k.Nrm.Z, k.Tex.x, k.Tex.y, j.spec));
 
                         if(cnt < 3)                     continue;
                         if(a == b || b == c || c == a)  continue;
