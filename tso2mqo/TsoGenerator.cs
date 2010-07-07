@@ -7,6 +7,8 @@ using System.Runtime.InteropServices;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 
 namespace Tso2MqoGui
 {
@@ -46,7 +48,7 @@ namespace Tso2MqoGui
             pc  = new PointCluster(vlst.Count);
 
             foreach(Vertex i in vlst)
-                pc.Add(i.Pos.x, i.Pos.y, i.Pos.z);
+                pc.Add(i.Pos.X, i.Pos.Y, i.Pos.Z);
 
             pc.Clustering();
         }
@@ -273,17 +275,17 @@ namespace Tso2MqoGui
                 // 一番近い頂点への参照
                 List<int>       vref= new List<int>(i.vertices.Count);
 
-                foreach(Point3 j in i.vertices)
-                    vref.Add(pc.NearestIndex(j.x, j.y, j.z));
+                foreach (Vector3 j in i.vertices)
+                    vref.Add(pc.NearestIndex(j.X, j.Y, j.Z));
 
                 // 法線生成
-                Point3[]        nrm = new Point3[i.vertices.Count];
+                Vector3[] nrm = new Vector3[i.vertices.Count];
                 
                 foreach(MqoFace j in i.faces)
                 {
-                    Point3  v1  = Point3.Normalize(i.vertices[j.b] - i.vertices[j.a]);
-                    Point3  v2  = Point3.Normalize(i.vertices[j.c] - i.vertices[j.b]);
-                    Point3  n   = Point3.Normalize(Point3.Cross(v1, v2));
+                    Vector3 v1 = Vector3.Normalize(i.vertices[j.b] - i.vertices[j.a]);
+                    Vector3 v2 = Vector3.Normalize(i.vertices[j.c] - i.vertices[j.b]);
+                    Vector3 n = Vector3.Normalize(Vector3.Cross(v1, v2));
 #if false
                     nrm[j.a]    +=n;
                     nrm[j.b]    +=n;
@@ -296,7 +298,7 @@ namespace Tso2MqoGui
                 }
 
                 for(int j= 0; j < nrm.Length; ++j)
-                    nrm[j]      = Point3.Normalize(nrm[j]);
+                    nrm[j] = Vector3.Normalize(nrm[j]);
 
                 // フェイスの組成
                 List<int>               faces1  = new List<int>();
@@ -469,20 +471,20 @@ namespace Tso2MqoGui
                 System.Diagnostics.Debug.WriteLine("object:" + i.name);            
 #endif
                 // 法線生成
-                Point3[]        nrm = new Point3[i.vertices.Count];
+                Vector3[] nrm = new Vector3[i.vertices.Count];
                 
                 foreach(MqoFace j in i.faces)
                 {
-                    Point3  v1  = Point3.Normalize(i.vertices[j.b] - i.vertices[j.a]);
-                    Point3  v2  = Point3.Normalize(i.vertices[j.c] - i.vertices[j.b]);
-                    Point3  n   = Point3.Normalize(Point3.Cross(v1, v2));
+                    Vector3 v1 = Vector3.Normalize(i.vertices[j.b] - i.vertices[j.a]);
+                    Vector3 v2 = Vector3.Normalize(i.vertices[j.c] - i.vertices[j.b]);
+                    Vector3 n = Vector3.Normalize(Vector3.Cross(v1, v2));
                     nrm[j.a]    -=n;
                     nrm[j.b]    -=n;
                     nrm[j.c]    -=n;
                 }
 
                 for(int j= 0; j < nrm.Length; ++j)
-                    nrm[j]      = Point3.Normalize(nrm[j]);
+                    nrm[j] = Vector3.Normalize(nrm[j]);
 
                 // ボーン情報作成
                 uint                idx     = 0x00000000;

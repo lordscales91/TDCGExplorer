@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 
 namespace Tso2MqoGui
 {
@@ -262,7 +264,7 @@ namespace Tso2MqoGui
         {
             if(tokens[2].ToLower() != "{")          Error(tokens);
 
-            current.vertices    = new List<Point3>(int.Parse(tokens[1]));
+            current.vertices = new List<Vector3>(int.Parse(tokens[1]));
             DoRead(SectionVertex);
         }
 
@@ -277,8 +279,8 @@ namespace Tso2MqoGui
 
     public class MqoScene
     {
-        public Point3           pos;
-        public Point3           lookat;
+        public Vector3 pos;
+        public Vector3 lookat;
         public float            head;
         public float            pich;
         public float            ortho;
@@ -339,7 +341,7 @@ namespace Tso2MqoGui
 	    public float            facet;
 	    public Color3           color;
 	    public int              color_type;
-        public List<Point3>     vertices;
+        public List<Vector3> vertices;
         public List<MqoFace>    faces;
 
         public MqoObject()              {           }
