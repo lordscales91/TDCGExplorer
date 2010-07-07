@@ -5,7 +5,7 @@ using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
-namespace TDCG.Extensions
+namespace tso2mqo.Extensions
 {
     /// <summary>
     /// BinaryReaderの拡張メソッドを定義します。
