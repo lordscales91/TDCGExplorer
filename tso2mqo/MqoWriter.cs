@@ -173,7 +173,7 @@ namespace Tso2MqoGui
                         ++cnt;
                         va= vb; a= b;
                         vb= vc; b= c;
-                        vc= k;  c= vh.Add(new UVertex(k.Pos.X, k.Pos.Y, k.Pos.Z, k.Nrm.X, k.Nrm.Y, k.Nrm.Z, k.Tex.x, k.Tex.y, j.spec));
+                        vc= k;  c= vh.Add(new UVertex(k.Pos.X, k.Pos.Y, k.Pos.Z, k.Nrm.X, k.Nrm.Y, k.Nrm.Z, k.Tex.X, k.Tex.Y, j.spec));
 
                         if(cnt < 3)                     continue;
                         if(a == b || b == c || c == a)  continue;
@@ -183,18 +183,18 @@ namespace Tso2MqoGui
                           //face.Add(a); uv.Add(va.Tex.x); uv.Add(va.Tex.y);
                           //face.Add(b); uv.Add(vb.Tex.x); uv.Add(vb.Tex.y);
                           //face.Add(c); uv.Add(vc.Tex.x); uv.Add(vc.Tex.y);
-                            face.Add(a); uv.Add(va.Tex.x); uv.Add(1-va.Tex.y);
-                            face.Add(b); uv.Add(vb.Tex.x); uv.Add(1-vb.Tex.y);
-                            face.Add(c); uv.Add(vc.Tex.x); uv.Add(1-vc.Tex.y);
+                            face.Add(a); uv.Add(va.Tex.X); uv.Add(1-va.Tex.Y);
+                            face.Add(b); uv.Add(vb.Tex.X); uv.Add(1-vb.Tex.Y);
+                            face.Add(c); uv.Add(vc.Tex.X); uv.Add(1-vc.Tex.Y);
                             mtl.Add(j.spec);
                         } else
                         {
                           //face.Add(a); uv.Add(va.Tex.x); uv.Add(va.Tex.y);
                           //face.Add(c); uv.Add(vc.Tex.x); uv.Add(vc.Tex.y);
                           //face.Add(b); uv.Add(vb.Tex.x); uv.Add(vb.Tex.y);
-                            face.Add(a); uv.Add(va.Tex.x); uv.Add(1-va.Tex.y);
-                            face.Add(c); uv.Add(vc.Tex.x); uv.Add(1-vc.Tex.y);
-                            face.Add(b); uv.Add(vb.Tex.x); uv.Add(1-vb.Tex.y);
+                            face.Add(a); uv.Add(va.Tex.X); uv.Add(1-va.Tex.Y);
+                            face.Add(c); uv.Add(vc.Tex.X); uv.Add(1-vc.Tex.Y);
+                            face.Add(b); uv.Add(vb.Tex.X); uv.Add(1-vb.Tex.Y);
                             mtl.Add(j.spec);
                         }
                     }
