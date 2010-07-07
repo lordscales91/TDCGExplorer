@@ -34,8 +34,6 @@ namespace tso2mqo
             tbMergeTso.Text             = (string)reg.GetValue("MergeTso", "");
             rbAutoBone     .Checked     = (int)reg.GetValue("AutoBone",      1) == 1;
             rb1Bone        .Checked     = (int)reg.GetValue("OneBone",       0) == 1;
-            rbBoneNone     .Checked     = (int)reg.GetValue("BoneNone",      1) == 1;
-            rbBoneRokDeBone.Checked     = (int)reg.GetValue("BoneRokDeBone", 0) == 1;
             cbMakeSub      .Checked     = (int)reg.GetValue("MakeSub",       1) == 1;
             cbCopyTSO      .Checked     = (int)reg.GetValue("CopyTSO",       1) == 1;
             cbShowMaterials.Checked     = (int)reg.GetValue("ShowMaterials", 0) == 1;
@@ -63,8 +61,6 @@ namespace tso2mqo
             reg.SetValue("MergeTso",      tbMergeTso.Text);
             reg.SetValue("AutoBone",      rbAutoBone     .Checked ? 1 : 0);
             reg.SetValue("OneBone",       rb1Bone        .Checked ? 1 : 0);
-            reg.SetValue("BoneNone",      rbBoneNone     .Checked ? 1 : 0);
-            reg.SetValue("BoneRokDeBone", rbBoneRokDeBone.Checked ? 1 : 0);
             reg.SetValue("MakeSub",       cbMakeSub      .Checked ? 1 : 0);
             reg.SetValue("CopyTSO",       cbCopyTSO      .Checked ? 1 : 0);
             reg.SetValue("ShowMaterials", cbShowMaterials.Checked ? 1 : 0);
@@ -187,8 +183,6 @@ namespace tso2mqo
                 {
                     TSOFile     tso = new TSOFile(f);
                     tso.ReadAll();
-
-                    if(rbBoneRokDeBone.Checked) mqo.BoneMode    = MqoBoneMode.RokDeBone;
 
                     mqo.Write(tso);
                     mqo.Close();
