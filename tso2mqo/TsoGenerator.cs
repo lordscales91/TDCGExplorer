@@ -344,7 +344,7 @@ namespace Tso2MqoGui
                         {
                             Vertex      vv      = v[k];
                             UInt32      idx0    = vv.Idx;
-                            Point4      wgt0    = vv.Wgt;
+                            Vector4 wgt0 = vv.Wgt;
                             byte*       idx     = (byte*)(&idx0);
                             float*      wgt     = (float*)(&wgt0);
 
@@ -416,7 +416,7 @@ namespace Tso2MqoGui
                     {
                         uint        idx0= verts[j].Idx;
                         byte*       idx = (byte*)(&idx0);
-                        Point4      wgt0= verts[j].Wgt;
+                        Vector4 wgt0 = verts[j].Wgt;
                         float*      wgt = (float*)(&wgt0);
 
                         for(int k= 0; k < 4; ++k)
@@ -488,7 +488,7 @@ namespace Tso2MqoGui
 
                 // ƒ{[ƒ“î•ñì¬
                 uint                idx     = 0x00000000;
-                Point4              wgt     = new Point4(1, 0, 0, 0);
+                Vector4 wgt = new Vector4(1, 0, 0, 0);
                 int[]               bones   = new int[1];
                 string              bone    = config.boneref[i.name];
                 bones[0]                    = nodes[bone].ID;
@@ -721,10 +721,10 @@ namespace Tso2MqoGui
             List<int>   idxs    = new List<int>(4);
             List<float> wgts    = new List<float>(4);
 
-            if(v.Wgt.x > 0) { idxs.Add(idx[0]); wgts.Add(v.Wgt.x); }
-            if(v.Wgt.y > 0) { idxs.Add(idx[1]); wgts.Add(v.Wgt.y); }
-            if(v.Wgt.z > 0) { idxs.Add(idx[2]); wgts.Add(v.Wgt.z); }
-            if(v.Wgt.w > 0) { idxs.Add(idx[3]); wgts.Add(v.Wgt.w); }
+            if(v.Wgt.X > 0) { idxs.Add(idx[0]); wgts.Add(v.Wgt.X); }
+            if(v.Wgt.Y > 0) { idxs.Add(idx[1]); wgts.Add(v.Wgt.Y); }
+            if(v.Wgt.Z > 0) { idxs.Add(idx[2]); wgts.Add(v.Wgt.Z); }
+            if(v.Wgt.W > 0) { idxs.Add(idx[3]); wgts.Add(v.Wgt.W); }
 
             bw.Write(v.Pos.X); bw.Write(v.Pos.Y); bw.Write(v.Pos.Z);
             bw.Write(v.Nrm.X); bw.Write(v.Nrm.Y); bw.Write(v.Nrm.Z);
