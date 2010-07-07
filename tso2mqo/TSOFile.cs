@@ -219,16 +219,18 @@ namespace Tso2MqoGui
         internal int            id;
         internal string         name;
         internal string         sname;
-        internal Matrix44       matrix;
-        internal Matrix44       world;
+        internal Matrix matrix;
+        internal Matrix world;
         internal List<TSONode>  children    = new List<TSONode>();
         internal TSONode        parent;
 
         [Category("General")] public int      ID        { get { return id; } }
         [Category("General")] public string   Name      { get { return name; } }
         [Category("General")] public string   ShortName { get { return sname; } }
-        [Category("Detail")]  public Matrix44 Matrix    { get { return matrix; } set { matrix= value; } }
-        [Category("Detail")]  public Matrix44 World     { get { return world;  } set { world = value; } }
+        [Category("Detail")]
+        public Matrix Matrix { get { return matrix; } set { matrix = value; } }
+        [Category("Detail")]
+        public Matrix World { get { return world; } set { world = value; } }
 
         public override string ToString()
         {
@@ -499,14 +501,15 @@ namespace Tso2MqoGui
     {
         internal TSOFile        file;
         internal string         name;
-        internal Matrix44       matrix;
+        internal Matrix matrix;
         internal int            effect;
         internal int            numsubs;
         internal TSOSubMesh[]   sub;
 
         [Category("General")]   public string   Name    { get { return name; } set { name= value; } }
       //[Category("Detail")]    public int      Effect  { get { return name; } set { name= value; } }
-        [Category("Detail")]    public Matrix44 Matrix  { get { return matrix; } set { matrix= value; } }
+        [Category("Detail")]
+        public Matrix Matrix { get { return matrix; } set { matrix = value; } }
 
         public override string ToString()
         {
@@ -541,96 +544,6 @@ namespace Tso2MqoGui
             sb.Append("NumBones:       ").AppendLine(numbones.ToString());
             sb.Append("NumVertices:    ").AppendLine(numvertices.ToString());
             return sb.ToString();
-        }
-    }
-
-    public struct Matrix44
-    {
-        public static readonly Matrix44 Identity    = new Matrix44(1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1);
-
-        public float m11, m12, m13, m14;
-        public float m21, m22, m23, m24;
-        public float m31, m32, m33, m34;
-        public float m41, m42, m43, m44;
-
-        public float M11 { get { return m11; } set { m11= value; } }
-        public float M12 { get { return m12; } set { m12= value; } }
-        public float M13 { get { return m13; } set { m13= value; } }
-        public float M14 { get { return m14; } set { m14= value; } }
-        public float M21 { get { return m21; } set { m21= value; } }
-        public float M22 { get { return m22; } set { m22= value; } }
-        public float M23 { get { return m23; } set { m23= value; } }
-        public float M24 { get { return m24; } set { m24= value; } }
-        public float M31 { get { return m31; } set { m31= value; } }
-        public float M32 { get { return m32; } set { m32= value; } }
-        public float M33 { get { return m33; } set { m33= value; } }
-        public float M34 { get { return m34; } set { m34= value; } }
-        public float M41 { get { return m41; } set { m41= value; } }
-        public float M42 { get { return m42; } set { m42= value; } }
-        public float M43 { get { return m43; } set { m43= value; } }
-        public float M44 { get { return m44; } set { m44= value; } }
-
-        public Matrix44(
-            float a11, float a12, float a13, float a14,
-            float a21, float a22, float a23, float a24,
-            float a31, float a32, float a33, float a34,
-            float a41, float a42, float a43, float a44)
-        {
-            m11=a11; m12=a12; m13=a13; m14=a14;
-            m21=a21; m22=a22; m23=a23; m24=a24;
-            m31=a31; m32=a32; m33=a33; m34=a34;
-            m41=a41; m42=a42; m43=a43; m44=a44;
-        }
-
-        public Vector3 Translation { get { return new Vector3(M41, M42, M43); } } 
-
-        public override string ToString()
-        {
-            StringBuilder   sb  = new StringBuilder();
-            sb.Append("[").Append(M11).Append(", ")
-                          .Append(M12).Append(", ")
-                          .Append(M13).Append(", ")
-                          .Append(M14).Append("], ")
-              .Append("[").Append(M21).Append(", ")
-                          .Append(M22).Append(", ")
-                          .Append(M23).Append(", ")
-                          .Append(M24).Append("], ")
-              .Append("[").Append(M31).Append(", ")
-                          .Append(M32).Append(", ")
-                          .Append(M33).Append(", ")
-                          .Append(M34).Append("], ")
-              .Append("[").Append(M41).Append(", ")
-                          .Append(M42).Append(", ")
-                          .Append(M43).Append(", ")
-                          .Append(M44).Append("]");
-            return sb.ToString();
-        }
-
-        public static Matrix44 Mul(Matrix44 a, Matrix44 b)
-        {
-            Matrix44    m   = new Matrix44();
-
-            m.M11   = a.M11*b.M11 + a.M12*b.M21 + a.M13*b.M31 + a.M14*b.M41;
-            m.M12   = a.M11*b.M12 + a.M12*b.M22 + a.M13*b.M32 + a.M14*b.M42;
-            m.M13   = a.M11*b.M13 + a.M12*b.M23 + a.M13*b.M33 + a.M14*b.M43;
-            m.M14   = a.M11*b.M14 + a.M12*b.M24 + a.M13*b.M34 + a.M14*b.M44;
-
-            m.M21   = a.M21*b.M11 + a.M22*b.M21 + a.M23*b.M31 + a.M24*b.M41;
-            m.M22   = a.M21*b.M12 + a.M22*b.M22 + a.M23*b.M32 + a.M24*b.M42;
-            m.M23   = a.M21*b.M13 + a.M22*b.M23 + a.M23*b.M33 + a.M24*b.M43;
-            m.M24   = a.M21*b.M14 + a.M22*b.M24 + a.M23*b.M34 + a.M24*b.M44;
-
-            m.M31   = a.M31*b.M11 + a.M32*b.M21 + a.M33*b.M31 + a.M34*b.M41;
-            m.M32   = a.M31*b.M12 + a.M32*b.M22 + a.M33*b.M32 + a.M34*b.M42;
-            m.M33   = a.M31*b.M13 + a.M32*b.M23 + a.M33*b.M33 + a.M34*b.M43;
-            m.M34   = a.M31*b.M14 + a.M32*b.M24 + a.M33*b.M34 + a.M34*b.M44;
-
-            m.M41   = a.M41*b.M11 + a.M42*b.M21 + a.M43*b.M31 + a.M44*b.M41;
-            m.M42   = a.M41*b.M12 + a.M42*b.M22 + a.M43*b.M32 + a.M44*b.M42;
-            m.M43   = a.M41*b.M13 + a.M42*b.M23 + a.M43*b.M33 + a.M44*b.M43;
-            m.M44   = a.M41*b.M14 + a.M42*b.M24 + a.M43*b.M34 + a.M44*b.M44;
-
-            return m;
         }
     }
 

@@ -451,7 +451,7 @@ namespace Tso2MqoGui
                 mesh.name       = i.name;
                 mesh.numsubs    = subs.Count;
                 mesh.sub        = subs.ToArray();
-                mesh.matrix     = Matrix44.Identity;
+                mesh.matrix     = Matrix.Identity;
                 mesh.effect     = 0;
                 meshes.Add(mesh);
             }
@@ -543,7 +543,7 @@ namespace Tso2MqoGui
                 mesh.name       = i.name;
                 mesh.numsubs    = subs.Count;
                 mesh.sub        = subs.ToArray();
-                mesh.matrix     = Matrix44.Identity;
+                mesh.matrix     = Matrix.Identity;
                 mesh.effect     = 0;
                 meshes.Add(mesh);
             }
@@ -706,7 +706,7 @@ namespace Tso2MqoGui
             bw.Write((byte)0);
         }
 
-        public void WriteMatrix(BinaryWriter bw, Matrix44 m)
+        public void WriteMatrix(BinaryWriter bw, Matrix m)
         {
             bw.Write(m.M11); bw.Write(m.M12); bw.Write(m.M13); bw.Write(m.M14);
             bw.Write(m.M21); bw.Write(m.M22); bw.Write(m.M23); bw.Write(m.M24);

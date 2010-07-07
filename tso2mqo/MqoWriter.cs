@@ -250,7 +250,7 @@ namespace Tso2MqoGui
                 {
                     if(i.parent == null)
                             i.world = i.Matrix;
-                    else    i.world = Matrix44.Mul(i.Matrix, i.parent.World);
+                    else    i.world = Matrix.Multiply(i.Matrix, i.parent.World);
                 }
                 
 #if false
