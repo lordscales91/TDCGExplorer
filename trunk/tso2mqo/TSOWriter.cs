@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
+using tso2mqo.Extensions;
 
 namespace tso2mqo
 {
@@ -41,21 +42,16 @@ namespace tso2mqo
 
             bw.Write(items.Length);
 
-            foreach(var i in items)
-                Write(bw, i.Matrix);
+            foreach (var i in items)
+            {
+                Matrix m = i.Matrix;
+                bw.Write(ref m);
+            }
         }
 
         public static void Write(BinaryWriter bw, TSONode item)
         {
             Write(bw, item.Name);
-        }
-
-        public static void Write(BinaryWriter bw, Matrix item)
-        {
-            bw.Write(item.M11); bw.Write(item.M12); bw.Write(item.M13); bw.Write(item.M14);
-            bw.Write(item.M21); bw.Write(item.M22); bw.Write(item.M23); bw.Write(item.M24);
-            bw.Write(item.M31); bw.Write(item.M32); bw.Write(item.M33); bw.Write(item.M34);
-            bw.Write(item.M41); bw.Write(item.M42); bw.Write(item.M43); bw.Write(item.M44);
         }
 
         public static void Write(BinaryWriter bw, TSOTex[] items)
@@ -116,7 +112,8 @@ namespace tso2mqo
         public static void Write(BinaryWriter bw, TSOMesh item)
         {
             Write(bw, item.Name);
-            Write(bw, item.Matrix);
+            Matrix m = item.Matrix;
+            bw.Write(ref m);
             bw.Write(1);
             Write(bw, item.sub);
         }
