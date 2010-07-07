@@ -486,7 +486,7 @@ namespace Tso2MqoGui
         public Vector4 GetPoint4(string value)
         {
             string[]    token   = value.Trim('[', ']', ' ').Split(',');
-            Vector4 p = new Vector4();
+            Vector4 p;
             p.X                 = float.Parse(token[0].Trim());
             p.Y                 = float.Parse(token[1].Trim());
             p.Z                 = float.Parse(token[2].Trim());
@@ -582,7 +582,7 @@ namespace Tso2MqoGui
             m41=a41; m42=a42; m43=a43; m44=a44;
         }
 
-        public Point3 Translation   { get { return new Point3(M41, M42, M43); } } 
+        public Vector3 Translation { get { return new Vector3(M41, M42, M43); } } 
 
         public override string ToString()
         {

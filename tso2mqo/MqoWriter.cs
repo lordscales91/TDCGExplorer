@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 
 namespace Tso2MqoGui
 {
@@ -264,7 +266,7 @@ namespace Tso2MqoGui
 
               //RDBBonFile                  bonfile = new RDBBonFile();
 #endif
-                List<Point3>                points  = new List<Point3>();
+                List<Vector3> points = new List<Vector3>();
                 List<int>                   bones   = new List<int>();
 
                 tw.WriteLine("Object \"{0}\" {{", "Bone");
@@ -294,19 +296,19 @@ namespace Tso2MqoGui
                     if(i.children.Count == 0)
                         continue;
 
-                    Point3  q   = new Point3(i.world.M41, i.world.M42, i.world.M43);
-                    Point3  p   = new Point3();
+                    Vector3 q = new Vector3(i.world.M41, i.world.M42, i.world.M43);
+                    Vector3 p = Vector3.Empty;
                     
                     foreach(TSONode j in i.children)
                     {
-                        p.x     +=j.world.M41;
-                        p.y     +=j.world.M42;
-                        p.z     +=j.world.M43;
+                        p.X     +=j.world.M41;
+                        p.Y     +=j.world.M42;
+                        p.Z     +=j.world.M43;
                     }
 
-                    p.x         /=i.children.Count;
-                    p.y         /=i.children.Count;
-                    p.z         /=i.children.Count;
+                    p.X         /=i.children.Count;
+                    p.Y         /=i.children.Count;
+                    p.Z         /=i.children.Count;
 
                     bones.Add(points.Count); points.Add(q);
                     bones.Add(points.Count); points.Add(p);
@@ -314,8 +316,8 @@ namespace Tso2MqoGui
 
                 tw.WriteLine("	vertex {0} {{", points.Count);
 
-                foreach(Point3 j in points)
-                    WriteVertex(j.x, j.y, j.z);
+                foreach (Vector3 j in points)
+                    WriteVertex(j.X, j.Y, j.Z);
 
                 tw.WriteLine("	}");
 
