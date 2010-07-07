@@ -132,9 +132,9 @@ namespace Tso2MqoGui
 
     public partial struct Point2
     {
-        public static Point2    Parse(string[] t, int  begin)
+        public static Vector2 Parse(string[] t, int begin)
         {
-            return new Point2(
+            return new Vector2(
                 float.Parse(t[begin+0]),
                 float.Parse(t[begin+1]));
         }

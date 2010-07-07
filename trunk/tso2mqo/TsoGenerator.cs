@@ -392,9 +392,9 @@ namespace Tso2MqoGui
                         }
 
                         // \todo “_‚Ì’Ç‰Á
-                        Vertex  va  = new Vertex(i.vertices[f.a], v[0].Wgt, v[0].Idx, nrm[f.a], new Point2(f.ta.x, 1-f.ta.y));
-                        Vertex  vb  = new Vertex(i.vertices[f.b], v[1].Wgt, v[1].Idx, nrm[f.b], new Point2(f.tb.x, 1-f.tb.y));
-                        Vertex  vc  = new Vertex(i.vertices[f.c], v[2].Wgt, v[2].Idx, nrm[f.c], new Point2(f.tc.x, 1-f.tc.y));
+                        Vertex va = new Vertex(i.vertices[f.a], v[0].Wgt, v[0].Idx, nrm[f.a], new Vector2(f.ta.X, 1 - f.ta.Y));
+                        Vertex vb = new Vertex(i.vertices[f.b], v[1].Wgt, v[1].Idx, nrm[f.b], new Vector2(f.tb.X, 1 - f.tb.Y));
+                        Vertex vc = new Vertex(i.vertices[f.c], v[2].Wgt, v[2].Idx, nrm[f.c], new Vector2(f.tc.X, 1 - f.tc.Y));
 #if false
                         indices.Add(vh.Add(va));
                         indices.Add(vh.Add(vb));
@@ -508,9 +508,9 @@ namespace Tso2MqoGui
                         if(f.mtl != mtl)
                             continue;
 
-                        Vertex  va  = new Vertex(i.vertices[f.a], wgt, idx, nrm[f.a], new Point2(f.ta.x, 1-f.ta.y));
-                        Vertex  vb  = new Vertex(i.vertices[f.b], wgt, idx, nrm[f.b], new Point2(f.tb.x, 1-f.tb.y));
-                        Vertex  vc  = new Vertex(i.vertices[f.c], wgt, idx, nrm[f.c], new Point2(f.tc.x, 1-f.tc.y));
+                        Vertex va = new Vertex(i.vertices[f.a], wgt, idx, nrm[f.a], new Vector2(f.ta.X, 1 - f.ta.Y));
+                        Vertex vb = new Vertex(i.vertices[f.b], wgt, idx, nrm[f.b], new Vector2(f.tb.X, 1 - f.tb.Y));
+                        Vertex vc = new Vertex(i.vertices[f.c], wgt, idx, nrm[f.c], new Vector2(f.tc.X, 1 - f.tc.Y));
 
                         indices.Add(vh.Add(va));
                         indices.Add(vh.Add(vc));

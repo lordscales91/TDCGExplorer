@@ -638,11 +638,11 @@ namespace Tso2MqoGui
         public Point4       Wgt;
         public UInt32       Idx;
         public Vector3 Nrm;
-        public Point2       Tex;
+        public Vector2 Tex;
       //public int          Count;
       //public Weights[]    Weights;
 
-        public Vertex(Vector3 pos, Point4 wgt, UInt32 idx, Vector3 nrm, Point2 tex)
+        public Vertex(Vector3 pos, Point4 wgt, UInt32 idx, Vector3 nrm, Vector2 tex)
         {
             Pos = pos;
             Wgt = wgt;
@@ -659,8 +659,8 @@ namespace Tso2MqoGui
             if(Nrm.X < o.Nrm.X) return -1; if(Nrm.X > o.Nrm.X) return 1;
             if(Nrm.Y < o.Nrm.Y) return -1; if(Nrm.Y > o.Nrm.Y) return 1;
             if(Nrm.Z < o.Nrm.Z) return -1; if(Nrm.Z > o.Nrm.Z) return 1;
-            if(Tex.x < o.Tex.x) return -1; if(Tex.x > o.Tex.x) return 1;
-            if(Tex.y < o.Tex.y) return -1; if(Tex.y > o.Tex.y) return 1;
+            if(Tex.X < o.Tex.X) return -1; if(Tex.X > o.Tex.X) return 1;
+            if(Tex.Y < o.Tex.Y) return -1; if(Tex.Y > o.Tex.Y) return 1;
             if(Wgt.x < o.Wgt.x) return -1; if(Wgt.x > o.Wgt.x) return 1;
             if(Wgt.y < o.Wgt.y) return -1; if(Wgt.y > o.Wgt.y) return 1;
             if(Wgt.z < o.Wgt.z) return -1; if(Wgt.z > o.Wgt.z) return 1;
@@ -673,7 +673,7 @@ namespace Tso2MqoGui
         {
             return Pos.X.GetHashCode() ^ Pos.Y.GetHashCode() ^ Pos.Z.GetHashCode()
                  ^ Nrm.X.GetHashCode() ^ Nrm.Y.GetHashCode() ^ Nrm.Z.GetHashCode()
-                 ^ Tex.x.GetHashCode() ^ Tex.y.GetHashCode() ^ Wgt.w.GetHashCode()
+                 ^ Tex.X.GetHashCode() ^ Tex.Y.GetHashCode() ^ Wgt.w.GetHashCode()
                  ^ Wgt.x.GetHashCode() ^ Wgt.y.GetHashCode() ^ Wgt.z.GetHashCode()
                  - Idx.GetHashCode();
         }
@@ -684,7 +684,7 @@ namespace Tso2MqoGui
 
             return Pos.X==o.Pos.X && Pos.Y==o.Pos.Y && Pos.Z==o.Pos.Z
                 && Nrm.X==o.Nrm.X && Nrm.Y==o.Nrm.Y && Nrm.Z==o.Nrm.Z
-                && Tex.x==o.Tex.x && Tex.y==o.Tex.y && Wgt.w==o.Wgt.w
+                && Tex.X==o.Tex.X && Tex.Y==o.Tex.Y && Wgt.w==o.Wgt.w
                 && Wgt.x==o.Wgt.x && Wgt.y==o.Wgt.y && Wgt.z==o.Wgt.z
                 && Idx  ==o.Idx;
         }

@@ -366,13 +366,13 @@ namespace Tso2MqoGui
     public class  MqoFace
     {
         public ushort   a, b, c, mtl;
-        public Point2   ta, tb, tc;
+        public Vector2 ta, tb, tc;
 
         public MqoFace()
         {
         }
 
-        public MqoFace(ushort a, ushort b, ushort c, ushort mtl, Point2 ta, Point2 tb, Point2 tc)
+        public MqoFace(ushort a, ushort b, ushort c, ushort mtl, Vector2 ta, Vector2 tb, Vector2 tc)
         {
             this.a  = a;
             this.b  = b;
