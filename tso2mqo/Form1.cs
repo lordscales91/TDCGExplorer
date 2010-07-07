@@ -182,7 +182,7 @@ namespace Tso2MqoGui
                 label2.Invalidate();
                 label2.Update();
 
-                // ƒ‚ƒfƒ‹AƒeƒNƒXƒ`ƒƒ‚Ìì¬
+                // ãƒ¢ãƒ‡ãƒ«ã€ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®ä½œæˆ
                 using(MqoWriter mqo = new MqoWriter(file))
                 {
                     TSOFile     tso = new TSOFile(f);
@@ -195,18 +195,18 @@ namespace Tso2MqoGui
 
                     ImportInfo  ii  = new ImportInfo();
 
-                    // ƒeƒNƒXƒ`ƒƒî•ñ
+                    // ãƒ†ã‚¯ã‚¹ãƒãƒ£æƒ…å ±
                     foreach(TSOTex i in tso.textures)
                         ii.textures.Add(new ImportTextureInfo(i));
 
-                    // ƒGƒtƒFƒNƒg‚Ìì¬
+                    // ã‚¨ãƒ•ã‚§ã‚¯ãƒˆã®ä½œæˆ
                     foreach(TSOEffect i in tso.effects)
                     {
                         ii.effects.Add(new ImportEffectInfo(i));
                         File.WriteAllText(Path.Combine(dir, i.Name), i.code, Encoding.Default);
                     }
 
-                    // ƒ}ƒeƒŠƒAƒ‹‚Ìì¬
+                    // ãƒãƒ†ãƒªã‚¢ãƒ«ã®ä½œæˆ
                     foreach(TSOMaterial i in tso.materials)
                     {
                         ii.materials.Add(new ImportMaterialInfo(i));
@@ -255,7 +255,7 @@ namespace Tso2MqoGui
                 {
                     if(i.SubItems[1].Text == "")
                     {
-                        MessageBox.Show("‚·‚×‚Ä‚ÌƒIƒuƒWƒFƒNƒg‚Éƒ{[ƒ“‚ğİ’è‚µ‚Ä‚­‚¾‚³‚¢");
+                        MessageBox.Show("ã™ã¹ã¦ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã«ãƒœãƒ¼ãƒ³ã‚’è¨­å®šã—ã¦ãã ã•ã„");
                         return;
                     }
 
@@ -368,10 +368,10 @@ namespace Tso2MqoGui
         {
             try
             {
-                // ˆê’UŒ»ó‚ğ•Û‘¶
+                // ä¸€æ—¦ç¾çŠ¶ã‚’ä¿å­˜
                 SaveAssign();
 
-                // ƒIƒuƒWƒFƒNƒg
+                // ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
                 MqoFile mqo = new MqoFile();
                 mqo.Load(tbMqoIn.Text);
                 lvObject.Items.Clear();
@@ -387,7 +387,7 @@ namespace Tso2MqoGui
                     else    item.SubItems.Add("");
                 }
 
-                // ƒ{[ƒ“\‘¢
+                // ãƒœãƒ¼ãƒ³æ§‹é€ 
                 TSOFile tso = new TSOFile(tbTso.Text);
                 tso.ReadAll();
                 tvBone.Visible  = false;
@@ -425,7 +425,7 @@ namespace Tso2MqoGui
 
                 if(n == null)
                 {
-                    MessageBox.Show("Š„‚è“–‚Ä‚éƒ{[ƒ“‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢");
+                    MessageBox.Show("å‰²ã‚Šå½“ã¦ã‚‹ãƒœãƒ¼ãƒ³ã‚’é¸æŠã—ã¦ãã ã•ã„");
                     return;
                 }
 
