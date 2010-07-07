@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 
 namespace Tso2MqoGui
 {
@@ -130,13 +132,28 @@ namespace Tso2MqoGui
             return enc.GetString(buf.ToArray());
         }
 
-        public unsafe Matrix44 ReadMatrix()
+        public unsafe Matrix ReadMatrix()
         {
-            Matrix44    m   = new Matrix44();
-            float*      p   = &m.m11;
+            Matrix m;
+            m.M11 = r.ReadSingle();
+            m.M12 = r.ReadSingle();
+            m.M13 = r.ReadSingle();
+            m.M14 = r.ReadSingle();
 
-            for(int i= 0; i < 16; ++i)
-                *p++    = r.ReadSingle();
+            m.M21 = r.ReadSingle();
+            m.M22 = r.ReadSingle();
+            m.M23 = r.ReadSingle();
+            m.M24 = r.ReadSingle();
+
+            m.M31 = r.ReadSingle();
+            m.M32 = r.ReadSingle();
+            m.M33 = r.ReadSingle();
+            m.M34 = r.ReadSingle();
+
+            m.M41 = r.ReadSingle();
+            m.M42 = r.ReadSingle();
+            m.M43 = r.ReadSingle();
+            m.M44 = r.ReadSingle();
 
             return m;
         }

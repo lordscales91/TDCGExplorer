@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 
 namespace Tso2MqoGui
 {
@@ -48,7 +50,7 @@ namespace Tso2MqoGui
             Write(bw, item.Name);
         }
 
-        public static void Write(BinaryWriter bw, Matrix44 item)
+        public static void Write(BinaryWriter bw, Matrix item)
         {
             bw.Write(item.M11); bw.Write(item.M12); bw.Write(item.M13); bw.Write(item.M14);
             bw.Write(item.M21); bw.Write(item.M22); bw.Write(item.M23); bw.Write(item.M24);
