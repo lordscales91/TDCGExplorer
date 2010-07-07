@@ -383,12 +383,12 @@ namespace Tso2MqoGui
         internal float      lightDirY;       // = [-0.0582338]
         internal float      lightDirZ;       // = [-0.998302]
         internal float      lightDirW;       // = [0]
-        internal Point4     shadowColor;     // = [0, 0, 0, 1]
+        internal Vector4 shadowColor;     // = [0, 0, 0, 1]
         internal string     shadeTex;        // = Ninjya_Ribbon_Toon_Tex
         internal float      highLight;       // = [0]
         internal float      colorBlend;      // = [10]
         internal float      highLightBlend;  // = [10]
-        internal Point4     penColor;        // = [0.166, 0.166, 0.166, 1]
+        internal Vector4 penColor;        // = [0.166, 0.166, 0.166, 1]
         internal float      ambient;         // = [38]
         internal string     colorTex;        // = file24
         internal float      thickness;       // = [0.018]
@@ -407,12 +407,14 @@ namespace Tso2MqoGui
         [Category("Parameters")] public float       LightDirY		{ get { return lightDirY;      } set { lightDirY     = value; } }
         [Category("Parameters")] public float       LightDirZ		{ get { return lightDirZ;      } set { lightDirZ     = value; } }
         [Category("Parameters")] public float       LightDirW		{ get { return lightDirW;      } set { lightDirW     = value; } }
-        [Category("Parameters")] public Point4      ShadowColor     { get { return shadowColor;    } set { shadowColor   = value; } }
+        [Category("Parameters")]
+        public Vector4 ShadowColor { get { return shadowColor; } set { shadowColor = value; } }
         [Category("Parameters")] public string      ShadeTex		{ get { return shadeTex;       } set { shadeTex      = value; } }
         [Category("Parameters")] public float       HighLight		{ get { return highLight;      } set { highLight     = value; } }
         [Category("Parameters")] public float       ColorBlend		{ get { return colorBlend;     } set { colorBlend    = value; } }
         [Category("Parameters")] public float       HighLightBlend	{ get { return highLightBlend; } set { highLightBlend= value; } }
-        [Category("Parameters")] public Point4      PenColor		{ get { return penColor;       } set { penColor      = value; } }
+        [Category("Parameters")]
+        public Vector4 PenColor { get { return penColor; } set { penColor = value; } }
         [Category("Parameters")] public float       Ambient		    { get { return ambient;        } set { ambient       = value; } }
         [Category("Parameters")] public string      ColorTex		{ get { return colorTex;       } set { colorTex      = value; } }
         [Category("Parameters")] public float       Thickness		{ get { return thickness;      } set { thickness     = value; } }
@@ -481,10 +483,10 @@ namespace Tso2MqoGui
             return float.Parse(value.Trim('[', ']', ' '));
         }
 
-        public Point4   GetPoint4(string value)
+        public Vector4 GetPoint4(string value)
         {
             string[]    token   = value.Trim('[', ']', ' ').Split(',');
-            Point4      p       = new Point4();
+            Vector4 p = new Vector4();
             p.X                 = float.Parse(token[0].Trim());
             p.Y                 = float.Parse(token[1].Trim());
             p.Z                 = float.Parse(token[2].Trim());
