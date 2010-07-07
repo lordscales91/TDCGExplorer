@@ -33,7 +33,7 @@ namespace Tso2MqoGui
 
         private void bOk_Click(object sender, EventArgs e)
         {
-            // ³‚µ‚­î•ñ‚ªİ’è‚³‚ê‚Ä‚¢‚é‚©‚ğƒ`ƒFƒbƒN‚·‚é
+            // æ­£ã—ãæƒ…å ±ãŒè¨­å®šã•ã‚Œã¦ã„ã‚‹ã‹ã‚’ãƒã‚§ãƒƒã‚¯ã™ã‚‹
             foreach(ListViewItem i in lvMaterials.Items)
             {
                 if(i.SubItems[1].Text == ""
@@ -43,7 +43,7 @@ namespace Tso2MqoGui
                 || !File.Exists(i.SubItems[2].Text)
                 || !File.Exists(i.SubItems[3].Text))
                 {
-                    MessageBox.Show("ƒ}ƒeƒŠƒAƒ‹‚Ìî•ñ‚ª³‚µ‚­İ’è‚³‚ê‚Ä‚¢‚È‚¢‚©Aƒtƒ@ƒCƒ‹‚ª‘¶İ‚µ‚Ü‚¹‚ñ");
+                    MessageBox.Show("ãƒãƒ†ãƒªã‚¢ãƒ«ã®æƒ…å ±ãŒæ­£ã—ãè¨­å®šã•ã‚Œã¦ã„ãªã„ã‹ã€ãƒ•ã‚¡ã‚¤ãƒ«ãŒå­˜åœ¨ã—ã¾ã›ã‚“");
                     i.Selected  = true;
                     return;
                 }
@@ -80,9 +80,9 @@ namespace Tso2MqoGui
 
                 switch(e.ChangedItem.Label)
                 {
-                case "ƒeƒNƒXƒ`ƒƒFƒJƒ‰[":          item.SubItems[1].Text= e.ChangedItem.Value.ToString(); break;
-                case "ƒeƒNƒXƒ`ƒƒFƒVƒF[ƒfƒBƒ“ƒO":  item.SubItems[2].Text= e.ChangedItem.Value.ToString(); break;
-                case "ƒVƒF[ƒ_[İ’èƒtƒ@ƒCƒ‹":      item.SubItems[3].Text= e.ChangedItem.Value.ToString(); break;
+                case "ãƒ†ã‚¯ã‚¹ãƒãƒ£ï¼šã‚«ãƒ©ãƒ¼":          item.SubItems[1].Text= e.ChangedItem.Value.ToString(); break;
+                case "ãƒ†ã‚¯ã‚¹ãƒãƒ£ï¼šã‚·ã‚§ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°":  item.SubItems[2].Text= e.ChangedItem.Value.ToString(); break;
+                case "ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«":      item.SubItems[3].Text= e.ChangedItem.Value.ToString(); break;
                 }
             }
         }

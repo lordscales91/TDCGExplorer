@@ -61,7 +61,7 @@ namespace Tso2MqoGui
 
         private bool Common_DoLoadMQO()
         {
-            // MQO“Ç‚İ‚İ
+            // MQOèª­ã¿è¾¼ã¿
             mqo = new MqoFile();
             mqo.Load(mqoin);
             mqo.Dump();
@@ -70,7 +70,7 @@ namespace Tso2MqoGui
 
         private bool AutoBone_DoLoadRefTSO()
         {
-            // QÆTSOƒ[ƒh
+            // å‚ç…§TSOãƒ­ãƒ¼ãƒ‰
             tsor    = LoadTSO(tsoref);
 
             foreach(TSOMesh i in tsor.meshes)
@@ -80,7 +80,7 @@ namespace Tso2MqoGui
 
                 for(int k= 0, n= j.numvertices; k < n; ++k)
                 {
-                    // ƒ{[ƒ“‚ğƒOƒ[ƒoƒ‹‚È”Ô†‚É•ÏŠ·
+                    // ãƒœãƒ¼ãƒ³ã‚’ã‚°ãƒ­ãƒ¼ãƒãƒ«ãªç•ªå·ã«å¤‰æ›
                     uint    idx0= j.vertices[k].Idx;
                     byte*   idx = (byte*)(&idx0);
                     idx[0]      = (byte)bones[idx[0]];
@@ -97,17 +97,17 @@ namespace Tso2MqoGui
 
         private bool OneBone_DoLoadRefTSO()
         {
-            // QÆTSOƒ[ƒh
+            // å‚ç…§TSOãƒ­ãƒ¼ãƒ‰
             tsor    = LoadTSO(tsoref);
             return true;
         }
 
         private bool Common_DoLoadXml()
         {
-            // XML“Ç‚İ‚İ
+            // XMLèª­ã¿è¾¼ã¿
             ii  = ImportInfo.Load(Path.ChangeExtension(mqoin, ".xml"));
 
-            // g—pƒ}ƒeƒŠƒAƒ‹ˆê——æ“¾
+            // ä½¿ç”¨ãƒãƒ†ãƒªã‚¢ãƒ«ä¸€è¦§å–å¾—
             materials       = new Dictionary<string, MaterialInfo>();
             bool    validmap= true;
 
@@ -121,7 +121,7 @@ namespace Tso2MqoGui
             if(!validmap || config.materialconfig)
             {
                 if(config.cui)
-                    throw new Exception("ƒ}ƒeƒŠƒAƒ‹‚Ìİ’è‚ª–³Œø‚Å‚·");
+                    throw new Exception("ãƒãƒ†ãƒªã‚¢ãƒ«ã®è¨­å®šãŒç„¡åŠ¹ã§ã™");
 
                 FormMaterial    fm  = new FormMaterial();
                 fm.materials        = materials;
@@ -130,7 +130,7 @@ namespace Tso2MqoGui
                     return false;
             }
 
-            // g—pƒeƒNƒXƒ`ƒƒˆê——‚Ìæ“¾
+            // ä½¿ç”¨ãƒ†ã‚¯ã‚¹ãƒãƒ£ä¸€è¦§ã®å–å¾—
             textures        = new Dictionary<string, TextureInfo>();
 
             foreach(MaterialInfo i in materials.Values)
@@ -192,7 +192,7 @@ namespace Tso2MqoGui
                 WriteString(bw, name);
                 WriteString(bw, "\"" + Path.GetFileName(file) + "\"");
 
-                // ƒeƒNƒXƒ`ƒƒ‚Ì“Ç‚İ‚İ
+                // ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®èª­ã¿è¾¼ã¿
                 TSOTex  tex = LoadTex(file);
                 tex.name    = name;
                 bw.Write(tex.Width);
@@ -203,7 +203,7 @@ namespace Tso2MqoGui
                 ImportTextureInfo   iti = new ImportTextureInfo(tex);
                 ii.textures.Add(iti);
 
-                // ƒeƒNƒXƒ`ƒƒ‚ª“¯‚¶ƒtƒHƒ‹ƒ_‚É‚È‚¢ê‡AƒRƒs[‚µ‚Ä‚¨‚­
+                // ãƒ†ã‚¯ã‚¹ãƒãƒ£ãŒåŒã˜ãƒ•ã‚©ãƒ«ãƒ€ã«ãªã„å ´åˆã€ã‚³ãƒ”ãƒ¼ã—ã¦ãŠã
                 if(Path.GetDirectoryName(file).ToUpper() != dir.ToUpper())
                 {
                     iti.File    = Path.Combine(dir, Path.GetFileName(file));
@@ -254,7 +254,7 @@ namespace Tso2MqoGui
                 imi.File                = "cgfxShader";
                 ii.materials.Add(imi);
 
-                // ƒR[ƒh‚ğ•Û‘¶‚·‚é
+                // ã‚³ãƒ¼ãƒ‰ã‚’ä¿å­˜ã™ã‚‹
                 File.WriteAllLines(Path.Combine(dir, i.name), code);
             }
 
@@ -272,13 +272,13 @@ namespace Tso2MqoGui
 #if true
                 System.Diagnostics.Debug.WriteLine("object:" + i.name);            
 #endif
-                // ˆê”Ô‹ß‚¢’¸“_‚Ö‚ÌQÆ
+                // ä¸€ç•ªè¿‘ã„é ‚ç‚¹ã¸ã®å‚ç…§
                 List<int>       vref= new List<int>(i.vertices.Count);
 
                 foreach (Vector3 j in i.vertices)
                     vref.Add(pc.NearestIndex(j.X, j.Y, j.Z));
 
-                // –@ü¶¬
+                // æ³•ç·šç”Ÿæˆ
                 Vector3[] nrm = new Vector3[i.vertices.Count];
                 
                 foreach(MqoFace j in i.faces)
@@ -300,10 +300,10 @@ namespace Tso2MqoGui
                 for(int j= 0; j < nrm.Length; ++j)
                     nrm[j] = Vector3.Normalize(nrm[j]);
 
-                // ƒtƒFƒCƒX‚Ì‘g¬
+                // ãƒ•ã‚§ã‚¤ã‚¹ã®çµ„æˆ
                 List<int>               faces1  = new List<int>();
                 List<int>               faces2  = new List<int>();
-              //int[]                   bonecnv = new int[tsor.nodes.Length];   // ƒ{[ƒ“•ÏŠ·ƒe[ƒuƒ‹
+              //int[]                   bonecnv = new int[tsor.nodes.Length];   // ãƒœãƒ¼ãƒ³å¤‰æ›ãƒ†ãƒ¼ãƒ–ãƒ«
                 VertexHeap<Vertex>      vh      = new VertexHeap<Vertex>();
                 Vertex[]                v       = new Vertex[3];
                 List<int>               bones   = new List<int>(16);
@@ -315,7 +315,7 @@ namespace Tso2MqoGui
                 for(int j= 0, n= i.faces.Count; j < n; ++j)
                     faces1.Add(j);
 
-#region ƒ{[ƒ“ƒp[ƒeƒBƒVƒ‡ƒ“
+#region ãƒœãƒ¼ãƒ³ãƒ‘ãƒ¼ãƒ†ã‚£ã‚·ãƒ§ãƒ³
                 while(faces1.Count > 0)
                 {
                     int                 mtl     = i.faces[faces1[0]].mtl;
@@ -382,16 +382,16 @@ namespace Tso2MqoGui
                             continue;
                         }
 
-                        // ƒ{[ƒ“ƒŠƒXƒg‚É‘«‚µ‚Ävalid
+                        // ãƒœãƒ¼ãƒ³ãƒªã‚¹ãƒˆã«è¶³ã—ã¦valid
                         foreach(KeyValuePair<int, int> l in work)
                         {
                             System.Diagnostics.Debug.WriteLine(
                                 string.Format("Add: {0} -> {1}", l.Key, selected.Count)); 
-                            selected.Add(l.Key, selected.Count);    // ƒ{[ƒ“ƒe[ƒuƒ‹‚É’Ç‰Á
+                            selected.Add(l.Key, selected.Count);    // ãƒœãƒ¼ãƒ³ãƒ†ãƒ¼ãƒ–ãƒ«ã«è¿½åŠ 
                             bones.Add(l.Key);
                         }
 
-                        // \todo “_‚Ì’Ç‰Á
+                        // \todo ç‚¹ã®è¿½åŠ 
                         Vertex va = new Vertex(i.vertices[f.a], v[0].Wgt, v[0].Idx, nrm[f.a], new Vector2(f.ta.X, 1 - f.ta.Y));
                         Vertex vb = new Vertex(i.vertices[f.b], v[1].Wgt, v[1].Idx, nrm[f.b], new Vector2(f.tb.X, 1 - f.tb.Y));
                         Vertex vc = new Vertex(i.vertices[f.c], v[2].Wgt, v[2].Idx, nrm[f.c], new Vector2(f.tc.X, 1 - f.tc.Y));
@@ -406,10 +406,10 @@ namespace Tso2MqoGui
 #endif
                     }
 
-                    // ƒtƒFƒCƒXÅ“K‰»
+                    // ãƒ•ã‚§ã‚¤ã‚¹æœ€é©åŒ–
                     ushort[]    nidx    = NvTriStrip.Optimize(indices.ToArray());
 
-                    // ’¸“_‚Ìƒ{[ƒ“QÆƒ[ƒJƒ‹‚É•ÏŠ·
+                    // é ‚ç‚¹ã®ãƒœãƒ¼ãƒ³å‚ç…§ãƒ­ãƒ¼ã‚«ãƒ«ã«å¤‰æ›
                     Vertex[]    verts   = vh.verts.ToArray();
 
                     for(int j= 0; j < verts.Length; ++j)
@@ -426,7 +426,7 @@ namespace Tso2MqoGui
                         verts[j].Idx    = idx0;
                     }
 
-                    // ƒTƒuƒƒbƒVƒ…¶¬
+                    // ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥ç”Ÿæˆ
                     TSOSubMesh  sub = new TSOSubMesh();
                     sub.spec        = mtl;
                     sub.numbones    = bones.Count;
@@ -439,14 +439,14 @@ namespace Tso2MqoGui
 
                     subs.Add(sub);
 
-                    // Ÿ‚Ìü‰ñ
+                    // æ¬¡ã®å‘¨å›
                     List<int>   t   = faces1;
                     faces1          = faces2;
                     faces2          = t;
                     t.Clear();
                 }
 #endregion
-                // \todo TSOMesh¶¬
+                // \todo TSOMeshç”Ÿæˆ
                 TSOMesh mesh    = new TSOMesh();
                 mesh.name       = i.name;
                 mesh.numsubs    = subs.Count;
@@ -470,7 +470,7 @@ namespace Tso2MqoGui
 #if true
                 System.Diagnostics.Debug.WriteLine("object:" + i.name);            
 #endif
-                // –@ü¶¬
+                // æ³•ç·šç”Ÿæˆ
                 Vector3[] nrm = new Vector3[i.vertices.Count];
                 
                 foreach(MqoFace j in i.faces)
@@ -486,14 +486,14 @@ namespace Tso2MqoGui
                 for(int j= 0; j < nrm.Length; ++j)
                     nrm[j] = Vector3.Normalize(nrm[j]);
 
-                // ƒ{[ƒ“î•ñì¬
+                // ãƒœãƒ¼ãƒ³æƒ…å ±ä½œæˆ
                 uint                idx     = 0x00000000;
                 Vector4 wgt = new Vector4(1, 0, 0, 0);
                 int[]               bones   = new int[1];
                 string              bone    = config.boneref[i.name];
                 bones[0]                    = nodes[bone].ID;
 
-                // ƒ}ƒeƒŠƒAƒ‹•Ê‚Éˆ—‚ğÀs
+                // ãƒãƒ†ãƒªã‚¢ãƒ«åˆ¥ã«å‡¦ç†ã‚’å®Ÿè¡Œ
                 List<ushort>        indices = new List<ushort>();
                 VertexHeap<Vertex>  vh      = new VertexHeap<Vertex>();
                 List<TSOSubMesh>    subs    = new List<TSOSubMesh>();
@@ -520,10 +520,10 @@ namespace Tso2MqoGui
                     if(indices.Count == 0)
                         continue;
 
-                    // ƒtƒFƒCƒXÅ“K‰»
+                    // ãƒ•ã‚§ã‚¤ã‚¹æœ€é©åŒ–
                     ushort[]    nidx    = NvTriStrip.Optimize(indices.ToArray());
 
-                    // ƒTƒuƒƒbƒVƒ…¶¬
+                    // ã‚µãƒ–ãƒ¡ãƒƒã‚·ãƒ¥ç”Ÿæˆ
                     Vertex[]    verts= vh.verts.ToArray();
                     TSOSubMesh  sub = new TSOSubMesh();
                     sub.spec        = mtl;
@@ -538,7 +538,7 @@ namespace Tso2MqoGui
                     subs.Add(sub);
                 }
 
-                // ƒƒbƒVƒ…¶¬
+                // ãƒ¡ãƒƒã‚·ãƒ¥ç”Ÿæˆ
                 TSOMesh mesh    = new TSOMesh();
                 mesh.name       = i.name;
                 mesh.numsubs    = subs.Count;
@@ -582,7 +582,7 @@ namespace Tso2MqoGui
 
         private bool AutoBone_DoOutput()
         {
-            //----- o—Íˆ— -----------------------------------------------
+            //----- å‡ºåŠ›å‡¦ç† -----------------------------------------------
             ii.materials.Clear();
             ii.textures.Clear();
 
@@ -606,7 +606,7 @@ namespace Tso2MqoGui
 
         private bool OneBone_DoOutput()
         {
-            //----- o—Íˆ— -----------------------------------------------
+            //----- å‡ºåŠ›å‡¦ç† -----------------------------------------------
             ii.materials.Clear();
             ii.textures.Clear();
 
@@ -630,7 +630,7 @@ namespace Tso2MqoGui
 
         private bool Common_DoSaveXml()
         {
-            // Œ‹‰Ê‚ğ•Û‘¶‚µ‚Ä‚¨‚­
+            // çµæœã‚’ä¿å­˜ã—ã¦ãŠã
             ImportInfo.Save(Path.ChangeExtension(mqoin, ".xml"), ii);
             return true;
         }
@@ -698,7 +698,7 @@ namespace Tso2MqoGui
                 Common_DoCleanup();
             }
         }
-#region ƒ†[ƒeƒBƒŠƒeƒB
+#region ãƒ¦ãƒ¼ãƒ†ã‚£ãƒªãƒ†ã‚£
         public void WriteString(BinaryWriter bw, string s)
         {
             byte[]  b   = Encoding.ASCII.GetBytes(s);
@@ -739,7 +739,7 @@ namespace Tso2MqoGui
             }
         }
 #endregion
-#region ƒeƒNƒXƒ`ƒƒˆ—
+#region ãƒ†ã‚¯ã‚¹ãƒãƒ£å‡¦ç†
         public TSOTex   LoadTex(string file)
         {
             string  ext = Path.GetExtension(file).ToUpper();
@@ -883,15 +883,15 @@ namespace Tso2MqoGui
         public string Name           { get { return name;    } }
         
         [Editor(typeof(FileNameEditor), typeof(UITypeEditor))]
-        [DisplayNameAttribute("ƒVƒF[ƒ_[İ’èƒtƒ@ƒCƒ‹")]
+        [DisplayNameAttribute("ã‚·ã‚§ãƒ¼ãƒ€ãƒ¼è¨­å®šãƒ•ã‚¡ã‚¤ãƒ«")]
         public string ShaderFile     { get { return shader;  } set { shader  = value; } }
         
         [Editor(typeof(FileNameEditor), typeof(UITypeEditor))]
-        [DisplayNameAttribute("ƒeƒNƒXƒ`ƒƒFƒJƒ‰[")]
+        [DisplayNameAttribute("ãƒ†ã‚¯ã‚¹ãƒãƒ£ï¼šã‚«ãƒ©ãƒ¼")]
         public string DiffuseTexture { get { return diffuse; } set { diffuse = value; } }
 
         [Editor(typeof(FileNameEditor), typeof(UITypeEditor))]
-        [DisplayNameAttribute("ƒeƒNƒXƒ`ƒƒFƒVƒF[ƒeƒBƒ“ƒO")]
+        [DisplayNameAttribute("ãƒ†ã‚¯ã‚¹ãƒãƒ£ï¼šã‚·ã‚§ãƒ¼ãƒ†ã‚£ãƒ³ã‚°")]
         public string ShadowTexture  { get { return shadow;  } set { shadow  = value; } }
     }
 }

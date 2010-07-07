@@ -42,7 +42,7 @@ namespace Tso2MqoGui
             || magic[3] != (byte)'1')
                 throw new Exception("File is not TSO");
 
-            //----- ÉmÅ[Éh -------------------------------------------------
+            //----- „Éé„Éº„Éâ -------------------------------------------------
             nodemap                         = new Dictionary<string, TSONode>();
             int     count                   = r.ReadInt32();
             nodes                           = new TSONode[count];
@@ -83,7 +83,7 @@ namespace Tso2MqoGui
 
             WriteLine(r.BaseStream.Position.ToString("X"));
 
-            //----- ÉeÉNÉXÉ`ÉÉ ---------------------------------------------
+            //----- „ÉÜ„ÇØ„Çπ„ÉÅ„É£ ---------------------------------------------
             count                           = r.ReadInt32();
             textures                        = new TSOTex[count];
             texturemap                      = new Dictionary<string, TSOTex>();
@@ -110,7 +110,7 @@ namespace Tso2MqoGui
                 WriteLine(r.BaseStream.Position.ToString("X"));
             }
 
-            //----- ÉGÉtÉFÉNÉg ---------------------------------------------
+            //----- „Ç®„Éï„Çß„ÇØ„Éà ---------------------------------------------
             count                   = r.ReadInt32();
             effects                 = new TSOEffect[count];
 
@@ -129,7 +129,7 @@ namespace Tso2MqoGui
                 WriteLine(r.BaseStream.Position.ToString("X"));
             }
 
-            //----- É}ÉeÉäÉAÉã ---------------------------------------------
+            //----- „Éû„ÉÜ„É™„Ç¢„É´ ---------------------------------------------
             count                           = r.ReadInt32();
             materials                       = new TSOMaterial[count];
 
@@ -151,7 +151,7 @@ namespace Tso2MqoGui
                 WriteLine(r.BaseStream.Position.ToString("X"));
             }
 
-            //----- ÉÅÉbÉVÉÖ -----------------------------------------------
+            //----- „É°„ÉÉ„Ç∑„É• -----------------------------------------------
             count                           = r.ReadInt32();
             meshes                          = new TSOMesh[count];
             int             check           = 0;

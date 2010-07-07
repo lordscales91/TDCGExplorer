@@ -239,13 +239,13 @@ namespace Tso2MqoGui
                 tw.WriteLine("}");
             }
 
-            // ƒ{[ƒ“‚ğo‚·
+            // ãƒœãƒ¼ãƒ³ã‚’å‡ºã™
             switch(BoneMode)
             {
             case MqoBoneMode.None:      break;
             case MqoBoneMode.RokDeBone:
                 {
-                // ƒ}ƒgƒŠƒNƒXŒvZ
+                // ãƒãƒˆãƒªã‚¯ã‚¹è¨ˆç®—
                 foreach(TSONode i in file.nodes)
                 {
                     if(i.parent == null)
@@ -254,7 +254,7 @@ namespace Tso2MqoGui
                 }
                 
 #if false
-                // ˆÊ’uˆê——
+                // ä½ç½®ä¸€è¦§
                 Dictionary<string, Point3>  pointmap= new Dictionary<string, Point3>();
                 Dictionary<string, int>     indexmap= new Dictionary<string, int();
 
