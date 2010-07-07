@@ -133,7 +133,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="RDBBonFile.cs" />
     <Compile Include="TDCGFile.cs" />
     <Compile Include="TSOFile.cs" />
     <Compile Include="TSOGenerateConfig.cs" />
