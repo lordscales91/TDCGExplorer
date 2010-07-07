@@ -80,7 +80,6 @@
     <Compile Include="FormMaterial.Designer.cs">
       <DependentUpon>FormMaterial.cs</DependentUpon>
     </Compile>
-    <Compile Include="General.cs" />
     <Compile Include="ImageFile.cs" />
     <Compile Include="ImportInfo.cs" />
     <Compile Include="MqoFile.cs" />
