@@ -637,14 +637,14 @@ namespace Tso2MqoGui
     public partial struct Vertex : IComparable<Vertex>
     {
         public Vector3 Pos;
-        public Point4       Wgt;
+        public Vector4 Wgt;
         public UInt32       Idx;
         public Vector3 Nrm;
         public Vector2 Tex;
       //public int          Count;
       //public Weights[]    Weights;
 
-        public Vertex(Vector3 pos, Point4 wgt, UInt32 idx, Vector3 nrm, Vector2 tex)
+        public Vertex(Vector3 pos, Vector4 wgt, UInt32 idx, Vector3 nrm, Vector2 tex)
         {
             Pos = pos;
             Wgt = wgt;
@@ -663,10 +663,10 @@ namespace Tso2MqoGui
             if(Nrm.Z < o.Nrm.Z) return -1; if(Nrm.Z > o.Nrm.Z) return 1;
             if(Tex.X < o.Tex.X) return -1; if(Tex.X > o.Tex.X) return 1;
             if(Tex.Y < o.Tex.Y) return -1; if(Tex.Y > o.Tex.Y) return 1;
-            if(Wgt.x < o.Wgt.x) return -1; if(Wgt.x > o.Wgt.x) return 1;
-            if(Wgt.y < o.Wgt.y) return -1; if(Wgt.y > o.Wgt.y) return 1;
-            if(Wgt.z < o.Wgt.z) return -1; if(Wgt.z > o.Wgt.z) return 1;
-            if(Wgt.w < o.Wgt.w) return -1; if(Wgt.w > o.Wgt.w) return 1;
+            if(Wgt.X < o.Wgt.X) return -1; if(Wgt.X > o.Wgt.X) return 1;
+            if(Wgt.Y < o.Wgt.Y) return -1; if(Wgt.Y > o.Wgt.Y) return 1;
+            if(Wgt.Z < o.Wgt.Z) return -1; if(Wgt.Z > o.Wgt.Z) return 1;
+            if(Wgt.W < o.Wgt.W) return -1; if(Wgt.W > o.Wgt.W) return 1;
             if(Idx   < o.Idx)   return -1; if(Idx   > o.Idx)   return 1;
             return 0;
         }
@@ -675,8 +675,8 @@ namespace Tso2MqoGui
         {
             return Pos.X.GetHashCode() ^ Pos.Y.GetHashCode() ^ Pos.Z.GetHashCode()
                  ^ Nrm.X.GetHashCode() ^ Nrm.Y.GetHashCode() ^ Nrm.Z.GetHashCode()
-                 ^ Tex.X.GetHashCode() ^ Tex.Y.GetHashCode() ^ Wgt.w.GetHashCode()
-                 ^ Wgt.x.GetHashCode() ^ Wgt.y.GetHashCode() ^ Wgt.z.GetHashCode()
+                 ^ Tex.X.GetHashCode() ^ Tex.Y.GetHashCode() ^ Wgt.W.GetHashCode()
+                 ^ Wgt.X.GetHashCode() ^ Wgt.Y.GetHashCode() ^ Wgt.Z.GetHashCode()
                  - Idx.GetHashCode();
         }
 
@@ -686,8 +686,8 @@ namespace Tso2MqoGui
 
             return Pos.X==o.Pos.X && Pos.Y==o.Pos.Y && Pos.Z==o.Pos.Z
                 && Nrm.X==o.Nrm.X && Nrm.Y==o.Nrm.Y && Nrm.Z==o.Nrm.Z
-                && Tex.X==o.Tex.X && Tex.Y==o.Tex.Y && Wgt.w==o.Wgt.w
-                && Wgt.x==o.Wgt.x && Wgt.y==o.Wgt.y && Wgt.z==o.Wgt.z
+                && Tex.X==o.Tex.X && Tex.Y==o.Tex.Y && Wgt.W==o.Wgt.W
+                && Wgt.X==o.Wgt.X && Wgt.Y==o.Wgt.Y && Wgt.Z==o.Wgt.Z
                 && Idx  ==o.Idx;
         }
     }

@@ -6,29 +6,6 @@ using Microsoft.DirectX.Direct3D;
 
 namespace Tso2MqoGui
 {
-    public partial struct Point4
-    {
-        public float x, y, z, w;
-
-        public Point4(float x, float y, float z, float w)
-        {
-            this.x  = x;
-            this.y  = y;
-            this.z  = z;
-            this.w  = w;
-        }
-
-        public float    X   { get { return x; } set { x= value; } }
-        public float    Y   { get { return y; } set { y= value; } }
-        public float    Z   { get { return z; } set { z= value; } }
-        public float    W   { get { return w; } set { w= value; } }
-
-        public override string ToString()
-        {
-            return X+","+Y+","+Z+","+W;
-        }
-    }
-
     public partial struct Color3
     {
         public float    r, g, b;
