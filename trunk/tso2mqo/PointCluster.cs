@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 
 namespace Tso2MqoGui
 {
@@ -31,41 +33,41 @@ namespace Tso2MqoGui
 
     public class PointCluster
     {
-        public List<Point3>         points;
+        public List<Vector3> points;
         public int                  div;
         public float                divu;
         public Array3D<List<int>>   clusters;
-        public Point3               min= new Point3(float.MaxValue, float.MaxValue, float.MaxValue);
-        public Point3               max= new Point3(float.MinValue, float.MinValue, float.MinValue);
+        public Vector3 min = new Vector3(float.MaxValue, float.MaxValue, float.MaxValue);
+        public Vector3 max = new Vector3(float.MinValue, float.MinValue, float.MinValue);
 
         public PointCluster(int n)
         {
-            points  = new List<Point3>(n);
+            points = new List<Vector3>(n);
         }
 
-        public Point3 GetPoint(int i)
+        public Vector3 GetPoint(int i)
         {
             return points[i];
         }
 
-        public void Add(Point3 p)
+        public void Add(Vector3 p)
         {
             points.Add(p);
-            if(p.x < min.x) min.x= p.x; else if(p.x > max.x) max.x= p.x;
-            if(p.y < min.y) min.y= p.y; else if(p.y > max.y) max.y= p.y;
-            if(p.z < min.z) min.z= p.z; else if(p.z > max.z) max.z= p.z;
+            if(p.X < min.X) min.X= p.X; else if(p.X > max.X) max.X= p.X;
+            if(p.Y < min.Y) min.Y= p.Y; else if(p.Y > max.Y) max.Y= p.Y;
+            if(p.Z < min.Z) min.Z= p.Z; else if(p.Z > max.Z) max.Z= p.Z;
         }
 
         public void Add(float x, float y, float z)
         {
-            Add(new Point3(x, y, z));
+            Add(new Vector3(x, y, z));
         }
 
         public void Clustering()
         {
-            float   x   = max.x - min.x;
-            float   y   = max.y - min.y;
-            float   z   = max.z - min.z;
+            float   x   = max.X - min.X;
+            float   y   = max.Y - min.Y;
+            float   z   = max.Z - min.Z;
             div         = (int)Math.Ceiling((float)Math.Sqrt(Math.Sqrt(points.Count)));
 
                  if(x >= y && x >= z)   divu= x / div;
@@ -78,7 +80,7 @@ namespace Tso2MqoGui
                  Math.Max(1, (int)(z / divu)));
 
             for(int i= 0, n= points.Count; i < n; ++i)
-                AddCluster(i, points[i].x, points[i].y, points[i].z);
+                AddCluster(i, points[i].X, points[i].Y, points[i].Z);
         }
 
         public int Clump(int a, int min, int max)
@@ -86,9 +88,9 @@ namespace Tso2MqoGui
             return a < min ? min : a > max ? max : a;
         }
 
-        public int  IndexX(float x) { return Clump((int)((x-min.x) / divu), 0, clusters.xx-1); }
-        public int  IndexY(float y) { return Clump((int)((y-min.y) / divu), 0, clusters.yy-1); }
-        public int  IndexZ(float z) { return Clump((int)((z-min.z) / divu), 0, clusters.zz-1); }
+        public int  IndexX(float x) { return Clump((int)((x-min.X) / divu), 0, clusters.xx-1); }
+        public int  IndexY(float y) { return Clump((int)((y-min.Y) / divu), 0, clusters.yy-1); }
+        public int  IndexZ(float z) { return Clump((int)((z-min.Z) / divu), 0, clusters.zz-1); }
 
         public void AddCluster(int i, float x, float y, float z)
         {
@@ -138,11 +140,11 @@ namespace Tso2MqoGui
 
                     foreach(int j in l)
                     {
-                        Point3  p   = points[j];
-                        p.x         -=x;
-                        p.y         -=y;
-                        p.z         -=z;
-                        float   d   = p.x*p.x + p.y*p.y + p.z*p.z;
+                        Vector3 p = points[j];
+                        p.X         -=x;
+                        p.Y         -=y;
+                        p.Z         -=z;
+                        float   d   = p.X*p.X + p.Y*p.Y + p.Z*p.Z;
 #if SEARCH_DEBUG
                         ++dbgcount;
 #endif
