@@ -5,7 +5,7 @@ class ArcsController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [ :auto_complete_for_tag_name ]
 
   def auto_complete_for_tag_name
-    find_options = { :conditions => [ "name like ?", '%' + NKF.nkf('-Ws', params[:arc][:arc_tag_attributes][0][:tag_name]) + '%' ], :limit => 10 }
+    find_options = { :conditions => [ "name like ?", '%' + params[:arc][:arc_tag_attributes][0][:tag_name] + '%' ], :limit => 10 }
     @items = Tag.find(:all, find_options)
     render :inline => "<%= auto_complete_result @items, 'name' %>"
   end
