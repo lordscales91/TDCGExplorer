@@ -276,7 +276,7 @@ namespace tso2mqo
                 List<int>       vref= new List<int>(i.vertices.Count);
 
                 foreach (Vector3 j in i.vertices)
-                    vref.Add(pc.NearestIndex(j.X, j.Y, j.Z));
+                    vref.Add(pc.NearestIndex(j));
 
                 // 法線生成
                 Vector3[] nrm = new Vector3[i.vertices.Count];

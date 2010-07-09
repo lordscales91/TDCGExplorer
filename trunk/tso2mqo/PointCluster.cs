@@ -111,7 +111,7 @@ namespace tso2mqo
             }
         }
 
-        public int NearestIndex(float x, float y, float z)
+        public int NearestIndex(Vector3 p)
         {
 #if SEARCH_DEBUG
             int     dbgcount= 0;    
@@ -119,9 +119,9 @@ namespace tso2mqo
             int     limit   = 99;
             int     near    = -1;
             float   distsq  = float.MaxValue;
-            int     a       = IndexX(x);
-            int     b       = IndexY(y);
-            int     c       = IndexZ(z);
+            int     a       = IndexX(p.X);
+            int     b       = IndexY(p.Y);
+            int     c       = IndexZ(p.Z);
 
             for(int i= 0; i <= limit; ++i)
             {
@@ -140,11 +140,7 @@ namespace tso2mqo
 
                     foreach(int j in l)
                     {
-                        Vector3 p = points[j];
-                        p.X         -=x;
-                        p.Y         -=y;
-                        p.Z         -=z;
-                        float   d   = p.X*p.X + p.Y*p.Y + p.Z*p.Z;
+                        float   d   = Vector3.LengthSq(points[j] - p);
 #if SEARCH_DEBUG
                         ++dbgcount;
 #endif
