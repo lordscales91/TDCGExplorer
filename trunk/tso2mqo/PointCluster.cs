@@ -1,4 +1,3 @@
-//#define SEARCH_DEBUG
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -113,9 +112,6 @@ namespace tso2mqo
 
         public int NearestIndex(Vector3 p)
         {
-#if SEARCH_DEBUG
-            int     dbgcount= 0;    
-#endif
             int     limit   = 99;
             int     near    = -1;
             float   distsq  = float.MaxValue;
@@ -141,9 +137,6 @@ namespace tso2mqo
                     foreach(int j in l)
                     {
                         float   d   = Vector3.LengthSq(points[j] - p);
-#if SEARCH_DEBUG
-                        ++dbgcount;
-#endif
                         if(d >= distsq)
                             continue;
 
@@ -154,10 +147,6 @@ namespace tso2mqo
                     }
                 }
             }
-#if SEARCH_DEBUG
-            System.Diagnostics.Debug.WriteLine(string.Format(
-                "dbgcount:{0} index:{1} distance:{2}", dbgcount, near, distsq));
-#endif
             return near;
         }
     }
