@@ -48,7 +48,7 @@ namespace tso2mqo
             pc  = new PointCluster(vlst.Count);
 
             foreach(Vertex i in vlst)
-                pc.Add(i.Pos.X, i.Pos.Y, i.Pos.Z);
+                pc.Add(i.Pos);
 
             pc.Clustering();
         }
