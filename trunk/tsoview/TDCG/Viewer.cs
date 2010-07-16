@@ -628,9 +628,9 @@ public class Viewer : IDisposable
         device.RenderState.Lighting = false;
         device.RenderState.CullMode = Cull.CounterClockwise;
 
-        device.SetTextureStageState(0, TextureStageStates.AlphaOperation, (int)TextureOperation.Modulate);
-        device.SetTextureStageState(0, TextureStageStates.AlphaArgument1, (int)TextureArgument.TextureColor);
-        device.SetTextureStageState(0, TextureStageStates.AlphaArgument2, (int)TextureArgument.Current);
+        device.TextureState[0].AlphaOperation = TextureOperation.Modulate;
+        device.TextureState[0].AlphaArgument1 = TextureArgument.TextureColor;
+        device.TextureState[0].AlphaArgument2 = TextureArgument.Current;
 
         device.RenderState.SourceBlend = Blend.SourceAlpha; 
         device.RenderState.DestinationBlend = Blend.InvSourceAlpha;

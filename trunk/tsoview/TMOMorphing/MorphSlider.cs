@@ -27,22 +27,22 @@ namespace TMOMorphing
             }
         }
 
-        float ratio = 0.0f;
+        Dictionary<string, float> ratiomap = new Dictionary<string, float>();
         public float Ratio
         {
             get
             {
-                return ratio;
+                return ratiomap[morph_name];
             }
             set
             {
-                if (ratio != value)
-                {
-                    ratio = value;
-                    tbRatio.Value = (int)(ratio * 10.0f);
-                    if (ValueChanged != null)
-                        ValueChanged(this, new EventArgs());
-                }
+                if (ratiomap[morph_name] == value)
+                    return;
+
+                ratiomap[morph_name] = value;
+                tbRatio.Value = (int)(ratiomap[morph_name] * 10.0f);
+                if (ValueChanged != null)
+                    ValueChanged(this, new EventArgs());
             }
 
         }
@@ -58,6 +58,7 @@ namespace TMOMorphing
             {
                 morph_name = value;
                 cbMorphNames.SelectedIndex = cbMorphNames.FindString(morph_name);
+                tbRatio.Value = (int)(ratiomap[morph_name] * 10.0f);
                 if (ValueChanged != null)
                     ValueChanged(this, new EventArgs());
             }
@@ -76,6 +77,11 @@ namespace TMOMorphing
 
         public void SetMorphNames(List<string> names)
         {
+            ratiomap.Clear();
+            foreach (string name in names)
+            {
+                ratiomap[name] = 0.0f;
+            }
             cbMorphNames.Items.Clear();
             foreach (string name in names)
             {
