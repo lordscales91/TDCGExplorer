@@ -75,7 +75,7 @@ namespace TMOMorphing
             MorphSlider slider = sender as MorphSlider;
             {
                 MorphGroup group = slider.Tag as MorphGroup;
-                group.ClearRatios();
+                //group.ClearRatios();
                 Morph morph = group.FindItemByName(slider.MorphName);
                 if (morph != null)
                     morph.Ratio = slider.Ratio;
