@@ -1059,6 +1059,7 @@ namespace TDCG
         /// </summary>
         public void LinkMatrices(TMOFrame[] frames)
         {
+            this.matrices.Clear();
             foreach (TMOFrame frame in frames)
                 this.matrices.Add(frame.matrices[id]);
         }
