@@ -168,22 +168,33 @@ public class Morphing
     {
         tmo.LoadTransformationMatrixFromFrame(0);
 
+        Dictionary<TMONode, Matrix> mmap = new Dictionary<TMONode, Matrix>();
+
         foreach (MorphGroup group in groups)
         {
             List<TMONode> select_nodes = group.SelectNodes(tmo);
 
-            foreach (Morph morph in group.Items)
+            foreach (TMONode select_node in select_nodes)
             {
-                if (morph.Ratio == 0.0f)
-                    continue;
-
-                foreach (TMONode node in select_nodes)
+                foreach (Morph morph in group.Items)
                 {
-                    Matrix min = node.TransformationMatrix;
-                    Matrix max = morph.Tmo.FindNodeByName(node.Name).TransformationMatrix;
-                    node.TransformationMatrix = SlideMatrices.GetMatrixRatio(min, max, morph.Ratio);
+                    if (morph.Ratio == 0.0f)
+                        continue;
+
+                    TMONode node = morph.Tmo.FindNodeByName(select_node.Name);
+                    Matrix min = select_node.TransformationMatrix;
+                    Matrix max = node.TransformationMatrix;
+                    Matrix inv_min = Matrix.Invert(min);
+                    if (! mmap.ContainsKey(select_node))
+                        mmap[select_node] = min;
+                    mmap[select_node] = mmap[select_node] * inv_min * SlideMatrices.GetMatrixRatio(min, max, morph.Ratio);
                 }
             }
+        }
+
+        foreach (TMONode select_node in mmap.Keys)
+        {
+            select_node.TransformationMatrix = mmap[select_node];
         }
     }
 }
