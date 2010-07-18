@@ -440,12 +440,11 @@ public class WeightViewer : Viewer
     /// <param name="fig"></param>
     void DrawNodeTree(Figure fig)
     {
-        Color line_color = Color.FromArgb(100, 100, 230); //from MikuMikuDance
-        Rectangle rect = new Rectangle(0, 16, 15, 15); //node circle
-        Vector3 rect_center = new Vector3(7, 7, 0);
 
         TMOFile tmo = fig.Tmo;
-        
+
+        Color line_color = Color.FromArgb(100, 100, 230); //from MikuMikuDance
+        Line line = new Line(device);
         foreach (TMONode node in tmo.nodes)
         {
             Vector3 p0 = GetNodePositionOnScreen(node);
@@ -455,14 +454,24 @@ public class WeightViewer : Viewer
             {
                 Vector3 p1 = GetNodePositionOnScreen(parent_node);
 
-                Line line = new Line(device);
-                Vector2[] vertices = new Vector2[2];
-                vertices[0] = new Vector2(p0.X, p0.Y);
-                vertices[1] = new Vector2(p1.X, p1.Y);
+                Vector3 pd = p0 - p1;
+                float len = Vector3.Length(pd);
+                float scale = 4.0f / len;
+                Vector2 p3 = new Vector2(p1.X+pd.Y*scale, p1.Y-pd.X*scale);
+                Vector2 p4 = new Vector2(p1.X-pd.Y*scale, p1.Y+pd.X*scale);
+
+                Vector2[] vertices = new Vector2[3];
+                vertices[0] = new Vector2(p3.X, p3.Y);
+                vertices[1] = new Vector2(p0.X, p0.Y);
+                vertices[2] = new Vector2(p4.X, p4.Y);
                 line.Draw(vertices, line_color);
             }
         }
+        line.Dispose();
+        line = null;
 
+        Rectangle rect = new Rectangle(0, 16, 15, 15); //node circle
+        Vector3 rect_center = new Vector3(7, 7, 0);
         sprite.Begin(SpriteFlags.None);
         foreach (TMONode node in tmo.nodes)
         {
