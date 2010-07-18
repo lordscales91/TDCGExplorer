@@ -172,7 +172,7 @@ public class WeightViewer : Viewer
         if (! base.InitializeApplication(control, shadowMapEnabled))
             return false;
 
-        sphere = Mesh.Sphere(device, 0.25f, 4, 2);
+        sphere = Mesh.Sphere(device, 0.25f, 8, 4);
         dot_texture = TextureLoader.FromFile(device, GetDotBitmapPath());
 
         return true;
@@ -421,6 +421,8 @@ public class WeightViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
+            DrawNodeTree(fig);
+
             if (SelectedMesh != null)
             {
                 foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
@@ -430,6 +432,57 @@ public class WeightViewer : Viewer
                 DrawSelectedVertex(fig);
             }
         }
+    }
+
+    /// <summary>
+    /// フィギュアに含まれるnode treeを描画する。
+    /// </summary>
+    /// <param name="fig"></param>
+    void DrawNodeTree(Figure fig)
+    {
+        Color line_color = Color.FromArgb(100, 100, 230); //from MikuMikuDance
+        Rectangle rect = new Rectangle(0, 16, 15, 15); //node circle
+        Vector3 rect_center = new Vector3(7, 7, 0);
+
+        TMOFile tmo = fig.Tmo;
+        
+        foreach (TMONode node in tmo.nodes)
+        {
+            Vector3 p0 = GetNodePositionOnScreen(node);
+
+            TMONode parent_node = node.parent;
+            if (parent_node != null)
+            {
+                Vector3 p1 = GetNodePositionOnScreen(parent_node);
+
+                Line line = new Line(device);
+                Vector2[] vertices = new Vector2[2];
+                vertices[0] = new Vector2(p0.X, p0.Y);
+                vertices[1] = new Vector2(p1.X, p1.Y);
+                line.Draw(vertices, line_color);
+            }
+        }
+
+        sprite.Begin(SpriteFlags.None);
+        foreach (TMONode node in tmo.nodes)
+        {
+            Vector3 p0 = GetNodePositionOnScreen(node);
+            sprite.Draw(dot_texture, rect, rect_center, p0, Color.White);
+        }
+        sprite.End();
+    }
+
+    static Vector3 GetMatrixTranslation(ref Matrix m)
+    {
+        return new Vector3(m.M41, m.M42, m.M43);
+    }
+
+    Vector3 GetNodePositionOnScreen(TMONode node)
+    {
+        Vector3 p1 = GetMatrixTranslation(ref node.combined_matrix);
+        Vector3 p2 = WorldToScreen(p1);
+        p2.Z = 0.0f; //表面に固定
+        return p2;
     }
 
     /// 半径
