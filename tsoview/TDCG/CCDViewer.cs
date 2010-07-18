@@ -201,77 +201,6 @@ public class CCDViewer : Viewer
         }
     }
 
-    /// 球とレイの衝突を見つけます。
-    public bool DetectSphereRayCollision(float sphereRadius, ref Vector3 sphereCenter, ref Vector3 rayStart, ref Vector3 rayOrientation, out Vector3 collisionPoint, out float collisionTime)
-    {
-        collisionTime = 0.0f;
-        collisionPoint = Vector3.Empty;
-
-        Vector3 u = rayStart - sphereCenter;
-        float a = Vector3.Dot(rayOrientation, rayOrientation);
-        float b = Vector3.Dot(rayOrientation, u);
-        float c = Vector3.Dot(u, u) - sphereRadius*sphereRadius;
-        if (a <= float.Epsilon)
-            //誤差
-            return false;
-        float d = b*b - a*c;
-        if (d < 0.0f)
-            //衝突しない
-            return false;
-        collisionTime = (-b - (float)Math.Sqrt(d))/a;
-        collisionPoint = rayStart + rayOrientation*collisionTime;
-        return true;
-    }
-
-    /// <summary>
-    /// viewport行列を作成します。
-    /// </summary>
-    /// <param name="viewport">viewport</param>
-    /// <returns>viewport行列</returns>
-    public Matrix CreateViewportMatrix(Viewport viewport)
-    {
-        Matrix m = Matrix.Identity;
-        m.M11 = (float)viewport.Width / 2;
-        m.M22 = -1.0f * (float)viewport.Height / 2;
-        m.M33 = (float)viewport.MaxZ - (float)viewport.MinZ;
-        m.M41 = (float)(viewport.X + viewport.Width / 2);
-        m.M42 = (float)(viewport.Y + viewport.Height / 2);
-        m.M43 = viewport.MinZ;
-        return m;
-    }
-
-    /// スクリーン位置をワールド座標へ変換します。
-    public Vector3 ScreenToWorld(float screenX, float screenY, float z, Viewport viewport, Matrix view, Matrix proj)
-    {
-        //スクリーン位置
-        Vector3 v = new Vector3(screenX, screenY,  z);
-
-        Matrix inv_m = Matrix.Invert(CreateViewportMatrix(viewport));
-        Matrix inv_proj = Matrix.Invert(proj);
-        Matrix inv_view = Matrix.Invert(view);
-
-        //スクリーン位置をワールド座標へ変換
-        return Vector3.TransformCoordinate(v, inv_m * inv_proj * inv_view);
-    }
-
-    /// スクリーン位置をワールド座標へ変換します。
-    public Vector3 ScreenToWorld(float screenX, float screenY, float z)
-    {
-        return ScreenToWorld(screenX, screenY, z, device.Viewport, Transform_View, Transform_Projection);
-    }
-
-    /// ワールド座標をスクリーン位置へ変換します。
-    public Vector3 WorldToScreen(Vector3 v, Viewport viewport, Matrix view, Matrix proj)
-    {
-        return Vector3.TransformCoordinate(v, view * proj * CreateViewportMatrix(viewport));
-    }
-
-    /// ワールド座標をスクリーン位置へ変換します。
-    public Vector3 WorldToScreen(Vector3 v)
-    {
-        return WorldToScreen(v, device.Viewport, Transform_View, Transform_Projection);
-    }
-
     /// <summary>
     /// deviceを作成します。
     /// </summary>
@@ -405,7 +334,14 @@ public class CCDViewer : Viewer
         return false;
     }
 
-    private bool FindBoneOnScreenPoint(float x, float y, TMONode bone)
+    /// <summary>
+    /// 指定スクリーン座標に指定ボーンがあるか。
+    /// </summary>
+    /// <param name="x">スクリーンX座標</param>
+    /// <param name="y">スクリーンY座標</param>
+    /// <param name="bone">ボーン</param>
+    /// <returns>ボーンを見つけたか</returns>
+    public bool FindBoneOnScreenPoint(float x, float y, TMONode bone)
     {
         float collisionTime;
         Vector3 collisionPoint;
@@ -413,7 +349,16 @@ public class CCDViewer : Viewer
         return FindBoneOnScreenPoint(x, y, bone, out collisionPoint, out collisionTime);
     }
 
-    private bool FindBoneOnScreenPoint(float x, float y, TMONode bone, out Vector3 collisionPoint, out float collisionTime)
+    /// <summary>
+    /// 指定スクリーン座標に指定ボーンがあるか。
+    /// </summary>
+    /// <param name="x">スクリーンX座標</param>
+    /// <param name="y">スクリーンY座標</param>
+    /// <param name="bone">ボーン</param>
+    /// <param name="collisionPoint"></param>
+    /// <param name="collisionTime"></param>
+    /// <returns>ボーンを見つけたか</returns>
+    public bool FindBoneOnScreenPoint(float x, float y, TMONode bone, out Vector3 collisionPoint, out float collisionTime)
     {
         collisionTime = 0.0f;
         collisionPoint = Vector3.Empty;
@@ -434,7 +379,14 @@ public class CCDViewer : Viewer
         return false;
     }
 
-    private bool FindCurrentEffectorHandleOnScreenPoint(float x, float y, out Vector3 dir)
+    /// <summary>
+    /// 指定スクリーン座標に現在のエフェクタハンドルがあるか。
+    /// </summary>
+    /// <param name="x">スクリーンX座標</param>
+    /// <param name="y">スクリーンY座標</param>
+    /// <param name="dir">ハンドルの方向</param>
+    /// <returns>エフェクタハンドルを見つけたか</returns>
+    public bool FindCurrentEffectorHandleOnScreenPoint(float x, float y, out Vector3 dir)
     {
         dir = Vector3.Empty;
 
@@ -461,7 +413,15 @@ public class CCDViewer : Viewer
         return false;
     }
 
-    private bool FindBoneHandleOnScreenPoint(float x, float y, TMONode bone, Vector3 dir)
+    /// <summary>
+    /// 指定スクリーン座標に指定ボーンハンドルがあるか。
+    /// </summary>
+    /// <param name="x">スクリーンX座標</param>
+    /// <param name="y">スクリーンY座標</param>
+    /// <param name="bone">ボーン</param>
+    /// <param name="dir">ハンドルの方向</param>
+    /// <returns>ボーンハンドルを見つけたか</returns>
+    public bool FindBoneHandleOnScreenPoint(float x, float y, TMONode bone, Vector3 dir)
     {
         Figure fig;
         if (TryGetFigure(out fig))

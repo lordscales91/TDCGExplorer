@@ -1174,5 +1174,85 @@ public class Viewer : IDisposable
       if (sf != null)
           SurfaceLoader.Save(file, ImageFileFormat.Png, sf);
     }
+
+    /// <summary>
+    /// 球とレイの衝突を見つけます。
+    /// </summary>
+    /// <param name="sphereRadius">球の半径</param>
+    /// <param name="sphereCenter">球の中心位置</param>
+    /// <param name="rayStart">光線の発射位置</param>
+    /// <param name="rayOrientation">光線の方向</param>
+    /// <param name="collisionPoint">衝突位置</param>
+    /// <param name="collisionTime">衝突時刻</param>
+    /// <returns>衝突したか</returns>
+    public static bool DetectSphereRayCollision(float sphereRadius, ref Vector3 sphereCenter, ref Vector3 rayStart, ref Vector3 rayOrientation, out Vector3 collisionPoint, out float collisionTime)
+    {
+        collisionTime = 0.0f;
+        collisionPoint = Vector3.Empty;
+
+        Vector3 u = rayStart - sphereCenter;
+        float a = Vector3.Dot(rayOrientation, rayOrientation);
+        float b = Vector3.Dot(rayOrientation, u);
+        float c = Vector3.Dot(u, u) - sphereRadius * sphereRadius;
+        if (a <= float.Epsilon)
+            //誤差
+            return false;
+        float d = b * b - a * c;
+        if (d < 0.0f)
+            //衝突しない
+            return false;
+        collisionTime = (-b - (float)Math.Sqrt(d)) / a;
+        collisionPoint = rayStart + rayOrientation * collisionTime;
+        return true;
+    }
+
+    /// <summary>
+    /// viewport行列を作成します。
+    /// </summary>
+    /// <param name="viewport">viewport</param>
+    /// <returns>viewport行列</returns>
+    public static Matrix CreateViewportMatrix(Viewport viewport)
+    {
+        Matrix m = Matrix.Identity;
+        m.M11 = (float)viewport.Width / 2;
+        m.M22 = -1.0f * (float)viewport.Height / 2;
+        m.M33 = (float)viewport.MaxZ - (float)viewport.MinZ;
+        m.M41 = (float)(viewport.X + viewport.Width / 2);
+        m.M42 = (float)(viewport.Y + viewport.Height / 2);
+        m.M43 = viewport.MinZ;
+        return m;
+    }
+
+    /// スクリーン位置をワールド座標へ変換します。
+    public static Vector3 ScreenToWorld(float screenX, float screenY, float z, Viewport viewport, Matrix view, Matrix proj)
+    {
+        //スクリーン位置
+        Vector3 v = new Vector3(screenX, screenY, z);
+
+        Matrix inv_m = Matrix.Invert(CreateViewportMatrix(viewport));
+        Matrix inv_proj = Matrix.Invert(proj);
+        Matrix inv_view = Matrix.Invert(view);
+
+        //スクリーン位置をワールド座標へ変換
+        return Vector3.TransformCoordinate(v, inv_m * inv_proj * inv_view);
+    }
+
+    /// スクリーン位置をワールド座標へ変換します。
+    public Vector3 ScreenToWorld(float screenX, float screenY, float z)
+    {
+        return ScreenToWorld(screenX, screenY, z, device.Viewport, Transform_View, Transform_Projection);
+    }
+
+    /// ワールド座標をスクリーン位置へ変換します。
+    public static Vector3 WorldToScreen(Vector3 v, Viewport viewport, Matrix view, Matrix proj)
+    {
+        return Vector3.TransformCoordinate(v, view * proj * CreateViewportMatrix(viewport));
+    }
+
+    /// ワールド座標をスクリーン位置へ変換します。
+    public Vector3 WorldToScreen(Vector3 v)
+    {
+        return WorldToScreen(v, device.Viewport, Transform_View, Transform_Projection);
+    }
 }
 }
