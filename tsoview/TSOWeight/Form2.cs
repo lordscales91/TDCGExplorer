@@ -88,5 +88,10 @@ namespace TSOWeight
             else
                 Console.WriteLine(control.Name + " has not captured the mouse");
         }
+
+        private void Form2_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            e.Cancel = true;
+        }
     }
 }
