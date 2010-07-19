@@ -37,6 +37,10 @@ namespace TSOWeight
                         viewer.ClearCommands();
                     }
                 };
+                viewer.NodeEvent += delegate(object sender, EventArgs e)
+                {
+                    Console.WriteLine("select node {0}", viewer.SelectedNode.Name);
+                };
                 viewer.SubMeshEvent += delegate(object sender, EventArgs e)
                 {
                     lvSubMeshes.SelectedItems.Clear();

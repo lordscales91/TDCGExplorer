@@ -351,6 +351,7 @@ public class WeightViewer : Viewer
         if (TryGetFigure(out fig))
         {
             DrawNodeTree(fig);
+            DrawSelectedNode(fig);
 
             if (SelectedMesh != null)
             {
@@ -421,6 +422,24 @@ public class WeightViewer : Viewer
         Vector3 p2 = WorldToScreen(p1);
         p2.Z = 0.0f; //表面に固定
         return p2;
+    }
+
+    /// 選択nodeを描画する。
+    void DrawSelectedNode(Figure fig)
+    {
+        if (selected_node == null)
+            return;
+
+        TMONode bone;
+        if (fig.nodemap.TryGetValue(selected_node, out bone))
+        {
+            Rectangle rect = new Rectangle(16, 16, 15, 15); //node circle
+            Vector3 rect_center = new Vector3(7, 7, 0);
+            sprite.Begin(SpriteFlags.None);
+            Vector3 p0 = GetNodePositionOnScreen(bone);
+            sprite.Draw(dot_texture, rect, rect_center, p0, Color.White);
+            sprite.End();
+        }
     }
 
     /// 半径
@@ -893,7 +912,8 @@ public class WeightViewer : Viewer
             else
                 if (!motionEnabled)
                 {
-                    SelectVertex();
+                    if (! SelectVertex())
+                        SelectNode();
                     control.Invalidate(false);
                 }
             break;
@@ -987,6 +1007,62 @@ public class WeightViewer : Viewer
     }
 
     /// <summary>
+    /// node選択時に呼び出されるハンドラ
+    /// </summary>
+    public event EventHandler NodeEvent;
+
+    /// nodeを選択します。
+    /// returns: nodeを見つけたかどうか
+    public bool SelectNode()
+    {
+        bool found = false;
+
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            if (SelectedTSOFile != null)
+            {
+                //スクリーン座標からnodeを見つけます。
+                //衝突する頂点の中で最も近い位置にあるnodeを返します。
+
+                float x = lastScreenPoint.X;
+                float y = lastScreenPoint.Y;
+
+                int width = 3;//頂点ハンドルの幅
+                float min_z = 1e12f;
+
+                TSONode found_node = null;
+
+                foreach (TSONode node in SelectedTSOFile.nodes)
+                {
+                    TMONode bone;
+                    if (fig.nodemap.TryGetValue(node, out bone))
+                    {
+                        Vector3 p2 = GetNodePositionOnScreen(bone);
+                        if (p2.X - width <= x && x <= p2.X + width && p2.Y - width <= y && y <= p2.Y + width)
+                        {
+                            if (p2.Z < min_z)
+                            {
+                                min_z = p2.Z;
+                                found = true;
+                                found_node = node;
+                            }
+                        }
+                    }
+                }
+
+                if (found)
+                {
+                    selected_node = found_node;
+                    if (NodeEvent != null)
+                        NodeEvent(this, EventArgs.Empty);
+                }
+            }
+        }
+        return found;
+    }
+
+    /// <summary>
     /// サブメッシュ選択時に呼び出されるハンドラ
     /// </summary>
     public event EventHandler SubMeshEvent;
@@ -996,8 +1072,12 @@ public class WeightViewer : Viewer
     /// </summary>
     public event EventHandler VertexEvent;
 
-    private void SelectVertex()
+    /// 頂点を選択します。
+    /// returns: 頂点を見つけたかどうか
+    public bool SelectVertex()
     {
+        bool found = false;
+
         Figure fig;
         if (TryGetFigure(out fig))
         {
@@ -1019,17 +1099,18 @@ public class WeightViewer : Viewer
                 {
                     Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
 
-                    for (int i = 0; i < sub_mesh.vertices.Length; i++)
+                    foreach (Vertex v in sub_mesh.vertices)
                     {
-                        Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+                        Vector3 p1 = CalcSkindeformPosition(v, clipped_boneMatrices);
                         Vector3 p2 = WorldToScreen(p1);
                         if (p2.X - width <= x && x <= p2.X + width && p2.Y - width <= y && y <= p2.Y + width)
                         {
                             if (p2.Z < min_z)
                             {
                                 min_z = p2.Z;
+                                found = true;
                                 found_sub_mesh = sub_mesh;
-                                found_vertex = sub_mesh.vertices[i];
+                                found_vertex = v;
                             }
                         }
                     }
@@ -1037,7 +1118,7 @@ public class WeightViewer : Viewer
 
                 //
 
-                if (found_vertex != null)
+                if (found)
                 {
                     selected_sub_mesh = found_sub_mesh;
                     if (SubMeshEvent != null)
@@ -1048,6 +1129,7 @@ public class WeightViewer : Viewer
                 }
             }
         }
+        return found;
     }
 
     /// <summary>
