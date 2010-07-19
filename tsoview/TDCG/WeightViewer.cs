@@ -433,11 +433,39 @@ public class WeightViewer : Viewer
         TMONode bone;
         if (fig.nodemap.TryGetValue(selected_node, out bone))
         {
+            Vector3 p1 = GetNodePositionOnScreen(bone);
+
+            if (selected_node.children.Count != 0)
+            {
+                TMONode child_bone;
+                if (fig.nodemap.TryGetValue(selected_node.children[0], out child_bone))
+                {
+                    Color line_color = Color.FromArgb(255, 0, 0); //red
+                    Line line = new Line(device);
+
+                    Vector3 p0 = GetNodePositionOnScreen(child_bone);
+
+                    Vector3 pd = p0 - p1;
+                    float len = Vector3.Length(pd);
+                    float scale = 4.0f / len;
+                    Vector2 p3 = new Vector2(p1.X+pd.Y*scale, p1.Y-pd.X*scale);
+                    Vector2 p4 = new Vector2(p1.X-pd.Y*scale, p1.Y+pd.X*scale);
+
+                    Vector2[] vertices = new Vector2[3];
+                    vertices[0] = new Vector2(p3.X, p3.Y);
+                    vertices[1] = new Vector2(p0.X, p0.Y);
+                    vertices[2] = new Vector2(p4.X, p4.Y);
+                    line.Draw(vertices, line_color);
+
+                    line.Dispose();
+                    line = null;
+                }
+            }
+
             Rectangle rect = new Rectangle(16, 16, 15, 15); //node circle
             Vector3 rect_center = new Vector3(7, 7, 0);
             sprite.Begin(SpriteFlags.None);
-            Vector3 p0 = GetNodePositionOnScreen(bone);
-            sprite.Draw(dot_texture, rect, rect_center, p0, Color.White);
+            sprite.Draw(dot_texture, rect, rect_center, p1, Color.White);
             sprite.End();
         }
     }
