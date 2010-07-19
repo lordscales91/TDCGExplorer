@@ -416,9 +416,48 @@ public class WeightViewer : Viewer
         return new Vector3(m.M41, m.M42, m.M43);
     }
 
+    static Vector3 GetMatrixDirXTranslation(ref Matrix m, float len)
+    {
+        return new Vector3(m.M11 * len + m.M41, m.M12 * len + m.M42, m.M13 * len + m.M43);
+    }
+
+    static Vector3 GetMatrixDirYTranslation(ref Matrix m, float len)
+    {
+        return new Vector3(m.M21 * len + m.M41, m.M22 * len + m.M42, m.M23 * len + m.M43);
+    }
+
+    static Vector3 GetMatrixDirZTranslation(ref Matrix m, float len)
+    {
+        return new Vector3(m.M31 * len + m.M41, m.M32 * len + m.M42, m.M33 * len + m.M43);
+    }
+
     Vector3 GetNodePositionOnScreen(TMONode node)
     {
         Vector3 p1 = GetMatrixTranslation(ref node.combined_matrix);
+        Vector3 p2 = WorldToScreen(p1);
+        p2.Z = 0.0f; //表面に固定
+        return p2;
+    }
+
+    Vector3 GetNodeDirXPositionOnScreen(TMONode node)
+    {
+        Vector3 p1 = GetMatrixDirXTranslation(ref node.combined_matrix, 1);
+        Vector3 p2 = WorldToScreen(p1);
+        p2.Z = 0.0f; //表面に固定
+        return p2;
+    }
+
+    Vector3 GetNodeDirYPositionOnScreen(TMONode node)
+    {
+        Vector3 p1 = GetMatrixDirYTranslation(ref node.combined_matrix, 1);
+        Vector3 p2 = WorldToScreen(p1);
+        p2.Z = 0.0f; //表面に固定
+        return p2;
+    }
+
+    Vector3 GetNodeDirZPositionOnScreen(TMONode node)
+    {
+        Vector3 p1 = GetMatrixDirZTranslation(ref node.combined_matrix, 1);
         Vector3 p2 = WorldToScreen(p1);
         p2.Z = 0.0f; //表面に固定
         return p2;
@@ -448,8 +487,8 @@ public class WeightViewer : Viewer
                     Vector3 pd = p0 - p1;
                     float len = Vector3.Length(pd);
                     float scale = 4.0f / len;
-                    Vector2 p3 = new Vector2(p1.X+pd.Y*scale, p1.Y-pd.X*scale);
-                    Vector2 p4 = new Vector2(p1.X-pd.Y*scale, p1.Y+pd.X*scale);
+                    Vector2 p3 = new Vector2(p1.X + pd.Y * scale, p1.Y - pd.X * scale);
+                    Vector2 p4 = new Vector2(p1.X - pd.Y * scale, p1.Y + pd.X * scale);
 
                     Vector2[] vertices = new Vector2[3];
                     vertices[0] = new Vector2(p3.X, p3.Y);
@@ -460,6 +499,30 @@ public class WeightViewer : Viewer
                     line.Dispose();
                     line = null;
                 }
+            }
+
+            {
+                Vector3 px = GetNodeDirXPositionOnScreen(bone);
+                Vector3 py = GetNodeDirYPositionOnScreen(bone);
+                Vector3 pz = GetNodeDirZPositionOnScreen(bone);
+
+                Color line_color_x = Color.FromArgb(255, 0, 0); //R
+                Color line_color_y = Color.FromArgb(0, 255, 0); //G
+                Color line_color_z = Color.FromArgb(0, 0, 255); //B
+                Line line = new Line(device);
+                line.Width = 3;
+
+                Vector2[] vertices = new Vector2[2];
+                vertices[0] = new Vector2(p1.X, p1.Y);
+                vertices[1] = new Vector2(px.X, px.Y);
+                line.Draw(vertices, line_color_x);
+                vertices[1] = new Vector2(py.X, py.Y);
+                line.Draw(vertices, line_color_y);
+                vertices[1] = new Vector2(pz.X, pz.Y);
+                line.Draw(vertices, line_color_z);
+
+                line.Dispose();
+                line = null;
             }
 
             Rectangle rect = new Rectangle(16, 16, 15, 15); //node circle
