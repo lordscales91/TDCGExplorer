@@ -53,6 +53,15 @@ namespace TSOWeight
             Control control = (Control)sender;
             if (pressed)
             {
+                if (control == btnTraX)
+                    viewer.TranslateXOnScreen(dx, dy);
+                else
+                if (control == btnTraY)
+                    viewer.TranslateYOnScreen(dx, dy);
+                else
+                if (control == btnTraZ)
+                    viewer.TranslateZOnScreen(dx, dy);
+                else
                 if (control == btnRotX)
                     viewer.RotateXOnScreen(dx, dy);
                 else
