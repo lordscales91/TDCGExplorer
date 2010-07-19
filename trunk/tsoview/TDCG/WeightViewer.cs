@@ -1223,6 +1223,40 @@ public class WeightViewer : Viewer
         return found;
     }
 
+    public void TranslateAxisOnScreen(int dx, int dy, Vector3 axis)
+    {
+        if (SelectedNode == null)
+            return;
+
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+            TMONode bone;
+            if (fig.nodemap.TryGetValue(SelectedNode, out bone))
+            {
+                float len = dx * 0.005f;
+                bone.Translation += new Vector3(axis.X * len, axis.Y * len, axis.Z * len);
+            }
+            fig.UpdateBoneMatricesWithoutTMOFrame();
+        }
+    }
+
+    public void TranslateXOnScreen(int dx, int dy)
+    {
+        TranslateAxisOnScreen(dx, dy, new Vector3(1, 0, 0));
+    }
+
+    public void TranslateYOnScreen(int dx, int dy)
+    {
+        TranslateAxisOnScreen(dx, dy, new Vector3(0, 1, 0));
+    }
+
+    public void TranslateZOnScreen(int dx, int dy)
+    {
+        TranslateAxisOnScreen(dx, dy, new Vector3(0, 0, 1));
+    }
+
     public void RotateAxisOnScreen(int dx, int dy, Vector3 axis)
     {
         if (SelectedNode == null)
@@ -1236,8 +1270,7 @@ public class WeightViewer : Viewer
             if (fig.nodemap.TryGetValue(SelectedNode, out bone))
             {
                 float angle = dx * 0.005f;
-                bone.Rotation = Quaternion.RotationAxis(axis, angle) * bone.Rotation;
-                //LimitRotation(bone);
+                bone.Rotation *= Quaternion.RotationAxis(axis, angle);
             }
             fig.UpdateBoneMatricesWithoutTMOFrame();
         }
