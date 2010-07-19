@@ -1003,52 +1003,51 @@ public class WeightViewer : Viewer
         {
             if (SelectedMesh != null)
             {
+                //スクリーン座標から頂点を見つけます。
+                //衝突する頂点の中で最も近い位置にある頂点を返します。
+
+                float x = lastScreenPoint.X;
+                float y = lastScreenPoint.Y;
+
+                int width = 3;//頂点ハンドルの幅
+                float min_z = 1e12f;
+
+                TSOSubMesh found_sub_mesh = null;
+                Vertex found_vertex = null;
+
                 foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
                 {
-                    Vertex vertex = FindVertexOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, fig, sub_mesh);
-                    if (vertex != null)
+                    Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
+
+                    for (int i = 0; i < sub_mesh.vertices.Length; i++)
                     {
-                        selected_sub_mesh = sub_mesh;
-                        if (SubMeshEvent != null)
-                            SubMeshEvent(this, EventArgs.Empty);
-                        selected_vertex = vertex;
-                        if (VertexEvent != null)
-                            VertexEvent(this, EventArgs.Empty);
-                        break;
+                        Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+                        Vector3 p2 = WorldToScreen(p1);
+                        if (p2.X - width <= x && x <= p2.X + width && p2.Y - width <= y && y <= p2.Y + width)
+                        {
+                            if (p2.Z < min_z)
+                            {
+                                min_z = p2.Z;
+                                found_sub_mesh = sub_mesh;
+                                found_vertex = sub_mesh.vertices[i];
+                            }
+                        }
                     }
                 }
-            }
-        }
-    }
 
-    /// スクリーン座標から頂点を見つけます。
-    /// 衝突する頂点の中で最も近い位置にある頂点を返します。
-    private Vertex FindVertexOnScreenPoint(float x, float y, Figure fig, TSOSubMesh sub_mesh)
-    {
-        Vertex vertex = null;
+                //
 
-        Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
-
-        {
-            int width = 3;
-            float min_z = 1e12f;
-
-            for (int i = 0; i < sub_mesh.vertices.Length; i++)
-            {
-                Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
-                Vector3 p2 = WorldToScreen(p1);
-                if (p2.X - width <= x && x <= p2.X + width && p2.Y - width <= y && y <= p2.Y + width)
+                if (found_vertex != null)
                 {
-                    if (p2.Z < min_z)
-                    {
-                        min_z = p2.Z;
-                        vertex = sub_mesh.vertices[i];
-                    }
+                    selected_sub_mesh = found_sub_mesh;
+                    if (SubMeshEvent != null)
+                        SubMeshEvent(this, EventArgs.Empty);
+                    selected_vertex = found_vertex;
+                    if (VertexEvent != null)
+                        VertexEvent(this, EventArgs.Empty);
                 }
             }
         }
-
-        return vertex;
     }
 
     /// <summary>
