@@ -1223,6 +1223,7 @@ public class WeightViewer : Viewer
         return found;
     }
 
+    /// 選択nodeを指定軸方向に移動します。
     public void TranslateAxisOnScreen(int dx, int dy, Vector3 axis)
     {
         if (SelectedNode == null)
@@ -1242,21 +1243,25 @@ public class WeightViewer : Viewer
         }
     }
 
+    /// 選択nodeをX軸方向に移動します。
     public void TranslateXOnScreen(int dx, int dy)
     {
         TranslateAxisOnScreen(dx, dy, new Vector3(1, 0, 0));
     }
 
+    /// 選択nodeをY軸方向に移動します。
     public void TranslateYOnScreen(int dx, int dy)
     {
         TranslateAxisOnScreen(dx, dy, new Vector3(0, 1, 0));
     }
 
+    /// 選択nodeをZ軸方向に移動します。
     public void TranslateZOnScreen(int dx, int dy)
     {
         TranslateAxisOnScreen(dx, dy, new Vector3(0, 0, 1));
     }
 
+    /// 選択nodeを指定軸中心に回転します。
     public void RotateAxisOnScreen(int dx, int dy, Vector3 axis)
     {
         if (SelectedNode == null)
@@ -1276,16 +1281,19 @@ public class WeightViewer : Viewer
         }
     }
 
+    /// 選択nodeをX軸中心に回転します。
     public void RotateXOnScreen(int dx, int dy)
     {
         RotateAxisOnScreen(dx, dy, new Vector3(1, 0, 0));
     }
 
+    /// 選択nodeをY軸中心に回転します。
     public void RotateYOnScreen(int dx, int dy)
     {
         RotateAxisOnScreen(dx, dy, new Vector3(0, 1, 0));
     }
 
+    /// 選択nodeをZ軸中心に回転します。
     public void RotateZOnScreen(int dx, int dy)
     {
         RotateAxisOnScreen(dx, dy, new Vector3(0, 0, 1));
