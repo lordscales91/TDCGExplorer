@@ -12,7 +12,7 @@ namespace TSOWeight
 {
     public partial class Form1 : Form
     {
-        WeightViewer viewer = null;
+        public WeightViewer viewer = null;
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
 
         public Form1(TSOConfig tso_config, string[] args)

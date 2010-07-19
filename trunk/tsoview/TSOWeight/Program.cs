@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -27,6 +27,11 @@ namespace TSOWeight
             using (Form1 form1 = new Form1(tso_config, args))
             using (Form2 form2 = new Form2())
             {
+                form2.viewer = form1.viewer;
+                form2.RotationEvent += delegate(object sender, EventArgs e)
+                {
+                    form1.Invalidate(false);
+                };
                 form1.Show();
                 form2.Show();
                 Application.Run(form1);

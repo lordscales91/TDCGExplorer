@@ -1223,6 +1223,41 @@ public class WeightViewer : Viewer
         return found;
     }
 
+    public void RotateAxisOnScreen(int dx, int dy, Vector3 axis)
+    {
+        if (SelectedNode == null)
+            return;
+
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+            TMONode bone;
+            if (fig.nodemap.TryGetValue(SelectedNode, out bone))
+            {
+                float angle = dx * 0.005f;
+                bone.Rotation = Quaternion.RotationAxis(axis, angle) * bone.Rotation;
+                //LimitRotation(bone);
+            }
+            fig.UpdateBoneMatricesWithoutTMOFrame();
+        }
+    }
+
+    public void RotateXOnScreen(int dx, int dy)
+    {
+        RotateAxisOnScreen(dx, dy, new Vector3(1, 0, 0));
+    }
+
+    public void RotateYOnScreen(int dx, int dy)
+    {
+        RotateAxisOnScreen(dx, dy, new Vector3(0, 1, 0));
+    }
+
+    public void RotateZOnScreen(int dx, int dy)
+    {
+        RotateAxisOnScreen(dx, dy, new Vector3(0, 0, 1));
+    }
+
     /// <summary>
     /// 内部objectを破棄します。
     /// </summary>
