@@ -23,7 +23,14 @@ namespace TSOWeight
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1(tso_config, args));
+
+            using (Form1 form1 = new Form1(tso_config, args))
+            using (Form2 form2 = new Form2())
+            {
+                form1.Show();
+                form2.Show();
+                Application.Run(form1);
+            }
         }
     }
 }
