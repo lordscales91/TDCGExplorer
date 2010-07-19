@@ -227,7 +227,7 @@ public class WeightViewer : Viewer
                                     tso.BeginRender();
                                     foreach (TSOMesh mesh in tso.meshes)
                                         foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
-                                            DrawSubMeshForWeightPainting(fig, sub_mesh);
+                                            DrawSubMeshForWeightHeating(fig, sub_mesh);
                                     tso.EndRender();
                                 }
                             }
@@ -238,7 +238,7 @@ public class WeightViewer : Viewer
                                 TSOFile tso = SelectedTSOFile;
                                 tso.BeginRender();
                                 foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
-                                    DrawSubMeshForWeightPainting(fig, sub_mesh);
+                                    DrawSubMeshForWeightHeating(fig, sub_mesh);
                                 tso.EndRender();
                             }
                             break;
@@ -295,7 +295,7 @@ public class WeightViewer : Viewer
         effect.End();
     }
 
-    private void DrawSubMeshForWeightPainting(Figure fig, TSOSubMesh sub_mesh)
+    private void DrawSubMeshForWeightHeating(Figure fig, TSOSubMesh sub_mesh)
     {
         device.RenderState.FillMode = FillMode.Solid;
         device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
