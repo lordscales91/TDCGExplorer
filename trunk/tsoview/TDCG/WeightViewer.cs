@@ -1087,7 +1087,7 @@ public class WeightViewer : Viewer
     /// <summary>
     /// node選択時に呼び出されるハンドラ
     /// </summary>
-    public event EventHandler NodeEvent;
+    public event EventHandler SelectedNodeChanged;
 
     /// nodeを選択します。
     /// returns: nodeを見つけたかどうか
@@ -1132,8 +1132,8 @@ public class WeightViewer : Viewer
                 if (found)
                 {
                     selected_node = found_node;
-                    if (NodeEvent != null)
-                        NodeEvent(this, EventArgs.Empty);
+                    if (SelectedNodeChanged != null)
+                        SelectedNodeChanged(this, EventArgs.Empty);
                 }
             }
         }
@@ -1141,14 +1141,9 @@ public class WeightViewer : Viewer
     }
 
     /// <summary>
-    /// サブメッシュ選択時に呼び出されるハンドラ
-    /// </summary>
-    public event EventHandler SubMeshEvent;
-
-    /// <summary>
     /// 頂点選択時に呼び出されるハンドラ
     /// </summary>
-    public event EventHandler VertexEvent;
+    public event EventHandler SelectedVertexChanged;
 
     /// 頂点を選択します。
     /// returns: 頂点を見つけたかどうか
@@ -1238,11 +1233,9 @@ public class WeightViewer : Viewer
                 if (found)
                 {
                     selected_sub_mesh = found_sub_mesh;
-                    if (SubMeshEvent != null)
-                        SubMeshEvent(this, EventArgs.Empty);
                     selected_vertex = found_vertex;
-                    if (VertexEvent != null)
-                        VertexEvent(this, EventArgs.Empty);
+                    if (SelectedVertexChanged != null)
+                        SelectedVertexChanged(this, EventArgs.Empty);
                 }
             }
         }
