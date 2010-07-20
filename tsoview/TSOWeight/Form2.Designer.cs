@@ -156,7 +156,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(154, 133);
+            this.ClientSize = new System.Drawing.Size(158, 133);
             this.Controls.Add(this.btnTraZ);
             this.Controls.Add(this.btnTraY);
             this.Controls.Add(this.btnTraX);
