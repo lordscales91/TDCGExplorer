@@ -119,7 +119,7 @@ public class WeightViewer : Viewer
         /// <summary>
         /// ウェイト描画
         /// </summary>
-        Weight,
+        Heat,
         /// <summary>
         /// ワイヤー描画
         /// </summary>
@@ -217,7 +217,7 @@ public class WeightViewer : Viewer
                             break;
                     }
                     break;
-                case MeshViewMode.Weight:
+                case MeshViewMode.Heat:
                     switch (mesh_selection_mode)
                     {
                         case MeshSelectionMode.AllMeshes:
