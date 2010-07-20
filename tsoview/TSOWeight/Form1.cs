@@ -37,14 +37,11 @@ namespace TSOWeight
                         viewer.ClearCommands();
                     }
                 };
-                viewer.NodeEvent += delegate(object sender, EventArgs e)
+                viewer.SelectedNodeChanged += delegate(object sender, EventArgs e)
                 {
                     Console.WriteLine("select node {0}", viewer.SelectedNode.Name);
                 };
-                viewer.SubMeshEvent += delegate(object sender, EventArgs e)
-                {
-                };
-                viewer.VertexEvent += delegate(object sender, EventArgs e)
+                viewer.SelectedVertexChanged += delegate(object sender, EventArgs e)
                 {
                     AssignSkinWeights(viewer.SelectedVertex);
                 };
