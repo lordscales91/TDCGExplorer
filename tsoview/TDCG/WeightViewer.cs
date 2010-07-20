@@ -161,7 +161,7 @@ public class WeightViewer : Viewer
         /// <summary>
         /// 表面頂点のみ描画
         /// </summary>
-        CCWVertices,
+        CcwVertices,
         /// <summary>
         /// 頂点を描画しない
         /// </summary>
@@ -170,7 +170,7 @@ public class WeightViewer : Viewer
     /// <summary>
     /// 頂点描画モード
     /// </summary>
-    public VertexSelectionMode vertex_selection_mode = VertexSelectionMode.CCWVertices;
+    public VertexSelectionMode vertex_selection_mode = VertexSelectionMode.CcwVertices;
 
     /// <summary>
     /// フィギュアを描画します。
@@ -598,7 +598,7 @@ public class WeightViewer : Viewer
                     }
                 }
                 break;
-            case VertexSelectionMode.CCWVertices:
+            case VertexSelectionMode.CcwVertices:
                 {
                     bool[] ccws = new bool[sub_mesh.vertices.Length];
                     for (int i = 2; i < sub_mesh.vertices.Length; i++)
@@ -699,7 +699,7 @@ public class WeightViewer : Viewer
         switch (vertex_selection_mode)
         {
             case VertexSelectionMode.AllVertices:
-            case VertexSelectionMode.CCWVertices:
+            case VertexSelectionMode.CcwVertices:
                 {
                     sprite.Begin(SpriteFlags.None);
                     {
@@ -1129,7 +1129,7 @@ public class WeightViewer : Viewer
                 float x = lastScreenPoint.X;
                 float y = lastScreenPoint.Y;
 
-                int width = 3;//頂点ハンドルの幅
+                int width = 5;//頂点ハンドルの幅
                 float min_z = 1e12f;
 
                 TSONode found_node = null;
@@ -1196,14 +1196,25 @@ public class WeightViewer : Viewer
                 TSOSubMesh found_sub_mesh = null;
                 Vertex found_vertex = null;
 
-                foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
-                {
-                    Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
+    foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
+    {
+        Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
 
-                    foreach (Vertex v in sub_mesh.vertices)
+        Vector3[] view_positions = new Vector3[sub_mesh.vertices.Length];
+        Vector3[] screen_positions = new Vector3[sub_mesh.vertices.Length];
+        for (int i = 0; i < sub_mesh.vertices.Length; i++)
+        {
+            Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+            view_positions[i] = Vector3.TransformCoordinate(p1, Transform_View);
+            screen_positions[i] = WorldToScreen(p1);
+        }
+        switch (vertex_selection_mode)
+        {
+            case VertexSelectionMode.AllVertices:
+                {
+                    for (int i = 0; i < sub_mesh.vertices.Length; i++)
                     {
-                        Vector3 p1 = CalcSkindeformPosition(v, clipped_boneMatrices);
-                        Vector3 p2 = WorldToScreen(p1);
+                        Vector3 p2 = screen_positions[i];
                         if (p2.X - width <= x && x <= p2.X + width && p2.Y - width <= y && y <= p2.Y + width)
                         {
                             if (p2.Z < min_z)
@@ -1211,11 +1222,62 @@ public class WeightViewer : Viewer
                                 min_z = p2.Z;
                                 found = true;
                                 found_sub_mesh = sub_mesh;
-                                found_vertex = v;
+                                found_vertex = sub_mesh.vertices[i];
                             }
                         }
                     }
                 }
+                break;
+            case VertexSelectionMode.CcwVertices:
+                {
+                    bool[] ccws = new bool[sub_mesh.vertices.Length];
+                    for (int i = 2; i < sub_mesh.vertices.Length; i++)
+                    {
+                        ccws[i] = false;
+                    }
+                    for (int i = 2; i < sub_mesh.vertices.Length; i++)
+                    {
+                        int a, b, c;
+                        if (i % 2 != 0)
+                        {
+                            a = i - 0;
+                            b = i - 1;
+                            c = i - 2;
+                        }
+                        else
+                        {
+                            a = i - 2;
+                            b = i - 1;
+                            c = i - 0;
+                        }
+                        ccws[i] = ccws[i] || IsCounterClockWise(view_positions[a], view_positions[b], view_positions[c]);
+                    }
+                    ccws[0] = ccws[2];
+                    ccws[1] = ccws[2];
+
+                    for (int i = 0; i < sub_mesh.vertices.Length; i++)
+                    {
+                        if (!ccws[i])
+                            continue;
+
+                        Vector3 p2 = screen_positions[i];
+                        if (p2.X - width <= x && x <= p2.X + width && p2.Y - width <= y && y <= p2.Y + width)
+                        {
+                            if (p2.Z < min_z)
+                            {
+                                min_z = p2.Z;
+                                found = true;
+                                found_sub_mesh = sub_mesh;
+                                found_vertex = sub_mesh.vertices[i];
+                            }
+                        }
+                    }
+                }
+                break;
+            case VertexSelectionMode.None:
+                break;
+        }
+    }
 
                 //
 
