@@ -411,22 +411,22 @@ public class WeightViewer : Viewer
         sprite.End();
     }
 
-    static Vector3 GetMatrixTranslation(ref Matrix m)
+    public static Vector3 GetMatrixTranslation(ref Matrix m)
     {
         return new Vector3(m.M41, m.M42, m.M43);
     }
 
-    static Vector3 GetMatrixDirXTranslation(ref Matrix m, float len)
+    public static Vector3 GetMatrixDirXTranslation(ref Matrix m, float len)
     {
         return new Vector3(m.M11 * len + m.M41, m.M12 * len + m.M42, m.M13 * len + m.M43);
     }
 
-    static Vector3 GetMatrixDirYTranslation(ref Matrix m, float len)
+    public static Vector3 GetMatrixDirYTranslation(ref Matrix m, float len)
     {
         return new Vector3(m.M21 * len + m.M41, m.M22 * len + m.M42, m.M23 * len + m.M43);
     }
 
-    static Vector3 GetMatrixDirZTranslation(ref Matrix m, float len)
+    public static Vector3 GetMatrixDirZTranslation(ref Matrix m, float len)
     {
         return new Vector3(m.M31 * len + m.M41, m.M32 * len + m.M42, m.M33 * len + m.M43);
     }

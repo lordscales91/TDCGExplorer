@@ -413,7 +413,20 @@ namespace TSOWeight
 
         private void cameraSelectedBoneToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (viewer.SelectedNode == null)
+                return;
 
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
+            {
+                TMONode bone;
+                if (fig.nodemap.TryGetValue(viewer.SelectedNode, out bone))
+                {
+                    viewer.Camera.Center = WeightViewer.GetMatrixTranslation(ref bone.combined_matrix);
+                    viewer.Camera.ResetTranslation();
+                }
+            }
+            Invalidate(false);
         }
     }
 }
