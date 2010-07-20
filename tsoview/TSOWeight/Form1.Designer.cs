@@ -311,7 +311,7 @@
             this.wireToolStripMenuItem});
             this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
             this.modeToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-            this.modeToolStripMenuItem.Text = "表示形式";
+            this.modeToolStripMenuItem.Text = "表示形式(&S)";
             // 
             // toonToolStripMenuItem
             // 
@@ -384,16 +384,16 @@
             // 
             this.meshAllToolStripMenuItem.Name = "meshAllToolStripMenuItem";
             this.meshAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.A)));
-            this.meshAllToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.meshAllToolStripMenuItem.Text = "全てのメッシュを表示";
+            this.meshAllToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
+            this.meshAllToolStripMenuItem.Text = "全てのメッシュを表示(&A)";
             this.meshAllToolStripMenuItem.Click += new System.EventHandler(this.meshAllToolStripMenuItem_Click);
             // 
             // meshSelectedToolStripMenuItem
             // 
             this.meshSelectedToolStripMenuItem.Name = "meshSelectedToolStripMenuItem";
             this.meshSelectedToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.S)));
-            this.meshSelectedToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
-            this.meshSelectedToolStripMenuItem.Text = "選択メッシュのみ表示";
+            this.meshSelectedToolStripMenuItem.Size = new System.Drawing.Size(256, 22);
+            this.meshSelectedToolStripMenuItem.Text = "選択メッシュのみ表示(&S)";
             this.meshSelectedToolStripMenuItem.Click += new System.EventHandler(this.meshSelectedToolStripMenuItem_Click);
             // 
             // vertexToolStripMenuItem
@@ -409,22 +409,22 @@
             // vertexAllToolStripMenuItem1
             // 
             this.vertexAllToolStripMenuItem1.Name = "vertexAllToolStripMenuItem1";
-            this.vertexAllToolStripMenuItem1.Size = new System.Drawing.Size(172, 22);
-            this.vertexAllToolStripMenuItem1.Text = "全ての頂点を表示";
+            this.vertexAllToolStripMenuItem1.Size = new System.Drawing.Size(190, 22);
+            this.vertexAllToolStripMenuItem1.Text = "全ての頂点を表示(&A)";
             this.vertexAllToolStripMenuItem1.Click += new System.EventHandler(this.vertexAllToolStripMenuItem1_Click);
             // 
             // vertexCcwToolStripMenuItem
             // 
             this.vertexCcwToolStripMenuItem.Name = "vertexCcwToolStripMenuItem";
-            this.vertexCcwToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.vertexCcwToolStripMenuItem.Text = "表面頂点のみ表示";
+            this.vertexCcwToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.vertexCcwToolStripMenuItem.Text = "表面頂点のみ表示(&S)";
             this.vertexCcwToolStripMenuItem.Click += new System.EventHandler(this.vertexCcwToolStripMenuItem_Click);
             // 
             // vertexNoneToolStripMenuItem
             // 
             this.vertexNoneToolStripMenuItem.Name = "vertexNoneToolStripMenuItem";
-            this.vertexNoneToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.vertexNoneToolStripMenuItem.Text = "なし";
+            this.vertexNoneToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.vertexNoneToolStripMenuItem.Text = "なし(&N)";
             this.vertexNoneToolStripMenuItem.Click += new System.EventHandler(this.vertexNoneToolStripMenuItem_Click);
             // 
             // HelpToolStripMenuItem
