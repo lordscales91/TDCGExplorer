@@ -365,7 +365,7 @@ namespace TSOWeight
 
         private void vertexCcwToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            viewer.vertex_selection_mode = WeightViewer.VertexSelectionMode.CCWVertices;
+            viewer.vertex_selection_mode = WeightViewer.VertexSelectionMode.CcwVertices;
             Invalidate(false);
         }
 
