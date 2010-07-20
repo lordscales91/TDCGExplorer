@@ -1237,7 +1237,7 @@ public class WeightViewer : Viewer
             if (fig.nodemap.TryGetValue(SelectedNode, out bone))
             {
                 float len = dx * 0.005f;
-                bone.Translation += new Vector3(axis.X * len, axis.Y * len, axis.Z * len);
+                bone.Translation = new Vector3(axis.X * len, axis.Y * len, axis.Z * len) + bone.Translation;
             }
             fig.UpdateBoneMatricesWithoutTMOFrame();
         }
@@ -1275,7 +1275,7 @@ public class WeightViewer : Viewer
             if (fig.nodemap.TryGetValue(SelectedNode, out bone))
             {
                 float angle = dx * 0.005f;
-                bone.Rotation *= Quaternion.RotationAxis(axis, angle);
+                bone.Rotation = Quaternion.RotationAxis(axis, angle) * bone.Rotation;
             }
             fig.UpdateBoneMatricesWithoutTMOFrame();
         }
