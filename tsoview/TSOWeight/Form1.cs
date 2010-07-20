@@ -43,16 +43,6 @@ namespace TSOWeight
                 };
                 viewer.SubMeshEvent += delegate(object sender, EventArgs e)
                 {
-                    lvSubMeshes.SelectedItems.Clear();
-                    foreach (ListViewItem li in lvSubMeshes.Items)
-                    {
-                        TSOSubMesh sub_mesh = li.Tag as TSOSubMesh;
-                        if (sub_mesh == viewer.SelectedSubMesh)
-                        {
-                            li.Selected = true;
-                            break;
-                        }
-                    }
                 };
                 viewer.VertexEvent += delegate(object sender, EventArgs e)
                 {
@@ -79,7 +69,7 @@ namespace TSOWeight
                 li.Tag = tso;
                 lvTSOFiles.Items.Add(li);
             }
-            lvTSOFiles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            lvTSOFiles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             lvTSOFiles.EndUpdate();
         }
 
@@ -93,38 +83,8 @@ namespace TSOWeight
                 li.Tag = mesh;
                 lvMeshes.Items.Add(li);
             }
-            lvMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            lvMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             lvMeshes.EndUpdate();
-        }
-
-        void AssignSubMeshes(TSOMesh mesh)
-        {
-            lvSubMeshes.BeginUpdate();
-            lvSubMeshes.Items.Clear();
-            int nsub_mesh = 0;
-            foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
-            {
-                ListViewItem li = new ListViewItem(string.Format("sub_mesh #{0}", nsub_mesh));
-                li.Tag = sub_mesh;
-                lvSubMeshes.Items.Add(li);
-                nsub_mesh++;
-            }
-            lvSubMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-            lvSubMeshes.EndUpdate();
-        }
-
-        void AssignBoneIndices(TSOSubMesh sub_mesh)
-        {
-            lvBoneIndices.BeginUpdate();
-            lvBoneIndices.Items.Clear();
-            foreach (TSONode bone in sub_mesh.bones)
-            {
-                ListViewItem li = new ListViewItem(bone.Name);
-                li.Tag = bone;
-                lvBoneIndices.Items.Add(li);
-            }
-            lvBoneIndices.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-            lvBoneIndices.EndUpdate();
         }
 
         void AssignSkinWeights(Vertex vertex)
@@ -195,30 +155,8 @@ namespace TSOWeight
 
             ListViewItem li = lvMeshes.SelectedItems[0];
             TSOMesh mesh = li.Tag as TSOMesh;
-            AssignSubMeshes(mesh);
+
             viewer.SelectedMesh = mesh;
-            Invalidate(false);
-        }
-
-        private void lvMeshes_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (lvSubMeshes.SelectedItems.Count == 0)
-                return;
-
-            ListViewItem li = lvSubMeshes.SelectedItems[0];
-            TSOSubMesh sub_mesh = li.Tag as TSOSubMesh;
-            AssignBoneIndices(sub_mesh);
-            viewer.SelectedSubMesh = sub_mesh;
-        }
-
-        private void lvBoneIndices_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (lvBoneIndices.SelectedItems.Count == 0)
-                return;
-
-            ListViewItem li = lvBoneIndices.SelectedItems[0];
-            TSONode bone = li.Tag as TSONode;
-            viewer.SelectedNode = bone;
             Invalidate(false);
         }
 
@@ -227,10 +165,14 @@ namespace TSOWeight
             if (lvSkinWeights.SelectedItems.Count == 0)
                 return;
 
+            if (viewer.SelectedSubMesh == null)
+                return;
+
             ListViewItem li = lvSkinWeights.SelectedItems[0];
             SkinWeight skin_weight = li.Tag as SkinWeight;
-            lvBoneIndices.SelectedItems.Clear();
-            lvBoneIndices.Items[skin_weight.bone_index].Selected = true;
+
+            viewer.SelectedNode = viewer.SelectedSubMesh.GetBone(skin_weight.bone_index);
+            Invalidate(false);
         }
 
         private void btnDraw_Click(object sender, EventArgs e)
