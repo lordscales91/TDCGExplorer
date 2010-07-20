@@ -81,7 +81,6 @@
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.btnWire = new System.Windows.Forms.Button();
             this.btnNone = new System.Windows.Forms.Button();
             this.btnCCWVertices = new System.Windows.Forms.Button();
             this.btnAllVertices = new System.Windows.Forms.Button();
@@ -89,9 +88,6 @@
             this.btnSelectedMesh = new System.Windows.Forms.Button();
             this.btnAllMeshes = new System.Windows.Forms.Button();
             this.lbMeshSelectionMode = new System.Windows.Forms.Label();
-            this.btnWeight = new System.Windows.Forms.Button();
-            this.btnToon = new System.Windows.Forms.Button();
-            this.lbViewMode = new System.Windows.Forms.Label();
             this.lbWeight = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
             this.lbRadius = new System.Windows.Forms.Label();
@@ -103,6 +99,10 @@
             this.btnDraw = new System.Windows.Forms.Button();
             this.tbRadius = new System.Windows.Forms.TrackBar();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.modeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.heatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.wireToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -304,6 +304,7 @@
             // ViewToolStripMenuItem
             // 
             this.ViewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.modeToolStripMenuItem,
             this.cameraCenterToolStripMenuItem});
             this.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem";
             this.ViewToolStripMenuItem.Size = new System.Drawing.Size(62, 22);
@@ -521,7 +522,6 @@
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.Controls.Add(this.btnWire);
             this.panel2.Controls.Add(this.btnNone);
             this.panel2.Controls.Add(this.btnCCWVertices);
             this.panel2.Controls.Add(this.btnAllVertices);
@@ -529,9 +529,6 @@
             this.panel2.Controls.Add(this.btnSelectedMesh);
             this.panel2.Controls.Add(this.btnAllMeshes);
             this.panel2.Controls.Add(this.lbMeshSelectionMode);
-            this.panel2.Controls.Add(this.btnWeight);
-            this.panel2.Controls.Add(this.btnToon);
-            this.panel2.Controls.Add(this.lbViewMode);
             this.panel2.Controls.Add(this.lbWeight);
             this.panel2.Controls.Add(this.btnSave);
             this.panel2.Controls.Add(this.lbRadius);
@@ -544,16 +541,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(144, 681);
             this.panel2.TabIndex = 22;
-            // 
-            // btnWire
-            // 
-            this.btnWire.Location = new System.Drawing.Point(10, 74);
-            this.btnWire.Name = "btnWire";
-            this.btnWire.Size = new System.Drawing.Size(120, 23);
-            this.btnWire.TabIndex = 40;
-            this.btnWire.Text = "ワイヤー(&3)";
-            this.btnWire.UseVisualStyleBackColor = true;
-            this.btnWire.Click += new System.EventHandler(this.btnWire_Click);
             // 
             // btnNone
             // 
@@ -620,34 +607,6 @@
             this.lbMeshSelectionMode.Size = new System.Drawing.Size(120, 12);
             this.lbMeshSelectionMode.TabIndex = 33;
             this.lbMeshSelectionMode.Text = "描画するメッシュ";
-            // 
-            // btnWeight
-            // 
-            this.btnWeight.Location = new System.Drawing.Point(10, 45);
-            this.btnWeight.Name = "btnWeight";
-            this.btnWeight.Size = new System.Drawing.Size(120, 23);
-            this.btnWeight.TabIndex = 32;
-            this.btnWeight.Text = "ウェイト(&2)";
-            this.btnWeight.UseVisualStyleBackColor = true;
-            this.btnWeight.Click += new System.EventHandler(this.btnHeat_Click);
-            // 
-            // btnToon
-            // 
-            this.btnToon.Location = new System.Drawing.Point(10, 16);
-            this.btnToon.Name = "btnToon";
-            this.btnToon.Size = new System.Drawing.Size(120, 23);
-            this.btnToon.TabIndex = 31;
-            this.btnToon.Text = "トゥーン(&1)";
-            this.btnToon.UseVisualStyleBackColor = true;
-            this.btnToon.Click += new System.EventHandler(this.btnToon_Click);
-            // 
-            // lbViewMode
-            // 
-            this.lbViewMode.Location = new System.Drawing.Point(10, 1);
-            this.lbViewMode.Name = "lbViewMode";
-            this.lbViewMode.Size = new System.Drawing.Size(120, 12);
-            this.lbViewMode.TabIndex = 30;
-            this.lbViewMode.Text = "描画モード";
             // 
             // lbWeight
             // 
@@ -746,6 +705,40 @@
             this.statusStrip1.TabIndex = 23;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // modeToolStripMenuItem
+            // 
+            this.modeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toonToolStripMenuItem,
+            this.heatToolStripMenuItem,
+            this.wireToolStripMenuItem});
+            this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
+            this.modeToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.modeToolStripMenuItem.Text = "表示形式(&M)";
+            // 
+            // toonToolStripMenuItem
+            // 
+            this.toonToolStripMenuItem.Name = "toonToolStripMenuItem";
+            this.toonToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
+            this.toonToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.toonToolStripMenuItem.Text = "トゥーン(&T)";
+            this.toonToolStripMenuItem.Click += new System.EventHandler(this.toonToolStripMenuItem_Click);
+            // 
+            // heatToolStripMenuItem
+            // 
+            this.heatToolStripMenuItem.Name = "heatToolStripMenuItem";
+            this.heatToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
+            this.heatToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.heatToolStripMenuItem.Text = "ウェイト(&H)";
+            this.heatToolStripMenuItem.Click += new System.EventHandler(this.heatToolStripMenuItem_Click);
+            // 
+            // wireToolStripMenuItem
+            // 
+            this.wireToolStripMenuItem.Name = "wireToolStripMenuItem";
+            this.wireToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
+            this.wireToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.wireToolStripMenuItem.Text = "ワイヤー(&W)";
+            this.wireToolStripMenuItem.Click += new System.EventHandler(this.wireToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -829,9 +822,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.Label lbSkinWeights;
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.Button btnWeight;
-        private System.Windows.Forms.Button btnToon;
-        private System.Windows.Forms.Label lbViewMode;
         private System.Windows.Forms.Button btnSelectedMesh;
         private System.Windows.Forms.Button btnAllMeshes;
         private System.Windows.Forms.Label lbMeshSelectionMode;
@@ -839,11 +829,14 @@
         private System.Windows.Forms.Button btnCCWVertices;
         private System.Windows.Forms.Button btnAllVertices;
         private System.Windows.Forms.Label lbVertexViewMode;
-        private System.Windows.Forms.Button btnWire;
         private System.Windows.Forms.ToolStripMenuItem cameraCenterToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cameraResetToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cameraSelectedVertexToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cameraSelectedBoneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem modeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toonToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem heatToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem wireToolStripMenuItem;
     }
 }
 

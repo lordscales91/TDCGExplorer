@@ -296,24 +296,6 @@ namespace TSOWeight
             Invalidate(false);
         }
 
-        private void btnToon_Click(object sender, EventArgs e)
-        {
-            viewer.mesh_view_mode = WeightViewer.MeshViewMode.Toon;
-            Invalidate(false);
-        }
-
-        private void btnHeat_Click(object sender, EventArgs e)
-        {
-            viewer.mesh_view_mode = WeightViewer.MeshViewMode.Weight;
-            Invalidate(false);
-        }
-
-        private void btnWire_Click(object sender, EventArgs e)
-        {
-            viewer.mesh_view_mode = WeightViewer.MeshViewMode.Wire;
-            Invalidate(false);
-        }
-
         private void 名前を付けて保存AToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SaveFigure();
@@ -426,6 +408,24 @@ namespace TSOWeight
                     viewer.Camera.ResetTranslation();
                 }
             }
+            Invalidate(false);
+        }
+
+        private void toonToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.mesh_view_mode = WeightViewer.MeshViewMode.Toon;
+            Invalidate(false);
+        }
+
+        private void heatToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.mesh_view_mode = WeightViewer.MeshViewMode.Heat;
+            Invalidate(false);
+        }
+
+        private void wireToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.mesh_view_mode = WeightViewer.MeshViewMode.Wire;
             Invalidate(false);
         }
     }
