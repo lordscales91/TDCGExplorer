@@ -36,7 +36,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.ファイルFToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.FileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.新規作成NToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.開くOToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
@@ -47,7 +47,7 @@
             this.印刷プレビューVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.終了XToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.編集EToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.EditToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.元に戻すUToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.やり直しRToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
@@ -56,10 +56,12 @@
             this.貼り付けPToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.すべて選択AToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ツールTToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.カスタマイズCToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.オプションOToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ヘルプHToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cameraCenterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cameraResetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cameraSelectedVertexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.cameraSelectedBoneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.内容CToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.インデックスIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.検索SToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -79,7 +81,6 @@
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.btnCameraInitialize = new System.Windows.Forms.Button();
             this.btnWire = new System.Windows.Forms.Button();
             this.btnNone = new System.Windows.Forms.Button();
             this.btnCCWVertices = new System.Windows.Forms.Button();
@@ -93,7 +94,6 @@
             this.lbViewMode = new System.Windows.Forms.Label();
             this.lbWeight = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
-            this.btnCenterToSelectedVertex = new System.Windows.Forms.Button();
             this.lbRadius = new System.Windows.Forms.Label();
             this.lvSkinWeights = new System.Windows.Forms.ListView();
             this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
@@ -102,7 +102,6 @@
             this.tbWeight = new System.Windows.Forms.TrackBar();
             this.btnDraw = new System.Windows.Forms.Button();
             this.tbRadius = new System.Windows.Forms.TrackBar();
-            this.lbCamera = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -119,19 +118,19 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ファイルFToolStripMenuItem,
-            this.編集EToolStripMenuItem,
-            this.ツールTToolStripMenuItem,
-            this.ヘルプHToolStripMenuItem});
+            this.FileToolStripMenuItem,
+            this.EditToolStripMenuItem,
+            this.ViewToolStripMenuItem,
+            this.HelpToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1008, 26);
             this.menuStrip1.TabIndex = 20;
             this.menuStrip1.Text = "menuStrip1";
             // 
-            // ファイルFToolStripMenuItem
+            // FileToolStripMenuItem
             // 
-            this.ファイルFToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.FileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.新規作成NToolStripMenuItem,
             this.開くOToolStripMenuItem,
             this.toolStripSeparator,
@@ -142,9 +141,9 @@
             this.印刷プレビューVToolStripMenuItem,
             this.toolStripSeparator2,
             this.終了XToolStripMenuItem});
-            this.ファイルFToolStripMenuItem.Name = "ファイルFToolStripMenuItem";
-            this.ファイルFToolStripMenuItem.Size = new System.Drawing.Size(85, 22);
-            this.ファイルFToolStripMenuItem.Text = "ファイル(&F)";
+            this.FileToolStripMenuItem.Name = "FileToolStripMenuItem";
+            this.FileToolStripMenuItem.Size = new System.Drawing.Size(85, 22);
+            this.FileToolStripMenuItem.Text = "ファイル(&F)";
             // 
             // 新規作成NToolStripMenuItem
             // 
@@ -224,9 +223,9 @@
             this.終了XToolStripMenuItem.Text = "終了(&X)";
             this.終了XToolStripMenuItem.Click += new System.EventHandler(this.終了XToolStripMenuItem_Click);
             // 
-            // 編集EToolStripMenuItem
+            // EditToolStripMenuItem
             // 
-            this.編集EToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.EditToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.元に戻すUToolStripMenuItem,
             this.やり直しRToolStripMenuItem,
             this.toolStripSeparator3,
@@ -235,9 +234,9 @@
             this.貼り付けPToolStripMenuItem,
             this.toolStripSeparator4,
             this.すべて選択AToolStripMenuItem});
-            this.編集EToolStripMenuItem.Name = "編集EToolStripMenuItem";
-            this.編集EToolStripMenuItem.Size = new System.Drawing.Size(61, 22);
-            this.編集EToolStripMenuItem.Text = "編集(&E)";
+            this.EditToolStripMenuItem.Name = "EditToolStripMenuItem";
+            this.EditToolStripMenuItem.Size = new System.Drawing.Size(61, 22);
+            this.EditToolStripMenuItem.Text = "編集(&E)";
             // 
             // 元に戻すUToolStripMenuItem
             // 
@@ -302,40 +301,59 @@
             this.すべて選択AToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
             this.すべて選択AToolStripMenuItem.Text = "すべて選択(&A)";
             // 
-            // ツールTToolStripMenuItem
+            // ViewToolStripMenuItem
             // 
-            this.ツールTToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.カスタマイズCToolStripMenuItem,
-            this.オプションOToolStripMenuItem});
-            this.ツールTToolStripMenuItem.Name = "ツールTToolStripMenuItem";
-            this.ツールTToolStripMenuItem.Size = new System.Drawing.Size(74, 22);
-            this.ツールTToolStripMenuItem.Text = "ツール(&T)";
+            this.ViewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cameraCenterToolStripMenuItem});
+            this.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem";
+            this.ViewToolStripMenuItem.Size = new System.Drawing.Size(62, 22);
+            this.ViewToolStripMenuItem.Text = "表示(&V)";
             // 
-            // カスタマイズCToolStripMenuItem
+            // cameraCenterToolStripMenuItem
             // 
-            this.カスタマイズCToolStripMenuItem.Enabled = false;
-            this.カスタマイズCToolStripMenuItem.Name = "カスタマイズCToolStripMenuItem";
-            this.カスタマイズCToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.カスタマイズCToolStripMenuItem.Text = "カスタマイズ(&C)";
+            this.cameraCenterToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cameraResetToolStripMenuItem,
+            this.cameraSelectedVertexToolStripMenuItem,
+            this.cameraSelectedBoneToolStripMenuItem});
+            this.cameraCenterToolStripMenuItem.Name = "cameraCenterToolStripMenuItem";
+            this.cameraCenterToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.cameraCenterToolStripMenuItem.Text = "視点の回転中心(&C)";
             // 
-            // オプションOToolStripMenuItem
+            // cameraResetToolStripMenuItem
             // 
-            this.オプションOToolStripMenuItem.Enabled = false;
-            this.オプションOToolStripMenuItem.Name = "オプションOToolStripMenuItem";
-            this.オプションOToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.オプションOToolStripMenuItem.Text = "オプション(&O)";
+            this.cameraResetToolStripMenuItem.Name = "cameraResetToolStripMenuItem";
+            this.cameraResetToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D1)));
+            this.cameraResetToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.cameraResetToolStripMenuItem.Text = "初期位置(&R)";
+            this.cameraResetToolStripMenuItem.Click += new System.EventHandler(this.cameraResetToolStripMenuItem_Click);
             // 
-            // ヘルプHToolStripMenuItem
+            // cameraSelectedVertexToolStripMenuItem
             // 
-            this.ヘルプHToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cameraSelectedVertexToolStripMenuItem.Name = "cameraSelectedVertexToolStripMenuItem";
+            this.cameraSelectedVertexToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D2)));
+            this.cameraSelectedVertexToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.cameraSelectedVertexToolStripMenuItem.Text = "選択頂点(&V)";
+            this.cameraSelectedVertexToolStripMenuItem.Click += new System.EventHandler(this.cameraSelectedVertexToolStripMenuItem_Click);
+            // 
+            // cameraSelectedBoneToolStripMenuItem
+            // 
+            this.cameraSelectedBoneToolStripMenuItem.Name = "cameraSelectedBoneToolStripMenuItem";
+            this.cameraSelectedBoneToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D3)));
+            this.cameraSelectedBoneToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.cameraSelectedBoneToolStripMenuItem.Text = "選択ボーン(&B)";
+            this.cameraSelectedBoneToolStripMenuItem.Click += new System.EventHandler(this.cameraSelectedBoneToolStripMenuItem_Click);
+            // 
+            // HelpToolStripMenuItem
+            // 
+            this.HelpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.内容CToolStripMenuItem,
             this.インデックスIToolStripMenuItem,
             this.検索SToolStripMenuItem,
             this.toolStripSeparator5,
             this.バージョン情報AToolStripMenuItem});
-            this.ヘルプHToolStripMenuItem.Name = "ヘルプHToolStripMenuItem";
-            this.ヘルプHToolStripMenuItem.Size = new System.Drawing.Size(75, 22);
-            this.ヘルプHToolStripMenuItem.Text = "ヘルプ(&H)";
+            this.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem";
+            this.HelpToolStripMenuItem.Size = new System.Drawing.Size(75, 22);
+            this.HelpToolStripMenuItem.Text = "ヘルプ(&H)";
             // 
             // 内容CToolStripMenuItem
             // 
@@ -503,7 +521,6 @@
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.Controls.Add(this.btnCameraInitialize);
             this.panel2.Controls.Add(this.btnWire);
             this.panel2.Controls.Add(this.btnNone);
             this.panel2.Controls.Add(this.btnCCWVertices);
@@ -517,28 +534,16 @@
             this.panel2.Controls.Add(this.lbViewMode);
             this.panel2.Controls.Add(this.lbWeight);
             this.panel2.Controls.Add(this.btnSave);
-            this.panel2.Controls.Add(this.btnCenterToSelectedVertex);
             this.panel2.Controls.Add(this.lbRadius);
             this.panel2.Controls.Add(this.lvSkinWeights);
             this.panel2.Controls.Add(this.lbSkinWeights);
             this.panel2.Controls.Add(this.tbWeight);
             this.panel2.Controls.Add(this.btnDraw);
             this.panel2.Controls.Add(this.tbRadius);
-            this.panel2.Controls.Add(this.lbCamera);
             this.panel2.Location = new System.Drawing.Point(866, 26);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(144, 681);
             this.panel2.TabIndex = 22;
-            // 
-            // btnCameraInitialize
-            // 
-            this.btnCameraInitialize.Location = new System.Drawing.Point(10, 321);
-            this.btnCameraInitialize.Name = "btnCameraInitialize";
-            this.btnCameraInitialize.Size = new System.Drawing.Size(120, 23);
-            this.btnCameraInitialize.TabIndex = 41;
-            this.btnCameraInitialize.Text = "初期位置(&0)";
-            this.btnCameraInitialize.UseVisualStyleBackColor = true;
-            this.btnCameraInitialize.Click += new System.EventHandler(this.btnCameraInitialize_Click);
             // 
             // btnWire
             // 
@@ -662,16 +667,6 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // btnCenterToSelectedVertex
-            // 
-            this.btnCenterToSelectedVertex.Location = new System.Drawing.Point(10, 292);
-            this.btnCenterToSelectedVertex.Name = "btnCenterToSelectedVertex";
-            this.btnCenterToSelectedVertex.Size = new System.Drawing.Size(120, 23);
-            this.btnCenterToSelectedVertex.TabIndex = 21;
-            this.btnCenterToSelectedVertex.Text = "頂点中心(&C)";
-            this.btnCenterToSelectedVertex.UseVisualStyleBackColor = true;
-            this.btnCenterToSelectedVertex.Click += new System.EventHandler(this.btnCenterToSelectedVertex_Click);
-            // 
             // lbRadius
             // 
             this.lbRadius.Location = new System.Drawing.Point(10, 538);
@@ -743,14 +738,6 @@
             this.tbRadius.Value = 5;
             this.tbRadius.ValueChanged += new System.EventHandler(this.tbRadius_ValueChanged);
             // 
-            // lbCamera
-            // 
-            this.lbCamera.Location = new System.Drawing.Point(10, 277);
-            this.lbCamera.Name = "lbCamera";
-            this.lbCamera.Size = new System.Drawing.Size(120, 12);
-            this.lbCamera.TabIndex = 20;
-            this.lbCamera.Text = "カメラ";
-            // 
             // statusStrip1
             // 
             this.statusStrip1.Location = new System.Drawing.Point(0, 709);
@@ -790,7 +777,7 @@
 
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem ファイルFToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem FileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 新規作成NToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 開くOToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator;
@@ -801,7 +788,7 @@
         private System.Windows.Forms.ToolStripMenuItem 印刷プレビューVToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
         private System.Windows.Forms.ToolStripMenuItem 終了XToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 編集EToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem EditToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 元に戻すUToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem やり直しRToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
@@ -810,10 +797,8 @@
         private System.Windows.Forms.ToolStripMenuItem 貼り付けPToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
         private System.Windows.Forms.ToolStripMenuItem すべて選択AToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ツールTToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem カスタマイズCToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem オプションOToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ヘルプHToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ViewToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem HelpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 内容CToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem インデックスIToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 検索SToolStripMenuItem;
@@ -843,8 +828,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.Label lbSkinWeights;
-        private System.Windows.Forms.Button btnCenterToSelectedVertex;
-        private System.Windows.Forms.Label lbCamera;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.Button btnWeight;
         private System.Windows.Forms.Button btnToon;
@@ -857,7 +840,10 @@
         private System.Windows.Forms.Button btnAllVertices;
         private System.Windows.Forms.Label lbVertexViewMode;
         private System.Windows.Forms.Button btnWire;
-        private System.Windows.Forms.Button btnCameraInitialize;
+        private System.Windows.Forms.ToolStripMenuItem cameraCenterToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cameraResetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cameraSelectedVertexToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cameraSelectedBoneToolStripMenuItem;
     }
 }
 

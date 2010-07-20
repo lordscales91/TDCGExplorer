@@ -233,27 +233,6 @@ namespace TSOWeight
             lvBoneIndices.Items[skin_weight.bone_index].Selected = true;
         }
 
-        private void btnCenterToSelectedVertex_Click(object sender, EventArgs e)
-        {
-            if (viewer.SelectedVertex == null)
-                return;
-
-            Figure fig;
-            if (viewer.TryGetFigure(out fig))
-            {
-                viewer.Camera.Center = WeightViewer.CalcSkindeformPosition(viewer.SelectedVertex, WeightViewer.ClipBoneMatrices(fig, viewer.SelectedSubMesh));
-                viewer.Camera.ResetTranslation();
-            }
-            Invalidate(false);
-        }
-
-        private void btnCameraInitialize_Click(object sender, EventArgs e)
-        {
-            viewer.Camera.Reset();
-            viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
-            Invalidate(false);
-        }
-
         private void btnDraw_Click(object sender, EventArgs e)
         {
             viewer.GainSkinWeight(viewer.SelectedNode);
@@ -409,6 +388,32 @@ namespace TSOWeight
         {
             viewer.vertex_selection_mode = WeightViewer.VertexSelectionMode.None;
             Invalidate(false);
+        }
+
+        private void cameraResetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.Camera.Reset();
+            viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
+            Invalidate(false);
+        }
+
+        private void cameraSelectedVertexToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (viewer.SelectedVertex == null)
+                return;
+
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
+            {
+                viewer.Camera.Center = WeightViewer.CalcSkindeformPosition(viewer.SelectedVertex, WeightViewer.ClipBoneMatrices(fig, viewer.SelectedSubMesh));
+                viewer.Camera.ResetTranslation();
+            }
+            Invalidate(false);
+        }
+
+        private void cameraSelectedBoneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
