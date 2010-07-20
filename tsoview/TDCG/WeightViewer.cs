@@ -411,21 +411,25 @@ public class WeightViewer : Viewer
         sprite.End();
     }
 
+    /// 指定行列の移動変位を得ます。
     public static Vector3 GetMatrixTranslation(ref Matrix m)
     {
         return new Vector3(m.M41, m.M42, m.M43);
     }
 
+    /// 指定行列のX軸先位置を得ます。
     public static Vector3 GetMatrixDirXTranslation(ref Matrix m, float len)
     {
         return new Vector3(m.M11 * len + m.M41, m.M12 * len + m.M42, m.M13 * len + m.M43);
     }
 
+    /// 指定行列のY軸先位置を得ます。
     public static Vector3 GetMatrixDirYTranslation(ref Matrix m, float len)
     {
         return new Vector3(m.M21 * len + m.M41, m.M22 * len + m.M42, m.M23 * len + m.M43);
     }
 
+    /// 指定行列のZ軸先位置を得ます。
     public static Vector3 GetMatrixDirZTranslation(ref Matrix m, float len)
     {
         return new Vector3(m.M31 * len + m.M41, m.M32 * len + m.M42, m.M33 * len + m.M43);
