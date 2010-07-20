@@ -1278,8 +1278,8 @@ public class WeightViewer : Viewer
         return ccws;
     }
 
-    /// 選択nodeを指定軸方向に移動します。
-    public void TranslateAxisOnScreen(int dx, int dy, Vector3 axis)
+    /// 選択nodeをX軸方向に移動します。
+    public void TranslateXOnScreen(int dx, int dy)
     {
         if (SelectedNode == null)
             return;
@@ -1292,28 +1292,56 @@ public class WeightViewer : Viewer
             if (fig.nodemap.TryGetValue(SelectedNode, out bone))
             {
                 float len = dx * 0.005f;
+                Matrix m = bone.RotationMatrix;
+                Vector3 axis = new Vector3(m.M11, m.M12, m.M13);
                 bone.Translation = new Vector3(axis.X * len, axis.Y * len, axis.Z * len) + bone.Translation;
             }
             fig.UpdateBoneMatricesWithoutTMOFrame();
         }
     }
 
-    /// 選択nodeをX軸方向に移動します。
-    public void TranslateXOnScreen(int dx, int dy)
-    {
-        TranslateAxisOnScreen(dx, dy, new Vector3(1, 0, 0));
-    }
-
     /// 選択nodeをY軸方向に移動します。
     public void TranslateYOnScreen(int dx, int dy)
     {
-        TranslateAxisOnScreen(dx, dy, new Vector3(0, 1, 0));
+        if (SelectedNode == null)
+            return;
+
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+            TMONode bone;
+            if (fig.nodemap.TryGetValue(SelectedNode, out bone))
+            {
+                float len = dx * 0.005f;
+                Matrix m = bone.RotationMatrix;
+                Vector3 axis = new Vector3(m.M21, m.M22, m.M23);
+                bone.Translation = new Vector3(axis.X * len, axis.Y * len, axis.Z * len) + bone.Translation;
+            }
+            fig.UpdateBoneMatricesWithoutTMOFrame();
+        }
     }
 
     /// 選択nodeをZ軸方向に移動します。
     public void TranslateZOnScreen(int dx, int dy)
     {
-        TranslateAxisOnScreen(dx, dy, new Vector3(0, 0, 1));
+        if (SelectedNode == null)
+            return;
+
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+            TMONode bone;
+            if (fig.nodemap.TryGetValue(SelectedNode, out bone))
+            {
+                float len = dx * 0.005f;
+                Matrix m = bone.RotationMatrix;
+                Vector3 axis = new Vector3(m.M31, m.M32, m.M33);
+                bone.Translation = new Vector3(axis.X * len, axis.Y * len, axis.Z * len) + bone.Translation;
+            }
+            fig.UpdateBoneMatricesWithoutTMOFrame();
+        }
     }
 
     /// 選択nodeを指定軸中心に回転します。
