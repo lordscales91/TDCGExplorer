@@ -92,22 +92,22 @@
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.lbWeight = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.tbRadius = new System.Windows.Forms.TrackBar();
-            this.btnDraw = new System.Windows.Forms.Button();
-            this.tbWeight = new System.Windows.Forms.TrackBar();
-            this.lbSkinWeights = new System.Windows.Forms.Label();
+            this.lbRadius = new System.Windows.Forms.Label();
+            this.lvSkinWeights = new System.Windows.Forms.ListView();
             this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
-            this.lvSkinWeights = new System.Windows.Forms.ListView();
-            this.lbRadius = new System.Windows.Forms.Label();
-            this.lbWeight = new System.Windows.Forms.Label();
+            this.lbSkinWeights = new System.Windows.Forms.Label();
+            this.tbWeight = new System.Windows.Forms.TrackBar();
+            this.btnDraw = new System.Windows.Forms.Button();
+            this.tbRadius = new System.Windows.Forms.TrackBar();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbRadius)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbWeight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbRadius)).BeginInit();
             this.SuspendLayout();
             // 
             // timer1
@@ -627,6 +627,14 @@
             this.panel2.Size = new System.Drawing.Size(144, 681);
             this.panel2.TabIndex = 22;
             // 
+            // lbWeight
+            // 
+            this.lbWeight.Location = new System.Drawing.Point(10, 490);
+            this.lbWeight.Name = "lbWeight";
+            this.lbWeight.Size = new System.Drawing.Size(120, 12);
+            this.lbWeight.TabIndex = 24;
+            this.lbWeight.Text = "加算ウェイト";
+            // 
             // btnSave
             // 
             this.btnSave.Location = new System.Drawing.Point(10, 655);
@@ -637,59 +645,13 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
-            // statusStrip1
+            // lbRadius
             // 
-            this.statusStrip1.Location = new System.Drawing.Point(0, 709);
-            this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1008, 22);
-            this.statusStrip1.TabIndex = 23;
-            this.statusStrip1.Text = "statusStrip1";
-            // 
-            // tbRadius
-            // 
-            this.tbRadius.Location = new System.Drawing.Point(12, 553);
-            this.tbRadius.Maximum = 20;
-            this.tbRadius.Name = "tbRadius";
-            this.tbRadius.Size = new System.Drawing.Size(120, 45);
-            this.tbRadius.TabIndex = 27;
-            this.tbRadius.Value = 5;
-            this.tbRadius.ValueChanged += new System.EventHandler(this.tbRadius_ValueChanged);
-            // 
-            // btnDraw
-            // 
-            this.btnDraw.Location = new System.Drawing.Point(10, 587);
-            this.btnDraw.Name = "btnDraw";
-            this.btnDraw.Size = new System.Drawing.Size(120, 23);
-            this.btnDraw.TabIndex = 28;
-            this.btnDraw.Text = "塗る(&D)";
-            this.btnDraw.UseVisualStyleBackColor = true;
-            this.btnDraw.Click += new System.EventHandler(this.btnDraw_Click);
-            // 
-            // tbWeight
-            // 
-            this.tbWeight.Location = new System.Drawing.Point(12, 505);
-            this.tbWeight.Maximum = 20;
-            this.tbWeight.Name = "tbWeight";
-            this.tbWeight.Size = new System.Drawing.Size(120, 45);
-            this.tbWeight.TabIndex = 25;
-            this.tbWeight.Value = 2;
-            this.tbWeight.ValueChanged += new System.EventHandler(this.tbWeight_ValueChanged);
-            // 
-            // lbSkinWeights
-            // 
-            this.lbSkinWeights.Location = new System.Drawing.Point(10, 352);
-            this.lbSkinWeights.Name = "lbSkinWeights";
-            this.lbSkinWeights.Size = new System.Drawing.Size(120, 12);
-            this.lbSkinWeights.TabIndex = 22;
-            this.lbSkinWeights.Text = "頂点ウェイト";
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "ボーン";
-            // 
-            // columnHeader5
-            // 
-            this.columnHeader5.Text = "ウェイト";
+            this.lbRadius.Location = new System.Drawing.Point(10, 538);
+            this.lbRadius.Name = "lbRadius";
+            this.lbRadius.Size = new System.Drawing.Size(120, 12);
+            this.lbRadius.TabIndex = 26;
+            this.lbRadius.Text = "半径";
             // 
             // lvSkinWeights
             // 
@@ -708,21 +670,59 @@
             this.lvSkinWeights.View = System.Windows.Forms.View.Details;
             this.lvSkinWeights.SelectedIndexChanged += new System.EventHandler(this.lvSkinWeights_SelectedIndexChanged);
             // 
-            // lbRadius
+            // columnHeader4
             // 
-            this.lbRadius.Location = new System.Drawing.Point(10, 538);
-            this.lbRadius.Name = "lbRadius";
-            this.lbRadius.Size = new System.Drawing.Size(120, 12);
-            this.lbRadius.TabIndex = 26;
-            this.lbRadius.Text = "半径";
+            this.columnHeader4.Text = "ボーン";
             // 
-            // lbWeight
+            // columnHeader5
             // 
-            this.lbWeight.Location = new System.Drawing.Point(10, 490);
-            this.lbWeight.Name = "lbWeight";
-            this.lbWeight.Size = new System.Drawing.Size(120, 12);
-            this.lbWeight.TabIndex = 24;
-            this.lbWeight.Text = "加算ウェイト";
+            this.columnHeader5.Text = "ウェイト";
+            // 
+            // lbSkinWeights
+            // 
+            this.lbSkinWeights.Location = new System.Drawing.Point(10, 352);
+            this.lbSkinWeights.Name = "lbSkinWeights";
+            this.lbSkinWeights.Size = new System.Drawing.Size(120, 12);
+            this.lbSkinWeights.TabIndex = 22;
+            this.lbSkinWeights.Text = "頂点ウェイト";
+            // 
+            // tbWeight
+            // 
+            this.tbWeight.Location = new System.Drawing.Point(12, 505);
+            this.tbWeight.Maximum = 20;
+            this.tbWeight.Name = "tbWeight";
+            this.tbWeight.Size = new System.Drawing.Size(120, 45);
+            this.tbWeight.TabIndex = 25;
+            this.tbWeight.Value = 2;
+            this.tbWeight.ValueChanged += new System.EventHandler(this.tbWeight_ValueChanged);
+            // 
+            // btnDraw
+            // 
+            this.btnDraw.Location = new System.Drawing.Point(10, 587);
+            this.btnDraw.Name = "btnDraw";
+            this.btnDraw.Size = new System.Drawing.Size(120, 23);
+            this.btnDraw.TabIndex = 28;
+            this.btnDraw.Text = "塗る(&D)";
+            this.btnDraw.UseVisualStyleBackColor = true;
+            this.btnDraw.Click += new System.EventHandler(this.btnDraw_Click);
+            // 
+            // tbRadius
+            // 
+            this.tbRadius.Location = new System.Drawing.Point(12, 553);
+            this.tbRadius.Maximum = 20;
+            this.tbRadius.Name = "tbRadius";
+            this.tbRadius.Size = new System.Drawing.Size(120, 45);
+            this.tbRadius.TabIndex = 27;
+            this.tbRadius.Value = 5;
+            this.tbRadius.ValueChanged += new System.EventHandler(this.tbRadius_ValueChanged);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Location = new System.Drawing.Point(0, 709);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(1008, 22);
+            this.statusStrip1.TabIndex = 23;
+            this.statusStrip1.Text = "statusStrip1";
             // 
             // Form1
             // 
@@ -744,8 +744,8 @@
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbRadius)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbWeight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tbRadius)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -796,7 +796,16 @@
         private System.Windows.Forms.Label lbTSOFiles;
         private System.Windows.Forms.ListView lvTSOFiles;
         private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.Label lbWeight;
+        private System.Windows.Forms.Label lbRadius;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Button btnDraw;
+        private System.Windows.Forms.TrackBar tbRadius;
+        private System.Windows.Forms.TrackBar tbWeight;
+        private System.Windows.Forms.ListView lvSkinWeights;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.Label lbSkinWeights;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripMenuItem cameraCenterToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cameraResetToolStripMenuItem;
@@ -813,15 +822,6 @@
         private System.Windows.Forms.ToolStripMenuItem vertexCcwToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem vertexNoneToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem meshSelectedToolStripMenuItem;
-        private System.Windows.Forms.Label lbWeight;
-        private System.Windows.Forms.Label lbRadius;
-        private System.Windows.Forms.ListView lvSkinWeights;
-        private System.Windows.Forms.ColumnHeader columnHeader4;
-        private System.Windows.Forms.ColumnHeader columnHeader5;
-        private System.Windows.Forms.Label lbSkinWeights;
-        private System.Windows.Forms.TrackBar tbWeight;
-        private System.Windows.Forms.Button btnDraw;
-        private System.Windows.Forms.TrackBar tbRadius;
     }
 }
 

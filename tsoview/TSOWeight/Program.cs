@@ -26,7 +26,6 @@ namespace TSOWeight
 
             using (Form1 form1 = new Form1(tso_config, args))
             using (Form2 form2 = new Form2())
-            using (Form3 form3 = new Form3())
             {
                 form2.viewer = form1.viewer;
                 form2.RotationEvent += delegate(object sender, EventArgs e)
@@ -35,7 +34,6 @@ namespace TSOWeight
                 };
                 form1.Show();
                 form2.Show();
-                form3.Show();
                 Application.Run(form1);
             }
         }
