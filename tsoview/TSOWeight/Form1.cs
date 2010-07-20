@@ -342,36 +342,6 @@ namespace TSOWeight
             //base.OnPaintBackground(e);
         }
 
-        private void btnAllMeshes_Click(object sender, EventArgs e)
-        {
-            viewer.mesh_selection_mode = WeightViewer.MeshSelectionMode.AllMeshes;
-            Invalidate(false);
-        }
-
-        private void btnSelectedMesh_Click(object sender, EventArgs e)
-        {
-            viewer.mesh_selection_mode = WeightViewer.MeshSelectionMode.SelectedMesh;
-            Invalidate(false);
-        }
-
-        private void btnAllVertices_Click(object sender, EventArgs e)
-        {
-            viewer.vertex_selection_mode = WeightViewer.VertexSelectionMode.AllVertices;
-            Invalidate(false);
-        }
-
-        private void btnCCWVertices_Click(object sender, EventArgs e)
-        {
-            viewer.vertex_selection_mode = WeightViewer.VertexSelectionMode.CCWVertices;
-            Invalidate(false);
-        }
-
-        private void btnNone_Click(object sender, EventArgs e)
-        {
-            viewer.vertex_selection_mode = WeightViewer.VertexSelectionMode.None;
-            Invalidate(false);
-        }
-
         private void cameraResetToolStripMenuItem_Click(object sender, EventArgs e)
         {
             viewer.Camera.Reset();
@@ -426,6 +396,36 @@ namespace TSOWeight
         private void wireToolStripMenuItem_Click(object sender, EventArgs e)
         {
             viewer.mesh_view_mode = WeightViewer.MeshViewMode.Wire;
+            Invalidate(false);
+        }
+
+        private void meshAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.mesh_selection_mode = WeightViewer.MeshSelectionMode.AllMeshes;
+            Invalidate(false);
+        }
+
+        private void meshSelectedToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.mesh_selection_mode = WeightViewer.MeshSelectionMode.SelectedMesh;
+            Invalidate(false);
+        }
+
+        private void vertexAllToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            viewer.vertex_selection_mode = WeightViewer.VertexSelectionMode.AllVertices;
+            Invalidate(false);
+        }
+
+        private void vertexCcwToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.vertex_selection_mode = WeightViewer.VertexSelectionMode.CCWVertices;
+            Invalidate(false);
+        }
+
+        private void vertexNoneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.vertex_selection_mode = WeightViewer.VertexSelectionMode.None;
             Invalidate(false);
         }
     }

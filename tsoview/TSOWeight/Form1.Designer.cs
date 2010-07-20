@@ -57,10 +57,21 @@
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.すべて選択AToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ViewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.modeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.heatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.wireToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cameraCenterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cameraResetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cameraSelectedVertexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cameraSelectedBoneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.meshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.meshAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.meshSelectedToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.vertexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.vertexAllToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.vertexCcwToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.vertexNoneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.内容CToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.インデックスIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -81,13 +92,6 @@
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.btnNone = new System.Windows.Forms.Button();
-            this.btnCCWVertices = new System.Windows.Forms.Button();
-            this.btnAllVertices = new System.Windows.Forms.Button();
-            this.lbVertexViewMode = new System.Windows.Forms.Label();
-            this.btnSelectedMesh = new System.Windows.Forms.Button();
-            this.btnAllMeshes = new System.Windows.Forms.Button();
-            this.lbMeshSelectionMode = new System.Windows.Forms.Label();
             this.lbWeight = new System.Windows.Forms.Label();
             this.btnSave = new System.Windows.Forms.Button();
             this.lbRadius = new System.Windows.Forms.Label();
@@ -99,10 +103,6 @@
             this.btnDraw = new System.Windows.Forms.Button();
             this.tbRadius = new System.Windows.Forms.TrackBar();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.modeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toonToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.heatToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.wireToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
@@ -305,10 +305,46 @@
             // 
             this.ViewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.modeToolStripMenuItem,
-            this.cameraCenterToolStripMenuItem});
+            this.cameraCenterToolStripMenuItem,
+            this.meshToolStripMenuItem,
+            this.vertexToolStripMenuItem});
             this.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem";
             this.ViewToolStripMenuItem.Size = new System.Drawing.Size(62, 22);
             this.ViewToolStripMenuItem.Text = "表示(&V)";
+            // 
+            // modeToolStripMenuItem
+            // 
+            this.modeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toonToolStripMenuItem,
+            this.heatToolStripMenuItem,
+            this.wireToolStripMenuItem});
+            this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
+            this.modeToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.modeToolStripMenuItem.Text = "表示形式";
+            // 
+            // toonToolStripMenuItem
+            // 
+            this.toonToolStripMenuItem.Name = "toonToolStripMenuItem";
+            this.toonToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
+            this.toonToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.toonToolStripMenuItem.Text = "トゥーン(&T)";
+            this.toonToolStripMenuItem.Click += new System.EventHandler(this.toonToolStripMenuItem_Click);
+            // 
+            // heatToolStripMenuItem
+            // 
+            this.heatToolStripMenuItem.Name = "heatToolStripMenuItem";
+            this.heatToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
+            this.heatToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.heatToolStripMenuItem.Text = "ウェイト(&H)";
+            this.heatToolStripMenuItem.Click += new System.EventHandler(this.heatToolStripMenuItem_Click);
+            // 
+            // wireToolStripMenuItem
+            // 
+            this.wireToolStripMenuItem.Name = "wireToolStripMenuItem";
+            this.wireToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
+            this.wireToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
+            this.wireToolStripMenuItem.Text = "ワイヤー(&W)";
+            this.wireToolStripMenuItem.Click += new System.EventHandler(this.wireToolStripMenuItem_Click);
             // 
             // cameraCenterToolStripMenuItem
             // 
@@ -343,6 +379,62 @@
             this.cameraSelectedBoneToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.cameraSelectedBoneToolStripMenuItem.Text = "選択ボーン(&B)";
             this.cameraSelectedBoneToolStripMenuItem.Click += new System.EventHandler(this.cameraSelectedBoneToolStripMenuItem_Click);
+            // 
+            // meshToolStripMenuItem
+            // 
+            this.meshToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.meshAllToolStripMenuItem,
+            this.meshSelectedToolStripMenuItem});
+            this.meshToolStripMenuItem.Name = "meshToolStripMenuItem";
+            this.meshToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.meshToolStripMenuItem.Text = "メッシュ(&M)";
+            // 
+            // meshAllToolStripMenuItem
+            // 
+            this.meshAllToolStripMenuItem.Name = "meshAllToolStripMenuItem";
+            this.meshAllToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.A)));
+            this.meshAllToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.meshAllToolStripMenuItem.Text = "全てのメッシュを表示";
+            this.meshAllToolStripMenuItem.Click += new System.EventHandler(this.meshAllToolStripMenuItem_Click);
+            // 
+            // meshSelectedToolStripMenuItem
+            // 
+            this.meshSelectedToolStripMenuItem.Name = "meshSelectedToolStripMenuItem";
+            this.meshSelectedToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.S)));
+            this.meshSelectedToolStripMenuItem.Size = new System.Drawing.Size(238, 22);
+            this.meshSelectedToolStripMenuItem.Text = "選択メッシュのみ表示";
+            this.meshSelectedToolStripMenuItem.Click += new System.EventHandler(this.meshSelectedToolStripMenuItem_Click);
+            // 
+            // vertexToolStripMenuItem
+            // 
+            this.vertexToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.vertexAllToolStripMenuItem1,
+            this.vertexCcwToolStripMenuItem,
+            this.vertexNoneToolStripMenuItem});
+            this.vertexToolStripMenuItem.Name = "vertexToolStripMenuItem";
+            this.vertexToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.vertexToolStripMenuItem.Text = "頂点(&V)";
+            // 
+            // vertexAllToolStripMenuItem1
+            // 
+            this.vertexAllToolStripMenuItem1.Name = "vertexAllToolStripMenuItem1";
+            this.vertexAllToolStripMenuItem1.Size = new System.Drawing.Size(172, 22);
+            this.vertexAllToolStripMenuItem1.Text = "全ての頂点を表示";
+            this.vertexAllToolStripMenuItem1.Click += new System.EventHandler(this.vertexAllToolStripMenuItem1_Click);
+            // 
+            // vertexCcwToolStripMenuItem
+            // 
+            this.vertexCcwToolStripMenuItem.Name = "vertexCcwToolStripMenuItem";
+            this.vertexCcwToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.vertexCcwToolStripMenuItem.Text = "表面頂点のみ表示";
+            this.vertexCcwToolStripMenuItem.Click += new System.EventHandler(this.vertexCcwToolStripMenuItem_Click);
+            // 
+            // vertexNoneToolStripMenuItem
+            // 
+            this.vertexNoneToolStripMenuItem.Name = "vertexNoneToolStripMenuItem";
+            this.vertexNoneToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
+            this.vertexNoneToolStripMenuItem.Text = "なし";
+            this.vertexNoneToolStripMenuItem.Click += new System.EventHandler(this.vertexNoneToolStripMenuItem_Click);
             // 
             // HelpToolStripMenuItem
             // 
@@ -522,13 +614,6 @@
             // 
             this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel2.Controls.Add(this.btnNone);
-            this.panel2.Controls.Add(this.btnCCWVertices);
-            this.panel2.Controls.Add(this.btnAllVertices);
-            this.panel2.Controls.Add(this.lbVertexViewMode);
-            this.panel2.Controls.Add(this.btnSelectedMesh);
-            this.panel2.Controls.Add(this.btnAllMeshes);
-            this.panel2.Controls.Add(this.lbMeshSelectionMode);
             this.panel2.Controls.Add(this.lbWeight);
             this.panel2.Controls.Add(this.btnSave);
             this.panel2.Controls.Add(this.lbRadius);
@@ -541,72 +626,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(144, 681);
             this.panel2.TabIndex = 22;
-            // 
-            // btnNone
-            // 
-            this.btnNone.Location = new System.Drawing.Point(10, 241);
-            this.btnNone.Name = "btnNone";
-            this.btnNone.Size = new System.Drawing.Size(120, 23);
-            this.btnNone.TabIndex = 39;
-            this.btnNone.Text = "頂点を描画しない";
-            this.btnNone.UseVisualStyleBackColor = true;
-            this.btnNone.Click += new System.EventHandler(this.btnNone_Click);
-            // 
-            // btnCCWVertices
-            // 
-            this.btnCCWVertices.Location = new System.Drawing.Point(10, 212);
-            this.btnCCWVertices.Name = "btnCCWVertices";
-            this.btnCCWVertices.Size = new System.Drawing.Size(120, 23);
-            this.btnCCWVertices.TabIndex = 38;
-            this.btnCCWVertices.Text = "表面頂点のみ";
-            this.btnCCWVertices.UseVisualStyleBackColor = true;
-            this.btnCCWVertices.Click += new System.EventHandler(this.btnCCWVertices_Click);
-            // 
-            // btnAllVertices
-            // 
-            this.btnAllVertices.Location = new System.Drawing.Point(10, 183);
-            this.btnAllVertices.Name = "btnAllVertices";
-            this.btnAllVertices.Size = new System.Drawing.Size(120, 23);
-            this.btnAllVertices.TabIndex = 37;
-            this.btnAllVertices.Text = "すべての頂点";
-            this.btnAllVertices.UseVisualStyleBackColor = true;
-            this.btnAllVertices.Click += new System.EventHandler(this.btnAllVertices_Click);
-            // 
-            // lbVertexViewMode
-            // 
-            this.lbVertexViewMode.Location = new System.Drawing.Point(10, 168);
-            this.lbVertexViewMode.Name = "lbVertexViewMode";
-            this.lbVertexViewMode.Size = new System.Drawing.Size(120, 12);
-            this.lbVertexViewMode.TabIndex = 36;
-            this.lbVertexViewMode.Text = "描画する頂点";
-            // 
-            // btnSelectedMesh
-            // 
-            this.btnSelectedMesh.Location = new System.Drawing.Point(10, 142);
-            this.btnSelectedMesh.Name = "btnSelectedMesh";
-            this.btnSelectedMesh.Size = new System.Drawing.Size(120, 23);
-            this.btnSelectedMesh.TabIndex = 35;
-            this.btnSelectedMesh.Text = "選択メッシュのみ";
-            this.btnSelectedMesh.UseVisualStyleBackColor = true;
-            this.btnSelectedMesh.Click += new System.EventHandler(this.btnSelectedMesh_Click);
-            // 
-            // btnAllMeshes
-            // 
-            this.btnAllMeshes.Location = new System.Drawing.Point(10, 113);
-            this.btnAllMeshes.Name = "btnAllMeshes";
-            this.btnAllMeshes.Size = new System.Drawing.Size(120, 23);
-            this.btnAllMeshes.TabIndex = 34;
-            this.btnAllMeshes.Text = "すべてのメッシュ";
-            this.btnAllMeshes.UseVisualStyleBackColor = true;
-            this.btnAllMeshes.Click += new System.EventHandler(this.btnAllMeshes_Click);
-            // 
-            // lbMeshSelectionMode
-            // 
-            this.lbMeshSelectionMode.Location = new System.Drawing.Point(10, 98);
-            this.lbMeshSelectionMode.Name = "lbMeshSelectionMode";
-            this.lbMeshSelectionMode.Size = new System.Drawing.Size(120, 12);
-            this.lbMeshSelectionMode.TabIndex = 33;
-            this.lbMeshSelectionMode.Text = "描画するメッシュ";
             // 
             // lbWeight
             // 
@@ -705,40 +724,6 @@
             this.statusStrip1.TabIndex = 23;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // modeToolStripMenuItem
-            // 
-            this.modeToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toonToolStripMenuItem,
-            this.heatToolStripMenuItem,
-            this.wireToolStripMenuItem});
-            this.modeToolStripMenuItem.Name = "modeToolStripMenuItem";
-            this.modeToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-            this.modeToolStripMenuItem.Text = "表示形式(&M)";
-            // 
-            // toonToolStripMenuItem
-            // 
-            this.toonToolStripMenuItem.Name = "toonToolStripMenuItem";
-            this.toonToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D1)));
-            this.toonToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.toonToolStripMenuItem.Text = "トゥーン(&T)";
-            this.toonToolStripMenuItem.Click += new System.EventHandler(this.toonToolStripMenuItem_Click);
-            // 
-            // heatToolStripMenuItem
-            // 
-            this.heatToolStripMenuItem.Name = "heatToolStripMenuItem";
-            this.heatToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D2)));
-            this.heatToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.heatToolStripMenuItem.Text = "ウェイト(&H)";
-            this.heatToolStripMenuItem.Click += new System.EventHandler(this.heatToolStripMenuItem_Click);
-            // 
-            // wireToolStripMenuItem
-            // 
-            this.wireToolStripMenuItem.Name = "wireToolStripMenuItem";
-            this.wireToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.D3)));
-            this.wireToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
-            this.wireToolStripMenuItem.Text = "ワイヤー(&W)";
-            this.wireToolStripMenuItem.Click += new System.EventHandler(this.wireToolStripMenuItem_Click);
-            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -822,13 +807,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.Label lbSkinWeights;
         private System.Windows.Forms.StatusStrip statusStrip1;
-        private System.Windows.Forms.Button btnSelectedMesh;
-        private System.Windows.Forms.Button btnAllMeshes;
-        private System.Windows.Forms.Label lbMeshSelectionMode;
-        private System.Windows.Forms.Button btnNone;
-        private System.Windows.Forms.Button btnCCWVertices;
-        private System.Windows.Forms.Button btnAllVertices;
-        private System.Windows.Forms.Label lbVertexViewMode;
         private System.Windows.Forms.ToolStripMenuItem cameraCenterToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cameraResetToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cameraSelectedVertexToolStripMenuItem;
@@ -837,6 +815,13 @@
         private System.Windows.Forms.ToolStripMenuItem toonToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem heatToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem wireToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem meshToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem vertexToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem meshAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem vertexAllToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem vertexCcwToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem vertexNoneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem meshSelectedToolStripMenuItem;
     }
 }
 
