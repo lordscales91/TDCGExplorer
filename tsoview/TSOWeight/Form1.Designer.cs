@@ -85,8 +85,8 @@
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.lbWeight = new System.Windows.Forms.Label();
-            this.lbRadius = new System.Windows.Forms.Label();
+            this.lbWeightCaption = new System.Windows.Forms.Label();
+            this.lbRadiusCaption = new System.Windows.Forms.Label();
             this.lvSkinWeights = new System.Windows.Forms.ListView();
             this.columnHeader4 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
@@ -95,6 +95,8 @@
             this.btnDraw = new System.Windows.Forms.Button();
             this.tbRadius = new System.Windows.Forms.TrackBar();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.lbWeight = new System.Windows.Forms.Label();
+            this.lbRadius = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbWeight)).BeginInit();
@@ -532,12 +534,14 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.lbRadius);
+            this.panel1.Controls.Add(this.lbWeight);
             this.panel1.Controls.Add(this.lvTSOFiles);
             this.panel1.Controls.Add(this.lbTSOFiles);
-            this.panel1.Controls.Add(this.lbWeight);
+            this.panel1.Controls.Add(this.lbWeightCaption);
             this.panel1.Controls.Add(this.lbMeshes);
             this.panel1.Controls.Add(this.lvMeshes);
-            this.panel1.Controls.Add(this.lbRadius);
+            this.panel1.Controls.Add(this.lbRadiusCaption);
             this.panel1.Controls.Add(this.lvSkinWeights);
             this.panel1.Controls.Add(this.lbSkinWeights);
             this.panel1.Controls.Add(this.tbWeight);
@@ -548,21 +552,21 @@
             this.panel1.Size = new System.Drawing.Size(200, 681);
             this.panel1.TabIndex = 22;
             // 
-            // lbWeight
+            // lbWeightCaption
             // 
-            this.lbWeight.Location = new System.Drawing.Point(10, 490);
-            this.lbWeight.Name = "lbWeight";
-            this.lbWeight.Size = new System.Drawing.Size(120, 12);
-            this.lbWeight.TabIndex = 24;
-            this.lbWeight.Text = "加算ウェイト";
+            this.lbWeightCaption.Location = new System.Drawing.Point(10, 490);
+            this.lbWeightCaption.Name = "lbWeightCaption";
+            this.lbWeightCaption.Size = new System.Drawing.Size(120, 12);
+            this.lbWeightCaption.TabIndex = 24;
+            this.lbWeightCaption.Text = "強度";
             // 
-            // lbRadius
+            // lbRadiusCaption
             // 
-            this.lbRadius.Location = new System.Drawing.Point(10, 538);
-            this.lbRadius.Name = "lbRadius";
-            this.lbRadius.Size = new System.Drawing.Size(120, 12);
-            this.lbRadius.TabIndex = 26;
-            this.lbRadius.Text = "半径";
+            this.lbRadiusCaption.Location = new System.Drawing.Point(10, 538);
+            this.lbRadiusCaption.Name = "lbRadiusCaption";
+            this.lbRadiusCaption.Size = new System.Drawing.Size(120, 12);
+            this.lbRadiusCaption.TabIndex = 26;
+            this.lbRadiusCaption.Text = "半径";
             // 
             // lvSkinWeights
             // 
@@ -600,11 +604,11 @@
             // tbWeight
             // 
             this.tbWeight.Location = new System.Drawing.Point(12, 505);
-            this.tbWeight.Maximum = 20;
+            this.tbWeight.Maximum = 40;
             this.tbWeight.Name = "tbWeight";
             this.tbWeight.Size = new System.Drawing.Size(176, 45);
             this.tbWeight.TabIndex = 25;
-            this.tbWeight.Value = 2;
+            this.tbWeight.Value = 24;
             this.tbWeight.ValueChanged += new System.EventHandler(this.tbWeight_ValueChanged);
             // 
             // btnDraw
@@ -620,11 +624,11 @@
             // tbRadius
             // 
             this.tbRadius.Location = new System.Drawing.Point(12, 553);
-            this.tbRadius.Maximum = 20;
+            this.tbRadius.Maximum = 40;
             this.tbRadius.Name = "tbRadius";
             this.tbRadius.Size = new System.Drawing.Size(176, 45);
             this.tbRadius.TabIndex = 27;
-            this.tbRadius.Value = 5;
+            this.tbRadius.Value = 20;
             this.tbRadius.ValueChanged += new System.EventHandler(this.tbRadius_ValueChanged);
             // 
             // statusStrip1
@@ -634,6 +638,24 @@
             this.statusStrip1.Size = new System.Drawing.Size(1008, 22);
             this.statusStrip1.TabIndex = 23;
             this.statusStrip1.Text = "statusStrip1";
+            // 
+            // lbWeight
+            // 
+            this.lbWeight.AutoSize = true;
+            this.lbWeight.Location = new System.Drawing.Point(153, 490);
+            this.lbWeight.Name = "lbWeight";
+            this.lbWeight.Size = new System.Drawing.Size(31, 12);
+            this.lbWeight.TabIndex = 32;
+            this.lbWeight.Text = "0.200";
+            // 
+            // lbRadius
+            // 
+            this.lbRadius.AutoSize = true;
+            this.lbRadius.Location = new System.Drawing.Point(153, 538);
+            this.lbRadius.Name = "lbRadius";
+            this.lbRadius.Size = new System.Drawing.Size(31, 12);
+            this.lbRadius.TabIndex = 33;
+            this.lbRadius.Text = "0.500";
             // 
             // Form1
             // 
@@ -698,8 +720,8 @@
         private System.Windows.Forms.Label lbTSOFiles;
         private System.Windows.Forms.ListView lvTSOFiles;
         private System.Windows.Forms.ColumnHeader columnHeader6;
-        private System.Windows.Forms.Label lbWeight;
-        private System.Windows.Forms.Label lbRadius;
+        private System.Windows.Forms.Label lbWeightCaption;
+        private System.Windows.Forms.Label lbRadiusCaption;
         private System.Windows.Forms.Button btnDraw;
         private System.Windows.Forms.TrackBar tbRadius;
         private System.Windows.Forms.TrackBar tbWeight;
@@ -723,6 +745,8 @@
         private System.Windows.Forms.ToolStripMenuItem vertexCcwToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem vertexNoneToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem meshSelectedToolStripMenuItem;
+        private System.Windows.Forms.Label lbRadius;
+        private System.Windows.Forms.Label lbWeight;
     }
 }
 
