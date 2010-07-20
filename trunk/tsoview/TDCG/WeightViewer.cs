@@ -600,30 +600,7 @@ public class WeightViewer : Viewer
                 break;
             case VertexSelectionMode.CcwVertices:
                 {
-                    bool[] ccws = new bool[sub_mesh.vertices.Length];
-                    for (int i = 2; i < sub_mesh.vertices.Length; i++)
-                    {
-                        ccws[i] = false;
-                    }
-                    for (int i = 2; i < sub_mesh.vertices.Length; i++)
-                    {
-                        int a, b, c;
-                        if (i % 2 != 0)
-                        {
-                            a = i - 0;
-                            b = i - 1;
-                            c = i - 2;
-                        }
-                        else
-                        {
-                            a = i - 2;
-                            b = i - 1;
-                            c = i - 0;
-                        }
-                        ccws[i] = ccws[i] || IsCounterClockWise(view_positions[a], view_positions[b], view_positions[c]);
-                    }
-                    ccws[0] = ccws[2];
-                    ccws[1] = ccws[2];
+                    bool[] ccws = CreateCcws(view_positions);
 
                     if (selected_vertex != null)
                     {
@@ -1230,30 +1207,7 @@ public class WeightViewer : Viewer
                 break;
             case VertexSelectionMode.CcwVertices:
                 {
-                    bool[] ccws = new bool[sub_mesh.vertices.Length];
-                    for (int i = 2; i < sub_mesh.vertices.Length; i++)
-                    {
-                        ccws[i] = false;
-                    }
-                    for (int i = 2; i < sub_mesh.vertices.Length; i++)
-                    {
-                        int a, b, c;
-                        if (i % 2 != 0)
-                        {
-                            a = i - 0;
-                            b = i - 1;
-                            c = i - 2;
-                        }
-                        else
-                        {
-                            a = i - 2;
-                            b = i - 1;
-                            c = i - 0;
-                        }
-                        ccws[i] = ccws[i] || IsCounterClockWise(view_positions[a], view_positions[b], view_positions[c]);
-                    }
-                    ccws[0] = ccws[2];
-                    ccws[1] = ccws[2];
+                    bool[] ccws = CreateCcws(view_positions);
 
                     for (int i = 0; i < sub_mesh.vertices.Length; i++)
                     {
@@ -1293,6 +1247,35 @@ public class WeightViewer : Viewer
             }
         }
         return found;
+    }
+
+    private bool[] CreateCcws(Vector3[] view_positions)
+    {
+        bool[] ccws = new bool[view_positions.Length];
+        for (int i = 2; i < view_positions.Length; i++)
+        {
+            ccws[i] = false;
+        }
+        for (int i = 2; i < view_positions.Length; i++)
+        {
+            int a, b, c;
+            if (i % 2 != 0)
+            {
+                a = i - 0;
+                b = i - 1;
+                c = i - 2;
+            }
+            else
+            {
+                a = i - 2;
+                b = i - 1;
+                c = i - 0;
+            }
+            ccws[i] = ccws[i] || IsCounterClockWise(view_positions[a], view_positions[b], view_positions[c]);
+        }
+        ccws[0] = ccws[2];
+        ccws[1] = ccws[2];
+        return ccws;
     }
 
     /// 選択nodeを指定軸方向に移動します。
