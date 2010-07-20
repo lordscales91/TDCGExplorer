@@ -831,6 +831,7 @@ public class WeightViewer : Viewer
                 break;
             }
         }
+
         //選択ボーンに対応するウェイトがなければ、最小値を持つウェイトを置き換える。
         if (selected_skin_weight == null)
         {
@@ -853,36 +854,41 @@ public class WeightViewer : Viewer
                 selected_skin_weight.weight = 0.0f;
             }
         }
+
         //選択ボーンに対応するウェイトを加算する。
         if (selected_skin_weight != null)
         {
             updated = true;
 
-            //変更前の対象ウェイト値
-            float prev_selected_weight = selected_skin_weight.weight;
-            //変更前の残りウェイト値
-            float prev_rest_weight = 1.0f - prev_selected_weight;
-            //ウェイトを加算する。
-            selected_skin_weight.weight += weight;
-            if (selected_skin_weight.weight > 1.0f)
-                selected_skin_weight.weight = 1.0f;
+            float w0 = selected_skin_weight.weight; //変更前の対象ウェイト値
+            float m0 = 1.0f - w0;                   //変更前の残りウェイト値
+            float w1 = w0 + weight;                 //変更後の対象ウェイト値
 
-            if (prev_rest_weight != 0.0f)
+            //clamp 0.0f .. 1.0f
+            if (w1 > 1.0f) w1 = 1.0f;
+            if (w1 < 0.0f) w1 = 0.0f;
+
+            float d1 = w1 - w0; //実際の加算値
+            float m1 = 0.0f;    //減算後の残りウェイト値
+            if (m0 != 0)
             {
-                //実際の加算値
-                float gain_weight = selected_skin_weight.weight - prev_selected_weight;
                 //残りウェイトを減算する。
                 foreach (SkinWeight skin_weight in v.skin_weights)
                 {
                     if (skin_weight == selected_skin_weight)
                         continue;
 
-                    skin_weight.weight -= gain_weight * skin_weight.weight / prev_rest_weight;
-                    if (skin_weight.weight < 0.001f)
-                        skin_weight.weight = 0.0f;
+                    float w2 = skin_weight.weight - skin_weight.weight * d1 / m0;
+                    if (w2 < 0.001f)
+                        w2 = 0.0f;//微小ウェイトは捨てる。
+
+                    skin_weight.weight = w2;
+                    m1 += w2;
                 }
             }
+            selected_skin_weight.weight = 1.0f - m1;
         }
+
         //処理後の値を記憶する。
         {
             int nskin_weight = 0;

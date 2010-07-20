@@ -184,13 +184,17 @@ namespace TSOWeight
 
         private void tbWeight_ValueChanged(object sender, EventArgs e)
         {
-            WeightViewer.weight = (float)(tbWeight.Value) * 0.05f;
-            Invalidate(false);
+            float value = (float)(tbWeight.Value - 20) * 0.050f;
+            lbWeight.Text = string.Format("{0:F3}", value);
+            WeightViewer.weight = value;
+            //Invalidate(false);
         }
 
         private void tbRadius_ValueChanged(object sender, EventArgs e)
         {
-            WeightViewer.radius = (float)(tbRadius.Value) * 0.05f;
+            float value = (float)(tbRadius.Value) * 0.025f;
+            lbRadius.Text = string.Format("{0:F3}", value);
+            WeightViewer.radius = value;
             Invalidate(false);
         }
 
