@@ -49,10 +49,22 @@ namespace TDCG
     /// 頂点操作
     public class VertexCommand
     {
-        /// 頂点
-        public Vertex vertex;
-        /// スキンウェイト操作リスト
-        public List<SkinWeightCommand> skin_weight_commands = new List<SkinWeightCommand>();
+        //操作対象頂点
+        Vertex vertex;
+        //スキンウェイト操作リスト
+        List<SkinWeightCommand> skin_weight_commands = new List<SkinWeightCommand>();
+
+        TSOSubMesh sub_mesh = null;
+        TSONode selected_node = null;
+        float weight;
+
+        public VertexCommand(TSOSubMesh sub_mesh, TSONode selected_node, Vertex vertex, float weight)
+        {
+            this.sub_mesh = sub_mesh;
+            this.selected_node = selected_node;
+            this.vertex = vertex;
+            this.weight = weight;
+        }
 
         /// 変更を元に戻す。
         public void Undo()
@@ -77,10 +89,6 @@ namespace TDCG
             vertex.FillSkinWeights(); //for sort
             vertex.GenerateBoneIndices();
         }
-
-        public TSOSubMesh sub_mesh = null;
-        public TSONode selected_node = null;
-        public float weight;
 
         /// 選択ボーンに対応するウェイトを加算する。
         /// returns: ウェイトを変更したか
@@ -248,11 +256,7 @@ namespace TDCG
                 Vector3 p1 = v.CalcSkindeformPosition(clipped_boneMatrices);
                 if (Vector3.LengthSq(p1 - center) - radius * radius < float.Epsilon)
                 {
-                    VertexCommand vertex_command = new VertexCommand();
-                    vertex_command.sub_mesh = sub_mesh;
-                    vertex_command.selected_node = selected_node;
-                    vertex_command.vertex = v;
-                    vertex_command.weight = weight;
+                    VertexCommand vertex_command = new VertexCommand(sub_mesh, selected_node, v, weight);
                     
                     if (vertex_command.Execute())
                     {
