@@ -284,21 +284,15 @@ namespace TDCG
         }
 
         public Figure fig = null;
-        public Vertex selected_vertex = null;
-        public TSOSubMesh selected_sub_mesh = null;
         public TSONode selected_node = null;
         public float weight;
+        public Vector3 center;
         public float radius;
 
         /// 選択ボーンに対応するウェイトを加算する。
         public bool Execute()
         {
-            if (selected_vertex == null)
-                return false;
-
             bool updated = false;
-
-            Vector3 center = selected_vertex.CalcSkindeformPosition(fig.ClipBoneMatrices(selected_sub_mesh));
 
             foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
@@ -978,15 +972,16 @@ public class WeightViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            if (SelectedMesh != null)
+            if (SelectedMesh != null && SelectedVertex != null)
             {
+                Vector3 center = SelectedVertex.CalcSkindeformPosition(fig.ClipBoneMatrices(SelectedSubMesh));
+
                 MeshCommand mesh_command = new MeshCommand();
                 mesh_command.fig = fig;
                 mesh_command.mesh = SelectedMesh;
-                mesh_command.selected_vertex = selected_vertex;
-                mesh_command.selected_sub_mesh = selected_sub_mesh;
                 mesh_command.selected_node = selected_node;
                 mesh_command.weight = weight;
+                mesh_command.center = center;
                 mesh_command.radius = radius;
 
                 bool updated = mesh_command.Execute();
