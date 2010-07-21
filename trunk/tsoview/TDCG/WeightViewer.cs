@@ -82,6 +82,8 @@ namespace TDCG
         public TSONode selected_node = null;
         public float weight;
 
+        /// 選択ボーンに対応するウェイトを加算する。
+        /// returns: ウェイトを変更したか
         public bool Execute()
         {
             Vertex v = this.vertex;
@@ -936,12 +938,20 @@ public class WeightViewer : Viewer
                 float dz = p1.Z - p0.Z;
                 if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
                 {
-                    if (GainSkinWeight(sub_mesh, selected_node, v, sub_mesh_command))
+                    VertexCommand vertex_command = new VertexCommand();
+                    vertex_command.sub_mesh = sub_mesh;
+                    vertex_command.selected_node = selected_node;
+                    vertex_command.vertex = v;
+                    vertex_command.weight = weight;
+                    
+                    if (vertex_command.Execute())
                     {
                         updated = true;
 
                         v.FillSkinWeights();
                         v.GenerateBoneIndices();
+
+                        sub_mesh_command.vertex_commands.Add(vertex_command);
                     }
                 }
             }
@@ -960,20 +970,6 @@ public class WeightViewer : Viewer
     /// メッシュ操作リスト
     public static List<MeshCommand> mesh_commands = new List<MeshCommand>();
     static int mesh_command_id = 0;
-
-    /// 選択ボーンに対応するウェイトを加算する。
-    /// returns: ウェイトを変更したか
-    public static bool GainSkinWeight(TSOSubMesh sub_mesh, TSONode selected_node, Vertex v, SubMeshCommand sub_mesh_command)
-    {
-        VertexCommand vertex_command = new VertexCommand();
-        vertex_command.sub_mesh = sub_mesh;
-        vertex_command.selected_node = selected_node;
-        vertex_command.vertex = v;
-        vertex_command.weight = weight;
-        sub_mesh_command.vertex_commands.Add(vertex_command);
-        
-        return vertex_command.Execute();
-    }
 
     /// 操作を消去します。
     public void ClearCommands()
