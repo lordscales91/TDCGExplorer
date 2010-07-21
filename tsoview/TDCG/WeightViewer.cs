@@ -294,12 +294,10 @@ namespace TDCG
                         
                         if (vertex_command.Execute())
                         {
-                            updated = true;
-
                             v.FillSkinWeights();
                             v.GenerateBoneIndices();
-
                             this.vertex_commands.Add(vertex_command);
+                            updated = true;
                         }
                     }
                 }
@@ -348,33 +346,23 @@ namespace TDCG
 
             foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
-                if (GainSkinWeight(fig, sub_mesh, selected_node))
+                //操作を生成する。
+                SubMeshCommand sub_mesh_command = new SubMeshCommand();
+                sub_mesh_command.fig = fig;
+                sub_mesh_command.sub_mesh = sub_mesh;
+                sub_mesh_command.selected_vertex = selected_vertex;
+                sub_mesh_command.selected_sub_mesh = selected_sub_mesh;
+                sub_mesh_command.selected_node = selected_node;
+                sub_mesh_command.weight = weight;
+                sub_mesh_command.radius = radius;
+
+                if (sub_mesh_command.Execute())
+                {
+                    sub_mesh.WriteBuffer();
+                    this.sub_mesh_commands.Add(sub_mesh_command);
                     updated = true;
+                }
             }
-            return updated;
-        }
-
-        /// 選択ボーンに対応するウェイトを加算する。
-        public bool GainSkinWeight(Figure fig, TSOSubMesh sub_mesh, TSONode selected_node)
-        {
-            //操作を生成する。
-            SubMeshCommand sub_mesh_command = new SubMeshCommand();
-            sub_mesh_command.fig = fig;
-            sub_mesh_command.sub_mesh = sub_mesh;
-            sub_mesh_command.selected_vertex = selected_vertex;
-            sub_mesh_command.selected_sub_mesh = selected_sub_mesh;
-            sub_mesh_command.selected_node = selected_node;
-            sub_mesh_command.weight = weight;
-            sub_mesh_command.radius = radius;
-
-            bool updated = sub_mesh_command.Execute();
-
-            if (updated)
-                sub_mesh.WriteBuffer();
-
-            if (updated)
-                this.sub_mesh_commands.Add(sub_mesh_command);
-
             return updated;
         }
     }
