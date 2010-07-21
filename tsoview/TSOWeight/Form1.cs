@@ -300,7 +300,7 @@ namespace TSOWeight
             Figure fig;
             if (viewer.TryGetFigure(out fig))
             {
-                viewer.Camera.Center = viewer.SelectedVertex.CalcSkindeformPosition(WeightViewer.ClipBoneMatrices(fig, viewer.SelectedSubMesh));
+                viewer.Camera.Center = viewer.SelectedVertex.CalcSkindeformPosition(fig.ClipBoneMatrices(viewer.SelectedSubMesh));
                 viewer.Camera.ResetTranslation();
             }
             Invalidate(false);

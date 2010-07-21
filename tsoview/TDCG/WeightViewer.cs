@@ -216,26 +216,6 @@ namespace TDCG
             this.sub_mesh.WriteBuffer();
         }
 
-        /// <summary>
-        /// スキン変形行列の配列を得ます。
-        /// </summary>
-        /// <param name="fig">フィギュア</param>
-        /// <param name="sub_mesh">サブメッシュ</param>
-        /// <returns>スキン変形行列の配列</returns>
-        public static Matrix[] ClipBoneMatrices(Figure fig, TSOSubMesh sub_mesh)
-        {
-            Matrix[] clipped_boneMatrices = new Matrix[sub_mesh.maxPalettes];
-
-            for (int numPalettes = 0; numPalettes < sub_mesh.maxPalettes; numPalettes++)
-            {
-                TSONode tso_node = sub_mesh.GetBone(numPalettes);
-                TMONode tmo_node;
-                if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
-                    clipped_boneMatrices[numPalettes] = tso_node.offset_matrix * tmo_node.combined_matrix;
-            }
-            return clipped_boneMatrices;
-        }
-
         public Figure fig = null;
         public TSONode selected_node = null;
         public float weight;
@@ -248,7 +228,7 @@ namespace TDCG
         {
             bool updated = false;
 
-            Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
+            Matrix[] clipped_boneMatrices = fig.ClipBoneMatrices(sub_mesh);
 
             for (int i = 0; i < sub_mesh.vertices.Length; i++)
             {
@@ -303,26 +283,6 @@ namespace TDCG
             }
         }
 
-        /// <summary>
-        /// スキン変形行列の配列を得ます。
-        /// </summary>
-        /// <param name="fig">フィギュア</param>
-        /// <param name="sub_mesh">サブメッシュ</param>
-        /// <returns>スキン変形行列の配列</returns>
-        public static Matrix[] ClipBoneMatrices(Figure fig, TSOSubMesh sub_mesh)
-        {
-            Matrix[] clipped_boneMatrices = new Matrix[sub_mesh.maxPalettes];
-
-            for (int numPalettes = 0; numPalettes < sub_mesh.maxPalettes; numPalettes++)
-            {
-                TSONode tso_node = sub_mesh.GetBone(numPalettes);
-                TMONode tmo_node;
-                if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
-                    clipped_boneMatrices[numPalettes] = tso_node.offset_matrix * tmo_node.combined_matrix;
-            }
-            return clipped_boneMatrices;
-        }
-
         public Figure fig = null;
         public Vertex selected_vertex = null;
         public TSOSubMesh selected_sub_mesh = null;
@@ -338,7 +298,7 @@ namespace TDCG
 
             bool updated = false;
 
-            Vector3 center = selected_vertex.CalcSkindeformPosition(ClipBoneMatrices(fig, selected_sub_mesh));
+            Vector3 center = selected_vertex.CalcSkindeformPosition(fig.ClipBoneMatrices(selected_sub_mesh));
 
             foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
@@ -590,7 +550,7 @@ public class WeightViewer : Viewer
         device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
         tso.SwitchShader(sub_mesh);
 
-        effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
+        effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
 
         int npass = effect.Begin(0);
         for (int ipass = 0; ipass < npass; ipass++)
@@ -609,7 +569,7 @@ public class WeightViewer : Viewer
         effect.Technique = "BoneCol";
         effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
 
-        effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
+        effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
         effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(fig, sub_mesh, selected_node));
 
         int npass = effect.Begin(0);
@@ -628,7 +588,7 @@ public class WeightViewer : Viewer
         device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
         tso.SwitchShader(sub_mesh);
 
-        effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
+        effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
 
         int npass = effect.Begin(0);
         for (int ipass = 0; ipass < npass; ipass++)
@@ -850,7 +810,7 @@ public class WeightViewer : Viewer
     /// 頂点を描画する。
     void DrawVertices(Figure fig, TSOSubMesh sub_mesh)
     {
-        Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
+        Matrix[] clipped_boneMatrices = fig.ClipBoneMatrices(sub_mesh);
 
         Rectangle rect = new Rectangle(0, 0, 7, 7);//red
         Vector3 rect_center = new Vector3(3, 3, 0);
@@ -869,7 +829,7 @@ public class WeightViewer : Viewer
                 {
                     if (selected_vertex != null)
                     {
-                        Vector3 p0 = selected_vertex.CalcSkindeformPosition(ClipBoneMatrices(fig, selected_sub_mesh));
+                        Vector3 p0 = selected_vertex.CalcSkindeformPosition(fig.ClipBoneMatrices(selected_sub_mesh));
 
                         sprite.Begin(SpriteFlags.None);
 
@@ -908,7 +868,7 @@ public class WeightViewer : Viewer
 
                     if (selected_vertex != null)
                     {
-                        Vector3 p0 = selected_vertex.CalcSkindeformPosition(ClipBoneMatrices(fig, selected_sub_mesh));
+                        Vector3 p0 = selected_vertex.CalcSkindeformPosition(fig.ClipBoneMatrices(selected_sub_mesh));
 
                         sprite.Begin(SpriteFlags.None);
 
@@ -969,7 +929,7 @@ public class WeightViewer : Viewer
         if (selected_vertex == null)
             return;
 
-        Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, SelectedSubMesh);
+        Matrix[] clipped_boneMatrices = fig.ClipBoneMatrices(SelectedSubMesh);
 
         Rectangle rect = new Rectangle(8, 0, 7, 7);//green
         Vector3 rect_center = new Vector3(3, 3, 0);
@@ -1272,7 +1232,7 @@ public class WeightViewer : Viewer
 
     foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
     {
-        Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
+        Matrix[] clipped_boneMatrices = fig.ClipBoneMatrices(sub_mesh);
 
         Vector3[] view_positions = new Vector3[sub_mesh.vertices.Length];
         Vector3[] screen_positions = new Vector3[sub_mesh.vertices.Length];

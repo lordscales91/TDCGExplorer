@@ -892,7 +892,7 @@ public class Viewer : IDisposable
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
                 //tso.SwitchShader(sub_mesh);
-                effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
+                effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
 
                 int npass = effect.Begin(0);
                 for (int ipass = 0; ipass < npass; ipass++)
@@ -912,26 +912,6 @@ public class Viewer : IDisposable
         device.SetRenderTarget(0, ztex_surface);
         device.DepthStencilSurface = ztex_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
-    }
-
-    /// <summary>
-    /// スキン変形行列の配列を得ます。
-    /// </summary>
-    /// <param name="fig">フィギュア</param>
-    /// <param name="sub_mesh">サブメッシュ</param>
-    /// <returns>スキン変形行列の配列</returns>
-    public static Matrix[] ClipBoneMatrices(Figure fig, TSOSubMesh sub_mesh)
-    {
-        Matrix[] clipped_boneMatrices = new Matrix[sub_mesh.maxPalettes];
-
-        for (int numPalettes = 0; numPalettes < sub_mesh.maxPalettes; numPalettes++)
-        {
-            TSONode tso_node = sub_mesh.GetBone(numPalettes);
-            TMONode tmo_node;
-            if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
-                clipped_boneMatrices[numPalettes] = tso_node.offset_matrix * tmo_node.combined_matrix;
-        }
-        return clipped_boneMatrices;
     }
 
     /// <summary>
@@ -975,7 +955,7 @@ public class Viewer : IDisposable
                 device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
                 tso.SwitchShader(sub_mesh);
 
-                effect.SetValue(handle_LocalBoneMats, ClipBoneMatrices(fig, sub_mesh));
+                effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
 
                 int npass = effect.Begin(0);
                 for (int ipass = 0; ipass < npass; ipass++)
