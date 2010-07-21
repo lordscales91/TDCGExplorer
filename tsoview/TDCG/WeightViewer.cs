@@ -191,10 +191,26 @@ namespace TDCG
     /// サブメッシュ操作
     public class SubMeshCommand
     {
-        /// サブメッシュ
-        public TSOSubMesh sub_mesh = null;
-        /// 頂点操作リスト
-        public List<VertexCommand> vertex_commands = new List<VertexCommand>();
+        //操作対象サブメッシュ
+        TSOSubMesh sub_mesh = null;
+        //頂点操作リスト
+        List<VertexCommand> vertex_commands = new List<VertexCommand>();
+
+        Figure fig = null;
+        TSONode selected_node = null;
+        float weight;
+        Vector3 center;
+        float radius;
+
+        public SubMeshCommand(Figure fig, TSOSubMesh sub_mesh, TSONode selected_node, float weight, Vector3 center, float radius)
+        {
+            this.fig = fig;
+            this.sub_mesh = sub_mesh;
+            this.selected_node = selected_node;
+            this.weight = weight;
+            this.center = center;
+            this.radius = radius;
+        }
 
         /// 変更を元に戻す。
         public void Undo()
@@ -215,12 +231,6 @@ namespace TDCG
             }
             this.sub_mesh.WriteBuffer();
         }
-
-        public Figure fig = null;
-        public TSONode selected_node = null;
-        public float weight;
-        public Vector3 center;
-        public float radius;
 
         /// 選択ボーンに対応するウェイトを加算する。
         /// returns: ウェイトを変更したか
@@ -307,13 +317,7 @@ namespace TDCG
             foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
                 //操作を生成する。
-                SubMeshCommand sub_mesh_command = new SubMeshCommand();
-                sub_mesh_command.fig = fig;
-                sub_mesh_command.sub_mesh = sub_mesh;
-                sub_mesh_command.selected_node = selected_node;
-                sub_mesh_command.weight = weight;
-                sub_mesh_command.center = center;
-                sub_mesh_command.radius = radius;
+                SubMeshCommand sub_mesh_command = new SubMeshCommand(fig, sub_mesh, selected_node, weight, center, radius);
 
                 if (sub_mesh_command.Execute())
                 {
