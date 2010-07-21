@@ -333,6 +333,50 @@ namespace TDCG
                 sub_mesh_command.Redo();
             }
         }
+
+        public Figure fig = null;
+        public Vertex selected_vertex = null;
+        public TSOSubMesh selected_sub_mesh = null;
+        public TSONode selected_node = null;
+        public float weight;
+        public float radius;
+
+        /// 選択ボーンに対応するウェイトを加算する。
+        public bool Execute()
+        {
+            bool updated = false;
+
+            foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
+            {
+                if (GainSkinWeight(fig, sub_mesh, selected_node))
+                    updated = true;
+            }
+            return updated;
+        }
+
+        /// 選択ボーンに対応するウェイトを加算する。
+        public bool GainSkinWeight(Figure fig, TSOSubMesh sub_mesh, TSONode selected_node)
+        {
+            //操作を生成する。
+            SubMeshCommand sub_mesh_command = new SubMeshCommand();
+            sub_mesh_command.fig = fig;
+            sub_mesh_command.sub_mesh = sub_mesh;
+            sub_mesh_command.selected_vertex = selected_vertex;
+            sub_mesh_command.selected_sub_mesh = selected_sub_mesh;
+            sub_mesh_command.selected_node = selected_node;
+            sub_mesh_command.weight = weight;
+            sub_mesh_command.radius = radius;
+
+            bool updated = sub_mesh_command.Execute();
+
+            if (updated)
+                sub_mesh.WriteBuffer();
+
+            if (updated)
+                this.sub_mesh_commands.Add(sub_mesh_command);
+
+            return updated;
+        }
     }
 
     /// <summary>
@@ -982,13 +1026,16 @@ public class WeightViewer : Viewer
             if (SelectedMesh != null)
             {
                 MeshCommand mesh_command = new MeshCommand();
+                mesh_command.fig = fig;
                 mesh_command.mesh = SelectedMesh;
-                bool updated = false;
-                foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
-                {
-                    if (GainSkinWeight(fig, sub_mesh, selected_node, mesh_command))
-                        updated = true;
-                }
+                mesh_command.selected_vertex = selected_vertex;
+                mesh_command.selected_sub_mesh = selected_sub_mesh;
+                mesh_command.selected_node = selected_node;
+                mesh_command.weight = weight;
+                mesh_command.radius = radius;
+
+                bool updated = mesh_command.Execute();
+
                 if (updated)
                 {
                     if (mesh_command_id == mesh_commands.Count)
@@ -999,30 +1046,6 @@ public class WeightViewer : Viewer
                 }
             }
         }
-    }
-
-    /// 選択ボーンに対応するウェイトを加算する。
-    public bool GainSkinWeight(Figure fig, TSOSubMesh sub_mesh, TSONode selected_node, MeshCommand mesh_command)
-    {
-        //操作を生成する。
-        SubMeshCommand sub_mesh_command = new SubMeshCommand();
-        sub_mesh_command.fig = fig;
-        sub_mesh_command.sub_mesh = sub_mesh;
-        sub_mesh_command.selected_vertex = selected_vertex;
-        sub_mesh_command.selected_sub_mesh = selected_sub_mesh;
-        sub_mesh_command.selected_node = selected_node;
-        sub_mesh_command.weight = weight;
-        sub_mesh_command.radius = radius;
-
-        bool updated = sub_mesh_command.Execute();
-
-        if (updated)
-            sub_mesh.WriteBuffer();
-
-        if (updated)
-            mesh_command.sub_mesh_commands.Add(sub_mesh_command);
-
-        return updated;
     }
 
     /// 加算ウェイト値
