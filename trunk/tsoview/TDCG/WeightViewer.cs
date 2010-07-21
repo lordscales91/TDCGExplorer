@@ -281,10 +281,7 @@ namespace TDCG
 
                     //頂点間距離が半径未満ならウェイトを加算する。
                     Vector3 p1 = CalcSkindeformPosition(v, clipped_boneMatrices);
-                    float dx = p1.X - p0.X;
-                    float dy = p1.Y - p0.Y;
-                    float dz = p1.Z - p0.Z;
-                    if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
+                    if (Vector3.LengthSq(p1 - p0) - radius * radius < float.Epsilon)
                     {
                         VertexCommand vertex_command = new VertexCommand();
                         vertex_command.sub_mesh = sub_mesh;
@@ -882,10 +879,7 @@ public class WeightViewer : Viewer
                         {
                             //頂点間距離が半径未満なら黄色にする。
                             Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
-                            float dx = p1.X - p0.X;
-                            float dy = p1.Y - p0.Y;
-                            float dz = p1.Z - p0.Z;
-                            if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
+                            if (Vector3.LengthSq(p1 - p0) - radius * radius < float.Epsilon)
                                 rect = new Rectangle(8, 8, 7, 7);//yellow
                             else
                                 rect = new Rectangle(0, 0, 7, 7);//red
@@ -927,10 +921,7 @@ public class WeightViewer : Viewer
 
                             //頂点間距離が半径未満なら黄色にする。
                             Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
-                            float dx = p1.X - p0.X;
-                            float dy = p1.Y - p0.Y;
-                            float dz = p1.Z - p0.Z;
-                            if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
+                            if (Vector3.LengthSq(p1 - p0) - radius * radius < float.Epsilon)
                                 rect = new Rectangle(8, 8, 7, 7);//yellow
                             else
                                 rect = new Rectangle(0, 0, 7, 7);//red
