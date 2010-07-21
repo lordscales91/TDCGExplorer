@@ -53,6 +53,50 @@ namespace TDCG
         public TSOMesh mesh = null;
         /// サブメッシュ操作リスト
         public List<SubMeshCommand> sub_mesh_commands = new List<SubMeshCommand>();
+
+        /// 指定操作による変更を元に戻す。
+        public void Undo()
+        {
+            foreach (SubMeshCommand sub_mesh_command in this.sub_mesh_commands)
+            {
+                foreach (VertexCommand vertex_command in sub_mesh_command.vertex_commands)
+                {
+                    Vertex v = vertex_command.vertex;
+                    int nskin_weight = 0;
+                    foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
+                    {
+                        v.skin_weights[nskin_weight].bone_index = skin_weight_command.old_attr.bone_index;
+                        v.skin_weights[nskin_weight].weight = skin_weight_command.old_attr.weight;
+                        nskin_weight++;
+                    }
+                    v.FillSkinWeights();
+                    v.GenerateBoneIndices();
+                }
+                sub_mesh_command.sub_mesh.WriteBuffer();
+            }
+        }
+
+        /// 指定操作による変更をやり直す。
+        public void Redo()
+        {
+            foreach (SubMeshCommand sub_mesh_command in this.sub_mesh_commands)
+            {
+                foreach (VertexCommand vertex_command in sub_mesh_command.vertex_commands)
+                {
+                    Vertex v = vertex_command.vertex;
+                    int nskin_weight = 0;
+                    foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
+                    {
+                        v.skin_weights[nskin_weight].bone_index = skin_weight_command.new_attr.bone_index;
+                        v.skin_weights[nskin_weight].weight = skin_weight_command.new_attr.weight;
+                        nskin_weight++;
+                    }
+                    v.FillSkinWeights();
+                    v.GenerateBoneIndices();
+                }
+                sub_mesh_command.sub_mesh.WriteBuffer();
+            }
+        }
     }
 
     /// <summary>
@@ -759,7 +803,7 @@ public class WeightViewer : Viewer
         }
 
         if (updated)
-            sub_mesh.WriteBuffer(device);
+            sub_mesh.WriteBuffer();
         if (updated)
             mesh_command.sub_mesh_commands.Add(sub_mesh_command);
 
@@ -903,23 +947,7 @@ public class WeightViewer : Viewer
     /// 指定操作による変更を元に戻す。
     public void Undo(MeshCommand mesh_command)
     {
-        foreach (SubMeshCommand sub_mesh_command in mesh_command.sub_mesh_commands)
-        {
-            foreach (VertexCommand vertex_command in sub_mesh_command.vertex_commands)
-            {
-                Vertex v = vertex_command.vertex;
-                int nskin_weight = 0;
-                foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
-                {
-                    v.skin_weights[nskin_weight].bone_index = skin_weight_command.old_attr.bone_index;
-                    v.skin_weights[nskin_weight].weight = skin_weight_command.old_attr.weight;
-                    nskin_weight++;
-                }
-                v.FillSkinWeights();
-                v.GenerateBoneIndices();
-            }
-            sub_mesh_command.sub_mesh.WriteBuffer(device);
-        }
+        mesh_command.Undo();
     }
 
     /// ひとつ前の操作による変更をやり直せるか。
@@ -939,23 +967,7 @@ public class WeightViewer : Viewer
     /// 指定操作による変更をやり直す。
     public void Redo(MeshCommand mesh_command)
     {
-        foreach (SubMeshCommand sub_mesh_command in mesh_command.sub_mesh_commands)
-        {
-            foreach (VertexCommand vertex_command in sub_mesh_command.vertex_commands)
-            {
-                Vertex v = vertex_command.vertex;
-                int nskin_weight = 0;
-                foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
-                {
-                    v.skin_weights[nskin_weight].bone_index = skin_weight_command.new_attr.bone_index;
-                    v.skin_weights[nskin_weight].weight = skin_weight_command.new_attr.weight;
-                    nskin_weight++;
-                }
-                v.FillSkinWeights();
-                v.GenerateBoneIndices();
-            }
-            sub_mesh_command.sub_mesh.WriteBuffer(device);
-        }
+        mesh_command.Redo();
     }
 
     /// <summary>

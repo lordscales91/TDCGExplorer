@@ -173,6 +173,15 @@ namespace TDCG
         /// <summary>
         /// 頂点をDirect3Dバッファに書き込みます。
         /// </summary>
+        public void WriteBuffer()
+        {
+            if (dm != null)
+                WriteBuffer(dm.Device);
+        }
+
+        /// <summary>
+        /// 頂点をDirect3Dバッファに書き込みます。
+        /// </summary>
         /// <param name="device">device</param>
         public void WriteBuffer(Device device)
         {
