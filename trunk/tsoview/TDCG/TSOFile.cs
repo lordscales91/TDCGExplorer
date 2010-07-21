@@ -449,6 +449,23 @@ namespace TDCG
                 bw.Write(skin_weights[i].weight);
             }
         }
+
+        /// <summary>
+        /// スキン変形後の位置を得ます。
+        /// </summary>
+        /// <param name="bone_matrices">スキン変形行列の配列</param>
+        /// <returns>スキン変形後の位置</returns>
+        public Vector3 CalcSkindeformPosition(Matrix[] bone_matrices)
+        {
+            Vector3 pos = Vector3.Empty;
+            for (int i = 0; i < 4; i++)
+            {
+                Matrix m = bone_matrices[skin_weights[i].bone_index];
+                float w = skin_weights[i].weight;
+                pos += Vector3.TransformCoordinate(position, m) * w;
+            }
+            return pos;
+        }
     }
 
     /// <summary>

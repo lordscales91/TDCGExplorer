@@ -236,24 +236,6 @@ namespace TDCG
             return clipped_boneMatrices;
         }
 
-        /// <summary>
-        /// スキン変形後の指定頂点の位置を得ます。
-        /// </summary>
-        /// <param name="v">頂点</param>
-        /// <param name="boneMatrices">スキン変形行列の配列</param>
-        /// <returns></returns>
-        public static Vector3 CalcSkindeformPosition(Vertex v, Matrix[] boneMatrices)
-        {
-            Vector3 pos = Vector3.Empty;
-            for (int i = 0; i < 4; i++)
-            {
-                Matrix m = boneMatrices[v.skin_weights[i].bone_index];
-                float w = v.skin_weights[i].weight;
-                pos += Vector3.TransformCoordinate(v.position, m) * w;
-            }
-            return pos;
-        }
-
         public Figure fig = null;
         public TSONode selected_node = null;
         public float weight;
@@ -273,7 +255,7 @@ namespace TDCG
                 Vertex v = sub_mesh.vertices[i];
 
                 //頂点間距離が半径未満ならウェイトを加算する。
-                Vector3 p1 = CalcSkindeformPosition(v, clipped_boneMatrices);
+                Vector3 p1 = v.CalcSkindeformPosition(clipped_boneMatrices);
                 if (Vector3.LengthSq(p1 - center) - radius * radius < float.Epsilon)
                 {
                     VertexCommand vertex_command = new VertexCommand();
@@ -341,24 +323,6 @@ namespace TDCG
             return clipped_boneMatrices;
         }
 
-        /// <summary>
-        /// スキン変形後の指定頂点の位置を得ます。
-        /// </summary>
-        /// <param name="v">頂点</param>
-        /// <param name="boneMatrices">スキン変形行列の配列</param>
-        /// <returns></returns>
-        public static Vector3 CalcSkindeformPosition(Vertex v, Matrix[] boneMatrices)
-        {
-            Vector3 pos = Vector3.Empty;
-            for (int i = 0; i < 4; i++)
-            {
-                Matrix m = boneMatrices[v.skin_weights[i].bone_index];
-                float w = v.skin_weights[i].weight;
-                pos += Vector3.TransformCoordinate(v.position, m) * w;
-            }
-            return pos;
-        }
-
         public Figure fig = null;
         public Vertex selected_vertex = null;
         public TSOSubMesh selected_sub_mesh = null;
@@ -374,7 +338,7 @@ namespace TDCG
 
             bool updated = false;
 
-            Vector3 center = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
+            Vector3 center = selected_vertex.CalcSkindeformPosition(ClipBoneMatrices(fig, selected_sub_mesh));
 
             foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
@@ -895,7 +859,7 @@ public class WeightViewer : Viewer
         Vector3[] screen_positions = new Vector3[sub_mesh.vertices.Length];
         for (int i = 0; i < sub_mesh.vertices.Length; i++)
         {
-            Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+            Vector3 p1 = sub_mesh.vertices[i].CalcSkindeformPosition(clipped_boneMatrices);
             view_positions[i] = Vector3.TransformCoordinate(p1, Transform_View);
             screen_positions[i] = WorldToScreen(p1);
         }
@@ -905,14 +869,14 @@ public class WeightViewer : Viewer
                 {
                     if (selected_vertex != null)
                     {
-                        Vector3 p0 = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
+                        Vector3 p0 = selected_vertex.CalcSkindeformPosition(ClipBoneMatrices(fig, selected_sub_mesh));
 
                         sprite.Begin(SpriteFlags.None);
 
                         for (int i = 0; i < sub_mesh.vertices.Length; i++)
                         {
                             //頂点間距離が半径未満なら黄色にする。
-                            Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+                            Vector3 p1 = sub_mesh.vertices[i].CalcSkindeformPosition(clipped_boneMatrices);
                             if (Vector3.LengthSq(p1 - p0) - radius * radius < float.Epsilon)
                                 rect = new Rectangle(8, 8, 7, 7);//yellow
                             else
@@ -944,7 +908,7 @@ public class WeightViewer : Viewer
 
                     if (selected_vertex != null)
                     {
-                        Vector3 p0 = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
+                        Vector3 p0 = selected_vertex.CalcSkindeformPosition(ClipBoneMatrices(fig, selected_sub_mesh));
 
                         sprite.Begin(SpriteFlags.None);
 
@@ -954,7 +918,7 @@ public class WeightViewer : Viewer
                                 continue;
 
                             //頂点間距離が半径未満なら黄色にする。
-                            Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+                            Vector3 p1 = sub_mesh.vertices[i].CalcSkindeformPosition(clipped_boneMatrices);
                             if (Vector3.LengthSq(p1 - p0) - radius * radius < float.Epsilon)
                                 rect = new Rectangle(8, 8, 7, 7);//yellow
                             else
@@ -1017,7 +981,7 @@ public class WeightViewer : Viewer
                 {
                     sprite.Begin(SpriteFlags.None);
                     {
-                        Vector3 p1 = CalcSkindeformPosition(selected_vertex, clipped_boneMatrices);
+                        Vector3 p1 = selected_vertex.CalcSkindeformPosition(clipped_boneMatrices);
                         Vector3 p2 = WorldToScreen(p1);
                         p2.Z = 0.0f;
                         sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
@@ -1112,24 +1076,6 @@ public class WeightViewer : Viewer
     public void Redo(MeshCommand mesh_command)
     {
         mesh_command.Redo();
-    }
-
-    /// <summary>
-    /// スキン変形後の指定頂点の位置を得ます。
-    /// </summary>
-    /// <param name="v">頂点</param>
-    /// <param name="boneMatrices">スキン変形行列の配列</param>
-    /// <returns></returns>
-    public static Vector3 CalcSkindeformPosition(Vertex v, Matrix[] boneMatrices)
-    {
-        Vector3 pos = Vector3.Empty;
-        for (int i = 0; i < 4; i++)
-        {
-            Matrix m = boneMatrices[v.skin_weights[i].bone_index];
-            float w = v.skin_weights[i].weight;
-            pos += Vector3.TransformCoordinate(v.position, m) * w;
-        }
-        return pos;
     }
 
     /// マウスボタンを押したときに実行するハンドラ
@@ -1332,7 +1278,7 @@ public class WeightViewer : Viewer
         Vector3[] screen_positions = new Vector3[sub_mesh.vertices.Length];
         for (int i = 0; i < sub_mesh.vertices.Length; i++)
         {
-            Vector3 p1 = CalcSkindeformPosition(sub_mesh.vertices[i], clipped_boneMatrices);
+            Vector3 p1 = sub_mesh.vertices[i].CalcSkindeformPosition(clipped_boneMatrices);
             view_positions[i] = Vector3.TransformCoordinate(p1, Transform_View);
             screen_positions[i] = WorldToScreen(p1);
         }
