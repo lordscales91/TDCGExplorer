@@ -570,7 +570,7 @@ public class WeightViewer : Viewer
         effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
 
         effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
-        effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(fig, sub_mesh, selected_node));
+        effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(sub_mesh, selected_node));
 
         int npass = effect.Begin(0);
         for (int ipass = 0; ipass < npass; ipass++)
@@ -598,6 +598,24 @@ public class WeightViewer : Viewer
             effect.EndPass();
         }
         effect.End();
+    }
+
+    /// <summary>
+    /// ボーン選択の配列を得ます。
+    /// </summary>
+    /// <param name="sub_mesh">サブメッシュ</param>
+    /// <param name="selected_node">選択ボーン</param>
+    /// <returns>ボーン選択の配列</returns>
+    static int[] ClipBoneSelections(TSOSubMesh sub_mesh, TSONode selected_node)
+    {
+        int[] clipped_boneSelections = new int[sub_mesh.maxPalettes];
+
+        for (int numPalettes = 0; numPalettes < sub_mesh.maxPalettes; numPalettes++)
+        {
+            TSONode tso_node = sub_mesh.GetBone(numPalettes);
+            clipped_boneSelections[numPalettes] = (selected_node == tso_node) ? 1 : 0;
+        }
+        return clipped_boneSelections;
     }
 
     /// <summary>

@@ -915,25 +915,6 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
-    /// ボーン選択の配列を得ます。
-    /// </summary>
-    /// <param name="fig">フィギュア</param>
-    /// <param name="sub_mesh">サブメッシュ</param>
-    /// <param name="selected_node">選択ボーン</param>
-    /// <returns>ボーン選択の配列</returns>
-    public static int[] ClipBoneSelections(Figure fig, TSOSubMesh sub_mesh, TSONode selected_node)
-    {
-        int[] clipped_boneSelections = new int[sub_mesh.maxPalettes];
-
-        for (int numPalettes = 0; numPalettes < sub_mesh.maxPalettes; numPalettes++)
-        {
-            TSONode tso_node = sub_mesh.GetBone(numPalettes);
-            clipped_boneSelections[numPalettes] = (selected_node == tso_node) ? 1 : 0;
-        }
-        return clipped_boneSelections;
-    }
-
-    /// <summary>
     /// フィギュアを描画します。
     /// </summary>
     protected virtual void DrawFigure()
