@@ -38,6 +38,7 @@ namespace TDCG
         /// スキンウェイト操作リスト
         public List<SkinWeightCommand> skin_weight_commands = new List<SkinWeightCommand>();
     }
+
     /// サブメッシュ操作
     public class SubMeshCommand
     {
@@ -45,7 +46,46 @@ namespace TDCG
         public TSOSubMesh sub_mesh = null;
         /// 頂点操作リスト
         public List<VertexCommand> vertex_commands = new List<VertexCommand>();
+
+        /// 変更を元に戻す。
+        public void Undo()
+        {
+            foreach (VertexCommand vertex_command in this.vertex_commands)
+            {
+                Vertex v = vertex_command.vertex;
+                int nskin_weight = 0;
+                foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
+                {
+                    v.skin_weights[nskin_weight].bone_index = skin_weight_command.old_attr.bone_index;
+                    v.skin_weights[nskin_weight].weight = skin_weight_command.old_attr.weight;
+                    nskin_weight++;
+                }
+                v.FillSkinWeights();
+                v.GenerateBoneIndices();
+            }
+            this.sub_mesh.WriteBuffer();
+        }
+
+        /// 変更をやり直す。
+        public void Redo()
+        {
+            foreach (VertexCommand vertex_command in this.vertex_commands)
+            {
+                Vertex v = vertex_command.vertex;
+                int nskin_weight = 0;
+                foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
+                {
+                    v.skin_weights[nskin_weight].bone_index = skin_weight_command.new_attr.bone_index;
+                    v.skin_weights[nskin_weight].weight = skin_weight_command.new_attr.weight;
+                    nskin_weight++;
+                }
+                v.FillSkinWeights();
+                v.GenerateBoneIndices();
+            }
+            this.sub_mesh.WriteBuffer();
+        }
     }
+
     /// メッシュ操作
     public class MeshCommand
     {
@@ -54,47 +94,21 @@ namespace TDCG
         /// サブメッシュ操作リスト
         public List<SubMeshCommand> sub_mesh_commands = new List<SubMeshCommand>();
 
-        /// 指定操作による変更を元に戻す。
+        /// 変更を元に戻す。
         public void Undo()
         {
             foreach (SubMeshCommand sub_mesh_command in this.sub_mesh_commands)
             {
-                foreach (VertexCommand vertex_command in sub_mesh_command.vertex_commands)
-                {
-                    Vertex v = vertex_command.vertex;
-                    int nskin_weight = 0;
-                    foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
-                    {
-                        v.skin_weights[nskin_weight].bone_index = skin_weight_command.old_attr.bone_index;
-                        v.skin_weights[nskin_weight].weight = skin_weight_command.old_attr.weight;
-                        nskin_weight++;
-                    }
-                    v.FillSkinWeights();
-                    v.GenerateBoneIndices();
-                }
-                sub_mesh_command.sub_mesh.WriteBuffer();
+                sub_mesh_command.Undo();
             }
         }
 
-        /// 指定操作による変更をやり直す。
+        /// 変更をやり直す。
         public void Redo()
         {
             foreach (SubMeshCommand sub_mesh_command in this.sub_mesh_commands)
             {
-                foreach (VertexCommand vertex_command in sub_mesh_command.vertex_commands)
-                {
-                    Vertex v = vertex_command.vertex;
-                    int nskin_weight = 0;
-                    foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
-                    {
-                        v.skin_weights[nskin_weight].bone_index = skin_weight_command.new_attr.bone_index;
-                        v.skin_weights[nskin_weight].weight = skin_weight_command.new_attr.weight;
-                        nskin_weight++;
-                    }
-                    v.FillSkinWeights();
-                    v.GenerateBoneIndices();
-                }
-                sub_mesh_command.sub_mesh.WriteBuffer();
+                sub_mesh_command.Redo();
             }
         }
     }
