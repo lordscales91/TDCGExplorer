@@ -77,6 +77,115 @@ namespace TDCG
             vertex.FillSkinWeights(); //for sort
             vertex.GenerateBoneIndices();
         }
+
+        public TSOSubMesh sub_mesh = null;
+        public TSONode selected_node = null;
+        public float weight;
+
+        public bool Execute()
+        {
+            Vertex v = this.vertex;
+
+            foreach (SkinWeight skin_weight in v.skin_weights)
+            {
+                SkinWeightCommand skin_weight_command = new SkinWeightCommand();
+                skin_weight_command.skin_weight = skin_weight;
+                this.skin_weight_commands.Add(skin_weight_command);
+            }
+            //処理前の値を記憶する。
+            {
+                int nskin_weight = 0;
+                foreach (SkinWeight skin_weight in v.skin_weights)
+                {
+                    this.skin_weight_commands[nskin_weight].old_attr.bone_index = skin_weight.bone_index;
+                    this.skin_weight_commands[nskin_weight].old_attr.weight = skin_weight.weight;
+                    nskin_weight++;
+                }
+            }
+
+            bool updated = false;
+
+            //選択ボーンに対応するウェイトを検索する。
+            SkinWeight selected_skin_weight = null;
+            foreach (SkinWeight skin_weight in v.skin_weights)
+            {
+                TSONode bone = sub_mesh.GetBone(skin_weight.bone_index);
+                if (bone == selected_node)
+                {
+                    selected_skin_weight = skin_weight;
+                    break;
+                }
+            }
+
+            //選択ボーンに対応するウェイトがなければ、最小値を持つウェイトを置き換える。
+            if (selected_skin_weight == null)
+            {
+                //サブメッシュのボーン参照に指定ノードが含まれるか。
+                bool found = false;
+                int bone_index = 0;
+                foreach (TSONode bone in sub_mesh.bones)
+                {
+                    if (bone == selected_node)
+                    {
+                        found = true;
+                        break;
+                    }
+                    bone_index++;
+                }
+                if (found)
+                {
+                    selected_skin_weight = v.skin_weights[3]; //前提: v.skin_weights の要素数は 4 かつ並び順はウェイト値の降順
+                    selected_skin_weight.bone_index = bone_index;
+                    selected_skin_weight.weight = 0.0f;
+                }
+            }
+
+            //選択ボーンに対応するウェイトを加算する。
+            if (selected_skin_weight != null)
+            {
+                updated = true;
+
+                float w0 = selected_skin_weight.weight; //変更前の対象ウェイト値
+                float m0 = 1.0f - w0;                   //変更前の残りウェイト値
+                float w1 = w0 + weight;                 //変更後の対象ウェイト値
+
+                //clamp 0.0f .. 1.0f
+                if (w1 > 1.0f) w1 = 1.0f;
+                if (w1 < 0.0f) w1 = 0.0f;
+
+                float d1 = w1 - w0; //実際の加算値
+                float m1 = 0.0f;    //減算後の残りウェイト値
+                if (m0 != 0)
+                {
+                    //残りウェイトを減算する。
+                    foreach (SkinWeight skin_weight in v.skin_weights)
+                    {
+                        if (skin_weight == selected_skin_weight)
+                            continue;
+
+                        float w2 = skin_weight.weight - skin_weight.weight * d1 / m0;
+                        if (w2 < 0.001f)
+                            w2 = 0.0f;//微小ウェイトは捨てる。
+
+                        skin_weight.weight = w2;
+                        m1 += w2;
+                    }
+                }
+                selected_skin_weight.weight = 1.0f - m1;
+            }
+
+            //処理後の値を記憶する。
+            {
+                int nskin_weight = 0;
+                foreach (SkinWeight skin_weight in v.skin_weights)
+                {
+                    this.skin_weight_commands[nskin_weight].new_attr.bone_index = skin_weight.bone_index;
+                    this.skin_weight_commands[nskin_weight].new_attr.weight = skin_weight.weight;
+                    nskin_weight++;
+                }
+            }
+            return updated;
+        }
     }
 
     /// サブメッシュ操作
@@ -857,106 +966,13 @@ public class WeightViewer : Viewer
     public static bool GainSkinWeight(TSOSubMesh sub_mesh, TSONode selected_node, Vertex v, SubMeshCommand sub_mesh_command)
     {
         VertexCommand vertex_command = new VertexCommand();
+        vertex_command.sub_mesh = sub_mesh;
+        vertex_command.selected_node = selected_node;
         vertex_command.vertex = v;
-        foreach (SkinWeight skin_weight in v.skin_weights)
-        {
-            SkinWeightCommand skin_weight_command = new SkinWeightCommand();
-            skin_weight_command.skin_weight = skin_weight;
-            vertex_command.skin_weight_commands.Add(skin_weight_command);
-        }
+        vertex_command.weight = weight;
         sub_mesh_command.vertex_commands.Add(vertex_command);
-        //処理前の値を記憶する。
-        {
-            int nskin_weight = 0;
-            foreach (SkinWeight skin_weight in v.skin_weights)
-            {
-                vertex_command.skin_weight_commands[nskin_weight].old_attr.bone_index = skin_weight.bone_index;
-                vertex_command.skin_weight_commands[nskin_weight].old_attr.weight = skin_weight.weight;
-                nskin_weight++;
-            }
-        }
-        bool updated = false;
-
-        //選択ボーンに対応するウェイトを検索する。
-        SkinWeight selected_skin_weight = null;
-        foreach (SkinWeight skin_weight in v.skin_weights)
-        {
-            TSONode bone = sub_mesh.GetBone(skin_weight.bone_index);
-            if (bone == selected_node)
-            {
-                selected_skin_weight = skin_weight;
-                break;
-            }
-        }
-
-        //選択ボーンに対応するウェイトがなければ、最小値を持つウェイトを置き換える。
-        if (selected_skin_weight == null)
-        {
-            //サブメッシュのボーン参照に指定ノードが含まれるか。
-            bool found = false;
-            int bone_index = 0;
-            foreach (TSONode bone in sub_mesh.bones)
-            {
-                if (bone == selected_node)
-                {
-                    found = true;
-                    break;
-                }
-                bone_index++;
-            }
-            if (found)
-            {
-                selected_skin_weight = v.skin_weights[3]; //前提: v.skin_weights の要素数は 4 かつ並び順はウェイト値の降順
-                selected_skin_weight.bone_index = bone_index;
-                selected_skin_weight.weight = 0.0f;
-            }
-        }
-
-        //選択ボーンに対応するウェイトを加算する。
-        if (selected_skin_weight != null)
-        {
-            updated = true;
-
-            float w0 = selected_skin_weight.weight; //変更前の対象ウェイト値
-            float m0 = 1.0f - w0;                   //変更前の残りウェイト値
-            float w1 = w0 + weight;                 //変更後の対象ウェイト値
-
-            //clamp 0.0f .. 1.0f
-            if (w1 > 1.0f) w1 = 1.0f;
-            if (w1 < 0.0f) w1 = 0.0f;
-
-            float d1 = w1 - w0; //実際の加算値
-            float m1 = 0.0f;    //減算後の残りウェイト値
-            if (m0 != 0)
-            {
-                //残りウェイトを減算する。
-                foreach (SkinWeight skin_weight in v.skin_weights)
-                {
-                    if (skin_weight == selected_skin_weight)
-                        continue;
-
-                    float w2 = skin_weight.weight - skin_weight.weight * d1 / m0;
-                    if (w2 < 0.001f)
-                        w2 = 0.0f;//微小ウェイトは捨てる。
-
-                    skin_weight.weight = w2;
-                    m1 += w2;
-                }
-            }
-            selected_skin_weight.weight = 1.0f - m1;
-        }
-
-        //処理後の値を記憶する。
-        {
-            int nskin_weight = 0;
-            foreach (SkinWeight skin_weight in v.skin_weights)
-            {
-                vertex_command.skin_weight_commands[nskin_weight].new_attr.bone_index = skin_weight.bone_index;
-                vertex_command.skin_weight_commands[nskin_weight].new_attr.weight = skin_weight.weight;
-                nskin_weight++;
-            }
-        }
-        return updated;
+        
+        return vertex_command.Execute();
     }
 
     /// 操作を消去します。
