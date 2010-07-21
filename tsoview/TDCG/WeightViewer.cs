@@ -31,6 +31,7 @@ namespace TDCG
         /// 変更後の属性
         public SkinWeightAttr new_attr;
 
+        /// スキンウェイト操作を生成します。
         public SkinWeightCommand(SkinWeight skin_weight)
         {
             this.skin_weight = skin_weight;
@@ -63,6 +64,7 @@ namespace TDCG
         TSONode selected_node = null;
         float weight;
 
+        /// 頂点操作を生成します。
         public VertexCommand(TSOSubMesh sub_mesh, TSONode selected_node, Vertex vertex, float weight)
         {
             this.sub_mesh = sub_mesh;
@@ -214,6 +216,7 @@ namespace TDCG
         Vector3 center;
         float radius;
 
+        /// サブメッシュ操作を生成します。
         public SubMeshCommand(Figure fig, TSOSubMesh sub_mesh, TSONode selected_node, float weight, Vector3 center, float radius)
         {
             this.fig = fig;
@@ -289,6 +292,7 @@ namespace TDCG
         Vector3 center;
         float radius;
 
+        /// メッシュ操作を生成します。
         public MeshCommand(Figure fig, TSOMesh mesh, TSONode selected_node, float weight, Vector3 center, float radius)
         {
             this.fig = fig;
