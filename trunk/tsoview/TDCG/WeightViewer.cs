@@ -260,10 +260,26 @@ namespace TDCG
     /// メッシュ操作
     public class MeshCommand
     {
-        /// メッシュ
-        public TSOMesh mesh = null;
-        /// サブメッシュ操作リスト
-        public List<SubMeshCommand> sub_mesh_commands = new List<SubMeshCommand>();
+        //操作対象メッシュ
+        TSOMesh mesh = null;
+        //サブメッシュ操作リスト
+        List<SubMeshCommand> sub_mesh_commands = new List<SubMeshCommand>();
+
+        Figure fig = null;
+        TSONode selected_node = null;
+        float weight;
+        Vector3 center;
+        float radius;
+
+        public MeshCommand(Figure fig, TSOMesh mesh, TSONode selected_node, float weight, Vector3 center, float radius)
+        {
+            this.fig = fig;
+            this.mesh = mesh;
+            this.selected_node = selected_node;
+            this.weight = weight;
+            this.center = center;
+            this.radius = radius;
+        }
 
         /// 変更を元に戻す。
         public void Undo()
@@ -282,12 +298,6 @@ namespace TDCG
                 sub_mesh_command.Redo();
             }
         }
-
-        public Figure fig = null;
-        public TSONode selected_node = null;
-        public float weight;
-        public Vector3 center;
-        public float radius;
 
         /// 選択ボーンに対応するウェイトを加算する。
         public bool Execute()
@@ -976,13 +986,7 @@ public class WeightViewer : Viewer
             {
                 Vector3 center = SelectedVertex.CalcSkindeformPosition(fig.ClipBoneMatrices(SelectedSubMesh));
 
-                MeshCommand mesh_command = new MeshCommand();
-                mesh_command.fig = fig;
-                mesh_command.mesh = SelectedMesh;
-                mesh_command.selected_node = selected_node;
-                mesh_command.weight = weight;
-                mesh_command.center = center;
-                mesh_command.radius = radius;
+                MeshCommand mesh_command = new MeshCommand(fig, SelectedMesh, SelectedNode, weight, center, radius);
 
                 bool updated = mesh_command.Execute();
 
