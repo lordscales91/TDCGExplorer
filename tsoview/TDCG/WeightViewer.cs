@@ -24,12 +24,17 @@ namespace TDCG
     /// スキンウェイト操作
     public class SkinWeightCommand
     {
-        /// スキンウェイト
-        public SkinWeight skin_weight = null;
+        //操作対象スキンウェイト
+        SkinWeight skin_weight = null;
         /// 変更前の属性
         public SkinWeightAttr old_attr;
         /// 変更後の属性
         public SkinWeightAttr new_attr;
+
+        public SkinWeightCommand(SkinWeight skin_weight)
+        {
+            this.skin_weight = skin_weight;
+        }
 
         /// 変更を元に戻す。
         public void Undo()
@@ -96,8 +101,7 @@ namespace TDCG
         {
             foreach (SkinWeight skin_weight in vertex.skin_weights)
             {
-                SkinWeightCommand skin_weight_command = new SkinWeightCommand();
-                skin_weight_command.skin_weight = skin_weight;
+                SkinWeightCommand skin_weight_command = new SkinWeightCommand(skin_weight);
                 this.skin_weight_commands.Add(skin_weight_command);
             }
             //処理前の値を記憶する。
