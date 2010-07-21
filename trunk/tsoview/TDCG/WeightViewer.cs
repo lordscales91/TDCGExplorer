@@ -86,9 +86,7 @@ namespace TDCG
         /// returns: ウェイトを変更したか
         public bool Execute()
         {
-            Vertex v = this.vertex;
-
-            foreach (SkinWeight skin_weight in v.skin_weights)
+            foreach (SkinWeight skin_weight in vertex.skin_weights)
             {
                 SkinWeightCommand skin_weight_command = new SkinWeightCommand();
                 skin_weight_command.skin_weight = skin_weight;
@@ -97,7 +95,7 @@ namespace TDCG
             //処理前の値を記憶する。
             {
                 int nskin_weight = 0;
-                foreach (SkinWeight skin_weight in v.skin_weights)
+                foreach (SkinWeight skin_weight in vertex.skin_weights)
                 {
                     this.skin_weight_commands[nskin_weight].old_attr.bone_index = skin_weight.bone_index;
                     this.skin_weight_commands[nskin_weight].old_attr.weight = skin_weight.weight;
@@ -109,7 +107,7 @@ namespace TDCG
 
             //選択ボーンに対応するウェイトを検索する。
             SkinWeight selected_skin_weight = null;
-            foreach (SkinWeight skin_weight in v.skin_weights)
+            foreach (SkinWeight skin_weight in vertex.skin_weights)
             {
                 TSONode bone = sub_mesh.GetBone(skin_weight.bone_index);
                 if (bone == selected_node)
@@ -136,7 +134,7 @@ namespace TDCG
                 }
                 if (found)
                 {
-                    selected_skin_weight = v.skin_weights[3]; //前提: v.skin_weights の要素数は 4 かつ並び順はウェイト値の降順
+                    selected_skin_weight = vertex.skin_weights[3]; //前提: vertex.skin_weights の要素数は 4 かつ並び順はウェイト値の降順
                     selected_skin_weight.bone_index = bone_index;
                     selected_skin_weight.weight = 0.0f;
                 }
@@ -160,7 +158,7 @@ namespace TDCG
                 if (m0 != 0)
                 {
                     //残りウェイトを減算する。
-                    foreach (SkinWeight skin_weight in v.skin_weights)
+                    foreach (SkinWeight skin_weight in vertex.skin_weights)
                     {
                         if (skin_weight == selected_skin_weight)
                             continue;
@@ -179,7 +177,7 @@ namespace TDCG
             //処理後の値を記憶する。
             {
                 int nskin_weight = 0;
-                foreach (SkinWeight skin_weight in v.skin_weights)
+                foreach (SkinWeight skin_weight in vertex.skin_weights)
                 {
                     this.skin_weight_commands[nskin_weight].new_attr.bone_index = skin_weight.bone_index;
                     this.skin_weight_commands[nskin_weight].new_attr.weight = skin_weight.weight;
