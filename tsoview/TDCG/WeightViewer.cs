@@ -20,6 +20,7 @@ namespace TDCG
         /// ウェイト値
         public float weight;
     }
+
     /// スキンウェイト操作
     public class SkinWeightCommand
     {
@@ -29,6 +30,20 @@ namespace TDCG
         public SkinWeightAttr old_attr;
         /// 変更後の属性
         public SkinWeightAttr new_attr;
+
+        /// 変更を元に戻す。
+        public void Undo()
+        {
+            skin_weight.bone_index = old_attr.bone_index;
+            skin_weight.weight = old_attr.weight;
+        }
+
+        /// 変更をやり直す。
+        public void Redo()
+        {
+            skin_weight.bone_index = new_attr.bone_index;
+            skin_weight.weight = new_attr.weight;
+        }
     }
 
     /// 頂点操作
@@ -42,31 +57,25 @@ namespace TDCG
         /// 変更を元に戻す。
         public void Undo()
         {
-            Vertex v = this.vertex;
-            int nskin_weight = 0;
+            //前提: vertex.skin_weights の各要素は変更の前後で同じインスタンスである
             foreach (SkinWeightCommand skin_weight_command in this.skin_weight_commands)
             {
-                v.skin_weights[nskin_weight].bone_index = skin_weight_command.old_attr.bone_index;
-                v.skin_weights[nskin_weight].weight = skin_weight_command.old_attr.weight;
-                nskin_weight++;
+                skin_weight_command.Undo();
             }
-            v.FillSkinWeights();
-            v.GenerateBoneIndices();
+            vertex.FillSkinWeights(); //for sort
+            vertex.GenerateBoneIndices();
         }
 
         /// 変更をやり直す。
         public void Redo()
         {
-            Vertex v = this.vertex;
-            int nskin_weight = 0;
+            //前提: vertex.skin_weights の各要素は変更の前後で同じインスタンスである
             foreach (SkinWeightCommand skin_weight_command in this.skin_weight_commands)
             {
-                v.skin_weights[nskin_weight].bone_index = skin_weight_command.new_attr.bone_index;
-                v.skin_weights[nskin_weight].weight = skin_weight_command.new_attr.weight;
-                nskin_weight++;
+                skin_weight_command.Redo();
             }
-            v.FillSkinWeights();
-            v.GenerateBoneIndices();
+            vertex.FillSkinWeights(); //for sort
+            vertex.GenerateBoneIndices();
         }
     }
 
@@ -897,7 +906,7 @@ public class WeightViewer : Viewer
             }
             if (found)
             {
-                selected_skin_weight = v.skin_weights[3];
+                selected_skin_weight = v.skin_weights[3]; //前提: v.skin_weights の要素数は 4 かつ並び順はウェイト値の降順
                 selected_skin_weight.bone_index = bone_index;
                 selected_skin_weight.weight = 0.0f;
             }
