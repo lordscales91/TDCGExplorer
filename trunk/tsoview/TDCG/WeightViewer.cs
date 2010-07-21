@@ -217,6 +217,95 @@ namespace TDCG
             }
             this.sub_mesh.WriteBuffer();
         }
+
+        /// <summary>
+        /// スキン変形行列の配列を得ます。
+        /// </summary>
+        /// <param name="fig">フィギュア</param>
+        /// <param name="sub_mesh">サブメッシュ</param>
+        /// <returns>スキン変形行列の配列</returns>
+        public static Matrix[] ClipBoneMatrices(Figure fig, TSOSubMesh sub_mesh)
+        {
+            Matrix[] clipped_boneMatrices = new Matrix[sub_mesh.maxPalettes];
+
+            for (int numPalettes = 0; numPalettes < sub_mesh.maxPalettes; numPalettes++)
+            {
+                TSONode tso_node = sub_mesh.GetBone(numPalettes);
+                TMONode tmo_node;
+                if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
+                    clipped_boneMatrices[numPalettes] = tso_node.offset_matrix * tmo_node.combined_matrix;
+            }
+            return clipped_boneMatrices;
+        }
+
+        /// <summary>
+        /// スキン変形後の指定頂点の位置を得ます。
+        /// </summary>
+        /// <param name="v">頂点</param>
+        /// <param name="boneMatrices">スキン変形行列の配列</param>
+        /// <returns></returns>
+        public static Vector3 CalcSkindeformPosition(Vertex v, Matrix[] boneMatrices)
+        {
+            Vector3 pos = Vector3.Empty;
+            for (int i = 0; i < 4; i++)
+            {
+                Matrix m = boneMatrices[v.skin_weights[i].bone_index];
+                float w = v.skin_weights[i].weight;
+                pos += Vector3.TransformCoordinate(v.position, m) * w;
+            }
+            return pos;
+        }
+
+        public Figure fig = null;
+        public Vertex selected_vertex = null;
+        public TSOSubMesh selected_sub_mesh = null;
+        public TSONode selected_node = null;
+        public float weight;
+        public float radius;
+
+        /// 選択ボーンに対応するウェイトを加算する。
+        /// returns: ウェイトを変更したか
+        public bool Execute()
+        {
+            bool updated = false;
+
+            Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
+
+            if (selected_vertex != null)
+            {
+                Vector3 p0 = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
+
+                for (int i = 0; i < sub_mesh.vertices.Length; i++)
+                {
+                    Vertex v = sub_mesh.vertices[i];
+
+                    //頂点間距離が半径未満ならウェイトを加算する。
+                    Vector3 p1 = CalcSkindeformPosition(v, clipped_boneMatrices);
+                    float dx = p1.X - p0.X;
+                    float dy = p1.Y - p0.Y;
+                    float dz = p1.Z - p0.Z;
+                    if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
+                    {
+                        VertexCommand vertex_command = new VertexCommand();
+                        vertex_command.sub_mesh = sub_mesh;
+                        vertex_command.selected_node = selected_node;
+                        vertex_command.vertex = v;
+                        vertex_command.weight = weight;
+                        
+                        if (vertex_command.Execute())
+                        {
+                            updated = true;
+
+                            v.FillSkinWeights();
+                            v.GenerateBoneIndices();
+
+                            this.vertex_commands.Add(vertex_command);
+                        }
+                    }
+                }
+            }
+            return updated;
+        }
     }
 
     /// メッシュ操作
@@ -915,50 +1004,21 @@ public class WeightViewer : Viewer
     /// 選択ボーンに対応するウェイトを加算する。
     public bool GainSkinWeight(Figure fig, TSOSubMesh sub_mesh, TSONode selected_node, MeshCommand mesh_command)
     {
-        bool updated = false;
-
         //操作を生成する。
         SubMeshCommand sub_mesh_command = new SubMeshCommand();
+        sub_mesh_command.fig = fig;
         sub_mesh_command.sub_mesh = sub_mesh;
+        sub_mesh_command.selected_vertex = selected_vertex;
+        sub_mesh_command.selected_sub_mesh = selected_sub_mesh;
+        sub_mesh_command.selected_node = selected_node;
+        sub_mesh_command.weight = weight;
+        sub_mesh_command.radius = radius;
 
-        Matrix[] clipped_boneMatrices = ClipBoneMatrices(fig, sub_mesh);
-
-        if (selected_vertex != null)
-        {
-            Vector3 p0 = CalcSkindeformPosition(selected_vertex, ClipBoneMatrices(fig, selected_sub_mesh));
-
-            for (int i = 0; i < sub_mesh.vertices.Length; i++)
-            {
-                Vertex v = sub_mesh.vertices[i];
-
-                //頂点間距離が半径未満ならウェイトを加算する。
-                Vector3 p1 = CalcSkindeformPosition(v, clipped_boneMatrices);
-                float dx = p1.X - p0.X;
-                float dy = p1.Y - p0.Y;
-                float dz = p1.Z - p0.Z;
-                if (dx * dx + dy * dy + dz * dz - radius * radius < float.Epsilon)
-                {
-                    VertexCommand vertex_command = new VertexCommand();
-                    vertex_command.sub_mesh = sub_mesh;
-                    vertex_command.selected_node = selected_node;
-                    vertex_command.vertex = v;
-                    vertex_command.weight = weight;
-                    
-                    if (vertex_command.Execute())
-                    {
-                        updated = true;
-
-                        v.FillSkinWeights();
-                        v.GenerateBoneIndices();
-
-                        sub_mesh_command.vertex_commands.Add(vertex_command);
-                    }
-                }
-            }
-        }
+        bool updated = sub_mesh_command.Execute();
 
         if (updated)
             sub_mesh.WriteBuffer();
+
         if (updated)
             mesh_command.sub_mesh_commands.Add(sub_mesh_command);
 
