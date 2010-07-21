@@ -30,6 +30,7 @@ namespace TDCG
         /// 変更後の属性
         public SkinWeightAttr new_attr;
     }
+
     /// 頂点操作
     public class VertexCommand
     {
@@ -37,6 +38,36 @@ namespace TDCG
         public Vertex vertex;
         /// スキンウェイト操作リスト
         public List<SkinWeightCommand> skin_weight_commands = new List<SkinWeightCommand>();
+
+        /// 変更を元に戻す。
+        public void Undo()
+        {
+            Vertex v = this.vertex;
+            int nskin_weight = 0;
+            foreach (SkinWeightCommand skin_weight_command in this.skin_weight_commands)
+            {
+                v.skin_weights[nskin_weight].bone_index = skin_weight_command.old_attr.bone_index;
+                v.skin_weights[nskin_weight].weight = skin_weight_command.old_attr.weight;
+                nskin_weight++;
+            }
+            v.FillSkinWeights();
+            v.GenerateBoneIndices();
+        }
+
+        /// 変更をやり直す。
+        public void Redo()
+        {
+            Vertex v = this.vertex;
+            int nskin_weight = 0;
+            foreach (SkinWeightCommand skin_weight_command in this.skin_weight_commands)
+            {
+                v.skin_weights[nskin_weight].bone_index = skin_weight_command.new_attr.bone_index;
+                v.skin_weights[nskin_weight].weight = skin_weight_command.new_attr.weight;
+                nskin_weight++;
+            }
+            v.FillSkinWeights();
+            v.GenerateBoneIndices();
+        }
     }
 
     /// サブメッシュ操作
@@ -52,16 +83,7 @@ namespace TDCG
         {
             foreach (VertexCommand vertex_command in this.vertex_commands)
             {
-                Vertex v = vertex_command.vertex;
-                int nskin_weight = 0;
-                foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
-                {
-                    v.skin_weights[nskin_weight].bone_index = skin_weight_command.old_attr.bone_index;
-                    v.skin_weights[nskin_weight].weight = skin_weight_command.old_attr.weight;
-                    nskin_weight++;
-                }
-                v.FillSkinWeights();
-                v.GenerateBoneIndices();
+                vertex_command.Undo();
             }
             this.sub_mesh.WriteBuffer();
         }
@@ -71,16 +93,7 @@ namespace TDCG
         {
             foreach (VertexCommand vertex_command in this.vertex_commands)
             {
-                Vertex v = vertex_command.vertex;
-                int nskin_weight = 0;
-                foreach (SkinWeightCommand skin_weight_command in vertex_command.skin_weight_commands)
-                {
-                    v.skin_weights[nskin_weight].bone_index = skin_weight_command.new_attr.bone_index;
-                    v.skin_weights[nskin_weight].weight = skin_weight_command.new_attr.weight;
-                    nskin_weight++;
-                }
-                v.FillSkinWeights();
-                v.GenerateBoneIndices();
+                vertex_command.Redo();
             }
             this.sub_mesh.WriteBuffer();
         }
