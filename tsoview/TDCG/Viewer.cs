@@ -923,7 +923,7 @@ public class Viewer : IDisposable
 
         device.SetRenderTarget(0, dev_surface);
         device.DepthStencilSurface = dev_zbuf;
-        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer | ClearFlags.Stencil, Color.LightGray, 1.0f, 0);
 
         foreach (Figure fig in FigureList)
         foreach (TSOFile tso in fig.TSOList)

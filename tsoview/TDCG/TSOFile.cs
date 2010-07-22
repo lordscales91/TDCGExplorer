@@ -763,6 +763,8 @@ namespace TDCG
         {
             if (file.Trim('"') == "")
                 return;
+            if (data.Length == 0)
+                return;
             MemoryStream ms = new MemoryStream();
             using (BinaryWriter bw = new BinaryWriter(ms))
             {
