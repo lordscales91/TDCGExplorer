@@ -172,13 +172,6 @@ namespace TSOWeight
             Invalidate(false);
         }
 
-        private void btnDraw_Click(object sender, EventArgs e)
-        {
-            viewer.GainSkinWeight(viewer.SelectedNode);
-            AssignSkinWeights(viewer.SelectedVertex);
-            Invalidate(false);
-        }
-
         private void tbWeight_ValueChanged(object sender, EventArgs e)
         {
             float value = (float)(tbWeight.Value - 20) * 0.050f;
@@ -195,9 +188,18 @@ namespace TSOWeight
             Invalidate(false);
         }
 
-        private void btnSave_Click(object sender, EventArgs e)
+        private void btnDraw_Click(object sender, EventArgs e)
         {
-            SaveFigure();
+            viewer.GainSkinWeight(viewer.SelectedNode);
+            AssignSkinWeights(viewer.SelectedVertex);
+            Invalidate(false);
+        }
+
+        private void btnErase_Click(object sender, EventArgs e)
+        {
+            viewer.ReduceSkinWeight(viewer.SelectedNode);
+            AssignSkinWeights(viewer.SelectedVertex);
+            Invalidate(false);
         }
 
         private void SaveFigure()
