@@ -72,6 +72,12 @@
             this.vertexAllToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.vertexCcwToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vertexNoneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpContentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpIndexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
+            this.helpVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lbTSOFiles = new System.Windows.Forms.Label();
             this.lvTSOFiles = new System.Windows.Forms.ListView();
             this.columnHeader6 = new System.Windows.Forms.ColumnHeader();
@@ -91,12 +97,7 @@
             this.btnDraw = new System.Windows.Forms.Button();
             this.tbRadius = new System.Windows.Forms.TrackBar();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.helpVersionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.helpContentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpIndexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.helpSearchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnErase = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbWeight)).BeginInit();
@@ -429,6 +430,51 @@
             this.vertexNoneToolStripMenuItem.Text = "なし(&N)";
             this.vertexNoneToolStripMenuItem.Click += new System.EventHandler(this.vertexNoneToolStripMenuItem_Click);
             // 
+            // HelpToolStripMenuItem
+            // 
+            this.HelpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.helpContentToolStripMenuItem,
+            this.helpIndexToolStripMenuItem,
+            this.helpSearchToolStripMenuItem,
+            this.toolStripSeparator5,
+            this.helpVersionToolStripMenuItem});
+            this.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem";
+            this.HelpToolStripMenuItem.Size = new System.Drawing.Size(75, 22);
+            this.HelpToolStripMenuItem.Text = "ヘルプ(&H)";
+            // 
+            // helpContentToolStripMenuItem
+            // 
+            this.helpContentToolStripMenuItem.Enabled = false;
+            this.helpContentToolStripMenuItem.Name = "helpContentToolStripMenuItem";
+            this.helpContentToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.helpContentToolStripMenuItem.Text = "内容(&C)";
+            // 
+            // helpIndexToolStripMenuItem
+            // 
+            this.helpIndexToolStripMenuItem.Enabled = false;
+            this.helpIndexToolStripMenuItem.Name = "helpIndexToolStripMenuItem";
+            this.helpIndexToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.helpIndexToolStripMenuItem.Text = "インデックス(&I)";
+            // 
+            // helpSearchToolStripMenuItem
+            // 
+            this.helpSearchToolStripMenuItem.Enabled = false;
+            this.helpSearchToolStripMenuItem.Name = "helpSearchToolStripMenuItem";
+            this.helpSearchToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.helpSearchToolStripMenuItem.Text = "検索(&S)";
+            // 
+            // toolStripSeparator5
+            // 
+            this.toolStripSeparator5.Name = "toolStripSeparator5";
+            this.toolStripSeparator5.Size = new System.Drawing.Size(187, 6);
+            // 
+            // helpVersionToolStripMenuItem
+            // 
+            this.helpVersionToolStripMenuItem.Enabled = false;
+            this.helpVersionToolStripMenuItem.Name = "helpVersionToolStripMenuItem";
+            this.helpVersionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
+            this.helpVersionToolStripMenuItem.Text = "バージョン情報(&A)...";
+            // 
             // lbTSOFiles
             // 
             this.lbTSOFiles.Location = new System.Drawing.Point(12, 1);
@@ -489,6 +535,7 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel1.Controls.Add(this.btnErase);
             this.panel1.Controls.Add(this.lbRadius);
             this.panel1.Controls.Add(this.lbWeight);
             this.panel1.Controls.Add(this.lvTSOFiles);
@@ -510,7 +557,7 @@
             // lbRadius
             // 
             this.lbRadius.AutoSize = true;
-            this.lbRadius.Location = new System.Drawing.Point(153, 538);
+            this.lbRadius.Location = new System.Drawing.Point(157, 463);
             this.lbRadius.Name = "lbRadius";
             this.lbRadius.Size = new System.Drawing.Size(31, 12);
             this.lbRadius.TabIndex = 33;
@@ -519,7 +566,7 @@
             // lbWeight
             // 
             this.lbWeight.AutoSize = true;
-            this.lbWeight.Location = new System.Drawing.Point(153, 490);
+            this.lbWeight.Location = new System.Drawing.Point(157, 415);
             this.lbWeight.Name = "lbWeight";
             this.lbWeight.Size = new System.Drawing.Size(31, 12);
             this.lbWeight.TabIndex = 32;
@@ -527,7 +574,7 @@
             // 
             // lbWeightCaption
             // 
-            this.lbWeightCaption.Location = new System.Drawing.Point(10, 490);
+            this.lbWeightCaption.Location = new System.Drawing.Point(14, 415);
             this.lbWeightCaption.Name = "lbWeightCaption";
             this.lbWeightCaption.Size = new System.Drawing.Size(120, 12);
             this.lbWeightCaption.TabIndex = 24;
@@ -535,7 +582,7 @@
             // 
             // lbRadiusCaption
             // 
-            this.lbRadiusCaption.Location = new System.Drawing.Point(10, 538);
+            this.lbRadiusCaption.Location = new System.Drawing.Point(14, 463);
             this.lbRadiusCaption.Name = "lbRadiusCaption";
             this.lbRadiusCaption.Size = new System.Drawing.Size(120, 12);
             this.lbRadiusCaption.TabIndex = 26;
@@ -549,10 +596,10 @@
             this.lvSkinWeights.FullRowSelect = true;
             this.lvSkinWeights.GridLines = true;
             this.lvSkinWeights.HideSelection = false;
-            this.lvSkinWeights.Location = new System.Drawing.Point(10, 367);
+            this.lvSkinWeights.Location = new System.Drawing.Point(14, 292);
             this.lvSkinWeights.MultiSelect = false;
             this.lvSkinWeights.Name = "lvSkinWeights";
-            this.lvSkinWeights.Size = new System.Drawing.Size(178, 120);
+            this.lvSkinWeights.Size = new System.Drawing.Size(174, 120);
             this.lvSkinWeights.TabIndex = 23;
             this.lvSkinWeights.UseCompatibleStateImageBehavior = false;
             this.lvSkinWeights.View = System.Windows.Forms.View.Details;
@@ -568,7 +615,7 @@
             // 
             // lbSkinWeights
             // 
-            this.lbSkinWeights.Location = new System.Drawing.Point(10, 352);
+            this.lbSkinWeights.Location = new System.Drawing.Point(14, 277);
             this.lbSkinWeights.Name = "lbSkinWeights";
             this.lbSkinWeights.Size = new System.Drawing.Size(120, 12);
             this.lbSkinWeights.TabIndex = 22;
@@ -576,19 +623,19 @@
             // 
             // tbWeight
             // 
-            this.tbWeight.Location = new System.Drawing.Point(12, 505);
+            this.tbWeight.Location = new System.Drawing.Point(16, 430);
             this.tbWeight.Maximum = 40;
             this.tbWeight.Name = "tbWeight";
-            this.tbWeight.Size = new System.Drawing.Size(176, 45);
+            this.tbWeight.Size = new System.Drawing.Size(172, 45);
             this.tbWeight.TabIndex = 25;
             this.tbWeight.Value = 24;
             this.tbWeight.ValueChanged += new System.EventHandler(this.tbWeight_ValueChanged);
             // 
             // btnDraw
             // 
-            this.btnDraw.Location = new System.Drawing.Point(10, 587);
+            this.btnDraw.Location = new System.Drawing.Point(14, 512);
             this.btnDraw.Name = "btnDraw";
-            this.btnDraw.Size = new System.Drawing.Size(178, 23);
+            this.btnDraw.Size = new System.Drawing.Size(84, 23);
             this.btnDraw.TabIndex = 28;
             this.btnDraw.Text = "塗る(&D)";
             this.btnDraw.UseVisualStyleBackColor = true;
@@ -596,10 +643,10 @@
             // 
             // tbRadius
             // 
-            this.tbRadius.Location = new System.Drawing.Point(12, 553);
+            this.tbRadius.Location = new System.Drawing.Point(16, 478);
             this.tbRadius.Maximum = 40;
             this.tbRadius.Name = "tbRadius";
-            this.tbRadius.Size = new System.Drawing.Size(176, 45);
+            this.tbRadius.Size = new System.Drawing.Size(172, 45);
             this.tbRadius.TabIndex = 27;
             this.tbRadius.Value = 20;
             this.tbRadius.ValueChanged += new System.EventHandler(this.tbRadius_ValueChanged);
@@ -612,50 +659,15 @@
             this.statusStrip1.TabIndex = 23;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // helpVersionToolStripMenuItem
+            // btnErase
             // 
-            this.helpVersionToolStripMenuItem.Enabled = false;
-            this.helpVersionToolStripMenuItem.Name = "helpVersionToolStripMenuItem";
-            this.helpVersionToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.helpVersionToolStripMenuItem.Text = "バージョン情報(&A)...";
-            // 
-            // HelpToolStripMenuItem
-            // 
-            this.HelpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.helpContentToolStripMenuItem,
-            this.helpIndexToolStripMenuItem,
-            this.helpSearchToolStripMenuItem,
-            this.toolStripSeparator5,
-            this.helpVersionToolStripMenuItem});
-            this.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem";
-            this.HelpToolStripMenuItem.Size = new System.Drawing.Size(75, 22);
-            this.HelpToolStripMenuItem.Text = "ヘルプ(&H)";
-            // 
-            // toolStripSeparator5
-            // 
-            this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(187, 6);
-            // 
-            // helpContentToolStripMenuItem
-            // 
-            this.helpContentToolStripMenuItem.Enabled = false;
-            this.helpContentToolStripMenuItem.Name = "helpContentToolStripMenuItem";
-            this.helpContentToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.helpContentToolStripMenuItem.Text = "内容(&C)";
-            // 
-            // helpIndexToolStripMenuItem
-            // 
-            this.helpIndexToolStripMenuItem.Enabled = false;
-            this.helpIndexToolStripMenuItem.Name = "helpIndexToolStripMenuItem";
-            this.helpIndexToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.helpIndexToolStripMenuItem.Text = "インデックス(&I)";
-            // 
-            // helpSearchToolStripMenuItem
-            // 
-            this.helpSearchToolStripMenuItem.Enabled = false;
-            this.helpSearchToolStripMenuItem.Name = "helpSearchToolStripMenuItem";
-            this.helpSearchToolStripMenuItem.Size = new System.Drawing.Size(190, 22);
-            this.helpSearchToolStripMenuItem.Text = "検索(&S)";
+            this.btnErase.Location = new System.Drawing.Point(104, 512);
+            this.btnErase.Name = "btnErase";
+            this.btnErase.Size = new System.Drawing.Size(84, 23);
+            this.btnErase.TabIndex = 34;
+            this.btnErase.Text = "消す(&E)";
+            this.btnErase.UseVisualStyleBackColor = true;
+            this.btnErase.Click += new System.EventHandler(this.btnErase_Click);
             // 
             // Form1
             // 
@@ -747,6 +759,7 @@
         private System.Windows.Forms.ToolStripMenuItem helpSearchToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem helpVersionToolStripMenuItem;
+        private System.Windows.Forms.Button btnErase;
     }
 }
 
