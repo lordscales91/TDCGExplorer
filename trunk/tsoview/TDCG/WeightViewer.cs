@@ -993,20 +993,36 @@ public class WeightViewer : Viewer
             if (SelectedMesh != null && SelectedVertex != null)
             {
                 Vector3 center = SelectedVertex.CalcSkindeformPosition(fig.ClipBoneMatrices(SelectedSubMesh));
-
-                MeshCommand mesh_command = new MeshCommand(fig, SelectedMesh, SelectedNode, weight, center, radius);
-
-                bool updated = mesh_command.Execute();
-
-                if (updated)
-                {
-                    if (mesh_command_id == mesh_commands.Count)
-                        mesh_commands.Add(mesh_command);
-                    else
-                        mesh_commands[mesh_command_id] = mesh_command;
-                    mesh_command_id++;
-                }
+                MeshCommand mesh_command = new MeshCommand(fig, SelectedMesh, SelectedNode, +weight, center, radius);
+                Execute(mesh_command);
             }
+        }
+    }
+
+    /// 選択ボーンに対応するウェイトを減算する。
+    public void ReduceSkinWeight(TSONode selected_node)
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            if (SelectedMesh != null && SelectedVertex != null)
+            {
+                Vector3 center = SelectedVertex.CalcSkindeformPosition(fig.ClipBoneMatrices(SelectedSubMesh));
+                MeshCommand mesh_command = new MeshCommand(fig, SelectedMesh, SelectedNode, -weight, center, radius);
+                Execute(mesh_command);
+            }
+        }
+    }
+
+    public void Execute(MeshCommand mesh_command)
+    {
+        if (mesh_command.Execute())
+        {
+            if (mesh_command_id == mesh_commands.Count)
+                mesh_commands.Add(mesh_command);
+            else
+                mesh_commands[mesh_command_id] = mesh_command;
+            mesh_command_id++;
         }
     }
 
