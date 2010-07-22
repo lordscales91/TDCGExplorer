@@ -984,7 +984,7 @@ public class WeightViewer : Viewer
         }
     }
 
-    /// 選択ボーンに対応するウェイトを加算する。
+    /// 選択ボーンに対応するウェイトを加算します。
     public void GainSkinWeight(TSONode selected_node)
     {
         Figure fig;
@@ -999,7 +999,7 @@ public class WeightViewer : Viewer
         }
     }
 
-    /// 選択ボーンに対応するウェイトを減算する。
+    /// 選択ボーンに対応するウェイトを減算します。
     public void ReduceSkinWeight(TSONode selected_node)
     {
         Figure fig;
@@ -1014,6 +1014,7 @@ public class WeightViewer : Viewer
         }
     }
 
+    /// メッシュ操作を実行します。
     public void Execute(MeshCommand mesh_command)
     {
         if (mesh_command.Execute())
