@@ -85,6 +85,7 @@
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnErase = new System.Windows.Forms.Button();
             this.lbRadius = new System.Windows.Forms.Label();
             this.lbWeight = new System.Windows.Forms.Label();
             this.lbWeightCaption = new System.Windows.Forms.Label();
@@ -97,7 +98,6 @@
             this.btnDraw = new System.Windows.Forms.Button();
             this.tbRadius = new System.Windows.Forms.TrackBar();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.btnErase = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbWeight)).BeginInit();
@@ -480,7 +480,7 @@
             this.lbTSOFiles.Location = new System.Drawing.Point(12, 1);
             this.lbTSOFiles.Name = "lbTSOFiles";
             this.lbTSOFiles.Size = new System.Drawing.Size(120, 12);
-            this.lbTSOFiles.TabIndex = 31;
+            this.lbTSOFiles.TabIndex = 0;
             this.lbTSOFiles.Text = "TSOファイル";
             // 
             // lvTSOFiles
@@ -494,7 +494,7 @@
             this.lvTSOFiles.MultiSelect = false;
             this.lvTSOFiles.Name = "lvTSOFiles";
             this.lvTSOFiles.Size = new System.Drawing.Size(174, 120);
-            this.lvTSOFiles.TabIndex = 30;
+            this.lvTSOFiles.TabIndex = 1;
             this.lvTSOFiles.UseCompatibleStateImageBehavior = false;
             this.lvTSOFiles.View = System.Windows.Forms.View.Details;
             this.lvTSOFiles.SelectedIndexChanged += new System.EventHandler(this.lvTSOFiles_SelectedIndexChanged);
@@ -508,7 +508,7 @@
             this.lbMeshes.Location = new System.Drawing.Point(14, 139);
             this.lbMeshes.Name = "lbMeshes";
             this.lbMeshes.Size = new System.Drawing.Size(120, 12);
-            this.lbMeshes.TabIndex = 10;
+            this.lbMeshes.TabIndex = 2;
             this.lbMeshes.Text = "メッシュ";
             // 
             // lvMeshes
@@ -522,7 +522,7 @@
             this.lvMeshes.MultiSelect = false;
             this.lvMeshes.Name = "lvMeshes";
             this.lvMeshes.Size = new System.Drawing.Size(174, 120);
-            this.lvMeshes.TabIndex = 8;
+            this.lvMeshes.TabIndex = 3;
             this.lvMeshes.UseCompatibleStateImageBehavior = false;
             this.lvMeshes.View = System.Windows.Forms.View.Details;
             this.lvMeshes.SelectedIndexChanged += new System.EventHandler(this.lvFrames_SelectedIndexChanged);
@@ -554,13 +554,23 @@
             this.panel1.Size = new System.Drawing.Size(200, 681);
             this.panel1.TabIndex = 22;
             // 
+            // btnErase
+            // 
+            this.btnErase.Location = new System.Drawing.Point(104, 512);
+            this.btnErase.Name = "btnErase";
+            this.btnErase.Size = new System.Drawing.Size(84, 23);
+            this.btnErase.TabIndex = 13;
+            this.btnErase.Text = "消す(&E)";
+            this.btnErase.UseVisualStyleBackColor = true;
+            this.btnErase.Click += new System.EventHandler(this.btnErase_Click);
+            // 
             // lbRadius
             // 
             this.lbRadius.AutoSize = true;
             this.lbRadius.Location = new System.Drawing.Point(157, 463);
             this.lbRadius.Name = "lbRadius";
             this.lbRadius.Size = new System.Drawing.Size(31, 12);
-            this.lbRadius.TabIndex = 33;
+            this.lbRadius.TabIndex = 10;
             this.lbRadius.Text = "0.500";
             // 
             // lbWeight
@@ -569,15 +579,15 @@
             this.lbWeight.Location = new System.Drawing.Point(157, 415);
             this.lbWeight.Name = "lbWeight";
             this.lbWeight.Size = new System.Drawing.Size(31, 12);
-            this.lbWeight.TabIndex = 32;
-            this.lbWeight.Text = "0.200";
+            this.lbWeight.TabIndex = 7;
+            this.lbWeight.Text = "0.020";
             // 
             // lbWeightCaption
             // 
             this.lbWeightCaption.Location = new System.Drawing.Point(14, 415);
             this.lbWeightCaption.Name = "lbWeightCaption";
             this.lbWeightCaption.Size = new System.Drawing.Size(120, 12);
-            this.lbWeightCaption.TabIndex = 24;
+            this.lbWeightCaption.TabIndex = 6;
             this.lbWeightCaption.Text = "強度";
             // 
             // lbRadiusCaption
@@ -585,7 +595,7 @@
             this.lbRadiusCaption.Location = new System.Drawing.Point(14, 463);
             this.lbRadiusCaption.Name = "lbRadiusCaption";
             this.lbRadiusCaption.Size = new System.Drawing.Size(120, 12);
-            this.lbRadiusCaption.TabIndex = 26;
+            this.lbRadiusCaption.TabIndex = 9;
             this.lbRadiusCaption.Text = "半径";
             // 
             // lvSkinWeights
@@ -600,7 +610,7 @@
             this.lvSkinWeights.MultiSelect = false;
             this.lvSkinWeights.Name = "lvSkinWeights";
             this.lvSkinWeights.Size = new System.Drawing.Size(174, 120);
-            this.lvSkinWeights.TabIndex = 23;
+            this.lvSkinWeights.TabIndex = 5;
             this.lvSkinWeights.UseCompatibleStateImageBehavior = false;
             this.lvSkinWeights.View = System.Windows.Forms.View.Details;
             this.lvSkinWeights.SelectedIndexChanged += new System.EventHandler(this.lvSkinWeights_SelectedIndexChanged);
@@ -618,7 +628,7 @@
             this.lbSkinWeights.Location = new System.Drawing.Point(14, 277);
             this.lbSkinWeights.Name = "lbSkinWeights";
             this.lbSkinWeights.Size = new System.Drawing.Size(120, 12);
-            this.lbSkinWeights.TabIndex = 22;
+            this.lbSkinWeights.TabIndex = 4;
             this.lbSkinWeights.Text = "頂点ウェイト";
             // 
             // tbWeight
@@ -627,8 +637,8 @@
             this.tbWeight.Maximum = 40;
             this.tbWeight.Name = "tbWeight";
             this.tbWeight.Size = new System.Drawing.Size(172, 45);
-            this.tbWeight.TabIndex = 25;
-            this.tbWeight.Value = 24;
+            this.tbWeight.TabIndex = 8;
+            this.tbWeight.Value = 4;
             this.tbWeight.ValueChanged += new System.EventHandler(this.tbWeight_ValueChanged);
             // 
             // btnDraw
@@ -636,7 +646,7 @@
             this.btnDraw.Location = new System.Drawing.Point(14, 512);
             this.btnDraw.Name = "btnDraw";
             this.btnDraw.Size = new System.Drawing.Size(84, 23);
-            this.btnDraw.TabIndex = 28;
+            this.btnDraw.TabIndex = 12;
             this.btnDraw.Text = "塗る(&D)";
             this.btnDraw.UseVisualStyleBackColor = true;
             this.btnDraw.Click += new System.EventHandler(this.btnDraw_Click);
@@ -647,7 +657,7 @@
             this.tbRadius.Maximum = 40;
             this.tbRadius.Name = "tbRadius";
             this.tbRadius.Size = new System.Drawing.Size(172, 45);
-            this.tbRadius.TabIndex = 27;
+            this.tbRadius.TabIndex = 11;
             this.tbRadius.Value = 20;
             this.tbRadius.ValueChanged += new System.EventHandler(this.tbRadius_ValueChanged);
             // 
@@ -658,16 +668,6 @@
             this.statusStrip1.Size = new System.Drawing.Size(1008, 22);
             this.statusStrip1.TabIndex = 23;
             this.statusStrip1.Text = "statusStrip1";
-            // 
-            // btnErase
-            // 
-            this.btnErase.Location = new System.Drawing.Point(104, 512);
-            this.btnErase.Name = "btnErase";
-            this.btnErase.Size = new System.Drawing.Size(84, 23);
-            this.btnErase.TabIndex = 34;
-            this.btnErase.Text = "消す(&E)";
-            this.btnErase.UseVisualStyleBackColor = true;
-            this.btnErase.Click += new System.EventHandler(this.btnErase_Click);
             // 
             // Form1
             // 

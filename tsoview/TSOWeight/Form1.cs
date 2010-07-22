@@ -174,7 +174,7 @@ namespace TSOWeight
 
         private void tbWeight_ValueChanged(object sender, EventArgs e)
         {
-            float value = (float)(tbWeight.Value - 20) * 0.050f;
+            float value = (float)(tbWeight.Value) * 0.005f;
             lbWeight.Text = string.Format("{0:F3}", value);
             viewer.weight = value;
             //Invalidate(false);

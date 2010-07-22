@@ -1027,10 +1027,10 @@ public class WeightViewer : Viewer
     }
 
     /// 半径
-    public float radius = 0.5f;
+    public float radius = 0.500f;
 
     /// 加算ウェイト値
-    public float weight = 0.2f;
+    public float weight = 0.020f;
 
     /// メッシュ操作リスト
     public List<MeshCommand> mesh_commands = new List<MeshCommand>();
