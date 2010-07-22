@@ -418,7 +418,7 @@ public class WeightViewer : Viewer
     public MeshViewMode mesh_view_mode = MeshViewMode.Toon;
 
     /// <summary>
-    /// 描画メッシュ選択モード
+    /// メッシュ選択モード
     /// </summary>
     public enum MeshSelectionMode
     {
@@ -432,12 +432,12 @@ public class WeightViewer : Viewer
         SelectedMesh
     }
     /// <summary>
-    /// 描画メッシュ選択モード
+    /// メッシュ選択モード
     /// </summary>
     public MeshSelectionMode mesh_selection_mode = MeshSelectionMode.AllMeshes;
 
     /// <summary>
-    /// 頂点描画モード
+    /// 頂点選択モード
     /// </summary>
     public enum VertexSelectionMode
     {
@@ -455,7 +455,7 @@ public class WeightViewer : Viewer
         None
     }
     /// <summary>
-    /// 頂点描画モード
+    /// 頂点選択モード
     /// </summary>
     public VertexSelectionMode vertex_selection_mode = VertexSelectionMode.CcwVertices;
 
@@ -646,20 +646,16 @@ public class WeightViewer : Viewer
         if (motionEnabled)
             return;
 
-        DrawFigureVertices();
-    }
-
-    /// 頂点を描画する。
-    void DrawFigureVertices()
-    {
         Figure fig;
         if (TryGetFigure(out fig))
         {
+            //nodeを描画する。
             DrawNodeTree(fig);
             DrawSelectedNode(fig);
 
             if (SelectedMesh != null)
             {
+                //頂点を描画する。
                 foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
                 {
                     DrawVertices(fig, sub_mesh);
@@ -675,7 +671,6 @@ public class WeightViewer : Viewer
     /// <param name="fig"></param>
     void DrawNodeTree(Figure fig)
     {
-
         TMOFile tmo = fig.Tmo;
 
         Color line_color = Color.FromArgb(100, 100, 230); //from MikuMikuDance
@@ -841,9 +836,6 @@ public class WeightViewer : Viewer
             sprite.End();
         }
     }
-
-    /// 半径
-    public static float radius = 0.5f;
 
     /// 頂点を描画する。
     void DrawVertices(Figure fig, TSOSubMesh sub_mesh)
@@ -1018,11 +1010,15 @@ public class WeightViewer : Viewer
         }
     }
 
+    /// 半径
+    public float radius = 0.5f;
+
     /// 加算ウェイト値
-    public static float weight = 0.2f;
+    public float weight = 0.2f;
+
     /// メッシュ操作リスト
-    public static List<MeshCommand> mesh_commands = new List<MeshCommand>();
-    static int mesh_command_id = 0;
+    public List<MeshCommand> mesh_commands = new List<MeshCommand>();
+    int mesh_command_id = 0;
 
     /// 操作を消去します。
     public void ClearCommands()
@@ -1036,7 +1032,8 @@ public class WeightViewer : Viewer
     {
         return (mesh_command_id > 0);
     }
-    /// ひとつ前の操作による変更を元に戻す。
+
+    /// ひとつ前の操作による変更を元に戻します。
     public void Undo()
     {
         if (!CanUndo())
@@ -1045,7 +1042,8 @@ public class WeightViewer : Viewer
         mesh_command_id--;
         Undo(mesh_commands[mesh_command_id]);
     }
-    /// 指定操作による変更を元に戻す。
+
+    /// 指定操作による変更を元に戻します。
     public void Undo(MeshCommand mesh_command)
     {
         mesh_command.Undo();
@@ -1056,7 +1054,8 @@ public class WeightViewer : Viewer
     {
         return (mesh_command_id < mesh_commands.Count);
     }
-    /// ひとつ前の操作による変更をやり直す。
+
+    /// ひとつ前の操作による変更をやり直します。
     public void Redo()
     {
         if (!CanRedo())
@@ -1065,7 +1064,8 @@ public class WeightViewer : Viewer
         Redo(mesh_commands[mesh_command_id]);
         mesh_command_id++;
     }
-    /// 指定操作による変更をやり直す。
+
+    /// 指定操作による変更をやり直します。
     public void Redo(MeshCommand mesh_command)
     {
         mesh_command.Redo();
@@ -1126,6 +1126,11 @@ public class WeightViewer : Viewer
     }
 
     TSOFile selected_tso_file = null;
+    TSOMesh selected_mesh = null;
+    TSOSubMesh selected_sub_mesh = null;
+    TSONode selected_node = null;
+    Vertex selected_vertex = null;
+
     /// 選択TSOファイル
     public TSOFile SelectedTSOFile
     {
@@ -1139,7 +1144,6 @@ public class WeightViewer : Viewer
         }
     }
 
-    TSOMesh selected_mesh = null;
     /// 選択メッシュ
     public TSOMesh SelectedMesh
     {
@@ -1152,7 +1156,6 @@ public class WeightViewer : Viewer
         }
     }
 
-    TSOSubMesh selected_sub_mesh = null;
     /// 選択サブメッシュ
     public TSOSubMesh SelectedSubMesh
     {
@@ -1164,12 +1167,17 @@ public class WeightViewer : Viewer
         }
     }
 
-    TSONode selected_node = null;
     /// 選択ボーン
-    public TSONode SelectedNode { get { return selected_node; } set { selected_node = value; } }
+    public TSONode SelectedNode
+    {
+        get { return selected_node; }
+        set
+        {
+            selected_node = value;
+        }
+    }
 
-    Vertex selected_vertex = null;
-    /// 選択頂点id
+    /// 選択頂点
     public Vertex SelectedVertex
     {
         get { return selected_vertex; }
