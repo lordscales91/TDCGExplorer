@@ -24,6 +24,62 @@ namespace TDCG
         bool Execute();
     }
 
+    /// node属性
+    public struct NodeAttr
+    {
+        /// 回転
+        public Quaternion rotation;
+        /// 移動
+        public Vector3 translation;
+    }
+
+    /// node操作
+    public class NodeCommand : ICommand
+    {
+        //操作対象node
+        TMONode node = null;
+        /// 変更前の属性
+        NodeAttr old_attr;
+        /// 変更後の属性
+        NodeAttr new_attr;
+
+        Figure fig = null;
+
+        /// node操作を生成します。
+        public NodeCommand(Figure fig, TMONode node)
+        {
+            this.fig = fig;
+            this.node = node;
+            this.old_attr.rotation = node.Rotation;
+            this.old_attr.translation = node.Translation;
+        }
+
+        /// 元に戻す。
+        public void Undo()
+        {
+            node.Rotation = old_attr.rotation;
+            node.Translation = old_attr.translation;
+            fig.UpdateBoneMatricesWithoutTMOFrame();
+        }
+
+        /// やり直す。
+        public void Redo()
+        {
+            node.Rotation = new_attr.rotation;
+            node.Translation = new_attr.translation;
+            fig.UpdateBoneMatricesWithoutTMOFrame();
+        }
+
+        /// 実行する。
+        public bool Execute()
+        {
+            this.new_attr.rotation = node.Rotation;
+            this.new_attr.translation = node.Translation;
+            bool updated = old_attr.rotation != new_attr.rotation || old_attr.translation != new_attr.translation;
+            return updated;
+        }
+    }
+
     /// スキンウェイト属性
     public struct SkinWeightAttr
     {
@@ -1401,6 +1457,38 @@ public class WeightViewer : Viewer
         ccws[0] = ccws[2];
         ccws[1] = ccws[2];
         return ccws;
+    }
+
+    NodeCommand node_command = null;
+
+    public void BeginNodeCommand()
+    {
+        if (SelectedNode == null)
+            return;
+
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            Debug.Assert(fig.Tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
+            TMONode bone;
+            if (fig.nodemap.TryGetValue(SelectedNode, out bone))
+            {
+                node_command = new NodeCommand(fig, bone);
+            }
+        }
+    }
+
+    public bool HasNodeCommand()
+    {
+        return node_command != null;
+    }
+
+    public void EndNodeCommand()
+    {
+        if (node_command != null)
+            Execute(node_command);
+
+        node_command = null;
     }
 
     /// 選択nodeをX軸方向に移動します。
