@@ -726,7 +726,7 @@ m.M44 = 1.000000F;
         m.M33 *= scaling.M33;
     }
 
-    // おっぱい変形：貧乳
+    /// おっぱい変形：貧乳を行います。
     public void TransformChichiFlat(TMONode tmo_node, ref Matrix m)
     {
         switch (tmo_node.Name)
@@ -786,7 +786,7 @@ m.M44 = 1.000000F;
         }
     }
 
-    // 表情変形
+    /// 表情変形を行います。
     public void TransformFace(TMONode tmo_node, ref Matrix m)
     {
         switch (tmo_node.Name)
@@ -808,7 +808,7 @@ m.M44 = 1.000000F;
         }
     }
 
-    // 体型変形
+    /// 体型変形を行います。
     public void Scale(TMONode tmo_node, ref Matrix m)
     {
         switch (tmo_node.Name)
@@ -861,7 +861,7 @@ m.M44 = 1.000000F;
         }
     }
 
-    // おっぱい変形
+    /// おっぱい変形を行います。
     public void ScaleChichi(ref Matrix m)
     {
         Scale1(ref m, this.Chichi);
