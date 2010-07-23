@@ -19,9 +19,7 @@ namespace TSOWeight
             InitializeComponent();
         }
 
-        bool pressed = false;
-
-        // ƒ}ƒEƒXƒ|ƒCƒ“ƒg‚µ‚Ä‚¢‚éƒXƒNƒŠ[ƒ“À•W
+        // ãƒã‚¦ã‚¹ãƒã‚¤ãƒ³ãƒˆã—ã¦ã„ã‚‹ã‚¹ã‚¯ãƒªãƒ¼ãƒ³åº§æ¨™
         internal Point lastScreenPoint = Point.Empty;
 
         // This method handles the mouse down event for all the controls on the form.  
@@ -30,18 +28,13 @@ namespace TSOWeight
         private void Control_MouseDown(System.Object sender,
             System.Windows.Forms.MouseEventArgs e)
         {
-            Control control = (Control)sender;
-            pressed = true;
             lastScreenPoint.X = e.X;
             lastScreenPoint.Y = e.Y;
-            if (control.Capture)
-                Console.WriteLine(control.Name + " has captured the mouse");
-            else
-                Console.WriteLine(control.Name + " has not captured the mouse");
+            viewer.BeginNodeCommand();
         }
 
         /// <summary>
-        /// ‰ñ“]‘€ì‚ÉŒÄ‚Ño‚³‚ê‚éƒnƒ“ƒhƒ‰
+        /// å›è»¢æ“ä½œæ™‚ã«å‘¼ã³å‡ºã•ã‚Œã‚‹ãƒãƒ³ãƒ‰ãƒ©
         /// </summary>
         public event EventHandler RotationEvent;
 
@@ -51,7 +44,7 @@ namespace TSOWeight
             int dy = e.Y - lastScreenPoint.Y;
 
             Control control = (Control)sender;
-            if (pressed)
+            if (viewer.HasNodeCommand())
             {
                 if (control == btnTraX)
                     viewer.TranslateXOnScreen(dx, dy);
@@ -81,12 +74,7 @@ namespace TSOWeight
 
         private void Control_MouseUp(object sender, MouseEventArgs e)
         {
-            Control control = (Control)sender;
-            pressed = false;
-            if (control.Capture)
-                Console.WriteLine(control.Name + " has captured the mouse");
-            else
-                Console.WriteLine(control.Name + " has not captured the mouse");
+            viewer.EndNodeCommand();
         }
 
         private void Form2_FormClosing(object sender, FormClosingEventArgs e)
