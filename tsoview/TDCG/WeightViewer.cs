@@ -12,6 +12,7 @@ using Direct3D = Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
+    /// 操作を扱います。
     public interface ICommand
     {
         /// 元に戻す。
@@ -1461,6 +1462,7 @@ public class WeightViewer : Viewer
 
     NodeCommand node_command = null;
 
+    /// node操作を開始します。
     public void BeginNodeCommand()
     {
         if (SelectedNode == null)
@@ -1478,11 +1480,13 @@ public class WeightViewer : Viewer
         }
     }
 
+    /// nodeを操作中であるか。
     public bool HasNodeCommand()
     {
         return node_command != null;
     }
 
+    /// node操作を終了します。
     public void EndNodeCommand()
     {
         if (node_command != null)
