@@ -325,19 +325,27 @@ public class Figure : IDisposable
         if (tmo.nodes == null)
             return;
 
-        //先頭nodeをrootとみなす
-        TMONode tmo_node = tmo.nodes[0];
+        if (tmo.w_hips_node != null)
+        {
+            //姉妹スライダによる変形
+            Matrix local = Matrix.Scaling(slide_matrices.Local);
 
-        //姉妹スライダによる変形
-        Matrix local = Matrix.Scaling(slide_matrices.Local);
+            //移動変位を設定
+            local.M41 = translation.X;
+            local.M42 = translation.Y;
+            local.M43 = translation.Z;
 
-        //移動変位を設定
-        local.M41 = translation.X;
-        local.M42 = translation.Y;
-        local.M43 = translation.Z;
+            matrixStack.LoadMatrix(local);
+            UpdateBoneMatrices(tmo.w_hips_node, tmo_frame);
+        }
+        foreach (TMONode tmo_node in tmo.root_nodes_except_w_hips)
+        {
+            //移動変位を設定
+            Matrix local = Matrix.Translation(translation);
 
-        matrixStack.LoadMatrix(local);
-        UpdateBoneMatrices(tmo_node, tmo_frame);
+            matrixStack.LoadMatrix(local);
+            UpdateBoneMatricesWithoutSlideMatrices(tmo_node, tmo_frame);
+        }
     }
 
     static Regex re_chichi = new Regex(@"\AChichi");
@@ -376,6 +384,31 @@ public class Figure : IDisposable
         }
         else
             slide_matrices.Scale(tmo_node, ref m);
+
+        tmo_node.combined_matrix = m;
+
+        foreach (TMONode child_node in tmo_node.children)
+            UpdateBoneMatrices(child_node, tmo_frame);
+
+        matrixStack.Pop();
+    }
+
+    /// <summary>
+    /// bone行列を更新します（体型変更なし）。
+    /// </summary>
+    protected void UpdateBoneMatricesWithoutSlideMatrices(TMONode tmo_node, TMOFrame tmo_frame)
+    {
+        matrixStack.Push();
+
+        if (tmo_frame != null)
+        {
+            // TMO animation
+            tmo_node.TransformationMatrix = tmo_frame.matrices[tmo_node.ID].m;
+        }
+        Matrix m = tmo_node.TransformationMatrix;
+
+        matrixStack.MultiplyMatrixLocal(m);
+        m = matrixStack.Top;
 
         tmo_node.combined_matrix = m;
 
