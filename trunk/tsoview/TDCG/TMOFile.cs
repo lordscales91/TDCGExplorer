@@ -44,6 +44,8 @@ namespace TDCG
         public byte[] footer;
 
         internal Dictionary<string, TMONode> nodemap;
+        internal TMONode w_hips_node = null;
+        internal List<TMONode> root_nodes_except_w_hips;
 
         /// <summary>
         /// 指定パスに保存します。
@@ -151,14 +153,28 @@ namespace TDCG
                 nodemap.Add(nodes[i].Path, nodes[i]);
             }
 
+            List<TMONode> root_nodes = new List<TMONode>();
+
             for (int i = 0; i < nodes.Length; i++)
             {
                 int index = nodes[i].Path.LastIndexOf('|');
+                if (index == 0)
+                    root_nodes.Add(nodes[i]);
                 if (index <= 0)
                     continue;
                 string path = nodes[i].Path.Substring(0, index);
                 nodes[i].parent = nodemap[path];
                 nodes[i].parent.children.Add(nodes[i]);
+            }
+
+            root_nodes_except_w_hips = new List<TMONode>();
+
+            foreach (TMONode node in root_nodes)
+            {
+                if (node.Name == "|W_Hips")
+                    w_hips_node = node;
+                else
+                    root_nodes_except_w_hips.Add(node);
             }
         }
 
