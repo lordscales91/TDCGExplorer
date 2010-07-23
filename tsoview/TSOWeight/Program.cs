@@ -27,6 +27,10 @@ namespace TSOWeight
             using (Form1 form1 = new Form1(tso_config, args))
             using (Form2 form2 = new Form2())
             {
+                form2.TopLevel = false;
+                form2.Location = new System.Drawing.Point(0, 26);
+                form1.Controls.Add(form2);
+                form2.BringToFront();
                 form2.viewer = form1.viewer;
                 form2.RotationEvent += delegate(object sender, EventArgs e)
                 {
