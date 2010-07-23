@@ -12,6 +12,18 @@ using Direct3D = Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
+    public interface ICommand
+    {
+        /// 元に戻す。
+        void Undo();
+
+        /// やり直す。
+        void Redo();
+
+        /// 実行する。
+        bool Execute();
+    }
+
     /// スキンウェイト属性
     public struct SkinWeightAttr
     {
@@ -279,7 +291,7 @@ namespace TDCG
     }
 
     /// メッシュ操作
-    public class MeshCommand
+    public class MeshCommand : ICommand
     {
         //操作対象メッシュ
         TSOMesh mesh = null;
@@ -1014,16 +1026,16 @@ public class WeightViewer : Viewer
         }
     }
 
-    /// メッシュ操作を実行します。
-    public void Execute(MeshCommand mesh_command)
+    /// 指定操作を実行します。
+    public void Execute(ICommand command)
     {
-        if (mesh_command.Execute())
+        if (command.Execute())
         {
-            if (mesh_command_id == mesh_commands.Count)
-                mesh_commands.Add(mesh_command);
+            if (command_id == commands.Count)
+                commands.Add(command);
             else
-                mesh_commands[mesh_command_id] = mesh_command;
-            mesh_command_id++;
+                commands[command_id] = command;
+            command_id++;
         }
     }
 
@@ -1033,21 +1045,21 @@ public class WeightViewer : Viewer
     /// 加算ウェイト値
     public float weight = 0.020f;
 
-    /// メッシュ操作リスト
-    public List<MeshCommand> mesh_commands = new List<MeshCommand>();
-    int mesh_command_id = 0;
+    /// 操作リスト
+    public List<ICommand> commands = new List<ICommand>();
+    int command_id = 0;
 
     /// 操作を消去します。
     public void ClearCommands()
     {
-        mesh_commands.Clear();
-        mesh_command_id = 0;
+        commands.Clear();
+        command_id = 0;
     }
 
     /// ひとつ前の操作による変更を元に戻せるか。
     public bool CanUndo()
     {
-        return (mesh_command_id > 0);
+        return (command_id > 0);
     }
 
     /// ひとつ前の操作による変更を元に戻します。
@@ -1056,20 +1068,20 @@ public class WeightViewer : Viewer
         if (!CanUndo())
             return;
 
-        mesh_command_id--;
-        Undo(mesh_commands[mesh_command_id]);
+        command_id--;
+        Undo(commands[command_id]);
     }
 
     /// 指定操作による変更を元に戻します。
-    public void Undo(MeshCommand mesh_command)
+    public void Undo(ICommand command)
     {
-        mesh_command.Undo();
+        command.Undo();
     }
 
     /// ひとつ前の操作による変更をやり直せるか。
     public bool CanRedo()
     {
-        return (mesh_command_id < mesh_commands.Count);
+        return (command_id < commands.Count);
     }
 
     /// ひとつ前の操作による変更をやり直します。
@@ -1078,14 +1090,14 @@ public class WeightViewer : Viewer
         if (!CanRedo())
             return;
 
-        Redo(mesh_commands[mesh_command_id]);
-        mesh_command_id++;
+        Redo(commands[command_id]);
+        command_id++;
     }
 
     /// 指定操作による変更をやり直します。
-    public void Redo(MeshCommand mesh_command)
+    public void Redo(ICommand command)
     {
-        mesh_command.Redo();
+        command.Redo();
     }
 
     /// マウスボタンを押したときに実行するハンドラ
