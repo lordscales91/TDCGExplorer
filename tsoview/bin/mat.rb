@@ -1,6 +1,6 @@
 #!ir
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../lib")
-require 'mdx'
+require 'directx'
 
 # Chichi_Right1	bust=0.225	world
 src = <<EOT
