@@ -173,12 +173,8 @@ namespace TPOEditor
             int tpofile_row = tpoFileBindingSource.Position;
             TPOFile tpo = TPOList[tpofile_row];
 
-            Figure fig;
-            if (viewer.TryGetFigure(out fig))
-            {
-                fig.TPOList.ClearRatios();
-                tpo.Ratio = 1.0f;
-            }
+            TPOList.ClearRatios();
+            tpo.Ratio = 1.0f;
             Transform();
             
             tpoNodeBindingSource.DataSource = tpo.nodes;
