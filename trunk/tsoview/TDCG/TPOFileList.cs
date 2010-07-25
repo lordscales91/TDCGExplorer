@@ -80,6 +80,8 @@ public class TPOFileList
     public void SetProportionList(ProportionList pro_list)
     {
         Clear();
+        if (pro_list == null)
+            return;
         foreach (IProportion pro in pro_list.items)
         {
             TPOFile tpo = new TPOFile();
