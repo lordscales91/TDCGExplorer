@@ -1,45 +1,6 @@
-#!/usr/bin/ir
-
-$LOAD_PATH.unshift "C:/Windows/Microsoft.NET/DirectX for Managed Code/1.0.2902.0"
-require 'Microsoft.DirectX'
-require 'Microsoft.DirectX.Direct3D'
-require 'Microsoft.DirectX.Direct3DX'
-include Microsoft::DirectX
-include Microsoft::DirectX::Direct3D
-# p Matrix.identity
-
-require 'stringio'
-
-def create_vertices(src)
-  io = StringIO.new(src)
-  vertices = []
-  while line = io.gets
-    idx, *vec = line.chomp.split(/ +/)
-    vertices[idx.to_i] = vec.map { |x| x.to_f }
-  end
-  vertices
-end
-
-def vertices_to_matrix(vertices)
-  z,y,t,x = vertices
-  3.times { |i| x[i] -= t[i] }
-  3.times { |i| y[i] -= t[i] }
-  3.times { |i| z[i] -= t[i] }
-  m = Matrix.identity
-  m.M11 = x[0]
-  m.M12 = x[1]
-  m.M13 = x[2]
-  m.M21 = y[0]
-  m.M22 = y[1]
-  m.M23 = y[2]
-  m.M31 = z[0]
-  m.M32 = z[1]
-  m.M33 = z[2]
-  m.M41 = t[0]
-  m.M42 = t[1]
-  m.M43 = t[2]
-  m
-end
+#!ir
+$LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../lib")
+require 'directx'
 
 def combined_matrix(node)
   m = Matrix.identity
