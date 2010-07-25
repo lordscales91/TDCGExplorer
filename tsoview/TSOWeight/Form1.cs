@@ -373,5 +373,17 @@ namespace TSOWeight
             viewer.vertex_selection_mode = WeightViewer.VertexSelectionMode.None;
             Invalidate(false);
         }
+
+        private void boneAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.node_selection_mode = WeightViewer.NodeSelectionMode.AllBones;
+            Invalidate(false);
+        }
+
+        private void boneNoneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            viewer.node_selection_mode = WeightViewer.NodeSelectionMode.None;
+            Invalidate(false);
+        }
     }
 }

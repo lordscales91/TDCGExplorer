@@ -529,6 +529,25 @@ public class WeightViewer : Viewer
     public VertexSelectionMode vertex_selection_mode = VertexSelectionMode.CcwVertices;
 
     /// <summary>
+    /// node選択モード
+    /// </summary>
+    public enum NodeSelectionMode
+    {
+        /// <summary>
+        /// 全てのnodeを描画
+        /// </summary>
+        AllBones,
+        /// <summary>
+        /// nodeを描画しない
+        /// </summary>
+        None
+    }
+    /// <summary>
+    /// node選択モード
+    /// </summary>
+    public NodeSelectionMode node_selection_mode = NodeSelectionMode.AllBones;
+
+    /// <summary>
     /// フィギュアを描画します。
     /// </summary>
     protected override void DrawFigure()
@@ -718,9 +737,12 @@ public class WeightViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            //nodeを描画する。
-            DrawNodeTree(fig);
-            DrawSelectedNode(fig);
+            if (node_selection_mode == NodeSelectionMode.AllBones)
+            {
+                //nodeを描画する。
+                DrawNodeTree(fig);
+                DrawSelectedNode(fig);
+            }
 
             if (SelectedMesh != null)
             {

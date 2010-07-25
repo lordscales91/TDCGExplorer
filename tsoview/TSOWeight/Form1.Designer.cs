@@ -98,6 +98,9 @@
             this.btnDraw = new System.Windows.Forms.Button();
             this.tbRadius = new System.Windows.Forms.TrackBar();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.boneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.boneAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.boneNoneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbWeight)).BeginInit();
@@ -301,7 +304,8 @@
             this.modeToolStripMenuItem,
             this.cameraCenterToolStripMenuItem,
             this.meshToolStripMenuItem,
-            this.vertexToolStripMenuItem});
+            this.vertexToolStripMenuItem,
+            this.boneToolStripMenuItem});
             this.ViewToolStripMenuItem.Name = "ViewToolStripMenuItem";
             this.ViewToolStripMenuItem.Size = new System.Drawing.Size(62, 22);
             this.ViewToolStripMenuItem.Text = "表示(&V)";
@@ -669,6 +673,29 @@
             this.statusStrip1.TabIndex = 23;
             this.statusStrip1.Text = "statusStrip1";
             // 
+            // boneToolStripMenuItem
+            // 
+            this.boneToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.boneAllToolStripMenuItem,
+            this.boneNoneToolStripMenuItem});
+            this.boneToolStripMenuItem.Name = "boneToolStripMenuItem";
+            this.boneToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.boneToolStripMenuItem.Text = "ボーン(&B)";
+            // 
+            // boneAllToolStripMenuItem
+            // 
+            this.boneAllToolStripMenuItem.Name = "boneAllToolStripMenuItem";
+            this.boneAllToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.boneAllToolStripMenuItem.Text = "全てのボーンを表示(&A)";
+            this.boneAllToolStripMenuItem.Click += new System.EventHandler(this.boneAllToolStripMenuItem_Click);
+            // 
+            // boneNoneToolStripMenuItem
+            // 
+            this.boneNoneToolStripMenuItem.Name = "boneNoneToolStripMenuItem";
+            this.boneNoneToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.boneNoneToolStripMenuItem.Text = "なし(&N)";
+            this.boneNoneToolStripMenuItem.Click += new System.EventHandler(this.boneNoneToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -760,6 +787,9 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem helpVersionToolStripMenuItem;
         private System.Windows.Forms.Button btnErase;
+        private System.Windows.Forms.ToolStripMenuItem boneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem boneAllToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem boneNoneToolStripMenuItem;
     }
 }
 
