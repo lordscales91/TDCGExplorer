@@ -5,31 +5,28 @@ namespace TDCG.TAHTool
 {
     public class TAHFileUtils
     {
-        public static string GetExtensionFromMagic(byte[] data_output)
+        public static string GetExtensionFromMagic(byte[] magic)
         {
             string ext;
-            string magic = System.Text.Encoding.ASCII.GetString(data_output, 0, 4);
-            switch (magic)
-            {
-                case "8BPS":
-                    ext = ".psd";
-                    break;
-                case "TMO1":
-                    ext = ".tmo";
-                    break;
-                case "TSO1":
-                    ext = ".tso";
-                    break;
-                case "OggS":
-                    ext = ".ogg";
-                    break;
-                case "BBBB":
-                    ext = ".tbn";
-                    break;
-                default:
-                    ext = ".cgfx";
-                    break;
-            }
+            if (magic[0] == '8' && magic[1] == 'B' && magic[2] == 'P' && magic[3] == 'S')
+                ext = ".psd";
+            else
+            if (magic[0] == 'T' && magic[1] == 'M' && magic[2] == 'O' && magic[3] == '1')
+                ext = ".tmo";
+            else
+            if (magic[0] == 'T' && magic[1] == 'S' && magic[2] == 'O' && magic[3] == '1')
+                ext = ".tso";
+            else
+            if (magic[0] == 'O' && magic[1] == 'g' && magic[2] == 'g' && magic[3] == 'S')
+                ext = ".ogg";
+            else
+            if (magic[0] == 'B' && magic[1] == 'B' && magic[2] == 'B' && magic[3] == 'B')
+                ext = ".tbn";
+            else
+            if (magic[0] == 0x89 && magic[1] == 'P' && magic[2] == 'N' && magic[3] == 'G')
+                ext = ".png";
+            else
+                ext = ".cgfx";
             return ext;
         }
     }
