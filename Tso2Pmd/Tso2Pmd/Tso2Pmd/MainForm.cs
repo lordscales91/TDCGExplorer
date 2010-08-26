@@ -229,7 +229,7 @@ namespace Tso2Pmd
             pd.Show(this);
             pd.Message = "ファイルを変換しています。";
 
-            //try {
+            try {
 
                 string em;
 
@@ -278,14 +278,14 @@ namespace Tso2Pmd
                 // 初期の表情にする
                 t2p.DefaultFace();
 
-            /*}
+            }
             catch
             {
                 // お待ちくださいダイアログを閉じる
                 pd.Dispose(); 
 
                 MessageBox.Show("エラーにより、変換できませんでした。");
-            }*/
+            }
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

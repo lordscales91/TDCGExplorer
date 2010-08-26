@@ -66,7 +66,6 @@ namespace Tso2Pmd
         CorrespondTable girl2miku = new CorrespondTable("girl2miku");
         CorrespondTable man2miku = new CorrespondTable("man2miku");
         CorrespondTable girl2mikuTwist = new CorrespondTable("girl2mikuTwist");
-        CorrespondTable man2mikuTwist = new CorrespondTable("man2mikuTwist");
                
         // -----------------------------------------------------
         // 表情設定リスト
