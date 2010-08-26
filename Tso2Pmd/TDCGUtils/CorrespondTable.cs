@@ -105,7 +105,7 @@ namespace TDCGUtils
             }
             sr.Close();
 
-            //内容を一行ずつ読み込む
+            /*//内容を一行ずつ読み込む
             sr = new System.IO.StreamReader(
                 Application.StartupPath + @"/CorrespondTable/" + name + "_vmd2tmo.txt",
                 System.Text.Encoding.GetEncoding("shift_jis"));
@@ -137,7 +137,7 @@ namespace TDCGUtils
 
                 boneCorrespond_t2v.Add(data[0].Trim(), data_list);
             }
-            sr.Close();
+            sr.Close();*/
         }
     }
 }
