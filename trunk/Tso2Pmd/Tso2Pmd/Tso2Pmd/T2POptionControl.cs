@@ -67,6 +67,9 @@ namespace Tso2Pmd
             if (radioButton_Bone0.Checked == true) t2p.Bone_flag = 0;
             else if (radioButton_Bone1.Checked == true) t2p.Bone_flag = 1;
 
+            t2p.Twist_flag = checkBox1.Checked;
+            t2p.ArmIK_flag = checkBox2.Checked;
+
             t2p.Spheremap_flag = checkBox_Spheremap.Checked;
             t2p.Edge_flag_flag = checkBox_Edge.Checked;
             t2p.Merge_flag = checkBox_Merge.Checked;
@@ -139,5 +142,15 @@ namespace Tso2Pmd
             taikeiControl1.SaveTPOConfig(path);
         }
 
+        private void radioButton_Bone0_CheckedChanged(object sender, EventArgs e)
+        {
+            checkBox1.Enabled = radioButton_Bone0.Checked;
+            checkBox2.Enabled = radioButton_Bone0.Checked;
+        }
+
+        private void radioButton_Bone1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
