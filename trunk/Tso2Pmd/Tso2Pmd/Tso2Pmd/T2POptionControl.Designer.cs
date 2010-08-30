@@ -43,6 +43,7 @@
             this.textBox_Folder = new System.Windows.Forms.TextBox();
             this.button_Folder = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.label3 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
@@ -67,7 +68,6 @@
             this.checkBox_Merge = new System.Windows.Forms.CheckBox();
             this.checkBox_Edge = new System.Windows.Forms.CheckBox();
             this.taikeiControl1 = new Tso2Pmd.TaikeiControl();
-            this.label3 = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -130,7 +130,7 @@
             this.textBox_Comment.Size = new System.Drawing.Size(290, 99);
             this.textBox_Comment.TabIndex = 11;
             this.textBox_Comment.Text = "PolyMo用モデルデータ : カスタム少女\r\n(物理演算対応モデル)\r\n\r\nモデル編集者 : ---\r\nMOD作成者 : ---\r\nデータ変換 : Tso2Pm" +
-                "d Ver. 0.2.1\r\nCopyright : TechArts3D & ---";
+                "d Ver. 0.2.2\r\nCopyright : TechArts3D & ---";
             // 
             // label7
             // 
@@ -243,6 +243,15 @@
             this.tabPage4.TabIndex = 3;
             this.tabPage4.Text = "オプション1";
             this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(32, 56);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(207, 12);
+            this.label3.TabIndex = 24;
+            this.label3.Text = "＊ 捩ボーンと腕IKは同時に適用できません";
             // 
             // groupBox4
             // 
@@ -510,15 +519,6 @@
             this.taikeiControl1.Name = "taikeiControl1";
             this.taikeiControl1.Size = new System.Drawing.Size(316, 104);
             this.taikeiControl1.TabIndex = 28;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(32, 56);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(217, 12);
-            this.label3.TabIndex = 24;
-            this.label3.Text = "＊ 捩ボーンと腕IKは同時には適用できません";
             // 
             // T2POptionControl
             // 
