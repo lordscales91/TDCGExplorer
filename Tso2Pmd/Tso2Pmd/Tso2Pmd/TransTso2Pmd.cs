@@ -528,23 +528,27 @@ namespace Tso2Pmd
                 = new MmdVector3(
                     pmd.getBoneByName("左足ＩＫ").vec3Position.x,
                     pmd.getBoneByName("左足ＩＫ").vec3Position.y,
-                    pmd.getBoneByName("左足ＩＫ").vec3Position.z + 2.0f);
+                    pmd.getBoneByName("左足ＩＫ").vec3Position.z + 1.7f);
             pmd.getBoneByName("右足ＩＫ先").vec3Position
                 = new MmdVector3(
                     pmd.getBoneByName("右足ＩＫ").vec3Position.x,
                     pmd.getBoneByName("右足ＩＫ").vec3Position.y,
-                    pmd.getBoneByName("右足ＩＫ").vec3Position.z + 2.0f);
-            pmd.getBoneByName("左つま先ＩＫ").vec3Position.z -= 0.25f;
+                    pmd.getBoneByName("右足ＩＫ").vec3Position.z + 1.7f);
+
+            pmd.getBoneByName("左つま先").vec3Position.y = 0.0f;
+            pmd.getBoneByName("左つま先ＩＫ").vec3Position.y = 0.0f;
             pmd.getBoneByName("左つま先ＩＫ先").vec3Position
                 = new MmdVector3(
                     pmd.getBoneByName("左つま先ＩＫ").vec3Position.x,
-                    pmd.getBoneByName("左つま先ＩＫ").vec3Position.y - 2.0f,
+                    pmd.getBoneByName("左つま先ＩＫ").vec3Position.y - 1.0f,
                     pmd.getBoneByName("左つま先ＩＫ").vec3Position.z);
-            pmd.getBoneByName("右つま先ＩＫ").vec3Position.z -= 0.25f;
+
+            pmd.getBoneByName("右つま先").vec3Position.y = 0.0f;
+            pmd.getBoneByName("右つま先ＩＫ").vec3Position.y = 0.0f;
             pmd.getBoneByName("右つま先ＩＫ先").vec3Position
                 = new MmdVector3(
                     pmd.getBoneByName("右つま先ＩＫ").vec3Position.x,
-                    pmd.getBoneByName("右つま先ＩＫ").vec3Position.y - 2.0f,
+                    pmd.getBoneByName("右つま先ＩＫ").vec3Position.y - 1.0f,
                     pmd.getBoneByName("右つま先ＩＫ").vec3Position.z);
           
             // -----------------------------------------------------
