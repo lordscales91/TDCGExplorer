@@ -25,8 +25,7 @@ namespace TDCGUtils
         public Dictionary<string, PMD_Bone> boneStructure_dic = new Dictionary<string, PMD_Bone>();
         public List<DispBoneGroup> dispBoneGroup = new List<DispBoneGroup>();
 
-        public Dictionary<string, string> boneCorrespond_v2t = new Dictionary<string, string>();
-        public Dictionary<string, List<string>> boneCorrespond_t2v = new Dictionary<string, List<string>>();
+        //public Dictionary<string, string> boneCorrespond_v2t = new Dictionary<string, string>();
 
         public CorrespondTable(string name)
         {
@@ -116,28 +115,8 @@ namespace TDCGUtils
 
                 boneCorrespond_v2t.Add(data[0].Trim(), data[1].Trim());
             }
-            sr.Close();
-
-            //内容を一行ずつ読み込む
-            sr = new System.IO.StreamReader(
-                Application.StartupPath + @"/CorrespondTable/" + name + "_tmo2vpd.txt",
-                System.Text.Encoding.GetEncoding("shift_jis"));
-            while (sr.Peek() > -1)
-            {
-                string line = sr.ReadLine();
-                string[] data = line.Split(',');
-
-                List<string> data_list = new List<string>();
-
-                for (int i = 1; i < data.Length; i++)
-                {
-                    if (data[i].Trim() == "") break;
-                    data_list.Add(data[i].Trim());
-                }
-
-                boneCorrespond_t2v.Add(data[0].Trim(), data_list);
-            }
             sr.Close();*/
+
         }
     }
 }
