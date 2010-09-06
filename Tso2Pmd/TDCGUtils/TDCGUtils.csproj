@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CorrespondBoneForTmo2Vpd.cs" />
     <Compile Include="CorrespondTable.cs" />
     <Compile Include="ProgressForm.cs">
       <SubType>Form</SubType>

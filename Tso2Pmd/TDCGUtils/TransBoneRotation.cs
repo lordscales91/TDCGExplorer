@@ -11,7 +11,7 @@ namespace TDCGUtils
 {
     public class TransBoneRotation
     {
-        CorrespondTable girl2miku = new CorrespondTable("girl2miku");
+        CorrespondBoneForTmo2Vpd tmo2vpd = new CorrespondBoneForTmo2Vpd("girl2miku");
 
         TMOFile initPose;
         TMOFile pmd_initPose_diff;
@@ -100,6 +100,7 @@ namespace TDCGUtils
                     UnitaryTmo(pose_diff, pmd_initPose_diff_w),
                     InvertTmo(pmd_initPose_diff)
                 );
+            TMOFile output2 = UnitaryTmo(pose_diff, pmd_initPose_diff_w);
 
             // ファイルを上書きし、Shift JISで書き込む
             System.IO.StreamWriter sw = new System.IO.StreamWriter(
@@ -111,15 +112,15 @@ namespace TDCGUtils
             sw.WriteLine(@"Vocaloid Pose Data file");
             sw.WriteLine(@"");
             sw.WriteLine(@"miku.osm;");
-            sw.WriteLine((girl2miku.boneCorrespond_t2v.Count).ToString() + @";");
+            sw.WriteLine((tmo2vpd.CorrespondBone.Count).ToString() + @";");
 
             // ボーンの回転
             int i = 0;
-            foreach (KeyValuePair<string, List<string>> kvp in girl2miku.boneCorrespond_t2v)
+            foreach (KeyValuePair<string, List<string>> kvp in tmo2vpd.CorrespondBone)
             {
                 sw.WriteLine(@"");
                 sw.WriteLine(@"Bone" + i.ToString() + "{" + kvp.Key); i++;
-                sw.WriteLine(@"-0.000000,0.000000,0.000000;");
+                sw.WriteLine(@"0.000000,0.000000,0.000000;");
 
                 Quaternion q;
 
@@ -137,7 +138,14 @@ namespace TDCGUtils
                     Quaternion face_q = output.FindNodeByName("face_oya").Rotation;
 
                     q = output.FindNodeByName("Head").Rotation *
-                        new Quaternion(-face_q.X, face_q.Y, face_q.Z, face_q.W);
+                        new Quaternion(-face_q.X, face_q.Y, -face_q.Z, face_q.W);
+                }
+                else if (kvp.Key.IndexOf("捩") >= 0)
+                {
+                    q = Quaternion.Identity;
+
+                    foreach (string bone_name in kvp.Value)
+                        q = q * output2.FindNodeByName(bone_name).Rotation;
                 }
                 else
                 {

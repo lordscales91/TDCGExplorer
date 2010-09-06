@@ -644,6 +644,11 @@ public class Viewer : IDisposable
         device.Transform.Projection = Transform_Projection;
         effect.SetValue("proj", Transform_Projection);
 
+        Transform_View = camera.ViewMatrix;
+        // xxx: for w-buffering
+        device.Transform.View = Transform_View;
+        effect.SetValue("view", Transform_View);
+
         if (shadow_map_enabled)
         {
             Light_Projection = Matrix.PerspectiveFovLH(
@@ -1044,9 +1049,17 @@ public class Viewer : IDisposable
         // ６つ分の頂点を作成
         _lineVertexBuffer = new VertexBuffer(typeof(CustomVertex.PositionColored),
             (3 + 21 + 21) * 2, device, Usage.None, CustomVertex.PositionColored.Format, Pool.Managed);
+        _lineVertexBuffer.Created += new EventHandler(_lineVertexBuffer_Created);
+        _lineVertexBuffer_Created(_lineVertexBuffer, null);
+
+    }
+
+    void _lineVertexBuffer_Created(object sender, EventArgs e)
+    {
+        VertexBuffer buffer = (VertexBuffer)sender;
 
         // 頂点バッファをロックして、位置、色情報を書き込む
-        using (GraphicsStream data = _lineVertexBuffer.Lock(0, 0, LockFlags.None))
+        using (GraphicsStream data = buffer.Lock(0, 0, LockFlags.None))
         {
             // 今回は各 XYZ のラインを原点(0.0f, 0.0f, 0.0f)からプラス方向に 10.0f 伸びた線を作成
             data.Write(new CustomVertex.PositionColored(0.0f, 0.0f, 0.0f, Color.Red.ToArgb()));
@@ -1069,7 +1082,7 @@ public class Viewer : IDisposable
                 else data.Write(new CustomVertex.PositionColored(i * 5.0f, 0.0f, 50.0f, Color.Black.ToArgb()));
             }
 
-            _lineVertexBuffer.Unlock();
+            buffer.Unlock();
         }
     }
 
