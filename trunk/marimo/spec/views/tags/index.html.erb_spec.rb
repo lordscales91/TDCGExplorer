@@ -6,10 +6,10 @@ describe "/tags/index.html.erb" do
   before(:each) do
     assigns[:tags] = [
       stub_model(Tag,
-        :name => "value for name"
+        :name => "value for name", :arc_tags => [ 1,2,3 ]
       ),
       stub_model(Tag,
-        :name => "value for name"
+        :name => "value for name", :arc_tags => [ 1,2,3 ]
       )
     ]
     template.stub!(:logged_in?).and_return(false)
@@ -19,7 +19,7 @@ describe "/tags/index.html.erb" do
 
   it "renders a list of tags" do
     render
-    response.should have_tag("tr>td", "value for name".to_s, 2)
+    response.should have_tag("tr>td", "value for name ( 3 )".to_s, 2)
   end
 end
 
