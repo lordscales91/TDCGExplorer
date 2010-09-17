@@ -15,7 +15,7 @@
   <%-for tag in group-%>
     <td>
     <%-if tag-%>
-      <%= link_to h(tag.name), tag %>
+      <%= link_to h("#{tag.name} ( #{tag.arc_tags.size} )"), tag %>
 <%-if logged_in? -%>
       <%= link_to _('Edit'), edit_tag_path(tag) %>
       <%= link_to _('Destroy'), tag, :confirm => 'Are you sure?', :method => :delete %>
