@@ -9,26 +9,22 @@
   Total <%=h @tags.total_entries %>
 </p>
 <table class="list tags">
-  <thead>
-  <tr>
-    <th><%= _'Tag|Name' %></th>
-    <th></th>
-<%-if logged_in? -%>
-    <th></th>
-    <th></th>
-<%-end-%>
-  </tr>
-  </thead>
-
   <tbody>
-<% for tag in @tags %>
+<% for group in @tags.in_groups_of(3) %>
   <tr class="<%= cycle('odd', 'even') %>">
-    <td><%=h tag.name %></td>
-    <td><%= link_to _('Show'), tag %></td>
+  <%-for tag in group-%>
+    <td>
+    <%-if tag-%>
+      <%= link_to h(tag.name), tag %>
 <%-if logged_in? -%>
-    <td><%= link_to _('Edit'), edit_tag_path(tag) %></td>
-    <td><%= link_to _('Destroy'), tag, :confirm => 'Are you sure?', :method => :delete %></td>
+      <%= link_to _('Edit'), edit_tag_path(tag) %>
+      <%= link_to _('Destroy'), tag, :confirm => 'Are you sure?', :method => :delete %>
 <%-end-%>
+    <%-else-%>
+      &nbsp;
+    <%-end-%>
+    </td>
+  <%-end-%>
   </tr>
 <% end %>
   </tbody>
