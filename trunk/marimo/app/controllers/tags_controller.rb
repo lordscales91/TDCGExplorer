@@ -14,7 +14,7 @@ class TagsController < ApplicationController
   # GET /tags.xml
   def index
     @search = Tag::Search.new(params[:search])
-    @tags = Tag.paginate(@search.find_options.merge(:page => params[:page]))
+    @tags = Tag.paginate(@search.find_options.merge(:page => params[:page], :include => :arc_tags))
 
     respond_to do |format|
       format.html # index.html.erb
