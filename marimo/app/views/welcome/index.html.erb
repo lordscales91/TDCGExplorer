@@ -12,7 +12,7 @@
   <b><%= _'tag' %>:</b>
 </p>
 <% for tag in @tags %>
-  <%=link_to h(tag.name), tag %>
+  <%=link_to h("#{tag.name} ( #{tag.arc_tags.size} )"), tag %>
 <% end %>
 <%-end-%>
 
