@@ -11,8 +11,8 @@
 <body>
 <div id="wrapper">
   <div id="top-menu">
+    <%= link_to "Home", root_path %>
     <div id="account">
-      <%= link_to "Home", root_path %>
     <%-if logged_in? -%>
       <%= link_to "Logout", session_path, :method => :delete %>
     <%-else-%>
