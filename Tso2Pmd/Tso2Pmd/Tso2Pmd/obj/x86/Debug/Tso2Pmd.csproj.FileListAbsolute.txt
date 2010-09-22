@@ -1,0 +1,15 @@
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Debug\Script.cs
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Debug\toonshader.cgfx
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Debug\Tso2Pmd.exe
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Debug\Tso2Pmd.pdb
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Tso2Pmd\Tso2Pmd\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Tso2Pmd\Tso2Pmd\obj\x86\Debug\Tso2Pmd.ClippingVertexForm.resources
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Tso2Pmd\Tso2Pmd\obj\x86\Debug\TSOView.FigureForm.resources
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Tso2Pmd\Tso2Pmd\obj\x86\Debug\Tso2Pmd.MainForm.resources
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Tso2Pmd\Tso2Pmd\obj\x86\Debug\Tso2Pmd.Properties.Resources.resources
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Tso2Pmd\Tso2Pmd\obj\x86\Debug\Tso2Pmd.T2POptionControl.resources
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Tso2Pmd\Tso2Pmd\obj\x86\Debug\Tso2Pmd.TaikeiControl.resources
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Tso2Pmd\Tso2Pmd\obj\x86\Debug\TSOView.TSOForm.resources
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Tso2Pmd\Tso2Pmd\obj\x86\Debug\Tso2Pmd.csproj.GenerateResource.Cache
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Tso2Pmd\Tso2Pmd\obj\x86\Debug\Tso2Pmd.exe
+C:\Users\nimono\Documents\MyProject\TDCG Project\Tso2Pmd\Tso2Pmd\Tso2Pmd\obj\x86\Debug\Tso2Pmd.pdb
