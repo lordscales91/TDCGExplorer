@@ -34,12 +34,11 @@ public class ProportionList
         if (! Directory.Exists(proportion_path))
             return;
 
-        string namespace_name = "TDCG.Proportion";
         string[] script_files = Directory.GetFiles(proportion_path, "*.cs");
         foreach (string script_file in script_files)
         {
-            string class_name = Path.GetFileNameWithoutExtension(script_file);
-            var script = CSScript.Load(script_file, Path.GetTempFileName(), true).CreateInstance(namespace_name + "." + class_name).AlignToInterface<IProportion>();
+            string class_name = "TDCG.Proportion." + Path.GetFileNameWithoutExtension(script_file);
+            var script = CSScript.Load(script_file).CreateInstance(class_name).AlignToInterface<IProportion>();
             items.Add(script);
         }
     }
