@@ -58,6 +58,7 @@ namespace TDCG.TAHTool
             encrypter.SourcePath = source_path;
             encrypter.GetFileEntryStream = delegate(string true_file_name)
             {
+                Console.WriteLine("compressing {0}", true_file_name);
                 return File.OpenRead(true_file_name);
             };
             encrypter.Save(file_path_name);
