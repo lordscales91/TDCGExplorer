@@ -13,9 +13,9 @@ namespace TMOFlip
 {
 class Program
 {
-    public static string GetSwapNodesPath()
+    public static string GetFlipNodesPath()
     {
-        return Path.Combine(Application.StartupPath, @"swapnodes.txt");
+        return Path.Combine(Application.StartupPath, @"flipnodes.txt");
     }
 
     public static void Main(string[] args)
@@ -39,16 +39,29 @@ class Program
         }
 
         char[] delim = { ' ' };
-        using (StreamReader source = new StreamReader(File.OpenRead(GetSwapNodesPath())))
+        using (StreamReader source = new StreamReader(File.OpenRead(GetFlipNodesPath())))
         {
             string line;
             while ((line = source.ReadLine()) != null)
             {
                 string[] tokens = line.Split(delim);
-                Debug.Assert(tokens.Length == 3, "tokens length should be 3");
                 string op = tokens[0];
+                if (op == "flip")
+                {
+                    Debug.Assert(tokens.Length == 2, "tokens length should be 2");
+                    string cnode_name = tokens[1];
+                    int cnode_id = nodemap[cnode_name].ID;
+
+                    foreach (TMOFrame frame in tmo.frames)
+                    {
+                        TMOMat cmat = frame.matrices[cnode_id];
+                        FlipMatrix(ref cmat.m);
+                    }
+                }
+                else
                 if (op == "swap")
                 {
+                    Debug.Assert(tokens.Length == 3, "tokens length should be 3");
                     string lnode_name = tokens[1];
                     string rnode_name = tokens[2];
                     int lnode_id = nodemap[lnode_name].ID;
