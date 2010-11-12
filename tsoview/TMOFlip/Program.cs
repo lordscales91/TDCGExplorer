@@ -80,9 +80,11 @@ class Program
             }
         }
 
+        string dest_path = Path.GetDirectoryName(source_file);
         string dest_file = Path.GetFileNameWithoutExtension(source_file) + @".new.tmo";
-        Console.WriteLine("Save File: " + dest_file);
-        tmo.Save(dest_file);
+        dest_path = Path.Combine(dest_path, dest_file);
+        Console.WriteLine("Save File: " + dest_path);
+        tmo.Save(dest_path);
     }
 
     static void FlipMatrix(ref Matrix m)
