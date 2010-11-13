@@ -73,8 +73,8 @@ class Program
                         TMOMat rmat = frame.matrices[rnode_id];
                         FlipMatrix(ref lmat.m);
                         FlipMatrix(ref rmat.m);
-                        frame.matrices[nodemap[lnode_name].ID] = rmat;
-                        frame.matrices[nodemap[rnode_name].ID] = lmat;
+                        frame.matrices[lnode_id] = rmat;
+                        frame.matrices[rnode_id] = lmat;
                     }
                 }
             }
