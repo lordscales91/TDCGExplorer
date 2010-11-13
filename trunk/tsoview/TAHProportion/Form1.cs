@@ -19,7 +19,6 @@ namespace TAHProportion
         string source_file = null;
         Decrypter decrypter = new Decrypter();
 
-        ProportionList pro_list = new ProportionList();
         TPOFileList tpo_list = new TPOFileList();
     
         public string GetTPOConfigPath()
@@ -31,9 +30,13 @@ namespace TAHProportion
         {
             InitializeComponent();
 
-            pro_list.Load();
-            tpo_list.SetProportionList(pro_list);
+            LoadTPOFileList();
             DumpPortions();
+        }
+
+        private void LoadTPOFileList()
+        {
+            tpo_list.Load();
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
