@@ -23,6 +23,9 @@ public class ProportionList
     {
     }
 
+    /// <summary>
+    /// 体型リスト
+    /// </summary>
     public static ProportionList Instance
     {
         get
@@ -47,9 +50,13 @@ public class ProportionList
 
     /// <summary>
     /// 体型スクリプトを読み込みます。
+    /// 2回目は読み込みません。
     /// </summary>
     public void Load()
     {
+        if (items.Count != 0)
+            return;
+
         string proportion_path = GetProportionPath();
         if (! Directory.Exists(proportion_path))
             return;

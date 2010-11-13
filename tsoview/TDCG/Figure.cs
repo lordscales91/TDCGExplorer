@@ -68,11 +68,6 @@ public class Figure : IDisposable
     private int frame_index = 0;
     private int current_frame_index = 0;
 
-    /// <summary>
-    /// 体型スクリプトのリスト
-    /// </summary>
-    public static ProportionList ProportionList { get; set; }
-
     TPOFileList tpo_list = new TPOFileList();
     /// <summary>
     /// TPOファイルのリスト
@@ -97,7 +92,7 @@ public class Figure : IDisposable
         nodemap = new Dictionary<TSONode, TMONode>();
         matrixStack = new MatrixStack();
 
-        tpo_list.SetProportionList(ProportionList);
+        tpo_list.Load();
 
         string config_file = GetTPOConfigPath();
         if (File.Exists(config_file))
