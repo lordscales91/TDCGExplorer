@@ -37,7 +37,7 @@ namespace PNGProportion
             string source_file = args[0];
 
             Program program = new Program();
-            program.SetProportionList();
+            program.LoadTPOFileList();
             program.Process(source_file);
         }
 
@@ -45,7 +45,6 @@ namespace PNGProportion
 
         byte[] cami;
 
-        ProportionList pro_list = new ProportionList();
         TPOFileList tpo_list = new TPOFileList();
     
         public string GetTPOConfigPath()
@@ -53,10 +52,9 @@ namespace PNGProportion
             return Path.Combine(Application.StartupPath, @"TPOConfig.xml");
         }
 
-        public void SetProportionList()
+        public void LoadTPOFileList()
         {
-            pro_list.Load();
-            tpo_list.SetProportionList(pro_list);
+            tpo_list.Load();
         }
 
         public bool Process(string source_file)
