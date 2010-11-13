@@ -41,7 +41,7 @@ namespace TMOProportion
             slidermap = new Dictionary<IProportion, ProportionSlider>();
             {
                 int nproportion = 0;
-                foreach (IProportion proportion in Figure.ProportionList.items)
+                foreach (IProportion proportion in ProportionList.Instance.items)
                 {
                     ProportionSlider slider = new ProportionSlider();
                     slider.ClassName = proportion.ToString();
