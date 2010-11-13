@@ -78,7 +78,7 @@ public class TPOFileList
     /// </summary>
     public void Load()
     {
-        ProportionList pro_list = new ProportionList();
+        ProportionList pro_list = ProportionList.Instance;
         pro_list.Load();
         SetProportionList(pro_list);
     }

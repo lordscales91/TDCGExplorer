@@ -70,7 +70,7 @@ public class Viewer : IDisposable
     // マウスポイントしているスクリーン座標
     internal Point lastScreenPoint = Point.Empty;
 
-    ProportionList pro_list = new ProportionList();
+    ProportionList pro_list = ProportionList.Instance;
 
     /// <summary>
     /// viewerを生成します。
