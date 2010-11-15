@@ -229,7 +229,7 @@ namespace PNGFlip
                     foreach (TMOFrame frame in tmo.frames)
                     {
                         TMOMat cmat = frame.matrices[cnode_id];
-                        FlipMatrix(ref cmat.m);
+                        cmat.Flip();
                     }
                 }
                 else
@@ -245,28 +245,14 @@ namespace PNGFlip
                     {
                         TMOMat lmat = frame.matrices[lnode_id];
                         TMOMat rmat = frame.matrices[rnode_id];
-                        FlipMatrix(ref lmat.m);
-                        FlipMatrix(ref rmat.m);
+                        lmat.Flip();
+                        rmat.Flip();
                         frame.matrices[lnode_id] = rmat;
                         frame.matrices[rnode_id] = lmat;
                     }
                 }
             }
         }
-    }
-
-    static void FlipMatrix(ref Matrix m)
-    {
-        //y‰ñ“]
-        m.M31 = -m.M31;
-        m.M13 = -m.M13;
-
-        //z‰ñ“]
-        m.M21 = -m.M21;
-        m.M12 = -m.M12;
-
-        //xˆÚ“®
-        m.M41 = -m.M41;
     }
     }
 }

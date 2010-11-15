@@ -912,6 +912,27 @@ namespace TDCG
         {
             return ToAngleXYZ(Matrix.RotationQuaternion(q));
         }
+
+        /// 左右反転します。
+        public void Flip()
+        {
+            FlipMatrix(ref m);
+        }
+
+        /// 左右反転します。
+        public static void FlipMatrix(ref Matrix m)
+        {
+            //y回転
+            m.M31 = -m.M31;
+            m.M13 = -m.M13;
+
+            //z回転
+            m.M21 = -m.M21;
+            m.M12 = -m.M12;
+
+            //x移動
+            m.M41 = -m.M41;
+        }
     }
 
     /// <summary>
