@@ -142,7 +142,6 @@ public class Figure : IDisposable
     /// <param name="delta">変位</param>
     public void Move(Vector3 delta)
     {
-        center += delta;
         translation += delta;
         UpdateBoneMatrices(true);
     }

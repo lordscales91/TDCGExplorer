@@ -61,7 +61,7 @@ public class TSOForm : Form
             {
                 Figure fig;
                 if (viewer.TryGetFigure(out fig))
-                    viewer.Camera.SetCenter(fig.Center);
+                    viewer.Camera.SetCenter(fig.Center + fig.Translation);
             };
             viewer.FigureEvent += delegate(object sender, EventArgs e)
             {
@@ -151,7 +151,7 @@ public class TSOForm : Form
             viewer.Camera.Reset();
             Figure fig;
             if (viewer.TryGetFigure(out fig))
-                viewer.Camera.SetCenter(fig.Center);
+                viewer.Camera.SetCenter(fig.Center + fig.Translation);
         }
         if (keysEnabled[keyFigureForm] && keys[keyFigureForm])
         {
@@ -187,8 +187,17 @@ public class TSOForm : Form
         if (keys[(int)Keys.D])
             keyZRol = +2.0f;
 
-        viewer.Camera.Move(keyR - keyL, keyU - keyD, keyPull - keyPush);
-        viewer.Camera.RotZ(DegreeToRadian(keyZRol));
+        if (Control.ModifierKeys == Keys.Shift)
+        {
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
+                fig.Move(keyR - keyL, keyU - keyD, keyPull - keyPush);
+        }
+        else
+        {
+            viewer.Camera.Move(keyR - keyL, keyU - keyD, keyPull - keyPush);
+            viewer.Camera.RotZ(DegreeToRadian(keyZRol));
+        }
     }
 
     private void form_OnDragOver(object sender, DragEventArgs e)
