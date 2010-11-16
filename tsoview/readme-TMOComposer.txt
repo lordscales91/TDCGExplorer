@@ -1,6 +1,6 @@
 ƒ_ƒEƒ“ƒ[ƒh‚ ‚è‚ª‚Æ‚¤‚²‚´‚¢‚Ü‚·
 
-œTMOComposer ver 0.3.1
+œTMOComposer ver 0.3.2
 
 ‚±‚ê‚Í‚È‚É
 ƒ|[ƒY‚©‚çƒ‚[ƒVƒ‡ƒ“‚ðŠÈ’P‚Éì¬‚·‚éƒc[ƒ‹‚Å‚·B
@@ -53,6 +53,7 @@
 EAccelF•âŠÔ‘¬“xŒW”
 
 [ Copy] ƒ{ƒ^ƒ“‚ð‰Ÿ‚·‚ÆA‘I‘ð’†‚Ìƒ|[ƒYÝ’è‚ð•¡ŽÊ‚µ‚Ü‚·B
+[ Flip] ƒ{ƒ^ƒ“‚ð‰Ÿ‚·‚ÆA‘I‘ð’†‚Ìƒ|[ƒY‚ð¶‰E”½“]‚µ‚Ü‚·B
 [ Up  ] ƒ{ƒ^ƒ“‚ð‰Ÿ‚·‚ÆA‘I‘ð’†‚Ìƒ|[ƒYÝ’è‚ªˆê‚Âã‚ÉˆÚ“®‚µ‚Ü‚·B
 [ Down] ƒ{ƒ^ƒ“‚ð‰Ÿ‚·‚ÆA‘I‘ð’†‚Ìƒ|[ƒYÝ’è‚ªˆê‚Â‰º‚ÉˆÚ“®‚µ‚Ü‚·B
 [ Del ] ƒ{ƒ^ƒ“‚ð‰Ÿ‚·‚ÆA‘I‘ð’†‚Ìƒ|[ƒYÝ’è‚ðíœ‚µ‚Ü‚·B
@@ -102,6 +103,9 @@ TMOComposerConfig.exe‚ðŽg‚Á‚Äconfig.xml‚ðC³‚·‚é‚±‚Æ‚ÅAŠî–{Ý’è‚ð•ÏX‚Å‚«‚Ü‚·
 ETMOComposer.exe‚Æ“¯‚¶ƒtƒHƒ‹ƒ_‚Étoonshader.cgfx‚ª•K—v‚Å‚·B
 E•K‚¸pngƒtƒ@ƒCƒ‹‚ðƒoƒbƒNƒAƒbƒv‚µ‚Ä‚­‚¾‚³‚¢B
 
+
+ver 0.3.1 ‚©‚ç‚Ì•ÏX“_F
+EFlipƒ{ƒ^ƒ“‚ð’Ç‰Á
 
 ver 0.0.8 ‚©‚ç‚Ì•ÏX“_F
 Esources: TSOView, TMOComposer, TMOProportion ‚ð“‡
