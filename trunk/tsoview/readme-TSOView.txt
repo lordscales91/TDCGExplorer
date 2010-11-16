@@ -77,6 +77,7 @@ TSOView.exe [file ... ]
 ver 0.3.1 からの変更点：
 ・XPC02319 toonshader4TSOView
 ・Shift+方向キーで選択フィギュアを移動
+・起動時にsystem.tdcgsav.pngを読み込む
 
 ver 0.3.0 からの変更点：
 ・画面サイズ変更時に解像度修正
