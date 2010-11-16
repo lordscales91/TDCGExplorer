@@ -388,5 +388,34 @@ namespace TMOComposer
         {
             viewer.FloorEnabled = cbFloor.Checked;
         }
+
+        private void btnFlip_Click(object sender, EventArgs e)
+        {
+            int pngsave_row = pngSaveItemBindingSource.Position;
+            int tmoanim_row = tmoAnimItemBindingSource.Position;
+
+            if (pngsave_row == -1)
+                return;
+
+            if (pngsave_row >= viewer.FigureList.Count)
+                return;
+
+            TMOAnim tmoanim = pngsave.items[pngsave_row].tmoanim;
+
+            if (tmoanim_row == -1)
+                return;
+
+            TMOAnimItem item = tmoanim.items[tmoanim_row];
+
+            TDCG.TMOFlip.TMOFlipProcessor processor = new TDCG.TMOFlip.TMOFlipProcessor();
+
+            Figure fig = viewer.FigureList[pngsave_row];
+            {
+                TMOFile tmo = tmoanim.GetTmo(item);
+                viewer.Solver.Solved = true;
+                processor.Process(fig.Tmo);
+                fig.UpdateNodeMapAndBoneMatrices();
+            }
+        }
     }
 }
