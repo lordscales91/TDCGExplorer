@@ -6,8 +6,8 @@
    ( This file is a part of "3D Custom Girl" project. )
 **********************************************************/
 #define OBSIDIAN_3D
-#define PROFILE_VS vs_2_0
-#define PROFILE_PS ps_2_0
+#define PROFILE_VS vs_3_0
+#define PROFILE_PS ps_3_0
 
 #define	MONO	0
 
@@ -313,9 +313,16 @@ sampler2D FurShadeTex = sampler_state {
 	WrapS = REPEAT;
 	WrapT = REPEAT;
 
+#if (1)
+	MinFilter = ANISOTROPIC;
+	MagFilter = ANISOTROPIC;
+	MipFilter = ANISOTROPIC;
+	MAXANISOTROPY = 16;
+#else
 	MagFilter = LINEAR;
 	MinFilter = LINEAR;
 	MipFilter = NONE;
+#endif
 };
 
 sampler2D ColorTex = sampler_state {
@@ -324,9 +331,16 @@ sampler2D ColorTex = sampler_state {
 	WrapS = REPEAT;
 	WrapT = REPEAT;
 
+#if (1)
+	MinFilter = ANISOTROPIC;
+	MagFilter = ANISOTROPIC;
+	MipFilter = ANISOTROPIC;
+	MAXANISOTROPY = 16;
+#else
 	MagFilter = LINEAR;
 	MinFilter = LINEAR;
 	MipFilter = NONE;
+#endif
 };
 
 sampler2D RotateTex = sampler_state {
@@ -336,21 +350,16 @@ sampler2D RotateTex = sampler_state {
 	WrapT = Border;
 	BorderColor = (0);
 
+#if (1)
+	MinFilter = ANISOTROPIC;
+	MagFilter = ANISOTROPIC;
+	MipFilter = ANISOTROPIC;
+	MAXANISOTROPY = 16;
+#else
 	MagFilter = LINEAR;
 	MinFilter = LINEAR;
 	MipFilter = NONE;
-};
-
-sampler2D ShadowMap = sampler_state
-{
-	Texture		= <texShadowMap>;
-
-	WrapS = CLAMP;
-	WrapT = CLAMP;
-
-	MagFilter = LINEAR;
-	MinFilter = LINEAR;
-        MipFilter = NONE;
+#endif
 };
 
 sampler2D DesktopTex = sampler_state {
@@ -359,9 +368,16 @@ sampler2D DesktopTex = sampler_state {
 	WrapS = REPEAT;
 	WrapT = REPEAT;
 
+#if (1)
+	MinFilter = ANISOTROPIC;
+	MagFilter = ANISOTROPIC;
+	MipFilter = ANISOTROPIC;
+	MAXANISOTROPY = 16;
+#else
 	MagFilter = LINEAR;
 	MinFilter = LINEAR;
 	MipFilter = NONE;
+#endif
 };
 
 sampler2D MojiTex = sampler_state {
@@ -370,9 +386,16 @@ sampler2D MojiTex = sampler_state {
 	WrapS = REPEAT;
 	WrapT = REPEAT;
 
+#if (1)
+	MinFilter = ANISOTROPIC;
+	MagFilter = ANISOTROPIC;
+	MipFilter = ANISOTROPIC;
+	MAXANISOTROPY = 16;
+#else
 	MagFilter = LINEAR;
 	MinFilter = LINEAR;
 	MipFilter = NONE;
+#endif
 };
 
 #if MONO
@@ -388,8 +411,6 @@ sampler2D MonoPal = sampler_state {
 };
 #endif
 
-const uniform float4x4	LocalBoneMats[16];
-const uniform int	LocalBoneSels[16];
 
 struct appdata {
 	float3	Position	: POSITION;
@@ -410,11 +431,6 @@ struct cVertexData {
 
 struct cVertexData2 {
 	float4	Position	: POSITION;
-};
-
-struct cVertexData3 {
-	float4	Position	: POSITION;
-	float4  ShadowMapTex    : TEXCOORD0;
 };
 
 struct HLMapData {
@@ -439,6 +455,34 @@ struct cBHLData {
 	float2	UV		: TEXCOORD0;
 	float3	Normal		: TEXCOORD1;
 };
+
+//-----------------------------------------------------------
+//  tsoviewånÇ±Ç±Ç©ÇÁ
+//-----------------------------------------------------------
+
+sampler2D ShadowMap = sampler_state
+{
+	Texture		= <texShadowMap>;
+
+	WrapS = CLAMP;
+	WrapT = CLAMP;
+
+	MagFilter = LINEAR;
+	MinFilter = LINEAR;
+        MipFilter = NONE;
+};
+
+const uniform float4x4	LocalBoneMats[16];
+const uniform int	LocalBoneSels[16];
+
+struct cVertexData3 {
+	float4	Position	: POSITION;
+	float4  ShadowMapTex    : TEXCOORD0;
+};
+
+//-----------------------------------------------------------
+//  tsoviewånÇ±Ç±Ç‹Ç≈
+//-----------------------------------------------------------
 
 //-----------------------------------------------------------
 //  ÉXÉLÉìïœå` (í∏ì_Å^ñ@ê¸)
@@ -483,6 +527,10 @@ void calc_skindeform_nonorm( float4 inpos, float4 weights, int4 idxs, out float4
 	outpos = float4( npos.xyz, 1 );
 }
 
+//-----------------------------------------------------------
+//  tsoviewånÇ±Ç±Ç©ÇÁ
+//-----------------------------------------------------------
+
 void calc_bonecol( float4 incol, float4 weights, int4 idxs, out float4 outcol )
 {
 	float4	ncol;
@@ -491,6 +539,24 @@ void calc_bonecol( float4 incol, float4 weights, int4 idxs, out float4 outcol )
 	ncol += mul( incol, LocalBoneSels[idxs[2]] ) * weights[2];
 	ncol += mul( incol, LocalBoneSels[idxs[3]] ) * weights[3];
 	outcol = float4( ncol.xyz, 1 );
+}
+
+cVertexData cMainVS_BoneCol( appdata IN )
+{
+	cVertexData OUT;
+	float4 pos; float3 nor; float4 col;
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+        calc_bonecol( PenColor, IN.VWeights, IN.BoneIdxs, col );
+	OUT.Position	 = mul( pos, wvp );
+	OUT.UV		 = IN.UV;
+	OUT.Normal	 = normalize( mul( float4( nor.xyz, 0 ), wld ) );
+	OUT.ZTex         = col;
+	return OUT;
+}
+
+float4 cMainPS_BoneCol( cVertexData IN ) : COLOR
+{
+        return IN.ZTex;
 }
 
 cVertexData3 cShadowMapVS( appdata IN )
@@ -510,7 +576,106 @@ cVertexData3 cShadowMapVS( appdata IN )
 
    return OUT;
 }
+
+float4 cShadowMapPS( float4 ShadowMapTex : TEXCOORD0 ) : COLOR
+{
+   // ZíléZèo
+   float depth = ShadowMapTex.z / ShadowMapTex.w;
+   // ê∏ìxÇè„Ç∞ÇÈ
+   float4 unpacked_depth = float4( 0.0, 0.0, 256.0, 256.0 );
+   unpacked_depth.g = modf( depth*256.0, unpacked_depth.r );
+   unpacked_depth.b *= modf( unpacked_depth.g*256.0, unpacked_depth.g );
+   return unpacked_depth / 256.0;
+}
+
+technique ShadowMap
+{
+	pass ShadowMap
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= false;
+		AlphaFunc = greaterequal;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cShadowMapVS();
+		FragmentProgram	= compile PROFILE_PS cShadowMapPS();
+	}
+}
  
+technique BoneCol
+{
+	pass Main
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc = greaterequal;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS_BoneCol();
+		FragmentProgram	= compile PROFILE_PS cMainPS_BoneCol();
+	}
+}
+
+cVertexData2 cBoneVS( cVertexData2 IN )
+{
+	cVertexData2 OUT;
+	OUT.Position = mul( IN.Position, wvp );
+	return OUT;
+}
+
+//-----------------------------------------------------------
+//  tsoviewånÇ±Ç±Ç‹Ç≈
+//	ShadowMap,BoneColÇ∆Ç©íçà”
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+//  ìÆÇ≠ÉnÉCÉâÉCÉgÇ±Ç±Ç©ÇÁ
+//-----------------------------------------------------------
+void calc_skindeform_onorm(
+    float3 innor, 
+    float4 weights, 
+    float4 idxs, 
+    out float3 outnor
+)
+{
+    float4 nnor;
+    float w;
+    int mi;
+
+    nnor = mul( float4( innor.xyz, 0 ), LocalBoneMats[idxs[0]] ) * weights[0];
+    nnor += mul( float4( innor.xyz, 0 ), LocalBoneMats[idxs[1]] ) * weights[1];
+    nnor += mul( float4( innor.xyz, 0 ), LocalBoneMats[idxs[2]] ) * weights[2];
+    nnor += mul( float4( innor.xyz, 0 ), LocalBoneMats[idxs[3]] ) * weights[3];
+
+    outnor = normalize( nnor.xyz );
+}
+
+//-----------------------------------------------------------
+//  ìÆÇ≠ÉnÉCÉâÉCÉgÇ±Ç±Ç‹Ç≈
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+//  ÉpÅ[ÉXópçsóÒÇ±Ç±Ç©ÇÁ
+//-----------------------------------------------------------
+
+const float4x4 bias = float4x4(
+        1.0f,    0.0f,    0.0f,    0.0f,
+        0.0f,    1.0f,    0.0f,    0.0f,
+        0.0f,    0.0f,    1.0f,    0.0f,
+        0.0f,    0.0f,    0.0f,    1.002f );
+
+//-----------------------------------------------------------
+//  ÉpÅ[ÉXópçsóÒÇ±Ç±Ç‹Ç≈
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+//  tsoviewånÇ±Ç±Ç©ÇÁ
+//-----------------------------------------------------------
+
 cVertexData2 cInkVS( appdata IN )
 {
 	cVertexData2 OUT;
@@ -558,18 +723,9 @@ float4 cInkPS( cVertexData2 IN ) : COLOR
 	return ColRate( PenColor );
 }
 
-cVertexData cMainVS_BoneCol( appdata IN )
-{
-	cVertexData OUT;
-	float4 pos; float3 nor; float4 col;
-	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
-        calc_bonecol( PenColor, IN.VWeights, IN.BoneIdxs, col );
-	OUT.Position	 = mul( pos, wvp );
-	OUT.UV		 = IN.UV;
-	OUT.Normal	 = normalize( mul( float4( nor.xyz, 0 ), wld ) );
-	OUT.ZTex         = col;
-	return OUT;
-}
+//-----------------------------------------------------------
+//  tsoviewånÇ±Ç±Ç‹Ç≈
+//-----------------------------------------------------------
 
 cVertexData cMainVS2( appdata IN )
 {
@@ -858,50 +1014,39 @@ cVertexData cMainVS_UVRPL( appdata IN ) //í«â¡ Ripple UV.x=((SQRT(UVSCR)*IN.UV.x
   	return OUT;
 }
 
-float4 cMainPS_BoneCol( cVertexData IN ) : COLOR
+//-----------------------------------------------------------
+//  ìÆÇ≠ÉnÉCÉâÉCÉgÇ±Ç±Ç©ÇÁ
+//-----------------------------------------------------------
+
+float4 cMainPS( cVertexData IN ) : COLOR//ÉfÉtÉHÉãÉgÉsÉNÉZÉãÉVÉFÅ[É_
 {
-        return IN.ZTex;
+        float4 nnormal = float4 (normalize (IN.Normal), 0.0);
+        float4 esnormal = mul (nnormal, view);
+        float4 eslight = mul (LightDirForced, view);
+        float4 eyedir = {0, 0, -1, 0};
+        float4 halfvec = normalize (eyedir + eslight);
+        
+        float ldotn = dot (nnormal, -LightDirForced);
+        float hdotn = dot (esnormal, -halfvec);
+        float lp = min (1.0, max( 0.0, ( ldotn * 0.6) + (Ambient * 0.01)));
+        float hp0 = min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+        float hp = pow (hp0, HighLightPower);
+
+        float4  shadecol = tex2D( ShadeTex, float2( lp, 0.5 ) );
+        float4  texcol   = tex2D( ColorTex, IN.UV  );
+        float4  hl       = float4 ( hp, hp, hp, 1.0 );
+
+        float4  col;
+        col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+        col += hl * ( HighLightBlend * 0.0025 ); // old
+        //col += hl * HighLightBlend;
+
+        return ColRate( float4(col.rgb, texcol.a ) * ColorRate );
 }
 
-float4 cShadowMapPS( float4 ShadowMapTex : TEXCOORD0 ) : COLOR
-{
-   // ZíléZèo
-   float depth = ShadowMapTex.z / ShadowMapTex.w;
-   // ê∏ìxÇè„Ç∞ÇÈ
-   float4 unpacked_depth = float4( 0.0, 0.0, 256.0, 256.0 );
-   unpacked_depth.g = modf( depth*256.0, unpacked_depth.r );
-   unpacked_depth.b *= modf( unpacked_depth.g*256.0, unpacked_depth.g );
-   return unpacked_depth / 256.0;
-}
-
-float4 cMainPS( cVertexData IN ) : COLOR //ÉfÉtÉHÉãÉgÉsÉNÉZÉãÉVÉFÅ[É_
-{
-	float	L		 = dot( IN.Normal, -LightDirForced );
-
-	float2 texcoord;
-	texcoord.x = ( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
-	texcoord.y = ( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
-	float4 c = tex2D( ShadowMap, texcoord );
-	float z = c.r + (c.g + c.b/256.0)/256.0;
-	if ( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
-	{
-		L = -1.0; /* depth-buffer-shadow */
-	}
-	float	lp		 = min( 1.0, max( 0.0, ( L * 0.6   ) + ( Ambient   * 0.01 ) ) );
-	float	hp0		 = min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
-	float	hp		 = pow( abs(hp0), HighLightPower );
-
-	float4	shadecol = tex2D( ShadeTex, float2( lp, 0.5 ) );
-	float4	texcol   = tex2D( ColorTex, IN.UV  );
-	float4	hl		 = float4( hp, hp, hp, 1.0 );
-
-	float4	col;
-	col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
-	col += hl * ( HighLightBlend * 0.0025 ); // old
-	//col += hl * HighLightBlend;
-
-	return ColRate( float4( col.rgb, texcol.a ) );
-}
+//-----------------------------------------------------------
+//  ìÆÇ≠ÉnÉCÉâÉCÉgÇ±Ç±Ç‹Ç≈
+//-----------------------------------------------------------
 
 float4 cHLMapPS( cHLMapData IN ) : COLOR //îΩéÀåıÉnÉCÉâÉCÉgÉsÉNÉZÉãÉVÉFÅ[É_
 {
@@ -917,6 +1062,19 @@ float4 cHLMapPS( cHLMapData IN ) : COLOR //îΩéÀåıÉnÉCÉâÉCÉgÉsÉNÉZÉãÉVÉFÅ[É_
 	
 	return HLColor1;
 }
+
+//-----------------------------------------------------------
+//  tsoviewånÇ±Ç±Ç©ÇÁ
+//-----------------------------------------------------------
+
+float4 cBonePS( cVertexData2 IN ) : COLOR
+{
+	return ColRate( ManColor );
+}
+
+//-----------------------------------------------------------
+//  tsoviewånÇ±Ç±Ç‹Ç≈
+//-----------------------------------------------------------
 
 //-----------------------------------------------------------
 //  ìÆÇ≠ÉnÉCÉâÉCÉgÇ±Ç±Ç©ÇÁ
@@ -945,7 +1103,7 @@ float4 cMainPS3( cVertexData IN ) : COLOR//ShadeTexìKópîÕàÕïœçXÉsÉNÉZÉãÉVÉFÅ[É_
         col += hl * ( HighLightBlend * 0.0025 ); // old
         //col += hl * HighLightBlend;
 
-        return ColRate( float4(col.rgb, texcol.a ) );
+        return ColRate( float4(col.rgb, texcol.a ) * ColorRate );
 }
 
 //-----------------------------------------------------------
@@ -1222,18 +1380,6 @@ cVertexData2 cShadowVS( appdata IN )
 	pos = mul( opos, wld ); pos.y = SHADOW_HEIGHT;
 	OUT.Position = mul( mul( pos, view ), proj );
 	return OUT;
-}
-
-cVertexData2 cBoneVS( cVertexData2 IN )
-{
-	cVertexData2 OUT;
-	OUT.Position = mul( IN.Position, wvp );
-	return OUT;
-}
-
-float4 cBonePS( cVertexData2 IN ) : COLOR
-{
-	return ColRate( ManColor );
 }
 
 float4 cTrnsPS( cVertexData IN ) : COLOR
@@ -1598,37 +1744,6 @@ technique NormalMap
 	}	
 }
 
-technique ShadowMap
-{
-	pass ShadowMap
-	{
-		DepthTestEnable = true;
-		DepthMask		= true;
-		CullMode		= ccw;
-		AlphaBlendEnable= false;
-		AlphaFunc = greaterequal;
-		StencilEnable	= false;
-
-		VertexProgram	= compile PROFILE_VS cShadowMapVS();
-		FragmentProgram	= compile PROFILE_PS cShadowMapPS();
-	}
-}
- 
-technique BoneCol
-{
-	pass Main
-	{
-		DepthTestEnable = true;
-		DepthMask		= true;
-		CullMode		= ccw;
-		AlphaBlendEnable= true;
-		AlphaFunc = greaterequal;
-		StencilEnable	= false;
-
-		VertexProgram	= compile PROFILE_VS cMainVS_BoneCol();
-		FragmentProgram	= compile PROFILE_PS cMainPS_BoneCol();
-	}
-}
 
 #define MAIN_SW		(1)
 #define INK_SW		(1)
@@ -4016,8 +4131,8 @@ technique ShadowOff_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = greaterequal;
@@ -4063,8 +4178,8 @@ technique ShadowOn_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = greaterequal;
@@ -4161,8 +4276,8 @@ technique AllAmb_ShadowOff_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = greaterequal;
@@ -4207,8 +4322,8 @@ technique AllAmb_ShadowOn_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = greaterequal;
@@ -4289,8 +4404,8 @@ technique AllAmb_ShadowOff_BHL_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = greaterequal;
@@ -4363,8 +4478,8 @@ technique AllAmb_ShadowOff_HLC_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = greaterequal;
@@ -4409,8 +4524,8 @@ technique AllAmb_ShadowOn_HLC_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = greaterequal;
@@ -4491,8 +4606,8 @@ technique AllAmb_ShadowOff_BHL_HLC_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = greaterequal;
@@ -5519,8 +5634,8 @@ technique NAT_ShadowOff_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = always;
@@ -5566,8 +5681,8 @@ technique NAT_ShadowOn_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = always;
@@ -5664,8 +5779,8 @@ technique NAT_AllAmb_ShadowOff_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = always;
@@ -5710,8 +5825,8 @@ technique NAT_AllAmb_ShadowOn_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = always;
@@ -5792,8 +5907,8 @@ technique NAT_AllAmb_ShadowOff_BHL_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = always;
@@ -5866,8 +5981,8 @@ technique NAT_AllAmb_ShadowOff_HLC_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = always;
@@ -5912,8 +6027,8 @@ technique NAT_AllAmb_ShadowOn_HLC_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = always;
@@ -5994,8 +6109,8 @@ technique NAT_AllAmb_ShadowOff_BHL_HLC_Front
 #if INK_SW
 	pass Ink
 	{
-		DepthTestEnable = true;
-		DepthMask		= true;
+		DepthTestEnable = false;
+		DepthMask		= false;
 		CullMode		= cw;
 		AlphaBlendEnable= false;
 		AlphaFunc = always;
@@ -6091,7 +6206,7 @@ float4 cTex2AlphaPS( cVertexData IN ) : COLOR//ÉeÉNÉXÉ`ÉÉÇÉAÉãÉtÉ@èÓïÒÇÃÇ›Ç∆ÇµÇ
         float4  texcol   = tex2D( ColorTex, IN.UV  );
 		float texcol2alpha = ( 1 - max ( texcol.b, ( max ( texcol.r, texcol.g ) ) ) );
 			//ÉeÉNÉXÉ`ÉÉÇÃÉJÉâÅ[Ç©ÇÁñæìxÇéZèo
-        return ColRate( float4(Tex2AlphaCol.rgb, texcol2alpha) );
+        return ColRate( float4(Tex2AlphaCol.rgb, texcol2alpha) * ColorRate );
 }
 
 technique Tex2Alpha
@@ -6161,3 +6276,1713 @@ technique WASHOUT_KAZAN_FLASH
 //-----------------------------------------------------------
 //  ñ¢ÅFWASHOUT+FLASH
 //-----------------------------------------------------------
+
+//-----------------------------------------------------------
+//  KAZAN2ñOòaÇÇ»ÇÒÇ∆Ç©http://d.hatena.ne.jp/kataho/20080111/p1Ç±Ç±Ç©ÇÁ
+//-----------------------------------------------------------
+
+//ÉeÉNÉXÉ`ÉÉ
+
+sampler2D Kataho_KAZAN_Tex = sampler_state {
+	Texture		= <ColorTex_texture>;
+
+	WrapS = REPEAT;
+	WrapT = REPEAT;
+
+	MagFilter = LINEAR;
+	MinFilter = LINEAR;
+	MipFilter = LINEAR;
+};
+
+sampler2D Kataho_KAZAN_RotateTex = sampler_state {
+	Texture		= <ColorTex_texture>;
+
+	WrapS = Border;
+	WrapT = Border;
+	BorderColor = (0);
+
+	MagFilter = LINEAR;
+	MinFilter = LINEAR;
+	MipFilter = LINEAR;
+};
+
+//ïœêîíËã`
+
+float4	KAZAN2COLOR
+<	string UIName	= "KAZAN2COLOR";
+	string UIWidget	= "Color";
+> = { 1.0, 1.0, 1.0, 1.0 };
+
+//ÉsÉNÉZÉãÉVÉFÅ[É_
+
+float4 KATAHO_KAZAN( cVertexData IN ) : COLOR
+{
+        float4 t0 = tex2D( Kataho_KAZAN_Tex, IN.UV  );
+		float4 r0 = pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+		float4 lrp = r0 + KAZAN2COLOR * ( t0 - r0 );
+		float t1 = max ( t0.b, ( max ( t0.r, t0.g ) ) );
+		float r1 = min (1.0, max( 0.0, (t1 + 0.75)));
+		float4 lrp2 = float4(lrp.rgb, ((r1 - 0.75) * KAZAN2COLOR.a));
+
+return ColRate(lrp2 * ColorRate);
+
+}
+
+float4 KATAHO_KAZAN_UVROT( cVertexData IN ) : COLOR
+{
+        float4 t0 = tex2D( Kataho_KAZAN_RotateTex, IN.UV  );
+		float4 r0 = pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+		float4 lrp = r0 + KAZAN2COLOR * ( t0 - r0 );
+		float t1 = max ( t0.b, ( max ( t0.r, t0.g ) ) );
+		float r1 = min (1.0, max( 0.0, (t1 + 0.75)));
+		float4 lrp2 = float4(lrp.rgb, ((r1 - 0.75) * KAZAN2COLOR.a));
+		return ColRate(lrp2 * ColorRate);
+}
+
+float4 KATAHO_KAZAN_UVFLS( cVertexData IN ) : COLOR //ÉeÉNÉXÉ`ÉÉì_ñ≈ópÉsÉNÉZÉãÉVÉFÅ[É_
+{
+        float4 t0 = tex2D( Kataho_KAZAN_RotateTex, IN.UV  );
+		float4 r0 = pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+		float4 lrp = r0 + KAZAN2COLOR * ( t0 - r0 );
+		float t1 = max ( t0.b, ( max ( t0.r, t0.g ) ) );
+		float r1 = min (1.0, max( 0.0, (t1 + 0.75)));
+		float4 lrp2 = float4(lrp.rgb, ((r1 - 0.75) * KAZAN2COLOR.a));
+
+		float	FlashAlpha	 = (round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc))
+				 + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc))
+				 * lrp2.a;
+
+		return ColRate( float4( lrp2.rgb, FlashAlpha )  * ColorRate);
+}
+
+float4 WASHOUT_KATAHO_KAZAN( cVertexData IN ) : COLOR //ãtåıÉnÉCÉâÉCÉgâûópó÷äsÇ⁄Ç©ÇµópÉsÉNÉZÉãÉVÉFÅ[É_
+{
+	float4	viewNor	 = mul( IN.Normal, wv );
+	float	L		 = dot( viewNor, float4(0,0,1,0) );
+	float	lp		 = min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float4	shadecol = tex2D( ShadeTex, float2( lp, 0.1 ) );
+
+        float4 t0 = tex2D( Kataho_KAZAN_Tex, IN.UV  );
+		float4 r0 = pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+		float4 lrp = r0 + KAZAN2COLOR * ( t0 - r0 );
+		float t1 = max ( t0.b, ( max ( t0.r, t0.g ) ) );
+		float r1 = min (1.0, max( 0.0, (t1 + 0.75)));
+		float4 lrp2 = float4(lrp.rgb, ((r1 - 0.75) * KAZAN2COLOR.a));
+
+return ColRate(float4( lrp2.rgb, lrp2.a * shadecol.a) * ColorRate);
+
+}
+
+float4 WASHOUT_KATAHO_KAZAN_FLASH( cVertexData IN ) : COLOR //ãtåıÉnÉCÉâÉCÉgâûópó÷äsÇ⁄Ç©ÇµÉeÉNÉXÉ`ÉÉì_ñ≈ópÉsÉNÉZÉãÉVÉFÅ[É_
+{
+	float4	viewNor	 = mul( IN.Normal, wv );
+	float	L		 = dot( viewNor, float4(0,0,1,0) );
+	float	lp		 = min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float4	shadecol = tex2D( ShadeTex, float2( lp, 0.1 ) );
+
+        float4 t0 = tex2D( Kataho_KAZAN_Tex, IN.UV  );
+		float4 r0 = pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+		float4 lrp = r0 + KAZAN2COLOR * ( t0 - r0 );
+		float t1 = max ( t0.b, ( max ( t0.r, t0.g ) ) );
+		float r1 = min (1.0, max( 0.0, (t1 + 0.75)));
+		float4 lrp2 = float4(lrp.rgb, ((r1 - 0.75) * KAZAN2COLOR.a));
+
+	float	FlashAlpha	 = (round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc))
+				 + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc))
+				 * shadecol.a;
+
+return ColRate(float4( lrp2.rgb,lrp2.a * FlashAlpha) * ColorRate);
+
+}
+
+//ÉVÉFÅ[ÉfÉBÉìÉOÉeÉNÉjÉbÉN
+
+technique KAZAN2
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN();
+	}
+}
+
+technique KAZAN2_FRONT
+{
+	pass Main
+	{
+		DepthTestEnable  = false;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS KATAHO_KAZAN();
+	}
+}
+
+technique SCROLL_KAZAN2
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR2();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN();
+	}
+}
+
+technique XYSCROLL_KAZAN2
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR9();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN();
+	}
+}
+
+technique XREPEAT_KAZAN2
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR3();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN();
+	}
+}
+technique BOUND_KAZAN2
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR4();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN();
+	}
+}
+technique CIRCLE_KAZAN2
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR5();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN();
+	}
+}
+technique BLANCO_KAZAN2
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR6();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN();
+	}
+}
+
+technique EIGHT_KAZAN2
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR7();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN();
+	}
+}
+technique WAVE_KAZAN2
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR8();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN();
+	}
+}
+
+technique ROTATE_KAZAN2
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVROT();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_UVROT();
+	}
+}
+
+technique CLOCK_KAZAN2
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVCLC();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_UVROT();
+	}
+}
+technique FLASH_KAZAN2
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_UVFLS();
+	}
+}
+technique WASHOUT_KAZAN2
+{
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS WASHOUT_KATAHO_KAZAN();
+	}
+#endif
+}
+technique WASHOUT_KAZAN2_FRONT
+{
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS WASHOUT_KATAHO_KAZAN();
+	}
+#endif
+}
+technique WASHOUT_KAZAN2_FLASH
+{
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS WASHOUT_KATAHO_KAZAN_FLASH();
+	}
+#endif
+}
+
+//-----------------------------------------------------------
+//  KAZAN2 Ç±Ç±Ç‹Ç≈
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+//  emissive Ç±Ç±Ç©ÇÁ
+//-----------------------------------------------------------
+//ïœêîíËã`
+float4	Emissive
+<	string UIName	= "Emissive";
+	string UIWidget	= "Color";		> = { 0.0f, 0.0f, 0.0f, 0.0f };
+//ÉsÉNÉZÉãÉVÉFÅ[É_
+float4 cMainPS_emissive( cVertexData IN ) : COLOR//ÉfÉtÉHÉãÉgÉsÉNÉZÉãÉVÉFÅ[É_
+{
+        float4 nnormal = float4 (normalize (IN.Normal), 0.0);
+        float4 esnormal = mul (nnormal, view);
+        float4 eslight = mul (LightDirForced, view);
+        float4 eyedir = {0, 0, -1, 0};
+        float4 halfvec = normalize (eyedir + eslight);
+        
+        float ldotn = dot (nnormal, -LightDirForced);
+        float hdotn = dot (esnormal, -halfvec);
+        float lp = min (1.0, max( 0.0, ( ldotn * 0.6) + (Ambient * 0.01)));
+        float hp0 = min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+        float hp = pow (hp0, HighLightPower);
+
+        float4  shadecol = tex2D( ShadeTex, float2( lp, 0.5 ) );
+        float4  texcol   = tex2D( ColorTex, IN.UV  );
+        float4  hl       = float4 ( hp, hp, hp, 1.0 );
+
+        float4  col;
+        col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+        col += hl * ( HighLightBlend * 0.0025 ); // old
+        //col += hl * HighLightBlend;
+
+        return ColRate( float4(col.rgb, texcol.a ) + Emissive);
+}
+
+float4 cMainPS3_emissive( cVertexData IN ) : COLOR//ShadeTexìKópîÕàÕïœçXÉsÉNÉZÉãÉVÉFÅ[É_+emissive
+{
+        float4 nnormal = float4 (normalize (IN.Normal), 0.0);
+        float4 esnormal = mul (nnormal, view);
+        float4 eslight = mul (LightDirForced, view);
+        float4 eyedir = {0, 0, -1, 0};
+        float4 halfvec = normalize (eyedir + eslight);
+        
+        float ldotn = dot (nnormal, -LightDirForced);
+        float hdotn = dot (esnormal, -halfvec);
+        float lp = min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+        float hp0 = min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+        float hp = pow (hp0, HighLightPower);
+
+        float4  shadecol = tex2D( ShadeTex, float2( lp, 0.1 ) );
+        float4  texcol   = tex2D( ColorTex, IN.UV  );
+        float4  hl       = float4 ( hp, hp, hp, 1.0 );
+
+        float4  col;
+        col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+        col += hl * ( HighLightBlend * 0.0025 ); // old
+        //col += hl * HighLightBlend;
+
+        return ColRate( float4(col.rgb, texcol.a ) + Emissive );
+}
+
+float4 cBHLMainPS_emissive( cVertexData IN ) : COLOR //ãtåıÉnÉCÉâÉCÉgÉsÉNÉZÉãÉVÉFÅ[É_+emissive
+{
+	float4	viewNor		 = mul( IN.Normal, wv );
+	float	L2		 = dot( viewNor, float4(0,0,1,0) );
+	float	lp2		 = min( 1.0, max( 0.0, ( L2 * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float	hp02		 = min( 1.0, max( 0.0, ( L2 * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp2		 = pow( hp02, HighLightPower );
+
+	float	L		 = dot( IN.Normal, -LightDirForced );
+	float	lp		 = min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float	hp0		 = min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp		 = pow( hp0, HighLightPower );
+
+	float4	BHLcol = tex2D( ShadeTex, float2( lp2, 0.9 ) );
+	float4	shadecol = tex2D( ShadeTex, float2( lp, 0.9 ) );
+	float4	hl2		 = float4( hp2, hp2, hp2, 1.0 );
+
+	float4	col2;
+	col2 = BHLcol;
+	//col2 += hl2;
+
+	return ColRate( float4(shadecol.rgb, BHLcol.a) + Emissive );
+}
+
+float4 cMainPS_UVROT_emissive( cVertexData IN ) : COLOR //UVRotateópÉsÉNÉZÉãÉVÉFÅ[É_+emissive
+{
+	float	L		 = dot( IN.Normal, -LightDirForced );
+	float	lp		 = min( 1.0, max( 0.0, ( L * 0.6   ) + ( Ambient   * 0.01 ) ) );
+	float	hp0		 = min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp		 = pow( hp0, HighLightPower );
+
+	float4	shadecol = tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol   = tex2D( RotateTex, IN.UV  );
+	float4	hl		 = float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col += hl * ( HighLightBlend * 0.0025 ); // old
+	//col += hl * HighLightBlend;
+
+	return ColRate( float4( col.rgb, texcol.a ) + Emissive );
+}
+
+float4 cMainPS_UVFLS_emissive( cVertexData IN ) : COLOR //ÉeÉNÉXÉ`ÉÉì_ñ≈ópÉsÉNÉZÉãÉVÉFÅ[É_+emissive
+{
+	float	L		 = dot( IN.Normal, -LightDirForced );
+	float	lp		 = min( 1.0, max( 0.0, ( L * 0.6   ) + ( Ambient   * 0.01 ) ) );
+	float	hp0		 = min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp		 = pow( hp0, HighLightPower );
+
+	float4	shadecol = tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol   = tex2D( ColorTex, IN.UV  );
+	float4	hl		 = float4( hp, hp, hp, 1.0 );
+	float	FlashAlpha	 = (round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc))
+				 + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc))
+				 * texcol.a;
+
+	float4	col;
+	col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col += hl * ( HighLightBlend * 0.0025 ); // old
+	//col += hl * HighLightBlend;
+
+	return ColRate( float4( col.rgb, FlashAlpha ) + Emissive );
+}
+
+float4 cMainWashOut_emissive( cVertexData IN ) : COLOR //ãtåıÉnÉCÉâÉCÉgâûópó÷äsÇ⁄Ç©ÇµópÉsÉNÉZÉãÉVÉFÅ[É_+emissive
+{
+	float4	viewNor	 = mul( IN.Normal, wv );
+	float	L		 = dot( viewNor, float4(0,0,1,0) );
+	float	lp		 = min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float	hp0		 = min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp		 = pow( hp0, HighLightPower );
+
+	float4	shadecol = tex2D( ShadeTex, float2( lp, 0.1 ) );
+	float4	texcol   = tex2D( ColorTex, IN.UV  );
+	float4	hl		 = float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col += hl * ( HighLightBlend * 0.0025 );
+
+	return ColRate( float4( col.rgb, shadecol.a) + Emissive );
+}
+
+float4 cMainWashoutFlash_emissive( cVertexData IN ) : COLOR //ãtåıÉnÉCÉâÉCÉgâûópó÷äsÇ⁄Ç©ÇµÉeÉNÉXÉ`ÉÉì_ñ≈ópÉsÉNÉZÉãÉVÉFÅ[É_+emissive
+{
+	float4	viewNor	 = mul( IN.Normal, wv );
+	float	L		 = dot( viewNor, float4(0,0,1,0) );
+	float	lp		 = min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float	hp0		 = min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp		 = pow( hp0, HighLightPower );
+
+	float4	shadecol = tex2D( ShadeTex, float2( lp, 0.1 ) );
+	float4	texcol   = tex2D( ColorTex, IN.UV  );
+	float4	hl		 = float4( hp, hp, hp, 1.0 );
+	float	FlashAlpha	 = (round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc))
+				 + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc))
+				 * shadecol.a;
+
+	float4	col;
+	col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col += hl * ( HighLightBlend * 0.0025 );
+
+	return ColRate( float4( col.rgb, FlashAlpha ) + Emissive );
+}
+
+float4 KATAHO_KAZAN_emissive( cVertexData IN ) : COLOR
+{
+        float4 t0 = tex2D( Kataho_KAZAN_Tex, IN.UV  );
+		float4 r0 = pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+		float4 lrp = r0 + KAZAN2COLOR * ( t0 - r0 );
+		float t1 = max ( t0.b, ( max ( t0.r, t0.g ) ) );
+		float r1 = min (1.0, max( 0.0, (t1 + 0.75)));
+		float4 lrp2 = float4(lrp.rgb, ((r1 - 0.75) * KAZAN2COLOR.a));
+
+return ColRate(lrp2 + Emissive);
+}
+
+float4 KATAHO_KAZAN_UVROT_emissive( cVertexData IN ) : COLOR
+{
+        float4 t0 = tex2D( Kataho_KAZAN_RotateTex, IN.UV  );
+		float4 r0 = pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+		float4 lrp = r0 + KAZAN2COLOR * ( t0 - r0 );
+		float t1 = max ( t0.b, ( max ( t0.r, t0.g ) ) );
+		float r1 = min (1.0, max( 0.0, (t1 + 0.75)));
+		float4 lrp2 = float4(lrp.rgb, ((r1 - 0.75) * KAZAN2COLOR.a));
+		return ColRate(lrp2 + Emissive);
+}
+
+float4 KATAHO_KAZAN_UVFLS_emissive( cVertexData IN ) : COLOR //ÉeÉNÉXÉ`ÉÉì_ñ≈ópÉsÉNÉZÉãÉVÉFÅ[É_
+{
+        float4 t0 = tex2D( Kataho_KAZAN_RotateTex, IN.UV  );
+		float4 r0 = pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+		float4 lrp = r0 + KAZAN2COLOR * ( t0 - r0 );
+		float t1 = max ( t0.b, ( max ( t0.r, t0.g ) ) );
+		float r1 = min (1.0, max( 0.0, (t1 + 0.75)));
+		float4 lrp2 = float4(lrp.rgb, ((r1 - 0.75) * KAZAN2COLOR.a));
+
+		float	FlashAlpha	 = (round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc))
+				 + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc))
+				 * lrp2.a;
+
+		return ColRate( float4( lrp2.rgb, FlashAlpha )  + Emissive);
+}
+
+float4 WASHOUT_KATAHO_KAZAN_emissive( cVertexData IN ) : COLOR //ãtåıÉnÉCÉâÉCÉgâûópó÷äsÇ⁄Ç©ÇµópÉsÉNÉZÉãÉVÉFÅ[É_
+{
+	float4	viewNor	 = mul( IN.Normal, wv );
+	float	L		 = dot( viewNor, float4(0,0,1,0) );
+	float	lp		 = min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float4	shadecol = tex2D( ShadeTex, float2( lp, 0.1 ) );
+
+        float4 t0 = tex2D( Kataho_KAZAN_Tex, IN.UV  );
+		float4 r0 = pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+		float4 lrp = r0 + KAZAN2COLOR * ( t0 - r0 );
+		float t1 = max ( t0.b, ( max ( t0.r, t0.g ) ) );
+		float r1 = min (1.0, max( 0.0, (t1 + 0.75)));
+		float4 lrp2 = float4(lrp.rgb, ((r1 - 0.75) * KAZAN2COLOR.a));
+
+return ColRate(float4( lrp2.rgb, lrp2.a * shadecol.a) + Emissive);
+
+}
+
+float4 WASHOUT_KATAHO_KAZAN_FLASH_emissive( cVertexData IN ) : COLOR //ãtåıÉnÉCÉâÉCÉgâûópó÷äsÇ⁄Ç©ÇµÉeÉNÉXÉ`ÉÉì_ñ≈ópÉsÉNÉZÉãÉVÉFÅ[É_
+{
+	float4	viewNor	 = mul( IN.Normal, wv );
+	float	L		 = dot( viewNor, float4(0,0,1,0) );
+	float	lp		 = min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float4	shadecol = tex2D( ShadeTex, float2( lp, 0.1 ) );
+
+        float4 t0 = tex2D( Kataho_KAZAN_Tex, IN.UV  );
+		float4 r0 = pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+		float4 lrp = r0 + KAZAN2COLOR * ( t0 - r0 );
+		float t1 = max ( t0.b, ( max ( t0.r, t0.g ) ) );
+		float r1 = min (1.0, max( 0.0, (t1 + 0.75)));
+		float4 lrp2 = float4(lrp.rgb, ((r1 - 0.75) * KAZAN2COLOR.a));
+
+	float	FlashAlpha	 = (round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc))
+				 + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc))
+				 * shadecol.a;
+
+return ColRate(float4( lrp2.rgb,lrp2.a * FlashAlpha) + Emissive);
+
+}
+
+//ÉVÉFÅ[ÉfÉBÉìÉOÉeÉNÉjÉbÉN
+
+technique AllAmb_ShadowOff_InkOff_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc = greaterequal;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cMainPS3_emissive();
+	}
+}
+
+technique AllAmb_ShadowOff_InkOff_BHL_Emissive
+{
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc = greaterequal;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cMainPS3_emissive();
+	}
+	pass Pass0
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc        = always;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram = compile PROFILE_PS cBHLMainPS_emissive();
+	}
+#endif
+}
+
+technique AllAmb_ShadowOff_InkOff_Front_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable = false;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc = greaterequal;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cMainPS3_emissive();
+	}
+}
+
+technique AllAmb_ShadowOff_InkOff_BHL_Front_Emissive
+{
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable = false;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc = greaterequal;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cMainPS3_emissive();
+	}
+	pass Pass0
+	{
+		DepthTestEnable = false;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc        = always;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram = compile PROFILE_PS cBHLMainPS_emissive();
+	}
+#endif
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc = always;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cMainPS3_emissive();
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_BHL_Emissive
+{
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc = always;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cMainPS3_emissive();
+	}
+	pass Pass0
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc        = always;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram = compile PROFILE_PS cBHLMainPS_emissive();
+	}
+#endif
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_Front_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable = false;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc = always;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cMainPS3_emissive();
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_BHL_Front_Emissive
+{
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable = false;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc = always;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cMainPS3_emissive();
+	}
+	pass Pass0
+	{
+		DepthTestEnable = false;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc        = always;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram = compile PROFILE_PS cBHLMainPS_emissive();
+	}
+#endif
+}
+
+technique KAZAN_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS();
+		FragmentProgram	 = compile PROFILE_PS cMainPS_emissive();
+	}
+}
+
+technique KAZAN_FRONT_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = false;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cMainPS_emissive();
+	}
+}
+
+technique SCROLL_KAZAN_Emissive
+{
+	pass Main
+	{
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR2();
+		FragmentProgram	 = compile PROFILE_PS cMainPS_emissive();
+	}
+}
+
+technique XYSCROLL_KAZAN_Emissive
+{
+	pass Main
+	{
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR9();
+		FragmentProgram	 = compile PROFILE_PS cMainPS_emissive();
+	}
+}
+
+technique XREPEAT_KAZAN_Emissive
+{
+	pass Main
+	{
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR3();
+		FragmentProgram	 = compile PROFILE_PS cMainPS_emissive();
+	}
+}
+
+technique BOUND_KAZAN_Emissive
+{
+	pass Main
+	{
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR4();
+		FragmentProgram	 = compile PROFILE_PS cMainPS_emissive();
+	}
+}
+
+technique CIRCLE_KAZAN_Emissive
+{
+	pass Main
+	{
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR5();
+		FragmentProgram	 = compile PROFILE_PS cMainPS_emissive();
+	}
+}
+
+technique BLANCO_KAZAN_Emissive
+{
+	pass Main
+	{
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR6();
+		FragmentProgram	 = compile PROFILE_PS cMainPS_emissive();
+	}
+}
+
+technique EIGHT_KAZAN_Emissive
+{
+	pass Main
+	{
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR7();
+		FragmentProgram	 = compile PROFILE_PS cMainPS_emissive();
+	}
+}
+technique WAVE_KAZAN_Emissive
+{
+	pass Main
+	{
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR8();
+		FragmentProgram	 = compile PROFILE_PS cMainPS_emissive();
+	}
+}
+technique ROTATE_KAZAN_Emissive
+{
+	pass Main
+	{
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVROT();
+		FragmentProgram	 = compile PROFILE_PS cMainPS_UVROT_emissive();
+	}
+}
+
+technique CLOCK_KAZAN_Emissive
+{
+	pass Main
+	{
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVCLC();
+		FragmentProgram	 = compile PROFILE_PS cMainPS_UVROT_emissive();
+	}
+}
+
+technique FLASH_KAZAN_Emissives
+{
+	pass Main
+	{
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS();
+		FragmentProgram	 = compile PROFILE_PS cMainPS_UVFLS_emissive();
+	}
+}
+technique WASHOUT_KAZAN_Emissive
+{
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable	 = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+		AlphaFunc		 = always;
+		StencilEnable	 = false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cMainWashOut_emissive();
+	}
+#endif
+}
+technique WASHOUT_KAZAN_FRONT_Emissive
+{
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable	 = false;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+		AlphaFunc		 = always;
+		StencilEnable	 = false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cMainWashOut_emissive();
+	}
+#endif
+}
+technique WASHOUT_KAZAN_FLASH_Emissive
+{
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable	 = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		SrcBlend         = srcalpha;
+		DestBlend        = one;
+		AlphaFunc		 = always;
+		StencilEnable	 = false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cMainWashoutFlash_emissive();
+	}
+#endif
+}
+
+technique KAZAN2_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_emissive();
+	}
+}
+
+technique KAZAN2_FRONT_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = false;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS KATAHO_KAZAN_emissive();
+	}
+}
+
+technique SCROLL_KAZAN2_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR2();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_emissive();
+	}
+}
+
+technique XYSCROLL_KAZAN2_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR9();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_emissive();
+	}
+}
+
+technique XREPEAT_KAZAN2_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR3();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_emissive();
+	}
+}
+technique BOUND_KAZAN2_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR4();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_emissive();
+	}
+}
+technique CIRCLE_KAZAN2_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR5();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_emissive();
+	}
+}
+technique BLANCO_KAZAN2_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR6();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_emissive();
+	}
+}
+
+technique EIGHT_KAZAN2_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR7();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_emissive();
+	}
+}
+technique WAVE_KAZAN2_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR8();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_emissive();
+	}
+}
+
+technique ROTATE_KAZAN2_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVROT();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_UVROT_emissive();
+	}
+}
+
+technique CLOCK_KAZAN2_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS_UVCLC();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_UVROT_emissive();
+	}
+}
+technique FLASH_KAZAN2_Emissive
+{
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	 = compile PROFILE_VS cMainVS();
+		FragmentProgram	 = compile PROFILE_PS KATAHO_KAZAN_UVFLS_emissive();
+	}
+}
+technique WASHOUT_KAZAN2_Emissive
+{
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS WASHOUT_KATAHO_KAZAN_emissive();
+	}
+#endif
+}
+technique WASHOUT_KAZAN2_FRONT_Emissive
+{
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable  = false;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS WASHOUT_KATAHO_KAZAN_emissive();
+	}
+#endif
+}
+technique WASHOUT_KAZAN2_FLASH_Emissive
+{
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = ccw;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS WASHOUT_KATAHO_KAZAN_FLASH_emissive();
+	}
+#endif
+}
+
+//-----------------------------------------------------------
+//  emissive
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+//  Transparentâ¸
+//-----------------------------------------------------------
+
+float4 cInkPS_TrnsC( cVertexData2 IN ) : COLOR
+{
+	return ColRate( float4((ManColor.rgb / 3 * ColorRate), ManColor.a) );
+}
+
+technique Transparent2
+{
+
+	pass Main
+	{
+
+		ZEnable				= true;
+		ZWriteEnable		= false;
+		CullMode			= none;
+		AlphaBlendEnable	= true;
+		AlphaTestEnable		= false;
+
+		StencilFunc			= equal;
+		StencilRef			= 0;
+		StencilMask			= 255;
+		StencilPass			= incrsat;
+		StencilFail			= keep;
+		StencilZFail		= replace;
+		StencilEnable		= true;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cTrnsPS();
+	}
+
+	pass Ink
+	{
+		ZEnable				= true;
+		ZWriteEnable		= false;
+		CullMode			= none;
+		AlphaBlendEnable	= true;
+		AlphaTestEnable		= false;
+
+		StencilFunc			= equal;
+		StencilRef			= 0;
+		StencilMask			= 255;
+		StencilPass			= incrsat;
+		StencilFail			= keep;
+		StencilZFail		= replace;
+		StencilEnable		= true;
+
+
+		VertexProgram	= compile PROFILE_VS cInkVS();
+		FragmentProgram	= compile PROFILE_PS cInkPS_TrnsC();
+	}
+
+}
+
+//-----------------------------------------------------------
+//  transparentâ¸
+//-----------------------------------------------------------
+
+//------------------------------------------------------------------
+// í«â¡technique Fur+KAZAN2+EmissiveÇ±Ç±Ç©ÇÁ
+//------------------------------------------------------------------
+
+float4 Fur_KAZAN2_Emissive_PS (cFurShaderData IN,uniform float ratio): COLOR
+{
+
+//KAZAN2ÇÃÉJÉâÅ[åàÇﬂïîï™
+	float4 t0 = tex2D( Kataho_KAZAN_Tex, IN.UV  );
+	float4 r0 = pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4 lrp = r0 + KAZAN2COLOR * ( t0 - r0 );
+	float t1 = max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float r1 = min (1.0, max( 0.0, (t1 + 0.75)));
+	float4 lrp2 = float4(lrp.rgb, ((r1 - 0.75) * KAZAN2COLOR.a));
+
+//furshaderÇÃÉeÉNÉXÉ`ÉÉÇÃàÍïî
+	float4	furtex		 = tex2D( FurShadeTex, IN.UV * UVMag );
+
+//KAZAN2ÇÃÉJÉâÅ[ÇfurshaderÇ∆ìØÇ∂ì‡óeÇ≈êFïtÇØ
+	lrp2.rgb *= ratio + (1.0 - ratio) * FurDarkening;
+	float3 FurBrite = (1 - lrp2.rgb) * FurBritening.rgb;
+	lrp2.rgb = lrp2.rgb + (((ratio + 1) * (ratio - 0.5)) * FurBrite);
+
+//ÉAÉãÉtÉ@É`ÉÉÉìÉlÉãÇæÇØfurshaderÇ∆ìØÇ∂Ç≠Ç∑ÇÈ
+	lrp2 *= 1 - (1 - furtex.a) * (ratio + 1);
+
+//èoóÕ
+	return ColRate(lrp2 + Emissive);
+
+}
+
+technique ShadingFur_KAZAN2_Emissive
+{
+        pass SFurK0
+        {
+		DepthTestEnable  = true;
+		DepthMask		 = false;
+		CullMode		 = none;
+		AlphaBlendEnable = true;
+		BlendOp			 = add;
+		SrcBlend         = one;
+		DestBlend        = invsrcalpha;
+		AlphaFunc        = always;
+		StencilEnable	 = false;
+
+		VertexProgram	= compile PROFILE_VS cFurVS (0.0);
+		FragmentProgram	= compile PROFILE_PS Fur_KAZAN2_Emissive_PS (0.0);
+        }
+        pass SFurK1
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (0.125);
+		FragmentProgram	= compile PROFILE_PS Fur_KAZAN2_Emissive_PS (0.125);
+        }
+        pass SFurK2
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (0.25);
+		FragmentProgram	= compile PROFILE_PS Fur_KAZAN2_Emissive_PS (0.25);
+        }
+        pass SFurK3
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (0.375);
+		FragmentProgram	= compile PROFILE_PS Fur_KAZAN2_Emissive_PS (0.375);
+        }
+        pass SFurK4
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (0.5);
+		FragmentProgram	= compile PROFILE_PS Fur_KAZAN2_Emissive_PS (0.5);
+        }
+        pass SFurK5
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (0.625);
+		FragmentProgram	= compile PROFILE_PS Fur_KAZAN2_Emissive_PS (0.625);
+        }
+        pass SFurK6
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (0.75);
+		FragmentProgram	= compile PROFILE_PS Fur_KAZAN2_Emissive_PS (0.75);
+        }
+        pass SFurK7
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (0.875);
+		FragmentProgram	= compile PROFILE_PS Fur_KAZAN2_Emissive_PS (0.875);
+        }
+        pass SFurK8
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (1.0);
+		FragmentProgram	= compile PROFILE_PS Fur_KAZAN2_Emissive_PS (1.0);
+        }
+}
+//------------------------------------------------------------------
+// í«â¡technique Fur+KAZAN2+EmissiveÇ±Ç±Ç‹Ç≈
+//------------------------------------------------------------------
+
+
+//------------------------------------------------------------------
+// í«â¡technique Fur+KAZAN+EmissiveÇ±Ç±Ç©ÇÁ
+//------------------------------------------------------------------
+
+float4 cShadingFurPSEmissive (cFurShaderData IN,uniform float ratio): COLOR
+{
+	float3	FurNormal	 = IN.Normal /* + IN.random */;
+	float	L		 = dot( FurNormal, -LightDirForced );
+	float	lp		 = min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float	hp0		 = min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp		 = pow( hp0, HighLightPower );
+
+	float4	shadecol	 = tex2D( FurShadeTex, float2( lp, 0.5 ) );
+	float4	furtex		 = tex2D( FurShadeTex, IN.UV * UVMag );
+	float4	texcol		 = tex2D( ColorTex, IN.UV );
+	float4	hl		 = float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col	 = (( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol*1.1 * ( ShadeBlend * 0.1 ) ));
+	col	+= hl * ( HighLightBlend * 0.0025 );
+
+	col.rgb *= ratio + (1.0 - ratio) * FurDarkening;
+	float3 FurBrite = (1 - col.rgb) * FurBritening.rgb;
+	col.rgb = col.rgb + (((ratio + 1) * (ratio - 0.5)) * FurBrite);
+	texcol.a *= 1 - (1 - furtex.a) * (ratio + 1);
+
+	return ColRate( float4( col.rgb, texcol.a ) + Emissive );
+}
+
+technique ShadingFur_KAZAN_Emissive
+{
+        pass SFurK0
+        {
+		DepthTestEnable		= true;
+		DepthMask		= false;
+		CullMode			= none;
+		AlphaBlendEnable		= true;
+		SrcBlend			= srcalpha;
+		DestBlend			= one;
+		BlendOP			= add;
+		AlphaFunc			= always;
+		StencilEnable		= false;
+
+		VertexProgram	= compile PROFILE_VS cFurVS (0.0);
+		FragmentProgram	= compile PROFILE_PS cShadingFurPSEmissive (0.0);
+        }
+        pass SFurK1
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (0.125);
+		FragmentProgram	= compile PROFILE_PS cShadingFurPSEmissive (0.125);
+        }
+        pass SFurK2
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (0.25);
+		FragmentProgram	= compile PROFILE_PS cShadingFurPSEmissive (0.25);
+        }
+        pass SFurK3
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (0.375);
+		FragmentProgram	= compile PROFILE_PS cShadingFurPSEmissive (0.375);
+        }
+        pass SFurK4
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (0.5);
+		FragmentProgram	= compile PROFILE_PS cShadingFurPSEmissive (0.5);
+        }
+        pass SFurK5
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (0.625);
+		FragmentProgram	= compile PROFILE_PS cShadingFurPSEmissive (0.625);
+        }
+        pass SFurK6
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (0.75);
+		FragmentProgram	= compile PROFILE_PS cShadingFurPSEmissive (0.75);
+        }
+        pass SFurK7
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (0.875);
+		FragmentProgram	= compile PROFILE_PS cShadingFurPSEmissive (0.875);
+        }
+        pass SFurK8
+        {
+		VertexProgram	= compile PROFILE_VS cFurVS (1.0);
+		FragmentProgram	= compile PROFILE_PS cShadingFurPSEmissive (1.0);
+        }
+}
+
+//------------------------------------------------------------------
+// í«â¡technique Fur+KAZAN+EmissiveÇ±Ç±Ç‹Ç≈
+//------------------------------------------------------------------
+
