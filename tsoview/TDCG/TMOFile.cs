@@ -940,8 +940,17 @@ namespace TDCG
     /// </summary>
     public class TMOFrame
     {
-        internal int id;
-        internal TMOMat[] matrices;
+        int id;
+
+        /// <summary>
+        /// 行列の配列
+        /// </summary>
+        public TMOMat[] matrices;
+
+        /// <summary>
+        /// ID
+        /// </summary>
+        public int ID { get { return id; } }
 
         /// <summary>
         /// フレームを生成します。
