@@ -30,16 +30,6 @@ public class TSOForm : Form
     internal Viewer viewer = null;
     internal FigureForm fig_form = null;
     
-    private SimpleCamera camera
-    {
-        get {
-            return viewer.Camera;
-        }
-        set {
-            viewer.Camera = value;
-        }
-    }
-
     private Timer timer1;
     private System.ComponentModel.IContainer components;
 
@@ -154,10 +144,10 @@ public class TSOForm : Form
         if (keysEnabled[keyCameraReset] && keys[keyCameraReset])
         {
             keysEnabled[keyCameraReset] = false;
-            camera.Reset();
+            viewer.Camera.Reset();
             Figure fig;
             if (viewer.TryGetFigure(out fig))
-                camera.SetCenter(fig.Center);
+                viewer.Camera.SetCenter(fig.Center);
         }
         if (keysEnabled[keyFigureForm] && keys[keyFigureForm])
         {
@@ -193,8 +183,8 @@ public class TSOForm : Form
         if (keys[(int)Keys.D])
             keyZRol = +2.0f;
 
-        camera.Move(keyR - keyL, keyU - keyD, keyPull - keyPush);
-        camera.RotZ(DegreeToRadian(keyZRol));
+        viewer.Camera.Move(keyR - keyL, keyU - keyD, keyPull - keyPush);
+        viewer.Camera.RotZ(DegreeToRadian(keyZRol));
     }
 
     private void form_OnDragOver(object sender, DragEventArgs e)
