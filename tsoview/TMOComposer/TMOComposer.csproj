@@ -49,6 +49,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>TDCG.dll</HintPath>
     </Reference>
+    <Reference Include="TDCG.TMOFlip, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccelSlider.cs">

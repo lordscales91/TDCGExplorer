@@ -19,9 +19,7 @@ public class TMOFlipProcessor
         nodemap = new Dictionary<string, TMONode>();
 
         foreach (TMONode node in tmo.nodes)
-        {
             nodemap.Add(node.Name, node);
-        }
 
         char[] delim = { ' ' };
         using (StreamReader source = new StreamReader(File.OpenRead(GetFlipNodesPath())))
@@ -64,6 +62,9 @@ public class TMOFlipProcessor
                 }
             }
         }
+
+        foreach (TMONode node in tmo.nodes)
+            node.LinkMatrices(tmo.frames);
     }
 }
 }

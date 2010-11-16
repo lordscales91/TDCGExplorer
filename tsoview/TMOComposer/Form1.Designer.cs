@@ -53,6 +53,7 @@
             this.btnCopy = new System.Windows.Forms.Button();
             this.cbLimitRotation = new System.Windows.Forms.CheckBox();
             this.cbFloor = new System.Windows.Forms.CheckBox();
+            this.btnFlip = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.gvTMOAnimItems)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tmoAnimItemBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gvFigures)).BeginInit();
@@ -140,7 +141,7 @@
             // 
             // btnUp
             // 
-            this.btnUp.Location = new System.Drawing.Point(218, 197);
+            this.btnUp.Location = new System.Drawing.Point(218, 226);
             this.btnUp.Name = "btnUp";
             this.btnUp.Size = new System.Drawing.Size(50, 23);
             this.btnUp.TabIndex = 5;
@@ -150,7 +151,7 @@
             // 
             // btnDown
             // 
-            this.btnDown.Location = new System.Drawing.Point(218, 226);
+            this.btnDown.Location = new System.Drawing.Point(218, 255);
             this.btnDown.Name = "btnDown";
             this.btnDown.Size = new System.Drawing.Size(50, 23);
             this.btnDown.TabIndex = 6;
@@ -160,7 +161,7 @@
             // 
             // btnDelete
             // 
-            this.btnDelete.Location = new System.Drawing.Point(218, 255);
+            this.btnDelete.Location = new System.Drawing.Point(218, 284);
             this.btnDelete.Name = "btnDelete";
             this.btnDelete.Size = new System.Drawing.Size(50, 23);
             this.btnDelete.TabIndex = 7;
@@ -263,11 +264,22 @@
             this.cbFloor.UseVisualStyleBackColor = true;
             this.cbFloor.CheckedChanged += new System.EventHandler(this.cbFloor_CheckedChanged);
             // 
+            // btnFlip
+            // 
+            this.btnFlip.Location = new System.Drawing.Point(218, 197);
+            this.btnFlip.Name = "btnFlip";
+            this.btnFlip.Size = new System.Drawing.Size(50, 23);
+            this.btnFlip.TabIndex = 15;
+            this.btnFlip.Text = "&Flip";
+            this.btnFlip.UseVisualStyleBackColor = true;
+            this.btnFlip.Click += new System.EventHandler(this.btnFlip_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 563);
+            this.Controls.Add(this.btnFlip);
             this.Controls.Add(this.cbFloor);
             this.Controls.Add(this.cbLimitRotation);
             this.Controls.Add(this.btnCopy);
@@ -314,6 +326,7 @@
         private System.Windows.Forms.Button btnCopy;
         private System.Windows.Forms.CheckBox cbLimitRotation;
         private System.Windows.Forms.CheckBox cbFloor;
+        private System.Windows.Forms.Button btnFlip;
     }
 }
 
