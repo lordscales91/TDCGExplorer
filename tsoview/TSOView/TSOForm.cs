@@ -30,6 +30,8 @@ public class TSOForm : Form
     internal Viewer viewer = null;
     internal FigureForm fig_form = null;
     
+    string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
+
     private Timer timer1;
     private System.ComponentModel.IContainer components;
 
@@ -71,6 +73,8 @@ public class TSOForm : Form
             };
             foreach (string arg in args)
                 viewer.LoadAnyFile(arg, true);
+            if (viewer.FigureList.Count == 0)
+                viewer.LoadAnyFile(Path.Combine(save_path, "system.tdcgsav.png"), true);
 
             string script_file = Path.Combine(Application.StartupPath, "Script.cs");
             if (File.Exists(script_file))
