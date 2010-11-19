@@ -171,7 +171,7 @@ namespace TDCG
 
             foreach (TMONode node in root_nodes)
             {
-                if (node.Name == "|W_Hips")
+                if (node.Path == "|W_Hips")
                     w_hips_node = node;
                 else
                     root_nodes_except_w_hips.Add(node);
