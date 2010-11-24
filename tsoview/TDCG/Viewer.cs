@@ -75,6 +75,7 @@ public class Viewer : IDisposable
     /// </summary>
     public Viewer()
     {
+        ScreenColor = Color.LightGray;
     }
 
     /// マウスボタンを押したときに実行するハンドラ
@@ -907,8 +908,11 @@ public class Viewer : IDisposable
     {
         device.SetRenderTarget(0, ztex_surface);
         device.DepthStencilSurface = ztex_zbuf;
-        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.LightGray, 1.0f, 0);
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
     }
+
+    /// スクリーン塗りつぶし色
+    public Color ScreenColor { get; set; }
 
     /// <summary>
     /// フィギュアを描画します。
@@ -919,7 +923,7 @@ public class Viewer : IDisposable
 
         device.SetRenderTarget(0, dev_surface);
         device.DepthStencilSurface = dev_zbuf;
-        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer | ClearFlags.Stencil, Color.LightGray, 1.0f, 0);
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer | ClearFlags.Stencil, ScreenColor, 1.0f, 0);
 
         foreach (Figure fig in FigureList)
         foreach (TSOFile tso in fig.TSOList)
