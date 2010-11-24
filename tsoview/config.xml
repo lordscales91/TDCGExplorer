@@ -2,6 +2,7 @@
 <TSOConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <ClientSize>
     <Width>1024</Width>
-    <Height>800</Height>
+    <Height>768</Height>
   </ClientSize>
+  <ScreenColorName>LightGrey</ScreenColorName>
 </TSOConfig>
