@@ -21,6 +21,7 @@ namespace TSOWeight
             this.ClientSize = tso_config.ClientSize;
 
             this.viewer = new WeightViewer();
+            viewer.ScreenColor = tso_config.ScreenColor;
 
             if (viewer.InitializeApplication(this))
             {

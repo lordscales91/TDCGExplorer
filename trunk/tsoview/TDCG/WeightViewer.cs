@@ -558,7 +558,7 @@ public class WeightViewer : Viewer
 
         device.SetRenderTarget(0, dev_surface);
         device.DepthStencilSurface = dev_zbuf;
-        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer | ClearFlags.Stencil, Color.LightGray, 1.0f, 0);
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer | ClearFlags.Stencil, ScreenColor, 1.0f, 0);
 
         Figure fig;
         if (TryGetFigure(out fig))
