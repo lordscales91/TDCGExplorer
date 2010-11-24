@@ -428,6 +428,8 @@ public class WeightViewer : Viewer
         {
             RenderDerived();
         };
+        LineColor = Color.FromArgb(100, 100, 230); //from MikuMikuDance
+        SelectedLineColor = Color.FromArgb(255, 0, 0); //red
     }
 
     /// get path to dot.bmp
@@ -756,6 +758,9 @@ public class WeightViewer : Viewer
         }
     }
 
+    /// node line描画色
+    public Color LineColor { get; set; }
+
     /// <summary>
     /// フィギュアに含まれるnode treeを描画する。
     /// </summary>
@@ -764,7 +769,6 @@ public class WeightViewer : Viewer
     {
         TMOFile tmo = fig.Tmo;
 
-        Color line_color = Color.FromArgb(100, 100, 230); //from MikuMikuDance
         Line line = new Line(device);
         foreach (TMONode node in tmo.nodes)
         {
@@ -785,7 +789,7 @@ public class WeightViewer : Viewer
                 vertices[0] = new Vector2(p3.X, p3.Y);
                 vertices[1] = new Vector2(p0.X, p0.Y);
                 vertices[2] = new Vector2(p4.X, p4.Y);
-                line.Draw(vertices, line_color);
+                line.Draw(vertices, LineColor);
             }
         }
         line.Dispose();
@@ -858,6 +862,9 @@ public class WeightViewer : Viewer
         return p2;
     }
 
+    /// 選択node line描画色
+    public Color SelectedLineColor { get; set; }
+
     /// 選択nodeを描画する。
     void DrawSelectedNode(Figure fig)
     {
@@ -874,7 +881,6 @@ public class WeightViewer : Viewer
                 TMONode child_bone;
                 if (fig.nodemap.TryGetValue(selected_node.children[0], out child_bone))
                 {
-                    Color line_color = Color.FromArgb(255, 0, 0); //red
                     Line line = new Line(device);
 
                     Vector3 p0 = GetNodePositionOnScreen(child_bone);
@@ -889,7 +895,7 @@ public class WeightViewer : Viewer
                     vertices[0] = new Vector2(p3.X, p3.Y);
                     vertices[1] = new Vector2(p0.X, p0.Y);
                     vertices[2] = new Vector2(p4.X, p4.Y);
-                    line.Draw(vertices, line_color);
+                    line.Draw(vertices, SelectedLineColor);
 
                     line.Dispose();
                     line = null;
