@@ -8,16 +8,16 @@ include Microsoft::DirectX::Direct3D
 
 class Matrix
   def inspect
-    "[ [ %+.5f %+.5f %+.5f %+.5f ], \n" % [ m11, m12, m13, m14 ] +
-    "  [ %+.5f %+.5f %+.5f %+.5f ], \n" % [ m21, m22, m23, m24 ] +
-    "  [ %+.5f %+.5f %+.5f %+.5f ], \n" % [ m31, m32, m33, m34 ] +
-    "  [ %+.5f %+.5f %+.5f %+.5f ] ]\n" % [ m41, m42, m43, m44 ]
+    "[ [ %f %f %f %f ]\n" % [ m11, m12, m13, m14 ] +
+    "  [ %f %f %f %f ]\n" % [ m21, m22, m23, m24 ] +
+    "  [ %f %f %f %f ]\n" % [ m31, m32, m33, m34 ] +
+    "  [ %f %f %f %f ] ]" % [ m41, m42, m43, m44 ]
   end
 end
 
 class Vector3
   def inspect
-    "[ %+.5f %+.5f %+.5f ]\n" % [ x, y, z ]
+    "[ %f %f %f ]" % [ x, y, z ]
   end
 end
 
