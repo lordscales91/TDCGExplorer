@@ -34,6 +34,7 @@ class UniqVertex
   attr :vertices
   attr :position
   attr :skin_weights
+  attr :cell
   attr_accessor :opposite_vertex
 
   @@warn_count = 0
@@ -42,7 +43,7 @@ class UniqVertex
     @@warn_count
   end
 
-  def initialize(a, sub)
+  def initialize(a, sub, cell)
     @vertices = {}
     @vertices[a] = sub
     @position = a.position
@@ -50,6 +51,7 @@ class UniqVertex
     for skin_weight in a.skin_weights
       @skin_weights.push TDCG::SkinWeight.new(sub.bone_indices[skin_weight.bone_index], skin_weight.weight)
     end
+    @cell = cell
   end
   def push(a, sub)
     @vertices[a] = sub
@@ -58,7 +60,7 @@ class UniqVertex
     Vector3.new( -position.x, position.y, position.z )
   end
   def inspect
-    "UniqVertex(p:#{ position.inspect } #w:#{ skin_weights.size } #v:#{ vertices.size })"
+    "UniqVertex(p:#{ position.inspect } #w:#{ skin_weights.size } #v:#{ vertices.size } cell:#{ cell.inspect })"
   end
   def dump
     puts self.inspect
@@ -77,7 +79,7 @@ class UniqVertex
     found = nil
     opposite_vertex.skin_weights.each_with_index do |opp_sw, i|
       sw = skin_weights[i]
-      unless (sw.weight - opp_sw.weight).abs < 0.01
+      unless (sw.weight - opp_sw.weight).abs < 1.0e-2
         found = i
         break
       end
@@ -90,12 +92,14 @@ class UniqCell
   attr :x
   attr :y
   attr :z
+  attr :contains_zerox
   attr :vertices
   attr_accessor :opposite_cell
-  def initialize(x, y, z)
+  def initialize(x, y, z, contains_zerox = false)
     @x = x
     @y = y
     @z = z
+    @contains_zerox = contains_zerox
     @vertices = []
   end
   def push(a, sub)
@@ -108,7 +112,7 @@ class UniqCell
       end
     end
     unless found
-      @vertices.push UniqVertex.new(a, sub)
+      @vertices.push UniqVertex.new(a, sub, self)
     end
   end
   def inspect
@@ -128,9 +132,21 @@ class UniqCell
     end
     found
   end
-  def assign_opposite_vertices
+  def assign_opposite_vertices_contains_zerox
+    @vertices.each do |v|
+      v.opposite_vertex = v.position.x.abs < 1.0e-4 ? v : opposite_cell.find_vertex_at(v.opposite_position)
+    end
+  end
+  def assign_opposite_vertices_not_contains_zerox
     @vertices.each do |v|
       v.opposite_vertex = opposite_cell.find_vertex_at(v.opposite_position)
+    end
+  end
+  def assign_opposite_vertices
+    if contains_zerox
+      assign_opposite_vertices_contains_zerox
+    else
+      assign_opposite_vertices_not_contains_zerox
     end
   end
   def copy_opposite_weights
@@ -160,7 +176,7 @@ class Cluster
     ylen = @max.y.floor - @min.y.floor + 1
     zlen = @max.z.floor - @min.z.floor + 1
     cidx = x * ylen * zlen + y * zlen + z
-    @cells[cidx] ||= UniqCell.new(x, y, z)
+    @cells[cidx] ||= UniqCell.new(x, y, z, x == xidx(0) - 1)
   end
   def push(v, sub)
     x = xidx(v.position.x)
