@@ -7,9 +7,13 @@ using TDCG;
 
 namespace TSOWeightCopy
 {
+    public enum CopyDirection { LtoR, RtoL };
+
     /// 頂点探索クラスタ
     public class Cluster
     {
+        public CopyDirection dir = CopyDirection.LtoR;
+
         Vector3 min;
         Vector3 max;
         UniqueCell[, ,] cells;
@@ -49,7 +53,7 @@ namespace TSOWeightCopy
         public UniqueCell GetCell(int x, int y, int z)
         {
             if (cells[x, y, z] == null)
-                cells[x, y, z] = new UniqueCell(x, y, z, x == GetX(0.0f));
+                cells[x, y, z] = new UniqueCell(this, x, y, z, x == GetX(0.0f));
             return cells[x, y, z];
         }
 
@@ -110,7 +114,7 @@ namespace TSOWeightCopy
                 if (cell != null)
                     cell.AssignOppositeVertices();
         }
-
+        
         /// 対称位置にある同一視頂点のスキンウェイトを複写します。
         public void CopyOppositeWeights()
         {
@@ -118,7 +122,9 @@ namespace TSOWeightCopy
             foreach (UniqueCell cell in cells)
                 if (cell != null)
                 {
-                    if (cell.X > x)
+                    if (dir == CopyDirection.LtoR && cell.X > x)
+                        continue;
+                    if (dir == CopyDirection.RtoL && cell.X < x)
                         continue;
 
                     cell.CopyOppositeWeights();

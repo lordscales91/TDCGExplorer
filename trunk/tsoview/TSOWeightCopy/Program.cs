@@ -137,6 +137,31 @@ namespace TSOWeightCopy
 
             Console.WriteLine("#uniq vertices:{0}", cluster.vertices.Count);
             Console.WriteLine();
+
+            Console.WriteLine("Copy direction:");
+            Console.WriteLine("0 LtoR");
+            Console.WriteLine("1 RtoL");
+            Console.Write("Select copy direction (0-1): ");
+            int copy_dir = 0;
+            try
+            {
+                copy_dir = int.Parse(Console.ReadLine());
+            }
+            catch (System.FormatException e)
+            {
+                Console.WriteLine(e);
+                return;
+            }
+            switch (copy_dir)
+            {
+                case 0:
+                    cluster.dir = CopyDirection.LtoR;
+                    break;
+                case 1:
+                    cluster.dir = CopyDirection.RtoL;
+                    break;
+            }
+
             cluster.AssignOppositeCells();
             cluster.AssignOppositeVertices();
             //cluster.Dump();

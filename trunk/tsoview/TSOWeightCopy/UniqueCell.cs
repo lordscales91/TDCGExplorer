@@ -18,6 +18,7 @@ namespace TSOWeightCopy
             return dx * dx + dy * dy + dz * dz;
         }
 
+        Cluster cluster;
         int x;
         int y;
         int z;
@@ -31,8 +32,9 @@ namespace TSOWeightCopy
         public List<UniqueVertex> vertices;
         public UniqueCell opposite_cell;
 
-        public UniqueCell(int x, int y, int z, bool contains_zero_x)
+        public UniqueCell(Cluster cluster, int x, int y, int z, bool contains_zero_x)
         {
+            this.cluster = cluster;
             this.x = x;
             this.y = y;
             this.z = z;
@@ -112,7 +114,9 @@ namespace TSOWeightCopy
             {
                 foreach (UniqueVertex v in vertices)
                 {
-                    if (v.position.X > -1.0e-4f)
+                    if (cluster.dir == CopyDirection.LtoR && v.position.X > -1.0e-4f)
+                        continue;
+                    if (cluster.dir == CopyDirection.RtoL && v.position.X < +1.0e-4f)
                         continue;
 
                     v.CopyOppositeWeights();
