@@ -27,9 +27,11 @@ namespace TSOWeightCopy
         /// 対称位置にある同一視頂点
         public UniqueVertex opposite_vertex;
 
+        public static Dictionary<int, int> oppnode_idmap = null;
+
         public int GetOppositeBoneIndex(int bone_index)
         {
-            return 0;
+            return oppnode_idmap[bone_index];
         }
 
         public UniqueVertex(Vertex a, TSOSubMesh sub)
