@@ -38,7 +38,7 @@ namespace TSOWeightCopy
                 i++;
             }
 
-            Console.Write("Select mesh (0-{0}): ", tso.meshes.Length);
+            Console.Write("Select mesh (0-{0}): ", tso.meshes.Length - 1);
             int mesh_idx = 0;
             try
             {
