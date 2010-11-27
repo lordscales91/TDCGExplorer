@@ -157,26 +157,41 @@ class UniqCell
 end
 
 class Cluster
+  attr :min
+  attr :max
+  attr :cells
+  attr :xlen
+  attr :ylen
+  attr :zlen
+
   def initialize(min, max)
+    if min.x < 0 && max.x < 0 || min.x > 0 && max.x > 0
+      raise ArgumentError, "invalid_range"
+    end
+
+    min.x = -max.x if min.x.abs < max.x.abs
+    max.x = -min.x if min.x.abs > max.x.abs
+
     @min = min
     @max = max
     @cells = []
+
+    @xlen = (@max.x + 0.5).floor - (@min.x + 0.5).floor + 1
+    @ylen = (@max.y + 0.5).floor - (@min.y + 0.5).floor + 1
+    @zlen = (@max.z + 0.5).floor - (@min.z + 0.5).floor + 1
   end
   def xidx(x)
-    x.floor - @min.x.floor
+    (x + 0.5).floor - (@min.x + 0.5).floor
   end
   def yidx(y)
-    y.floor - @min.y.floor
+    (y + 0.5).floor - (@min.y + 0.5).floor
   end
   def zidx(z)
-    z.floor - @min.z.floor
+    (z + 0.5).floor - (@min.z + 0.5).floor
   end
   def get_cell(x, y, z)
-    xlen = @max.x.floor - @min.x.floor + 1
-    ylen = @max.y.floor - @min.y.floor + 1
-    zlen = @max.z.floor - @min.z.floor + 1
     cidx = x * ylen * zlen + y * zlen + z
-    @cells[cidx] ||= UniqCell.new(x, y, z, x == xidx(0) - 1)
+    @cells[cidx] ||= UniqCell.new(x, y, z, x == xidx(0.0))
   end
   def push(v, sub)
     x = xidx(v.position.x)
@@ -198,7 +213,6 @@ class Cluster
     ary
   end
   def oppositex(x)
-    xlen = @max.x.floor - @min.x.floor + 1
     xend = xlen - 1
     xend - x
   end
