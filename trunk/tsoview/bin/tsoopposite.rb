@@ -63,17 +63,12 @@ class UniqVertex
   attr :cell
   attr_accessor :opposite_vertex
 
-  @@warn_count = 0
   @@oppnode_idmap = nil
   def self.oppnode_idmap
     @@oppnode_idmap
   end
   def self.oppnode_idmap=(oppnode_idmap)
     @@oppnode_idmap= oppnode_idmap
-  end
-
-  def self.warn_count
-    @@warn_count
   end
 
   def opposite_bone_index(bone_index)
@@ -90,20 +85,35 @@ class UniqVertex
     end
     @cell = cell
   end
+  
   def push(a, sub)
     @vertices[a] = sub
+
+    4.times do |i|
+      sw = skin_weights[i]
+      a_sw = a.skin_weights[i]
+      if sw.weight != 0.0
+        if sw.bone_index != sub.bone_indices[a_sw.bone_index]
+          puts "### warn: bone_index not match"
+          dump
+          puts sprintf("%d sw(%d %f) a sw(%d %f)", i, sw.bone_index, sw.weight, sub.bone_indices[a_sw.bone_index], a_sw.weight)
+        end
+      end
+    end
   end
   def opposite_position
     Vector3.new( -position.x, position.y, position.z )
   end
   def inspect
-    "UniqVertex(p:#{ position.inspect } #w:#{ skin_weights.size } #v:#{ vertices.size } cell:#{ cell.inspect })"
+    "UniqVertex(p:#{ position.inspect } #v:#{ vertices.size } cell:#{ cell.inspect })"
   end
   def dump
     puts self.inspect
     puts "opp " + opposite_vertex.inspect
   end
+
   def warn_opposite_weights
+    puts "### warn: weights gap found"
     dump
     4.times do |i|
       sw = skin_weights[i]
@@ -111,19 +121,29 @@ class UniqVertex
       puts sprintf("%d sw(%d %f) opp sw(%d %f)", i, sw.bone_index, sw.weight, opp_sw.bone_index, opp_sw.weight)
     end
     puts
-    @@warn_count += 1
   end
+
+  def warn_bone_index_not_found(a, sub)
+    puts "### warn: a_sw.bone_index not found in sub.bone_indices"
+    dump
+    4.times do |i|
+      sw = skin_weights[i]
+      a_sw = a.skin_weights[i]
+      puts sprintf("%d sw(%d %f) a sw(%d %f)", i, sw.bone_index, sw.weight, sub.bone_indices[a_sw.bone_index], a_sw.weight)
+    end
+  end
+
   def copy_opposite_weights
-    found = nil
+    weights_gap_found = nil
     4.times do |i|
       sw = skin_weights[i]
       opp_sw = opposite_vertex.skin_weights[i]
       unless (sw.weight - opp_sw.weight).abs < 1.0e-2
-        found = i
+        weights_gap_found = i
         break
       end
     end
-    warn_opposite_weights if found
+    warn_opposite_weights if weights_gap_found
 
     4.times do |i|
       sw = skin_weights[i]
@@ -132,22 +152,26 @@ class UniqVertex
       sw.weight = opp_sw.weight
     end
 
-    vertices.each do |v, sub|
+    vertices.each do |a, sub|
+      bone_index_not_found = nil
       4.times do |i|
         sw = skin_weights[i]
-        v_sw = v.skin_weights[i]
-        idx = sub.bone_indices.index(sw.bone_index)
-        if idx.nil? && sw.weight == 0.0
-          idx = 0
+        a_sw = a.skin_weights[i]
+        a_bone_idx = sub.bone_indices.index(sw.bone_index)
+        if a_bone_idx.nil?
+          if sw.weight == 0.0
+            a_bone_idx = 0
+          elsif a_sw.weight == 0.0
+            a_bone_idx = 0
+          else
+            bone_index_not_found = true
+            next
+          end
         end
-        if idx.nil?
-          puts "warn: sw.bone_index not found in sub.bone_indices"
-          puts sprintf("%d sw(%d %f) v sw(%d %f)", i, sw.bone_index, sw.weight, v_sw.bone_index, v_sw.weight)
-          next
-        end
-        v_sw.bone_index = idx
-        v_sw.weight = sw.weight
+        a_sw.bone_index = a_bone_idx
+        a_sw.weight = sw.weight
       end
+      warn_bone_index_not_found(a, sub) if bone_index_not_found
     end
   end
 end
@@ -196,26 +220,29 @@ class UniqCell
     end
     found
   end
-  def assign_opposite_vertices_contains_zerox
-    @vertices.each do |v|
-      v.opposite_vertex = v.position.x.abs < 1.0e-4 ? v : opposite_cell.find_vertex_at(v.opposite_position)
-    end
-  end
-  def assign_opposite_vertices_not_contains_zerox
-    @vertices.each do |v|
-      v.opposite_vertex = opposite_cell.find_vertex_at(v.opposite_position)
-    end
-  end
+
   def assign_opposite_vertices
     if contains_zerox
-      assign_opposite_vertices_contains_zerox
+      @vertices.each do |v|
+        v.opposite_vertex = v.position.x.abs < 1.0e-4 ? v : opposite_cell.find_vertex_at(v.opposite_position)
+      end
     else
-      assign_opposite_vertices_not_contains_zerox
+      @vertices.each do |v|
+        v.opposite_vertex = opposite_cell.find_vertex_at(v.opposite_position)
+      end
     end
   end
+
   def copy_opposite_weights
-    @vertices.each do |v|
-      v.copy_opposite_weights
+    if contains_zerox
+      @vertices.each do |v|
+        next if v.position.x > -1.0e-4
+        v.copy_opposite_weights
+      end
+    else
+      @vertices.each do |v|
+        v.copy_opposite_weights
+      end
     end
   end
 end
@@ -296,15 +323,16 @@ class Cluster
   def copy_opposite_weights
     x = xidx(0.0)
     @cells.compact.each do |cell|
-      cell.copy_opposite_weights if cell.x < x
+      next if cell.x > x
+      cell.copy_opposite_weights
     end
   end
 end
 
 def main(mesh)
-  ary = []
   min = Vector3.empty
   max = Vector3.empty
+  nvertices = 0
 
   # p mesh.sub_meshes.size
   for sub in mesh.sub_meshes
@@ -323,10 +351,10 @@ def main(mesh)
       max.y = y if max.y < y
       max.z = z if max.z < z
 
-      ary.push(v)
+      nvertices += 1
     end
   end
-  puts "#vertices:#{ ary.size }"
+  puts "#vertices:#{ nvertices }"
   puts "min:#{ min.inspect }"
   puts "max:#{ max.inspect }"
 
@@ -349,5 +377,3 @@ UniqVertex.oppnode_idmap = oppnode_idmap
 
 main(selected_mesh)
 tso.save('out.tso')
-
-puts "#warn:#{ UniqVertex.warn_count }"
