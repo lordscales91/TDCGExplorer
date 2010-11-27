@@ -81,6 +81,8 @@ namespace TSOWeightCopy
                     if (sw.bone_index != sub.bone_indices[a_sw.bone_index])
                     {
                         Console.WriteLine("### warn: bone_index not match");
+                        Dump();
+                        Console.WriteLine("{0} sw({1} {2}) a sw({3} {4})", i, sw.bone_index, sw.weight, sub.bone_indices[a_sw.bone_index], a_sw.weight);
                     }
                 }
             }
@@ -171,30 +173,36 @@ namespace TSOWeightCopy
             {
                 Vertex a = pair.Key;
                 TSOSubMesh sub = pair.Value;
-                bool bone_index_not_found = false;
-                for (int i = 0; i < 4; i++)
+                CopyWeights(a, sub);
+            }
+        }
+
+        void CopyWeights(Vertex a, TSOSubMesh sub)
+        {
+            bool bone_index_not_found = false;
+            for (int i = 0; i < 4; i++)
+            {
+                SkinWeight sw = skin_weights[i];
+                SkinWeight a_sw = a.skin_weights[i];
+                int a_bone_idx = Array.IndexOf(sub.bone_indices, sw.bone_index);
+                if (a_bone_idx == -1)
                 {
-                    SkinWeight sw = skin_weights[i];
-                    SkinWeight a_sw = a.skin_weights[i];
-                    int a_bone_idx = Array.IndexOf(sub.bone_indices, sw.bone_index);
-                    if (a_bone_idx == -1)
+                    if (sw.weight == 0.0f)
                     {
-                        if (sw.weight == 0.0f)
-                            a_bone_idx = 0;
-                        else if (a_sw.weight == 0.0f)
-                            a_bone_idx = 0;
-                        else
-                        {
-                            bone_index_not_found = true;
-                            continue;
-                        }
+                        a_sw.bone_index = 0;
+                        a_sw.weight = sw.weight;
                     }
+                    else
+                        bone_index_not_found = true;
+                }
+                else
+                {
                     a_sw.bone_index = a_bone_idx;
                     a_sw.weight = sw.weight;
                 }
-                if (bone_index_not_found)
-                    WarnBoneIndexNotFound(a, sub);
             }
+            if (bone_index_not_found)
+                WarnBoneIndexNotFound(a, sub);
         }
     }
 }
