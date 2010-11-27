@@ -162,17 +162,17 @@ namespace TSOWeightCopy
                         oppnode_idmap[cnode_id] = cnode_id;
                     }
                     else
-                        if (op == "swap")
-                        {
-                            Debug.Assert(tokens.Length == 3, "tokens length should be 3: " + line);
-                            string lnode_name = tokens[1];
-                            string rnode_name = tokens[2];
-                            int lnode_id = nodemap[lnode_name].ID;
-                            int rnode_id = nodemap[rnode_name].ID;
+                    if (op == "swap")
+                    {
+                        Debug.Assert(tokens.Length == 3, "tokens length should be 3: " + line);
+                        string lnode_name = tokens[1];
+                        string rnode_name = tokens[2];
+                        int lnode_id = nodemap[lnode_name].ID;
+                        int rnode_id = nodemap[rnode_name].ID;
 
-                            oppnode_idmap[lnode_id] = rnode_id;
-                            oppnode_idmap[rnode_id] = lnode_id;
-                        }
+                        oppnode_idmap[lnode_id] = rnode_id;
+                        oppnode_idmap[rnode_id] = lnode_id;
+                    }
                 }
             }
 

@@ -7,11 +7,27 @@ using TDCG;
 
 namespace TSOWeightCopy
 {
-    public enum CopyDirection { LtoR, RtoL };
+    /// <summary>
+    /// 複写方向
+    /// </summary>
+    public enum CopyDirection
+    {
+        /// <summary>
+        /// 左から右
+        /// </summary>
+        LtoR,
+        /// <summary>
+        /// 右から左
+        /// </summary>
+        RtoL
+    };
 
     /// 頂点探索クラスタ
     public class Cluster
     {
+        /// <summary>
+        /// 複写方向
+        /// </summary>
         public CopyDirection dir = CopyDirection.LtoR;
 
         Vector3 min;
@@ -21,6 +37,11 @@ namespace TSOWeightCopy
         int ylen;
         int zlen;
 
+        /// <summary>
+        /// 頂点探索クラスタを生成します。
+        /// </summary>
+        /// <param name="min">頂点の最小位置</param>
+        /// <param name="max">頂点の最大位置</param>
         public Cluster(Vector3 min, Vector3 max)
         {
             this.min = min;
@@ -67,6 +88,9 @@ namespace TSOWeightCopy
             cell.Push(a, sub);
         }
 
+        /// <summary>
+        /// 文字列表現を出力します。
+        /// </summary>
         public void Dump()
         {
             foreach (UniqueCell cell in cells)

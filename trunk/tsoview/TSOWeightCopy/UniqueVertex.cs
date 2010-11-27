@@ -10,6 +10,11 @@ namespace TSOWeightCopy
     /// 同じ位置にある頂点（同一視頂点）を扱います。
     public class UniqueVertex
     {
+        /// <summary>
+        /// 指定位置の文字表現を得ます。
+        /// </summary>
+        /// <param name="v">位置</param>
+        /// <returns></returns>
         public static string ToString(Vector3 v)
         {
             return string.Format("[ {0} {1} {2} ]", v.X, v.Y, v.Z);
@@ -27,13 +32,26 @@ namespace TSOWeightCopy
         /// 対称位置にある同一視頂点
         public UniqueVertex opposite_vertex;
 
+        /// <summary>
+        /// 対称関係にあるボーン（の添字）辞書
+        /// </summary>
         public static Dictionary<int, int> oppnode_idmap = null;
 
+        /// <summary>
+        /// 指定ボーンと対称関係にあるボーン（の添字）を得ます。
+        /// </summary>
+        /// <param name="bone_index">ボーン添字</param>
+        /// <returns></returns>
         public int GetOppositeBoneIndex(int bone_index)
         {
             return oppnode_idmap[bone_index];
         }
 
+        /// <summary>
+        /// 同一視頂点を生成します。
+        /// </summary>
+        /// <param name="a">頂点</param>
+        /// <param name="sub">頂点を含むサブメッシュ</param>
         public UniqueVertex(Vertex a, TSOSubMesh sub)
         {
             this.vertices = new Dictionary<Vertex, TSOSubMesh>();
@@ -74,11 +92,18 @@ namespace TSOWeightCopy
             return new Vector3(-position.X, position.Y, position.Z);
         }
 
+        /// <summary>
+        /// 文字列表現を得ます。
+        /// </summary>
+        /// <returns>文字列表現</returns>
         public override string ToString()
         {
             return string.Format("UniqueVertex(p:{0} #v:{1})", ToString(position), vertices.Count);
         }
 
+        /// <summary>
+        /// 文字列表現を出力します。
+        /// </summary>
         public void Dump()
         {
             Console.WriteLine(this);
