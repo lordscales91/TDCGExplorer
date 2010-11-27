@@ -68,8 +68,9 @@ class UniqVertex
   end
   def warn_opposite_weights
     dump
-    opposite_vertex.skin_weights.each_with_index do |opp_sw, i|
+    4.times do |i|
       sw = skin_weights[i]
+      opp_sw = opposite_vertex.skin_weights[i]
       puts sprintf("%d sw(%d %f) opp sw(%d %f)", i, sw.bone_index, sw.weight, opp_sw.bone_index, opp_sw.weight)
     end
     puts
@@ -77,8 +78,9 @@ class UniqVertex
   end
   def copy_opposite_weights
     found = nil
-    opposite_vertex.skin_weights.each_with_index do |opp_sw, i|
+    4.times do |i|
       sw = skin_weights[i]
+      opp_sw = opposite_vertex.skin_weights[i]
       unless (sw.weight - opp_sw.weight).abs < 1.0e-2
         found = i
         break
