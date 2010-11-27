@@ -8,6 +8,33 @@ require 'TDCG'
 tso = TDCG::TSOFile.new
 tso.load('base/data/model/N001BODY_A00.tso')
 
+nodemap = {}
+for node in tso.nodes
+  puts "%d %s" % [ node.ID, node.name ]
+  nodemap[node.name.to_s] = node
+end
+
+oppnode_idmap = {}
+open('flipnodes.txt') do |f|
+  while line = f.gets
+    tokens = line.chomp.split(/ /)
+    op = tokens[0]
+    case op
+    when 'flip'
+      cnode_name = tokens[1]
+      cnode_id = nodemap[cnode_name].ID
+      oppnode_idmap[cnode_id] = cnode_id
+    when 'swap'
+      lnode_name = tokens[1]
+      rnode_name = tokens[2]
+      lnode_id = nodemap[lnode_name].ID
+      rnode_id = nodemap[rnode_name].ID
+      oppnode_idmap[lnode_id] = rnode_id
+      oppnode_idmap[rnode_id] = lnode_id
+    end
+  end
+end
+
 def tso.find_mesh(name)
   # p meshes.size
   found_mesh = nil
@@ -38,9 +65,20 @@ class UniqVertex
   attr_accessor :opposite_vertex
 
   @@warn_count = 0
+  @@oppnode_idmap = nil
+  def self.oppnode_idmap
+    @@oppnode_idmap
+  end
+  def self.oppnode_idmap=(oppnode_idmap)
+    @@oppnode_idmap= oppnode_idmap
+  end
 
   def self.warn_count
     @@warn_count
+  end
+
+  def opposite_bone_index(bone_index)
+    @@oppnode_idmap[bone_index]
   end
 
   def initialize(a, sub, cell)
@@ -85,6 +123,14 @@ class UniqVertex
         found = i
         break
       end
+    end
+    warn_opposite_weights if found
+
+    4.times do |i|
+      sw = skin_weights[i]
+      opp_sw = opposite_vertex.skin_weights[i]
+      sw.bone_index = opposite_bone_index(opp_sw.bone_index)
+      sw.weight = opp_sw.weight
     end
     warn_opposite_weights if found
   end
@@ -282,6 +328,8 @@ def main(mesh)
   # cluster.dump
   cluster.copy_opposite_weights
 end
+
+UniqVertex.oppnode_idmap = oppnode_idmap
 
 # p Float::EPSILON
 main(selected_mesh)
