@@ -131,6 +131,7 @@ class UniqVertex
       a_sw = a.skin_weights[i]
       puts sprintf("%d sw(%d %f) a sw(%d %f)", i, sw.bone_index, sw.weight, sub.bone_indices[a_sw.bone_index], a_sw.weight)
     end
+    puts
   end
 
   def copy_opposite_weights

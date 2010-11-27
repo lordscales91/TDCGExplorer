@@ -27,6 +27,11 @@ namespace TSOWeightCopy
         /// 対称位置にある同一視頂点
         public UniqueVertex opposite_vertex;
 
+        public int GetOppositeBoneIndex(int bone_index)
+        {
+            return 0;
+        }
+
         public UniqueVertex(Vertex a, TSOSubMesh sub)
         {
             this.vertices = new Dictionary<Vertex, TSOSubMesh>();
@@ -92,6 +97,20 @@ namespace TSOWeightCopy
             Console.WriteLine();
         }
 
+        /// 警告 'ボーン参照が見つからなかった' を出力します。
+        public void WarnBoneIndexNotFound(Vertex a, TSOSubMesh sub)
+        {
+            Console.WriteLine("### warn: a_sw.bone_index not found in sub.bone_indices");
+            Dump();
+            for (int i = 0; i < 4; i++)
+            {
+                SkinWeight sw = skin_weights[i];
+                SkinWeight a_sw = a.skin_weights[i];
+                Console.WriteLine("{0} sw({1} {2}) a sw({3} {4})", i, sw.bone_index, sw.weight, sub.bone_indices[a_sw.bone_index], a_sw.weight);
+            }
+            Console.WriteLine();
+        }
+
         /// 対称位置にある同一視頂点のスキンウェイトを複写します。
         public void CopyOppositeWeights()
         {
@@ -112,6 +131,43 @@ namespace TSOWeightCopy
             }
             if (weights_gap_found)
                 WarnOppositeWeights();
+
+            for (int i = 0; i < 4; i++)
+            {
+                SkinWeight sw = skin_weights[i];
+                SkinWeight opp_sw = opposite_vertex.skin_weights[i];
+                sw.bone_index = GetOppositeBoneIndex(opp_sw.bone_index);
+                sw.weight = opp_sw.weight;
+            }
+
+            foreach (KeyValuePair<Vertex, TSOSubMesh> pair in vertices)
+            {
+                Vertex a = pair.Key;
+                TSOSubMesh sub = pair.Value;
+                bool bone_index_not_found = false;
+                for (int i = 0; i < 4; i++)
+                {
+                    SkinWeight sw = skin_weights[i];
+                    SkinWeight a_sw = a.skin_weights[i];
+                    int a_bone_idx = Array.IndexOf(sub.bone_indices, sw.bone_index);
+                    if (a_bone_idx == -1)
+                    {
+                        if (sw.weight == 0.0f)
+                            a_bone_idx = 0;
+                        else if (a_sw.weight == 0.0f)
+                            a_bone_idx = 0;
+                        else
+                        {
+                            bone_index_not_found = true;
+                            continue;
+                        }
+                    }
+                    a_sw.bone_index = a_bone_idx;
+                    a_sw.weight = sw.weight;
+                }
+                if (bone_index_not_found)
+                    WarnBoneIndexNotFound(a, sub);
+            }
         }
     }
 }
