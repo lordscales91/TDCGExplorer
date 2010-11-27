@@ -18,8 +18,15 @@ namespace TSOWeightCopy
 
         static void Main(string[] args)
         {
+            if (args.Length < 1)
+            {
+                Console.WriteLine("TSOWeightCopy.exe <tso file>");
+                return;
+            }
+            string source_file = args[0];
+
             TSOFile tso = new TSOFile();
-            tso.Load(@"base/data/model/N001BODY_A00.tso");
+            tso.Load(source_file);
 
             Dictionary<string, TSONode> nodemap = new Dictionary<string, TSONode>();
 
@@ -61,14 +68,35 @@ namespace TSOWeightCopy
 
             UniqueVertex.oppnode_idmap = oppnode_idmap;
 
-            TSOMesh found_mesh = null;
+            Console.WriteLine("Meshes:");
+            int i = 0;
             foreach (TSOMesh mesh in tso.meshes)
             {
-                if (mesh.Name == "W_BODY_Nurin_M01")
-                {
-                    found_mesh = mesh;
-                    break;
-                }
+                Console.WriteLine("{0} {1}", i, mesh.Name);
+                i++;
+            }
+
+            Console.Write("Select mesh (0-{0}): ", tso.meshes.Length);
+            int mesh_idx = 0;
+            try
+            {
+                mesh_idx = int.Parse(Console.ReadLine());
+            }
+            catch (System.FormatException e)
+            {
+                Console.WriteLine(e);
+                return;
+            }
+
+            TSOMesh found_mesh = null;
+            try
+            {
+                found_mesh = tso.meshes[mesh_idx];
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                Console.WriteLine(e);
+                return;
             }
 
             Vector3 min = Vector3.Empty;
@@ -114,7 +142,11 @@ namespace TSOWeightCopy
             //cluster.Dump();
             cluster.CopyOppositeWeights();
 
-            tso.Save(@"out.tso");
+            string dest_path = Path.GetDirectoryName(source_file);
+            string dest_file = Path.GetFileNameWithoutExtension(source_file) + @".new.tso";
+            dest_path = Path.Combine(dest_path, dest_file);
+            Console.WriteLine("Save File: " + dest_path);
+            tso.Save(dest_path);
         }
     }
 }
