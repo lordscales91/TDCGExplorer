@@ -91,6 +91,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDCG.TMOFlip", "TDCG.TMOFli
 		{30D26679-E876-46FC-B8C0-E55146316C8C} = {30D26679-E876-46FC-B8C0-E55146316C8C}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSOWeightCopy", "TSOWeightCopy\TSOWeightCopy.csproj", "{BE392E3E-CEDA-4E9D-A041-6D1CF0EA3A02}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -177,6 +179,10 @@ Global
 		{B9D7EC5B-A24E-4164-A531-56801E65C6CD}.Debug|x86.Build.0 = Debug|x86
 		{B9D7EC5B-A24E-4164-A531-56801E65C6CD}.Release|x86.ActiveCfg = Release|x86
 		{B9D7EC5B-A24E-4164-A531-56801E65C6CD}.Release|x86.Build.0 = Release|x86
+		{BE392E3E-CEDA-4E9D-A041-6D1CF0EA3A02}.Debug|x86.ActiveCfg = Debug|x86
+		{BE392E3E-CEDA-4E9D-A041-6D1CF0EA3A02}.Debug|x86.Build.0 = Debug|x86
+		{BE392E3E-CEDA-4E9D-A041-6D1CF0EA3A02}.Release|x86.ActiveCfg = Release|x86
+		{BE392E3E-CEDA-4E9D-A041-6D1CF0EA3A02}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
