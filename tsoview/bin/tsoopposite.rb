@@ -10,7 +10,6 @@ tso.load('base/data/model/N001BODY_A00.tso')
 
 nodemap = {}
 for node in tso.nodes
-  puts "%d %s" % [ node.ID, node.name ]
   nodemap[node.name.to_s] = node
 end
 
@@ -132,7 +131,24 @@ class UniqVertex
       sw.bone_index = opposite_bone_index(opp_sw.bone_index)
       sw.weight = opp_sw.weight
     end
-    warn_opposite_weights if found
+
+    vertices.each do |v, sub|
+      4.times do |i|
+        sw = skin_weights[i]
+        v_sw = v.skin_weights[i]
+        idx = sub.bone_indices.index(sw.bone_index)
+        if idx.nil? && sw.weight == 0.0
+          idx = 0
+        end
+        if idx.nil?
+          puts "warn: sw.bone_index not found in sub.bone_indices"
+          puts sprintf("%d sw(%d %f) v sw(%d %f)", i, sw.bone_index, sw.weight, v_sw.bone_index, v_sw.weight)
+          next
+        end
+        v_sw.bone_index = idx
+        v_sw.weight = sw.weight
+      end
+    end
   end
 end
 
@@ -331,7 +347,7 @@ end
 
 UniqVertex.oppnode_idmap = oppnode_idmap
 
-# p Float::EPSILON
 main(selected_mesh)
+tso.save('out.tso')
 
 puts "#warn:#{ UniqVertex.warn_count }"
