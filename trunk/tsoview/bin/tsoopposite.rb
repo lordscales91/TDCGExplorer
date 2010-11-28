@@ -154,26 +154,29 @@ class UniqVertex
     end
 
     vertices.each do |a, sub|
-      bone_index_not_found = nil
-      4.times do |i|
-        sw = skin_weights[i]
-        a_sw = a.skin_weights[i]
-        a_bone_idx = sub.bone_indices.index(sw.bone_index)
-        if a_bone_idx.nil?
-          if sw.weight == 0.0
-            a_bone_idx = 0
-          elsif a_sw.weight == 0.0
-            a_bone_idx = 0
-          else
-            bone_index_not_found = true
-            next
-          end
+      copy_weights(a, sub)
+    end
+  end
+
+  def copy_weights(a, sub)
+    bone_index_not_found = nil
+    4.times do |i|
+      sw = skin_weights[i]
+      a_sw = a.skin_weights[i]
+      a_bone_idx = sub.bone_indices.index(sw.bone_index)
+      if a_bone_idx.nil?
+        if sw.weight == 0.0
+          a_sw.bone_index = 0
+          a_sw.weight = sw.weight
+        else
+          bone_index_not_found = true
         end
+      else
         a_sw.bone_index = a_bone_idx
         a_sw.weight = sw.weight
       end
-      warn_bone_index_not_found(a, sub) if bone_index_not_found
     end
+    warn_bone_index_not_found(a, sub) if bone_index_not_found
   end
 end
 
