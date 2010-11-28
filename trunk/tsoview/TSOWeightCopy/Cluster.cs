@@ -44,6 +44,16 @@ namespace TSOWeightCopy
         /// <param name="max">頂点の最大位置</param>
         public Cluster(Vector3 min, Vector3 max)
         {
+            if (min.X < 0.0f && max.X < 0.0f || min.X > 0.0f && max.X > 0.0f)
+            {
+                throw new ArgumentOutOfRangeException("min or max");
+            }
+
+            if (Math.Abs(min.X) < Math.Abs(max.X))
+                min.X = -max.X;
+            if (Math.Abs(min.X) > Math.Abs(max.X))
+                max.X = -min.X;
+
             this.min = min;
             this.max = max;
             this.xlen = (int)Math.Floor(max.X + 0.5f) - (int)Math.Floor(min.X + 0.5f) + 1;
@@ -154,9 +164,9 @@ namespace TSOWeightCopy
             foreach (UniqueCell cell in cells)
                 if (cell != null)
                 {
-                    if (dir == CopyDirection.LtoR && cell.X > x)
+                    if (dir == CopyDirection.LtoR && cell.X < x)
                         continue;
-                    if (dir == CopyDirection.RtoL && cell.X < x)
+                    if (dir == CopyDirection.RtoL && cell.X > x)
                         continue;
 
                     cell.CopyOppositeWeights();

@@ -321,6 +321,8 @@ class UniqCell
     if contains_zerox
       @vertices.each do |v|
         next if v.position.x > -1.0e-4
+        next if cluster.dir == :LtoR && v.position.x < 0.0
+        next if cluster.dir == :RtoL && v.position.x > 0.0
         v.copy_opposite_weights
       end
     else
@@ -332,6 +334,7 @@ class UniqCell
 end
 
 class Cluster
+  attr_accessor :dir
   attr :min
   attr :max
   attr :cells
@@ -347,6 +350,7 @@ class Cluster
     min.x = -max.x if min.x.abs < max.x.abs
     max.x = -min.x if min.x.abs > max.x.abs
 
+    @dir = :LtoR
     @min = min
     @max = max
     @cells = []
@@ -407,7 +411,8 @@ class Cluster
   def copy_opposite_weights
     x = xidx(0.0)
     @cells.compact.each do |cell|
-      next if cell.x > x
+      next if dir == :LtoR && cell.x < x
+      next if dir == :RtoL && cell.x > x
       cell.copy_opposite_weights
     end
   end
@@ -451,6 +456,20 @@ def main(mesh)
 
   puts "#uniq vertices:#{ cluster.vertices.size }"
   puts
+
+  puts "Copy direction:"
+  puts "0 LtoR"
+  puts "1 RtoL"
+  print "Select copy direction (0-1): "
+  line = gets
+  copy_dir = line.chomp.to_i
+  case copy_dir
+  when 0
+    cluster.dir = :LtoR
+  when 1
+    cluster.dir = :RtoL
+  end
+
   cluster.assign_opposite_cells
   cluster.assign_opposite_vertices
   # cluster.dump
