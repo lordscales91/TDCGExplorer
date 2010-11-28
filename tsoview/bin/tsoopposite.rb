@@ -5,8 +5,24 @@ require 'directx'
 $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../Debug")
 require 'TDCG'
 
+if ARGV.size < 1
+  puts "tsoopposite <tso file>"
+  exit
+end
+source_file = ARGV[0]
+
 tso = TDCG::TSOFile.new
-tso.load('base/data/model/N001BODY_A00.tso')
+tso.load(source_file)
+
+puts "Meshes:"
+tso.meshes.each_with_index do |mesh, i|
+  puts sprintf("%d %s", i, mesh.name)
+end
+
+print "Select mesh (0-#{tso.meshes.size - 1}): "
+line = gets
+mesh_idx = line.chomp.to_i
+selected_mesh = tso.meshes[mesh_idx]
 
 nodemap = {}
 for node in tso.nodes
@@ -33,21 +49,6 @@ open('flipnodes.txt') do |f|
     end
   end
 end
-
-def tso.find_mesh(name)
-  # p meshes.size
-  found_mesh = nil
-  for mesh in meshes
-    # p mesh.name
-    if mesh.name == name
-      found_mesh = mesh
-      break
-    end
-  end
-  found_mesh
-end
-
-selected_mesh = tso.find_mesh('W_BODY_Nurin_M01')
 
 def length_sq(a, b)
   dx = b.x - a.x
