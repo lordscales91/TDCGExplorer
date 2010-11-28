@@ -80,7 +80,7 @@ namespace TSOWeightCopy
                 {
                     if (sw.bone_index != sub.bone_indices[a_sw.bone_index])
                     {
-                        Console.WriteLine("### warn: bone_index not match");
+                        Console.WriteLine("### 警告: ボーン参照が最初の頂点と異なります。");
                         Dump();
                         Console.WriteLine("{0} sw({1} {2}) a sw({3} {4})", i, sw.bone_index, sw.weight, sub.bone_indices[a_sw.bone_index], a_sw.weight);
                     }
@@ -112,10 +112,10 @@ namespace TSOWeightCopy
             Console.WriteLine("opp {0}", opposite_vertex);
         }
 
-        /// 警告 'ウェイト値がずれている' を出力します。
+        /// 警告 'ウェイト値がずれています' を出力します。
         public void WarnOppositeWeights()
         {
-            Console.WriteLine("### warn: weights gap found");
+            Console.WriteLine("### 情報: ウェイト値がずれています。修正します。");
             Dump();
             for (int i = 0; i < 4; i++)
             {
@@ -126,10 +126,10 @@ namespace TSOWeightCopy
             Console.WriteLine();
         }
 
-        /// 警告 'ボーン参照が見つからなかった' を出力します。
+        /// 警告 'ボーン参照が見つかりませんでした' を出力します。
         public void WarnBoneIndexNotFound(Vertex a, TSOSubMesh sub)
         {
-            Console.WriteLine("### warn: a_sw.bone_index not found in sub.bone_indices");
+            Console.WriteLine("### 警告: ボーン参照が見つかりませんでした。修正は諦めます。");
             Dump();
             for (int i = 0; i < 4; i++)
             {
@@ -144,16 +144,10 @@ namespace TSOWeightCopy
         public void CopyOppositeWeights()
         {
             if (opposite_vertex == null)
-            {
-                Console.WriteLine("# warn: opposite_vertex is null");
                 return;
-            }
 
             if (opposite_vertex == this)
-            {
-                Console.WriteLine("# warn: opposite_vertex is self");
                 return;
-            }
 
             //ウェイト値がずれている場合は警告する。
             bool weights_gap_found = false;
@@ -188,6 +182,7 @@ namespace TSOWeightCopy
 
         void CopyWeights(Vertex a, TSOSubMesh sub)
         {
+            //ボーン参照が見つからない場合は警告する。
             bool bone_index_not_found = false;
             for (int i = 0; i < 4; i++)
             {
