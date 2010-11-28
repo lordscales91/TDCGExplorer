@@ -132,6 +132,14 @@ namespace TSOWeightCopy
             return found;
         }
 
+        /// <summary>
+        /// 指定位置に最も近い同一視頂点を見つけます。
+        /// </summary>
+        /// <param name="position">位置</param>
+        /// <param name="cell">探索対象セル</param>
+        /// <param name="found">前回見つけた頂点</param>
+        /// <param name="min_len_sq">前回見つけた頂点までの距離の平方</param>
+        /// <returns></returns>
         public static UniqueVertex FindVertex(Vector3 position, UniqueCell cell, UniqueVertex found, ref float min_len_sq)
         {
             if (cell != null)
@@ -147,6 +155,13 @@ namespace TSOWeightCopy
             return found;
         }
 
+        /// <summary>
+        /// 指定値だけ移動した位置にあるセルを得ます。
+        /// </summary>
+        /// <param name="dx">x値</param>
+        /// <param name="dy">y値</param>
+        /// <param name="dz">z値</param>
+        /// <returns></returns>
         public UniqueCell GetNeighbor(int dx, int dy, int dz)
         {
             return cluster.GetCell(x + dx, y + dy, z + dz);
