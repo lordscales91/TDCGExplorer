@@ -143,8 +143,17 @@ namespace TSOWeightCopy
         /// 対称位置にある同一視頂点のスキンウェイトを複写します。
         public void CopyOppositeWeights()
         {
-            Debug.Assert(opposite_vertex != null, "opposite_vertex should not be null");
-            Debug.Assert(opposite_vertex != this, "opposite_vertex should not be self");
+            if (opposite_vertex == null)
+            {
+                Console.WriteLine("# warn: opposite_vertex is null");
+                return;
+            }
+
+            if (opposite_vertex == this)
+            {
+                Console.WriteLine("# warn: opposite_vertex is self");
+                return;
+            }
 
             //ウェイト値がずれている場合は警告する。
             bool weights_gap_found = false;

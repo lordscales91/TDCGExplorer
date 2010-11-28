@@ -116,9 +116,9 @@ namespace TSOWeightCopy
         }
 
         /// 指定位置に最も近い同一視頂点を見つけます。
-        public UniqueVertex FindVertexAt(Vector3 position)
+        public UniqueVertex FindVertexAt(Vector3 position, out float min_len_sq)
         {
-            float min_len_sq = 10.0f;
+            min_len_sq = 10.0f;
             UniqueVertex found = null;
             foreach (UniqueVertex v in vertices)
             {
@@ -132,18 +132,85 @@ namespace TSOWeightCopy
             return found;
         }
 
+        public static UniqueVertex FindVertex(Vector3 position, UniqueCell cell, UniqueVertex found, ref float min_len_sq)
+        {
+            if (cell != null)
+            {
+                float len_sq;
+                UniqueVertex v = cell.FindVertexAt(position, out len_sq);
+                if (min_len_sq > len_sq)
+                {
+                    min_len_sq = len_sq;
+                    found = v;
+                }
+            }
+            return found;
+        }
+
+        public UniqueCell GetNeighbor(int dx, int dy, int dz)
+        {
+            return cluster.GetCell(x + dx, y + dy, z + dz);
+        }
+
+        int GetSign(float x)
+        {
+            float o = (float)Math.Floor(x + 0.5f);
+            float d = x - o;
+            return Math.Abs(d) < float.Epsilon ? 0 : (d < 0.0f ? -1 : +1);
+        }
+
+        void FindOppositeVertex(UniqueVertex v)
+        {
+            Vector3 opp_p = v.GetOppositePosition();
+            float x = opp_p.X;
+            float y = opp_p.Y;
+            float z = opp_p.Z;
+
+            int dx = GetSign(x);
+            int dy = GetSign(y);
+            int dz = GetSign(z);
+
+            UniqueVertex opp_v = null;
+            float min_len_sq = 10.0f;
+
+            opp_v = FindVertex(opp_p, opposite_cell, opp_v, ref min_len_sq);
+            if (dx != 0)
+                opp_v = FindVertex(opp_p, opposite_cell.GetNeighbor(dx, 0, 0), opp_v, ref min_len_sq);
+            if (dy != 0)
+                opp_v = FindVertex(opp_p, opposite_cell.GetNeighbor(0, dy, 0), opp_v, ref min_len_sq);
+            if (dz != 0)
+                opp_v = FindVertex(opp_p, opposite_cell.GetNeighbor(0, 0, dz), opp_v, ref min_len_sq);
+            if (dx != 0 && dy != 0)
+                opp_v = FindVertex(opp_p, opposite_cell.GetNeighbor(dx, dy, 0), opp_v, ref min_len_sq);
+            if (dy != 0 && dz != 0)
+                opp_v = FindVertex(opp_p, opposite_cell.GetNeighbor(0, dy, dz), opp_v, ref min_len_sq);
+            if (dz != 0 && dx != 0)
+                opp_v = FindVertex(opp_p, opposite_cell.GetNeighbor(dx, 0, dz), opp_v, ref min_len_sq);
+            if (dx != 0 && dy != 0 && dz != 0)
+                opp_v = FindVertex(opp_p, opposite_cell.GetNeighbor(dx, dy, dz), opp_v, ref min_len_sq);
+
+            v.opposite_vertex = opp_v;
+        }
+
         /// 対称位置にある同一視頂点を保持します。
         public void AssignOppositeVertices()
         {
             if (contains_zero_x)
             {
                 foreach (UniqueVertex v in vertices)
-                    v.opposite_vertex = Math.Abs(v.position.X) < 1.0e-4f ? v : opposite_cell.FindVertexAt(v.GetOppositePosition());
+                {
+                    if (Math.Abs(v.position.X) < 1.0e-4f)
+                    {
+                        v.opposite_vertex = v;
+                        continue;
+                    }
+                    FindOppositeVertex(v);
+                }
             }
             else
             {
                 foreach (UniqueVertex v in vertices)
-                    v.opposite_vertex = opposite_cell.FindVertexAt(v.GetOppositePosition());
+                    FindOppositeVertex(v);
             }
         }
 
@@ -154,9 +221,11 @@ namespace TSOWeightCopy
             {
                 foreach (UniqueVertex v in vertices)
                 {
-                    if (cluster.dir == CopyDirection.LtoR && v.position.X > -1.0e-4f)
+                    if (Math.Abs(v.position.X) < 1.0e-4f)
                         continue;
-                    if (cluster.dir == CopyDirection.RtoL && v.position.X < +1.0e-4f)
+                    if (cluster.dir == CopyDirection.LtoR && v.position.X > 0.0f)
+                        continue;
+                    if (cluster.dir == CopyDirection.RtoL && v.position.X < 0.0f)
                         continue;
 
                     v.CopyOppositeWeights();

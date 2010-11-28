@@ -73,9 +73,17 @@ namespace TSOWeightCopy
         /// 指定座標にあるセルを得ます。
         public UniqueCell GetCell(int x, int y, int z)
         {
-            if (cells[x, y, z] == null)
-                cells[x, y, z] = new UniqueCell(this, x, y, z, x == GetX(0.0f));
-            return cells[x, y, z];
+            UniqueCell cell = null;
+            try
+            {
+                if (cells[x, y, z] == null)
+                    cells[x, y, z] = new UniqueCell(this, x, y, z, x == GetX(0.0f));
+                cell = cells[x, y, z];
+            }
+            catch (IndexOutOfRangeException)
+            {
+            }
+            return cell;
         }
 
         /// 頂点を追加します。
