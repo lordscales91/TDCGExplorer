@@ -136,6 +136,15 @@ class UniqVertex
   end
 
   def copy_opposite_weights
+    if opposite_vertex.nil?
+      puts "# warn: opposite_vertex is null"
+      return
+    end
+    if opposite_vertex == self
+      puts "# warn: opposite_vertex is self"
+      return
+    end
+
     weights_gap_found = nil
     4.times do |i|
       sw = skin_weights[i]
@@ -229,20 +238,20 @@ class UniqCell
     [ found, min_len_sq ]
   end
 
-  def find_vertex(position, opp_c, opp_v, min_len_sq)
-    if opp_c
-      found, len_sq = opp_c.find_vertex_and_len_sq_at(position)
-      if len_sq < min_len_sq then min_len_sq = len_sq; opp_v = found end
+  def find_vertex(position, cell, found, min_len_sq)
+    if cell
+      v, len_sq = cell.find_vertex_and_len_sq_at(position)
+      if len_sq < min_len_sq then min_len_sq = len_sq; found = v end
     end
-    [ opp_v, min_len_sq ]
+    [ found, min_len_sq ]
   end
 
   def neighbor(dx, dy, dz)
     cluster.get_cell(x + dx, y + dy, z + dz)
   end
 
-  def sign(f)
-    d = f - (f+0.5).floor
+  def sign(x)
+    d = x - (x+0.5).floor
     d.abs < Float::EPSILON ? 0 : (d < 0 ? -1 : +1)
   end
 
