@@ -84,7 +84,7 @@ namespace TSOWeightCopy
                     nvertices++;
                 }
             }
-            Console.WriteLine("#vertices:{0}", nvertices);
+            Console.WriteLine("頂点数:{0}", nvertices);
             Console.WriteLine("min:{0}", UniqueVertex.ToString(min));
             Console.WriteLine("max:{0}", UniqueVertex.ToString(max));
 
@@ -97,7 +97,7 @@ namespace TSOWeightCopy
                 }
             }
 
-            Console.WriteLine("#unique vertices:{0}", cluster.vertices.Count);
+            Console.WriteLine("同一視頂点数:{0}", cluster.vertices.Count);
             Console.WriteLine();
 
             Console.WriteLine("方向:");
