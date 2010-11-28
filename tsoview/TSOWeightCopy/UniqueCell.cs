@@ -223,9 +223,9 @@ namespace TSOWeightCopy
                 {
                     if (Math.Abs(v.position.X) < 1.0e-4f)
                         continue;
-                    if (cluster.dir == CopyDirection.LtoR && v.position.X > 0.0f)
+                    if (cluster.dir == CopyDirection.LtoR && v.position.X < 0.0f)
                         continue;
-                    if (cluster.dir == CopyDirection.RtoL && v.position.X < 0.0f)
+                    if (cluster.dir == CopyDirection.RtoL && v.position.X > 0.0f)
                         continue;
 
                     v.CopyOppositeWeights();
