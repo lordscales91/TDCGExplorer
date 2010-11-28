@@ -182,13 +182,15 @@ class UniqVertex
 end
 
 class UniqCell
+  attr :cluster
   attr :x
   attr :y
   attr :z
   attr :contains_zerox
   attr :vertices
   attr_accessor :opposite_cell
-  def initialize(x, y, z, contains_zerox = false)
+  def initialize(cluster, x, y, z, contains_zerox = false)
+    @cluster = cluster
     @x = x
     @y = y
     @z = z
@@ -216,24 +218,92 @@ class UniqCell
     v = vertices[0]
     v.dump if v
   end
-  def find_vertex_at(position)
+
+  def find_vertex_and_len_sq_at(position)
     min_len_sq = 10.0
     found = nil
     @vertices.each do |v|
       len_sq = length_sq(position, v.position)
       if min_len_sq > len_sq then min_len_sq = len_sq; found = v end
     end
-    found
+    [ found, min_len_sq ]
+  end
+
+  def find_vertex(position, opp_c, opp_v, min_len_sq)
+    if opp_c
+      found, len_sq = opp_c.find_vertex_and_len_sq_at(position)
+      if len_sq < min_len_sq then min_len_sq = len_sq; opp_v = found end
+    end
+    [ opp_v, min_len_sq ]
+  end
+
+  def neighbor(dx, dy, dz)
+    cluster.get_cell(x + dx, y + dy, z + dz)
+  end
+
+  def sign(f)
+    d = f - (f+0.5).floor
+    d.abs < Float::EPSILON ? 0 : (d < 0 ? -1 : +1)
+  end
+
+  def find_opposite_vertex(v)
+    opp_p = v.opposite_position
+    x = opp_p.x
+    y = opp_p.y
+    z = opp_p.z
+
+    dx = sign(x)
+    dy = sign(y)
+    dz = sign(z)
+
+    opp_v = nil
+    min_len_sq = 10.0
+
+    opp_v, min_len_sq = find_vertex(opp_p, opposite_cell, opp_v, min_len_sq)
+
+    if dx != 0
+      opp_v, min_len_sq = find_vertex(opp_p, opposite_cell.neighbor(dx, 0, 0), opp_v, min_len_sq)
+    end
+
+    if dy != 0
+      opp_v, min_len_sq = find_vertex(opp_p, opposite_cell.neighbor(0, dy, 0), opp_v, min_len_sq)
+    end
+
+    if dz != 0
+      opp_v, min_len_sq = find_vertex(opp_p, opposite_cell.neighbor(0, 0, dz), opp_v, min_len_sq)
+    end
+
+    if dx != 0 && dy != 0
+      opp_v, min_len_sq = find_vertex(opp_p, opposite_cell.neighbor(dx, dy, 0), opp_v, min_len_sq)
+    end
+
+    if dy != 0 && dz != 0
+      opp_v, min_len_sq = find_vertex(opp_p, opposite_cell.neighbor(0, dy, dz), opp_v, min_len_sq)
+    end
+
+    if dz != 0 && dx != 0
+      opp_v, min_len_sq = find_vertex(opp_p, opposite_cell.neighbor(dx, 0, dz), opp_v, min_len_sq)
+    end
+
+    if dx != 0 && dy != 0 && dz != 0
+      opp_v, min_len_sq = find_vertex(opp_p, opposite_cell.neighbor(dx, dy, dz), opp_v, min_len_sq)
+    end
+
+    v.opposite_vertex = opp_v
   end
 
   def assign_opposite_vertices
     if contains_zerox
       @vertices.each do |v|
-        v.opposite_vertex = v.position.x.abs < 1.0e-4 ? v : opposite_cell.find_vertex_at(v.opposite_position)
+        if v.position.x.abs < 1.0e-4
+          v.opposite_vertex = v
+          next
+        end
+        find_opposite_vertex(v)
       end
     else
       @vertices.each do |v|
-        v.opposite_vertex = opposite_cell.find_vertex_at(v.opposite_position)
+        find_opposite_vertex(v)
       end
     end
   end
@@ -287,7 +357,7 @@ class Cluster
   end
   def get_cell(x, y, z)
     cidx = x * ylen * zlen + y * zlen + z
-    @cells[cidx] ||= UniqCell.new(x, y, z, x == xidx(0.0))
+    @cells[cidx] ||= UniqCell.new(self, x, y, z, x == xidx(0.0))
   end
   def push(v, sub)
     x = xidx(v.position.x)
