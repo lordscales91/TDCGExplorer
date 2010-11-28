@@ -30,7 +30,7 @@ namespace TSOWeightCopy
 
             UniqueVertex.oppnode_idmap = create_oppnode_idmap(tso);
 
-            Console.WriteLine("Meshes:");
+            Console.WriteLine("メッシュ:");
             int i = 0;
             foreach (TSOMesh mesh in tso.meshes)
             {
@@ -38,7 +38,7 @@ namespace TSOWeightCopy
                 i++;
             }
 
-            Console.Write("Select mesh (0-{0}): ", tso.meshes.Length - 1);
+            Console.Write("メッシュを選択 (0-{0}): ", tso.meshes.Length - 1);
             int mesh_idx = 0;
             try
             {
@@ -100,10 +100,10 @@ namespace TSOWeightCopy
             Console.WriteLine("#unique vertices:{0}", cluster.vertices.Count);
             Console.WriteLine();
 
-            Console.WriteLine("Copy direction:");
-            Console.WriteLine("0 LtoR");
-            Console.WriteLine("1 RtoL");
-            Console.Write("Select copy direction (0-1): ");
+            Console.WriteLine("方向:");
+            Console.WriteLine("0 左から右");
+            Console.WriteLine("1 右から左");
+            Console.Write("方向を選択 (0-1): ");
             int copy_dir = 0;
             try
             {
