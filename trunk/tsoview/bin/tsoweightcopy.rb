@@ -6,7 +6,7 @@ $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../Debug")
 require 'TDCG'
 
 if ARGV.size < 1
-  puts "tsoopposite <tso file>"
+  puts "tsoweightcopy <tso file>"
   exit
 end
 source_file = ARGV[0]
