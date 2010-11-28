@@ -50,10 +50,10 @@ namespace TSOWeightCopy
                 return;
             }
 
-            TSOMesh found_mesh = null;
+            TSOMesh selected_mesh = null;
             try
             {
-                found_mesh = tso.meshes[mesh_idx];
+                selected_mesh = tso.meshes[mesh_idx];
             }
             catch (IndexOutOfRangeException e)
             {
@@ -65,7 +65,7 @@ namespace TSOWeightCopy
             Vector3 max = Vector3.Empty;
             int nvertices = 0;
 
-            foreach (TSOSubMesh sub in found_mesh.sub_meshes)
+            foreach (TSOSubMesh sub in selected_mesh.sub_meshes)
             {
                 foreach (Vertex v in sub.vertices)
                 {
@@ -89,7 +89,7 @@ namespace TSOWeightCopy
             Console.WriteLine("max:{0}", UniqueVertex.ToString(max));
 
             Cluster cluster = new Cluster(min, max);
-            foreach (TSOSubMesh sub in found_mesh.sub_meshes)
+            foreach (TSOSubMesh sub in selected_mesh.sub_meshes)
             {
                 foreach (Vertex v in sub.vertices)
                 {
