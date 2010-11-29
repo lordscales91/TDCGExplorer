@@ -2,7 +2,6 @@ class UniqVertex
   attr :vertices
   attr :position
   attr :skin_weights
-  attr :cell
   attr_accessor :opposite_vertex
 
   @@oppnode_idmap = nil
@@ -17,7 +16,7 @@ class UniqVertex
     @@oppnode_idmap[bone_index]
   end
 
-  def initialize(a, sub, cell)
+  def initialize(a, sub)
     @vertices = {}
     @vertices[a] = sub
     @position = a.position
@@ -25,7 +24,6 @@ class UniqVertex
     for skin_weight in a.skin_weights
       @skin_weights.push TDCG::SkinWeight.new(sub.bone_indices[skin_weight.bone_index], skin_weight.weight)
     end
-    @cell = cell
   end
   
   def push(a, sub)
@@ -43,12 +41,15 @@ class UniqVertex
       end
     end
   end
+
   def opposite_position
     Vector3.new( -position.x, position.y, position.z )
   end
+
   def inspect
-    "UniqVertex(p:#{ position.inspect } #v:#{ vertices.size } cell:#{ cell.inspect })"
+    "UniqVertex(p:#{ position.inspect } #v:#{ vertices.size }"
   end
+
   def dump
     puts self.inspect
     puts "opp " + opposite_vertex.inspect
@@ -77,14 +78,8 @@ class UniqVertex
   end
 
   def copy_opposite_weights
-    if opposite_vertex.nil?
-      puts "# warn: opposite_vertex is null"
-      return
-    end
-    if opposite_vertex == self
-      puts "# warn: opposite_vertex is self"
-      return
-    end
+    return if opposite_vertex.nil?
+    return if opposite_vertex == self
 
     weights_gap_found = nil
     4.times do |i|
