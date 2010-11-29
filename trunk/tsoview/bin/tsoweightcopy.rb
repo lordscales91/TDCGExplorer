@@ -53,13 +53,6 @@ open('flipnodes.txt') do |f|
   end
 end
 
-def length_sq(a, b)
-  dx = b.x - a.x
-  dy = b.y - a.y
-  dz = b.z - a.z
-  length_sq = dx*dx + dy*dy + dz*dz
-end
-
 def main(mesh)
   min = Vector3.empty
   max = Vector3.empty
