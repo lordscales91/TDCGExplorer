@@ -6,6 +6,7 @@ class UniqCell
   attr :contains_zerox
   attr :vertices
   attr_accessor :opposite_cell
+
   def initialize(cluster, x, y, z, contains_zerox = false)
     @cluster = cluster
     @x = x
@@ -14,6 +15,14 @@ class UniqCell
     @contains_zerox = contains_zerox
     @vertices = []
   end
+
+  def length_sq(a, b)
+    dx = b.x - a.x
+    dy = b.y - a.y
+    dz = b.z - a.z
+    length_sq = dx*dx + dy*dy + dz*dz
+  end
+
   def push(a, sub)
     found = nil
     @vertices.each do |v|
@@ -27,9 +36,11 @@ class UniqCell
       @vertices.push UniqVertex.new(a, sub, self)
     end
   end
+
   def inspect
     "UniqCell(x:#{ x } y:#{ y } z:#{ z } #v:#{ vertices.size })"
   end
+
   def dump
     puts self.inspect
     v = vertices[0]
