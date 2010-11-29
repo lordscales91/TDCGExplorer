@@ -33,7 +33,7 @@ class UniqCell
       end
     end
     unless found
-      @vertices.push UniqVertex.new(a, sub, self)
+      @vertices.push UniqVertex.new(a, sub)
     end
   end
 
