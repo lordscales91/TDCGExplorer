@@ -165,21 +165,11 @@ namespace TSOMeshOptimize
 
     class TSOFace
     {
-        public UnifiedPositionSpecVertex a;
-        public UnifiedPositionSpecVertex b;
-        public UnifiedPositionSpecVertex c;
-        public int spec;
-        public List<UnifiedPositionSpecVertex> vertices
-        {
-            get
-            {
-                List<UnifiedPositionSpecVertex> vertices = new List<UnifiedPositionSpecVertex>();
-                vertices.Add(a);
-                vertices.Add(b);
-                vertices.Add(c);
-                return vertices;
-            }
-        }
+        public readonly UnifiedPositionSpecVertex a;
+        public readonly UnifiedPositionSpecVertex b;
+        public readonly UnifiedPositionSpecVertex c;
+        public readonly int spec;
+        public readonly UnifiedPositionSpecVertex[] vertices;
 
         public TSOFace(UnifiedPositionSpecVertex a, UnifiedPositionSpecVertex b, UnifiedPositionSpecVertex c, int spec)
         {
@@ -187,6 +177,10 @@ namespace TSOMeshOptimize
             this.b = b;
             this.c = c;
             this.spec = spec;
+            vertices = new UnifiedPositionSpecVertex[3];
+            vertices[0] = a;
+            vertices[1] = b;
+            vertices[2] = c;
         }
     }
 
