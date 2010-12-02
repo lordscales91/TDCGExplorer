@@ -96,6 +96,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSOWeightCopy", "TSOWeightC
 		{30D26679-E876-46FC-B8C0-E55146316C8C} = {30D26679-E876-46FC-B8C0-E55146316C8C}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDCG.NvTriStrip", "TDCG.NvTriStrip\TDCG.NvTriStrip.csproj", "{197EB5EB-8155-4518-BF0F-557F26BF5088}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -186,6 +188,9 @@ Global
 		{BE392E3E-CEDA-4E9D-A041-6D1CF0EA3A02}.Debug|x86.Build.0 = Debug|x86
 		{BE392E3E-CEDA-4E9D-A041-6D1CF0EA3A02}.Release|x86.ActiveCfg = Release|x86
 		{BE392E3E-CEDA-4E9D-A041-6D1CF0EA3A02}.Release|x86.Build.0 = Release|x86
+		{197EB5EB-8155-4518-BF0F-557F26BF5088}.Debug|x86.ActiveCfg = Debug|x86
+		{197EB5EB-8155-4518-BF0F-557F26BF5088}.Debug|x86.Build.0 = Debug|x86
+		{197EB5EB-8155-4518-BF0F-557F26BF5088}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
