@@ -24,17 +24,19 @@ class UniqCell
   end
 
   def push(a, sub)
-    found = nil
+    u = nil
     @vertices.each do |v|
       if length_sq(a.position, v.position) < Float::EPSILON
         v.push(a, sub)
-        found = v
+        u = v
         break
       end
     end
-    unless found
-      @vertices.push UniqVertex.new(a, sub)
+    unless u
+      u = UniqVertex.new(a, sub)
+      @vertices.push u
     end
+    u
   end
 
   def inspect
