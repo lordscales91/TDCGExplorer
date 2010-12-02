@@ -31,7 +31,7 @@ for node in tso.nodes
   nodemap[node.name.to_s] = node
 end
 
-class TDCG::Vertex
+class UnifiedPositionTexcoordVertex < TDCG::Vertex
   def eql?(o)
     position == o.position && u == o.u && v == o.v
   end
@@ -121,7 +121,7 @@ WEIGHT_EPSILON = Float::EPSILON # or 1.0e-4
 MAX_PALETTES = 16
 
 def create_vertex(v, bmap)
-  a = TDCG::Vertex.new
+  a = UnifiedPositionTexcoordVertex.new
   a.position = v.position
   a.skin_weights = System::Array[TDCG::SkinWeight].new(4)
   4.times do |i|
@@ -217,7 +217,7 @@ def create_sub_meshes(faces)
     end
     sub.bone_indices = bone_indices_ary
 
-    vertices_ary = System::Array[TDCG::Vertex].new(optimized_indices.size)
+    vertices_ary = System::Array[UnifiedPositionTexcoordVertex].new(optimized_indices.size)
     optimized_indices.each_with_index do |vidx, i|
       vertices_ary[i] = vertices[vidx]
     end
