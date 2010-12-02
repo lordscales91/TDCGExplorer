@@ -98,6 +98,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSOWeightCopy", "TSOWeightC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDCG.NvTriStrip", "TDCG.NvTriStrip\TDCG.NvTriStrip.csproj", "{197EB5EB-8155-4518-BF0F-557F26BF5088}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSOMeshOptimize", "TSOMeshOptimize\TSOMeshOptimize.csproj", "{D84118E3-C2F0-4E30-94D4-9A87BD04B3F1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{30D26679-E876-46FC-B8C0-E55146316C8C} = {30D26679-E876-46FC-B8C0-E55146316C8C}
+		{197EB5EB-8155-4518-BF0F-557F26BF5088} = {197EB5EB-8155-4518-BF0F-557F26BF5088}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -191,6 +197,10 @@ Global
 		{197EB5EB-8155-4518-BF0F-557F26BF5088}.Debug|x86.ActiveCfg = Debug|x86
 		{197EB5EB-8155-4518-BF0F-557F26BF5088}.Debug|x86.Build.0 = Debug|x86
 		{197EB5EB-8155-4518-BF0F-557F26BF5088}.Release|x86.ActiveCfg = Release|Any CPU
+		{D84118E3-C2F0-4E30-94D4-9A87BD04B3F1}.Debug|x86.ActiveCfg = Debug|x86
+		{D84118E3-C2F0-4E30-94D4-9A87BD04B3F1}.Debug|x86.Build.0 = Debug|x86
+		{D84118E3-C2F0-4E30-94D4-9A87BD04B3F1}.Release|x86.ActiveCfg = Release|x86
+		{D84118E3-C2F0-4E30-94D4-9A87BD04B3F1}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
