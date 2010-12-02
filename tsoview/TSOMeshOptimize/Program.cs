@@ -37,6 +37,50 @@ namespace TSOMeshOptimize
         }
     }
 
+    class UnifiedPositionTexcoordVertex : Vertex, IComparable
+    {
+        public int CompareTo(object obj)
+        {
+            UnifiedPositionTexcoordVertex v = obj as UnifiedPositionTexcoordVertex;
+            if ((object)v == null)
+                throw new ArgumentException("not a UnifiedPositionTexcoordVertex");
+            int cmp = this.position.X.CompareTo(v.position.X);
+            if (cmp == 0)
+                cmp = this.position.Y.CompareTo(v.position.Y);
+            if (cmp == 0)
+                cmp = this.position.Z.CompareTo(v.position.Z);
+            if (cmp == 0)
+                cmp = this.u.CompareTo(v.u);
+            if (cmp == 0)
+                cmp = this.v.CompareTo(v.v);
+            return cmp;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            UnifiedPositionTexcoordVertex v = obj as UnifiedPositionTexcoordVertex;
+            if ((object)v == null)
+                return false;
+            //return this.position == v.position && this.u == v.u && this.v == v.v;
+            return position.X == v.position.X && position.Y == v.position.Y && position.Z == v.position.Z && this.u == v.u && this.v == v.v;
+        }
+
+        public  bool Equals(UnifiedPositionTexcoordVertex v)
+        {
+            if ((object)v == null)
+                return false;
+            //return this.position == v.position && this.u == v.u && this.v == v.v;
+            return position.X == v.position.X && position.Y == v.position.Y && position.Z == v.position.Z && this.u == v.u && this.v == v.v;
+        }
+
+        public override int GetHashCode()
+        {
+            return position.GetHashCode() ^ u.GetHashCode() ^ v.GetHashCode();
+        }
+    }
+
     class UnifiedPositionSpecVertex : IComparable
     {
         /// <summary>
@@ -230,9 +274,9 @@ namespace TSOMeshOptimize
             return faces;
         }
 
-        public static Vertex BuildVertex(UnifiedPositionSpecVertex v, Dictionary<int, ushort> bone_idmap)
+        public static UnifiedPositionTexcoordVertex BuildVertex(UnifiedPositionSpecVertex v, Dictionary<int, ushort> bone_idmap)
         {
-            Vertex a = new Vertex();
+            UnifiedPositionTexcoordVertex a = new UnifiedPositionTexcoordVertex();
             a.position = v.position;
             a.skin_weights = new SkinWeight[4];
             for (int i = 0; i < 4; i++)
@@ -258,7 +302,7 @@ namespace TSOMeshOptimize
             List<TSOFace> faces_2 = new List<TSOFace>();
 
             Heap<int> bh = new Heap<int>();
-            Heap<Vertex> vh = new Heap<Vertex>();
+            Heap<UnifiedPositionTexcoordVertex> vh = new Heap<UnifiedPositionTexcoordVertex>();
             
             List<ushort> vert_indices = new List<ushort>();
             Dictionary<int, bool> bone_indices = new Dictionary<int, bool>();
@@ -312,7 +356,7 @@ namespace TSOMeshOptimize
                     }
                     foreach (UnifiedPositionSpecVertex v in f.vertices)
                     {
-                        Vertex a = BuildVertex(v, bh.map);
+                        UnifiedPositionTexcoordVertex a = BuildVertex(v, bh.map);
                         if (!vh.ContainsKey(a))
                         {
                             vh.Add(a);
@@ -329,7 +373,7 @@ namespace TSOMeshOptimize
                 Console.WriteLine("#bone_indices:{0}", bh.Count);
                 sub.bone_indices = bh.ary.ToArray();
 
-                Vertex[] vertices = new Vertex[optimized_indices.Length];
+                UnifiedPositionTexcoordVertex[] vertices = new UnifiedPositionTexcoordVertex[optimized_indices.Length];
                 for (int i = 0; i < optimized_indices.Length; i++)
                 {
                     vertices[i] = vh.ary[optimized_indices[i]];
