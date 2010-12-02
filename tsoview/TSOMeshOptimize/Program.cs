@@ -84,27 +84,27 @@ namespace TSOMeshOptimize
     class UnifiedPositionSpecVertex : IComparable
     {
         /// <summary>
-        /// ˆÊ’u
+        /// ä½ç½®
         /// </summary>
         public Vector3 position;
         /// <summary>
-        /// –@ü
+        /// æ³•ç·š
         /// </summary>
         public Vector3 normal;
         /// <summary>
-        /// ƒeƒNƒXƒ`ƒƒUÀ•W
+        /// ãƒ†ã‚¯ã‚¹ãƒãƒ£Uåº§æ¨™
         /// </summary>
         public Single u;
         /// <summary>
-        /// ƒeƒNƒXƒ`ƒƒVÀ•W
+        /// ãƒ†ã‚¯ã‚¹ãƒãƒ£Våº§æ¨™
         /// </summary>
         public Single v;
         /// <summary>
-        /// ƒXƒLƒ“ƒEƒFƒCƒg”z—ñ
+        /// ã‚¹ã‚­ãƒ³ã‚¦ã‚§ã‚¤ãƒˆé…åˆ—
         /// </summary>
         public SkinWeight[] skin_weights;
         /// <summary>
-        /// ƒVƒF[ƒ_İ’è”Ô†
+        /// ã‚·ã‚§ãƒ¼ãƒ€è¨­å®šç•ªå·
         /// </summary>
         public int spec;
 
@@ -204,7 +204,7 @@ namespace TSOMeshOptimize
             TSOFile tso = new TSOFile();
             tso.Load(source_file);
 
-            Console.WriteLine("ƒƒbƒVƒ…:");
+            Console.WriteLine("ãƒ¡ãƒƒã‚·ãƒ¥:");
             int i = 0;
             foreach (TSOMesh mesh in tso.meshes)
             {
@@ -212,7 +212,7 @@ namespace TSOMeshOptimize
                 i++;
             }
 
-            Console.Write("ƒƒbƒVƒ…‚ğ‘I‘ğ (0-{0}): ", tso.meshes.Length - 1);
+            Console.Write("ãƒ¡ãƒƒã‚·ãƒ¥ã‚’é¸æŠ (0-{0}): ", tso.meshes.Length - 1);
             int mesh_idx = 0;
             try
             {
