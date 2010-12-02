@@ -9,7 +9,7 @@ class Cluster
 
   def initialize(min, max)
     if min.x < 0 && max.x < 0 || min.x > 0 && max.x > 0
-      raise ArgumentError, "invalid_range"
+      raise ArgumentError.new("invalid_range")
     end
 
     min.x = -max.x if min.x.abs < max.x.abs
