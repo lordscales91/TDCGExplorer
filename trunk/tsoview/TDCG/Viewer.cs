@@ -18,11 +18,23 @@ namespace TDCG
     /// </summary>
 public class Viewer : IDisposable
 {
+    /// <summary>
+    /// control
+    /// </summary>
     protected Control control;
 
+    /// <summary>
+    /// device
+    /// </summary>
     protected Device device;
 
+    /// <summary>
+    /// font
+    /// </summary>
     protected Direct3D.Font font;
+    /// <summary>
+    /// effect
+    /// </summary>
     protected Effect effect;
 
     /// <summary>
@@ -44,10 +56,19 @@ public class Viewer : IDisposable
     /// </summary>
     public bool ShadowMapEnabled { get { return shadow_map_enabled; } }
 
+    /// <summary>
+    /// ztexture
+    /// </summary>
     protected Texture ztex = null;
     int ztexw = 0;
     int ztexh = 0;
+    /// <summary>
+    /// surface of ztexture
+    /// </summary>
     protected Surface ztex_surface = null;
+    /// <summary>
+    /// zbuffer of ztexture
+    /// </summary>
     protected Surface ztex_zbuf = null;
 
     /// sprite
@@ -56,7 +77,13 @@ public class Viewer : IDisposable
     float w_scale = 1.0f;
     float h_scale = 1.0f;
 
+    /// <summary>
+    /// surface of device
+    /// </summary>
     protected Surface dev_surface = null;
+    /// <summary>
+    /// zbuffer of device
+    /// </summary>
     protected Surface dev_zbuf = null;
 
     /// <summary>
@@ -64,10 +91,14 @@ public class Viewer : IDisposable
     /// </summary>
     public List<Figure> FigureList = new List<Figure>();
 
-    // ライト方向
+    /// <summary>
+    /// 光源方向
+    /// </summary>
     protected Vector3 lightDir = new Vector3(0.0f, 0.0f, -1.0f);
 
-    // マウスポイントしているスクリーン座標
+    /// <summary>
+    /// マウスポイントしているスクリーン座標
+    /// </summary>
     protected Point lastScreenPoint = Point.Empty;
 
     /// <summary>
@@ -438,10 +469,25 @@ public class Viewer : IDisposable
         }
     }
 
+    /// <summary>
+    /// world行列
+    /// </summary>
     protected Matrix world_matrix = Matrix.Identity;
+    /// <summary>
+    /// view変換行列
+    /// </summary>
     protected Matrix Transform_View = Matrix.Identity;
+    /// <summary>
+    /// projection変換行列
+    /// </summary>
     protected Matrix Transform_Projection = Matrix.Identity;
+    /// <summary>
+    /// 光源view変換行列
+    /// </summary>
     protected Matrix Light_View = Matrix.Identity;
+    /// <summary>
+    /// 光源projection変換行列
+    /// </summary>
     protected Matrix Light_Projection = Matrix.Identity;
 
     /// <summary>
@@ -668,8 +714,17 @@ public class Viewer : IDisposable
         Console.WriteLine("Total Memory: {0}", GC.GetTotalMemory(true));
     }
 
+    /// <summary>
+    /// モーションの有無
+    /// </summary>
     protected bool motionEnabled = false;
+    /// <summary>
+    /// シャドウマップの有無
+    /// </summary>
     protected bool shadowShown = false;
+    /// <summary>
+    /// スプライトの有無
+    /// </summary>
     protected bool SpriteShown = false;
 
     /// <summary>

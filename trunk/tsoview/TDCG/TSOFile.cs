@@ -64,6 +64,9 @@ namespace TDCG
         /// </summary>
         public Vertex[] vertices;
 
+        /// <summary>
+        /// Direct3Dメッシュ
+        /// </summary>
         public Mesh dm = null;
 
         /// <summary>
