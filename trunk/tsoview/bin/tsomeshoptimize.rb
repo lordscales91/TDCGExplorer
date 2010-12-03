@@ -60,7 +60,7 @@ def create_faces(mesh)
         c = vertices[i-0]
       end
       if !a.eql?(b) && !b.eql?(c) && !c.eql?(a)
-        f = TDCG::TSOFace.new(a, b, c, sub.spec)
+        f = TDCG::TSOFace.new(a, b, c)
         faces.push f
       end
     end

@@ -508,6 +508,9 @@ namespace TDCG
         }
     }
 
+    /// <summary>
+    /// 位置とシェーダ設定の組が一意な頂点
+    /// </summary>
     public class UnifiedPositionSpecVertex : Vertex, IComparable
     {
         /// <summary>
@@ -515,6 +518,11 @@ namespace TDCG
         /// </summary>
         public int spec;
 
+        /// <summary>
+        /// 位置とシェーダ設定の組が一意な頂点を生成します。
+        /// </summary>
+        /// <param name="a">頂点</param>
+        /// <param name="sub">頂点を含むサブメッシュ</param>
         public UnifiedPositionSpecVertex(Vertex a, TSOSubMesh sub)
         {
             this.position = a.position;
@@ -529,6 +537,11 @@ namespace TDCG
             this.spec = sub.spec;
         }
 
+        /// <summary>
+        /// 比較関数
+        /// </summary>
+        /// <param name="obj">object</param>
+        /// <returns></returns>
         public int CompareTo(object obj)
         {
             UnifiedPositionSpecVertex v = obj as UnifiedPositionSpecVertex;
@@ -544,6 +557,11 @@ namespace TDCG
             return cmp;
         }
 
+        /// <summary>
+        /// 等値関数
+        /// </summary>
+        /// <param name="obj">object</param>
+        /// <returns></returns>
         public override bool Equals(object obj)
         {
             if (obj == null)
@@ -554,6 +572,11 @@ namespace TDCG
             return this.position == v.position && this.spec == v.spec;
         }
 
+        /// <summary>
+        /// 等値関数
+        /// </summary>
+        /// <param name="v">v</param>
+        /// <returns></returns>
         public bool Equals(UnifiedPositionSpecVertex v)
         {
             if ((object)v == null)
@@ -561,26 +584,54 @@ namespace TDCG
             return this.position == v.position && this.spec == v.spec;
         }
 
+        /// <summary>
+        /// ハッシュ関数
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             return position.GetHashCode() ^ spec.GetHashCode();
         }
     }
 
+    /// <summary>
+    /// 面
+    /// </summary>
     public class TSOFace
     {
+        /// <summary>
+        /// 頂点a
+        /// </summary>
         public readonly UnifiedPositionSpecVertex a;
+        /// <summary>
+        /// 頂点b
+        /// </summary>
         public readonly UnifiedPositionSpecVertex b;
+        /// <summary>
+        /// 頂点c
+        /// </summary>
         public readonly UnifiedPositionSpecVertex c;
+        /// <summary>
+        /// シェーダ設定番号
+        /// </summary>
         public readonly int spec;
+        /// <summary>
+        /// 頂点配列
+        /// </summary>
         public readonly UnifiedPositionSpecVertex[] vertices;
 
-        public TSOFace(UnifiedPositionSpecVertex a, UnifiedPositionSpecVertex b, UnifiedPositionSpecVertex c, int spec)
+        /// <summary>
+        /// 面を生成します。
+        /// </summary>
+        /// <param name="a">頂点a</param>
+        /// <param name="b">頂点b</param>
+        /// <param name="c">頂点c</param>
+        public TSOFace(UnifiedPositionSpecVertex a, UnifiedPositionSpecVertex b, UnifiedPositionSpecVertex c)
         {
             this.a = a;
             this.b = b;
             this.c = c;
-            this.spec = spec;
+            this.spec = a.spec;
             vertices = new UnifiedPositionSpecVertex[3];
             vertices[0] = a;
             vertices[1] = b;
