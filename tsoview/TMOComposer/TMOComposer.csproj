@@ -30,6 +30,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\CSScriptLibrary.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.Direct3D, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.Direct3DX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -58,6 +61,8 @@
     <Compile Include="AccelSlider.Designer.cs">
       <DependentUpon>AccelSlider.cs</DependentUpon>
     </Compile>
+    <Compile Include="CCDSolver.cs" />
+    <Compile Include="CCDViewer.cs" />
     <Compile Include="FaceListForm.cs">
       <SubType>Form</SubType>
     </Compile>
