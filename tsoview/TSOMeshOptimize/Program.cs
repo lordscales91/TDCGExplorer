@@ -156,7 +156,7 @@ namespace TSOMeshOptimize
                     }
                     if (!a.Equals(b) && !b.Equals(c) && !c.Equals(a))
                     {
-                        faces.Add(new TSOFace(a, b, c, sub.spec));
+                        faces.Add(new TSOFace(a, b, c));
                     }
                 }
             }
