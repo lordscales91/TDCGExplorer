@@ -81,28 +81,8 @@ namespace TSOMeshOptimize
         }
     }
 
-    class UnifiedPositionSpecVertex : IComparable
+    class UnifiedPositionSpecVertex : Vertex, IComparable
     {
-        /// <summary>
-        /// 位置
-        /// </summary>
-        public Vector3 position;
-        /// <summary>
-        /// 法線
-        /// </summary>
-        public Vector3 normal;
-        /// <summary>
-        /// テクスチャU座標
-        /// </summary>
-        public Single u;
-        /// <summary>
-        /// テクスチャV座標
-        /// </summary>
-        public Single v;
-        /// <summary>
-        /// スキンウェイト配列
-        /// </summary>
-        public SkinWeight[] skin_weights;
         /// <summary>
         /// シェーダ設定番号
         /// </summary>
