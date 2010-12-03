@@ -40,34 +40,6 @@ class UnifiedPositionTexcoordVertex < TDCG::Vertex
   end
 end
 
-# tso2mqo
-def create_faces(mesh)
-  faces = []
-  for sub in mesh.sub_meshes
-    vertices = []
-    for a in sub.vertices
-      v = TDCG::UnifiedPositionSpecVertex.new(a, sub)
-      vertices.push(v)
-    end
-    for i in 2...vertices.size
-      if i % 2 != 0
-        a = vertices[i-2]
-        b = vertices[i-0]
-        c = vertices[i-1]
-      else
-        a = vertices[i-2]
-        b = vertices[i-1]
-        c = vertices[i-0]
-      end
-      if !a.eql?(b) && !b.eql?(c) && !c.eql?(a)
-        f = TDCG::TSOFace.new(a, b, c)
-        faces.push f
-      end
-    end
-  end
-  faces
-end
-
 WEIGHT_EPSILON = Float::EPSILON # or 1.0e-4
 MAX_PALETTES = 16
 
@@ -186,7 +158,7 @@ end
 
 def main(mesh)
   puts "#sub_meshes:#{ mesh.sub_meshes.size }"
-  faces = create_faces(mesh)
+  faces = mesh.build_faces
   # faces.sort!
 
   puts "#uniq faces:#{ faces.size }"

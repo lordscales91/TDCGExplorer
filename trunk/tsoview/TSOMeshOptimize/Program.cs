@@ -129,40 +129,6 @@ namespace TSOMeshOptimize
             tso.Save(@"out.tso");
         }
 
-        public static List<TSOFace> BuildFaces(TSOMesh mesh)
-        {
-            List<TSOFace> faces = new List<TSOFace>();
-            foreach (TSOSubMesh sub in mesh.sub_meshes)
-            {
-                UnifiedPositionSpecVertex[] vertices = new UnifiedPositionSpecVertex[sub.vertices.Length];
-                for (int i = 0; i < vertices.Length; i++)
-                {
-                    vertices[i] = new UnifiedPositionSpecVertex(sub.vertices[i], sub);
-                }
-                for (int i = 2; i < vertices.Length; i++)
-                {
-                    UnifiedPositionSpecVertex a, b, c;
-                    if (i % 2 != 0)
-                    {
-                        a = vertices[i-2];
-                        b = vertices[i-0];
-                        c = vertices[i-1];
-                    }
-                    else
-                    {
-                        a = vertices[i-2];
-                        b = vertices[i-1];
-                        c = vertices[i-0];
-                    }
-                    if (!a.Equals(b) && !b.Equals(c) && !c.Equals(a))
-                    {
-                        faces.Add(new TSOFace(a, b, c));
-                    }
-                }
-            }
-            return faces;
-        }
-
         public static UnifiedPositionTexcoordVertex BuildVertex(UnifiedPositionSpecVertex v, Dictionary<int, ushort> bone_idmap)
         {
             UnifiedPositionTexcoordVertex a = new UnifiedPositionTexcoordVertex();
@@ -280,7 +246,7 @@ namespace TSOMeshOptimize
 
         public static TSOSubMesh[] BuildSubMeshes(TSOMesh mesh)
         {
-            List<TSOFace> faces = BuildFaces(mesh);
+            List<TSOFace> faces = mesh.BuildFaces();
             Console.WriteLine("#uniq faces:{0}", faces.Count);
             return BuildSubMeshes(faces);
         }
