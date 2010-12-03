@@ -63,7 +63,7 @@ def create_vertex(v, bmap)
 end
 
 # mqo2tso
-def create_sub_meshes(faces)
+def build_sub_meshes(faces)
   faces_1 = faces
   faces_2 = []
 
@@ -164,7 +164,7 @@ def main(mesh)
   puts "#uniq faces:#{ faces.size }"
   puts
 
-  subs = create_sub_meshes(faces)
+  subs = build_sub_meshes(faces)
 
   puts "#subs:#{ subs.size }"
   subs_ary = System::Array[TDCG::TSOSubMesh].new(subs.size)
