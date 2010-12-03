@@ -18,12 +18,12 @@ namespace TDCG
     /// </summary>
 public class Viewer : IDisposable
 {
-    internal Control control;
+    protected Control control;
 
-    internal Device device;
+    protected Device device;
 
-    internal Direct3D.Font font;
-    internal Effect effect;
+    protected Direct3D.Font font;
+    protected Effect effect;
 
     /// <summary>
     /// effect handle for LocalBoneMats
@@ -44,11 +44,11 @@ public class Viewer : IDisposable
     /// </summary>
     public bool ShadowMapEnabled { get { return shadow_map_enabled; } }
 
-    internal Texture ztex = null;
+    protected Texture ztex = null;
     int ztexw = 0;
     int ztexh = 0;
-    internal Surface ztex_surface = null;
-    internal Surface ztex_zbuf = null;
+    protected Surface ztex_surface = null;
+    protected Surface ztex_zbuf = null;
 
     /// sprite
     public Sprite sprite = null;
@@ -56,8 +56,8 @@ public class Viewer : IDisposable
     float w_scale = 1.0f;
     float h_scale = 1.0f;
 
-    internal Surface dev_surface = null;
-    internal Surface dev_zbuf = null;
+    protected Surface dev_surface = null;
+    protected Surface dev_zbuf = null;
 
     /// <summary>
     /// viewerが保持しているフィギュアリスト
@@ -65,10 +65,10 @@ public class Viewer : IDisposable
     public List<Figure> FigureList = new List<Figure>();
 
     // ライト方向
-    internal Vector3 lightDir = new Vector3(0.0f, 0.0f, -1.0f);
+    protected Vector3 lightDir = new Vector3(0.0f, 0.0f, -1.0f);
 
     // マウスポイントしているスクリーン座標
-    internal Point lastScreenPoint = Point.Empty;
+    protected Point lastScreenPoint = Point.Empty;
 
     /// <summary>
     /// viewerを生成します。
@@ -438,11 +438,11 @@ public class Viewer : IDisposable
         }
     }
 
-    internal Matrix world_matrix = Matrix.Identity;
-    internal Matrix Transform_View = Matrix.Identity;
-    internal Matrix Transform_Projection = Matrix.Identity;
-    internal Matrix Light_View = Matrix.Identity;
-    internal Matrix Light_Projection = Matrix.Identity;
+    protected Matrix world_matrix = Matrix.Identity;
+    protected Matrix Transform_View = Matrix.Identity;
+    protected Matrix Transform_Projection = Matrix.Identity;
+    protected Matrix Light_View = Matrix.Identity;
+    protected Matrix Light_Projection = Matrix.Identity;
 
     /// <summary>
     /// deviceを作成します。
@@ -668,9 +668,9 @@ public class Viewer : IDisposable
         Console.WriteLine("Total Memory: {0}", GC.GetTotalMemory(true));
     }
 
-    internal bool motionEnabled = false;
-    internal bool shadowShown = false;
-    internal bool SpriteShown = false;
+    protected bool motionEnabled = false;
+    protected bool shadowShown = false;
+    protected bool SpriteShown = false;
 
     /// <summary>
     /// モーションが有効であるか。

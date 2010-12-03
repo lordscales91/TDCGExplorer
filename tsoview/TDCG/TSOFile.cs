@@ -64,7 +64,7 @@ namespace TDCG
         /// </summary>
         public Vertex[] vertices;
 
-        internal Mesh dm = null;
+        public Mesh dm = null;
 
         /// <summary>
         /// パレット長さ
