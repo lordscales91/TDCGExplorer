@@ -43,7 +43,7 @@ namespace TDCG
         /// </summary>
         public byte[] footer;
 
-        internal Dictionary<string, TMONode> nodemap;
+        public Dictionary<string, TMONode> nodemap;
         internal TMONode w_hips_node = null;
         internal List<TMONode> root_nodes_except_w_hips;
 

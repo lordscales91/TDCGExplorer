@@ -92,6 +92,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="TSOConfig.cs" />
+    <Compile Include="WeightViewer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="dot.bmp">
