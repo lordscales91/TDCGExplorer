@@ -1082,7 +1082,7 @@ public class WeightViewer : Viewer
     }
 
     /// 選択ボーンに対応するウェイトを加算します。
-    public void GainSkinWeight(TSONode selected_node)
+    public void GainSkinWeight()
     {
         Figure fig;
         if (TryGetFigure(out fig))
@@ -1097,7 +1097,7 @@ public class WeightViewer : Viewer
     }
 
     /// 選択ボーンに対応するウェイトを減算します。
-    public void ReduceSkinWeight(TSONode selected_node)
+    public void ReduceSkinWeight()
     {
         Figure fig;
         if (TryGetFigure(out fig))
