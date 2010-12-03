@@ -54,12 +54,10 @@ class UnifiedPositionSpecVertex < TDCG::Vertex
     @spec = sub.spec
   end
   def eql?(o)
-    # position == o.position && spec == o.spec
-    position.x == o.position.x && position.y == o.position.y && position.z == o.position.z && spec == o.spec
+    position == o.position && spec == o.spec
   end
   def hash
-    # position.hash ^ spec.hash
-    position.x.hash ^ position.y.hash ^ position.z.hash ^ spec.hash
+    position.hash ^ spec.hash
   end
 end
 
