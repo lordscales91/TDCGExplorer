@@ -52,7 +52,7 @@ namespace TDCG
         /// </summary>
         public int spec;
         /// <summary>
-        /// ボーン参照リスト
+        /// ボーン参照配列
         /// </summary>
         public int[] bone_indices;
         /// <summary>
@@ -135,6 +135,26 @@ namespace TDCG
             {
                 this.vertices[i].Write(bw);
             }
+        }
+
+        /// <summary>
+        /// 指定ボーン参照を追加します。
+        /// 注意：this.bonesは更新しません。
+        /// </summary>
+        /// <param name="bone_index">ボーン参照</param>
+        /// <returns>ボーン参照配列の添字</returns>
+        public int AddBoneIndex(int bone_index)
+        {
+            if (bone_indices.Length >= 16)
+                return -1;
+
+            Array.Resize(ref bone_indices, bone_indices.Length + 1);
+            maxPalettes++;
+            
+            int end = bone_indices.Length - 1;
+            bone_indices[end] = bone_index;
+            
+            return end;
         }
 
         /// <summary>
