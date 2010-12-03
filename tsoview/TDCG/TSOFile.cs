@@ -508,6 +508,86 @@ namespace TDCG
         }
     }
 
+    public class UnifiedPositionSpecVertex : Vertex, IComparable
+    {
+        /// <summary>
+        /// シェーダ設定番号
+        /// </summary>
+        public int spec;
+
+        public UnifiedPositionSpecVertex(Vertex a, TSOSubMesh sub)
+        {
+            this.position = a.position;
+            this.normal = a.normal;
+            this.u = a.u;
+            this.v = a.v;
+            this.skin_weights = new SkinWeight[4];
+            for (int i = 0; i < 4; i++)
+            {
+                skin_weights[i] = new SkinWeight(sub.bone_indices[a.skin_weights[i].bone_index], a.skin_weights[i].weight);
+            }
+            this.spec = sub.spec;
+        }
+
+        public int CompareTo(object obj)
+        {
+            UnifiedPositionSpecVertex v = obj as UnifiedPositionSpecVertex;
+            if ((object)v == null)
+                throw new ArgumentException("not a UnifiedPositionSpecVertex");
+            int cmp = this.position.X.CompareTo(v.position.X);
+            if (cmp == 0)
+                cmp = this.position.Y.CompareTo(v.position.Y);
+            if (cmp == 0)
+                cmp = this.position.Z.CompareTo(v.position.Z);
+            if (cmp == 0)
+                cmp = this.spec.CompareTo(v.spec);
+            return cmp;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj == null)
+                return false;
+            UnifiedPositionSpecVertex v = obj as UnifiedPositionSpecVertex;
+            if ((object)v == null)
+                return false;
+            return this.position == v.position && this.spec == v.spec;
+        }
+
+        public bool Equals(UnifiedPositionSpecVertex v)
+        {
+            if ((object)v == null)
+                return false;
+            return this.position == v.position && this.spec == v.spec;
+        }
+
+        public override int GetHashCode()
+        {
+            return position.GetHashCode() ^ spec.GetHashCode();
+        }
+    }
+
+    public class TSOFace
+    {
+        public readonly UnifiedPositionSpecVertex a;
+        public readonly UnifiedPositionSpecVertex b;
+        public readonly UnifiedPositionSpecVertex c;
+        public readonly int spec;
+        public readonly UnifiedPositionSpecVertex[] vertices;
+
+        public TSOFace(UnifiedPositionSpecVertex a, UnifiedPositionSpecVertex b, UnifiedPositionSpecVertex c, int spec)
+        {
+            this.a = a;
+            this.b = b;
+            this.c = c;
+            this.spec = spec;
+            vertices = new UnifiedPositionSpecVertex[3];
+            vertices[0] = a;
+            vertices[1] = b;
+            vertices[2] = c;
+        }
+    }
+
     /// <summary>
     /// スクリプト
     /// </summary>

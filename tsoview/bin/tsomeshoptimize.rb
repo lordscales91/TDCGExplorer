@@ -40,55 +40,13 @@ class UnifiedPositionTexcoordVertex < TDCG::Vertex
   end
 end
 
-class UnifiedPositionSpecVertex < TDCG::Vertex
-  attr :spec
-  def initialize(a, sub)
-    self.position = a.position
-    self.normal = a.normal
-    self.u = a.u
-    self.v = a.v
-    self.skin_weights = System::Array[TDCG::SkinWeight].new(4)
-    4.times do |i|
-      self.skin_weights[i] = TDCG::SkinWeight.new(sub.bone_indices[a.skin_weights[i].bone_index], a.skin_weights[i].weight)
-    end
-    @spec = sub.spec
-  end
-  def eql?(o)
-    position == o.position && spec == o.spec
-  end
-  def hash
-    position.hash ^ spec.hash
-  end
-end
-
-class Face
-  attr :a
-  attr :b
-  attr :c
-  attr_accessor :spec
-  def initialize(a, b, c, spec)
-    @a = a
-    @b = b
-    @c = c
-    @spec = spec
-  end
-
-  def vertices
-    [a, b, c]
-  end
-
-  def inspect
-    "Face(spec:#{ spec })"
-  end
-end
-
 # tso2mqo
 def create_faces(mesh)
   faces = []
   for sub in mesh.sub_meshes
     vertices = []
     for a in sub.vertices
-      v = UnifiedPositionSpecVertex.new(a, sub)
+      v = TDCG::UnifiedPositionSpecVertex.new(a, sub)
       vertices.push(v)
     end
     for i in 2...vertices.size
@@ -102,7 +60,7 @@ def create_faces(mesh)
         c = vertices[i-0]
       end
       if !a.eql?(b) && !b.eql?(c) && !c.eql?(a)
-        f = Face.new(a, b, c, sub.spec)
+        f = TDCG::TSOFace.new(a, b, c, sub.spec)
         faces.push f
       end
     end
