@@ -190,11 +190,13 @@ namespace TSOWeightCopy
                 SkinWeight a_sw = a.skin_weights[i];
                 int a_bone_idx = Array.IndexOf(sub.bone_indices, sw.bone_index);
                 if (a_bone_idx == -1)
+                    a_bone_idx = sub.AddBoneIndex(sw.bone_index);
+                if (a_bone_idx == -1)
                 {
                     if (sw.weight == 0.0f)
                     {
                         a_sw.bone_index = 0;
-                        a_sw.weight = sw.weight;
+                        a_sw.weight = 0.0f;
                     }
                     else
                         bone_index_not_found = true;
