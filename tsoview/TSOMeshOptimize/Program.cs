@@ -63,16 +63,14 @@ namespace TSOMeshOptimize
             UnifiedPositionTexcoordVertex v = obj as UnifiedPositionTexcoordVertex;
             if ((object)v == null)
                 return false;
-            //return this.position == v.position && this.u == v.u && this.v == v.v;
-            return position.X == v.position.X && position.Y == v.position.Y && position.Z == v.position.Z && this.u == v.u && this.v == v.v;
+            return this.position == v.position && this.u == v.u && this.v == v.v;
         }
 
         public  bool Equals(UnifiedPositionTexcoordVertex v)
         {
             if ((object)v == null)
                 return false;
-            //return this.position == v.position && this.u == v.u && this.v == v.v;
-            return position.X == v.position.X && position.Y == v.position.Y && position.Z == v.position.Z && this.u == v.u && this.v == v.v;
+            return this.position == v.position && this.u == v.u && this.v == v.v;
         }
 
         public override int GetHashCode()
