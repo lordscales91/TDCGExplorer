@@ -339,6 +339,44 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 面リストを生成します。
+        /// </summary>
+        /// <returns>面リスト</returns>
+        public List<TSOFace> BuildFaces()
+        {
+            List<TSOFace> faces = new List<TSOFace>();
+            foreach (TSOSubMesh sub in this.sub_meshes)
+            {
+                UnifiedPositionSpecVertex[] vertices = new UnifiedPositionSpecVertex[sub.vertices.Length];
+                for (int i = 0; i < vertices.Length; i++)
+                {
+                    vertices[i] = new UnifiedPositionSpecVertex(sub.vertices[i], sub);
+                }
+                for (int i = 2; i < vertices.Length; i++)
+                {
+                    UnifiedPositionSpecVertex a, b, c;
+                    if (i % 2 != 0)
+                    {
+                        a = vertices[i - 2];
+                        b = vertices[i - 0];
+                        c = vertices[i - 1];
+                    }
+                    else
+                    {
+                        a = vertices[i - 2];
+                        b = vertices[i - 1];
+                        c = vertices[i - 0];
+                    }
+                    if (!a.Equals(b) && !b.Equals(c) && !c.Equals(a))
+                    {
+                        faces.Add(new TSOFace(a, b, c));
+                    }
+                }
+            }
+            return faces;
+        }
+
+        /// <summary>
         /// 内部objectを破棄します。
         /// </summary>
         public void Dispose()
