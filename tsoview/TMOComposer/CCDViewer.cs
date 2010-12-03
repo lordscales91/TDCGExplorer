@@ -50,7 +50,7 @@ public class CCDViewer : Viewer
             if (Control.ModifierKeys == Keys.Control)
                 lightDir = ScreenToOrientation(e.X, e.Y);
             else
-                if (!motionEnabled)
+                if (!MotionEnabled)
                 {
                     SelectEffector();
                     if (current_effector_path == "|W_Hips")
@@ -75,7 +75,7 @@ public class CCDViewer : Viewer
             if (Control.ModifierKeys == Keys.Control)
                 lightDir = ScreenToOrientation(e.X, e.Y);
             else
-                if (!motionEnabled)
+                if (!MotionEnabled)
                 {
                     if (Control.ModifierKeys == Keys.Shift)
                         SetTargetOnScreen(e.X, e.Y);
@@ -105,7 +105,7 @@ public class CCDViewer : Viewer
     /// </summary>
     public void FrameMoveDerived()
     {
-        if (motionEnabled)
+        if (MotionEnabled)
             return;
 
         if (solver.Solved)
@@ -127,7 +127,7 @@ public class CCDViewer : Viewer
     /// </summary>
     public void RenderDerived()
     {
-        if (motionEnabled)
+        if (MotionEnabled)
             return;
 
         DrawEffector();
