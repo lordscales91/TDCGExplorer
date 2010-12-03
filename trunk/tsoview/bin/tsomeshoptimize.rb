@@ -40,21 +40,16 @@ class UnifiedPositionTexcoordVertex < TDCG::Vertex
   end
 end
 
-class UnifiedPositionSpecVertex
-  attr :position
-  attr :normal
-  attr :u
-  attr :v
-  attr :skin_weights
+class UnifiedPositionSpecVertex < TDCG::Vertex
   attr :spec
   def initialize(a, sub)
-    @position = a.position
-    @normal = a.normal
-    @u = a.u
-    @v = a.v
-    @skin_weights = []
-    for sw in a.skin_weights
-      @skin_weights.push TDCG::SkinWeight.new(sub.bone_indices[sw.bone_index], sw.weight)
+    self.position = a.position
+    self.normal = a.normal
+    self.u = a.u
+    self.v = a.v
+    self.skin_weights = System::Array[TDCG::SkinWeight].new(4)
+    4.times do |i|
+      self.skin_weights[i] = TDCG::SkinWeight.new(sub.bone_indices[a.skin_weights[i].bone_index], a.skin_weights[i].weight)
     end
     @spec = sub.spec
   end
