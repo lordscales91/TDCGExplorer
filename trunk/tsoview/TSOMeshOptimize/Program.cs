@@ -124,22 +124,19 @@ namespace TSOMeshOptimize
             UnifiedPositionSpecVertex v = obj as UnifiedPositionSpecVertex;
             if ((object)v == null)
                 return false;
-            //return this.position == v.position && this.spec == v.spec;
-            return position.X == v.position.X && position.Y == v.position.Y && position.Z == v.position.Z && spec == v.spec;
+            return this.position == v.position && this.spec == v.spec;
         }
 
         public bool Equals(UnifiedPositionSpecVertex v)
         {
             if ((object)v == null)
                 return false;
-            //return this.position == v.position && this.spec == v.spec;
-            return position.X == v.position.X && position.Y == v.position.Y && position.Z == v.position.Z && spec == v.spec;
+            return this.position == v.position && this.spec == v.spec;
         }
 
         public override int GetHashCode()
         {
             return position.GetHashCode() ^ spec.GetHashCode();
-            //return position.X.GetHashCode() ^ position.Y.GetHashCode() ^ position.Z.GetHashCode() ^ spec.GetHashCode();
         }
     }
 
