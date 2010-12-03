@@ -714,22 +714,43 @@ public class Viewer : IDisposable
         Console.WriteLine("Total Memory: {0}", GC.GetTotalMemory(true));
     }
 
+    bool motionEnabled = false;
+
     /// <summary>
     /// モーションの有無
     /// </summary>
-    protected bool motionEnabled = false;
+    public bool MotionEnabled
+    {
+        get
+        {
+            return motionEnabled;
+        }
+        set
+        {
+            motionEnabled = value;
+
+            if (motionEnabled)
+            {
+                start_ticks = DateTime.Now.Ticks;
+                start_frame_index = frame_index;
+            }
+        }
+    }
+
     /// <summary>
     /// シャドウマップの有無
     /// </summary>
-    protected bool shadowShown = false;
+    public bool ShadowShown = false;
+
     /// <summary>
     /// スプライトの有無
     /// </summary>
-    protected bool SpriteShown = false;
+    public bool SpriteShown = false;
 
     /// <summary>
     /// モーションが有効であるか。
     /// </summary>
+    [Obsolete("use MotionEnabled", true)]
     public bool IsMotionEnabled()
     {
         return motionEnabled;
@@ -738,6 +759,7 @@ public class Viewer : IDisposable
     /// <summary>
     /// モーションの有無を切り替えます。
     /// </summary>
+    [Obsolete("use MotionEnabled", true)]
     public void SwitchMotionEnabled()
     {
         motionEnabled = ! motionEnabled;
@@ -754,14 +776,16 @@ public class Viewer : IDisposable
     /// <summary>
     /// シャドウマップの有無を切り替えます。
     /// </summary>
+    [Obsolete("use ShadowShown", true)]
     public void SwitchShadowShown()
     {
-        shadowShown = ! shadowShown;
+        ShadowShown = ! ShadowShown;
     }
 
     /// <summary>
     /// スプライトの有無を切り替えます。
     /// </summary>
+    [Obsolete("use SpriteShown", true)]
     public void SwitchSpriteShown()
     {
         SpriteShown = ! SpriteShown;
@@ -879,7 +903,7 @@ public class Viewer : IDisposable
 
         if (shadow_map_enabled)
         {
-            if (shadowShown)
+            if (ShadowShown)
             {
                 DrawShadowMap();
             }

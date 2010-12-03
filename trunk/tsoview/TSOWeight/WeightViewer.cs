@@ -733,7 +733,7 @@ public class WeightViewer : Viewer
     /// </summary>
     public void RenderDerived()
     {
-        if (motionEnabled)
+        if (MotionEnabled)
             return;
 
         Figure fig;
@@ -1197,9 +1197,9 @@ public class WeightViewer : Viewer
                 control.Invalidate(false);
             }
             else
-                if (!motionEnabled)
+                if (!MotionEnabled)
                 {
-                    if (! SelectVertex())
+                    if (!SelectVertex())
                         SelectNode();
                     control.Invalidate(false);
                 }

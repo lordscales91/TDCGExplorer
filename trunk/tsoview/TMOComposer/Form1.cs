@@ -40,7 +40,7 @@ namespace TMOComposer
             {
                 CreatePngSave();
                 viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
-                viewer.SwitchMotionEnabled();
+                viewer.MotionEnabled = true;
                 timer1.Enabled = true;
             }
             saveListForm = new SaveListForm();
@@ -132,8 +132,7 @@ namespace TMOComposer
 
             gvTMOAnimItems.ClearSelection();
 
-            if (!viewer.IsMotionEnabled())
-                viewer.SwitchMotionEnabled();
+            viewer.MotionEnabled = true;
 
             Animate(item);
         }
@@ -348,8 +347,7 @@ namespace TMOComposer
 
             TMOAnimItem item = tmoanim.items[tmoanim_row];
 
-            if (viewer.IsMotionEnabled())
-                viewer.SwitchMotionEnabled();
+            viewer.MotionEnabled = false;
 
             Figure fig = viewer.FigureList[pngsave_row];
             {
