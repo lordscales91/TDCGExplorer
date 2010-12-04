@@ -109,8 +109,8 @@ public partial class FigureForm : Form
         if (shader == null)
             return;
         Console.WriteLine("-- dump shader parameters --");
-        foreach (ShaderParameter param in shader.shader_parameters)
-            Console.WriteLine("Name {0} F1 {1} F2 {2} F3 {3} F4 {4}", param.Name, param.F1, param.F2, param.F3, param.F4);
+        foreach (string str in shader.GetLines())
+            Console.WriteLine(str);
     }
 
     private void btnUp_Click(object sender, EventArgs e)
