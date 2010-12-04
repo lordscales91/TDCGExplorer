@@ -103,14 +103,18 @@ namespace TSOMeshOptimize
 
             Console.Write("メッシュを選択 (0-{0}): ", tso.meshes.Length - 1);
             int mesh_idx = 0;
-            try
             {
-                mesh_idx = int.Parse(Console.ReadLine());
-            }
-            catch (System.FormatException e)
-            {
-                Console.WriteLine(e);
-                return;
+                string line = Console.ReadLine();
+                if (line.Length != 0)
+                    try
+                    {
+                        mesh_idx = int.Parse(line);
+                    }
+                    catch (System.FormatException e)
+                    {
+                        Console.WriteLine(e);
+                        return;
+                    }
             }
 
             TSOMesh selected_mesh = null;
@@ -124,19 +128,29 @@ namespace TSOMeshOptimize
                 return;
             }
 
+            Console.WriteLine("サブメッシュ:");
+            Console.WriteLine("  vertices bone_indices");
+            Console.WriteLine("  -------- ------------");
+            foreach (TSOSubMesh sub in selected_mesh.sub_meshes)
+            {
+                Console.WriteLine("  {0,8} {1,12}", sub.vertices.Length, sub.bone_indices.Length);
+            }
+
             Console.Write("最大パレット長: ");
-            int max_palettes = 0;
-            try
+            int max_palettes = 16;
             {
-                max_palettes = int.Parse(Console.ReadLine());
+                string line = Console.ReadLine();
+                if (line.Length != 0)
+                    try
+                    {
+                        max_palettes = int.Parse(line);
+                    }
+                    catch (System.FormatException e)
+                    {
+                        Console.WriteLine(e);
+                        return;
+                    }
             }
-            catch (System.FormatException e)
-            {
-                Console.WriteLine(e);
-                return;
-            }
-            if (max_palettes == 0)
-                max_palettes = 16;
 
             RebuildMesh(selected_mesh, max_palettes);
 
@@ -176,6 +190,9 @@ namespace TSOMeshOptimize
             List<ushort> vert_indices = new List<ushort>();
             Dictionary<int, bool> bone_indices = new Dictionary<int, bool>();
             List<TSOSubMesh> sub_meshes = new List<TSOSubMesh>();
+
+            Console.WriteLine("  vertices bone_indices");
+            Console.WriteLine("  -------- ------------");
 
             while (faces_1.Count != 0)
             {
@@ -233,13 +250,13 @@ namespace TSOMeshOptimize
                         vert_indices.Add(vh[a]);
                     }
                 }
-                Console.WriteLine("#vert_indices:{0}", vert_indices.Count);
+                //Console.WriteLine("#vert_indices:{0}", vert_indices.Count);
                 ushort[] optimized_indices = NvTriStrip.Optimize(vert_indices.ToArray());
-                Console.WriteLine("#optimized_indices:{0}", optimized_indices.Length);
+                //Console.WriteLine("#optimized_indices:{0}", optimized_indices.Length);
 
                 TSOSubMesh sub = new TSOSubMesh();
                 sub.spec = spec;
-                Console.WriteLine("#bone_indices:{0}", bh.Count);
+                //Console.WriteLine("#bone_indices:{0}", bh.Count);
                 sub.bone_indices = bh.ary.ToArray();
 
                 UnifiedPositionTexcoordVertex[] vertices = new UnifiedPositionTexcoordVertex[optimized_indices.Length];
@@ -248,6 +265,9 @@ namespace TSOMeshOptimize
                     vertices[i] = vh.ary[optimized_indices[i]];
                 }
                 sub.vertices = vertices;
+
+                Console.WriteLine("  {0,8} {1,12}", sub.vertices.Length, sub.bone_indices.Length);
+
                 sub_meshes.Add(sub);
 
                 List<TSOFace> faces_tmp = faces_1;
@@ -261,9 +281,9 @@ namespace TSOMeshOptimize
         public static TSOSubMesh[] BuildSubMeshes(TSOMesh mesh, int max_palettes)
         {
             List<TSOFace> faces = mesh.BuildFaces();
-            Console.WriteLine("#uniq faces:{0}", faces.Count);
+            //Console.WriteLine("#uniq faces:{0}", faces.Count);
             TSOSubMesh[] sub_meshes = BuildSubMeshes(faces, max_palettes);
-            Console.WriteLine("#subs:{0}", sub_meshes.Length);
+            //Console.WriteLine("#subs:{0}", sub_meshes.Length);
             return sub_meshes;
         }
 

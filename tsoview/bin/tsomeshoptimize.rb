@@ -42,6 +42,13 @@ end
 
 WEIGHT_EPSILON = Float::EPSILON # or 1.0e-4
 
+puts "Sub meshes:"
+puts "  vertices bone_indices"
+puts "  -------- ------------"
+for sub in selected_mesh.sub_meshes
+  puts sprintf("  %8d %12d", sub.vertices.size, sub.bone_indices.size)
+end
+
 print "Set max palettes: "
 line = gets
 max_palettes = line.chomp.to_i
@@ -72,6 +79,9 @@ def build_sub_meshes(faces, max_palettes)
   faces_2 = []
 
   subs = []
+
+  puts "  vertices bone_indices"
+  puts "  -------- ------------"
 
   until faces_1.empty?
     spec = faces_1[0].spec
@@ -125,19 +135,19 @@ def build_sub_meshes(faces, max_palettes)
       end
     end
 
-    puts "#vert_indices:#{ vert_indices.size }"
+    # puts "#vert_indices:#{ vert_indices.size }"
     vert_indices_ary = System::Array[System::UInt16].new(vert_indices.size)
     vert_indices.each_with_index do |vidx, i|
       vert_indices_ary[i] = vidx
     end
 
     optimized_indices = TDCG::NvTriStrip.optimize(vert_indices_ary)
-    puts "#optimized_indices:#{ optimized_indices.size }"
+    # puts "#optimized_indices:#{ optimized_indices.size }"
 
     sub = TDCG::TSOSubMesh.new
     sub.spec = spec
 
-    puts "#bone_indices:#{ bone_indices.size }"
+    # puts "#bone_indices:#{ bone_indices.size }"
     bone_indices_ary = System::Array[System::Int32].new(bone_indices.size)
     bone_indices.each_with_index do |bidx, i|
       bone_indices_ary[i] = bidx
@@ -150,6 +160,8 @@ def build_sub_meshes(faces, max_palettes)
     end
     sub.vertices = vertices_ary
 
+    puts sprintf("  %8d %12d", sub.vertices.size, sub.bone_indices.size)
+
     subs.push(sub)
 
     t = faces_1
@@ -161,16 +173,12 @@ def build_sub_meshes(faces, max_palettes)
 end
 
 def main(mesh, max_palettes)
-  puts "#sub_meshes:#{ mesh.sub_meshes.size }"
   faces = mesh.build_faces
-  # faces.sort!
-
-  puts "#uniq faces:#{ faces.size }"
-  puts
+  # puts "#uniq faces:#{ faces.size }"
 
   subs = build_sub_meshes(faces, max_palettes)
+  # puts "#subs:#{ subs.size }"
 
-  puts "#subs:#{ subs.size }"
   subs_ary = System::Array[TDCG::TSOSubMesh].new(subs.size)
   subs.each_with_index do |sub, i|
     subs_ary[i] = sub
