@@ -4,6 +4,18 @@ class UniqVertex
   attr :skin_weights
   attr_accessor :opposite_vertex
 
+  @@nodes = nil
+  def self.nodes
+    @@nodes
+  end
+  def self.nodes=(nodes)
+    @@nodes= nodes
+  end
+
+  def node_at(index)
+    @@nodes[index]
+  end
+
   @@oppnode_idmap = nil
   def self.oppnode_idmap
     @@oppnode_idmap
@@ -110,7 +122,10 @@ class UniqVertex
       sw = skin_weights[i]
       a_sw = a.skin_weights[i]
       a_bone_idx = sub.bone_indices.index(sw.bone_index) || -1
-      a_bone_idx = sub.add_bone_index(sw.bone_index) if a_bone_idx == -1
+      if a_bone_idx == -1
+        puts "### warn: add bone index:#{ sw.bone_index }"
+        a_bone_idx = sub.add_bone(node_at(sw.bone_index))
+      end
       if a_bone_idx == -1
         if sw.weight == 0.0
           a_sw.bone_index = 0

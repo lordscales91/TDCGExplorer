@@ -41,7 +41,7 @@ class UnifiedPositionTexcoordVertex < TDCG::Vertex
 end
 
 WEIGHT_EPSILON = Float::EPSILON # or 1.0e-4
-MAX_PALETTES = 16
+MAX_PALETTES = 12
 
 def create_vertex(v, bmap)
   a = UnifiedPositionTexcoordVertex.new

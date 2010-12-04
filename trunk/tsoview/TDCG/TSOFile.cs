@@ -158,6 +158,19 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 指定nodeを追加します。
+        /// </summary>
+        /// <param name="node">node</param>
+        /// <returns>ボーン参照配列の添字</returns>
+        public int AddBone(TSONode node)
+        {
+            int end = AddBoneIndex(node.ID);
+            if (end != -1)
+                bones.Add(node);
+            return end;
+        }
+
+        /// <summary>
         /// ボーン参照リストを生成します。
         /// </summary>
         public void LinkBones(TSONode[] nodes)
@@ -1236,7 +1249,10 @@ namespace TDCG
         /// </summary>
         public TSOMesh[] meshes;
 
-        internal Dictionary<string, TSONode> nodemap;
+        /// <summary>
+        /// bone名称とboneを関連付ける辞書
+        /// </summary>
+        public Dictionary<string, TSONode> nodemap;
 
         /// <summary>
         /// 指定パスに保存します。
