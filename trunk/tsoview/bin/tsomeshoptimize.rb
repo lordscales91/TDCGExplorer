@@ -6,6 +6,10 @@ $LOAD_PATH.unshift File.expand_path(File.dirname(__FILE__) + "/../Debug")
 require 'TDCG'
 require 'TDCG.NvTriStrip'
 
+require 'unified_position_texcoord_vertex'
+require 'unified_position_spec_vertex'
+require 'tsoface'
+
 if ARGV.size < 1
   puts "tsomeshoptimize <tso file>"
   exit
@@ -29,57 +33,6 @@ selected_mesh = tso.meshes[mesh_idx]
 nodemap = {}
 for node in tso.nodes
   nodemap[node.name.to_s] = node
-end
-
-class UnifiedPositionTexcoordVertex < TDCG::Vertex
-  def eql?(o)
-    position == o.position && u == o.u && v == o.v
-  end
-  def hash
-    position.hash ^ u.hash ^ v.hash
-  end
-end
-
-class UnifiedPositionSpecVertex < TDCG::Vertex
-  attr :spec
-  def initialize(a, sub)
-    self.position = a.position
-    self.normal = a.normal
-    self.u = a.u
-    self.v = a.v
-    self.skin_weights = System::Array[TDCG::SkinWeight].new(4)
-    4.times do |i|
-      self.skin_weights[i] = TDCG::SkinWeight.new(sub.bone_indices[a.skin_weights[i].bone_index], a.skin_weights[i].weight)
-    end
-    @spec = sub.spec
-  end
-  def eql?(o)
-    position == o.position && spec == o.spec
-  end
-  def hash
-    position.hash ^ spec.hash
-  end
-end
-
-class TSOFace
-  attr :a
-  attr :b
-  attr :c
-  attr_accessor :spec
-  def initialize(a, b, c)
-    @a = a
-    @b = b
-    @c = c
-    @spec = a.spec
-  end
-
-  def vertices
-    [a, b, c]
-  end
-
-  def inspect
-    "Face(spec:#{ spec })"
-  end
 end
 
 def create_faces(mesh)
