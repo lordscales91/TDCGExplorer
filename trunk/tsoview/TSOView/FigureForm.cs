@@ -35,7 +35,7 @@ public partial class FigureForm : Form
 
     private Figure fig = null;
     private TSOFile tso = null;
-    private Shader shader = null;
+    private TSOSubScript sub_script = null;
 
     /// <summary>
     /// フィギュア情報を削除します。
@@ -43,7 +43,7 @@ public partial class FigureForm : Form
     public void Clear()
     {
         gvShaderParams.DataSource = null;
-        this.shader = null;
+        this.sub_script = null;
         lvSubScripts.Items.Clear();
         this.tso = null;
         lvTSOFiles.Items.Clear();
@@ -94,22 +94,18 @@ public partial class FigureForm : Form
         lvSubScripts.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
     }
 
-    /// <summary>
-    /// シェーダ設定をUIに設定します。
-    /// </summary>
-    /// <param name="shader">シェーダ設定</param>
-    public void SetShader(Shader shader)
+    public void SetSubScript(TSOSubScript sub_script)
     {
-        this.shader = shader;
-        gvShaderParams.DataSource = shader.shader_parameters;
+        this.sub_script = sub_script;
+        gvShaderParams.DataSource = sub_script.shader.shader_parameters;
     }
 
     private void btnDump_Click(object sender, EventArgs e)
     {
-        if (shader == null)
+        if (sub_script == null)
             return;
         Console.WriteLine("-- dump shader parameters --");
-        foreach (string str in shader.GetLines())
+        foreach (string str in sub_script.shader.GetLines())
             Console.WriteLine(str);
     }
 
@@ -117,6 +113,8 @@ public partial class FigureForm : Form
     {
         if (tso == null)
             return;
+        if (sub_script != null)
+            sub_script.SaveShader();
         tso.Save(@"out.tso");
     }
 
@@ -163,7 +161,7 @@ public partial class FigureForm : Form
             return;
         ListViewItem li = lvSubScripts.SelectedItems[0];
         TSOSubScript sub_script = li.Tag as TSOSubScript;
-        SetShader(sub_script.shader);
+        SetSubScript(sub_script);
     }
 
     private void FigureForm_FormClosing(object sender, FormClosingEventArgs e)
