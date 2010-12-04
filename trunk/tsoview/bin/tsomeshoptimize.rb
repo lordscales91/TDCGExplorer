@@ -40,6 +40,75 @@ class UnifiedPositionTexcoordVertex < TDCG::Vertex
   end
 end
 
+class UnifiedPositionSpecVertex < TDCG::Vertex
+  attr :spec
+  def initialize(a, sub)
+    self.position = a.position
+    self.normal = a.normal
+    self.u = a.u
+    self.v = a.v
+    self.skin_weights = System::Array[TDCG::SkinWeight].new(4)
+    4.times do |i|
+      self.skin_weights[i] = TDCG::SkinWeight.new(sub.bone_indices[a.skin_weights[i].bone_index], a.skin_weights[i].weight)
+    end
+    @spec = sub.spec
+  end
+  def eql?(o)
+    position == o.position && spec == o.spec
+  end
+  def hash
+    position.hash ^ spec.hash
+  end
+end
+
+class TSOFace
+  attr :a
+  attr :b
+  attr :c
+  attr_accessor :spec
+  def initialize(a, b, c)
+    @a = a
+    @b = b
+    @c = c
+    @spec = a.spec
+  end
+
+  def vertices
+    [a, b, c]
+  end
+
+  def inspect
+    "Face(spec:#{ spec })"
+  end
+end
+
+def create_faces(mesh)
+  faces = []
+  for sub in mesh.sub_meshes
+    vertices = []
+    for a in sub.vertices
+      v = UnifiedPositionSpecVertex.new(a, sub)
+      vertices.push(v)
+    end
+    for i in 2...vertices.size
+      if i % 2 != 0
+        a = vertices[i-2]
+        b = vertices[i-0]
+        c = vertices[i-1]
+      else
+        a = vertices[i-2]
+        b = vertices[i-1]
+        c = vertices[i-0]
+      end
+      if !a.eql?(b) && !b.eql?(c) && !c.eql?(a)
+        f = TSOFace.new(a, b, c)
+        faces.push f
+      end
+    end
+  end
+  faces
+end
+
 WEIGHT_EPSILON = Float::EPSILON # or 1.0e-4
 
 puts "Sub meshes:"
@@ -73,8 +142,7 @@ def create_vertex(v, bmap)
   a
 end
 
-# mqo2tso
-def build_sub_meshes(faces, max_palettes)
+def create_sub_meshes(faces, max_palettes)
   faces_1 = faces
   faces_2 = []
 
@@ -172,11 +240,11 @@ def build_sub_meshes(faces, max_palettes)
   subs
 end
 
-def main(mesh, max_palettes)
-  faces = mesh.build_faces
+def rebuild_mesh(mesh, max_palettes)
+  faces = create_faces(mesh)
   # puts "#uniq faces:#{ faces.size }"
 
-  subs = build_sub_meshes(faces, max_palettes)
+  subs = create_sub_meshes(faces, max_palettes)
   # puts "#subs:#{ subs.size }"
 
   subs_ary = System::Array[TDCG::TSOSubMesh].new(subs.size)
@@ -186,5 +254,5 @@ def main(mesh, max_palettes)
   mesh.sub_meshes = subs_ary
 end
 
-main(selected_mesh, max_palettes)
+rebuild_mesh(selected_mesh, max_palettes)
 tso.save('out.tso')
