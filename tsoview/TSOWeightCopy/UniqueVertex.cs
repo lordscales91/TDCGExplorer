@@ -32,6 +32,13 @@ namespace TSOWeightCopy
         /// 対称位置にある同一視頂点
         public UniqueVertex opposite_vertex;
 
+        public static TSONode[] nodes = null;
+
+        public static TSONode GetBone(int index)
+        {
+            return nodes[index];
+        }
+
         /// <summary>
         /// 対称関係にあるボーン（の添字）辞書
         /// </summary>
@@ -42,7 +49,7 @@ namespace TSOWeightCopy
         /// </summary>
         /// <param name="bone_index">ボーン添字</param>
         /// <returns></returns>
-        public int GetOppositeBoneIndex(int bone_index)
+        public static int GetOppositeBoneIndex(int bone_index)
         {
             return oppnode_idmap[bone_index];
         }
@@ -190,7 +197,7 @@ namespace TSOWeightCopy
                 SkinWeight a_sw = a.skin_weights[i];
                 int a_bone_idx = Array.IndexOf(sub.bone_indices, sw.bone_index);
                 if (a_bone_idx == -1)
-                    a_bone_idx = sub.AddBoneIndex(sw.bone_index);
+                    a_bone_idx = sub.AddBone(GetBone(sw.bone_index));
                 if (a_bone_idx == -1)
                 {
                     if (sw.weight == 0.0f)
