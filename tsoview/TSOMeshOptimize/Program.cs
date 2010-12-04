@@ -83,7 +83,11 @@ namespace TSOMeshOptimize
 
             RebuildMesh(selected_mesh, max_palettes);
 
-            tso.Save(@"out.tso");
+            string dest_path = Path.GetDirectoryName(source_file);
+            string dest_file = Path.GetFileNameWithoutExtension(source_file) + @".new.tso";
+            dest_path = Path.Combine(dest_path, dest_file);
+            Console.WriteLine("Save File: " + dest_path);
+            tso.Save(dest_path);
         }
 
         public static UnifiedPositionTexcoordVertex CreateVertex(UnifiedPositionSpecVertex v, Dictionary<int, ushort> bone_idmap)
