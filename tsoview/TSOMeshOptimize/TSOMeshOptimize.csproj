@@ -46,8 +46,12 @@
     <Reference Include="TDCG.NvTriStrip, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Heap.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TSOFace.cs" />
+    <Compile Include="UnifiedPositionSpecVertex.cs" />
+    <Compile Include="UnifiedPositionTexcoordVertex.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
