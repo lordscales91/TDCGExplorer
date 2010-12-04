@@ -113,6 +113,13 @@ public partial class FigureForm : Form
             Console.WriteLine(str);
     }
 
+    private void btnSave_Click(object sender, EventArgs e)
+    {
+        if (tso == null)
+            return;
+        tso.Save(@"out.tso");
+    }
+
     private void btnUp_Click(object sender, EventArgs e)
     {
         if (lvTSOFiles.SelectedItems.Count == 0)

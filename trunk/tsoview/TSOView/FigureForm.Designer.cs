@@ -46,6 +46,7 @@ namespace TSOView
             this.lbSlideBust = new System.Windows.Forms.Label();
             this.lbSlideTall = new System.Windows.Forms.Label();
             this.tbSlideTall = new System.Windows.Forms.TrackBar();
+            this.btnSave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.gvShaderParams)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbSlideEye)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tbSlideLeg)).BeginInit();
@@ -57,7 +58,7 @@ namespace TSOView
             // 
             // btnDump
             // 
-            this.btnDump.Location = new System.Drawing.Point(523, 528);
+            this.btnDump.Location = new System.Drawing.Point(442, 528);
             this.btnDump.Name = "btnDump";
             this.btnDump.Size = new System.Drawing.Size(75, 23);
             this.btnDump.TabIndex = 0;
@@ -88,7 +89,7 @@ namespace TSOView
             // lvTSOFiles
             // 
             this.lvTSOFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-                this.columnHeader1});
+            this.columnHeader1});
             this.lvTSOFiles.FullRowSelect = true;
             this.lvTSOFiles.GridLines = true;
             this.lvTSOFiles.HideSelection = false;
@@ -108,8 +109,8 @@ namespace TSOView
             // lvSubScripts
             // 
             this.lvSubScripts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-                this.columnHeader2,
-                this.columnHeader3});
+            this.columnHeader2,
+            this.columnHeader3});
             this.lvSubScripts.FullRowSelect = true;
             this.lvSubScripts.GridLines = true;
             this.lvSubScripts.HideSelection = false;
@@ -249,9 +250,20 @@ namespace TSOView
             this.tbSlideTall.TabIndex = 16;
             this.tbSlideTall.ValueChanged += new System.EventHandler(this.tbSlideTall_ValueChanged);
             // 
+            // btnSave
+            // 
+            this.btnSave.Location = new System.Drawing.Point(523, 528);
+            this.btnSave.Name = "btnSave";
+            this.btnSave.Size = new System.Drawing.Size(75, 23);
+            this.btnSave.TabIndex = 18;
+            this.btnSave.Text = "&Save";
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
+            // 
             // FigureForm
             // 
             this.ClientSize = new System.Drawing.Size(784, 563);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.lbSlideEye);
             this.Controls.Add(this.tbSlideEye);
             this.Controls.Add(this.lbSlideTall);
@@ -308,5 +320,6 @@ namespace TSOView
         private System.Windows.Forms.Label lbSlideTall;
         private System.Windows.Forms.TrackBar tbSlideTall;
         private System.Windows.Forms.DataGridView gvShaderParams;
+        private System.Windows.Forms.Button btnSave;
     }
 }
