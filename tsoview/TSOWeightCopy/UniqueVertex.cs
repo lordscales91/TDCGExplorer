@@ -32,11 +32,19 @@ namespace TSOWeightCopy
         /// 対称位置にある同一視頂点
         public UniqueVertex opposite_vertex;
 
+        /// <summary>
+        /// bone配列
+        /// </summary>
         public static TSONode[] nodes = null;
 
-        public static TSONode GetBone(int index)
+        /// <summary>
+        /// 指定indexにあるボーンを得ます。
+        /// </summary>
+        /// <param name="i">index</param>
+        /// <returns>ボーン</returns>
+        public static TSONode GetBone(int i)
         {
-            return nodes[index];
+            return nodes[i];
         }
 
         /// <summary>
