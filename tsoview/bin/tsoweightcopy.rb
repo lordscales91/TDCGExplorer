@@ -111,6 +111,7 @@ def main(mesh)
   cluster.copy_opposite_weights
 end
 
+UniqVertex.nodes = tso.nodes
 UniqVertex.oppnode_idmap = oppnode_idmap
 
 main(selected_mesh)
