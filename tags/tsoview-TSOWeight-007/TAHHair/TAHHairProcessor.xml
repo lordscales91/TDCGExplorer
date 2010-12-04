@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="shift_jis"?>
+<TAHHairProcessor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <parts>
+    <TBNHairPart>
+      <Row>B</Row>
+      <TbnPath>N000FHEA_B00.tbn</TbnPath>
+    </TBNHairPart>
+    <TBNHairPart>
+      <Row>C</Row>
+      <TbnPath>N000BHEA_C00.tbn</TbnPath>
+    </TBNHairPart>
+  </parts>
+  <KitRoot>HAIR_KIT</KitRoot>
+  <PsdPath>Icon\Icon_{0}.psd</PsdPath>
+  <TahVersion>10</TahVersion>
+  <ColorSet>default</ColorSet>
+</TAHHairProcessor>
