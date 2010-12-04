@@ -28,6 +28,7 @@ namespace TSOWeightCopy
             TSOFile tso = new TSOFile();
             tso.Load(source_file);
 
+            UniqueVertex.nodes = tso.nodes;
             UniqueVertex.oppnode_idmap = create_oppnode_idmap(tso);
 
             Console.WriteLine("メッシュ:");

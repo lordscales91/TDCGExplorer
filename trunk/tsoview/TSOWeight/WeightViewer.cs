@@ -204,18 +204,10 @@ namespace TDCG
             if (selected_skin_weight == null)
             {
                 //サブメッシュのボーン参照に指定ノードが含まれるか。
-                bool found = false;
-                int bone_index = 0;
-                foreach (TSONode bone in sub_mesh.bones)
-                {
-                    if (bone == selected_node)
-                    {
-                        found = true;
-                        break;
-                    }
-                    bone_index++;
-                }
-                if (found)
+                int bone_index = Array.IndexOf(sub_mesh.bone_indices, selected_node.ID);
+                if (bone_index == -1)
+                    bone_index = sub_mesh.AddBone(selected_node);
+                if (bone_index != -1)
                 {
                     selected_skin_weight = vertex.skin_weights[3]; //前提: vertex.skin_weights の要素数は 4 かつ並び順はウェイト値の降順
                     selected_skin_weight.bone_index = bone_index;
