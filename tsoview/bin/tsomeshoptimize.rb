@@ -41,7 +41,11 @@ class UnifiedPositionTexcoordVertex < TDCG::Vertex
 end
 
 WEIGHT_EPSILON = Float::EPSILON # or 1.0e-4
-MAX_PALETTES = 12
+
+print "Set max palettes: "
+line = gets
+max_palettes = line.chomp.to_i
+max_palettes = 16 if max_palettes == 0
 
 def create_vertex(v, bmap)
   a = UnifiedPositionTexcoordVertex.new
@@ -63,7 +67,7 @@ def create_vertex(v, bmap)
 end
 
 # mqo2tso
-def build_sub_meshes(faces)
+def build_sub_meshes(faces, max_palettes)
   faces_1 = faces
   faces_2 = []
 
@@ -89,12 +93,12 @@ def build_sub_meshes(faces)
         for sw in v.skin_weights
           next if sw.weight < WEIGHT_EPSILON
           next if bmap[sw.bone_index]
-          if bmap.size == MAX_PALETTES
+          if bmap.size == max_palettes
             valid = false
             break
           end
           tmap[sw.bone_index] = true
-          if bmap.size + tmap.size > MAX_PALETTES
+          if bmap.size + tmap.size > max_palettes
             valid = false
             break
           end
@@ -156,7 +160,7 @@ def build_sub_meshes(faces)
   subs
 end
 
-def main(mesh)
+def main(mesh, max_palettes)
   puts "#sub_meshes:#{ mesh.sub_meshes.size }"
   faces = mesh.build_faces
   # faces.sort!
@@ -164,7 +168,7 @@ def main(mesh)
   puts "#uniq faces:#{ faces.size }"
   puts
 
-  subs = build_sub_meshes(faces)
+  subs = build_sub_meshes(faces, max_palettes)
 
   puts "#subs:#{ subs.size }"
   subs_ary = System::Array[TDCG::TSOSubMesh].new(subs.size)
@@ -174,5 +178,5 @@ def main(mesh)
   mesh.sub_meshes = subs_ary
 end
 
-main(selected_mesh)
+main(selected_mesh, max_palettes)
 tso.save('out.tso')

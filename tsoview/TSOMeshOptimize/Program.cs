@@ -124,7 +124,21 @@ namespace TSOMeshOptimize
                 return;
             }
 
-            RebuildMesh(selected_mesh);
+            Console.Write("最大パレット長: ");
+            int max_palettes = 0;
+            try
+            {
+                max_palettes = int.Parse(Console.ReadLine());
+            }
+            catch (System.FormatException e)
+            {
+                Console.WriteLine(e);
+                return;
+            }
+            if (max_palettes == 0)
+                max_palettes = 16;
+
+            RebuildMesh(selected_mesh, max_palettes);
 
             tso.Save(@"out.tso");
         }
@@ -149,9 +163,9 @@ namespace TSOMeshOptimize
         }
 
         public static float WeightEpsilon = float.Epsilon;
-        public static int MaxPalettes = 16;
+        public int MaxPalettes = 16;
 
-        public static TSOSubMesh[] BuildSubMeshes(List<TSOFace> faces)
+        public static TSOSubMesh[] BuildSubMeshes(List<TSOFace> faces, int max_palettes)
         {
             List<TSOFace> faces_1 = faces;
             List<TSOFace> faces_2 = new List<TSOFace>();
@@ -187,13 +201,13 @@ namespace TSOMeshOptimize
                                 continue;
                             if (bh.ContainsKey(sw.bone_index))
                                 continue;
-                            if (bh.Count == MaxPalettes)
+                            if (bh.Count == max_palettes)
                             {
                                 valid = false;
                                 break;
                             }
                             bone_indices[sw.bone_index] = true;
-                            if (bh.Count + bone_indices.Count > MaxPalettes)
+                            if (bh.Count + bone_indices.Count > max_palettes)
                             {
                                 valid = false;
                                 break;
@@ -244,16 +258,18 @@ namespace TSOMeshOptimize
             return sub_meshes.ToArray();
         }
 
-        public static TSOSubMesh[] BuildSubMeshes(TSOMesh mesh)
+        public static TSOSubMesh[] BuildSubMeshes(TSOMesh mesh, int max_palettes)
         {
             List<TSOFace> faces = mesh.BuildFaces();
             Console.WriteLine("#uniq faces:{0}", faces.Count);
-            return BuildSubMeshes(faces);
+            TSOSubMesh[] sub_meshes = BuildSubMeshes(faces, max_palettes);
+            Console.WriteLine("#subs:{0}", sub_meshes.Length);
+            return sub_meshes;
         }
 
-        public static void RebuildMesh(TSOMesh mesh)
+        public static void RebuildMesh(TSOMesh mesh, int max_palettes)
         {
-            mesh.sub_meshes = BuildSubMeshes(mesh);
+            mesh.sub_meshes = BuildSubMeshes(mesh, max_palettes);
         }
     }
 }
