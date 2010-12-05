@@ -710,11 +710,9 @@ namespace TDCG
         /// </summary>
         public void Load(string source_file)
         {
-            using (FileStream stream = File.OpenRead(source_file))
-            {
-                this.file = "\"" + Path.GetFileName(source_file) + "\"";
-                Load(stream);
-            }
+            using (BinaryReader br = new BinaryReader(File.OpenRead(source_file)))
+                Load(br);
+            this.file = "\"" + Path.GetFileName(source_file) + "\"";
         }
 
         static readonly int sizeof_bfh = Marshal.SizeOf(typeof(BITMAPFILEHEADER));
@@ -723,9 +721,8 @@ namespace TDCG
         /// <summary>
         /// テクスチャを読み込みます。
         /// </summary>
-        public void Load(Stream stream)
+        public void Load(BinaryReader br)
         {
-            BinaryReader br = new BinaryReader(stream);
             BITMAPFILEHEADER bfh;
             BITMAPINFOHEADER bih;
 
