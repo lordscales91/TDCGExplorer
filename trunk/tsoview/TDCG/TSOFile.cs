@@ -247,7 +247,7 @@ namespace TDCG
                         gs.Write(v.bone_indices);
                         gs.Write(v.normal);
                         gs.Write(v.u);
-                        gs.Write(v.v);
+                        gs.Write(1.0f - v.v);
                     }
                 }
                 dm.UnlockVertexBuffer();
@@ -773,9 +773,8 @@ namespace TDCG
         /// <summary>
         /// テクスチャを書き出します。
         /// </summary>
-        public void Save(Stream stream)
+        public void Save(BinaryWriter bw)
         {
-            BinaryWriter bw = new BinaryWriter(stream);
             BITMAPFILEHEADER bfh;
             BITMAPINFOHEADER bih;
 
@@ -850,34 +849,8 @@ namespace TDCG
             MemoryStream ms = new MemoryStream();
             using (BinaryWriter bw = new BinaryWriter(ms))
             {
-                {
-                    bw.Write((byte)'B');
-                    bw.Write((byte)'M');
-                    bw.Write((int)(54 + data.Length));
-                    bw.Write((int)0);
-                    bw.Write((int)54);
-                    bw.Write((int)40);
-                    bw.Write((int)width);
-                    bw.Write((int)height);
-                    bw.Write((short)1);
-                    bw.Write((short)(depth*8));
-                    bw.Write((int)0);
-                    bw.Write((int)data.Length);
-                    bw.Write((int)0);
-                    bw.Write((int)0);
-                    bw.Write((int)0);
-                    bw.Write((int)0);
-                }
-
-                int count = width * depth;
-                int index = width * height * depth - count;
-                for (int y = 0; y < height; y++)
-                {
-                    bw.Write(data, index, count);
-                    index -= count;
-                }
+                Save(bw);
                 bw.Flush();
-
                 ms.Seek(0, SeekOrigin.Begin);
                 tex = TextureLoader.FromStream(device, ms);
             }
