@@ -732,10 +732,12 @@ namespace TDCG
             IntPtr bfh_ptr = Marshal.AllocHGlobal(sizeof_bfh);
             Marshal.Copy(br.ReadBytes(sizeof_bfh), 0, bfh_ptr, sizeof_bfh);
             bfh = (BITMAPFILEHEADER)Marshal.PtrToStructure(bfh_ptr, typeof(BITMAPFILEHEADER));
+            Marshal.FreeHGlobal(bfh_ptr);
 
             IntPtr bih_ptr = Marshal.AllocHGlobal(sizeof_bih);
             Marshal.Copy(br.ReadBytes(sizeof_bih), 0, bih_ptr, sizeof_bih);
             bih = (BITMAPINFOHEADER)Marshal.PtrToStructure(bih_ptr, typeof(BITMAPINFOHEADER));
+            Marshal.FreeHGlobal(bih_ptr);
 
             if (bfh.bfType != 0x4D42)
                 throw new Exception("Invalid imagetype: " + file);
@@ -766,6 +768,50 @@ namespace TDCG
                 this.data[j+2] = this.data[j+0];
                 this.data[j+0] = tmp;
             }
+        }
+
+        /// <summary>
+        /// テクスチャを書き出します。
+        /// </summary>
+        public void Save(Stream stream)
+        {
+            BinaryWriter bw = new BinaryWriter(stream);
+            BITMAPFILEHEADER bfh;
+            BITMAPINFOHEADER bih;
+
+            bfh.bfType = 0x4D42;
+            bfh.bfSize = (uint)(54 + data.Length);
+            bfh.bfReserved1 = 0;
+            bfh.bfReserved2 = 0;
+            bfh.bfOffBits = 54;
+
+            IntPtr bfh_ptr = Marshal.AllocHGlobal(sizeof_bfh);
+            Marshal.StructureToPtr(bfh, bfh_ptr, false);
+            byte[] bfh_buf = new byte[sizeof_bfh];
+            Marshal.Copy(bfh_ptr, bfh_buf, 0, sizeof_bfh);
+            Marshal.FreeHGlobal(bfh_ptr);
+            bw.Write(bfh_buf);
+
+            bih.biSize = 40;
+            bih.biWidth = width;
+            bih.biHeight = height;
+            bih.biPlanes = 1;
+            bih.biBitCount = (ushort)(depth * 8);
+            bih.biCompression = 0;
+            bih.biSizeImage = (uint)data.Length;
+            bih.biXPelsPerMeter = 0;
+            bih.biYPelsPerMeter = 0;
+            bih.biClrUsed = 0;
+            bih.biClrImportant = 0;
+
+            IntPtr bih_ptr = Marshal.AllocHGlobal(sizeof_bih);
+            Marshal.StructureToPtr(bih, bih_ptr, false);
+            byte[] bih_buf = new byte[sizeof_bih];
+            Marshal.Copy(bih_ptr, bih_buf, 0, sizeof_bih);
+            Marshal.FreeHGlobal(bih_ptr);
+            bw.Write(bih_buf);
+
+            bw.Write(data, 0, data.Length);
         }
 
         /// <summary>
