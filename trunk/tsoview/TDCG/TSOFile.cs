@@ -636,6 +636,14 @@ namespace TDCG
         /// <summary>
         /// サブスクリプトを書き出します。
         /// </summary>
+        public void Save(string dest_file)
+        {
+            File.WriteAllLines(dest_file, this.lines);
+        }
+
+        /// <summary>
+        /// サブスクリプトを書き出します。
+        /// </summary>
         public void Write(BinaryWriter bw)
         {
             bw.WriteCString(this.name);
