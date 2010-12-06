@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
@@ -72,19 +73,6 @@ namespace tso2mqo
             return position.GetHashCode();
         }
     }
-    class MqoFace
-    {
-        public ushort a;
-        public ushort b;
-        public ushort c;
-        public float u1;
-        public float v1;
-        public float u2;
-        public float v2;
-        public float u3;
-        public float v3;
-        public int m;
-    }
     class Program
     {
         public static void Main(string[] args)
@@ -94,13 +82,28 @@ namespace tso2mqo
                 Console.WriteLine("tso2mqo.exe <tso file>");
                 return;
             }
+
             string source_file = args[0];
+
+            if (Path.GetExtension(source_file).ToLower() == ".tso")
+            {
+                string dest_path = Path.GetFileNameWithoutExtension(source_file);
+                Program program = new Program();
+                program.Extract(source_file, dest_path);
+            }
+            else if (Directory.Exists(source_file))
+            {
+                Program program = new Program();
+                program.Compose(source_file);
+            }
+        }
+
+        public int Extract(string source_file, string dest_path)
+        {
+            Directory.CreateDirectory(dest_path);
 
             TSOFile tso = new TSOFile();
             tso.Load(source_file);
-
-            string dest_path = Path.GetFileNameWithoutExtension(source_file);
-            Directory.CreateDirectory(dest_path);
 
             foreach (TSOTex tex in tso.textures)
             {
@@ -129,9 +132,24 @@ namespace tso2mqo
                 using (TextWriter tw = new StreamWriter(File.Create(dest_file)))
                     SaveToMqo(tw, tso);
             }
+
+            return 0;
         }
 
-        public static void SaveToMqo(TextWriter tw, TSOFile tso)
+        public int Compose(string source_file)
+        {
+            string source_name = Path.GetFileNameWithoutExtension(source_file);
+            string dest_file = Path.Combine(source_file, source_name + ".mqo");
+
+            Debug.Listeners.Add(new TextWriterTraceListener(Console.Out));
+            MqoFile mqo = new MqoFile();
+            mqo.Load(dest_file);
+            mqo.Dump();
+
+            return 0;
+        }
+
+        public void SaveToMqo(TextWriter tw, TSOFile tso)
         {
             tw.WriteLine("Metasequoia Document");
             tw.WriteLine("Format Text Ver 1.0");
@@ -207,13 +225,10 @@ namespace tso2mqo
                             f.a = a;
                             f.b = b;
                             f.c = c;
-                            f.u1 = va.u;
-                            f.v1 = 1-va.v;
-                            f.u2 = vb.u;
-                            f.v2 = 1-vb.v;
-                            f.u3 = vc.u;
-                            f.v3 = 1-vc.v;
-                            f.m = sub.spec;
+                            f.ta = new Vector2(va.u, 1-va.v);
+                            f.tb = new Vector2(vb.u, 1-vb.v);
+                            f.tc = new Vector2(vc.u, 1-vc.v);
+                            f.mtl = (ushort)sub.spec;
                             faces.Add(f);
                         }
                     }
@@ -227,7 +242,7 @@ namespace tso2mqo
                 tw.WriteLine("	face {0} {{", faces.Count);
                 foreach (MqoFace f in faces)
                 {
-                    tw.WriteLine("\t\t{0} V({1} {2} {3}) M({10}) UV({4} {5} {6} {7} {8} {9})", 3, f.a, f.b, f.c, f.u1, f.v1, f.u2, f.v2, f.u3, f.v3, f.m);
+                    tw.WriteLine("\t\t{0} V({1} {2} {3}) M({10}) UV({4} {5} {6} {7} {8} {9})", 3, f.a, f.b, f.c, f.ta.X, f.ta.Y, f.tb.X, f.tb.Y, f.tc.X, f.tc.Y, f.mtl);
                 }
                 tw.WriteLine("	}");
                 tw.WriteLine("}");
