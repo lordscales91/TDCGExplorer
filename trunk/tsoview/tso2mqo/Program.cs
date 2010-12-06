@@ -99,13 +99,17 @@ namespace tso2mqo
             TSOFile tso = new TSOFile();
             tso.Load(source_file);
 
+            string dest_path = Path.GetFileNameWithoutExtension(source_file);
+            Directory.CreateDirectory(dest_path);
+
             foreach (TSOTex tex in tso.textures)
             {
                 string name = tex.Name;
                 string file = tex.FileName.Trim('"');
                 file = Path.GetFileNameWithoutExtension(file) + ".bmp";
                 Console.WriteLine("tex name:{0} file:{1}", name, file);
-                using (BinaryWriter bw = new BinaryWriter(File.Create(file)))
+                string dest_file = Path.Combine(dest_path, file);
+                using (BinaryWriter bw = new BinaryWriter(File.Create(dest_file)))
                     tex.Save(bw);
             }
 
@@ -114,16 +118,20 @@ namespace tso2mqo
                 string name = sub.Name;
                 string file = sub.FileName;
                 Console.WriteLine("sub name:{0} file:{1}", name, file);
-                sub.Save(name);
+                string dest_file = Path.Combine(dest_path, name);
+                sub.Save(dest_file);
             }
 
-            Process(tso);
+            {
+                string name = dest_path + ".mqo";
+                string dest_file = Path.Combine(dest_path, name);
+                using (TextWriter tw = new StreamWriter(File.Create(dest_file)))
+                    SaveToMqo(tw, tso);
+            }
         }
 
-        public static void Process(TSOFile tso)
+        public static void SaveToMqo(TextWriter tw, TSOFile tso)
         {
-            TextWriter tw = new StreamWriter(File.Create("out.mqo"));
-
             tw.WriteLine("Metasequoia Document");
             tw.WriteLine("Format Text Ver 1.0");
             tw.WriteLine("");
@@ -223,8 +231,6 @@ namespace tso2mqo
                 tw.WriteLine("	}");
                 tw.WriteLine("}");
             }
-
-            tw.Close();
         }
     }
 }
