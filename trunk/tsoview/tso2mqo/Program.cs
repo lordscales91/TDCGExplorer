@@ -125,6 +125,7 @@ namespace tso2mqo
             {
                 string name = dest_path + ".mqo";
                 string dest_file = Path.Combine(dest_path, name);
+                Console.WriteLine("Save File: " + dest_file);
                 using (TextWriter tw = new StreamWriter(File.Create(dest_file)))
                     SaveToMqo(tw, tso);
             }
