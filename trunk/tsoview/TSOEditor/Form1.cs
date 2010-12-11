@@ -110,5 +110,49 @@ namespace TSOEditor
             lvMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             lvMeshes.EndUpdate();
         }
+
+        private void lvNodes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvNodes.SelectedItems.Count == 0)
+                return;
+
+            ListViewItem li = lvNodes.SelectedItems[0];
+            TSONode node = li.Tag as TSONode;
+
+            Debug.WriteLine("selected " + node.Name);
+        }
+
+        private void lvTextures_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvTextures.SelectedItems.Count == 0)
+                return;
+
+            ListViewItem li = lvTextures.SelectedItems[0];
+            TSOTex tex = li.Tag as TSOTex;
+
+            Debug.WriteLine("selected " + tex.Name);
+        }
+
+        private void lvSubScripts_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvSubScripts.SelectedItems.Count == 0)
+                return;
+
+            ListViewItem li = lvSubScripts.SelectedItems[0];
+            TSOSubScript sub_script = li.Tag as TSOSubScript;
+
+            Debug.WriteLine("selected " + sub_script.Name);
+        }
+
+        private void lvMeshes_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvMeshes.SelectedItems.Count == 0)
+                return;
+
+            ListViewItem li = lvMeshes.SelectedItems[0];
+            TSOMesh mesh = li.Tag as TSOMesh;
+
+            Debug.WriteLine("selected " + mesh.Name);
+        }
     }
 }

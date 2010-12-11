@@ -146,7 +146,7 @@ namespace TSOWeight
             Invalidate(false);
         }
 
-        private void lvFrames_SelectedIndexChanged(object sender, EventArgs e)
+        private void lvMeshes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (lvMeshes.SelectedItems.Count == 0)
                 return;
