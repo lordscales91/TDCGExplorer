@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -131,6 +132,23 @@ namespace TSOEditor
             TSOTex tex = li.Tag as TSOTex;
 
             Debug.WriteLine("selected " + tex.Name);
+            pbTexThumbnail.Image = GetImage(tex);
+        }
+
+        static Image GetImage(TSOTex tex)
+        {
+            if (tex.data.Length == 0)
+                return null;
+            Image image;
+            MemoryStream ms = new MemoryStream();
+            using (BinaryWriter bw = new BinaryWriter(ms))
+            {
+                tex.Save(bw);
+                bw.Flush();
+                ms.Seek(0, SeekOrigin.Begin);
+                image = Bitmap.FromStream(ms);
+            }
+            return image;
         }
 
         private void lvSubScripts_SelectedIndexChanged(object sender, EventArgs e)

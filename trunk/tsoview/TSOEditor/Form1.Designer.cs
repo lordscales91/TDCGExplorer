@@ -34,6 +34,7 @@
             this.lvNodes = new System.Windows.Forms.ListView();
             this.chNodeName = new System.Windows.Forms.ColumnHeader();
             this.tpTextures = new System.Windows.Forms.TabPage();
+            this.pbTexThumbnail = new System.Windows.Forms.PictureBox();
             this.lvTextures = new System.Windows.Forms.ListView();
             this.chTexName = new System.Windows.Forms.ColumnHeader();
             this.chTexFileName = new System.Windows.Forms.ColumnHeader();
@@ -47,6 +48,7 @@
             this.tabControl1.SuspendLayout();
             this.tpNodes.SuspendLayout();
             this.tpTextures.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pbTexThumbnail)).BeginInit();
             this.tpSubScripts.SuspendLayout();
             this.tpMeshes.SuspendLayout();
             this.SuspendLayout();
@@ -91,7 +93,7 @@
             this.chNodeName});
             this.lvNodes.Location = new System.Drawing.Point(6, 6);
             this.lvNodes.Name = "lvNodes";
-            this.lvNodes.Size = new System.Drawing.Size(121, 381);
+            this.lvNodes.Size = new System.Drawing.Size(174, 381);
             this.lvNodes.TabIndex = 0;
             this.lvNodes.UseCompatibleStateImageBehavior = false;
             this.lvNodes.View = System.Windows.Forms.View.Details;
@@ -103,6 +105,7 @@
             // 
             // tpTextures
             // 
+            this.tpTextures.Controls.Add(this.pbTexThumbnail);
             this.tpTextures.Controls.Add(this.lvTextures);
             this.tpTextures.Location = new System.Drawing.Point(4, 22);
             this.tpTextures.Name = "tpTextures";
@@ -112,6 +115,14 @@
             this.tpTextures.Text = "textures";
             this.tpTextures.UseVisualStyleBackColor = true;
             // 
+            // pbTexThumbnail
+            // 
+            this.pbTexThumbnail.Location = new System.Drawing.Point(186, 6);
+            this.pbTexThumbnail.Name = "pbTexThumbnail";
+            this.pbTexThumbnail.Size = new System.Drawing.Size(256, 256);
+            this.pbTexThumbnail.TabIndex = 1;
+            this.pbTexThumbnail.TabStop = false;
+            // 
             // lvTextures
             // 
             this.lvTextures.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -119,7 +130,7 @@
             this.chTexFileName});
             this.lvTextures.Location = new System.Drawing.Point(6, 6);
             this.lvTextures.Name = "lvTextures";
-            this.lvTextures.Size = new System.Drawing.Size(121, 381);
+            this.lvTextures.Size = new System.Drawing.Size(174, 381);
             this.lvTextures.TabIndex = 0;
             this.lvTextures.UseCompatibleStateImageBehavior = false;
             this.lvTextures.View = System.Windows.Forms.View.Details;
@@ -150,7 +161,7 @@
             this.chSubFileName});
             this.lvSubScripts.Location = new System.Drawing.Point(6, 6);
             this.lvSubScripts.Name = "lvSubScripts";
-            this.lvSubScripts.Size = new System.Drawing.Size(121, 381);
+            this.lvSubScripts.Size = new System.Drawing.Size(174, 381);
             this.lvSubScripts.TabIndex = 0;
             this.lvSubScripts.UseCompatibleStateImageBehavior = false;
             this.lvSubScripts.View = System.Windows.Forms.View.Details;
@@ -180,7 +191,7 @@
             this.chMeshName});
             this.lvMeshes.Location = new System.Drawing.Point(6, 6);
             this.lvMeshes.Name = "lvMeshes";
-            this.lvMeshes.Size = new System.Drawing.Size(121, 381);
+            this.lvMeshes.Size = new System.Drawing.Size(174, 381);
             this.lvMeshes.TabIndex = 0;
             this.lvMeshes.UseCompatibleStateImageBehavior = false;
             this.lvMeshes.View = System.Windows.Forms.View.Details;
@@ -206,6 +217,7 @@
             this.tabControl1.ResumeLayout(false);
             this.tpNodes.ResumeLayout(false);
             this.tpTextures.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pbTexThumbnail)).EndInit();
             this.tpSubScripts.ResumeLayout(false);
             this.tpMeshes.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -230,6 +242,7 @@
         private System.Windows.Forms.TabPage tpGeneral;
         private System.Windows.Forms.ColumnHeader chTexFileName;
         private System.Windows.Forms.ColumnHeader chSubFileName;
+        private System.Windows.Forms.PictureBox pbTexThumbnail;
     }
 }
 
