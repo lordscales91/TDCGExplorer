@@ -104,6 +104,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSOMeshOptimize", "TSOMeshO
 		{197EB5EB-8155-4518-BF0F-557F26BF5088} = {197EB5EB-8155-4518-BF0F-557F26BF5088}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSOEditor", "TSOEditor\TSOEditor.csproj", "{0499D8FD-ED45-4804-85A3-E059FA62B821}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -201,6 +203,10 @@ Global
 		{D84118E3-C2F0-4E30-94D4-9A87BD04B3F1}.Debug|x86.Build.0 = Debug|x86
 		{D84118E3-C2F0-4E30-94D4-9A87BD04B3F1}.Release|x86.ActiveCfg = Release|x86
 		{D84118E3-C2F0-4E30-94D4-9A87BD04B3F1}.Release|x86.Build.0 = Release|x86
+		{0499D8FD-ED45-4804-85A3-E059FA62B821}.Debug|x86.ActiveCfg = Debug|x86
+		{0499D8FD-ED45-4804-85A3-E059FA62B821}.Debug|x86.Build.0 = Debug|x86
+		{0499D8FD-ED45-4804-85A3-E059FA62B821}.Release|x86.ActiveCfg = Release|x86
+		{0499D8FD-ED45-4804-85A3-E059FA62B821}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
