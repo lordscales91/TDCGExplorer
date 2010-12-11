@@ -15,10 +15,12 @@ namespace TSOEditor
     {
         TSOFile tso;
 
-        public Form1()
+        public Form1(string[] args)
         {
             InitializeComponent();
             tso = new TSOFile();
+            foreach (string arg in args)
+                LoadTSOFile(arg);
         }
 
         private void Form1_DragDrop(object sender, DragEventArgs e)
@@ -26,14 +28,7 @@ namespace TSOEditor
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
                 foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
-                {
-                    Debug.WriteLine("loading " + src);
-                    tso.Load(src);
-                    AssignNodes(tso);
-                    AssignTextures(tso);
-                    AssignSubScripts(tso);
-                    AssignMeshes(tso);
-                }
+                    LoadTSOFile(src);
             }
         }
 
@@ -46,6 +41,16 @@ namespace TSOEditor
                 else
                     e.Effect = DragDropEffects.Move;
             }
+        }
+
+        void LoadTSOFile(string src)
+        {
+            Debug.WriteLine("loading " + src);
+            tso.Load(src);
+            AssignNodes(tso);
+            AssignTextures(tso);
+            AssignSubScripts(tso);
+            AssignMeshes(tso);
         }
 
         void AssignNodes(TSOFile tso)
