@@ -36,14 +36,14 @@
             this.tpTextures = new System.Windows.Forms.TabPage();
             this.lvTextures = new System.Windows.Forms.ListView();
             this.chTexName = new System.Windows.Forms.ColumnHeader();
+            this.chTexFileName = new System.Windows.Forms.ColumnHeader();
             this.tpSubScripts = new System.Windows.Forms.TabPage();
             this.lvSubScripts = new System.Windows.Forms.ListView();
             this.chSubName = new System.Windows.Forms.ColumnHeader();
+            this.chSubFileName = new System.Windows.Forms.ColumnHeader();
             this.tpMeshes = new System.Windows.Forms.TabPage();
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.chMeshName = new System.Windows.Forms.ColumnHeader();
-            this.chTexFileName = new System.Windows.Forms.ColumnHeader();
-            this.chSubFileName = new System.Windows.Forms.ColumnHeader();
             this.tabControl1.SuspendLayout();
             this.tpNodes.SuspendLayout();
             this.tpTextures.SuspendLayout();
@@ -95,6 +95,7 @@
             this.lvNodes.TabIndex = 0;
             this.lvNodes.UseCompatibleStateImageBehavior = false;
             this.lvNodes.View = System.Windows.Forms.View.Details;
+            this.lvNodes.SelectedIndexChanged += new System.EventHandler(this.lvNodes_SelectedIndexChanged);
             // 
             // chNodeName
             // 
@@ -122,10 +123,15 @@
             this.lvTextures.TabIndex = 0;
             this.lvTextures.UseCompatibleStateImageBehavior = false;
             this.lvTextures.View = System.Windows.Forms.View.Details;
+            this.lvTextures.SelectedIndexChanged += new System.EventHandler(this.lvTextures_SelectedIndexChanged);
             // 
             // chTexName
             // 
             this.chTexName.Text = "Name";
+            // 
+            // chTexFileName
+            // 
+            this.chTexFileName.Text = "File";
             // 
             // tpSubScripts
             // 
@@ -148,10 +154,15 @@
             this.lvSubScripts.TabIndex = 0;
             this.lvSubScripts.UseCompatibleStateImageBehavior = false;
             this.lvSubScripts.View = System.Windows.Forms.View.Details;
+            this.lvSubScripts.SelectedIndexChanged += new System.EventHandler(this.lvSubScripts_SelectedIndexChanged);
             // 
             // chSubName
             // 
             this.chSubName.Text = "Name";
+            // 
+            // chSubFileName
+            // 
+            this.chSubFileName.Text = "File";
             // 
             // tpMeshes
             // 
@@ -173,18 +184,11 @@
             this.lvMeshes.TabIndex = 0;
             this.lvMeshes.UseCompatibleStateImageBehavior = false;
             this.lvMeshes.View = System.Windows.Forms.View.Details;
+            this.lvMeshes.SelectedIndexChanged += new System.EventHandler(this.lvMeshes_SelectedIndexChanged);
             // 
             // chMeshName
             // 
             this.chMeshName.Text = "Name";
-            // 
-            // chTexFileName
-            // 
-            this.chTexFileName.Text = "File";
-            // 
-            // chSubFileName
-            // 
-            this.chSubFileName.Text = "File";
             // 
             // Form1
             // 

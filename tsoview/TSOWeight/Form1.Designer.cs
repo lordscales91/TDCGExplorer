@@ -529,7 +529,7 @@
             this.lvMeshes.TabIndex = 3;
             this.lvMeshes.UseCompatibleStateImageBehavior = false;
             this.lvMeshes.View = System.Windows.Forms.View.Details;
-            this.lvMeshes.SelectedIndexChanged += new System.EventHandler(this.lvFrames_SelectedIndexChanged);
+            this.lvMeshes.SelectedIndexChanged += new System.EventHandler(this.lvMeshes_SelectedIndexChanged);
             // 
             // columnHeader1
             // 
