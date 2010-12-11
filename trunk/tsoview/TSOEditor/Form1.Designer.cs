@@ -42,6 +42,8 @@
             this.tpMeshes = new System.Windows.Forms.TabPage();
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.chMeshName = new System.Windows.Forms.ColumnHeader();
+            this.chTexFileName = new System.Windows.Forms.ColumnHeader();
+            this.chSubFileName = new System.Windows.Forms.ColumnHeader();
             this.tabControl1.SuspendLayout();
             this.tpNodes.SuspendLayout();
             this.tpTextures.SuspendLayout();
@@ -78,7 +80,7 @@
             this.tpNodes.Location = new System.Drawing.Point(4, 22);
             this.tpNodes.Name = "tpNodes";
             this.tpNodes.Padding = new System.Windows.Forms.Padding(3);
-            this.tpNodes.Size = new System.Drawing.Size(592, 393);
+            this.tpNodes.Size = new System.Drawing.Size(602, 403);
             this.tpNodes.TabIndex = 0;
             this.tpNodes.Text = "nodes";
             this.tpNodes.UseVisualStyleBackColor = true;
@@ -104,7 +106,7 @@
             this.tpTextures.Location = new System.Drawing.Point(4, 22);
             this.tpTextures.Name = "tpTextures";
             this.tpTextures.Padding = new System.Windows.Forms.Padding(3);
-            this.tpTextures.Size = new System.Drawing.Size(592, 393);
+            this.tpTextures.Size = new System.Drawing.Size(602, 403);
             this.tpTextures.TabIndex = 1;
             this.tpTextures.Text = "textures";
             this.tpTextures.UseVisualStyleBackColor = true;
@@ -112,7 +114,8 @@
             // lvTextures
             // 
             this.lvTextures.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.chTexName});
+            this.chTexName,
+            this.chTexFileName});
             this.lvTextures.Location = new System.Drawing.Point(6, 6);
             this.lvTextures.Name = "lvTextures";
             this.lvTextures.Size = new System.Drawing.Size(121, 381);
@@ -129,7 +132,7 @@
             this.tpSubScripts.Controls.Add(this.lvSubScripts);
             this.tpSubScripts.Location = new System.Drawing.Point(4, 22);
             this.tpSubScripts.Name = "tpSubScripts";
-            this.tpSubScripts.Size = new System.Drawing.Size(592, 393);
+            this.tpSubScripts.Size = new System.Drawing.Size(602, 403);
             this.tpSubScripts.TabIndex = 2;
             this.tpSubScripts.Text = "sub scripts";
             this.tpSubScripts.UseVisualStyleBackColor = true;
@@ -137,7 +140,8 @@
             // lvSubScripts
             // 
             this.lvSubScripts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.chSubName});
+            this.chSubName,
+            this.chSubFileName});
             this.lvSubScripts.Location = new System.Drawing.Point(6, 6);
             this.lvSubScripts.Name = "lvSubScripts";
             this.lvSubScripts.Size = new System.Drawing.Size(121, 381);
@@ -154,7 +158,7 @@
             this.tpMeshes.Controls.Add(this.lvMeshes);
             this.tpMeshes.Location = new System.Drawing.Point(4, 22);
             this.tpMeshes.Name = "tpMeshes";
-            this.tpMeshes.Size = new System.Drawing.Size(592, 393);
+            this.tpMeshes.Size = new System.Drawing.Size(602, 403);
             this.tpMeshes.TabIndex = 3;
             this.tpMeshes.Text = "meshes";
             this.tpMeshes.UseVisualStyleBackColor = true;
@@ -173,6 +177,14 @@
             // chMeshName
             // 
             this.chMeshName.Text = "Name";
+            // 
+            // chTexFileName
+            // 
+            this.chTexFileName.Text = "File";
+            // 
+            // chSubFileName
+            // 
+            this.chSubFileName.Text = "File";
             // 
             // Form1
             // 
@@ -212,6 +224,8 @@
         private System.Windows.Forms.ListView lvMeshes;
         private System.Windows.Forms.ColumnHeader chMeshName;
         private System.Windows.Forms.TabPage tpGeneral;
+        private System.Windows.Forms.ColumnHeader chTexFileName;
+        private System.Windows.Forms.ColumnHeader chSubFileName;
     }
 }
 
