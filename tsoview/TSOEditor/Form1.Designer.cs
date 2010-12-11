@@ -29,19 +29,19 @@
         private void InitializeComponent()
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tpGeneral = new System.Windows.Forms.TabPage();
             this.tpNodes = new System.Windows.Forms.TabPage();
-            this.tpTextures = new System.Windows.Forms.TabPage();
-            this.tpSubScripts = new System.Windows.Forms.TabPage();
-            this.tpMeshes = new System.Windows.Forms.TabPage();
             this.lvNodes = new System.Windows.Forms.ListView();
             this.chNodeName = new System.Windows.Forms.ColumnHeader();
+            this.tpTextures = new System.Windows.Forms.TabPage();
             this.lvTextures = new System.Windows.Forms.ListView();
             this.chTexName = new System.Windows.Forms.ColumnHeader();
+            this.tpSubScripts = new System.Windows.Forms.TabPage();
             this.lvSubScripts = new System.Windows.Forms.ListView();
-            this.lvMeshes = new System.Windows.Forms.ListView();
             this.chSubName = new System.Windows.Forms.ColumnHeader();
+            this.tpMeshes = new System.Windows.Forms.TabPage();
+            this.lvMeshes = new System.Windows.Forms.ListView();
             this.chMeshName = new System.Windows.Forms.ColumnHeader();
-            this.tpGeneral = new System.Windows.Forms.TabPage();
             this.tabControl1.SuspendLayout();
             this.tpNodes.SuspendLayout();
             this.tpTextures.SuspendLayout();
@@ -59,8 +59,18 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(600, 419);
+            this.tabControl1.Size = new System.Drawing.Size(610, 429);
             this.tabControl1.TabIndex = 0;
+            // 
+            // tpGeneral
+            // 
+            this.tpGeneral.Location = new System.Drawing.Point(4, 22);
+            this.tpGeneral.Name = "tpGeneral";
+            this.tpGeneral.Padding = new System.Windows.Forms.Padding(3);
+            this.tpGeneral.Size = new System.Drawing.Size(602, 403);
+            this.tpGeneral.TabIndex = 4;
+            this.tpGeneral.Text = "General";
+            this.tpGeneral.UseVisualStyleBackColor = true;
             // 
             // tpNodes
             // 
@@ -72,37 +82,6 @@
             this.tpNodes.TabIndex = 0;
             this.tpNodes.Text = "nodes";
             this.tpNodes.UseVisualStyleBackColor = true;
-            // 
-            // tpTextures
-            // 
-            this.tpTextures.Controls.Add(this.lvTextures);
-            this.tpTextures.Location = new System.Drawing.Point(4, 22);
-            this.tpTextures.Name = "tpTextures";
-            this.tpTextures.Padding = new System.Windows.Forms.Padding(3);
-            this.tpTextures.Size = new System.Drawing.Size(592, 393);
-            this.tpTextures.TabIndex = 1;
-            this.tpTextures.Text = "textures";
-            this.tpTextures.UseVisualStyleBackColor = true;
-            // 
-            // tpSubScripts
-            // 
-            this.tpSubScripts.Controls.Add(this.lvSubScripts);
-            this.tpSubScripts.Location = new System.Drawing.Point(4, 22);
-            this.tpSubScripts.Name = "tpSubScripts";
-            this.tpSubScripts.Size = new System.Drawing.Size(592, 393);
-            this.tpSubScripts.TabIndex = 2;
-            this.tpSubScripts.Text = "sub scripts";
-            this.tpSubScripts.UseVisualStyleBackColor = true;
-            // 
-            // tpMeshes
-            // 
-            this.tpMeshes.Controls.Add(this.lvMeshes);
-            this.tpMeshes.Location = new System.Drawing.Point(4, 22);
-            this.tpMeshes.Name = "tpMeshes";
-            this.tpMeshes.Size = new System.Drawing.Size(592, 393);
-            this.tpMeshes.TabIndex = 3;
-            this.tpMeshes.Text = "meshes";
-            this.tpMeshes.UseVisualStyleBackColor = true;
             // 
             // lvNodes
             // 
@@ -119,6 +98,17 @@
             // 
             this.chNodeName.Text = "Name";
             // 
+            // tpTextures
+            // 
+            this.tpTextures.Controls.Add(this.lvTextures);
+            this.tpTextures.Location = new System.Drawing.Point(4, 22);
+            this.tpTextures.Name = "tpTextures";
+            this.tpTextures.Padding = new System.Windows.Forms.Padding(3);
+            this.tpTextures.Size = new System.Drawing.Size(592, 393);
+            this.tpTextures.TabIndex = 1;
+            this.tpTextures.Text = "textures";
+            this.tpTextures.UseVisualStyleBackColor = true;
+            // 
             // lvTextures
             // 
             this.lvTextures.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -134,6 +124,16 @@
             // 
             this.chTexName.Text = "Name";
             // 
+            // tpSubScripts
+            // 
+            this.tpSubScripts.Controls.Add(this.lvSubScripts);
+            this.tpSubScripts.Location = new System.Drawing.Point(4, 22);
+            this.tpSubScripts.Name = "tpSubScripts";
+            this.tpSubScripts.Size = new System.Drawing.Size(592, 393);
+            this.tpSubScripts.TabIndex = 2;
+            this.tpSubScripts.Text = "sub scripts";
+            this.tpSubScripts.UseVisualStyleBackColor = true;
+            // 
             // lvSubScripts
             // 
             this.lvSubScripts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -144,6 +144,20 @@
             this.lvSubScripts.TabIndex = 0;
             this.lvSubScripts.UseCompatibleStateImageBehavior = false;
             this.lvSubScripts.View = System.Windows.Forms.View.Details;
+            // 
+            // chSubName
+            // 
+            this.chSubName.Text = "Name";
+            // 
+            // tpMeshes
+            // 
+            this.tpMeshes.Controls.Add(this.lvMeshes);
+            this.tpMeshes.Location = new System.Drawing.Point(4, 22);
+            this.tpMeshes.Name = "tpMeshes";
+            this.tpMeshes.Size = new System.Drawing.Size(592, 393);
+            this.tpMeshes.TabIndex = 3;
+            this.tpMeshes.Text = "meshes";
+            this.tpMeshes.UseVisualStyleBackColor = true;
             // 
             // lvMeshes
             // 
@@ -156,34 +170,23 @@
             this.lvMeshes.UseCompatibleStateImageBehavior = false;
             this.lvMeshes.View = System.Windows.Forms.View.Details;
             // 
-            // chSubName
-            // 
-            this.chSubName.Text = "Name";
-            // 
             // chMeshName
             // 
             this.chMeshName.Text = "Name";
             // 
-            // tpGeneral
-            // 
-            this.tpGeneral.Location = new System.Drawing.Point(4, 22);
-            this.tpGeneral.Name = "tpGeneral";
-            this.tpGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tpGeneral.Size = new System.Drawing.Size(592, 393);
-            this.tpGeneral.TabIndex = 4;
-            this.tpGeneral.Text = "General";
-            this.tpGeneral.UseVisualStyleBackColor = true;
-            // 
             // Form1
             // 
+            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(624, 443);
+            this.ClientSize = new System.Drawing.Size(634, 453);
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.Text = "tso editor";
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
+            this.DragOver += new System.Windows.Forms.DragEventHandler(this.Form1_DragOver);
             this.tabControl1.ResumeLayout(false);
             this.tpNodes.ResumeLayout(false);
             this.tpTextures.ResumeLayout(false);
