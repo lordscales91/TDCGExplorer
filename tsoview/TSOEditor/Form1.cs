@@ -29,6 +29,10 @@ namespace TSOEditor
                 {
                     Debug.WriteLine("loading " + src);
                     tso.Load(src);
+                    AssignNodes(tso);
+                    AssignTextures(tso);
+                    AssignSubScripts(tso);
+                    AssignMeshes(tso);
                 }
             }
         }
@@ -42,6 +46,64 @@ namespace TSOEditor
                 else
                     e.Effect = DragDropEffects.Move;
             }
+        }
+
+        void AssignNodes(TSOFile tso)
+        {
+            lvNodes.BeginUpdate();
+            lvNodes.Items.Clear();
+            foreach (TSONode node in tso.nodes)
+            {
+                ListViewItem li = new ListViewItem(node.Name);
+                li.Tag = node;
+                lvNodes.Items.Add(li);
+            }
+            lvNodes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            lvNodes.EndUpdate();
+        }
+
+        void AssignTextures(TSOFile tso)
+        {
+            lvTextures.BeginUpdate();
+            lvTextures.Items.Clear();
+            foreach (TSOTex texture in tso.textures)
+            {
+                ListViewItem li = new ListViewItem(texture.Name);
+                li.SubItems.Add(texture.FileName);
+                li.Tag = texture;
+                lvTextures.Items.Add(li);
+            }
+            lvTextures.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            lvTextures.EndUpdate();
+        }
+
+        void AssignSubScripts(TSOFile tso)
+        {
+            lvSubScripts.BeginUpdate();
+            lvSubScripts.Items.Clear();
+            foreach (TSOSubScript sub_script in tso.sub_scripts)
+            {
+                ListViewItem li = new ListViewItem(sub_script.Name);
+                li.SubItems.Add(sub_script.FileName);
+                li.Tag = sub_script;
+                lvSubScripts.Items.Add(li);
+            }
+            lvSubScripts.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+            lvSubScripts.EndUpdate();
+        }
+
+        void AssignMeshes(TSOFile tso)
+        {
+            lvMeshes.BeginUpdate();
+            lvMeshes.Items.Clear();
+            foreach (TSOMesh mesh in tso.meshes)
+            {
+                ListViewItem li = new ListViewItem(mesh.Name);
+                li.Tag = mesh;
+                lvMeshes.Items.Add(li);
+            }
+            lvMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            lvMeshes.EndUpdate();
         }
     }
 }
