@@ -1,6 +1,6 @@
 ﻿namespace TSOEditor
 {
-    partial class Form1
+    partial class Form2
     {
         /// <summary>
         /// 必要なデザイナ変数です。
@@ -201,7 +201,7 @@
             // 
             this.chMeshName.Text = "Name";
             // 
-            // Form1
+            // Form2
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -210,10 +210,10 @@
             this.Controls.Add(this.tabControl1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
-            this.Name = "Form1";
+            this.Name = "Form2";
             this.Text = "tso editor";
-            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
-            this.DragOver += new System.Windows.Forms.DragEventHandler(this.Form1_DragOver);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form2_DragDrop);
+            this.DragOver += new System.Windows.Forms.DragEventHandler(this.Form2_DragOver);
             this.tabControl1.ResumeLayout(false);
             this.tpNodes.ResumeLayout(false);
             this.tpTextures.ResumeLayout(false);

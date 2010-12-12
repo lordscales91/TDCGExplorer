@@ -12,11 +12,11 @@ using TDCG;
 
 namespace TSOEditor
 {
-    public partial class Form1 : Form
+    public partial class Form2 : Form
     {
         TSOFile tso;
 
-        public Form1(string[] args)
+        public Form2(string[] args)
         {
             InitializeComponent();
             tso = new TSOFile();
@@ -24,7 +24,7 @@ namespace TSOEditor
                 LoadTSOFile(arg);
         }
 
-        private void Form1_DragDrop(object sender, DragEventArgs e)
+        private void Form2_DragDrop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -33,7 +33,7 @@ namespace TSOEditor
             }
         }
 
-        private void Form1_DragOver(object sender, DragEventArgs e)
+        private void Form2_DragOver(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
