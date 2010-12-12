@@ -181,7 +181,7 @@ namespace TSOEditor
             MemoryStream ms = new MemoryStream();
             using (BinaryWriter bw = new BinaryWriter(ms))
             {
-                tex.Save(bw);
+                tex.SaveBMP(bw);
                 bw.Flush();
                 ms.Seek(0, SeekOrigin.Begin);
                 image = Bitmap.FromStream(ms);
@@ -218,7 +218,7 @@ namespace TSOEditor
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 using (BinaryReader br = new BinaryReader(openFileDialog1.OpenFile()))
-                    tex.Load(br);
+                    tex.LoadBMP(br);
             }
         }
 
@@ -233,7 +233,7 @@ namespace TSOEditor
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 using (BinaryWriter bw = new BinaryWriter(saveFileDialog1.OpenFile()))
-                    tex.Save(bw);
+                    tex.SaveBMP(bw);
             }
         }
     }

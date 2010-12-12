@@ -736,15 +736,12 @@ namespace TDCG
         public void Load(string source_file)
         {
             string ext = Path.GetExtension(source_file).ToLower();
-            if (ext == ".tga")
+            using (BinaryReader br = new BinaryReader(File.OpenRead(source_file)))
             {
-                using (BinaryReader br = new BinaryReader(File.OpenRead(source_file)))
+                if (ext == ".tga")
                     LoadTGA(br);
-            }
-            else
-            if (ext == ".bmp")
-            {
-                using (BinaryReader br = new BinaryReader(File.OpenRead(source_file)))
+                else
+                if (ext == ".bmp")
                     LoadBMP(br);
             }
             this.file = "\"" + Path.GetFileName(source_file) + "\"";
@@ -827,9 +824,39 @@ namespace TDCG
         }
 
         /// <summary>
-        /// テクスチャを書き出します。
+        /// TGA形式のテクスチャを書き出します。
         /// </summary>
-        public void Save(BinaryWriter bw)
+        public void SaveTGA(BinaryWriter bw)
+        {
+            TARGA_HEADER header;
+
+            header.id = 0;
+            header.colormap = 0;
+            header.imagetype = 2;
+            header.colormaporigin = 0;
+            header.colormaplength = 0;
+            header.colormapdepth = 0;
+            header.x = 0;
+            header.y = 0;
+            header.width = (ushort)width;
+            header.height = (ushort)height;
+            header.depth = (byte)(depth * 8);
+            header.type = 0;
+
+            IntPtr header_ptr = Marshal.AllocHGlobal(sizeof_tga_header);
+            Marshal.StructureToPtr(header, header_ptr, false);
+            byte[] header_buf = new byte[sizeof_tga_header];
+            Marshal.Copy(header_ptr, header_buf, 0, sizeof_tga_header);
+            Marshal.FreeHGlobal(header_ptr);
+            bw.Write(header_buf);
+
+            bw.Write(data, 0, data.Length);
+        }
+
+        /// <summary>
+        /// BMP形式のテクスチャを書き出します。
+        /// </summary>
+        public void SaveBMP(BinaryWriter bw)
         {
             BITMAPFILEHEADER bfh;
             BITMAPINFOHEADER bih;
@@ -898,14 +925,20 @@ namespace TDCG
         /// <param name="device">device</param>
         public void Open(Device device)
         {
-            if (file.Trim('"') == "")
+            string dest_file = file.Trim('"');
+            if (dest_file == "")
                 return;
             if (data.Length == 0)
                 return;
+            string ext = Path.GetExtension(dest_file).ToLower();
             MemoryStream ms = new MemoryStream();
             using (BinaryWriter bw = new BinaryWriter(ms))
             {
-                Save(bw);
+                if (ext == ".tga")
+                    SaveTGA(bw);
+                else
+                if (ext == ".bmp")
+                    SaveBMP(bw);
                 bw.Flush();
                 ms.Seek(0, SeekOrigin.Begin);
                 tex = TextureLoader.FromStream(device, ms);
