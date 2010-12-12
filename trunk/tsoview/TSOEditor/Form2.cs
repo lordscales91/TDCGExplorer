@@ -255,5 +255,19 @@ namespace TSOEditor
                 }
             }
         }
+
+        private void btnTSOSave_Click(object sender, EventArgs e)
+        {
+            TSOFile tso = GetSelectedTSOFile();
+            if (tso == null)
+                return;
+
+            saveFileDialog1.FileName = "out.tso";
+            saveFileDialog1.Filter = "TSO files (*.tso)|*.tso|All files (*.*)|*.*";
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                tso.Save(saveFileDialog1.OpenFile());
+            }
+        }
     }
 }
