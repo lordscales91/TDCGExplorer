@@ -16,6 +16,11 @@ namespace TSOEditor
     {
         TSOFile tso;
 
+        public Form2()
+        {
+            InitializeComponent();
+        }
+
         public Form2(string[] args)
         {
             InitializeComponent();
@@ -42,6 +47,21 @@ namespace TSOEditor
                 else
                     e.Effect = DragDropEffects.Move;
             }
+        }
+
+        public void AssignTSOFiles(Figure fig)
+        {
+            lvTSOFiles.BeginUpdate();
+            lvTSOFiles.Items.Clear();
+            for (int i = 0; i < fig.TSOList.Count; i++)
+            {
+                TSOFile tso = fig.TSOList[i];
+                ListViewItem li = new ListViewItem("TSO #" + i.ToString());
+                li.Tag = tso;
+                lvTSOFiles.Items.Add(li);
+            }
+            lvTSOFiles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            lvTSOFiles.EndUpdate();
         }
 
         void LoadTSOFile(string src)
@@ -110,6 +130,19 @@ namespace TSOEditor
             }
             lvMeshes.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             lvMeshes.EndUpdate();
+        }
+
+        private void lvTSOFiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (lvTSOFiles.SelectedItems.Count == 0)
+                return;
+
+            ListViewItem li = lvTSOFiles.SelectedItems[0];
+            TSOFile tso = li.Tag as TSOFile;
+            AssignNodes(tso);
+            AssignTextures(tso);
+            AssignSubScripts(tso);
+            AssignMeshes(tso);
         }
 
         private void lvNodes_SelectedIndexChanged(object sender, EventArgs e)

@@ -45,7 +45,10 @@
             this.tpMeshes = new System.Windows.Forms.TabPage();
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.chMeshName = new System.Windows.Forms.ColumnHeader();
+            this.lvTSOFiles = new System.Windows.Forms.ListView();
+            this.chTSOName = new System.Windows.Forms.ColumnHeader();
             this.tabControl1.SuspendLayout();
+            this.tpGeneral.SuspendLayout();
             this.tpNodes.SuspendLayout();
             this.tpTextures.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pbTexThumbnail)).BeginInit();
@@ -68,6 +71,7 @@
             // 
             // tpGeneral
             // 
+            this.tpGeneral.Controls.Add(this.lvTSOFiles);
             this.tpGeneral.Location = new System.Drawing.Point(4, 22);
             this.tpGeneral.Name = "tpGeneral";
             this.tpGeneral.Padding = new System.Windows.Forms.Padding(3);
@@ -201,6 +205,22 @@
             // 
             this.chMeshName.Text = "Name";
             // 
+            // lvTSOFiles
+            // 
+            this.lvTSOFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.chTSOName});
+            this.lvTSOFiles.Location = new System.Drawing.Point(6, 6);
+            this.lvTSOFiles.Name = "lvTSOFiles";
+            this.lvTSOFiles.Size = new System.Drawing.Size(174, 391);
+            this.lvTSOFiles.TabIndex = 1;
+            this.lvTSOFiles.UseCompatibleStateImageBehavior = false;
+            this.lvTSOFiles.View = System.Windows.Forms.View.Details;
+            this.lvTSOFiles.SelectedIndexChanged += new System.EventHandler(this.lvTSOFiles_SelectedIndexChanged);
+            // 
+            // chTSOName
+            // 
+            this.chTSOName.Text = "Name";
+            // 
             // Form2
             // 
             this.AllowDrop = true;
@@ -215,6 +235,7 @@
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form2_DragDrop);
             this.DragOver += new System.Windows.Forms.DragEventHandler(this.Form2_DragOver);
             this.tabControl1.ResumeLayout(false);
+            this.tpGeneral.ResumeLayout(false);
             this.tpNodes.ResumeLayout(false);
             this.tpTextures.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pbTexThumbnail)).EndInit();
@@ -243,6 +264,8 @@
         private System.Windows.Forms.ColumnHeader chTexFileName;
         private System.Windows.Forms.ColumnHeader chSubFileName;
         private System.Windows.Forms.PictureBox pbTexThumbnail;
+        private System.Windows.Forms.ListView lvTSOFiles;
+        private System.Windows.Forms.ColumnHeader chTSOName;
     }
 }
 
