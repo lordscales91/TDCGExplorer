@@ -36,6 +36,8 @@
             this.lvNodes = new System.Windows.Forms.ListView();
             this.chNodeName = new System.Windows.Forms.ColumnHeader();
             this.tpTextures = new System.Windows.Forms.TabPage();
+            this.btnTexSave = new System.Windows.Forms.Button();
+            this.btnTexLoad = new System.Windows.Forms.Button();
             this.pbTexThumbnail = new System.Windows.Forms.PictureBox();
             this.lvTextures = new System.Windows.Forms.ListView();
             this.chTexName = new System.Windows.Forms.ColumnHeader();
@@ -49,8 +51,7 @@
             this.chMeshName = new System.Windows.Forms.ColumnHeader();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.btnTexLoad = new System.Windows.Forms.Button();
-            this.btnTexSave = new System.Windows.Forms.Button();
+            this.btnTSOSave = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tpGeneral.SuspendLayout();
             this.tpNodes.SuspendLayout();
@@ -75,6 +76,7 @@
             // 
             // tpGeneral
             // 
+            this.tpGeneral.Controls.Add(this.btnTSOSave);
             this.tpGeneral.Controls.Add(this.lvTSOFiles);
             this.tpGeneral.Location = new System.Drawing.Point(4, 22);
             this.tpGeneral.Name = "tpGeneral";
@@ -140,6 +142,26 @@
             this.tpTextures.TabIndex = 1;
             this.tpTextures.Text = "textures";
             this.tpTextures.UseVisualStyleBackColor = true;
+            // 
+            // btnTexSave
+            // 
+            this.btnTexSave.Location = new System.Drawing.Point(269, 269);
+            this.btnTexSave.Name = "btnTexSave";
+            this.btnTexSave.Size = new System.Drawing.Size(75, 23);
+            this.btnTexSave.TabIndex = 3;
+            this.btnTexSave.Text = "&Save";
+            this.btnTexSave.UseVisualStyleBackColor = true;
+            this.btnTexSave.Click += new System.EventHandler(this.btnTexSave_Click);
+            // 
+            // btnTexLoad
+            // 
+            this.btnTexLoad.Location = new System.Drawing.Point(187, 269);
+            this.btnTexLoad.Name = "btnTexLoad";
+            this.btnTexLoad.Size = new System.Drawing.Size(75, 23);
+            this.btnTexLoad.TabIndex = 2;
+            this.btnTexLoad.Text = "&Load";
+            this.btnTexLoad.UseVisualStyleBackColor = true;
+            this.btnTexLoad.Click += new System.EventHandler(this.btnTexLoad_Click);
             // 
             // pbTexThumbnail
             // 
@@ -231,25 +253,15 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // btnTexLoad
+            // btnTSOSave
             // 
-            this.btnTexLoad.Location = new System.Drawing.Point(187, 269);
-            this.btnTexLoad.Name = "btnTexLoad";
-            this.btnTexLoad.Size = new System.Drawing.Size(75, 23);
-            this.btnTexLoad.TabIndex = 2;
-            this.btnTexLoad.Text = "&Load";
-            this.btnTexLoad.UseVisualStyleBackColor = true;
-            this.btnTexLoad.Click += new System.EventHandler(this.btnTexLoad_Click);
-            // 
-            // btnTexSave
-            // 
-            this.btnTexSave.Location = new System.Drawing.Point(269, 269);
-            this.btnTexSave.Name = "btnTexSave";
-            this.btnTexSave.Size = new System.Drawing.Size(75, 23);
-            this.btnTexSave.TabIndex = 3;
-            this.btnTexSave.Text = "&Save";
-            this.btnTexSave.UseVisualStyleBackColor = true;
-            this.btnTexSave.Click += new System.EventHandler(this.btnTexSave_Click);
+            this.btnTSOSave.Location = new System.Drawing.Point(186, 6);
+            this.btnTSOSave.Name = "btnTSOSave";
+            this.btnTSOSave.Size = new System.Drawing.Size(75, 23);
+            this.btnTSOSave.TabIndex = 2;
+            this.btnTSOSave.Text = "&Save";
+            this.btnTSOSave.UseVisualStyleBackColor = true;
+            this.btnTSOSave.Click += new System.EventHandler(this.btnTSOSave_Click);
             // 
             // Form2
             // 
@@ -297,6 +309,7 @@
         private System.Windows.Forms.Button btnTexLoad;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
+        private System.Windows.Forms.Button btnTSOSave;
     }
 }
 
