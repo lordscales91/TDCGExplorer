@@ -165,5 +165,39 @@ namespace TSOEditor
 
             Debug.WriteLine("selected " + mesh.Name);
         }
+
+        private void btnTexLoad_Click(object sender, EventArgs e)
+        {
+            if (lvTextures.SelectedItems.Count == 0)
+                return;
+
+            ListViewItem li = lvTextures.SelectedItems[0];
+            TSOTex tex = li.Tag as TSOTex;
+
+            openFileDialog1.FileName = tex.FileName.Trim('"');
+            openFileDialog1.Filter = "Texture files (*.bmp)|*.bmp|All files (*.*)|*.*";
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                using (BinaryReader br = new BinaryReader(openFileDialog1.OpenFile()))
+                    tex.Load(br);
+            }
+        }
+
+        private void btnTexSave_Click(object sender, EventArgs e)
+        {
+            if (lvTextures.SelectedItems.Count == 0)
+                return;
+
+            ListViewItem li = lvTextures.SelectedItems[0];
+            TSOTex tex = li.Tag as TSOTex;
+
+            saveFileDialog1.FileName = tex.FileName.Trim('"');
+            saveFileDialog1.Filter = "Texture files (*.bmp)|*.bmp|All files (*.*)|*.*";
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                using (BinaryWriter bw = new BinaryWriter(saveFileDialog1.OpenFile()))
+                    tex.Save(bw);
+            }
+        }
     }
 }
