@@ -17,6 +17,23 @@ namespace TDCG
     using LONG  = Int32;
 
     [StructLayout(LayoutKind.Sequential, Pack=1)]
+    public struct TARGA_HEADER
+    {
+	    public BYTE     id;
+	    public BYTE		colormap;
+	    public BYTE		imagetype;
+	    public WORD		colormaporigin;
+	    public WORD		colormaplength;
+	    public BYTE		colormapdepth;
+	    public WORD		x;
+	    public WORD		y;
+	    public WORD		width;
+	    public WORD		height;
+	    public BYTE		depth;
+	    public BYTE		type;
+    };
+
+    [StructLayout(LayoutKind.Sequential, Pack=1)]
     struct BITMAPFILEHEADER
     {
         public WORD    bfType;
@@ -718,18 +735,52 @@ namespace TDCG
         /// </summary>
         public void Load(string source_file)
         {
-            using (BinaryReader br = new BinaryReader(File.OpenRead(source_file)))
-                Load(br);
+            string ext = Path.GetExtension(source_file).ToLower();
+            if (ext == ".tga")
+            {
+                using (BinaryReader br = new BinaryReader(File.OpenRead(source_file)))
+                    LoadTGA(br);
+            }
+            else
+            if (ext == ".bmp")
+            {
+                using (BinaryReader br = new BinaryReader(File.OpenRead(source_file)))
+                    LoadBMP(br);
+            }
             this.file = "\"" + Path.GetFileName(source_file) + "\"";
         }
 
+        static readonly int sizeof_tga_header = Marshal.SizeOf(typeof(TARGA_HEADER));
         static readonly int sizeof_bfh = Marshal.SizeOf(typeof(BITMAPFILEHEADER));
         static readonly int sizeof_bih = Marshal.SizeOf(typeof(BITMAPINFOHEADER));
 
         /// <summary>
-        /// テクスチャを読み込みます。
+        /// TGA形式のテクスチャを読み込みます。
         /// </summary>
-        public void Load(BinaryReader br)
+        public void LoadTGA(BinaryReader br)
+        {
+            TARGA_HEADER header;
+
+            IntPtr header_ptr = Marshal.AllocHGlobal(sizeof_tga_header);
+            Marshal.Copy(br.ReadBytes(sizeof_tga_header), 0, header_ptr, sizeof_tga_header);
+            header = (TARGA_HEADER)Marshal.PtrToStructure(header_ptr, typeof(TARGA_HEADER));
+            Marshal.FreeHGlobal(header_ptr);
+
+            if (header.imagetype != 0x02)
+                throw new Exception("Invalid imagetype: " + file);
+            if (header.depth != 24 && header.depth != 32)
+                throw new Exception("Invalid depth: " + file);
+
+            this.width = header.width;
+            this.height = header.height;
+            this.depth = header.depth / 8;
+            this.data = br.ReadBytes( this.width * this.height * this.depth );
+        }
+
+        /// <summary>
+        /// BMP形式のテクスチャを読み込みます。
+        /// </summary>
+        public void LoadBMP(BinaryReader br)
         {
             BITMAPFILEHEADER bfh;
             BITMAPINFOHEADER bih;
