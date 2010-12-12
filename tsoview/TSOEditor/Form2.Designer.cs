@@ -30,6 +30,8 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpGeneral = new System.Windows.Forms.TabPage();
+            this.lvTSOFiles = new System.Windows.Forms.ListView();
+            this.chTSOName = new System.Windows.Forms.ColumnHeader();
             this.tpNodes = new System.Windows.Forms.TabPage();
             this.lvNodes = new System.Windows.Forms.ListView();
             this.chNodeName = new System.Windows.Forms.ColumnHeader();
@@ -45,8 +47,6 @@
             this.tpMeshes = new System.Windows.Forms.TabPage();
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.chMeshName = new System.Windows.Forms.ColumnHeader();
-            this.lvTSOFiles = new System.Windows.Forms.ListView();
-            this.chTSOName = new System.Windows.Forms.ColumnHeader();
             this.tabControl1.SuspendLayout();
             this.tpGeneral.SuspendLayout();
             this.tpNodes.SuspendLayout();
@@ -79,6 +79,22 @@
             this.tpGeneral.TabIndex = 4;
             this.tpGeneral.Text = "General";
             this.tpGeneral.UseVisualStyleBackColor = true;
+            // 
+            // lvTSOFiles
+            // 
+            this.lvTSOFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.chTSOName});
+            this.lvTSOFiles.Location = new System.Drawing.Point(6, 6);
+            this.lvTSOFiles.Name = "lvTSOFiles";
+            this.lvTSOFiles.Size = new System.Drawing.Size(174, 391);
+            this.lvTSOFiles.TabIndex = 1;
+            this.lvTSOFiles.UseCompatibleStateImageBehavior = false;
+            this.lvTSOFiles.View = System.Windows.Forms.View.Details;
+            this.lvTSOFiles.SelectedIndexChanged += new System.EventHandler(this.lvTSOFiles_SelectedIndexChanged);
+            // 
+            // chTSOName
+            // 
+            this.chTSOName.Text = "Name";
             // 
             // tpNodes
             // 
@@ -205,25 +221,8 @@
             // 
             this.chMeshName.Text = "Name";
             // 
-            // lvTSOFiles
-            // 
-            this.lvTSOFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.chTSOName});
-            this.lvTSOFiles.Location = new System.Drawing.Point(6, 6);
-            this.lvTSOFiles.Name = "lvTSOFiles";
-            this.lvTSOFiles.Size = new System.Drawing.Size(174, 391);
-            this.lvTSOFiles.TabIndex = 1;
-            this.lvTSOFiles.UseCompatibleStateImageBehavior = false;
-            this.lvTSOFiles.View = System.Windows.Forms.View.Details;
-            this.lvTSOFiles.SelectedIndexChanged += new System.EventHandler(this.lvTSOFiles_SelectedIndexChanged);
-            // 
-            // chTSOName
-            // 
-            this.chTSOName.Text = "Name";
-            // 
             // Form2
             // 
-            this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(634, 453);
@@ -232,8 +231,6 @@
             this.MaximizeBox = false;
             this.Name = "Form2";
             this.Text = "tso editor";
-            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form2_DragDrop);
-            this.DragOver += new System.Windows.Forms.DragEventHandler(this.Form2_DragOver);
             this.tabControl1.ResumeLayout(false);
             this.tpGeneral.ResumeLayout(false);
             this.tpNodes.ResumeLayout(false);
