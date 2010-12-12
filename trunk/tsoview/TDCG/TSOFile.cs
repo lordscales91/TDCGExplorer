@@ -17,7 +17,7 @@ namespace TDCG
     using LONG  = Int32;
 
     [StructLayout(LayoutKind.Sequential, Pack=1)]
-    public struct TARGA_HEADER
+    struct TARGA_HEADER
     {
 	    public BYTE     id;
 	    public BYTE		colormap;

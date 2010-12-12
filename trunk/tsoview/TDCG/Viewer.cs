@@ -454,6 +454,10 @@ public class Viewer : IDisposable
         }
     }
 
+    /// <summary>
+    /// 指定テクスチャを開き直します。
+    /// </summary>
+    /// <param name="tex">テクスチャ</param>
     public void OpenTexture(TSOTex tex)
     {
         tex.Open(device);
