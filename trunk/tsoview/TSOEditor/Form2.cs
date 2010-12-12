@@ -92,13 +92,62 @@ namespace TSOEditor
             lvMeshes.EndUpdate();
         }
 
-        private void lvTSOFiles_SelectedIndexChanged(object sender, EventArgs e)
+        public TSOFile GetSelectedTSOFile()
         {
             if (lvTSOFiles.SelectedItems.Count == 0)
-                return;
+                return null;
 
             ListViewItem li = lvTSOFiles.SelectedItems[0];
             TSOFile tso = li.Tag as TSOFile;
+            return tso;
+        }
+
+        public TSONode GetSelectedNode()
+        {
+            if (lvNodes.SelectedItems.Count == 0)
+                return null;
+
+            ListViewItem li = lvNodes.SelectedItems[0];
+            TSONode node = li.Tag as TSONode;
+            return node;
+        }
+
+        public TSOTex GetSelectedTexture()
+        {
+            if (lvTextures.SelectedItems.Count == 0)
+                return null;
+
+            ListViewItem li = lvTextures.SelectedItems[0];
+            TSOTex tex = li.Tag as TSOTex;
+            return tex;
+        }
+
+        public TSOSubScript GetSelectedSubScript()
+        {
+            if (lvSubScripts.SelectedItems.Count == 0)
+                return null;
+
+            ListViewItem li = lvSubScripts.SelectedItems[0];
+            TSOSubScript sub_script = li.Tag as TSOSubScript;
+            return sub_script;
+        }
+
+        public TSOMesh GetSelectedMesh()
+        {
+            if (lvMeshes.SelectedItems.Count == 0)
+                return null;
+
+            ListViewItem li = lvMeshes.SelectedItems[0];
+            TSOMesh mesh = li.Tag as TSOMesh;
+            return mesh;
+        }
+
+        private void lvTSOFiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TSOFile tso = GetSelectedTSOFile();
+            if (tso == null)
+                return;
+
             AssignNodes(tso);
             AssignTextures(tso);
             AssignSubScripts(tso);
@@ -107,22 +156,18 @@ namespace TSOEditor
 
         private void lvNodes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lvNodes.SelectedItems.Count == 0)
+            TSONode node = GetSelectedNode();
+            if (node == null)
                 return;
-
-            ListViewItem li = lvNodes.SelectedItems[0];
-            TSONode node = li.Tag as TSONode;
 
             Debug.WriteLine("selected " + node.Name);
         }
 
         private void lvTextures_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lvTextures.SelectedItems.Count == 0)
+            TSOTex tex = GetSelectedTexture();
+            if (tex == null)
                 return;
-
-            ListViewItem li = lvTextures.SelectedItems[0];
-            TSOTex tex = li.Tag as TSOTex;
 
             Debug.WriteLine("selected " + tex.Name);
             pbTexThumbnail.Image = GetImage(tex);
@@ -146,33 +191,27 @@ namespace TSOEditor
 
         private void lvSubScripts_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lvSubScripts.SelectedItems.Count == 0)
+            TSOSubScript sub_script = GetSelectedSubScript();
+            if (sub_script == null)
                 return;
-
-            ListViewItem li = lvSubScripts.SelectedItems[0];
-            TSOSubScript sub_script = li.Tag as TSOSubScript;
 
             Debug.WriteLine("selected " + sub_script.Name);
         }
 
         private void lvMeshes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lvMeshes.SelectedItems.Count == 0)
+            TSOMesh mesh = GetSelectedMesh();
+            if (mesh == null)
                 return;
-
-            ListViewItem li = lvMeshes.SelectedItems[0];
-            TSOMesh mesh = li.Tag as TSOMesh;
 
             Debug.WriteLine("selected " + mesh.Name);
         }
 
         private void btnTexLoad_Click(object sender, EventArgs e)
         {
-            if (lvTextures.SelectedItems.Count == 0)
+            TSOTex tex = GetSelectedTexture();
+            if (tex == null)
                 return;
-
-            ListViewItem li = lvTextures.SelectedItems[0];
-            TSOTex tex = li.Tag as TSOTex;
 
             openFileDialog1.FileName = tex.FileName.Trim('"');
             openFileDialog1.Filter = "Texture files (*.bmp)|*.bmp|All files (*.*)|*.*";
@@ -185,11 +224,9 @@ namespace TSOEditor
 
         private void btnTexSave_Click(object sender, EventArgs e)
         {
-            if (lvTextures.SelectedItems.Count == 0)
+            TSOTex tex = GetSelectedTexture();
+            if (tex == null)
                 return;
-
-            ListViewItem li = lvTextures.SelectedItems[0];
-            TSOTex tex = li.Tag as TSOTex;
 
             saveFileDialog1.FileName = tex.FileName.Trim('"');
             saveFileDialog1.Filter = "Texture files (*.bmp)|*.bmp|All files (*.*)|*.*";
