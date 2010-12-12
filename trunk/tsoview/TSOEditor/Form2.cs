@@ -14,39 +14,9 @@ namespace TSOEditor
 {
     public partial class Form2 : Form
     {
-        TSOFile tso;
-
         public Form2()
         {
             InitializeComponent();
-        }
-
-        public Form2(string[] args)
-        {
-            InitializeComponent();
-            tso = new TSOFile();
-            foreach (string arg in args)
-                LoadTSOFile(arg);
-        }
-
-        private void Form2_DragDrop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                foreach (string src in (string[])e.Data.GetData(DataFormats.FileDrop))
-                    LoadTSOFile(src);
-            }
-        }
-
-        private void Form2_DragOver(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                if ((e.KeyState & 8) == 8)
-                    e.Effect = DragDropEffects.Copy;
-                else
-                    e.Effect = DragDropEffects.Move;
-            }
         }
 
         public void AssignTSOFiles(Figure fig)
@@ -62,16 +32,6 @@ namespace TSOEditor
             }
             lvTSOFiles.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
             lvTSOFiles.EndUpdate();
-        }
-
-        void LoadTSOFile(string src)
-        {
-            Debug.WriteLine("loading " + src);
-            tso.Load(src);
-            AssignNodes(tso);
-            AssignTextures(tso);
-            AssignSubScripts(tso);
-            AssignMeshes(tso);
         }
 
         void AssignNodes(TSOFile tso)
