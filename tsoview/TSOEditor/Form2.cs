@@ -214,11 +214,18 @@ namespace TSOEditor
                 return;
 
             openFileDialog1.FileName = tex.FileName.Trim('"');
-            openFileDialog1.Filter = "Texture files (*.bmp)|*.bmp|All files (*.*)|*.*";
+            openFileDialog1.Filter = "Texture files (*.tga;*.bmp)|*.tga;*.bmp|All files (*.*)|*.*";
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
+                string ext = Path.GetExtension(openFileDialog1.FileName).ToLower();
                 using (BinaryReader br = new BinaryReader(openFileDialog1.OpenFile()))
-                    tex.LoadBMP(br);
+                {
+                    if (ext == ".tga")
+                        tex.LoadTGA(br);
+                    else
+                    if (ext == ".bmp")
+                        tex.LoadBMP(br);
+                }
             }
         }
 
@@ -229,11 +236,18 @@ namespace TSOEditor
                 return;
 
             saveFileDialog1.FileName = tex.FileName.Trim('"');
-            saveFileDialog1.Filter = "Texture files (*.bmp)|*.bmp|All files (*.*)|*.*";
+            saveFileDialog1.Filter = "Texture files (*.tga;*.bmp)|*.tga;*.bmp|All files (*.*)|*.*";
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
+                string ext = Path.GetExtension(saveFileDialog1.FileName).ToLower();
                 using (BinaryWriter bw = new BinaryWriter(saveFileDialog1.OpenFile()))
-                    tex.SaveBMP(bw);
+                {
+                    if (ext == ".tga")
+                        tex.SaveTGA(bw);
+                    else
+                    if (ext == ".bmp")
+                        tex.SaveBMP(bw);
+                }
             }
         }
     }
