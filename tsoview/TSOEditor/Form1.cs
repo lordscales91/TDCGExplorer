@@ -12,13 +12,13 @@ namespace TSOEditor
 {
     public partial class Form1 : Form
     {
-        public Viewer viewer = null;
+        public EditorViewer viewer = null;
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
 
         public Form1(string[] args)
         {
             InitializeComponent();
-            this.viewer = new Viewer();
+            this.viewer = new EditorViewer();
             if (viewer.InitializeApplication(this))
             {
                 foreach (string arg in args)
@@ -34,6 +34,11 @@ namespace TSOEditor
             base.OnPaint(e);
             viewer.FrameMove();
             viewer.Render();
+        }
+
+        protected override void OnPaintBackground(PaintEventArgs e)
+        {
+            //base.OnPaintBackground(e);
         }
     }
 }
