@@ -15,10 +15,14 @@ namespace TSOEditor
         public EditorViewer viewer = null;
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
 
-        public Form1(string[] args)
+        public Form1()
         {
             InitializeComponent();
             this.viewer = new EditorViewer();
+        }
+
+        public void InitializeApplication(string[] args)
+        {
             if (viewer.InitializeApplication(this))
             {
                 foreach (string arg in args)
