@@ -454,6 +454,11 @@ public class Viewer : IDisposable
         }
     }
 
+    public void OpenTexture(TSOTex tex)
+    {
+        tex.Open(device);
+    }
+
     private SimpleCamera camera = new SimpleCamera();
 
     /// <summary>

@@ -27,6 +27,11 @@ namespace TSOEditor
                         form2.AssignTSOFiles(fig);
                     }
                 };
+                form2.OpenTextureEvent += delegate(object sender, EventArgs e)
+                {
+                    form1.viewer.OpenTexture(form2.GetSelectedTexture());
+                    form1.Invalidate();
+                };
                 form1.InitializeApplication(args);
                 form1.Show();
                 form2.Show();
