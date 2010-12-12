@@ -207,6 +207,8 @@ namespace TSOEditor
             Debug.WriteLine("selected " + mesh.Name);
         }
 
+        public event EventHandler OpenTextureEvent;
+
         private void btnTexLoad_Click(object sender, EventArgs e)
         {
             TSOTex tex = GetSelectedTexture();
@@ -226,6 +228,9 @@ namespace TSOEditor
                     if (ext == ".bmp")
                         tex.LoadBMP(br);
                 }
+                pbTexThumbnail.Image = GetImage(tex);
+                if (OpenTextureEvent != null)
+                    OpenTextureEvent(this, EventArgs.Empty);
             }
         }
 
