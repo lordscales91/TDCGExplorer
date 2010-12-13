@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -13,6 +13,11 @@ namespace TMOProportion
     {
         public event EventHandler ValueChanged;
 
+        static string GetClassNameWithoutNameSpace(string name)
+        {
+            return name.Substring(name.LastIndexOf('.') + 1);
+        }
+
         string class_name = null;
         public string ClassName
         {
@@ -23,7 +28,7 @@ namespace TMOProportion
             set
             {
                 class_name = value;
-                lbClassName.Text = class_name;
+                lbClassName.Text = GetClassNameWithoutNameSpace(class_name);
             }
         }
 
