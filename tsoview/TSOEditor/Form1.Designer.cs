@@ -41,7 +41,7 @@ namespace TSOEditor
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 263);
             this.Name = "Form1";
-            this.Text = "TSOView";
+            this.Text = "tso view";
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragOver += new System.Windows.Forms.DragEventHandler(this.Form1_DragOver);
             this.ResumeLayout(false);
