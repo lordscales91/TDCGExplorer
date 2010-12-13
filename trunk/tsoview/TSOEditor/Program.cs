@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
+using System.IO;
 using System.Windows.Forms;
 using TDCG;
 
@@ -13,6 +13,14 @@ namespace TSOEditor
         static void Main(string[] args)
         {
             Debug.Listeners.Add(new TextWriterTraceListener(Console.Out));
+
+            TSOConfig tso_config;
+
+            string tso_config_file = Path.Combine(Application.StartupPath, @"config.xml");
+            if (File.Exists(tso_config_file))
+                tso_config = TSOConfig.Load(tso_config_file);
+            else
+                tso_config = new TSOConfig();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -32,7 +40,7 @@ namespace TSOEditor
                     form1.viewer.OpenTexture(form2.GetSelectedTexture());
                     form1.Invalidate();
                 };
-                form1.InitializeApplication(args);
+                form1.InitializeApplication(tso_config, args);
                 form1.Show();
                 form2.Show();
                 Application.Run(form1);

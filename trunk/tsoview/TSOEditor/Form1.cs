@@ -21,8 +21,9 @@ namespace TSOEditor
             this.viewer = new EditorViewer();
         }
 
-        public void InitializeApplication(string[] args)
+        public void InitializeApplication(TSOConfig tso_config, string[] args)
         {
+            this.ClientSize = tso_config.ClientSize;
             if (viewer.InitializeApplication(this))
             {
                 foreach (string arg in args)
