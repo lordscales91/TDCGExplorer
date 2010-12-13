@@ -30,6 +30,7 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpGeneral = new System.Windows.Forms.TabPage();
+            this.btnTSOSave = new System.Windows.Forms.Button();
             this.lvTSOFiles = new System.Windows.Forms.ListView();
             this.chTSOName = new System.Windows.Forms.ColumnHeader();
             this.tpNodes = new System.Windows.Forms.TabPage();
@@ -51,7 +52,6 @@
             this.chMeshName = new System.Windows.Forms.ColumnHeader();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.btnTSOSave = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tpGeneral.SuspendLayout();
             this.tpNodes.SuspendLayout();
@@ -85,6 +85,16 @@
             this.tpGeneral.TabIndex = 4;
             this.tpGeneral.Text = "General";
             this.tpGeneral.UseVisualStyleBackColor = true;
+            // 
+            // btnTSOSave
+            // 
+            this.btnTSOSave.Location = new System.Drawing.Point(186, 6);
+            this.btnTSOSave.Name = "btnTSOSave";
+            this.btnTSOSave.Size = new System.Drawing.Size(75, 23);
+            this.btnTSOSave.TabIndex = 2;
+            this.btnTSOSave.Text = "&Save";
+            this.btnTSOSave.UseVisualStyleBackColor = true;
+            this.btnTSOSave.Click += new System.EventHandler(this.btnTSOSave_Click);
             // 
             // lvTSOFiles
             // 
@@ -253,16 +263,6 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
-            // btnTSOSave
-            // 
-            this.btnTSOSave.Location = new System.Drawing.Point(186, 6);
-            this.btnTSOSave.Name = "btnTSOSave";
-            this.btnTSOSave.Size = new System.Drawing.Size(75, 23);
-            this.btnTSOSave.TabIndex = 2;
-            this.btnTSOSave.Text = "&Save";
-            this.btnTSOSave.UseVisualStyleBackColor = true;
-            this.btnTSOSave.Click += new System.EventHandler(this.btnTSOSave_Click);
-            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -272,7 +272,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form2";
-            this.Text = "tso editor";
+            this.Text = "TSOEditor";
             this.tabControl1.ResumeLayout(false);
             this.tpGeneral.ResumeLayout(false);
             this.tpNodes.ResumeLayout(false);
