@@ -37,7 +37,7 @@
             // lbClassName
             // 
             this.lbClassName.AutoSize = true;
-            this.lbClassName.Location = new System.Drawing.Point(10, 10);
+            this.lbClassName.Location = new System.Drawing.Point(3, 3);
             this.lbClassName.Name = "lbClassName";
             this.lbClassName.Size = new System.Drawing.Size(35, 12);
             this.lbClassName.TabIndex = 0;
@@ -45,18 +45,17 @@
             // 
             // tbRatio
             // 
-            this.tbRatio.Location = new System.Drawing.Point(10, 30);
+            this.tbRatio.Location = new System.Drawing.Point(3, 18);
             this.tbRatio.Maximum = 20;
             this.tbRatio.Name = "tbRatio";
-            this.tbRatio.Size = new System.Drawing.Size(262, 45);
+            this.tbRatio.Size = new System.Drawing.Size(176, 45);
             this.tbRatio.TabIndex = 1;
-            this.tbRatio.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.tbRatio.ValueChanged += new System.EventHandler(this.tbRatio_ValueChanged);
             // 
             // lbRatio
             // 
             this.lbRatio.AutoSize = true;
-            this.lbRatio.Location = new System.Drawing.Point(237, 10);
+            this.lbRatio.Location = new System.Drawing.Point(156, 3);
             this.lbRatio.Name = "lbRatio";
             this.lbRatio.Size = new System.Drawing.Size(25, 12);
             this.lbRatio.TabIndex = 2;
@@ -70,7 +69,7 @@
             this.Controls.Add(this.tbRatio);
             this.Controls.Add(this.lbClassName);
             this.Name = "ProportionSlider";
-            this.Size = new System.Drawing.Size(280, 85);
+            this.Size = new System.Drawing.Size(182, 64);
             ((System.ComponentModel.ISupportInitialize)(this.tbRatio)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
