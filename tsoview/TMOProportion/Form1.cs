@@ -46,9 +46,9 @@ namespace TMOProportion
                     ProportionSlider slider = new ProportionSlider();
                     slider.ClassName = proportion.ToString();
 
-                    slider.Location = new System.Drawing.Point(10, 10 + nproportion * 95);
+                    slider.Location = new System.Drawing.Point(0, nproportion * 64);
                     slider.ValueChanged += new System.EventHandler(this.slider_ValueChanged);
-                    this.Controls.Add(slider);
+                    panel1.Controls.Add(slider);
                     
                     slidermap[proportion] = slider;
                     nproportion++;

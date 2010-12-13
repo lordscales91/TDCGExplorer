@@ -35,6 +35,7 @@
             this.components = new System.ComponentModel.Container();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.btnSave = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // timer1
@@ -53,6 +54,15 @@
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
             // 
+            // panel1
+            // 
+            this.panel1.AutoScroll = true;
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(200, 263);
+            this.panel1.TabIndex = 0;
+            // 
             // Form1
             // 
             this.AllowDrop = true;
@@ -60,6 +70,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 263);
             this.Controls.Add(this.btnSave);
+            this.Controls.Add(this.panel1);
             this.Name = "Form1";
             this.Text = "tmo proportion";
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
@@ -72,6 +83,7 @@
 
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button btnSave;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 
