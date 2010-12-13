@@ -272,7 +272,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.Name = "Form2";
-            this.Text = "TSOEditor";
+            this.Text = "tso editor";
             this.tabControl1.ResumeLayout(false);
             this.tpGeneral.ResumeLayout(false);
             this.tpNodes.ResumeLayout(false);
