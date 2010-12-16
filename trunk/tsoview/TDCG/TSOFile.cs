@@ -1520,12 +1520,12 @@ namespace TDCG
 
                 switch (p.type)
                 {
-                case ShaderParameter.Type.String:
+                case ShaderParameterType.String:
                     effect.SetValue(p.name, p.GetString());
                     break;
-                case ShaderParameter.Type.Float:
-                case ShaderParameter.Type.Float3:
-                case ShaderParameter.Type.Float4:
+                case ShaderParameterType.Float:
+                case ShaderParameterType.Float3:
+                case ShaderParameterType.Float4:
                     effect.SetValue(p.name, new float[]{ p.F1, p.F2, p.F3, p.F4 });
                     break;
                     /*

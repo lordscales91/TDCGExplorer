@@ -9,43 +9,43 @@ using Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
+    /// シェーダ設定の型名
+    /// </summary>
+    public enum ShaderParameterType
+    {
+        /// <summary>
+        /// わからない
+        /// </summary>
+        Unknown,
+        /// <summary>
+        /// string
+        /// </summary>
+        String,
+        /// <summary>
+        /// float
+        /// </summary>
+        Float,
+        /// <summary>
+        /// float3
+        /// </summary>
+        Float3,
+        /// <summary>
+        /// float4
+        /// </summary>
+        Float4,
+        /// <summary>
+        /// テクスチャ
+        /// </summary>
+        Texture
+    };
+
+    /// <summary>
     /// シェーダ設定パラメータ
     /// </summary>
     [TypeConverter(typeof(ExpandableObjectConverter))]
     public class ShaderParameter
     {
-        /// <summary>
-        /// シェーダ設定の型名
-        /// </summary>
-        public enum Type
-        {
-            /// <summary>
-            /// わからない
-            /// </summary>
-            Unknown,
-            /// <summary>
-            /// string
-            /// </summary>
-            String,
-            /// <summary>
-            /// float
-            /// </summary>
-            Float,
-            /// <summary>
-            /// float3
-            /// </summary>
-            Float3,
-            /// <summary>
-            /// float4
-            /// </summary>
-            Float4,
-            /// <summary>
-            /// テクスチャ
-            /// </summary>
-            Texture
-        };
-
-        internal Type type;
+        internal ShaderParameterType type;
         internal string name;
 
         private string str;
@@ -119,27 +119,27 @@ namespace TDCG
             switch (type_string)
             {
             case "string":
-                type = Type.String;
+                type = ShaderParameterType.String;
                 SetString(value);
                 break;
             case "float":
-                type = Type.Float;
+                type = ShaderParameterType.Float;
                 SetFloat(value);
                 break;
             case "float3":
-                type = Type.Float3;
+                type = ShaderParameterType.Float3;
                 SetFloat3(value);
                 break;
             case "float4":
-                type = Type.Float4;
+                type = ShaderParameterType.Float4;
                 SetFloat4(value);
                 break;
             case "texture":
-                type = Type.Texture;
+                type = ShaderParameterType.Texture;
                 SetTexture(value);
                 break;
             default:
-                type = Type.Unknown;
+                type = ShaderParameterType.Unknown;
                 break;
             }
         }
@@ -155,15 +155,15 @@ namespace TDCG
         {
             switch (type)
             {
-                case Type.String:
+                case ShaderParameterType.String:
                     return "string";
-                case Type.Float:
+                case ShaderParameterType.Float:
                     return "float";
-                case Type.Float3:
+                case ShaderParameterType.Float3:
                     return "float3";
-                case Type.Float4:
+                case ShaderParameterType.Float4:
                     return "float4";
-                case Type.Texture:
+                case ShaderParameterType.Texture:
                     return "texture";
             }
             return null;
@@ -176,15 +176,15 @@ namespace TDCG
         {
             switch (type)
             {
-                case Type.String:
+                case ShaderParameterType.String:
                     return "\"" + str + "\"";
-                case Type.Float:
+                case ShaderParameterType.Float:
                     return string.Format("[{0}]", f1);
-                case Type.Float3:
+                case ShaderParameterType.Float3:
                     return string.Format("[{0}, {1}, {2}]", f1, f2, f3);
-                case Type.Float4:
+                case ShaderParameterType.Float4:
                     return string.Format("[{0}, {1}, {2}, {3}]", f1, f2, f3, f4);
-                case Type.Texture:
+                case ShaderParameterType.Texture:
                     return str;
             }
             return str;
