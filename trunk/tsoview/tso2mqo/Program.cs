@@ -113,7 +113,7 @@ namespace tso2mqo
                 Console.WriteLine("tex name:{0} file:{1}", name, file);
                 string dest_file = Path.Combine(dest_path, file);
                 using (BinaryWriter bw = new BinaryWriter(File.Create(dest_file)))
-                    tex.Save(bw);
+                    tex.SaveBMP(bw);
             }
 
             foreach (TSOSubScript sub in tso.sub_scripts)
