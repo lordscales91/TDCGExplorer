@@ -9,16 +9,16 @@ using Microsoft.DirectX.Direct3D;
 namespace pmd2tmo
 {
     /// <summary>
-    /// BinaryReader�̊g�����\�b�h���`���܂��B
+    /// BinaryReaderの拡張メソッドを定義します。
     /// </summary>
     public static class BinaryReaderMethods
     {
         static Encoding enc = Encoding.GetEncoding("Shift_JIS");
 
         /// <summary>
-        /// null�I�[�������ǂ݂Ƃ�܂��B
+        /// null終端文字列を読みとります。
         /// </summary>
-        /// <returns>������</returns>
+        /// <returns>文字列</returns>
         public static string ReadCString(this BinaryReader reader, int length)
         {
             byte[] buf = reader.ReadBytes(length);
@@ -27,7 +27,7 @@ namespace pmd2tmo
         }
 
         /// <summary>
-        /// Vector3��ǂ݂Ƃ�܂��B
+        /// Vector3を読みとります。
         /// </summary>
         /// <param name="reader">BinaryReader</param>
         /// <param name="v">Vector3</param>
@@ -114,7 +114,7 @@ namespace pmd2tmo
         public Vector3 position;
 
         /// <summary>
-        /// PmdNode�𐶐����܂��B
+        /// PmdNodeを生成します。
         /// </summary>
         public PmdNode(ushort id)
         {
@@ -133,12 +133,12 @@ namespace pmd2tmo
     }
 
     /// <summary>
-    /// pmd�t�@�C���������܂��B
+    /// pmdファイルを扱います。
     /// </summary>
     public class PmdFile
     {
         /// <summary>
-        /// bone�z��
+        /// bone配列
         /// </summary>
         public PmdNode[] nodes;
 
