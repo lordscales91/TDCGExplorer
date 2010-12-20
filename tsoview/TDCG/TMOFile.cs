@@ -113,10 +113,7 @@ namespace TDCG
 
             byte[] magic = reader.ReadBytes(4);
 
-            if(magic[0] != (byte)'T'
-            || magic[1] != (byte)'M'
-            || magic[2] != (byte)'O'
-            || magic[3] != (byte)'1')
+            if (magic[0] != (byte)'T' || magic[1] != (byte)'M' || magic[2] != (byte)'O' || magic[3] != (byte)'1')
                 throw new Exception("File is not TMO");
 
             this.header = reader.ReadBytes(8);

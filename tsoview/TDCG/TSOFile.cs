@@ -1163,11 +1163,6 @@ namespace TDCG
     public class TSOFile : IDisposable
     {
         /// <summary>
-        /// バイナリ値として読み取ります。
-        /// </summary>
-        protected BinaryReader reader;
-
-        /// <summary>
         /// bone配列
         /// </summary>
         public TSONode[] nodes;
@@ -1266,14 +1261,11 @@ namespace TDCG
         /// <param name="source_stream">ストリーム</param>
         public void Load(Stream source_stream)
         {
-            reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
+            BinaryReader reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
 
             byte[] magic = reader.ReadBytes(4);
 
-            if(magic[0] != (byte)'T'
-            || magic[1] != (byte)'S'
-            || magic[2] != (byte)'O'
-            || magic[3] != (byte)'1')
+            if (magic[0] != (byte)'T' || magic[1] != (byte)'S' || magic[2] != (byte)'O' || magic[3] != (byte)'1')
                 throw new Exception("File is not TSO");
 
             int node_count = reader.ReadInt32();
