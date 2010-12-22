@@ -328,10 +328,6 @@ namespace pmdview
         /// bone配列
         /// </summary>
         public PmdNode[] nodes;
-        /// <summary>
-        /// テクスチャ配列
-        /// </summary>
-        public Texture[] textures;
 
         public void Load(string source_file)
         {
@@ -437,7 +433,7 @@ namespace pmdview
                     continue;
                 if (texmap.ContainsKey(material.texture_file))
                     continue;
-                string path = Path.Combine(@"D:\TechArts3D\MikuMikuDance_v704\UserFile\Model", material.texture_file);
+                string path = Path.Combine(@"C:\TechArts3D\MikuMikuDance_v704\UserFile\Model", material.texture_file);
                 Console.WriteLine("loading {0}", path);
                 Texture tex = TextureLoader.FromFile(device, path);
                 texmap[material.texture_file] = tex;
@@ -448,7 +444,7 @@ namespace pmdview
         {
             foreach (PmdSubMesh sub in sub_meshes)
                 sub.Dispose();
-            foreach (Texture tex in textures)
+            foreach (Texture tex in texmap.Values)
                 tex.Dispose();
         }
     }
