@@ -108,7 +108,7 @@ namespace pmdview
         {
             get { return new Vector4(ambient.X, ambient.Y, ambient.Z, 1); }
         }
-        public Vector4 Emmisive
+        public Vector4 Emissive
         {
             get { return new Vector4(0, 0, 0, 0); }
         }

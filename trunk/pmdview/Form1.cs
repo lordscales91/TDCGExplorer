@@ -224,7 +224,7 @@ namespace pmdview
                 {
                     effect.SetValue("MaterialDiffuse", material.Diffuse);
                     effect.SetValue("MaterialAmbient", material.Ambient);
-                    effect.SetValue("MaterialEmmisive", material.Emmisive);
+                    effect.SetValue("MaterialEmmisive", material.Emissive);
                     effect.SetValue("MaterialSpecular", material.Specular);
                     effect.SetValue("SpecularPower", material.SpecularPower);
                     effect.SetValue("MaterialToon", material.MaterialToon);
