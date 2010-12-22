@@ -87,18 +87,18 @@ namespace pmdview
         public Vector3 ambient;
         public byte toon_id;
         public byte edge;
+        public int face_vertex_start;
         public int face_vertex_count;
         public string texture_file;
 
-        static int whole_face_start = 0;
-        static int whole_face_vertex_start = 0;
-
-        public int FaceStart;
+        public int FaceStart
+        {
+            get { return face_vertex_start / 3; }
+        }
         public int FaceCount
         {
             get { return face_vertex_count / 3; }
         }
-        public int FaceVertexStart;
 
         public Vector4 Diffuse
         {
@@ -138,9 +138,6 @@ namespace pmdview
 
         public void Read(BinaryReader reader)
         {
-            FaceStart = whole_face_start;
-            FaceVertexStart = whole_face_vertex_start;
-
             reader.ReadVector3(ref this.diffuse);
             this.alpha = reader.ReadSingle();
             this.specularity = reader.ReadSingle();
@@ -155,9 +152,12 @@ namespace pmdview
             //Console.WriteLine("specular:{0}", specular);
             //Console.WriteLine("ambient:{0}", ambient);
             //Console.WriteLine("texture file:{0}", texture_file);
+        }
 
-            whole_face_start += FaceCount;
-            whole_face_vertex_start += face_vertex_count;
+        public int InjectFaceVertexStart(int value)
+        {
+            face_vertex_start = value;
+            return face_vertex_count + value;
         }
     }
 
@@ -217,6 +217,13 @@ namespace pmdview
                 vb.Dispose();
             vb = new VertexBuffer(typeof(CustomVertex.PositionNormalTextured), vertices.Length, device, Usage.Dynamic | Usage.WriteOnly, CustomVertex.PositionNormalTextured.Format, Pool.Default);
 
+            vb.Created += new EventHandler(vb_Created);
+            vb_Created(vb, null);
+        }
+
+        void vb_Created(object sender, EventArgs e)
+        {
+            VertexBuffer vb = (VertexBuffer)sender;
             //
             // rewrite vertex buffer
             //
@@ -250,7 +257,13 @@ namespace pmdview
             if (ib != null)
                 ib.Dispose();
             ib = new IndexBuffer(typeof(ushort), indices.Length, device, Usage.WriteOnly, Pool.Default);
+            ib.Created += new EventHandler(ib_Created);
+            ib_Created(ib, null);
+        }
 
+        void ib_Created(object sender, EventArgs e)
+        {
+            IndexBuffer ib = (IndexBuffer)sender;
             //
             // rewrite index buffer
             //
@@ -334,6 +347,12 @@ namespace pmdview
                 materials[i].Read(reader);
             }
 
+            int face_vertex_start = 0;
+            for (int i = 0; i < material_count; i++)
+            {
+                face_vertex_start = materials[i].InjectFaceVertexStart(face_vertex_start);
+            }
+
             ushort node_count = reader.ReadUInt16();
             Debug.WriteLine("node_count:" + node_count);
             nodes = new PmdNode[node_count];
@@ -354,6 +373,11 @@ namespace pmdview
         /// <param name="effect">effect</param>
         public void Open(Device device, Effect effect)
         {
+            if (texmap != null)
+            {
+                foreach (Texture tex in texmap.Values)
+                    tex.Dispose();
+            }
             texmap = new Dictionary<string, Texture>();
 
             foreach (PmdMaterial material in materials)

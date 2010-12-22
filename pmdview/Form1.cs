@@ -25,6 +25,7 @@ namespace pmdview
         {
             InitializeComponent();
             this.ClientSize = new Size(800, 600);
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.Opaque, true);
         }
 
         static Vector4 CreateColorVector4(float power)
@@ -127,7 +128,7 @@ namespace pmdview
 
             foreach (string arg in args)
                 LoadAnyFile(arg);
-            timer1.Enabled = true;
+
             return true;
         }
 
@@ -135,6 +136,7 @@ namespace pmdview
         {
             base.OnPaint(e);
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.CornflowerBlue, 1.0f, 0);
+            Render();
             device.Present();
         }
 
@@ -188,15 +190,13 @@ namespace pmdview
         {
             Console.WriteLine("loading {0}", source_file);
             if (pmd != null)
-            {
                 pmd.Dispose();
-                pmd = null;
-            }
             pmd = new PmdFile();
             pmd.Load(source_file);
             pmd.WriteVertexBuffer(device);
             pmd.WriteIndexBuffer(device);
             pmd.Open(device, effect);
+            Invalidate();
         }
 
         /// <summary>
@@ -238,7 +238,7 @@ namespace pmdview
                     {
                         //Console.WriteLine("render {0} {1}", pmd, ipass);
                         effect.BeginPass(ipass);
-                        device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, pmd.vertices.Length, material.FaceVertexStart, material.FaceCount);
+                        device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, pmd.vertices.Length, material.face_vertex_start, material.FaceCount);
                         effect.EndPass();
                     }
                     effect.End();
@@ -268,11 +268,5 @@ namespace pmdview
             device.Present();
             Thread.Sleep(30);
         }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            Render();
-        }
-
     }
 }
