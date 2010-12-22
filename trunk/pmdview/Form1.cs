@@ -19,6 +19,8 @@ namespace pmdview
         Matrix Transform_View = Matrix.Identity;
         Matrix Transform_Projection = Matrix.Identity;
 
+        VertexDeclaration decl = null;
+
         public Form1()
         {
             InitializeComponent();
@@ -121,6 +123,8 @@ namespace pmdview
 
             device.RenderState.IndexedVertexBlendEnable = true;
 
+            decl = new VertexDeclaration(device, PmdSubMesh.ve);
+
             foreach (string arg in args)
                 LoadAnyFile(arg);
             timer1.Enabled = true;
@@ -214,7 +218,9 @@ namespace pmdview
             {
                 foreach (PmdSubMesh sub in pmd.sub_meshes)
                 {
-                    if (sub.dm == null)
+                    if (sub.vb == null)
+                        continue;
+                    if (sub.ib == null)
                         continue;
 
                     effect.SetValue("MaterialDiffuse", sub.material.Diffuse);
@@ -233,7 +239,10 @@ namespace pmdview
                     {
                         //Console.WriteLine("render {0} {1}", pmd, ipass);
                         effect.BeginPass(ipass);
-                        sub.dm.DrawSubset(0);
+                        device.SetStreamSource(0, sub.vb, 0);
+                        device.Indices = sub.ib;
+                        device.VertexDeclaration = decl;
+                        device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, sub.vertices.Length, 0, sub.indices.Length / 3);
                         effect.EndPass();
                     }
                     effect.End();

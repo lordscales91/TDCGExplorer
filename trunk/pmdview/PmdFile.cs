@@ -198,8 +198,10 @@ namespace pmdview
         public PmdMaterial material;
 
         public Mesh dm = null;
+        public VertexBuffer vb = null;
+        public IndexBuffer ib = null;
 
-        static VertexElement[] ve = new VertexElement[]
+        public static VertexElement[] ve = new VertexElement[]
         {
             new VertexElement(0,  0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
             new VertexElement(0, 12, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0),
@@ -232,18 +234,18 @@ namespace pmdview
             ushort[] optimized_indices = NvTriStrip.Optimize(indices.ToArray());
             */
 
-            if (dm != null)
-            {
-                dm.Dispose();
-                dm = null;
-            }
-            dm = new Mesh(numFaces, numVertices, MeshFlags.Managed | MeshFlags.WriteOnly, ve, device);
+            if (ib != null)
+                ib.Dispose();
+            if (vb != null)
+                vb.Dispose();
+            vb = new VertexBuffer(typeof(CustomVertex.PositionNormalTextured), vertices.Length, device, Usage.Dynamic | Usage.WriteOnly, CustomVertex.PositionNormalTextured.Format, Pool.Default);
+            ib = new IndexBuffer(typeof(ushort), indices.Length, device, Usage.WriteOnly, Pool.Default);
 
             //
             // rewrite vertex buffer
             //
             {
-                GraphicsStream gs = dm.LockVertexBuffer(LockFlags.None);
+                GraphicsStream gs = vb.Lock(0, 0, LockFlags.None);
                 {
                     for (int i = 0; i < vertices.Length; i++)
                     {
@@ -258,7 +260,7 @@ namespace pmdview
                         gs.Write(v.v);
                     }
                 }
-                dm.UnlockVertexBuffer();
+                vb.Unlock();
             }
             Console.WriteLine("rewrite vertex buffer");
 
@@ -266,14 +268,14 @@ namespace pmdview
             // rewrite index buffer
             //
             {
-                GraphicsStream gs = dm.LockIndexBuffer(LockFlags.None);
+                GraphicsStream gs = ib.Lock(0, 0, LockFlags.None);
                 {
                     foreach (ushort idx in indices)
                     {
                         gs.Write(idx);
                     }
                 }
-                dm.UnlockIndexBuffer();
+                ib.Unlock();
             }
             Console.WriteLine("rewrite index buffer");
 
@@ -309,8 +311,10 @@ namespace pmdview
 
         public void Dispose()
         {
-            if (dm != null)
-                dm.Dispose();
+            if (ib != null)
+                ib.Dispose();
+            if (vb != null)
+                vb.Dispose();
         }
     }
 
