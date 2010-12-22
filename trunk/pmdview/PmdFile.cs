@@ -63,20 +63,6 @@ namespace pmdview
         }
     }
 
-    public class PmdFace
-    {
-        public ushort a;
-        public ushort b;
-        public ushort c;
-
-        public void Read(BinaryReader reader)
-        {
-            this.a = reader.ReadUInt16();
-            this.b = reader.ReadUInt16();
-            this.c = reader.ReadUInt16();
-        }
-    }
-
     public class PmdMaterial
     {
         public int id;
@@ -197,7 +183,6 @@ namespace pmdview
     {
         public Vertex[] vertices;
         public ushort[] indices;
-        //public PmdFace[] faces;
         public PmdMaterial[] materials;
         /// <summary>
         /// bone配列
