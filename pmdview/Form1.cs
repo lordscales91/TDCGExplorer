@@ -195,8 +195,7 @@ namespace pmdview
             pmd = new PmdFile();
             pmd.Load(source_file);
             pmd.WriteVertexBuffer(device);
-            foreach (PmdSubMesh sub in pmd.sub_meshes)
-                sub.WriteIndexBuffer(device);
+            pmd.WriteIndexBuffer(device);
             pmd.Open(device, effect);
         }
 
@@ -218,31 +217,28 @@ namespace pmdview
             if (pmd != null && pmd.vb != null)
             {
                 device.SetStreamSource(0, pmd.vb, 0);
+                device.Indices = pmd.ib;
                 device.VertexDeclaration = decl;
 
-                foreach (PmdSubMesh sub in pmd.sub_meshes)
+                foreach (PmdMaterial material in pmd.materials)
                 {
-                    if (sub.ib == null)
-                        continue;
-
-                    effect.SetValue("MaterialDiffuse", sub.material.Diffuse);
-                    effect.SetValue("MaterialAmbient", sub.material.Ambient);
-                    effect.SetValue("MaterialEmmisive", sub.material.Emmisive);
-                    effect.SetValue("MaterialSpecular", sub.material.Specular);
-                    effect.SetValue("SpecularPower", sub.material.SpecularPower);
-                    effect.SetValue("MaterialToon", sub.material.MaterialToon);
-                    effect.SetValue("use_texture", sub.material.use_texture);
-                    if (sub.material.use_texture)
-                        effect.SetValue("ObjectTexture", pmd.texmap[sub.material.texture_file]);
-                    effect.SetValue("use_toon", sub.material.use_toon);
+                    effect.SetValue("MaterialDiffuse", material.Diffuse);
+                    effect.SetValue("MaterialAmbient", material.Ambient);
+                    effect.SetValue("MaterialEmmisive", material.Emmisive);
+                    effect.SetValue("MaterialSpecular", material.Specular);
+                    effect.SetValue("SpecularPower", material.SpecularPower);
+                    effect.SetValue("MaterialToon", material.MaterialToon);
+                    effect.SetValue("use_texture", material.use_texture);
+                    if (material.use_texture)
+                        effect.SetValue("ObjectTexture", pmd.texmap[material.texture_file]);
+                    effect.SetValue("use_toon", material.use_toon);
                     
                     int npass = effect.Begin(0);
                     for (int ipass = 0; ipass < npass; ipass++)
                     {
                         //Console.WriteLine("render {0} {1}", pmd, ipass);
                         effect.BeginPass(ipass);
-                        device.Indices = sub.ib;
-                        device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, pmd.vertices.Length, 0, sub.indices.Length / 3);
+                        device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, pmd.vertices.Length, material.FaceVertexStart, material.FaceCount);
                         effect.EndPass();
                     }
                     effect.End();
