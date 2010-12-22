@@ -193,21 +193,10 @@ namespace pmdview
     public class PmdSubMesh : IDisposable
     {
         public int id;
-        public Vertex[] vertices;
         public ushort[] indices;
         public PmdMaterial material;
 
-        public Mesh dm = null;
-        public VertexBuffer vb = null;
         public IndexBuffer ib = null;
-
-        public static VertexElement[] ve = new VertexElement[]
-        {
-            new VertexElement(0,  0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
-            new VertexElement(0, 12, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0),
-            new VertexElement(0, 24, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
-                VertexElement.VertexDeclarationEnd
-        };
 
         public PmdSubMesh(int id)
         {
@@ -218,28 +207,61 @@ namespace pmdview
         /// 頂点をDirect3Dバッファに書き込みます。
         /// </summary>
         /// <param name="device">device</param>
-        public void WriteBuffer(Device device)
+        public void WriteIndexBuffer(Device device)
         {
-            int numVertices = vertices.Length;
-            int numFaces = indices.Length / 3; //faces.Length;
-
-            /*
-            List<ushort> indices = new List<ushort>(numFaces * 3);
-            foreach (PmdFace face in faces)
-            {
-                indices.Add(face.a);
-                indices.Add(face.b);
-                indices.Add(face.c);
-            }
-            ushort[] optimized_indices = NvTriStrip.Optimize(indices.ToArray());
-            */
-
             if (ib != null)
                 ib.Dispose();
+            ib = new IndexBuffer(typeof(ushort), indices.Length, device, Usage.WriteOnly, Pool.Default);
+
+            //
+            // rewrite index buffer
+            //
+            {
+                GraphicsStream gs = ib.Lock(0, 0, LockFlags.None);
+                {
+                    foreach (ushort idx in indices)
+                    {
+                        gs.Write(idx);
+                    }
+                }
+                ib.Unlock();
+            }
+            Console.WriteLine("rewrite index buffer");
+        }
+
+        public void Dispose()
+        {
+            if (ib != null)
+                ib.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// pmdファイルを扱います。
+    /// </summary>
+    public class PmdFile : IDisposable
+    {
+        public Vertex[] vertices;
+        public PmdSubMesh[] sub_meshes;
+        public ushort[] indices;
+        //public PmdFace[] faces;
+        public PmdMaterial[] materials;
+        /// <summary>
+        /// bone配列
+        /// </summary>
+        public PmdNode[] nodes;
+
+        public VertexBuffer vb = null;
+
+        /// <summary>
+        /// 頂点をDirect3Dバッファに書き込みます。
+        /// </summary>
+        /// <param name="device">device</param>
+        public void WriteVertexBuffer(Device device)
+        {
             if (vb != null)
                 vb.Dispose();
             vb = new VertexBuffer(typeof(CustomVertex.PositionNormalTextured), vertices.Length, device, Usage.Dynamic | Usage.WriteOnly, CustomVertex.PositionNormalTextured.Format, Pool.Default);
-            ib = new IndexBuffer(typeof(ushort), indices.Length, device, Usage.WriteOnly, Pool.Default);
 
             //
             // rewrite vertex buffer
@@ -263,75 +285,15 @@ namespace pmdview
                 vb.Unlock();
             }
             Console.WriteLine("rewrite vertex buffer");
-
-            //
-            // rewrite index buffer
-            //
-            {
-                GraphicsStream gs = ib.Lock(0, 0, LockFlags.None);
-                {
-                    foreach (ushort idx in indices)
-                    {
-                        gs.Write(idx);
-                    }
-                }
-                ib.Unlock();
-            }
-            Console.WriteLine("rewrite index buffer");
-
-            /*
-            //
-            // rewrite attribute table
-            //
-            {
-                AttributeRange[] ars = new AttributeRange[materials.Length];
-                int i = 0;
-                foreach (PmdMaterial material in materials)
-                {
-#if false
-                    ars[i].AttributeId = material.id;
-                    ars[i].FaceStart = material.FaceStart;
-                    ars[i].FaceCount = material.FaceCount;
-                    ars[i].VertexStart = material.face_vertex_start;
-                    ars[i].VertexCount = material.face_vertex_count;
-#endif
-                    ars[i].AttributeId = material.id;
-                    ars[i].FaceStart = material.FaceStart;
-                    ars[i].FaceCount = material.FaceCount;
-                    ars[i].VertexStart = 0;
-                    ars[i].VertexCount = vertices.Length;
-                    Console.WriteLine("attributerange:{0}", ars[i]);
-                }
-
-                dm.SetAttributeTable(ars); 
-            }
-            Console.WriteLine("rewrite attribute table");
-            */
         }
 
-        public void Dispose()
+        public static VertexElement[] ve = new VertexElement[]
         {
-            if (ib != null)
-                ib.Dispose();
-            if (vb != null)
-                vb.Dispose();
-        }
-    }
-
-    /// <summary>
-    /// pmdファイルを扱います。
-    /// </summary>
-    public class PmdFile : IDisposable
-    {
-        public Vertex[] vertices;
-        public PmdSubMesh[] sub_meshes;
-        public ushort[] indices;
-        //public PmdFace[] faces;
-        public PmdMaterial[] materials;
-        /// <summary>
-        /// bone配列
-        /// </summary>
-        public PmdNode[] nodes;
+            new VertexElement(0,  0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
+            new VertexElement(0, 12, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0),
+            new VertexElement(0, 24, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
+                VertexElement.VertexDeclarationEnd
+        };
 
         public void Load(string source_file)
         {
@@ -378,15 +340,6 @@ namespace pmdview
 
             int face_count = face_vertex_count / 3;
             Debug.WriteLine("face_count:" + face_count);
-            /*
-            faces = new PmdFace[face_count];
-
-            for (int i = 0; i < face_count; i++)
-            {
-                faces[i] = new PmdFace();
-                faces[i].Read(reader);
-            }
-             */
 
             int material_count = reader.ReadInt32();
             Debug.WriteLine("material_count:" + material_count);
@@ -403,7 +356,6 @@ namespace pmdview
             for (int i = 0; i < material_count; i++)
             {
                 sub_meshes[i] = new PmdSubMesh(i);
-                sub_meshes[i].vertices = vertices;
                 sub_meshes[i].indices = new ushort[materials[i].face_vertex_count];
                 Array.Copy(indices, materials[i].face_vertex_start, sub_meshes[i].indices, 0, materials[i].face_vertex_count);
                 sub_meshes[i].material = materials[i];
@@ -448,6 +400,8 @@ namespace pmdview
         {
             foreach (PmdSubMesh sub in sub_meshes)
                 sub.Dispose();
+            if (vb != null)
+                vb.Dispose();
             foreach (Texture tex in texmap.Values)
                 tex.Dispose();
         }

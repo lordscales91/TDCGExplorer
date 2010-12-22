@@ -123,7 +123,7 @@ namespace pmdview
 
             device.RenderState.IndexedVertexBlendEnable = true;
 
-            decl = new VertexDeclaration(device, PmdSubMesh.ve);
+            decl = new VertexDeclaration(device, PmdFile.ve);
 
             foreach (string arg in args)
                 LoadAnyFile(arg);
@@ -194,8 +194,9 @@ namespace pmdview
             }
             pmd = new PmdFile();
             pmd.Load(source_file);
+            pmd.WriteVertexBuffer(device);
             foreach (PmdSubMesh sub in pmd.sub_meshes)
-                sub.WriteBuffer(device);
+                sub.WriteIndexBuffer(device);
             pmd.Open(device, effect);
         }
 
@@ -214,12 +215,13 @@ namespace pmdview
                 effect.SetValue("WorldViewProjMatrix", world_view_projection_matrix);
             }
 
-            if (pmd != null)
+            if (pmd != null && pmd.vb != null)
             {
+                device.SetStreamSource(0, pmd.vb, 0);
+                device.VertexDeclaration = decl;
+
                 foreach (PmdSubMesh sub in pmd.sub_meshes)
                 {
-                    if (sub.vb == null)
-                        continue;
                     if (sub.ib == null)
                         continue;
 
@@ -239,10 +241,8 @@ namespace pmdview
                     {
                         //Console.WriteLine("render {0} {1}", pmd, ipass);
                         effect.BeginPass(ipass);
-                        device.SetStreamSource(0, sub.vb, 0);
                         device.Indices = sub.ib;
-                        device.VertexDeclaration = decl;
-                        device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, sub.vertices.Length, 0, sub.indices.Length / 3);
+                        device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, pmd.vertices.Length, 0, sub.indices.Length / 3);
                         effect.EndPass();
                     }
                     effect.End();
