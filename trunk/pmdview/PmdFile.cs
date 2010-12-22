@@ -98,7 +98,7 @@ namespace pmdview
         {
             get { return face_vertex_count / 3; }
         }
-        public int face_vertex_start;
+        public int FaceVertexStart;
 
         public Vector4 Diffuse
         {
@@ -139,7 +139,7 @@ namespace pmdview
         public void Read(BinaryReader reader)
         {
             FaceStart = whole_face_start;
-            face_vertex_start = whole_face_vertex_start;
+            FaceVertexStart = whole_face_vertex_start;
 
             reader.ReadVector3(ref this.diffuse);
             this.alpha = reader.ReadSingle();
@@ -190,59 +190,12 @@ namespace pmdview
         }
     }
 
-    public class PmdSubMesh : IDisposable
-    {
-        public int id;
-        public ushort[] indices;
-        public PmdMaterial material;
-
-        public IndexBuffer ib = null;
-
-        public PmdSubMesh(int id)
-        {
-            this.id = id;
-        }
-
-        /// <summary>
-        /// 頂点をDirect3Dバッファに書き込みます。
-        /// </summary>
-        /// <param name="device">device</param>
-        public void WriteIndexBuffer(Device device)
-        {
-            if (ib != null)
-                ib.Dispose();
-            ib = new IndexBuffer(typeof(ushort), indices.Length, device, Usage.WriteOnly, Pool.Default);
-
-            //
-            // rewrite index buffer
-            //
-            {
-                GraphicsStream gs = ib.Lock(0, 0, LockFlags.None);
-                {
-                    foreach (ushort idx in indices)
-                    {
-                        gs.Write(idx);
-                    }
-                }
-                ib.Unlock();
-            }
-            Console.WriteLine("rewrite index buffer");
-        }
-
-        public void Dispose()
-        {
-            if (ib != null)
-                ib.Dispose();
-        }
-    }
-
     /// <summary>
     /// pmdファイルを扱います。
     /// </summary>
     public class PmdFile : IDisposable
     {
         public Vertex[] vertices;
-        public PmdSubMesh[] sub_meshes;
         public ushort[] indices;
         //public PmdFace[] faces;
         public PmdMaterial[] materials;
@@ -252,6 +205,7 @@ namespace pmdview
         public PmdNode[] nodes;
 
         public VertexBuffer vb = null;
+        public IndexBuffer ib = null;
 
         /// <summary>
         /// 頂点をDirect3Dバッファに書き込みます。
@@ -285,6 +239,32 @@ namespace pmdview
                 vb.Unlock();
             }
             Console.WriteLine("rewrite vertex buffer");
+        }
+
+        /// <summary>
+        /// 頂点をDirect3Dバッファに書き込みます。
+        /// </summary>
+        /// <param name="device">device</param>
+        public void WriteIndexBuffer(Device device)
+        {
+            if (ib != null)
+                ib.Dispose();
+            ib = new IndexBuffer(typeof(ushort), indices.Length, device, Usage.WriteOnly, Pool.Default);
+
+            //
+            // rewrite index buffer
+            //
+            {
+                GraphicsStream gs = ib.Lock(0, 0, LockFlags.None);
+                {
+                    foreach (ushort idx in indices)
+                    {
+                        gs.Write(idx);
+                    }
+                }
+                ib.Unlock();
+            }
+            Console.WriteLine("rewrite index buffer");
         }
 
         public static VertexElement[] ve = new VertexElement[]
@@ -351,16 +331,6 @@ namespace pmdview
                 materials[i].Read(reader);
             }
 
-            sub_meshes = new PmdSubMesh[material_count];
-
-            for (int i = 0; i < material_count; i++)
-            {
-                sub_meshes[i] = new PmdSubMesh(i);
-                sub_meshes[i].indices = new ushort[materials[i].face_vertex_count];
-                Array.Copy(indices, materials[i].face_vertex_start, sub_meshes[i].indices, 0, materials[i].face_vertex_count);
-                sub_meshes[i].material = materials[i];
-            }
-
             ushort node_count = reader.ReadUInt16();
             Debug.WriteLine("node_count:" + node_count);
             nodes = new PmdNode[node_count];
@@ -398,8 +368,8 @@ namespace pmdview
 
         public void Dispose()
         {
-            foreach (PmdSubMesh sub in sub_meshes)
-                sub.Dispose();
+            if (ib != null)
+                ib.Dispose();
             if (vb != null)
                 vb.Dispose();
             foreach (Texture tex in texmap.Values)
