@@ -197,7 +197,7 @@ namespace pmdview
             pmd = new PmdFile();
             pmd.Load(source_file);
             vmd = pmd.GenerateVmd();
-            vmd.UpdateBoneMatrices();
+            pmd.UpdateBoneMatrices();
             pmd.WriteVertexBuffer(device);
             pmd.WriteIndexBuffer(device);
             pmd.Open(device, effect);
@@ -212,7 +212,7 @@ namespace pmdview
             vmd = new VmdFile();
             vmd.Load(source_file);
             pmd.UpdateFigureNodemap(vmd);
-            vmd.UpdateBoneMatrices();
+            pmd.UpdateBoneMatrices();
             pmd.WriteVertexBuffer(device);
             Invalidate();
         }

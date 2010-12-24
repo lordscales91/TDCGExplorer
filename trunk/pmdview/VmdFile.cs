@@ -19,20 +19,9 @@ namespace pmdview
 
         public Quaternion rotation = Quaternion.Identity;
         public Vector3 translation = Vector3.Empty;
-        public Matrix TransformationMatrix
-        {
-            get {
-                return Matrix.RotationQuaternion(rotation) * Matrix.Translation(translation);
-            }
-        }
 
         public List<VmdNode> children = new List<VmdNode>();
         public VmdNode parent;
-
-        /// <summary>
-        /// ワールド座標系での位置と向きを表します。これはviewerから更新されます。
-        /// </summary>
-        public Matrix combined_matrix;
 
         /// <summary>
         /// VmdNodeを生成します。
@@ -138,7 +127,7 @@ namespace pmdview
 
         public Dictionary<string, VmdNode> nodemap = new Dictionary<string, VmdNode>();
 
-        List<VmdNode> root_nodes = new List<VmdNode>();
+        public List<VmdNode> root_nodes = new List<VmdNode>();
 
         public void GenerateNodemapAndTree()
         {
@@ -161,31 +150,6 @@ namespace pmdview
                 node.parent = nodes[node.parent_node_id];
                 node.parent.children.Add(node);
             }
-        }
-
-        MatrixStack matrixStack = new MatrixStack();
-
-        public void UpdateBoneMatrices()
-        {
-            foreach (VmdNode node in root_nodes)
-            {
-                matrixStack.LoadMatrix(Matrix.Identity);
-                UpdateBoneMatrices(node);
-            }
-        }
-
-        /// <summary>
-        /// bone行列を更新します。
-        /// </summary>
-        public void UpdateBoneMatrices(VmdNode node)
-        {
-            matrixStack.Push();
-            Matrix m = node.TransformationMatrix;
-            matrixStack.MultiplyMatrixLocal(m);
-            node.combined_matrix = matrixStack.Top;
-            foreach (VmdNode child_node in node.children)
-                UpdateBoneMatrices(child_node);
-            matrixStack.Pop();
         }
     }
 }
