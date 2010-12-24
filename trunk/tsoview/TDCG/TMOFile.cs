@@ -523,7 +523,7 @@ namespace TDCG
     }
 
     /// <summary>
-    /// Direct3D Matrixのラッパ
+    /// 変形行列を扱います。
     /// </summary>
     public class TMOMat
     {
