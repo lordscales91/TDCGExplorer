@@ -213,6 +213,7 @@ namespace pmdview
             vmd.Load(source_file);
             pmd.UpdateFigureNodemap(vmd);
             vmd.UpdateBoneMatrices();
+            pmd.WriteVertexBuffer(device);
             Invalidate();
         }
 

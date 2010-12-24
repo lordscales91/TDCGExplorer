@@ -124,6 +124,7 @@ namespace pmdview
                 if (! nmap.ContainsKey(node_name))
                 {
                     VmdNode node = new VmdNode((ushort)nary.Count);
+                    node.name = node_name;
                     node.translation = translation;
                     node.rotation = rotation;
                     nary.Add(node);
@@ -135,17 +136,15 @@ namespace pmdview
             GenerateNodemapAndTree();
         }
 
-        public Dictionary<string, VmdNode> nodemap;
+        public Dictionary<string, VmdNode> nodemap = new Dictionary<string, VmdNode>();
 
         List<VmdNode> root_nodes = new List<VmdNode>();
 
         public void GenerateNodemapAndTree()
         {
-            nodemap = new Dictionary<string, VmdNode>();
+            nodemap.Clear();
             foreach (VmdNode node in nodes)
-            {
                 nodemap[node.name] = node;
-            }
 
             foreach (VmdNode node in nodes)
                 node.children.Clear();
