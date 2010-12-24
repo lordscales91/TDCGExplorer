@@ -17,9 +17,14 @@ namespace pmdview
         public string name;
         public ushort parent_node_id;
 
-        public Quaternion rotation;
-        public Vector3 translation;
-        public Matrix TransformationMatrix;
+        public Quaternion rotation = Quaternion.Identity;
+        public Vector3 translation = Vector3.Empty;
+        public Matrix TransformationMatrix
+        {
+            get {
+                return Matrix.RotationQuaternion(rotation) * Matrix.Translation(translation);
+            }
+        }
 
         public List<VmdNode> children = new List<VmdNode>();
         public VmdNode parent;

@@ -446,6 +446,18 @@ namespace pmdview
 
             vmd.GenerateNodemapAndTree();
 
+            for (ushort i = 0; i < node_count; i++)
+            {
+                if (nodes[i].parent == null)
+                    vmd.nodes[i].translation = nodes[i].position;
+                else
+                    vmd.nodes[i].translation = nodes[i].position - nodes[i].parent.position;
+            }
+
+            fig_nodemap.Clear();
+            for (ushort i = 0; i < node_count; i++)
+                fig_nodemap[nodes[i]] = vmd.nodes[i];
+
             return vmd;
         }
 

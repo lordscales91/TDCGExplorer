@@ -196,6 +196,7 @@ namespace pmdview
                 pmd.Dispose();
             pmd = new PmdFile();
             pmd.Load(source_file);
+            vmd = pmd.GenerateVmd();
             pmd.WriteVertexBuffer(device);
             pmd.WriteIndexBuffer(device);
             pmd.Open(device, effect);
