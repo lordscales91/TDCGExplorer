@@ -211,7 +211,8 @@ namespace pmdview
             Console.WriteLine("loading {0}", source_file);
             vmd = new VmdFile();
             vmd.Load(source_file);
-            //TODO: transform pmd
+            pmd.UpdateFigureNodemap(vmd);
+            vmd.UpdateBoneMatrices();
             Invalidate();
         }
 

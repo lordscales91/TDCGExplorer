@@ -483,11 +483,20 @@ namespace pmdview
                     vmd.nodes[i].translation = nodes[i].position - nodes[i].parent.position;
             }
 
-            fig_nodemap.Clear();
-            for (ushort i = 0; i < node_count; i++)
-                fig_nodemap[nodes[i]] = vmd.nodes[i];
+            UpdateFigureNodemap(vmd);
 
             return vmd;
+        }
+
+        public void UpdateFigureNodemap(VmdFile vmd)
+        {
+            fig_nodemap.Clear();
+            foreach (PmdNode node in nodes)
+            {
+                VmdNode vmd_node;
+                if (vmd.nodemap.TryGetValue(node.name, out vmd_node))
+                    fig_nodemap[node] = vmd_node;
+            }
         }
 
         internal Dictionary<string, Texture> texmap;
