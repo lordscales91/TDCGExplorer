@@ -147,7 +147,11 @@ namespace pmdview
                 nodemap[node.name] = node;
 
             foreach (VmdNode node in nodes)
+            {
+                node.parent = null;
                 node.children.Clear();
+            }
+            root_nodes.Clear();
             foreach (VmdNode node in nodes)
             {
                 if (node.parent_node_id == ushort.MaxValue)
