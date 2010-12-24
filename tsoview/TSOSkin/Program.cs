@@ -27,31 +27,27 @@ public static class Program
         TMOFile tmo = new TMOFile();
         tmo.Load(tmo_file);
 
-        ProportionList pro_list = new ProportionList();
-        pro_list.Load();
-        Figure.ProportionList = pro_list;
-
         Figure fig = new Figure();
         fig.TSOList.Add(tso);
         fig.Tmo = tmo;
         fig.UpdateNodeMapAndBoneMatrices();
 
-        foreach (TSOFrame frame in tso.frames)
-        foreach (TSOMesh mesh in frame.meshes)
+        foreach (TSOMesh mesh in tso.meshes)
+        foreach (TSOSubMesh sub in mesh.sub_meshes)
         {
-            Matrix[] clipped_boneMatrices = new Matrix[mesh.maxPalettes];
+            Matrix[] clipped_boneMatrices = new Matrix[sub.maxPalettes];
 
-            for (int numPalettes = 0; numPalettes < mesh.maxPalettes; numPalettes++)
+            for (int numPalettes = 0; numPalettes < sub.maxPalettes; numPalettes++)
             {
-                TSONode tso_node = mesh.GetBone(numPalettes);
+                TSONode tso_node = sub.GetBone(numPalettes);
                 TMONode tmo_node;
                 if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
-                    clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
+                    clipped_boneMatrices[numPalettes] = tso_node.offset_matrix * tmo_node.combined_matrix;
             }
 
-            for (int i = 0; i < mesh.vertices.Length; i++)
+            for (int i = 0; i < sub.vertices.Length; i++)
             {
-                CalcSkindeform(ref mesh.vertices[i], clipped_boneMatrices);
+                CalcSkindeform(ref sub.vertices[i], clipped_boneMatrices);
             }
         }
 
