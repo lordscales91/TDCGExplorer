@@ -438,15 +438,13 @@ namespace pmdview
             GenerateNodemapAndTree();
         }
 
-        public Dictionary<string, PmdNode> nodemap;
+        public Dictionary<string, PmdNode> nodemap = new Dictionary<string, PmdNode>();
 
         public void GenerateNodemapAndTree()
         {
-            nodemap = new Dictionary<string, PmdNode>();
+            nodemap.Clear();
             foreach (PmdNode node in nodes)
-            {
                 nodemap[node.name] = node;
-            }
 
             foreach (PmdNode node in nodes)
                 node.children.Clear();
