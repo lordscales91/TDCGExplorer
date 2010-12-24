@@ -181,6 +181,11 @@ namespace pmdview
         /// </summary>
         public Matrix offset_matrix;
 
+        public void ComputeOffsetMatrix()
+        {
+            offset_matrix = Matrix.Invert(Matrix.Translation(position));
+        }
+
         /// <summary>
         /// PmdNodeを生成します。
         /// </summary>
@@ -398,6 +403,8 @@ namespace pmdview
                 nodes[i] = new PmdNode(i);
                 nodes[i].Read(reader);
             }
+            for (ushort i = 0; i < node_count; i++)
+                nodes[i].ComputeOffsetMatrix();
 
             GenerateNodemapAndTree();
         }
