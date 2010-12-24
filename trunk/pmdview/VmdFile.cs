@@ -24,6 +24,11 @@ namespace pmdview
         public VmdNode parent;
 
         /// <summary>
+        /// ワールド座標系での位置と向きを表します。これはviewerから更新されます。
+        /// </summary>
+        public Matrix combined_matrix;
+
+        /// <summary>
         /// VmdNodeを生成します。
         /// </summary>
         public VmdNode(ushort id)

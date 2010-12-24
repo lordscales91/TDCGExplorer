@@ -177,6 +177,11 @@ namespace pmdview
         public PmdNode parent;
 
         /// <summary>
+        /// オフセット行列。これはワールド座標系をboneローカル座標系に変換します。
+        /// </summary>
+        public Matrix offset_matrix;
+
+        /// <summary>
         /// PmdNodeを生成します。
         /// </summary>
         public PmdNode(ushort id)
@@ -225,6 +230,32 @@ namespace pmdview
             vb_Created(vb, null);
         }
 
+        Dictionary<PmdNode, VmdNode> fig_nodemap = new Dictionary<PmdNode, VmdNode>();
+
+        Matrix[] ClipBoneMatrices()
+        {
+            PmdFile pmd = this;
+            Matrix[] matrices = new Matrix[pmd.nodes.Length];
+
+            for (int i = 0; i < pmd.nodes.Length; i++)
+            {
+                PmdNode pmd_node = pmd.nodes[i];
+                VmdNode vmd_node;
+                if (fig_nodemap.TryGetValue(pmd_node, out vmd_node))
+                {
+                    matrices[i] = pmd_node.offset_matrix * vmd_node.combined_matrix;
+                }
+            }
+
+            return matrices;
+        }
+
+        void CalcSkindeform(ref Vertex v, Matrix[] matrices, out Vector3 position, out Vector3 normal)
+        {
+            position = v.position;
+            normal = v.normal;
+        }
+
         void vb_Created(object sender, EventArgs e)
         {
             VertexBuffer vb = (VertexBuffer)sender;
@@ -238,11 +269,12 @@ namespace pmdview
                     {
                         Vertex v = vertices[i];
 
-                        gs.Write(v.position);
-                        //for (int j = 0; j < 4; j++)
-                        //    gs.Write(0.0f);
-                        //gs.Write(0);
-                        gs.Write(v.normal);
+                        Matrix[] matrices = ClipBoneMatrices();
+                        Vector3 position, normal;
+                        CalcSkindeform(ref v, matrices, out position, out normal);
+
+                        gs.Write(position);
+                        gs.Write(normal);
                         gs.Write(v.u);
                         gs.Write(v.v);
                     }
