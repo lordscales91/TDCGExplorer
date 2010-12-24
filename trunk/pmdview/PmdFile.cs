@@ -37,6 +37,19 @@ namespace pmdview
             v.Y = reader.ReadSingle();
             v.Z = reader.ReadSingle();
         }
+
+        /// <summary>
+        /// Quaternionを読みとります。
+        /// </summary>
+        /// <param name="reader">BinaryReader</param>
+        /// <param name="q">Quaternion</param>
+        public static void ReadQuaternion(this BinaryReader reader, ref Quaternion q)
+        {
+            q.X = reader.ReadSingle();
+            q.Y = reader.ReadSingle();
+            q.Z = reader.ReadSingle();
+            q.W = reader.ReadSingle();
+        }
     }
 
     public class Vertex
@@ -147,6 +160,9 @@ namespace pmdview
         }
     }
 
+    /// <summary>
+    /// boneを扱います。
+    /// </summary>
     public class PmdNode
     {
         public ushort id;
@@ -156,6 +172,9 @@ namespace pmdview
         public byte type;
         public ushort ik_parent_node_id;
         public Vector3 position;
+
+        public List<PmdNode> children = new List<PmdNode>();
+        public PmdNode parent;
 
         /// <summary>
         /// PmdNodeを生成します。
@@ -347,6 +366,38 @@ namespace pmdview
                 nodes[i] = new PmdNode(i);
                 nodes[i].Read(reader);
             }
+
+            GenerateNodemap();
+        }
+
+        public Dictionary<string, PmdNode> nodemap;
+
+        public void GenerateNodemap()
+        {
+            nodemap = new Dictionary<string, PmdNode>();
+            foreach (PmdNode node in nodes)
+            {
+                nodemap[node.name] = node;
+            }
+        }
+
+        public VmdFile GenerateVmd()
+        {
+            VmdFile vmd = new VmdFile();
+
+            int node_count = nodes.Length;
+            vmd.nodes = new VmdNode[node_count];
+
+            for (ushort i = 0; i < node_count; i++)
+            {
+                vmd.nodes[i] = new VmdNode(i);
+                vmd.nodes[i].name = nodes[i].name;
+                vmd.nodes[i].parent_node_id = nodes[i].parent_node_id;
+            }
+
+            vmd.GenerateNodemap();
+
+            return vmd;
         }
 
         internal Dictionary<string, Texture> texmap;
