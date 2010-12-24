@@ -257,8 +257,37 @@ namespace pmdview
 
         void CalcSkindeform(ref Vertex v, Matrix[] matrices, out Vector3 position, out Vector3 normal)
         {
-            position = v.position;
-            normal = v.normal;
+            Vector3 pos = Vector3.Empty;
+            {
+                Matrix m = matrices[v.node_id_0];
+                float w = v.weight;
+                pos += Vector3.TransformCoordinate(v.position, m) * w;
+            }
+            {
+                Matrix m = matrices[v.node_id_1];
+                float w = 1 - v.weight;
+                pos += Vector3.TransformCoordinate(v.position, m) * w;
+            }
+            position = pos;
+
+            Vector3 nor = Vector3.Empty;
+            {
+                Matrix m = matrices[v.node_id_0];
+                m.M41 = 0;
+                m.M42 = 0;
+                m.M43 = 0;
+                float w = v.weight;
+                nor += Vector3.TransformCoordinate(v.normal, m) * w;
+            }
+            {
+                Matrix m = matrices[v.node_id_1];
+                m.M41 = 0;
+                m.M42 = 0;
+                m.M43 = 0;
+                float w = 1 - v.weight;
+                nor += Vector3.TransformCoordinate(v.normal, m) * w;
+            }
+            normal = Vector3.Normalize(nor);
         }
 
         void vb_Created(object sender, EventArgs e)
