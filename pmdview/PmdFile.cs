@@ -60,7 +60,7 @@ namespace pmdview
         public float v;
         public ushort node_id_0;
         public ushort node_id_1;
-        public byte weight;
+        public float weight;
         public byte edge;
 
         public void Read(BinaryReader reader)
@@ -71,7 +71,7 @@ namespace pmdview
             this.v = reader.ReadSingle();
             this.node_id_0 = reader.ReadUInt16();
             this.node_id_1 = reader.ReadUInt16();
-            this.weight = reader.ReadByte();
+            this.weight = reader.ReadByte() * 0.01f;
             this.edge = reader.ReadByte();
         }
     }
@@ -181,6 +181,14 @@ namespace pmdview
         /// </summary>
         public Matrix offset_matrix;
 
+        public Quaternion rotation = Quaternion.Identity;
+        public Vector3 translation = Vector3.Empty;
+
+        /// <summary>
+        /// ワールド座標系での位置と向きを表します。これはviewerから更新されます。
+        /// </summary>
+        public Matrix combined_matrix;
+
         public void ComputeOffsetMatrix()
         {
             offset_matrix = Matrix.Invert(Matrix.Translation(position));
@@ -239,17 +247,11 @@ namespace pmdview
 
         Matrix[] ClipBoneMatrices()
         {
-            PmdFile pmd = this;
-            Matrix[] matrices = new Matrix[pmd.nodes.Length];
+            Matrix[] matrices = new Matrix[nodes.Length];
 
-            for (int i = 0; i < pmd.nodes.Length; i++)
+            for (int i = 0; i < nodes.Length; i++)
             {
-                PmdNode pmd_node = pmd.nodes[i];
-                VmdNode vmd_node;
-                if (fig_nodemap.TryGetValue(pmd_node, out vmd_node))
-                {
-                    matrices[i] = pmd_node.offset_matrix * vmd_node.combined_matrix;
-                }
+                matrices[i] = nodes[i].offset_matrix * nodes[i].combined_matrix;
             }
 
             return matrices;
@@ -440,6 +442,8 @@ namespace pmdview
 
         public Dictionary<string, PmdNode> nodemap = new Dictionary<string, PmdNode>();
 
+        public List<PmdNode> root_nodes = new List<PmdNode>();
+
         public void GenerateNodemapAndTree()
         {
             nodemap.Clear();
@@ -447,13 +451,26 @@ namespace pmdview
                 nodemap[node.name] = node;
 
             foreach (PmdNode node in nodes)
+            {
+                node.parent = null;
                 node.children.Clear();
+            }
             foreach (PmdNode node in nodes)
             {
+                if (node.parent_node_id == ushort.MaxValue)
+                    root_nodes.Add(node);
                 if (node.parent_node_id == ushort.MaxValue)
                     continue;
                 node.parent = nodes[node.parent_node_id];
                 node.parent.children.Add(node);
+            }
+
+            foreach (PmdNode node in nodes)
+            {
+                if (node.parent == null)
+                    node.translation = node.position;
+                else
+                    node.translation = node.position - node.parent.position;
             }
         }
 
@@ -473,14 +490,6 @@ namespace pmdview
 
             vmd.GenerateNodemapAndTree();
 
-            for (ushort i = 0; i < node_count; i++)
-            {
-                if (nodes[i].parent == null)
-                    vmd.nodes[i].translation = nodes[i].position;
-                else
-                    vmd.nodes[i].translation = nodes[i].position - nodes[i].parent.position;
-            }
-
             UpdateFigureNodemap(vmd);
 
             return vmd;
@@ -495,6 +504,37 @@ namespace pmdview
                 if (vmd.nodemap.TryGetValue(node.name, out vmd_node))
                     fig_nodemap[node] = vmd_node;
             }
+        }
+
+        MatrixStack matrixStack = new MatrixStack();
+
+        public void UpdateBoneMatrices()
+        {
+            foreach (PmdNode node in root_nodes)
+            {
+                matrixStack.LoadMatrix(Matrix.Identity);
+                UpdateBoneMatrices(node);
+            }
+        }
+
+        /// <summary>
+        /// bone行列を更新します。
+        /// </summary>
+        public void UpdateBoneMatrices(PmdNode node)
+        {
+            matrixStack.Push();
+
+            VmdNode vmd_node;
+            Matrix m;
+            if (fig_nodemap.TryGetValue(node, out vmd_node))
+                m = Matrix.RotationQuaternion(vmd_node.rotation * node.rotation) * Matrix.Translation(vmd_node.translation + node.translation);
+            else
+                m = Matrix.RotationQuaternion(node.rotation) * Matrix.Translation(node.translation);
+            matrixStack.MultiplyMatrixLocal(m);
+            node.combined_matrix = matrixStack.Top;
+            foreach (PmdNode child_node in node.children)
+                UpdateBoneMatrices(child_node);
+            matrixStack.Pop();
         }
 
         internal Dictionary<string, Texture> texmap;
