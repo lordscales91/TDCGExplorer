@@ -181,6 +181,9 @@ namespace pmdview
                 case ".pmd":
                     LoadPmdFile(source_file);
                     break;
+                case ".vmd":
+                    LoadVmdFile(source_file);
+                    break;
             }
         }
 
@@ -196,6 +199,17 @@ namespace pmdview
             pmd.WriteVertexBuffer(device);
             pmd.WriteIndexBuffer(device);
             pmd.Open(device, effect);
+            Invalidate();
+        }
+
+        VmdFile vmd = null;
+
+        public void LoadVmdFile(string source_file)
+        {
+            Console.WriteLine("loading {0}", source_file);
+            vmd = new VmdFile();
+            vmd.Load(source_file);
+            //TODO: transform pmd
             Invalidate();
         }
 
