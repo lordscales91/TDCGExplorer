@@ -99,6 +99,8 @@ namespace pmdview
             //TODO: nodes
             //TODO: frames
 
+            Dictionary<string, VmdNode> nmap = new Dictionary<string, VmdNode>();
+            List<VmdNode> nary = new List<VmdNode>();
             int current_frame_index = 0;
             for (int i = 0; i < frame_count; i++)
             {
@@ -119,10 +121,16 @@ namespace pmdview
 
                 byte[] bezier = reader.ReadBytes(64);
 
-                VmdNode node = new VmdNode(0);
-                node.translation = translation;
-                node.rotation = rotation;
+                if (! nmap.ContainsKey(node_name))
+                {
+                    VmdNode node = new VmdNode((ushort)nary.Count);
+                    node.translation = translation;
+                    node.rotation = rotation;
+                    nary.Add(node);
+                    nmap[node_name] = node;
+                }
             }
+            nodes = nary.ToArray();
 
             GenerateNodemapAndTree();
         }
