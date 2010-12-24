@@ -423,6 +423,8 @@ namespace pmdview
                 node.children.Clear();
             foreach (PmdNode node in nodes)
             {
+                if (node.parent_node_id == ushort.MaxValue)
+                    continue;
                 node.parent = nodes[node.parent_node_id];
                 node.parent.children.Add(node);
             }
