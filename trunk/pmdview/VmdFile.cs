@@ -19,6 +19,7 @@ namespace pmdview
 
         public Quaternion rotation;
         public Vector3 translation;
+        public Matrix TransformationMatrix;
 
         public List<VmdNode> children = new List<VmdNode>();
         public VmdNode parent;
@@ -123,6 +124,8 @@ namespace pmdview
 
         public Dictionary<string, VmdNode> nodemap;
 
+        List<VmdNode> root_nodes = new List<VmdNode>();
+
         public void GenerateNodemapAndTree()
         {
             nodemap = new Dictionary<string, VmdNode>();
@@ -135,9 +138,38 @@ namespace pmdview
                 node.children.Clear();
             foreach (VmdNode node in nodes)
             {
+                if (node.parent_node_id == ushort.MaxValue)
+                    root_nodes.Add(node);
+                if (node.parent_node_id == ushort.MaxValue)
+                    continue;
                 node.parent = nodes[node.parent_node_id];
                 node.parent.children.Add(node);
             }
+        }
+
+        MatrixStack matrixStack = new MatrixStack();
+
+        public void UpdateBoneMatrices()
+        {
+            foreach (VmdNode node in root_nodes)
+            {
+                matrixStack.LoadMatrix(Matrix.Identity);
+                UpdateBoneMatrices(node);
+            }
+        }
+
+        /// <summary>
+        /// bone行列を更新します。
+        /// </summary>
+        public void UpdateBoneMatrices(VmdNode node)
+        {
+            matrixStack.Push();
+            Matrix m = node.TransformationMatrix;
+            matrixStack.MultiplyMatrixLocal(m);
+            node.combined_matrix = matrixStack.Top;
+            foreach (VmdNode child_node in node.children)
+                UpdateBoneMatrices(child_node);
+            matrixStack.Pop();
         }
     }
 }
