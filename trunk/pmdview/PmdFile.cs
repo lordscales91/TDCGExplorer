@@ -399,17 +399,25 @@ namespace pmdview
                 nodes[i].Read(reader);
             }
 
-            GenerateNodemap();
+            GenerateNodemapAndTree();
         }
 
         public Dictionary<string, PmdNode> nodemap;
 
-        public void GenerateNodemap()
+        public void GenerateNodemapAndTree()
         {
             nodemap = new Dictionary<string, PmdNode>();
             foreach (PmdNode node in nodes)
             {
                 nodemap[node.name] = node;
+            }
+
+            foreach (PmdNode node in nodes)
+                node.children.Clear();
+            foreach (PmdNode node in nodes)
+            {
+                node.parent = nodes[node.parent_node_id];
+                node.parent.children.Add(node);
             }
         }
 
@@ -427,7 +435,7 @@ namespace pmdview
                 vmd.nodes[i].parent_node_id = nodes[i].parent_node_id;
             }
 
-            vmd.GenerateNodemap();
+            vmd.GenerateNodemapAndTree();
 
             return vmd;
         }

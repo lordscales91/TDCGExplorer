@@ -118,17 +118,25 @@ namespace pmdview
                 node.rotation = rotation;
             }
 
-            GenerateNodemap();
+            GenerateNodemapAndTree();
         }
 
         public Dictionary<string, VmdNode> nodemap;
 
-        public void GenerateNodemap()
+        public void GenerateNodemapAndTree()
         {
             nodemap = new Dictionary<string, VmdNode>();
             foreach (VmdNode node in nodes)
             {
                 nodemap[node.name] = node;
+            }
+
+            foreach (VmdNode node in nodes)
+                node.children.Clear();
+            foreach (VmdNode node in nodes)
+            {
+                node.parent = nodes[node.parent_node_id];
+                node.parent.children.Add(node);
             }
         }
     }
