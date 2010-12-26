@@ -55,58 +55,23 @@
     <Reference Include="TDCG.TMOFlip, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccelSlider.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="AccelSlider.Designer.cs">
-      <DependentUpon>AccelSlider.cs</DependentUpon>
-    </Compile>
     <Compile Include="CCDSolver.cs" />
     <Compile Include="CCDViewer.cs" />
-    <Compile Include="FaceListForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FaceListForm.Designer.cs">
-      <DependentUpon>FaceListForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="PngSave.cs" />
-    <Compile Include="PngSaveItem.cs" />
-    <Compile Include="PoseListForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="PoseListForm.Designer.cs">
-      <DependentUpon>PoseListForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="AccelSlider.resx">
-      <DependentUpon>AccelSlider.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="FaceListForm.resx">
-      <DependentUpon>FaceListForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PoseListForm.resx">
-      <DependentUpon>PoseListForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="SaveListForm.resx">
-      <DependentUpon>SaveListForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="TmoAnimItemForm.resx">
-      <DependentUpon>TmoAnimItemForm.cs</DependentUpon>
     </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -124,27 +89,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="SaveListForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="SaveListForm.Designer.cs">
-      <DependentUpon>SaveListForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="TMOAnim.cs" />
-    <Compile Include="TMOAnimItem.cs" />
-    <Compile Include="TmoAnimItemForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="TmoAnimItemForm.Designer.cs">
-      <DependentUpon>TmoAnimItemForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="TSOConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="config.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="TMOAnim.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
