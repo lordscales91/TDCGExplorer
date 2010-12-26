@@ -54,15 +54,5 @@ namespace TMOKinect
             viewer.FrameMoveDerived();
             viewer.Render();
         }
-
-        private void cbLimitRotation_CheckedChanged(object sender, EventArgs e)
-        {
-            viewer.LimitRotationEnabled = cbLimitRotation.Checked;
-        }
-
-        private void cbFloor_CheckedChanged(object sender, EventArgs e)
-        {
-            viewer.FloorEnabled = cbFloor.Checked;
-        }
     }
 }
