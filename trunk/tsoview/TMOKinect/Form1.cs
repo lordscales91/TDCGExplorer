@@ -40,7 +40,7 @@ namespace TMOComposer
             {
                 CreatePngSave();
                 viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
-                viewer.MotionEnabled = true;
+                //viewer.MotionEnabled = true;
                 timer1.Enabled = true;
             }
             saveListForm = new SaveListForm();

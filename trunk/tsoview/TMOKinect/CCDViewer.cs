@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using System.IO;
 using System.Text;
@@ -16,6 +18,70 @@ namespace TDCG
     /// </summary>
 public class CCDViewer : Viewer
 {
+    public struct XnVector3D
+    {
+        public float X;
+        public float Y;
+        public float Z;
+    }
+    public struct XnSkeletonJointPosition
+    {
+        public XnVector3D position;
+        public float confidence;
+    }
+
+    [DllImport("NiSimpleTracker.dll")]
+    public static extern int OpenNIClean();
+    [DllImport("NiSimpleTracker.dll")]
+    public static extern IntPtr OpenNIGetDepthBuf();
+    [DllImport("NiSimpleTracker.dll")]
+    public static extern IntPtr OpenNIGetJointPos();
+    [DllImport("NiSimpleTracker.dll")]
+    public static extern int OpenNIInit(StringBuilder path);
+    [DllImport("NiSimpleTracker.dll")]
+    public static extern void OpenNIDrawDepthMap();
+
+    const int camw = 640;
+    const int camh = 480;
+    bool OpenNiEnabled = false;
+    Surface surface = null;
+    byte[] surface_buf = null;
+
+    static Vector3 ToVector3(XnVector3D position)
+    {
+        return new Vector3(position.X, position.Y, -position.Z);
+    }
+
+    private void OnDeviceLost(object sender, EventArgs e)
+    {
+        Console.WriteLine("CCDViewer.OnDeviceLost");
+        if (OpenNiEnabled)
+        {
+            ni_model_translation = Vector3.Empty;
+            OpenNIClean();
+            Console.WriteLine("ok OpenNIClean");
+            OpenNiEnabled = false;
+        }
+        if (surface != null)
+            surface.Dispose();
+    }
+
+    private void OnDeviceReset(object sender, EventArgs e)
+    {
+        Console.WriteLine("CCDViewer.OnDeviceReset");
+        {
+            StringBuilder path = new StringBuilder(Path.Combine(Application.StartupPath, "Data\\SamplesConfig.xml"));
+            Console.WriteLine("OpenNIInit on {0}", path);
+            OpenNiEnabled = (OpenNIInit(path) == 0);
+            Console.WriteLine("ok OpenNIInit:{0}", OpenNiEnabled);
+        }
+        if (OpenNiEnabled)
+        {
+            surface = device.CreateOffscreenPlainSurface(camw, camh, Format.X8R8G8B8, Pool.Default);
+            surface_buf = new byte[camw * camh * 4];
+        }
+    }
+
     internal Mesh sphere = null;
 
     CCDSolver solver = new CCDSolver();
@@ -29,8 +95,8 @@ public class CCDViewer : Viewer
     /// </summary>
     public CCDViewer()
     {
-        LimitRotationEnabled = true;
-        FloorEnabled = true;
+        LimitRotationEnabled = false;
+        FloorEnabled = false;
         solver.TMONodeRotation += delegate(TMONode node)
         {
             LimitRotation(node);
@@ -39,6 +105,7 @@ public class CCDViewer : Viewer
         {
             RenderDerived();
         };
+        SetJointNames();
     }
 
     /// マウスボタンを押したときに実行するハンドラ
@@ -105,6 +172,10 @@ public class CCDViewer : Viewer
     /// </summary>
     public void FrameMoveDerived()
     {
+        if (OpenNiEnabled)
+        {
+            OpenNiTraking();
+        }
         if (MotionEnabled)
             return;
 
@@ -122,11 +193,316 @@ public class CCDViewer : Viewer
         }
     }
 
+    const float ni_world_scale = 0.0125f;
+    Vector3 ToWorldPosition(XnVector3D p)
+    {
+        return new Vector3( p.X * ni_world_scale, p.Y * ni_world_scale, -p.Z * ni_world_scale);
+    }
+
+    XnSkeletonJointPosition[] ni_joint_ary = new XnSkeletonJointPosition[15];
+    List<string> ni_joint_names = new List<string>();
+    Dictionary<string, XnSkeletonJointPosition> ni_joint_map = new Dictionary<string, XnSkeletonJointPosition>();
+
+    void SetJointNames()
+    {
+        ni_joint_names.Add("Torso");
+        ni_joint_names.Add("Neck");
+        ni_joint_names.Add("Head");
+        ni_joint_names.Add("LeftShoulder");
+        ni_joint_names.Add("LeftElbow");
+        ni_joint_names.Add("LeftHand");
+        ni_joint_names.Add("RightShoulder");
+        ni_joint_names.Add("RightElbow");
+        ni_joint_names.Add("RightHand");
+        ni_joint_names.Add("LeftHip");
+        ni_joint_names.Add("LeftKnee");
+        ni_joint_names.Add("LeftFoot");
+        ni_joint_names.Add("RightHip");
+        ni_joint_names.Add("RightKnee");
+        ni_joint_names.Add("RightFoot");
+    }
+
+    private void OpenNiTraking()
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            IntPtr ptr = OpenNIGetJointPos();
+            for (int i = 0; i < 15; i++)
+            {
+                ni_joint_ary[i] = (XnSkeletonJointPosition)Marshal.PtrToStructure(ptr, typeof(XnSkeletonJointPosition));
+                ptr = (IntPtr)(ptr.ToInt32() + Marshal.SizeOf(typeof(XnSkeletonJointPosition)));
+            }
+
+            if (ni_joint_ary[0].confidence < 0.5f)
+                return;
+
+            for (int i = 0; i < 15; i++)
+            {
+                ni_joint_map[ni_joint_names[i]] = ni_joint_ary[i];
+            }
+
+            TMOFile tmo = fig.Tmo;
+            {
+                Vector3 p0 = tmo.FindNodeByName("W_Hips").Translation;
+                Vector3 p1 = ToWorldPosition(Mean(ni_joint_map["LeftHip"].position, ni_joint_map["RightHip"].position));
+                if (ni_model_translation == Vector3.Empty)
+                {
+                    ni_model_translation = p1 - p0;
+                    Console.WriteLine("ni_model_translation:{0}", ni_model_translation);
+                }
+                tmo.FindNodeByName("W_Hips").Translation = p1 - ni_model_translation;
+            }
+
+            tmo.nodemap["|W_Hips"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck"].Rotation = Quaternion.Identity;
+
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_RightHips_Dummy|W_RightUpLeg"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg"].Rotation = Quaternion.Identity;
+
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg"].Rotation = Quaternion.Identity;
+
+            Quaternion q;
+            if (TryNiRotationDirX(out q, ni_joint_map["LeftHip"], ni_joint_map["RightHip"]))
+                tmo.FindNodeByName("W_Hips").Rotation = q;
+
+            {
+                Vector3 p1 = ToWorldPosition(ni_joint_map["Torso"].position);
+                solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3", p1 - ni_model_translation);
+            }
+
+            {
+                Vector3 p1 = ToWorldPosition(ni_joint_map["Neck"].position);
+                solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck", p1 - ni_model_translation);
+            }
+
+            {
+                Vector3 p1 = ToWorldPosition(ni_joint_map["Head"].position);
+                solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck|Head", p1 - ni_model_translation);
+            }
+
+            {
+                //Vector3 p1 = ToWorldPosition(ni_joint_map["LeftShoulder"].position);
+                //solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm", p1 - ni_model_translation);
+            }
+
+            {
+                Vector3 p1 = ToWorldPosition(ni_joint_map["LeftElbow"].position);
+                solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm", p1 - ni_model_translation);
+            }
+
+            {
+                Vector3 p1 = ToWorldPosition(ni_joint_map["LeftHand"].position);
+                solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm|W_RightForeArmRoll|W_RightHand", p1 - ni_model_translation);
+            }
+
+            {
+                Vector3 p1 = ToWorldPosition(ni_joint_map["LeftKnee"].position);
+                solver.Solve(tmo, "|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg", p1 - ni_model_translation);
+            }
+
+            {
+                Vector3 p1 = ToWorldPosition(ni_joint_map["LeftFoot"].position);
+                solver.Solve(tmo, "|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot", p1 - ni_model_translation);
+            }
+
+            {
+                //Vector3 p1 = ToWorldPosition(ni_joint_map["RightShoulder"].position);
+                //solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm", p1 - ni_model_translation);
+            }
+
+            {
+                Vector3 p1 = ToWorldPosition(ni_joint_map["RightElbow"].position);
+                solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm", p1 - ni_model_translation);
+            }
+
+            {
+                Vector3 p1 = ToWorldPosition(ni_joint_map["RightHand"].position);
+                solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand", p1 - ni_model_translation);
+            }
+
+            {
+                Vector3 p1 = ToWorldPosition(ni_joint_map["RightKnee"].position);
+                solver.Solve(tmo, "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg", p1 - ni_model_translation);
+            }
+
+            {
+                Vector3 p1 = ToWorldPosition(ni_joint_map["RightFoot"].position);
+                solver.Solve(tmo, "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot", p1 - ni_model_translation);
+            }
+
+            /*
+            if (TryNiRotation(out q, map["Neck"], map["LeftShoulder"], map["LeftElbow"]))
+                tmo.FindNodeByName("W_RightArm").Rotation = q;
+            if (TryNiRotation(out q, map["LeftShoulder"], map["LeftElbow"], map["LeftHand"]))
+                tmo.FindNodeByName("W_RightForeArm").Rotation = q;
+
+            if (TryNiRotation(out q, map["Neck"], map["RightShoulder"], map["RightElbow"]))
+                tmo.FindNodeByName("W_LeftArm").Rotation = q;
+            if (TryNiRotation(out q, map["RightShoulder"], map["RightElbow"], map["RightHand"]))
+                tmo.FindNodeByName("W_LeftForeArm").Rotation = q;
+
+            if (TryNiRotation(out q, map["LeftShoulder"], map["LeftHip"], map["LeftKnee"]))
+                tmo.FindNodeByName("W_RightUpLeg").Rotation = q;
+            if (TryNiRotation(out q, map["LeftHip"], map["LeftKnee"], map["LeftFoot"]))
+                tmo.FindNodeByName("W_RightLeg").Rotation = q;
+
+            if (TryNiRotation(out q, map["RightShoulder"], map["RightHip"], map["RightKnee"]))
+                tmo.FindNodeByName("W_LeftUpLeg").Rotation = q;
+            if (TryNiRotation(out q, map["RightHip"], map["RightKnee"], map["RightFoot"]))
+                tmo.FindNodeByName("W_LeftLeg").Rotation = q;
+            */
+            fig.UpdateBoneMatricesWithoutTMOFrame();
+        }
+    }
+
+    float Mean(float f1, float f2)
+    {
+        return (f1 + f2) / 2.0f;
+    }
+    XnVector3D Mean(XnVector3D v1, XnVector3D v2)
+    {
+        XnVector3D mean;
+        mean.X = Mean(v1.X, v2.X);
+        mean.Y = Mean(v1.Y, v2.Y);
+        mean.Z = Mean(v1.Z, v2.Z);
+        return mean;
+    }
+    XnSkeletonJointPosition Mean(XnSkeletonJointPosition p1, XnSkeletonJointPosition p2)
+    {
+        XnSkeletonJointPosition mean;
+        mean.position = Mean(p1.position, p2.position);
+        mean.confidence = Mean(p1.confidence, p2.confidence);
+        return mean;
+    }
+
+    /// <summary>
+    /// v1をv2に合わせる回転を得ます。
+    /// </summary>
+    /// <param name="v1">v1</param>
+    /// <param name="v2">v2</param>
+    /// <param name="q">q</param>
+    /// <returns>回転が必要であるか</returns>
+    public bool RotationVectorToVector(Vector3 v1, Vector3 v2, out Quaternion q)
+    {
+        Vector3 n1 = Vector3.Normalize(v1);
+        Vector3 n2 = Vector3.Normalize(v2);
+        float dotProduct = Vector3.Dot(n1, n2);
+        float angle = (float)Math.Acos(dotProduct);
+        bool needRotate = (angle > float.Epsilon);
+        if (needRotate)
+        {
+            Vector3 axis = Vector3.Cross(n1, n2);
+            q = Quaternion.RotationAxis(axis, angle);
+        }
+        else
+            q = Quaternion.Identity;
+        return needRotate;
+    }
+
+    Vector3 ni_model_translation = Vector3.Empty;
+
+    bool TryNiRotationDirX(out Quaternion q, XnSkeletonJointPosition xnp1, XnSkeletonJointPosition xnp2)
+    {
+        if (xnp1.confidence < 0.5f || xnp2.confidence < 0.5f)
+        {
+            q = Quaternion.Identity;
+            return false;
+        }
+
+        Vector3 p1 = ToVector3(xnp1.position);
+        Vector3 p2 = ToVector3(xnp2.position);
+
+        Vector3 vx = new Vector3(1, 0, 0);
+        Vector3 v2 = p2 - p1;
+
+        RotationVectorToVector(vx, v2, out q);
+        return true;
+    }
+
+    bool TryNiRotationDirY(out Quaternion q, XnSkeletonJointPosition xnp1, XnSkeletonJointPosition xnp2)
+    {
+        if (xnp1.confidence < 0.5f || xnp2.confidence < 0.5f)
+        {
+            q = Quaternion.Identity;
+            return false;
+        }
+
+        Vector3 p1 = ToVector3(xnp1.position);
+        Vector3 p2 = ToVector3(xnp2.position);
+
+        Vector3 vy = new Vector3(0, 1, 0);
+        Vector3 v2 = p2 - p1;
+
+        RotationVectorToVector(vy, v2, out q);
+        return true;
+    }
+
+    bool TryNiRotation(out Quaternion q, XnSkeletonJointPosition xnp0, XnSkeletonJointPosition xnp1, XnSkeletonJointPosition xnp2)
+    {
+        if (xnp0.confidence < 0.5f || xnp1.confidence < 0.5f || xnp2.confidence < 0.5f)
+        {
+            q = Quaternion.Identity;
+            return false;
+        }
+
+        Vector3 p0 = ToVector3(xnp0.position);
+        Vector3 p1 = ToVector3(xnp1.position);
+        Vector3 p2 = ToVector3(xnp2.position);
+
+        Vector3 v1 = p1 - p0;
+        Vector3 v2 = p2 - p1;
+
+        RotationVectorToVector(v1, v2, out q);
+        return true;
+    }
+
     /// <summary>
     /// シーンをレンダリングします。
     /// </summary>
     public void RenderDerived()
     {
+        if (OpenNiEnabled)
+        {
+            {
+                Vector4 color = new Vector4(1, 0, 0, 0.5f);
+                foreach (XnSkeletonJointPosition xnp in ni_joint_ary)
+                {
+                    Vector3 p1 = ToWorldPosition(xnp.position);
+                    Vector3 pos = p1 - ni_model_translation;
+                    DrawMesh(sphere, Matrix.Translation(pos), color);
+                }
+            }
+
+            {
+                GraphicsStream gs = surface.LockRectangle(LockFlags.None);
+                OpenNIDrawDepthMap();
+                IntPtr ptr = OpenNIGetDepthBuf();
+                int len = camw * camh * 4;
+                Marshal.Copy(ptr, surface_buf, 0, len);
+                Marshal.Copy(surface_buf, 0, gs.InternalData, len);
+                surface.UnlockRectangle();
+            }
+
+            Rectangle src_rect = new Rectangle(0, 0, camw, camh);
+
+            //カメラ画像の転写矩形を作成
+            Viewport vp = device.Viewport;
+            Rectangle view_rect = new Rectangle(vp.X + vp.Width - vp.Width / 4, vp.Y, vp.Width / 4, vp.Height / 4);
+
+            {
+                //背景描画
+                Surface dest_surface = device.GetBackBuffer(0, 0, BackBufferType.Mono);
+                device.StretchRectangle(surface, src_rect, dest_surface, view_rect, TextureFilter.None);
+            }
+        }
         if (MotionEnabled)
             return;
 
@@ -245,6 +621,10 @@ public class CCDViewer : Viewer
                 }
             }
         };
+
+        device.DeviceLost += new EventHandler(OnDeviceLost);
+        device.DeviceReset += new EventHandler(OnDeviceReset);
+        OnDeviceReset(device, null);
 
         return true;
     }
@@ -476,6 +856,8 @@ public class CCDViewer : Viewer
     /// </summary>
     public new void Dispose()
     {
+        if (surface != null)
+            surface.Dispose();
         if (sphere != null)
             sphere.Dispose();
         base.Dispose();
