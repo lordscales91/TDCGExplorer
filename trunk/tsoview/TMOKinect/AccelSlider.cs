@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TMOComposer
+namespace TMOKinect
 {
     public partial class AccelSlider : UserControl
     {

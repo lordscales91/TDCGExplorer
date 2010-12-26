@@ -9,7 +9,7 @@ using System.Xml;
 using System.Xml.Serialization;
 using TDCG;
 
-namespace TMOComposer
+namespace TMOKinect
 {
     public class TMOAnimItem
     {

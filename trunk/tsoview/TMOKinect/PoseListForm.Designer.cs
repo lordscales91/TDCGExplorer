@@ -1,4 +1,4 @@
-﻿namespace TMOComposer
+﻿namespace TMOKinect
 {
     partial class PoseListForm
     {
