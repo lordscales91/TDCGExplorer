@@ -37,6 +37,8 @@ public class CCDViewer : Viewer
     [DllImport("NiSimpleTracker.dll")]
     public static extern IntPtr OpenNIGetJointPos();
     [DllImport("NiSimpleTracker.dll")]
+    public static extern bool OpenNIIsTracking();
+    [DllImport("NiSimpleTracker.dll")]
     public static extern int OpenNIInit(StringBuilder path);
     [DllImport("NiSimpleTracker.dll")]
     public static extern void OpenNIDrawDepthMap();
@@ -172,9 +174,9 @@ public class CCDViewer : Viewer
     /// </summary>
     public void FrameMoveDerived()
     {
-        if (OpenNiEnabled)
+        if (OpenNiEnabled && OpenNIIsTracking())
         {
-            OpenNiTraking();
+            OpenNiTracking();
         }
         if (MotionEnabled)
             return;
@@ -222,7 +224,7 @@ public class CCDViewer : Viewer
         ni_joint_names.Add("RightFoot");
     }
 
-    private void OpenNiTraking()
+    private void OpenNiTracking()
     {
         Figure fig;
         if (TryGetFigure(out fig))
@@ -471,6 +473,7 @@ public class CCDViewer : Viewer
     {
         if (OpenNiEnabled)
         {
+            if (OpenNIIsTracking())
             {
                 Vector4 color = new Vector4(1, 0, 0, 0.5f);
                 foreach (XnSkeletonJointPosition xnp in ni_joint_ary)
