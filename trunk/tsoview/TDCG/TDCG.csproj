@@ -50,7 +50,6 @@
     <Compile Include="Extensions\BinaryWriterMethods.cs" />
     <Compile Include="SlideMatrices.cs" />
     <Compile Include="TBNFile.cs" />
-    <Compile Include="TMOConstraint.cs" />
     <Compile Include="TMOFile.cs" />
     <Compile Include="TPOConfig.cs" />
     <Compile Include="TPOFile.cs" />
