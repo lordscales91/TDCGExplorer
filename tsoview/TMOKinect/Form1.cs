@@ -26,8 +26,6 @@ namespace TMOKinect
             this.ClientSize = tso_config.ClientSize;
             save_path = tso_config.SavePath;
             pose_path = tso_config.PosePath;
-            TMOAnimItem.PoseRoot = tso_config.PosePath;
-            TMOAnimItem.FaceRoot = tso_config.FacePath;
 
             viewer = new CCDViewer();
             if (viewer.InitializeApplication(this))
@@ -47,10 +45,7 @@ namespace TMOKinect
 
         void CreatePngSaveItem(string file)
         {
-            PngSaveItem item = new PngSaveItem();
-            item.File = file;
-
-            viewer.LoadAnyFile(Path.Combine(save_path, item.File), true);
+            viewer.LoadAnyFile(Path.Combine(save_path, file), true);
         }
 
         private void timer1_Tick(object sender, EventArgs e)
