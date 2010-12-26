@@ -97,12 +97,6 @@ public class CCDViewer : Viewer
     /// </summary>
     public CCDViewer()
     {
-        LimitRotationEnabled = false;
-        FloorEnabled = false;
-        solver.TMONodeRotation += delegate(TMONode node)
-        {
-            LimitRotation(node);
-        };
         this.Rendering += delegate()
         {
             RenderDerived();
@@ -122,8 +116,6 @@ public class CCDViewer : Viewer
                 if (!MotionEnabled)
                 {
                     SelectEffector();
-                    if (current_effector_path == "|W_Hips")
-                        SaveFloorTargets();
                 }
             break;
         }
@@ -176,7 +168,7 @@ public class CCDViewer : Viewer
     {
         if (OpenNiEnabled && OpenNIIsTracking())
         {
-            OpenNiTracking();
+            OpenNiSolve();
         }
         if (MotionEnabled)
             return;
@@ -224,7 +216,7 @@ public class CCDViewer : Viewer
         ni_joint_names.Add("RightFoot");
     }
 
-    private void OpenNiTracking()
+    private void OpenNiSolve()
     {
         Figure fig;
         if (TryGetFigure(out fig))
@@ -554,15 +546,6 @@ public class CCDViewer : Viewer
         }
     }
 
-    private void SaveFloorTargets()
-    {
-        Figure fig;
-        if (TryGetFigure(out fig))
-        {
-            solver.SaveFloorTargets(fig.Tmo);
-        }
-    }
-
     void RotateOnScreen(int dx, int dy)
     {
         Figure fig;
@@ -574,7 +557,6 @@ public class CCDViewer : Viewer
             {
                 float angle = dx * 0.01f;
                 bone.Rotation = Quaternion.RotationAxis(current_handle_dir, angle) * bone.Rotation;
-                LimitRotation(bone);
             }
             fig.UpdateBoneMatricesWithoutTMOFrame();
         }
@@ -642,11 +624,6 @@ public class CCDViewer : Viewer
     /// </summary>
     public bool LimitRotationEnabled { get; set; }
     
-    /// <summary>
-    /// 接地が有効であるか。
-    /// </summary>
-    public bool FloorEnabled { get { return solver.FloorEnabled; } set { solver.FloorEnabled = value; } }
-
     void DrawEffector()
     {
         Figure fig;
@@ -823,35 +800,6 @@ public class CCDViewer : Viewer
             return DetectSphereRayCollision(sphereRadius, ref sphereCenter, ref rayStart, ref rayOrientation, out collisionPoint, out collisionTime);
         }
         return false;
-    }
-
-    static Regex re_legnode = new Regex(@"Leg|Foot|Toe");
-
-    private void LimitRotation(TMONode node)
-    {
-        if (LimitRotationEnabled)
-            if (re_legnode.IsMatch(node.Name))
-                LimitRotationXYZ(node);
-            else
-                LimitRotationZXY(node);
-    }
-
-    private void LimitRotationXYZ(TMONode node)
-    {
-        TMOConstraintItem item = constraint_xyz.GetItem(node.Name);
-        Vector3 angle1 = TMOMat.ToAngleXYZ(node.Rotation);
-        Vector3 angle0 = item.Limit(angle1);
-        node.Rotation = TMOMat.ToQuaternionXYZ(angle0);
-        //Console.WriteLine("node {0} x {1:F2} y {2:F2} z {3:F2}", node.Name, angle0.X, angle0.Y, angle0.Z);
-    }
-
-    private void LimitRotationZXY(TMONode node)
-    {
-        TMOConstraintItem item = constraint_zxy.GetItem(node.Name);
-        Vector3 angle1 = TMOMat.ToAngleZXY(node.Rotation);
-        Vector3 angle0 = item.Limit(angle1);
-        node.Rotation = TMOMat.ToQuaternionZXY(angle0);
-        //Console.WriteLine("node {0} x {1:F2} y {2:F2} z {3:F2}", node.Name, angle0.X, angle0.Y, angle0.Z);
     }
 
     /// <summary>

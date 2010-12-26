@@ -34,11 +34,6 @@ namespace TDCG
             solved = false;
         }
 
-        /// <summary>
-        /// 接地が有効であるか。
-        /// </summary>
-        public bool FloorEnabled { get; set; }
-
         bool solved = true;
         /// <summary>
         /// 逆運動学による解を得られたか。
@@ -46,8 +41,6 @@ namespace TDCG
         public bool Solved { get { return solved; } set { solved = value; } }
 
         Dictionary<string, string[]> effector_dictionary = new Dictionary<string, string[]>();
-        List<string> effector_list = new List<string>();
-        Dictionary<string, Vector3> target_dictionary = new Dictionary<string, Vector3>();
 
         /// <summary>
         /// 各エフェクタの名称を返します。
@@ -147,28 +140,6 @@ namespace TDCG
 
             effector_dictionary["|W_Hips"] =
                 new string[] { };
-
-            effector_list.Add("|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot");
-            effector_list.Add("|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot");
-        }
-
-        /// <summary>
-        /// 接地の目標を設定します。
-        /// </summary>
-        /// <param name="tmo">tmo</param>
-        public void SaveFloorTargets(TMOFile tmo)
-        {
-            Debug.Assert(tmo.nodemap != null, "fig.Tmo.nodemap should not be null");
-            target_dictionary.Clear();
-            foreach (string effector_name in effector_list)
-            {
-                TMONode node;
-                if (tmo.nodemap.TryGetValue(effector_name, out node))
-                {
-                    Matrix m = node.combined_matrix;
-                    target_dictionary[effector_name] = new Vector3(m.M41, 0, m.M43);
-                }
-            }
         }
 
         /// <summary>
@@ -184,11 +155,6 @@ namespace TDCG
             {
                 effector.Translation = target;
             }
-            if (FloorEnabled)
-                foreach (string ename in effector_list)
-                {
-                    Solve(tmo, ename, target_dictionary[ename]);
-                }
         }
 
         /// <summary>
