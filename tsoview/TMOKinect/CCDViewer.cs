@@ -587,9 +587,6 @@ public class CCDViewer : Viewer
 
         current_effector_path = "|W_Hips";
 
-        constraint_xyz = TMOConstraint.Load(@"angle-GRABIA-xyz.xml");
-        constraint_zxy = TMOConstraint.Load(@"angle-GRABIA-zxy.xml");
-
         //should be update target when select figure
         this.FigureEvent += delegate(object sender, EventArgs e)
         {
@@ -616,13 +613,6 @@ public class CCDViewer : Viewer
 
     string current_effector_path = null;
     Vector3 current_handle_dir = Vector3.Empty;
-    TMOConstraint constraint_xyz = null;
-    TMOConstraint constraint_zxy = null;
-    
-    /// <summary>
-    /// 回転角制限が有効であるか。
-    /// </summary>
-    public bool LimitRotationEnabled { get; set; }
     
     void DrawEffector()
     {
