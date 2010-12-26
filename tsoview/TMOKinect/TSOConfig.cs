@@ -5,7 +5,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace TMOComposer
+namespace TMOKinect
 {
 
 public class TSOConfig

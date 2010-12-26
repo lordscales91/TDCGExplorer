@@ -9,7 +9,7 @@ using System.Text;
 using System.Windows.Forms;
 using TDCG;
 
-namespace TMOComposer
+namespace TMOKinect
 {
     public partial class Form1 : Form
     {

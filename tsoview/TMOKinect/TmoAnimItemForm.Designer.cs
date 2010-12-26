@@ -1,4 +1,4 @@
-﻿namespace TMOComposer
+﻿namespace TMOKinect
 {
     partial class TmoAnimItemForm
     {
@@ -37,7 +37,7 @@
             this.tbFaceFile = new System.Windows.Forms.TextBox();
             this.lbFaceFile = new System.Windows.Forms.Label();
             this.btnOpenFaces = new System.Windows.Forms.Button();
-            this.accelSlider1 = new TMOComposer.AccelSlider();
+            this.accelSlider1 = new TMOKinect.AccelSlider();
             this.btnOpenPoses = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 

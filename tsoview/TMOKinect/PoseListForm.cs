@@ -7,7 +7,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
-namespace TMOComposer
+namespace TMOKinect
 {
     public partial class PoseListForm : Form
     {

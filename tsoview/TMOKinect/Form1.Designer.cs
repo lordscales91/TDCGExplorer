@@ -1,4 +1,4 @@
-﻿namespace TMOComposer
+﻿namespace TMOKinect
 {
     partial class Form1
     {
@@ -250,7 +250,7 @@
             // 
             // pngSaveItemBindingSource
             // 
-            this.pngSaveItemBindingSource.DataSource = typeof(TMOComposer.PngSaveItem);
+            this.pngSaveItemBindingSource.DataSource = typeof(TMOKinect.PngSaveItem);
             // 
             // poseFileDataGridViewTextBoxColumn
             // 
@@ -268,7 +268,7 @@
             // 
             // tmoAnimItemBindingSource
             // 
-            this.tmoAnimItemBindingSource.DataSource = typeof(TMOComposer.TMOAnimItem);
+            this.tmoAnimItemBindingSource.DataSource = typeof(TMOKinect.TMOAnimItem);
             // 
             // Form1
             // 
