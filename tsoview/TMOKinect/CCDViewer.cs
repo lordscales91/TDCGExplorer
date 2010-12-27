@@ -18,31 +18,6 @@ namespace TDCG
     /// </summary>
 public class CCDViewer : Viewer
 {
-    public struct XnVector3D
-    {
-        public float X;
-        public float Y;
-        public float Z;
-    }
-    public struct XnSkeletonJointPosition
-    {
-        public XnVector3D position;
-        public float confidence;
-    }
-
-    [DllImport("NiSimpleTracker.dll")]
-    public static extern int OpenNIClean();
-    [DllImport("NiSimpleTracker.dll")]
-    public static extern IntPtr OpenNIGetDepthBuf();
-    [DllImport("NiSimpleTracker.dll")]
-    public static extern IntPtr OpenNIGetJointPos();
-    [DllImport("NiSimpleTracker.dll")]
-    public static extern bool OpenNIIsTracking();
-    [DllImport("NiSimpleTracker.dll")]
-    public static extern int OpenNIInit(StringBuilder path);
-    [DllImport("NiSimpleTracker.dll")]
-    public static extern void OpenNIDrawDepthMap();
-
     const int camw = 640;
     const int camh = 480;
     bool OpenNiEnabled = false;
@@ -60,7 +35,7 @@ public class CCDViewer : Viewer
         if (OpenNiEnabled)
         {
             ni_model_translation = Vector3.Empty;
-            OpenNIClean();
+            NiSimpleTracker.Clean();
             Console.WriteLine("ok OpenNIClean");
             OpenNiEnabled = false;
         }
@@ -74,7 +49,7 @@ public class CCDViewer : Viewer
         {
             StringBuilder path = new StringBuilder(Path.Combine(Application.StartupPath, "Data\\SamplesConfig.xml"));
             Console.WriteLine("OpenNIInit on {0}", path);
-            OpenNiEnabled = (OpenNIInit(path) == 0);
+            OpenNiEnabled = (NiSimpleTracker.Init(path) == 0);
             Console.WriteLine("ok OpenNIInit:{0}", OpenNiEnabled);
         }
         if (OpenNiEnabled)
@@ -166,7 +141,7 @@ public class CCDViewer : Viewer
     /// </summary>
     public void FrameMoveDerived()
     {
-        if (OpenNiEnabled && OpenNIIsTracking())
+        if (OpenNiEnabled && NiSimpleTracker.IsTracking())
         {
             OpenNiSolve();
         }
@@ -221,7 +196,7 @@ public class CCDViewer : Viewer
         Figure fig;
         if (TryGetFigure(out fig))
         {
-            IntPtr ptr = OpenNIGetJointPos();
+            IntPtr ptr = NiSimpleTracker.GetJointPos();
             for (int i = 0; i < 15; i++)
             {
                 ni_joint_ary[i] = (XnSkeletonJointPosition)Marshal.PtrToStructure(ptr, typeof(XnSkeletonJointPosition));
@@ -465,7 +440,7 @@ public class CCDViewer : Viewer
     {
         if (OpenNiEnabled)
         {
-            if (OpenNIIsTracking())
+            if (NiSimpleTracker.IsTracking())
             {
                 Vector4 color = new Vector4(1, 0, 0, 0.5f);
                 foreach (XnSkeletonJointPosition xnp in ni_joint_ary)
@@ -478,8 +453,8 @@ public class CCDViewer : Viewer
 
             {
                 GraphicsStream gs = surface.LockRectangle(LockFlags.None);
-                OpenNIDrawDepthMap();
-                IntPtr ptr = OpenNIGetDepthBuf();
+                NiSimpleTracker.DrawDepthMap();
+                IntPtr ptr = NiSimpleTracker.GetDepthBuf();
                 int len = camw * camh * 4;
                 Marshal.Copy(ptr, surface_buf, 0, len);
                 Marshal.Copy(surface_buf, 0, gs.InternalData, len);
