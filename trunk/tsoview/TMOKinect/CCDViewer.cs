@@ -57,6 +57,7 @@ public class CCDViewer : Viewer
             surface = device.CreateOffscreenPlainSurface(camw, camh, Format.X8R8G8B8, Pool.Default);
             surface_buf = new byte[camw * camh * 4];
         }
+        CreateGrid();
     }
 
     internal Mesh sphere = null;
@@ -410,6 +411,7 @@ public class CCDViewer : Viewer
 
         DrawEffector();
         DrawTarget();
+        DrawGrid();
     }
 
     /// <summary>
@@ -555,6 +557,62 @@ public class CCDViewer : Viewer
     void DrawTarget()
     {
         DrawMesh(sphere, Matrix.Translation(solver.Target), new Vector4(1, 1, 0, 0.5f));
+    }
+
+    VertexBuffer vb_grid = null;
+
+    void CreateGrid()
+    {
+        vb_grid = new VertexBuffer(typeof(CustomVertex.PositionColored),
+            (3 + 11 + 11) * 2, device, Usage.None, CustomVertex.PositionColored.Format, Pool.Default);
+        vb_grid.Created += new EventHandler(vb_grid_Created);
+        vb_grid_Created(vb_grid, null);
+
+    }
+
+    void vb_grid_Created(object sender, EventArgs e)
+    {
+        VertexBuffer buffer = (VertexBuffer)sender;
+
+        using (GraphicsStream data = buffer.Lock(0, 0, LockFlags.None))
+        {
+            int color;
+            color = Color.Red.ToArgb();
+            data.Write(new CustomVertex.PositionColored(0, 0, 0, color));
+            data.Write(new CustomVertex.PositionColored(25, 0, 0, color));
+            color = Color.Green.ToArgb();
+            data.Write(new CustomVertex.PositionColored(0, 0, 0, color));
+            data.Write(new CustomVertex.PositionColored(0, 25, 0, color));
+            color = Color.Blue.ToArgb();
+            data.Write(new CustomVertex.PositionColored(0, 0, 0, color));
+            data.Write(new CustomVertex.PositionColored(0, 0, 25, color));
+
+            color = Color.Black.ToArgb();
+            for (int i = -5; i <= 5; i++)
+            {
+                data.Write(new CustomVertex.PositionColored(-25, 0, i * 5, color));
+                data.Write(new CustomVertex.PositionColored(i == 0 ? 0 : 25, 0, i * 5, color));
+            }
+            for (int i = -5; i <= 5; i++)
+            {
+                data.Write(new CustomVertex.PositionColored(i * 5, 0, -25, color));
+                data.Write(new CustomVertex.PositionColored(i * 5, 0, i == 0 ? 0 : 25, color));
+            }
+
+            buffer.Unlock();
+        }
+    }
+
+    void DrawGrid()
+    {
+        bool orig_lighting = device.RenderState.Lighting;
+        device.RenderState.Lighting = false;
+
+        device.SetStreamSource(0, vb_grid, 0);
+        device.VertexFormat = CustomVertex.PositionColored.Format;
+        device.DrawPrimitives(PrimitiveType.LineList, 0, (3 + 11 + 11));
+
+        device.RenderState.Lighting = orig_lighting;
     }
 
     /// スクリーン座標からエフェクタを見つけます。
@@ -704,6 +762,8 @@ public class CCDViewer : Viewer
     /// </summary>
     public new void Dispose()
     {
+        if (vb_grid != null)
+            vb_grid.Dispose();
         if (surface != null)
             surface.Dispose();
         if (sphere != null)
