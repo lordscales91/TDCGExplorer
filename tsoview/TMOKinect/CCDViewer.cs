@@ -225,6 +225,27 @@ public class CCDViewer : Viewer
 
             tmo.nodemap["|W_Hips"].Rotation = Quaternion.Identity;
             tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck"].Rotation = Quaternion.Identity;
+            //tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck|Head"].Rotation = Quaternion.Identity;
+
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm|W_RightForeArmRoll|W_RightHand"].Rotation = Quaternion.Identity;
+
+            tmo.nodemap["|W_Hips|W_RightHips_Dummy|W_RightUpLeg"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot"].Rotation = Quaternion.Identity;
+
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand"].Rotation = Quaternion.Identity;
+
+            tmo.nodemap["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg"].Rotation = Quaternion.Identity;
+            tmo.nodemap["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot"].Rotation = Quaternion.Identity;
 
             Quaternion q;
             if (TryNiRotationDirX(out q, ni_joint_map["LeftHip"], ni_joint_map["RightHip"]))
@@ -232,7 +253,7 @@ public class CCDViewer : Viewer
 
             Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3", "Torso");
             Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck", "Neck");
-            Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck|Head", "Head", false);
+            Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck|Head", "Head");
 
             //Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm", "LeftShoulder");
             Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm", "LeftElbow");
@@ -254,13 +275,6 @@ public class CCDViewer : Viewer
 
     void Solve(TMOFile tmo, string effector_name, string ni_joint_name)
     {
-        Solve(tmo, effector_name, ni_joint_name, true);
-    }
-
-    void Solve(TMOFile tmo, string effector_name, string ni_joint_name, bool reset_rotation)
-    {
-        if (reset_rotation)
-            tmo.nodemap[effector_name].Rotation = Quaternion.Identity;
         Vector3 p1 = ToWorldPosition(ni_joint_map[ni_joint_name].position);
         solver.Solve(tmo, effector_name, p1 - ni_model_translation);
     }
