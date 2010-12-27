@@ -22,37 +22,28 @@ namespace TMOKinect
         public Form1(TSOConfig tso_config, string[] args)
         {
             InitializeComponent();
-            
             this.ClientSize = tso_config.ClientSize;
+            this.SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.Opaque, true);
+
             save_path = tso_config.SavePath;
             pose_path = tso_config.PosePath;
 
             viewer = new CCDViewer();
             if (viewer.InitializeApplication(this))
             {
-                CreatePngSave();
+                viewer.LoadAnyFile(Path.Combine(save_path, @"system.tdcgsav.png"), true);
                 viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
-                //viewer.MotionEnabled = true;
-                timer1.Enabled = true;
             }
             this.tso_config = tso_config;
         }
 
-        private void CreatePngSave()
+        protected override void OnPaint(PaintEventArgs e)
         {
-            CreatePngSaveItem("system.tdcgsav.png");
-        }
-
-        void CreatePngSaveItem(string file)
-        {
-            viewer.LoadAnyFile(Path.Combine(save_path, file), true);
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
+            base.OnPaint(e);
             viewer.FrameMove();
             viewer.FrameMoveDerived();
             viewer.Render();
+            this.Invalidate();
         }
     }
 }
