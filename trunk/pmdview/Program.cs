@@ -12,11 +12,10 @@ namespace pmdview
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            using (Form1 form1 = new Form1())
+            using (Form1 form1 = new Form1(args))
             {
                 // Show our form and initialize our graphics engine
                 form1.Show();
-                form1.InitializeGraphics(args);
                 Application.Run(form1);
             }
         }
