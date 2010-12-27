@@ -218,118 +218,50 @@ public class CCDViewer : Viewer
                 if (ni_model_translation == Vector3.Empty)
                 {
                     ni_model_translation = p1 - p0;
-                    Console.WriteLine("ni_model_translation:{0}", ni_model_translation);
                 }
                 tmo.FindNodeByName("W_Hips").Translation = p1 - ni_model_translation;
             }
 
             tmo.nodemap["|W_Hips"].Rotation = Quaternion.Identity;
             tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1"].Rotation = Quaternion.Identity;
-            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3"].Rotation = Quaternion.Identity;
-            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck"].Rotation = Quaternion.Identity;
-
-            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm"].Rotation = Quaternion.Identity;
-            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm"].Rotation = Quaternion.Identity;
-            tmo.nodemap["|W_Hips|W_RightHips_Dummy|W_RightUpLeg"].Rotation = Quaternion.Identity;
-            tmo.nodemap["|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg"].Rotation = Quaternion.Identity;
-
-            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm"].Rotation = Quaternion.Identity;
-            tmo.nodemap["|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm"].Rotation = Quaternion.Identity;
-            tmo.nodemap["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg"].Rotation = Quaternion.Identity;
-            tmo.nodemap["|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg"].Rotation = Quaternion.Identity;
 
             Quaternion q;
             if (TryNiRotationDirX(out q, ni_joint_map["LeftHip"], ni_joint_map["RightHip"]))
                 tmo.FindNodeByName("W_Hips").Rotation = q;
 
-            {
-                Vector3 p1 = ToWorldPosition(ni_joint_map["Torso"].position);
-                solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3", p1 - ni_model_translation);
-            }
+            Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3", "Torso");
+            Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck", "Neck");
+            Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck|Head", "Head", false);
 
-            {
-                Vector3 p1 = ToWorldPosition(ni_joint_map["Neck"].position);
-                solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck", p1 - ni_model_translation);
-            }
+            //Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm", "LeftShoulder");
+            Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm", "LeftElbow");
+            Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm|W_RightForeArmRoll|W_RightHand", "LeftHand");
 
-            {
-                Vector3 p1 = ToWorldPosition(ni_joint_map["Head"].position);
-                solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_Neck|Head", p1 - ni_model_translation);
-            }
+            Solve(tmo, "|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg", "LeftKnee");
+            Solve(tmo, "|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot", "LeftFoot");
 
-            {
-                //Vector3 p1 = ToWorldPosition(ni_joint_map["LeftShoulder"].position);
-                //solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm", p1 - ni_model_translation);
-            }
+            //Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm", "RightShoulder");
+            Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm", "RightElbow");
+            Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand", "RightHand");
 
-            {
-                Vector3 p1 = ToWorldPosition(ni_joint_map["LeftElbow"].position);
-                solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm", p1 - ni_model_translation);
-            }
+            Solve(tmo, "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg", "RightKnee");
+            Solve(tmo, "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot", "RightFoot");
 
-            {
-                Vector3 p1 = ToWorldPosition(ni_joint_map["LeftHand"].position);
-                solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_RightShoulder_Dummy|W_RightShoulder|W_RightArm_Dummy|W_RightArm|W_RightArmRoll|W_RightForeArm|W_RightForeArmRoll|W_RightHand", p1 - ni_model_translation);
-            }
-
-            {
-                Vector3 p1 = ToWorldPosition(ni_joint_map["LeftKnee"].position);
-                solver.Solve(tmo, "|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg", p1 - ni_model_translation);
-            }
-
-            {
-                Vector3 p1 = ToWorldPosition(ni_joint_map["LeftFoot"].position);
-                solver.Solve(tmo, "|W_Hips|W_RightHips_Dummy|W_RightUpLeg|W_RightUpLegRoll|W_RightLeg|W_RightLegRoll|W_RightFoot", p1 - ni_model_translation);
-            }
-
-            {
-                //Vector3 p1 = ToWorldPosition(ni_joint_map["RightShoulder"].position);
-                //solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm", p1 - ni_model_translation);
-            }
-
-            {
-                Vector3 p1 = ToWorldPosition(ni_joint_map["RightElbow"].position);
-                solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm", p1 - ni_model_translation);
-            }
-
-            {
-                Vector3 p1 = ToWorldPosition(ni_joint_map["RightHand"].position);
-                solver.Solve(tmo, "|W_Hips|W_Spine_Dummy|W_Spine1|W_Spine2|W_Spine3|W_LeftShoulder_Dummy|W_LeftShoulder|W_LeftArm_Dummy|W_LeftArm|W_LeftArmRoll|W_LeftForeArm|W_LeftForeArmRoll|W_LeftHand", p1 - ni_model_translation);
-            }
-
-            {
-                Vector3 p1 = ToWorldPosition(ni_joint_map["RightKnee"].position);
-                solver.Solve(tmo, "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg", p1 - ni_model_translation);
-            }
-
-            {
-                Vector3 p1 = ToWorldPosition(ni_joint_map["RightFoot"].position);
-                solver.Solve(tmo, "|W_Hips|W_LeftHips_Dummy|W_LeftUpLeg|W_LeftUpLegRoll|W_LeftLeg|W_LeftLegRoll|W_LeftFoot", p1 - ni_model_translation);
-            }
-
-            /*
-            if (TryNiRotation(out q, map["Neck"], map["LeftShoulder"], map["LeftElbow"]))
-                tmo.FindNodeByName("W_RightArm").Rotation = q;
-            if (TryNiRotation(out q, map["LeftShoulder"], map["LeftElbow"], map["LeftHand"]))
-                tmo.FindNodeByName("W_RightForeArm").Rotation = q;
-
-            if (TryNiRotation(out q, map["Neck"], map["RightShoulder"], map["RightElbow"]))
-                tmo.FindNodeByName("W_LeftArm").Rotation = q;
-            if (TryNiRotation(out q, map["RightShoulder"], map["RightElbow"], map["RightHand"]))
-                tmo.FindNodeByName("W_LeftForeArm").Rotation = q;
-
-            if (TryNiRotation(out q, map["LeftShoulder"], map["LeftHip"], map["LeftKnee"]))
-                tmo.FindNodeByName("W_RightUpLeg").Rotation = q;
-            if (TryNiRotation(out q, map["LeftHip"], map["LeftKnee"], map["LeftFoot"]))
-                tmo.FindNodeByName("W_RightLeg").Rotation = q;
-
-            if (TryNiRotation(out q, map["RightShoulder"], map["RightHip"], map["RightKnee"]))
-                tmo.FindNodeByName("W_LeftUpLeg").Rotation = q;
-            if (TryNiRotation(out q, map["RightHip"], map["RightKnee"], map["RightFoot"]))
-                tmo.FindNodeByName("W_LeftLeg").Rotation = q;
-            */
             fig.UpdateBoneMatricesWithoutTMOFrame();
         }
+    }
+
+    void Solve(TMOFile tmo, string effector_name, string ni_joint_name)
+    {
+        Solve(tmo, effector_name, ni_joint_name, true);
+    }
+
+    void Solve(TMOFile tmo, string effector_name, string ni_joint_name, bool reset_rotation)
+    {
+        if (reset_rotation)
+            tmo.nodemap[effector_name].Rotation = Quaternion.Identity;
+        Vector3 p1 = ToWorldPosition(ni_joint_map[ni_joint_name].position);
+        solver.Solve(tmo, effector_name, p1 - ni_model_translation);
     }
 
     float Mean(float f1, float f2)
