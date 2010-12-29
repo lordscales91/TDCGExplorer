@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Drawing;
 using System.Threading;
@@ -160,7 +161,8 @@ namespace pmdview
             pmd = new PmdFile();
             pmd.Load(source_file);
             vmd = pmd.GenerateVmd();
-            pmd.UpdateBoneMatrices();
+            UpdateNodemap();
+            UpdateBoneMatrices();
             pmd.WriteVertexBuffer(device);
             pmd.WriteIndexBuffer(device);
             pmd.Open(device, effect);
@@ -174,10 +176,68 @@ namespace pmdview
             Console.WriteLine("loading {0}", source_file);
             vmd = new VmdFile();
             vmd.Load(source_file);
-            pmd.UpdateFigureNodemap(vmd);
-            pmd.UpdateBoneMatrices();
+            UpdateNodemap();
+            UpdateBoneMatrices();
             pmd.WriteVertexBuffer(device);
             control.Invalidate();
+        }
+
+        int frame_index = 0;
+
+        /// <summary>
+        /// 指定モーションフレームに進みます。
+        /// </summary>
+        public void SetFrameIndex(int frame_index)
+        {
+            Debug.Assert(frame_index >= 0);
+            this.frame_index = frame_index;
+        }
+
+        Dictionary<PmdNode, VmdNode> nodemap = new Dictionary<PmdNode, VmdNode>();
+
+        public void UpdateNodemap()
+        {
+            nodemap.Clear();
+            foreach (PmdNode node in pmd.nodes)
+            {
+                VmdNode vmd_node;
+                if (vmd.nodemap.TryGetValue(node.name, out vmd_node))
+                    nodemap[node] = vmd_node;
+            }
+        }
+
+        MatrixStack matrixStack = new MatrixStack();
+
+        public void UpdateBoneMatrices()
+        {
+            foreach (PmdNode node in pmd.root_nodes)
+            {
+                matrixStack.LoadMatrix(Matrix.Identity);
+                UpdateBoneMatrices(node);
+            }
+        }
+
+        /// <summary>
+        /// bone行列を更新します。
+        /// </summary>
+        public void UpdateBoneMatrices(PmdNode node)
+        {
+            matrixStack.Push();
+
+            VmdNode vmd_node;
+            Matrix m;
+            if (nodemap.TryGetValue(node, out vmd_node))
+            {
+                VmdMat mat = vmd_node.matrices[frame_index];
+                m = Matrix.RotationQuaternion(mat.rotation * node.rotation) * Matrix.Translation(mat.translation + node.translation);
+            }
+            else
+                m = Matrix.RotationQuaternion(node.rotation) * Matrix.Translation(node.translation);
+            matrixStack.MultiplyMatrixLocal(m);
+            node.combined_matrix = matrixStack.Top;
+            foreach (PmdNode child_node in node.children)
+                UpdateBoneMatrices(child_node);
+            matrixStack.Pop();
         }
 
         /// <summary>
