@@ -17,8 +17,10 @@ namespace pmdview
         public string name;
         public ushort parent_node_id;
 
-        public Quaternion rotation = Quaternion.Identity;
-        public Vector3 translation = Vector3.Empty;
+        /// <summary>
+        /// 行列の配列
+        /// </summary>
+        public VmdMat[] matrices;
 
         public List<VmdNode> children = new List<VmdNode>();
         public VmdNode parent;
@@ -37,19 +39,38 @@ namespace pmdview
     /// </summary>
     public class VmdMat
     {
+        public Quaternion rotation = Quaternion.Identity;
+        public Vector3 translation = Vector3.Empty;
     }
 
     /// <summary>
     /// フレームを扱います。
     /// </summary>
-    public class VmdFrame
+    public class VmdFrame : IComparable
     {
-        public int id;
+        public int index;
+        public Quaternion rotation = Quaternion.Identity;
+        public Vector3 translation = Vector3.Empty;
 
-        /// <summary>
-        /// 行列の配列
-        /// </summary>
-        public VmdMat[] matrices;
+        public VmdFrame(int index, Quaternion q, Vector3 v)
+        {
+            this.index = index;
+            rotation = q;
+            translation = v;
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is VmdFrame)
+            {
+                VmdFrame other = (VmdFrame)obj;
+                return index.CompareTo(other.index);
+            }
+            else
+            {
+               throw new ArgumentException("Object is not a VmdFrame");
+            }    
+        }
     }
 
     /// <summary>
@@ -85,12 +106,9 @@ namespace pmdview
             int frame_count = reader.ReadInt32();
             Debug.WriteLine("frame_count:" + frame_count);
 
-            //TODO: nodes
-            //TODO: frames
-
             Dictionary<string, VmdNode> nmap = new Dictionary<string, VmdNode>();
             List<VmdNode> nary = new List<VmdNode>();
-            int current_frame_index = 0;
+            Dictionary<VmdNode, List<VmdFrame>> fmap = new Dictionary<VmdNode, List<VmdFrame>>();
             for (int i = 0; i < frame_count; i++)
             {
                 string node_name = reader.ReadCString(15);
@@ -98,9 +116,6 @@ namespace pmdview
 
                 int frame_index = reader.ReadInt32();
                 Debug.WriteLine("frame_index:" + frame_index);
-
-                if (frame_index != current_frame_index)
-                    break;
 
                 Vector3 translation = Vector3.Empty;
                 reader.ReadVector3(ref translation);
@@ -110,19 +125,39 @@ namespace pmdview
 
                 byte[] bezier = reader.ReadBytes(64);
 
+                VmdNode node;
                 if (! nmap.ContainsKey(node_name))
                 {
-                    VmdNode node = new VmdNode((ushort)nary.Count);
+                    node = new VmdNode((ushort)nary.Count);
                     node.name = node_name;
-                    node.translation = translation;
-                    node.rotation = rotation;
                     nary.Add(node);
                     nmap[node_name] = node;
                 }
+                else
+                    node = nmap[node_name];
+
+                if (! fmap.ContainsKey(node))
+                    fmap[node] = new List<VmdFrame>();
+
+                fmap[node].Add(new VmdFrame(frame_index, rotation, translation));
             }
             nodes = nary.ToArray();
+            foreach (VmdNode node in nodes)
+            {
+                node.matrices = CreateMatrices(fmap[node]);
+            }
 
             GenerateNodemapAndTree();
+        }
+
+        VmdMat[] CreateMatrices(List<VmdFrame> frames)
+        {
+            frames.Sort();
+            VmdMat mat = new VmdMat();
+            mat.rotation = frames[0].rotation;
+            mat.translation = frames[0].translation;
+            VmdMat[] matrices = new VmdMat[] { mat };
+            return matrices;
         }
 
         public Dictionary<string, VmdNode> nodemap = new Dictionary<string, VmdNode>();
