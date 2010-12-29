@@ -486,6 +486,8 @@ namespace pmdview
                 vmd.nodes[i] = new VmdNode(i);
                 vmd.nodes[i].name = nodes[i].name;
                 vmd.nodes[i].parent_node_id = nodes[i].parent_node_id;
+                VmdMat mat = new VmdMat();
+                vmd.nodes[i].matrices = new VmdMat[] { mat };
             }
 
             vmd.GenerateNodemapAndTree();
@@ -527,7 +529,7 @@ namespace pmdview
             VmdNode vmd_node;
             Matrix m;
             if (fig_nodemap.TryGetValue(node, out vmd_node))
-                m = Matrix.RotationQuaternion(vmd_node.rotation * node.rotation) * Matrix.Translation(vmd_node.translation + node.translation);
+                m = Matrix.RotationQuaternion(vmd_node.matrices[0].rotation * node.rotation) * Matrix.Translation(vmd_node.matrices[0].translation + node.translation);
             else
                 m = Matrix.RotationQuaternion(node.rotation) * Matrix.Translation(node.translation);
             matrixStack.MultiplyMatrixLocal(m);
