@@ -153,10 +153,31 @@ namespace pmdview
         VmdMat[] CreateMatrices(List<VmdFrame> frames)
         {
             frames.Sort();
-            VmdMat mat = new VmdMat();
-            mat.rotation = frames[0].rotation;
-            mat.translation = frames[0].translation;
-            VmdMat[] matrices = new VmdMat[] { mat };
+
+            VmdFrame last_frame = frames[frames.Count - 1];
+            VmdMat[] matrices = new VmdMat[last_frame.index + 1];
+
+            for (int i = 1; i < frames.Count; i++)
+            {
+                VmdFrame fa = frames[i - 1];
+                VmdFrame fb = frames[i];
+                for (int index = fa.index; index < fb.index; index++)
+                {
+                    float ratio = (index - fa.index) / (fb.index - fa.index);
+                    VmdMat mat = new VmdMat();
+                    mat.rotation = Quaternion.Slerp(fa.rotation, fb.rotation, ratio);
+                    mat.translation.X = fa.translation.X * ratio + fb.translation.X * (1 - ratio);
+                    mat.translation.Y = fa.translation.Y * ratio + fb.translation.Y * (1 - ratio);
+                    mat.translation.Z = fa.translation.Z * ratio + fb.translation.Z * (1 - ratio);
+                    matrices[index] = mat;
+                }
+            }
+            {
+                VmdMat mat = new VmdMat();
+                mat.rotation = last_frame.rotation;
+                mat.translation = last_frame.translation;
+                matrices[last_frame.index] = mat;
+            }
             return matrices;
         }
 
