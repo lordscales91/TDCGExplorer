@@ -109,6 +109,7 @@ namespace pmdview
             Dictionary<string, VmdNode> nmap = new Dictionary<string, VmdNode>();
             List<VmdNode> nary = new List<VmdNode>();
             Dictionary<VmdNode, List<VmdFrame>> fmap = new Dictionary<VmdNode, List<VmdFrame>>();
+            int max_frame_index = 0;
             for (int i = 0; i < frame_count; i++)
             {
                 string node_name = reader.ReadCString(15);
@@ -116,6 +117,8 @@ namespace pmdview
 
                 int frame_index = reader.ReadInt32();
                 Debug.WriteLine("frame_index:" + frame_index);
+                if (max_frame_index < frame_index)
+                    max_frame_index = frame_index;
 
                 Vector3 translation = Vector3.Empty;
                 reader.ReadVector3(ref translation);
@@ -141,6 +144,7 @@ namespace pmdview
 
                 fmap[node].Add(new VmdFrame(frame_index, rotation, translation));
             }
+            frame_length = max_frame_index + 1;
             nodes = nary.ToArray();
             foreach (VmdNode node in nodes)
             {
@@ -154,9 +158,7 @@ namespace pmdview
         {
             frames.Sort();
 
-            VmdFrame last_frame = frames[frames.Count - 1];
-            VmdMat[] matrices = new VmdMat[last_frame.index + 1];
-
+            VmdMat[] matrices = new VmdMat[frame_length];
             for (int i = 1; i < frames.Count; i++)
             {
                 VmdFrame fa = frames[i - 1];
@@ -173,12 +175,24 @@ namespace pmdview
                 }
             }
             {
-                VmdMat mat = new VmdMat();
-                mat.rotation = last_frame.rotation;
-                mat.translation = last_frame.translation;
-                matrices[last_frame.index] = mat;
+                VmdFrame last_frame = frames[frames.Count - 1];
+                for (int index = last_frame.index; index < frame_length; index++)
+                {
+                    VmdMat mat = new VmdMat();
+                    mat.rotation = last_frame.rotation;
+                    mat.translation = last_frame.translation;
+                    matrices[index] = mat;
+                }
             }
             return matrices;
+        }
+
+        int frame_length = 0;
+
+        /// フレーム長さ
+        int FrameLength
+        {
+            get { return frame_length; }
         }
 
         public Dictionary<string, VmdNode> nodemap = new Dictionary<string, VmdNode>();

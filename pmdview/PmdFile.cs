@@ -243,8 +243,6 @@ namespace pmdview
             vb_Created(vb, null);
         }
 
-        Dictionary<PmdNode, VmdNode> fig_nodemap = new Dictionary<PmdNode, VmdNode>();
-
         Matrix[] ClipBoneMatrices()
         {
             Matrix[] matrices = new Matrix[nodes.Length];
@@ -492,51 +490,7 @@ namespace pmdview
 
             vmd.GenerateNodemapAndTree();
 
-            UpdateFigureNodemap(vmd);
-
             return vmd;
-        }
-
-        public void UpdateFigureNodemap(VmdFile vmd)
-        {
-            fig_nodemap.Clear();
-            foreach (PmdNode node in nodes)
-            {
-                VmdNode vmd_node;
-                if (vmd.nodemap.TryGetValue(node.name, out vmd_node))
-                    fig_nodemap[node] = vmd_node;
-            }
-        }
-
-        MatrixStack matrixStack = new MatrixStack();
-
-        public void UpdateBoneMatrices()
-        {
-            foreach (PmdNode node in root_nodes)
-            {
-                matrixStack.LoadMatrix(Matrix.Identity);
-                UpdateBoneMatrices(node);
-            }
-        }
-
-        /// <summary>
-        /// bone行列を更新します。
-        /// </summary>
-        public void UpdateBoneMatrices(PmdNode node)
-        {
-            matrixStack.Push();
-
-            VmdNode vmd_node;
-            Matrix m;
-            if (fig_nodemap.TryGetValue(node, out vmd_node))
-                m = Matrix.RotationQuaternion(vmd_node.matrices[0].rotation * node.rotation) * Matrix.Translation(vmd_node.matrices[0].translation + node.translation);
-            else
-                m = Matrix.RotationQuaternion(node.rotation) * Matrix.Translation(node.translation);
-            matrixStack.MultiplyMatrixLocal(m);
-            node.combined_matrix = matrixStack.Top;
-            foreach (PmdNode child_node in node.children)
-                UpdateBoneMatrices(child_node);
-            matrixStack.Pop();
         }
 
         internal Dictionary<string, Texture> texmap;
