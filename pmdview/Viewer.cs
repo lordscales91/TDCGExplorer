@@ -178,19 +178,44 @@ namespace pmdview
             vmd.Load(source_file);
             UpdateNodemap();
             UpdateBoneMatrices();
-            pmd.WriteVertexBuffer(device);
+            pmd.RewriteVertexBuffer(device);
             control.Invalidate();
         }
 
+        long wait = (long)(10000000.0f / 60.0f);
+        long start_ticks = 0;
+        int start_frame_index = 0;
         int frame_index = 0;
+
+        /// <summary>
+        /// 次のシーンフレームに進みます。
+        /// </summary>
+        public void FrameMove()
+        {
+            if (vmd == null)
+                return;
+            int frame_len = vmd.FrameLength;
+            if (frame_len > 0)
+            {
+                long dt = DateTime.Now.Ticks - start_ticks;
+                int new_frame_index = (int)((start_frame_index + dt / wait) % frame_len);
+                Debug.Assert(new_frame_index >= 0);
+                Debug.Assert(new_frame_index < frame_len);
+                frame_index = new_frame_index;
+            }
+            FrameMove(frame_index);
+        }
 
         /// <summary>
         /// 指定モーションフレームに進みます。
         /// </summary>
-        public void SetFrameIndex(int frame_index)
+        public void FrameMove(int frame_index)
         {
             Debug.Assert(frame_index >= 0);
             this.frame_index = frame_index;
+            UpdateBoneMatrices();
+            pmd.RewriteVertexBuffer(device);
+            control.Invalidate();
         }
 
         Dictionary<PmdNode, VmdNode> nodemap = new Dictionary<PmdNode, VmdNode>();

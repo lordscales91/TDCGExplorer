@@ -240,31 +240,34 @@ namespace pmdview
             vb = new VertexBuffer(typeof(CustomVertex.PositionNormalTextured), vertices.Length, device, Usage.Dynamic | Usage.WriteOnly, CustomVertex.PositionNormalTextured.Format, Pool.Default);
 
             vb.Created += new EventHandler(vb_Created);
+            ClipBoneMatrices();
             vb_Created(vb, null);
         }
 
-        Matrix[] ClipBoneMatrices()
+        public void RewriteVertexBuffer(Device device)
         {
-            Matrix[] matrices = new Matrix[nodes.Length];
-
-            for (int i = 0; i < nodes.Length; i++)
-            {
-                matrices[i] = nodes[i].offset_matrix * nodes[i].combined_matrix;
-            }
-
-            return matrices;
+            ClipBoneMatrices();
+            vb_Created(vb, null);
         }
 
-        void CalcSkindeform(ref Vertex v, Matrix[] matrices, out Vector3 position, out Vector3 normal)
+        Matrix[] clipped_bone_matrices;
+
+        void ClipBoneMatrices()
+        {
+            for (int i = 0; i < nodes.Length; i++)
+                clipped_bone_matrices[i] = nodes[i].offset_matrix * nodes[i].combined_matrix;
+        }
+
+        void CalcSkindeform(ref Vertex v, out Vector3 position, out Vector3 normal)
         {
             Vector3 pos = Vector3.Empty;
             {
-                Matrix m = matrices[v.node_id_0];
+                Matrix m = clipped_bone_matrices[v.node_id_0];
                 float w = v.weight;
                 pos += Vector3.TransformCoordinate(v.position, m) * w;
             }
             {
-                Matrix m = matrices[v.node_id_1];
+                Matrix m = clipped_bone_matrices[v.node_id_1];
                 float w = 1 - v.weight;
                 pos += Vector3.TransformCoordinate(v.position, m) * w;
             }
@@ -272,7 +275,7 @@ namespace pmdview
 
             Vector3 nor = Vector3.Empty;
             {
-                Matrix m = matrices[v.node_id_0];
+                Matrix m = clipped_bone_matrices[v.node_id_0];
                 m.M41 = 0;
                 m.M42 = 0;
                 m.M43 = 0;
@@ -280,7 +283,7 @@ namespace pmdview
                 nor += Vector3.TransformCoordinate(v.normal, m) * w;
             }
             {
-                Matrix m = matrices[v.node_id_1];
+                Matrix m = clipped_bone_matrices[v.node_id_1];
                 m.M41 = 0;
                 m.M42 = 0;
                 m.M43 = 0;
@@ -303,9 +306,8 @@ namespace pmdview
                     {
                         Vertex v = vertices[i];
 
-                        Matrix[] matrices = ClipBoneMatrices();
                         Vector3 position, normal;
-                        CalcSkindeform(ref v, matrices, out position, out normal);
+                        CalcSkindeform(ref v, out position, out normal);
 
                         gs.Write(position);
                         gs.Write(normal);
@@ -436,6 +438,7 @@ namespace pmdview
                 nodes[i].ComputeOffsetMatrix();
 
             GenerateNodemapAndTree();
+            clipped_bone_matrices = new Matrix[node_count];
         }
 
         public Dictionary<string, PmdNode> nodemap = new Dictionary<string, PmdNode>();
