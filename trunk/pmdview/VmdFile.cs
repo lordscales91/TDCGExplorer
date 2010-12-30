@@ -190,7 +190,7 @@ namespace pmdview
         int frame_length = 0;
 
         /// フレーム長さ
-        int FrameLength
+        public int FrameLength
         {
             get { return frame_length; }
         }

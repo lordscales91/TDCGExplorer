@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -29,6 +29,7 @@ namespace pmdview
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+            viewer.FrameMove();
             viewer.Render();
         }
 
