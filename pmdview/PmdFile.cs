@@ -193,6 +193,8 @@ namespace pmdview
         /// </summary>
         public Matrix offset_matrix;
 
+        public Vector3 local_translation = Vector3.Empty;
+
         public Quaternion rotation = Quaternion.Identity;
         public Vector3 translation = Vector3.Empty;
 
@@ -499,9 +501,10 @@ namespace pmdview
             foreach (PmdNode node in nodes)
             {
                 if (node.parent_node_id == ushort.MaxValue)
+                {
                     root_nodes.Add(node);
-                if (node.parent_node_id == ushort.MaxValue)
                     continue;
+                }
                 node.parent = nodes[node.parent_node_id];
                 node.parent.children.Add(node);
             }
@@ -509,9 +512,9 @@ namespace pmdview
             foreach (PmdNode node in nodes)
             {
                 if (node.parent == null)
-                    node.translation = node.position;
+                    node.local_translation = node.position;
                 else
-                    node.translation = node.position - node.parent.position;
+                    node.local_translation = node.position - node.parent.position;
             }
         }
 

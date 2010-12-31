@@ -158,6 +158,7 @@ namespace pmdview
             pmd.Load(source_file);
             vmd = pmd.GenerateVmd();
             UpdateNodemap();
+            UpdatePose(frame_index);
             UpdateBoneMatrices();
             pmd.WriteVertexBuffer(device);
             pmd.WriteIndexBuffer(device);
@@ -173,6 +174,7 @@ namespace pmdview
             vmd = new VmdFile();
             vmd.Load(source_file);
             UpdateNodemap();
+            UpdatePose(frame_index);
             UpdateBoneMatrices();
             pmd.RewriteVertexBuffer(device);
             control.Invalidate();
@@ -209,6 +211,7 @@ namespace pmdview
         {
             Debug.Assert(frame_index >= 0);
             this.frame_index = frame_index;
+            UpdatePose(frame_index);
             UpdateBoneMatrices();
             pmd.RewriteVertexBuffer(device);
             control.Invalidate();
@@ -224,6 +227,24 @@ namespace pmdview
                 VmdNode vmd_node;
                 if (vmd.nodemap.TryGetValue(node.name, out vmd_node))
                     nodemap[node] = vmd_node;
+            }
+        }
+
+        public void UpdatePose(int frame_index)
+        {
+            foreach (PmdNode node in pmd.nodes)
+            {
+                VmdNode vmd_node;
+                if (nodemap.TryGetValue(node, out vmd_node))
+                {
+                    node.rotation = vmd_node.matrices[frame_index].rotation;
+                    node.translation = vmd_node.matrices[frame_index].translation + node.local_translation;
+                }
+                else
+                {
+                    node.rotation = Quaternion.Identity;
+                    node.translation = node.local_translation;
+                }
             }
         }
 
@@ -244,16 +265,7 @@ namespace pmdview
         public void UpdateBoneMatrices(PmdNode node)
         {
             matrixStack.Push();
-
-            VmdNode vmd_node;
-            Matrix m;
-            if (nodemap.TryGetValue(node, out vmd_node))
-            {
-                VmdMat mat = vmd_node.matrices[frame_index];
-                m = Matrix.RotationQuaternion(mat.rotation * node.rotation) * Matrix.Translation(mat.translation + node.translation);
-            }
-            else
-                m = Matrix.RotationQuaternion(node.rotation) * Matrix.Translation(node.translation);
+            Matrix m = Matrix.RotationQuaternion(node.rotation) * Matrix.Translation(node.translation);
             matrixStack.MultiplyMatrixLocal(m);
             node.combined_matrix = matrixStack.Top;
             foreach (PmdNode child_node in node.children)
