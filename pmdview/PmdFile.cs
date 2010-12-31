@@ -195,8 +195,126 @@ namespace pmdview
 
         public Vector3 local_translation = Vector3.Empty;
 
-        public Quaternion rotation = Quaternion.Identity;
-        public Vector3 translation = Vector3.Empty;
+        private Quaternion rotation = Quaternion.Identity;
+        private Vector3 translation = Vector3.Empty;
+
+        private Matrix transformation_matrix;
+        private bool need_update_transformation;
+
+        /// <summary>
+        /// 回転変位
+        /// </summary>
+        public Quaternion Rotation
+        {
+            get {
+                return rotation;
+            }
+            set {
+                rotation = value;
+                need_update_transformation = true;
+            }
+        }
+
+        /// <summary>
+        /// 位置変位
+        /// </summary>
+        public Vector3 Translation
+        {
+            get {
+                return translation;
+            }
+            set {
+                translation = value;
+                need_update_transformation = true;
+            }
+        }
+
+        /// <summary>
+        /// ワールド座標系での位置を得ます。
+        /// </summary>
+        /// <returns></returns>
+        public Vector3 GetWorldPosition()
+        {
+            PmdNode node = this;
+            Vector3 v = Vector3.Empty;
+            while (node != null)
+            {
+                v = Vector3.TransformCoordinate(v, node.TransformationMatrix);
+                node = node.parent;
+            }
+            return v;
+        }
+
+        /// <summary>
+        /// ワールド座標系での位置と向きを得ます。
+        /// </summary>
+        /// <returns></returns>
+        public Matrix GetWorldCoordinate()
+        {
+            PmdNode node = this;
+            Matrix m = Matrix.Identity;
+            while (node != null)
+            {
+                m.Multiply(node.TransformationMatrix);
+                node = node.parent;
+            }
+            return m;
+        }
+
+        /// <summary>
+        /// 回転行列
+        /// </summary>
+        public Matrix RotationMatrix
+        {
+            get {
+                return Matrix.RotationQuaternion(rotation);
+            }
+        }
+
+        /// <summary>
+        /// 位置行列
+        /// </summary>
+        public Matrix TranslationMatrix
+        {
+            get {
+                return Matrix.Translation(translation);
+            }
+        }
+
+        /// <summary>
+        /// 変形行列。これは 回転行列 x 位置行列 です。
+        /// </summary>
+        public Matrix TransformationMatrix
+        {
+            get {
+                if (need_update_transformation)
+                {
+                    transformation_matrix = RotationMatrix * TranslationMatrix;
+                    need_update_transformation = false;
+                }
+                return transformation_matrix;
+            }
+            set {
+                transformation_matrix = value;
+                Matrix m = transformation_matrix;
+                translation = DecomposeMatrix(ref m);
+                rotation = Quaternion.RotationMatrix(m);
+            }
+        }
+
+        /// <summary>
+        /// 回転行列と位置ベクトルに分割します。
+        /// </summary>
+        /// <param name="m">元の行列（戻り値は回転行列）</param>
+        /// <returns>位置ベクトル</returns>
+        public static Vector3 DecomposeMatrix(ref Matrix m)
+        {
+            Vector3 t = new Vector3(m.M41, m.M42, m.M43);
+            m.M41 = 0;
+            m.M42 = 0;
+            m.M43 = 0;
+            return t;
+        }
 
         /// <summary>
         /// ワールド座標系での位置と向きを表します。これはviewerから更新されます。

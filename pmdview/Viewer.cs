@@ -159,6 +159,7 @@ namespace pmdview
             vmd = pmd.GenerateVmd();
             UpdateNodemap();
             UpdatePose(frame_index);
+            SolveIK();
             UpdateBoneMatrices();
             pmd.WriteVertexBuffer(device);
             pmd.WriteIndexBuffer(device);
@@ -175,6 +176,7 @@ namespace pmdview
             vmd.Load(source_file);
             UpdateNodemap();
             UpdatePose(frame_index);
+            SolveIK();
             UpdateBoneMatrices();
             pmd.RewriteVertexBuffer(device);
             control.Invalidate();
@@ -212,6 +214,7 @@ namespace pmdview
             Debug.Assert(frame_index >= 0);
             this.frame_index = frame_index;
             UpdatePose(frame_index);
+            SolveIK();
             UpdateBoneMatrices();
             pmd.RewriteVertexBuffer(device);
             control.Invalidate();
@@ -237,15 +240,83 @@ namespace pmdview
                 VmdNode vmd_node;
                 if (nodemap.TryGetValue(node, out vmd_node))
                 {
-                    node.rotation = vmd_node.matrices[frame_index].rotation;
-                    node.translation = vmd_node.matrices[frame_index].translation + node.local_translation;
+                    node.Rotation = vmd_node.matrices[frame_index].rotation;
+                    node.Translation = vmd_node.matrices[frame_index].translation + node.local_translation;
                 }
                 else
                 {
-                    node.rotation = Quaternion.Identity;
-                    node.translation = node.local_translation;
+                    node.Rotation = Quaternion.Identity;
+                    node.Translation = node.local_translation;
                 }
             }
+        }
+
+        public void SolveIK()
+        {
+            foreach (PmdIK ik in pmd.iks)
+                SolveIK(ik);
+        }
+
+        public void SolveIK(PmdIK ik)
+        {
+            Vector3 target = ik.target.GetWorldPosition();
+            for (int i = 0; i < ik.niteration; i++)
+            {
+                bool solved = true;
+                foreach (PmdNode node in ik.chain_nodes)
+                {
+                    solved &= SolveIK(ik.effector, node, target);
+                }
+                if (solved)
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Cyclic-Coordinate-Descent (CCD) 法による逆運動学の実装です。
+        /// </summary>
+        /// <param name="effector">エフェクタnode</param>
+        /// <param name="node">対象node</param>
+        /// <param name="target">目標</param>
+        public bool SolveIK(PmdNode effector, PmdNode node, Vector3 target)
+        {
+            Vector3 worldTargetP = target;
+
+            Vector3 worldEffectorP = effector.GetWorldPosition();
+            //Vector3 worldNodeP = node.GetWorldPosition();
+
+            Matrix invCoord = Matrix.Invert(node.GetWorldCoordinate());
+            Vector3 localEffectorP = Vector3.TransformCoordinate(worldEffectorP, invCoord);
+            Vector3 localTargetP = Vector3.TransformCoordinate(worldTargetP, invCoord);
+
+            Quaternion q;
+            if (RotationVectorToVector(localEffectorP, localTargetP, out q))
+                node.Rotation = q * node.Rotation;
+            return (localEffectorP - localTargetP).LengthSq() < 0.1f;
+        }
+
+        /// <summary>
+        /// v1をv2に合わせる回転を得ます。
+        /// </summary>
+        /// <param name="v1">v1</param>
+        /// <param name="v2">v2</param>
+        /// <param name="q">q</param>
+        /// <returns>回転が必要であるか</returns>
+        public bool RotationVectorToVector(Vector3 v1, Vector3 v2, out Quaternion q)
+        {
+            Vector3 n1 = Vector3.Normalize(v1);
+            Vector3 n2 = Vector3.Normalize(v2);
+            float dotProduct = Vector3.Dot(n1, n2);
+            float angle = (float)Math.Acos(dotProduct);
+            bool needRotate = (angle > float.Epsilon);
+            if (needRotate)
+            {
+                Vector3 axis = Vector3.Cross(n1, n2);
+                q = Quaternion.RotationAxis(axis, angle);
+            }
+            else
+                q = Quaternion.Identity;
+            return needRotate;
         }
 
         MatrixStack matrixStack = new MatrixStack();
@@ -265,7 +336,7 @@ namespace pmdview
         public void UpdateBoneMatrices(PmdNode node)
         {
             matrixStack.Push();
-            Matrix m = Matrix.RotationQuaternion(node.rotation) * Matrix.Translation(node.translation);
+            Matrix m = Matrix.RotationQuaternion(node.Rotation) * Matrix.Translation(node.Translation);
             matrixStack.MultiplyMatrixLocal(m);
             node.combined_matrix = matrixStack.Top;
             foreach (PmdNode child_node in node.children)
