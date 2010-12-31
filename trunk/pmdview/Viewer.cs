@@ -20,8 +20,6 @@ namespace pmdview
         Matrix Transform_View = Matrix.Identity;
         Matrix Transform_Projection = Matrix.Identity;
 
-        VertexDeclaration decl = null;
-
         static Vector4 CreateColorVector4(float power)
         {
             return new Vector4(power, power, power, 1);
@@ -117,9 +115,7 @@ namespace pmdview
             device.RenderState.ReferenceAlpha = 0x08;
             device.RenderState.AlphaFunction = Compare.GreaterEqual;
 
-            device.RenderState.IndexedVertexBlendEnable = true;
-
-            decl = new VertexDeclaration(device, PmdFile.ve);
+            device.VertexDeclaration = new VertexDeclaration(device, PmdFile.ve);
 
             return true;
         }
@@ -281,11 +277,11 @@ namespace pmdview
                 effect.SetValue("WorldViewProjMatrix", world_view_projection_matrix);
             }
 
-            if (pmd != null && pmd.vb != null)
+            if (pmd != null && pmd.vb_position != null)
             {
-                device.SetStreamSource(0, pmd.vb, 0);
+                device.SetStreamSource(0, pmd.vb_position, 0);
+                device.SetStreamSource(1, pmd.vb_texcoord, 0);
                 device.Indices = pmd.ib;
-                device.VertexDeclaration = decl;
 
                 foreach (PmdMaterial material in pmd.materials)
                 {
