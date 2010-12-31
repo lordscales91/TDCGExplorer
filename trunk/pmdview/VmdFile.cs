@@ -165,7 +165,7 @@ namespace pmdview
                 VmdFrame fb = frames[i];
                 for (int index = fa.index; index < fb.index; index++)
                 {
-                    float ratio = (index - fa.index) / (fb.index - fa.index);
+                    float ratio = ((float)(index - fa.index)) / ((float)(fb.index - fa.index));
                     VmdMat mat = new VmdMat();
                     mat.rotation = Quaternion.Slerp(fa.rotation, fb.rotation, ratio);
                     mat.translation.X = fa.translation.X * ratio + fb.translation.X * (1 - ratio);

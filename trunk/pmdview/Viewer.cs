@@ -178,7 +178,7 @@ namespace pmdview
             control.Invalidate();
         }
 
-        long wait = (long)(10000000.0f / 60.0f);
+        long wait = (long)(10000000.0f / 30.0f);
         long start_ticks = 0;
         int start_frame_index = 0;
         int frame_index = 0;
