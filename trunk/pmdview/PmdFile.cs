@@ -236,9 +236,9 @@ namespace pmdview
         public float weight;
         public ushort[] chain_node_ids;
 
-        public VmdNode target = null;
-        public VmdNode effector = null;
-        public List<VmdNode> chain_nodes = null;
+        public PmdNode target = null;
+        public PmdNode effector = null;
+        public List<PmdNode> chain_nodes = new List<PmdNode>();
 
         public void Read(BinaryReader reader)
         {
@@ -520,6 +520,7 @@ namespace pmdview
                 iks[i] = new PmdIK();
                 iks[i].Read(reader);
             }
+            UpdateNodeIKs();
         }
 
         public Dictionary<string, PmdNode> nodemap = new Dictionary<string, PmdNode>();
@@ -554,6 +555,20 @@ namespace pmdview
                     node.local_translation = node.position;
                 else
                     node.local_translation = node.position - node.parent.position;
+            }
+        }
+
+        public void UpdateNodeIKs()
+        {
+            foreach (PmdIK ik in iks)
+            {
+                ik.effector = nodes[ik.effector_node_id];
+                ik.target = nodes[ik.target_node_id];
+                ik.chain_nodes.Clear();
+                foreach (ushort node_id in ik.chain_node_ids)
+                {
+                    ik.chain_nodes.Add(nodes[node_id]);
+                }
             }
         }
 
