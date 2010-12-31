@@ -1,12 +1,12 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////
 //
 //  basic.fx ver1.2
-//  ì¬: •‘—Í‰î“üP
+//  ä½œæˆ: èˆåŠ›ä»‹å…¥P
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////
-// ƒpƒ‰ƒ[ƒ^éŒ¾
+// ãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿å®£è¨€
 
-// À–@•ÏŠ·s—ñ
+// åº§æ³•å¤‰æ›è¡Œåˆ—
 float4x4 WorldViewProjMatrix      : WORLDVIEWPROJECTION;
 float4x4 WorldMatrix              : WORLD;
 float4x4 LightWorldViewProjMatrix : WORLDVIEWPROJECTION < string Object = "Light"; >;
@@ -14,14 +14,14 @@ float4x4 LightWorldViewProjMatrix : WORLDVIEWPROJECTION < string Object = "Light
 float3   LightDirection    : DIRECTION < string Object = "Light"; >;
 float3   CameraPosition    : POSITION  < string Object = "Camera"; >;
 
-// ƒ}ƒeƒŠƒAƒ‹F
+// ãƒãƒ†ãƒªã‚¢ãƒ«è‰²
 float4   MaterialDiffuse   : DIFFUSE  < string Object = "Geometry"; >;
 float3   MaterialAmbient   : AMBIENT  < string Object = "Geometry"; >;
 float3   MaterialEmmisive  : EMISSIVE < string Object = "Geometry"; >;
 float3   MaterialSpecular  : SPECULAR < string Object = "Geometry"; >;
 float    SpecularPower     : SPECULARPOWER < string Object = "Geometry"; >;
 float3   MaterialToon      : TOONCOLOR;
-// ƒ‰ƒCƒgF
+// ãƒ©ã‚¤ãƒˆè‰²
 float3   LightDiffuse      : DIFFUSE   < string Object = "Light"; >;
 float3   LightAmbient      : AMBIENT   < string Object = "Light"; >;
 float3   LightSpecular     : SPECULAR  < string Object = "Light"; >;
@@ -29,16 +29,16 @@ static float4 DiffuseColor  = MaterialDiffuse  * float4(LightDiffuse, 1.0f);
 static float3 AmbientColor  = saturate(MaterialAmbient  * LightAmbient + MaterialEmmisive);
 static float3 SpecularColor = MaterialSpecular * LightSpecular;
 
-bool use_texture;  //ƒeƒNƒXƒ`ƒƒ‚Ì—L–³
-bool use_toon;     //ƒgƒD[ƒ“‚Ì—L–³
+bool use_texture;  //ãƒ†ã‚¯ã‚¹ãƒãƒ£ã®æœ‰ç„¡
+bool use_toon;     //ãƒˆã‚¥ãƒ¼ãƒ³ã®æœ‰ç„¡
 
-bool     parthf;   // ƒp[ƒXƒyƒNƒeƒBƒuƒtƒ‰ƒO
-bool     transp;   // ”¼“§–¾ƒtƒ‰ƒO
+bool     parthf;   // ãƒ‘ãƒ¼ã‚¹ãƒšã‚¯ãƒ†ã‚£ãƒ–ãƒ•ãƒ©ã‚°
+bool     transp;   // åŠé€æ˜ãƒ•ãƒ©ã‚°
 #define SKII1    1500
 #define SKII2    8000
 #define Toon     3
 
-// ƒIƒuƒWƒFƒNƒg‚ÌƒeƒNƒXƒ`ƒƒ
+// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ãƒ†ã‚¯ã‚¹ãƒãƒ£
 texture ObjectTexture: MATERIALTEXTURE;
 sampler ObjTexSampler = sampler_state
 {
@@ -47,71 +47,71 @@ sampler ObjTexSampler = sampler_state
     MAGFILTER = LINEAR;
 };
 
-// MMD–{—ˆ‚Ìsampler‚ğã‘‚«‚µ‚È‚¢‚½‚ß‚Ì‹Lq‚Å‚·Bíœ•s‰ÂB
+// MMDæœ¬æ¥ã®samplerã‚’ä¸Šæ›¸ãã—ãªã„ãŸã‚ã®è¨˜è¿°ã§ã™ã€‚å‰Šé™¤ä¸å¯ã€‚
 sampler MMDSamp0 : register(s0);
 sampler MMDSamp1 : register(s1);
 sampler MMDSamp2 : register(s2);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
-// ƒIƒuƒWƒFƒNƒg•`‰æiƒZƒ‹ƒtƒVƒƒƒhƒEOFFj
+// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæç”»ï¼ˆã‚»ãƒ«ãƒ•ã‚·ãƒ£ãƒ‰ã‚¦OFFï¼‰
 
 struct VS_OUTPUT
 {
-    float4 Pos        : POSITION;    // Ë‰e•ÏŠ·À•W
-    float2 Tex        : TEXCOORD1;   // ƒeƒNƒXƒ`ƒƒ
-    float3 Normal     : TEXCOORD2;   // –@ü
-    float3 Eye        : TEXCOORD3;   // ƒJƒƒ‰‚Æ‚Ì‘Š‘ÎˆÊ’u
-    float4 Color      : COLOR0;      // ƒfƒBƒtƒ…[ƒYF
+    float4 Pos        : POSITION;    // å°„å½±å¤‰æ›åº§æ¨™
+    float2 Tex        : TEXCOORD1;   // ãƒ†ã‚¯ã‚¹ãƒãƒ£
+    float3 Normal     : TEXCOORD2;   // æ³•ç·š
+    float3 Eye        : TEXCOORD3;   // ã‚«ãƒ¡ãƒ©ã¨ã®ç›¸å¯¾ä½ç½®
+    float4 Color      : COLOR0;      // ãƒ‡ã‚£ãƒ•ãƒ¥ãƒ¼ã‚ºè‰²
 };
 
-// ’¸“_ƒVƒF[ƒ_
+// é ‚ç‚¹ã‚·ã‚§ãƒ¼ãƒ€
 VS_OUTPUT Basic_VS(float4 Pos : POSITION, float3 Normal : NORMAL, float2 Tex : TEXCOORD0)
 {
     VS_OUTPUT Out = (VS_OUTPUT)0;
     
-    // ƒJƒƒ‰‹“_‚Ìƒ[ƒ‹ƒhƒrƒ…[Ë‰e•ÏŠ·
+    // ã‚«ãƒ¡ãƒ©è¦–ç‚¹ã®ãƒ¯ãƒ¼ãƒ«ãƒ‰ãƒ“ãƒ¥ãƒ¼å°„å½±å¤‰æ›
     Out.Pos = mul( Pos, WorldViewProjMatrix );
     
-    // ƒJƒƒ‰‚Æ‚Ì‘Š‘ÎˆÊ’u
+    // ã‚«ãƒ¡ãƒ©ã¨ã®ç›¸å¯¾ä½ç½®
     Out.Eye = CameraPosition - mul( Pos, WorldMatrix );
-    // ’¸“_–@ü
+    // é ‚ç‚¹æ³•ç·š
     Out.Normal = normalize( mul( Normal, (float3x3)WorldMatrix ) );
     
-    // ƒfƒBƒtƒ…[ƒYF{ƒAƒ“ƒrƒGƒ“ƒgF ŒvZ
+    // ãƒ‡ã‚£ãƒ•ãƒ¥ãƒ¼ã‚ºè‰²ï¼‹ã‚¢ãƒ³ãƒ“ã‚¨ãƒ³ãƒˆè‰² è¨ˆç®—
     Out.Color.rgb = saturate( max(0,dot( Out.Normal, -LightDirection )) * DiffuseColor.rgb + AmbientColor );
     Out.Color.a = DiffuseColor.a;
     
-    // ƒeƒNƒXƒ`ƒƒÀ•W
+    // ãƒ†ã‚¯ã‚¹ãƒãƒ£åº§æ¨™
     Out.Tex = Tex;
     
     return Out;
 }
 
-// ƒsƒNƒZƒ‹ƒVƒF[ƒ_
+// ãƒ”ã‚¯ã‚»ãƒ«ã‚·ã‚§ãƒ¼ãƒ€
 float4 Basic_PS( VS_OUTPUT IN ) : COLOR0
 {
-    // ƒXƒyƒLƒ…ƒ‰FŒvZ
+    // ã‚¹ãƒšã‚­ãƒ¥ãƒ©è‰²è¨ˆç®—
     float3 HalfVector = normalize( normalize(IN.Eye) + -LightDirection );
     float3 Specular = pow( max(0,dot( HalfVector, normalize(IN.Normal) )), SpecularPower ) * SpecularColor;
     
     float4 Color = IN.Color;
-    if ( use_texture ) {  //¦‚±‚Ìif•¶‚Í”ñŒø—¦“I
-        // ƒeƒNƒXƒ`ƒƒ“K—p
+    if ( use_texture ) {  //â€»ã“ã®ifæ–‡ã¯éåŠ¹ç‡çš„
+        // ãƒ†ã‚¯ã‚¹ãƒãƒ£é©ç”¨
         Color *= tex2D( ObjTexSampler, IN.Tex );
     }
-    if ( use_toon ) {  //“¯ã
-        // ƒgƒD[ƒ““K—p
+    if ( use_toon ) {  //åŒä¸Š
+        // ãƒˆã‚¥ãƒ¼ãƒ³é©ç”¨
         float LightNormal = dot( IN.Normal, -LightDirection );
-        // if(LightNormal<0){Color.rgb*=MaterialToon;} ‚Æ‚µ‚Ä‚à‚æ‚¢‚ªA‹«ŠE‚Ìƒhƒbƒg‚ªŒ©‚¦‚Ä‚µ‚Ü‚¤‚Ì‚Å‚Ú‚©‚·
+        // if(LightNormal<0){Color.rgb*=MaterialToon;} ã¨ã—ã¦ã‚‚ã‚ˆã„ãŒã€å¢ƒç•Œã®ãƒ‰ãƒƒãƒˆãŒè¦‹ãˆã¦ã—ã¾ã†ã®ã§ã¼ã‹ã™
         Color.rgb *= lerp(MaterialToon, float3(1,1,1), saturate(LightNormal * 16 + 0.5));
     }
-    // ƒXƒyƒLƒ…ƒ‰“K—p
+    // ã‚¹ãƒšã‚­ãƒ¥ãƒ©é©ç”¨
     Color.rgb += Specular;
     
     return Color;
 }
 
-// ƒIƒuƒWƒFƒNƒg•`‰æ—pƒeƒNƒjƒbƒN
+// ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆæç”»ç”¨ãƒ†ã‚¯ãƒ‹ãƒƒã‚¯
 technique MainTec < string MMDPass = "object"; > {
     pass DrawObject
     {
