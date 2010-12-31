@@ -52,6 +52,18 @@ namespace pmdview
         }
     }
 
+    public struct VertexPosition
+    {
+        public Vector3 position;
+        public Vector3 normal;
+    }
+
+    public struct VertexTexcoord
+    {
+        public float u;
+        public float v;
+    }
+
     public class Vertex
     {
         public Vector3 position;
@@ -226,7 +238,8 @@ namespace pmdview
         /// </summary>
         public PmdNode[] nodes;
 
-        public VertexBuffer vb = null;
+        public VertexBuffer vb_position = null;
+        public VertexBuffer vb_texcoord = null;
         public IndexBuffer ib = null;
 
         /// <summary>
@@ -235,19 +248,26 @@ namespace pmdview
         /// <param name="device">device</param>
         public void WriteVertexBuffer(Device device)
         {
-            if (vb != null)
-                vb.Dispose();
-            vb = new VertexBuffer(typeof(CustomVertex.PositionNormalTextured), vertices.Length, device, Usage.Dynamic | Usage.WriteOnly, CustomVertex.PositionNormalTextured.Format, Pool.Default);
+            if (vb_position != null)
+                vb_position.Dispose();
+            vb_position = new VertexBuffer(typeof(VertexPosition), vertices.Length, device, Usage.Dynamic | Usage.WriteOnly, VertexFormats.None, Pool.Default);
 
-            vb.Created += new EventHandler(vb_Created);
+            vb_position.Created += new EventHandler(vb_position_Created);
             ClipBoneMatrices();
-            vb_Created(vb, null);
+            vb_position_Created(vb_position, null);
+
+            if (vb_texcoord != null)
+                vb_texcoord.Dispose();
+            vb_texcoord = new VertexBuffer(typeof(VertexTexcoord), vertices.Length, device, Usage.Dynamic | Usage.WriteOnly, VertexFormats.None, Pool.Default);
+
+            vb_texcoord.Created += new EventHandler(vb_texcoord_Created);
+            vb_texcoord_Created(vb_texcoord, null);
         }
 
         public void RewriteVertexBuffer(Device device)
         {
             ClipBoneMatrices();
-            vb_Created(vb, null);
+            vb_position_Created(vb_position, null);
         }
 
         Matrix[] clipped_bone_matrices;
@@ -293,11 +313,11 @@ namespace pmdview
             normal = Vector3.Normalize(nor);
         }
 
-        void vb_Created(object sender, EventArgs e)
+        void vb_position_Created(object sender, EventArgs e)
         {
             VertexBuffer vb = (VertexBuffer)sender;
             //
-            // rewrite vertex buffer
+            // rewrite vertex position buffer
             //
             {
                 GraphicsStream gs = vb.Lock(0, 0, LockFlags.None);
@@ -311,13 +331,33 @@ namespace pmdview
 
                         gs.Write(position);
                         gs.Write(normal);
+                    }
+                }
+                vb.Unlock();
+            }
+            //Console.WriteLine("rewrite vertex position buffer");
+        }
+
+        void vb_texcoord_Created(object sender, EventArgs e)
+        {
+            VertexBuffer vb = (VertexBuffer)sender;
+            //
+            // rewrite vertex texcoord buffer
+            //
+            {
+                GraphicsStream gs = vb.Lock(0, 0, LockFlags.None);
+                {
+                    for (int i = 0; i < vertices.Length; i++)
+                    {
+                        Vertex v = vertices[i];
+
                         gs.Write(v.u);
                         gs.Write(v.v);
                     }
                 }
                 vb.Unlock();
             }
-            Console.WriteLine("rewrite vertex buffer");
+            //Console.WriteLine("rewrite vertex texcoord buffer");
         }
 
         /// <summary>
@@ -349,14 +389,14 @@ namespace pmdview
                 }
                 ib.Unlock();
             }
-            Console.WriteLine("rewrite index buffer");
+            //Console.WriteLine("rewrite index buffer");
         }
 
         public static VertexElement[] ve = new VertexElement[]
         {
             new VertexElement(0,  0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
             new VertexElement(0, 12, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0),
-            new VertexElement(0, 24, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
+            new VertexElement(1,  0, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
                 VertexElement.VertexDeclarationEnd
         };
 
@@ -529,8 +569,10 @@ namespace pmdview
         {
             if (ib != null)
                 ib.Dispose();
-            if (vb != null)
-                vb.Dispose();
+            if (vb_texcoord != null)
+                vb_texcoord.Dispose();
+            if (vb_position != null)
+                vb_position.Dispose();
             foreach (Texture tex in texmap.Values)
                 tex.Dispose();
         }
