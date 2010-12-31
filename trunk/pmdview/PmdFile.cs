@@ -227,6 +227,34 @@ namespace pmdview
         }
     }
 
+    public class PmdIK
+    {
+        public ushort target_node_id;
+        public ushort effector_node_id;
+        public byte chain_length;
+        public ushort niteration;
+        public float weight;
+        public ushort[] chain_node_ids;
+
+        public VmdNode target = null;
+        public VmdNode effector = null;
+        public List<VmdNode> chain_nodes = null;
+
+        public void Read(BinaryReader reader)
+        {
+            this.target_node_id = reader.ReadUInt16();
+            this.effector_node_id = reader.ReadUInt16();
+            this.chain_length = reader.ReadByte();
+            this.niteration = reader.ReadUInt16();
+            this.weight = reader.ReadSingle();
+            this.chain_node_ids = new ushort[chain_length];
+            for (int i = 0; i < chain_length; i++)
+            {
+                chain_node_ids[i] = reader.ReadUInt16();
+            }
+        }
+    }
+
     /// <summary>
     /// pmdファイルを扱います。
     /// </summary>
@@ -239,6 +267,7 @@ namespace pmdview
         /// bone配列
         /// </summary>
         public PmdNode[] nodes;
+        public PmdIK[] iks;
 
         public VertexBuffer vb_position = null;
         public VertexBuffer vb_texcoord = null;
@@ -481,6 +510,16 @@ namespace pmdview
 
             GenerateNodemapAndTree();
             bone_matrices = new Matrix[node_count];
+
+            ushort ik_count = reader.ReadUInt16();
+            Debug.WriteLine("ik_count:" + ik_count);
+            iks = new PmdIK[ik_count];
+
+            for (ushort i = 0; i < ik_count; i++)
+            {
+                iks[i] = new PmdIK();
+                iks[i].Read(reader);
+            }
         }
 
         public Dictionary<string, PmdNode> nodemap = new Dictionary<string, PmdNode>();
