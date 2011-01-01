@@ -266,15 +266,15 @@ namespace TDCG
             Vector3 n2 = Vector3.Normalize(v2);
             float dotProduct = Vector3.Dot(n1, n2);
             float angle = (float)Math.Acos(dotProduct);
-            bool needRotate = (angle > float.Epsilon);
-            if (needRotate)
+            bool need_rotate = (angle > float.Epsilon);
+            if (need_rotate)
             {
                 Vector3 axis = Vector3.Cross(n1, n2);
                 q = Quaternion.RotationAxis(axis, angle);
             }
             else
                 q = Quaternion.Identity;
-            return needRotate;
+            return need_rotate;
         }
     }
 }
