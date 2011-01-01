@@ -78,15 +78,48 @@ namespace pmdview
     /// </summary>
     public class VmdSkin
     {
+        public ushort id;
         public string name;
-        public int frame_index;
-        public float weight;
 
-        public void Read(BinaryReader reader)
+        /// <summary>
+        /// 比率の配列
+        /// </summary>
+        public float[] ratios;
+
+        /// <summary>
+        /// VmdSkinを生成します。
+        /// </summary>
+        public VmdSkin(ushort id)
         {
-            this.name = reader.ReadCString(15);
-            this.frame_index = reader.ReadInt32();
-            this.weight = reader.ReadSingle();
+            this.id = id;
+        }
+    }
+
+    /// <summary>
+    /// 表情フレームを扱います。
+    /// </summary>
+    public class VmdSkinFrame : IComparable
+    {
+        public int index;
+        public float ratio;
+
+        public VmdSkinFrame(int index, float ratio)
+        {
+            this.index = index;
+            this.ratio = ratio;
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (obj is VmdSkinFrame)
+            {
+                VmdSkinFrame other = (VmdSkinFrame)obj;
+                return index.CompareTo(other.index);
+            }
+            else
+            {
+               throw new ArgumentException("Object is not a VmdSkinFrame");
+            }    
         }
     }
 
@@ -99,11 +132,6 @@ namespace pmdview
         /// bone配列
         /// </summary>
         public VmdNode[] nodes;
-
-        /// <summary>
-        /// フレーム配列
-        /// </summary>
-        public VmdFrame[] frames;
 
         /// <summary>
         /// 表情配列
@@ -167,24 +195,63 @@ namespace pmdview
 
                 fmap[node].Add(new VmdFrame(frame_index, rotation, translation));
             }
-            frame_length = max_frame_index + 1;
+            int node_frame_len = max_frame_index + 1;
             nodes = nary.ToArray();
+
+            int skin_frame_count = reader.ReadInt32();
+            Debug.WriteLine("skin_frame_count:" + skin_frame_count);
+
+            Dictionary<string, VmdSkin> smap = new Dictionary<string, VmdSkin>();
+            List<VmdSkin> sary = new List<VmdSkin>();
+            Dictionary<VmdSkin, List<VmdSkinFrame>> gmap = new Dictionary<VmdSkin, List<VmdSkinFrame>>();
+            int max_skin_frame_index = 0;
+            for (int i = 0; i < skin_frame_count; i++)
+            {
+                string skin_name = reader.ReadCString(15);
+                Debug.WriteLine("skin_name:" + skin_name);
+
+                int frame_index = reader.ReadInt32();
+                Debug.WriteLine("frame_index:" + frame_index);
+                if (max_skin_frame_index < frame_index)
+                    max_skin_frame_index = frame_index;
+
+                float ratio = reader.ReadSingle();
+
+                VmdSkin skin;
+                if (! smap.ContainsKey(skin_name))
+                {
+                    skin = new VmdSkin((ushort)sary.Count);
+                    skin.name = skin_name;
+                    sary.Add(skin);
+                    smap[skin_name] = skin;
+                }
+                else
+                    skin = smap[skin_name];
+
+                if (! gmap.ContainsKey(skin))
+                    gmap[skin] = new List<VmdSkinFrame>();
+
+                gmap[skin].Add(new VmdSkinFrame(frame_index, ratio));
+            }
+            int skin_frame_len = max_skin_frame_index + 1;
+            skins = sary.ToArray();
+
+            if (node_frame_len < skin_frame_len)
+                frame_length = skin_frame_len;
+            else
+                frame_length = node_frame_len;
+
             foreach (VmdNode node in nodes)
             {
                 node.matrices = CreateMatrices(fmap[node]);
             }
 
-            GenerateNodemapAndTree();
-
-            int skin_count = reader.ReadInt32();
-            Debug.WriteLine("skin_count:" + skin_count);
-            skins = new VmdSkin[skin_count];
-
-            for (ushort i = 0; i < skin_count; i++)
+            foreach (VmdSkin skin in skins)
             {
-                skins[i] = new VmdSkin();
-                skins[i].Read(reader);
+                skin.ratios = CreateRatios(gmap[skin]);
             }
+
+            GenerateNodemapAndTree();
         }
 
         VmdMat[] CreateMatrices(List<VmdFrame> frames)
@@ -224,6 +291,14 @@ namespace pmdview
                 }
             }
             return matrices;
+        }
+
+        float[] CreateRatios(List<VmdSkinFrame> frames)
+        {
+            frames.Sort();
+
+            float[] ratios = new float[frame_length];
+            return ratios;
         }
 
         public static float Lerp(float value1, float value2, float amount)
