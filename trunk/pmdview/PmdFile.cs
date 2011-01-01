@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Text.RegularExpressions;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
@@ -334,6 +335,10 @@ namespace pmdview
             this.id = id;
         }
 
+        static Regex re_knee = new Regex(@"ひざ\z");
+        bool knee_p;
+        public bool IsKnee { get { return knee_p; } }
+
         public void Read(BinaryReader reader)
         {
             this.name = reader.ReadCString(20);
@@ -342,6 +347,7 @@ namespace pmdview
             this.type = reader.ReadByte();
             this.ik_parent_node_id = reader.ReadUInt16();
             reader.ReadVector3(ref this.position);
+            this.knee_p = re_knee.IsMatch(name);
         }
     }
 
