@@ -351,11 +351,13 @@ namespace pmdview
         }
     }
 
+    /// <summary>
+    /// IKを扱います。
+    /// </summary>
     public class PmdIK
     {
         public ushort target_node_id;
         public ushort effector_node_id;
-        public byte chain_length;
         public ushort niteration;
         public float weight;
         public ushort[] chain_node_ids;
@@ -368,13 +370,51 @@ namespace pmdview
         {
             this.target_node_id = reader.ReadUInt16();
             this.effector_node_id = reader.ReadUInt16();
-            this.chain_length = reader.ReadByte();
+            byte chain_length = reader.ReadByte();
             this.niteration = reader.ReadUInt16();
             this.weight = reader.ReadSingle();
             this.chain_node_ids = new ushort[chain_length];
             for (int i = 0; i < chain_length; i++)
             {
                 chain_node_ids[i] = reader.ReadUInt16();
+            }
+        }
+    }
+
+    /// <summary>
+    /// 表情頂点を扱います。
+    /// </summary>
+    public class PmdSkinVertex
+    {
+        public int id;
+        public Vector3 position;
+
+        public void Read(BinaryReader reader)
+        {
+            this.id = reader.ReadInt32();
+            reader.ReadVector3(ref this.position);
+        }
+    }
+
+    /// <summary>
+    /// 表情を扱います。
+    /// </summary>
+    public class PmdSkin
+    {
+        public string name;
+        public byte type;
+        public PmdSkinVertex[] vertices;
+
+        public void Read(BinaryReader reader)
+        {
+            this.name = reader.ReadCString(20);
+            int skin_vert_count = reader.ReadInt32();
+            this.type = reader.ReadByte();
+            this.vertices = new PmdSkinVertex[skin_vert_count];
+            for (int i = 0; i < skin_vert_count; i++)
+            {
+                vertices[i] = new PmdSkinVertex();
+                vertices[i].Read(reader);
             }
         }
     }
@@ -387,11 +427,21 @@ namespace pmdview
         public Vertex[] vertices;
         public ushort[] indices;
         public PmdMaterial[] materials;
+
         /// <summary>
         /// bone配列
         /// </summary>
         public PmdNode[] nodes;
+
+        /// <summary>
+        /// IK配列
+        /// </summary>
         public PmdIK[] iks;
+
+        /// <summary>
+        /// 表情配列
+        /// </summary>
+        public PmdSkin[] skins;
 
         public VertexBuffer vb_position = null;
         public VertexBuffer vb_texcoord = null;
@@ -645,6 +695,16 @@ namespace pmdview
                 iks[i].Read(reader);
             }
             UpdateNodeIKs();
+
+            ushort skin_count = reader.ReadUInt16();
+            Debug.WriteLine("skin_count:" + skin_count);
+            skins = new PmdSkin[skin_count];
+
+            for (ushort i = 0; i < skin_count; i++)
+            {
+                skins[i] = new PmdSkin();
+                skins[i].Read(reader);
+            }
         }
 
         public Dictionary<string, PmdNode> nodemap = new Dictionary<string, PmdNode>();

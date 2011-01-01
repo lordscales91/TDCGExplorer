@@ -74,6 +74,23 @@ namespace pmdview
     }
 
     /// <summary>
+    /// 表情を扱います。
+    /// </summary>
+    public class VmdSkin
+    {
+        public string name;
+        public int frame_index;
+        public float weight;
+
+        public void Read(BinaryReader reader)
+        {
+            this.name = reader.ReadCString(15);
+            this.frame_index = reader.ReadInt32();
+            this.weight = reader.ReadSingle();
+        }
+    }
+
+    /// <summary>
     /// vmdファイルを扱います。
     /// </summary>
     public class VmdFile
@@ -82,10 +99,16 @@ namespace pmdview
         /// bone配列
         /// </summary>
         public VmdNode[] nodes;
+
         /// <summary>
         /// フレーム配列
         /// </summary>
         public VmdFrame[] frames;
+
+        /// <summary>
+        /// 表情配列
+        /// </summary>
+        public VmdSkin[] skins;
 
         public void Load(string source_file)
         {
@@ -152,6 +175,16 @@ namespace pmdview
             }
 
             GenerateNodemapAndTree();
+
+            int skin_count = reader.ReadInt32();
+            Debug.WriteLine("skin_count:" + skin_count);
+            skins = new VmdSkin[skin_count];
+
+            for (ushort i = 0; i < skin_count; i++)
+            {
+                skins[i] = new VmdSkin();
+                skins[i].Read(reader);
+            }
         }
 
         VmdMat[] CreateMatrices(List<VmdFrame> frames)
