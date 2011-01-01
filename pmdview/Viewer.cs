@@ -158,8 +158,10 @@ namespace pmdview
             pmd.Load(source_file);
             vmd = pmd.GenerateVmd();
             UpdateNodemap();
+            UpdateSkinmap();
             this.frame_index = 0;
             UpdatePose(frame_index);
+            UpdateSkinBase();
             SolveIK();
             UpdateBoneMatrices();
             pmd.WriteVertexBuffer(device);
@@ -176,8 +178,11 @@ namespace pmdview
             vmd = new VmdFile();
             vmd.Load(source_file);
             UpdateNodemap();
+            UpdateSkinmap();
             this.frame_index = 0;
             UpdatePose(frame_index);
+            UpdateSkinBase();
+            UpdateSkin(frame_index);
             SolveIK();
             UpdateBoneMatrices();
             pmd.RewriteVertexBuffer(device);
@@ -216,6 +221,8 @@ namespace pmdview
             Debug.Assert(frame_index >= 0);
             this.frame_index = frame_index;
             UpdatePose(frame_index);
+            UpdateSkinBase();
+            UpdateSkin(frame_index);
             SolveIK();
             UpdateBoneMatrices();
             pmd.RewriteVertexBuffer(device);
@@ -249,6 +256,45 @@ namespace pmdview
                 {
                     node.Rotation = Quaternion.Identity;
                     node.Translation = node.local_translation;
+                }
+            }
+        }
+
+        Dictionary<PmdSkin, VmdSkin> skinmap = new Dictionary<PmdSkin, VmdSkin>();
+
+        public void UpdateSkinmap()
+        {
+            skinmap.Clear();
+            foreach (PmdSkin skin in pmd.skins)
+            {
+                VmdSkin vmd_skin;
+                if (vmd.skinmap.TryGetValue(skin.name, out vmd_skin))
+                    skinmap[skin] = vmd_skin;
+            }
+        }
+
+        public void UpdateSkinBase()
+        {
+            PmdSkin skin = pmd.skins[0];
+            foreach (PmdSkinVertex v in skin.vertices)
+            {
+                pmd.vertices[v.id].position = v.position;
+            }
+        }
+
+        public void UpdateSkin(int frame_index)
+        {
+            foreach (PmdSkin skin in pmd.skins)
+            {
+                VmdSkin vmd_skin;
+                if (skinmap.TryGetValue(skin, out vmd_skin))
+                {
+                    foreach (PmdSkinVertex v in skin.vertices)
+                    {
+                        if (vmd_skin.ratios[frame_index] == 0)
+                            continue;
+                        pmd.vertices[v.id].position = Vector3.Lerp(pmd.vertices[v.id].position, v.position, vmd_skin.ratios[frame_index]);
+                    }
                 }
             }
         }

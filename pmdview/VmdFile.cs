@@ -245,13 +245,13 @@ namespace pmdview
             {
                 node.matrices = CreateMatrices(fmap[node]);
             }
+            GenerateNodemapAndTree();
 
             foreach (VmdSkin skin in skins)
             {
                 skin.ratios = CreateRatios(gmap[skin]);
             }
-
-            GenerateNodemapAndTree();
+            GenerateSkinmap();
         }
 
         VmdMat[] CreateMatrices(List<VmdNodeFrame> frames)
@@ -298,6 +298,26 @@ namespace pmdview
             frames.Sort();
 
             float[] ratios = new float[frame_length];
+            for (int i = 1; i < frames.Count; i++)
+            {
+                VmdSkinFrame fa = frames[i - 1];
+                VmdSkinFrame fb = frames[i];
+                for (int index = fa.index; index < fb.index; index++)
+                {
+                    float ratio = ((float)(index - fa.index)) / ((float)(fb.index - fa.index));
+                    ratios[index] = Lerp(fa.ratio, fb.ratio, ratio);
+                }
+                {
+                    ratios[fb.index] = fb.ratio;
+                }
+            }
+            {
+                VmdSkinFrame last_frame = frames[frames.Count - 1];
+                for (int index = last_frame.index; index < frame_length; index++)
+                {
+                    ratios[index] = last_frame.ratio;
+                }
+            }
             return ratios;
         }
 
@@ -339,6 +359,15 @@ namespace pmdview
                 node.parent = nodes[node.parent_node_id];
                 node.parent.children.Add(node);
             }
+        }
+
+        public Dictionary<string, VmdSkin> skinmap = new Dictionary<string, VmdSkin>();
+
+        public void GenerateSkinmap()
+        {
+            skinmap.Clear();
+            foreach (VmdSkin skin in skins)
+                skinmap[skin.name] = skin;
         }
     }
 }
