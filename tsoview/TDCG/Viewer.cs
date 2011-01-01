@@ -690,7 +690,7 @@ public class Viewer : IDisposable
         device.RenderState.ReferenceAlpha = 0x08;
         device.RenderState.AlphaFunction = Compare.GreaterEqual;
 
-        device.RenderState.IndexedVertexBlendEnable = true;
+        //device.RenderState.IndexedVertexBlendEnable = true;
     }
 
     /// <summary>
@@ -974,7 +974,7 @@ public class Viewer : IDisposable
             foreach (TSOMesh mesh in tso.meshes)
             foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
-                device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
 
                 //tso.SwitchShader(sub_mesh);
                 effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
@@ -1021,7 +1021,7 @@ public class Viewer : IDisposable
             foreach (TSOMesh mesh in tso.meshes)
             foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
-                device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
                 tso.SwitchShader(sub_mesh);
 
                 effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
