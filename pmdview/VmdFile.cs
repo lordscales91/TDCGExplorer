@@ -168,10 +168,16 @@ namespace pmdview
                     float ratio = ((float)(index - fa.index)) / ((float)(fb.index - fa.index));
                     VmdMat mat = new VmdMat();
                     mat.rotation = Quaternion.Slerp(fa.rotation, fb.rotation, ratio);
-                    mat.translation.X = fa.translation.X * ratio + fb.translation.X * (1 - ratio);
-                    mat.translation.Y = fa.translation.Y * ratio + fb.translation.Y * (1 - ratio);
-                    mat.translation.Z = fa.translation.Z * ratio + fb.translation.Z * (1 - ratio);
+                    mat.translation.X = Lerp(fa.translation.X, fb.translation.X, ratio);
+                    mat.translation.Y = Lerp(fa.translation.Y, fb.translation.Y, ratio);
+                    mat.translation.Z = Lerp(fa.translation.Z, fb.translation.Z, ratio);
                     matrices[index] = mat;
+                }
+                {
+                    VmdMat mat = new VmdMat();
+                    mat.rotation = fb.rotation;
+                    mat.translation = fb.translation;
+                    matrices[fb.index] = mat;
                 }
             }
             {
@@ -185,6 +191,11 @@ namespace pmdview
                 }
             }
             return matrices;
+        }
+
+        public static float Lerp(float value1, float value2, float amount)
+        {
+            return value1 + (value2 - value1) * amount;
         }
 
         int frame_length = 0;
