@@ -158,6 +158,7 @@ namespace pmdview
             pmd.Load(source_file);
             vmd = pmd.GenerateVmd();
             UpdateNodemap();
+            this.frame_index = 0;
             UpdatePose(frame_index);
             SolveIK();
             UpdateBoneMatrices();
@@ -175,6 +176,7 @@ namespace pmdview
             vmd = new VmdFile();
             vmd.Load(source_file);
             UpdateNodemap();
+            this.frame_index = 0;
             UpdatePose(frame_index);
             SolveIK();
             UpdateBoneMatrices();
@@ -291,8 +293,29 @@ namespace pmdview
 
             Quaternion q;
             if (RotationVectorToVector(localEffectorP, localTargetP, out q))
+            {
+                if (node.IsKnee)
+                {
+                    Vector3 angle = ToAngleXYZ(q);
+                    angle.X = Clamp(angle.X, -(float)Math.PI, -0.002f);
+                    angle.Y = 0;
+                    angle.Z = 0;
+                    q = ToQuaternionXYZ(angle);
+                }
                 node.Rotation = q * node.Rotation;
+            }
             return (localEffectorP - localTargetP).LengthSq() < 0.1f;
+        }
+
+        public static float Clamp(float value, float min, float max)
+        {
+            if (value < min)
+                return min;
+            else
+            if (value > max)
+                return max;
+            else
+                return value;
         }
 
         /// <summary>
@@ -308,15 +331,59 @@ namespace pmdview
             Vector3 n2 = Vector3.Normalize(v2);
             float dotProduct = Vector3.Dot(n1, n2);
             float angle = (float)Math.Acos(dotProduct);
-            bool needRotate = (angle > float.Epsilon);
-            if (needRotate)
+            bool need_rotate = (angle > float.Epsilon);
+            if (need_rotate)
             {
                 Vector3 axis = Vector3.Cross(n1, n2);
                 q = Quaternion.RotationAxis(axis, angle);
             }
             else
                 q = Quaternion.Identity;
-            return needRotate;
+            return need_rotate;
+        }
+
+        /// euler角 (xyz回転) をquaternionに変換
+        public static Quaternion ToQuaternionXYZ(Vector3 angle)
+        {
+            Quaternion qx, qy, qz;
+            qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), angle.X);
+            qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), angle.Y);
+            qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), angle.Z);
+            return qz * qy * qx;
+        }
+
+        /// 回転行列をeuler角 (xyz回転) に変換
+        public static Vector3 ToAngleXYZ(Matrix m)
+        {
+            Vector3 angle;
+            if (m.M31 < +1.0f - float.Epsilon)
+            {
+                if (m.M31 > -1.0f + float.Epsilon)
+                {
+                    angle.X = (float)Math.Atan2(-m.M32, m.M33);
+                    angle.Y = (float)Math.Asin(m.M31);
+                    angle.Z = (float)Math.Atan2(-m.M21, m.M11);
+                }
+                else
+                {
+                    angle.X = (float)Math.Atan2(m.M21, m.M22);
+                    angle.Y = (float)Math.PI/2f;
+                    angle.Z = 0.0f;
+                }
+            }
+            else
+            {
+                angle.X = (float)Math.Atan2(m.M21, m.M22);
+                angle.Y = (float)Math.PI/2f;
+                angle.Z = 0.0f;
+            }
+            return angle;
+        }
+
+        /// quaternionをeuler角 (xyz回転) に変換
+        public static Vector3 ToAngleXYZ(Quaternion q)
+        {
+            return ToAngleXYZ(Matrix.RotationQuaternion(q));
         }
 
         MatrixStack matrixStack = new MatrixStack();
