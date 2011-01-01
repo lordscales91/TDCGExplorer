@@ -417,6 +417,15 @@ namespace pmdview
                 vertices[i].Read(reader);
             }
         }
+
+        public void Absolutize(PmdSkin base_skin)
+        {
+            foreach (PmdSkinVertex v in vertices)
+            {
+                v.position = v.position + base_skin.vertices[v.id].position;
+                v.id = base_skin.vertices[v.id].id;
+            }
+        }
     }
 
     /// <summary>
@@ -704,6 +713,10 @@ namespace pmdview
             {
                 skins[i] = new PmdSkin();
                 skins[i].Read(reader);
+            }
+            for (ushort i = 1; i < skin_count; i++)
+            {
+                skins[i].Absolutize(skins[0]);
             }
         }
 
