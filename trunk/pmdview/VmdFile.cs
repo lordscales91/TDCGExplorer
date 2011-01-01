@@ -46,13 +46,13 @@ namespace pmdview
     /// <summary>
     /// フレームを扱います。
     /// </summary>
-    public class VmdFrame : IComparable
+    public class VmdNodeFrame : IComparable
     {
         public int index;
         public Quaternion rotation = Quaternion.Identity;
         public Vector3 translation = Vector3.Empty;
 
-        public VmdFrame(int index, Quaternion q, Vector3 v)
+        public VmdNodeFrame(int index, Quaternion q, Vector3 v)
         {
             this.index = index;
             rotation = q;
@@ -61,9 +61,9 @@ namespace pmdview
 
         public int CompareTo(object obj)
         {
-            if (obj is VmdFrame)
+            if (obj is VmdNodeFrame)
             {
-                VmdFrame other = (VmdFrame)obj;
+                VmdNodeFrame other = (VmdNodeFrame)obj;
                 return index.CompareTo(other.index);
             }
             else
@@ -159,8 +159,8 @@ namespace pmdview
 
             Dictionary<string, VmdNode> nmap = new Dictionary<string, VmdNode>();
             List<VmdNode> nary = new List<VmdNode>();
-            Dictionary<VmdNode, List<VmdFrame>> fmap = new Dictionary<VmdNode, List<VmdFrame>>();
-            int max_frame_index = 0;
+            Dictionary<VmdNode, List<VmdNodeFrame>> fmap = new Dictionary<VmdNode, List<VmdNodeFrame>>();
+            int max_node_frame_index = 0;
             for (int i = 0; i < frame_count; i++)
             {
                 string node_name = reader.ReadCString(15);
@@ -168,8 +168,8 @@ namespace pmdview
 
                 int frame_index = reader.ReadInt32();
                 Debug.WriteLine("frame_index:" + frame_index);
-                if (max_frame_index < frame_index)
-                    max_frame_index = frame_index;
+                if (max_node_frame_index < frame_index)
+                    max_node_frame_index = frame_index;
 
                 Vector3 translation = Vector3.Empty;
                 reader.ReadVector3(ref translation);
@@ -191,11 +191,11 @@ namespace pmdview
                     node = nmap[node_name];
 
                 if (! fmap.ContainsKey(node))
-                    fmap[node] = new List<VmdFrame>();
+                    fmap[node] = new List<VmdNodeFrame>();
 
-                fmap[node].Add(new VmdFrame(frame_index, rotation, translation));
+                fmap[node].Add(new VmdNodeFrame(frame_index, rotation, translation));
             }
-            int node_frame_len = max_frame_index + 1;
+            int node_frame_len = max_node_frame_index + 1;
             nodes = nary.ToArray();
 
             int skin_frame_count = reader.ReadInt32();
@@ -254,15 +254,15 @@ namespace pmdview
             GenerateNodemapAndTree();
         }
 
-        VmdMat[] CreateMatrices(List<VmdFrame> frames)
+        VmdMat[] CreateMatrices(List<VmdNodeFrame> frames)
         {
             frames.Sort();
 
             VmdMat[] matrices = new VmdMat[frame_length];
             for (int i = 1; i < frames.Count; i++)
             {
-                VmdFrame fa = frames[i - 1];
-                VmdFrame fb = frames[i];
+                VmdNodeFrame fa = frames[i - 1];
+                VmdNodeFrame fb = frames[i];
                 for (int index = fa.index; index < fb.index; index++)
                 {
                     float ratio = ((float)(index - fa.index)) / ((float)(fb.index - fa.index));
@@ -281,7 +281,7 @@ namespace pmdview
                 }
             }
             {
-                VmdFrame last_frame = frames[frames.Count - 1];
+                VmdNodeFrame last_frame = frames[frames.Count - 1];
                 for (int index = last_frame.index; index < frame_length; index++)
                 {
                     VmdMat mat = new VmdMat();
