@@ -28,288 +28,165 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tpGeneral = new System.Windows.Forms.TabPage();
-            this.btnTSOSave = new System.Windows.Forms.Button();
-            this.lvTSOFiles = new System.Windows.Forms.ListView();
-            this.chTSOName = new System.Windows.Forms.ColumnHeader();
-            this.tpNodes = new System.Windows.Forms.TabPage();
-            this.lvNodes = new System.Windows.Forms.ListView();
-            this.chNodeName = new System.Windows.Forms.ColumnHeader();
-            this.tpTextures = new System.Windows.Forms.TabPage();
-            this.btnTexSave = new System.Windows.Forms.Button();
-            this.btnTexLoad = new System.Windows.Forms.Button();
-            this.pbTexThumbnail = new System.Windows.Forms.PictureBox();
-            this.lvTextures = new System.Windows.Forms.ListView();
-            this.chTexName = new System.Windows.Forms.ColumnHeader();
-            this.chTexFileName = new System.Windows.Forms.ColumnHeader();
-            this.tpSubScripts = new System.Windows.Forms.TabPage();
-            this.lvSubScripts = new System.Windows.Forms.ListView();
-            this.chSubName = new System.Windows.Forms.ColumnHeader();
-            this.chSubFileName = new System.Windows.Forms.ColumnHeader();
-            this.tpMeshes = new System.Windows.Forms.TabPage();
-            this.lvMeshes = new System.Windows.Forms.ListView();
-            this.chMeshName = new System.Windows.Forms.ColumnHeader();
-            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.tabControl1.SuspendLayout();
-            this.tpGeneral.SuspendLayout();
-            this.tpNodes.SuspendLayout();
-            this.tpTextures.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pbTexThumbnail)).BeginInit();
-            this.tpSubScripts.SuspendLayout();
-            this.tpMeshes.SuspendLayout();
+            this.lbRot = new System.Windows.Forms.Label();
+            this.lbTra = new System.Windows.Forms.Label();
+            this.btnTraZ = new TSOEditor.NotSelectableButton();
+            this.btnTraY = new TSOEditor.NotSelectableButton();
+            this.btnTraX = new TSOEditor.NotSelectableButton();
+            this.btnRotZ = new TSOEditor.NotSelectableButton();
+            this.btnRotY = new TSOEditor.NotSelectableButton();
+            this.btnRotX = new TSOEditor.NotSelectableButton();
             this.SuspendLayout();
             // 
-            // tabControl1
+            // lbRot
             // 
-            this.tabControl1.Controls.Add(this.tpGeneral);
-            this.tabControl1.Controls.Add(this.tpNodes);
-            this.tabControl1.Controls.Add(this.tpTextures);
-            this.tabControl1.Controls.Add(this.tpSubScripts);
-            this.tabControl1.Controls.Add(this.tpMeshes);
-            this.tabControl1.Location = new System.Drawing.Point(12, 12);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(610, 429);
-            this.tabControl1.TabIndex = 0;
+            this.lbRot.Location = new System.Drawing.Point(58, 9);
+            this.lbRot.Name = "lbRot";
+            this.lbRot.Size = new System.Drawing.Size(40, 12);
+            this.lbRot.TabIndex = 0;
+            this.lbRot.Text = "回転";
+            this.lbRot.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // tpGeneral
+            // lbTra
             // 
-            this.tpGeneral.Controls.Add(this.btnTSOSave);
-            this.tpGeneral.Controls.Add(this.lvTSOFiles);
-            this.tpGeneral.Location = new System.Drawing.Point(4, 22);
-            this.tpGeneral.Name = "tpGeneral";
-            this.tpGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tpGeneral.Size = new System.Drawing.Size(602, 403);
-            this.tpGeneral.TabIndex = 4;
-            this.tpGeneral.Text = "General";
-            this.tpGeneral.UseVisualStyleBackColor = true;
+            this.lbTra.Location = new System.Drawing.Point(12, 9);
+            this.lbTra.Name = "lbTra";
+            this.lbTra.Size = new System.Drawing.Size(40, 12);
+            this.lbTra.TabIndex = 4;
+            this.lbTra.Text = "移動";
+            this.lbTra.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // btnTSOSave
+            // btnTraZ
             // 
-            this.btnTSOSave.Location = new System.Drawing.Point(186, 6);
-            this.btnTSOSave.Name = "btnTSOSave";
-            this.btnTSOSave.Size = new System.Drawing.Size(75, 23);
-            this.btnTSOSave.TabIndex = 2;
-            this.btnTSOSave.Text = "&Save";
-            this.btnTSOSave.UseVisualStyleBackColor = true;
-            this.btnTSOSave.Click += new System.EventHandler(this.btnTSOSave_Click);
+            this.btnTraZ.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnTraZ.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTraZ.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.btnTraZ.ForeColor = System.Drawing.Color.Blue;
+            this.btnTraZ.Location = new System.Drawing.Point(12, 86);
+            this.btnTraZ.Name = "btnTraZ";
+            this.btnTraZ.Size = new System.Drawing.Size(40, 25);
+            this.btnTraZ.TabIndex = 7;
+            this.btnTraZ.Text = "Z";
+            this.btnTraZ.UseVisualStyleBackColor = true;
+            this.btnTraZ.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Control_MouseMove);
+            this.btnTraZ.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Control_MouseDown);
+            this.btnTraZ.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Control_MouseUp);
             // 
-            // lvTSOFiles
+            // btnTraY
             // 
-            this.lvTSOFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.chTSOName});
-            this.lvTSOFiles.Location = new System.Drawing.Point(6, 6);
-            this.lvTSOFiles.Name = "lvTSOFiles";
-            this.lvTSOFiles.Size = new System.Drawing.Size(174, 391);
-            this.lvTSOFiles.TabIndex = 1;
-            this.lvTSOFiles.UseCompatibleStateImageBehavior = false;
-            this.lvTSOFiles.View = System.Windows.Forms.View.Details;
-            this.lvTSOFiles.SelectedIndexChanged += new System.EventHandler(this.lvTSOFiles_SelectedIndexChanged);
+            this.btnTraY.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnTraY.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTraY.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.btnTraY.ForeColor = System.Drawing.Color.Green;
+            this.btnTraY.Location = new System.Drawing.Point(12, 55);
+            this.btnTraY.Name = "btnTraY";
+            this.btnTraY.Size = new System.Drawing.Size(40, 25);
+            this.btnTraY.TabIndex = 6;
+            this.btnTraY.Text = "Y";
+            this.btnTraY.UseVisualStyleBackColor = true;
+            this.btnTraY.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Control_MouseMove);
+            this.btnTraY.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Control_MouseDown);
+            this.btnTraY.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Control_MouseUp);
             // 
-            // chTSOName
+            // btnTraX
             // 
-            this.chTSOName.Text = "Name";
+            this.btnTraX.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnTraX.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnTraX.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.btnTraX.ForeColor = System.Drawing.Color.Red;
+            this.btnTraX.Location = new System.Drawing.Point(12, 24);
+            this.btnTraX.Name = "btnTraX";
+            this.btnTraX.Size = new System.Drawing.Size(40, 25);
+            this.btnTraX.TabIndex = 5;
+            this.btnTraX.Text = "X";
+            this.btnTraX.UseVisualStyleBackColor = true;
+            this.btnTraX.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Control_MouseMove);
+            this.btnTraX.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Control_MouseDown);
+            this.btnTraX.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Control_MouseUp);
             // 
-            // tpNodes
+            // btnRotZ
             // 
-            this.tpNodes.Controls.Add(this.lvNodes);
-            this.tpNodes.Location = new System.Drawing.Point(4, 22);
-            this.tpNodes.Name = "tpNodes";
-            this.tpNodes.Padding = new System.Windows.Forms.Padding(3);
-            this.tpNodes.Size = new System.Drawing.Size(602, 403);
-            this.tpNodes.TabIndex = 0;
-            this.tpNodes.Text = "nodes";
-            this.tpNodes.UseVisualStyleBackColor = true;
+            this.btnRotZ.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnRotZ.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRotZ.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.btnRotZ.ForeColor = System.Drawing.Color.Blue;
+            this.btnRotZ.Location = new System.Drawing.Point(58, 86);
+            this.btnRotZ.Name = "btnRotZ";
+            this.btnRotZ.Size = new System.Drawing.Size(40, 25);
+            this.btnRotZ.TabIndex = 3;
+            this.btnRotZ.Text = "Z";
+            this.btnRotZ.UseVisualStyleBackColor = true;
+            this.btnRotZ.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Control_MouseMove);
+            this.btnRotZ.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Control_MouseDown);
+            this.btnRotZ.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Control_MouseUp);
             // 
-            // lvNodes
+            // btnRotY
             // 
-            this.lvNodes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.chNodeName});
-            this.lvNodes.Location = new System.Drawing.Point(6, 6);
-            this.lvNodes.Name = "lvNodes";
-            this.lvNodes.Size = new System.Drawing.Size(174, 381);
-            this.lvNodes.TabIndex = 0;
-            this.lvNodes.UseCompatibleStateImageBehavior = false;
-            this.lvNodes.View = System.Windows.Forms.View.Details;
-            this.lvNodes.SelectedIndexChanged += new System.EventHandler(this.lvNodes_SelectedIndexChanged);
+            this.btnRotY.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnRotY.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRotY.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.btnRotY.ForeColor = System.Drawing.Color.Green;
+            this.btnRotY.Location = new System.Drawing.Point(58, 55);
+            this.btnRotY.Name = "btnRotY";
+            this.btnRotY.Size = new System.Drawing.Size(40, 25);
+            this.btnRotY.TabIndex = 2;
+            this.btnRotY.Text = "Y";
+            this.btnRotY.UseVisualStyleBackColor = true;
+            this.btnRotY.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Control_MouseMove);
+            this.btnRotY.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Control_MouseDown);
+            this.btnRotY.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Control_MouseUp);
             // 
-            // chNodeName
+            // btnRotX
             // 
-            this.chNodeName.Text = "Name";
-            // 
-            // tpTextures
-            // 
-            this.tpTextures.Controls.Add(this.btnTexSave);
-            this.tpTextures.Controls.Add(this.btnTexLoad);
-            this.tpTextures.Controls.Add(this.pbTexThumbnail);
-            this.tpTextures.Controls.Add(this.lvTextures);
-            this.tpTextures.Location = new System.Drawing.Point(4, 22);
-            this.tpTextures.Name = "tpTextures";
-            this.tpTextures.Padding = new System.Windows.Forms.Padding(3);
-            this.tpTextures.Size = new System.Drawing.Size(602, 403);
-            this.tpTextures.TabIndex = 1;
-            this.tpTextures.Text = "textures";
-            this.tpTextures.UseVisualStyleBackColor = true;
-            // 
-            // btnTexSave
-            // 
-            this.btnTexSave.Location = new System.Drawing.Point(269, 269);
-            this.btnTexSave.Name = "btnTexSave";
-            this.btnTexSave.Size = new System.Drawing.Size(75, 23);
-            this.btnTexSave.TabIndex = 3;
-            this.btnTexSave.Text = "&Save";
-            this.btnTexSave.UseVisualStyleBackColor = true;
-            this.btnTexSave.Click += new System.EventHandler(this.btnTexSave_Click);
-            // 
-            // btnTexLoad
-            // 
-            this.btnTexLoad.Location = new System.Drawing.Point(187, 269);
-            this.btnTexLoad.Name = "btnTexLoad";
-            this.btnTexLoad.Size = new System.Drawing.Size(75, 23);
-            this.btnTexLoad.TabIndex = 2;
-            this.btnTexLoad.Text = "&Load";
-            this.btnTexLoad.UseVisualStyleBackColor = true;
-            this.btnTexLoad.Click += new System.EventHandler(this.btnTexLoad_Click);
-            // 
-            // pbTexThumbnail
-            // 
-            this.pbTexThumbnail.Location = new System.Drawing.Point(186, 6);
-            this.pbTexThumbnail.Name = "pbTexThumbnail";
-            this.pbTexThumbnail.Size = new System.Drawing.Size(256, 256);
-            this.pbTexThumbnail.TabIndex = 1;
-            this.pbTexThumbnail.TabStop = false;
-            // 
-            // lvTextures
-            // 
-            this.lvTextures.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.chTexName,
-            this.chTexFileName});
-            this.lvTextures.Location = new System.Drawing.Point(6, 6);
-            this.lvTextures.Name = "lvTextures";
-            this.lvTextures.Size = new System.Drawing.Size(174, 381);
-            this.lvTextures.TabIndex = 0;
-            this.lvTextures.UseCompatibleStateImageBehavior = false;
-            this.lvTextures.View = System.Windows.Forms.View.Details;
-            this.lvTextures.SelectedIndexChanged += new System.EventHandler(this.lvTextures_SelectedIndexChanged);
-            // 
-            // chTexName
-            // 
-            this.chTexName.Text = "Name";
-            // 
-            // chTexFileName
-            // 
-            this.chTexFileName.Text = "File";
-            // 
-            // tpSubScripts
-            // 
-            this.tpSubScripts.Controls.Add(this.lvSubScripts);
-            this.tpSubScripts.Location = new System.Drawing.Point(4, 22);
-            this.tpSubScripts.Name = "tpSubScripts";
-            this.tpSubScripts.Size = new System.Drawing.Size(602, 403);
-            this.tpSubScripts.TabIndex = 2;
-            this.tpSubScripts.Text = "sub scripts";
-            this.tpSubScripts.UseVisualStyleBackColor = true;
-            // 
-            // lvSubScripts
-            // 
-            this.lvSubScripts.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.chSubName,
-            this.chSubFileName});
-            this.lvSubScripts.Location = new System.Drawing.Point(6, 6);
-            this.lvSubScripts.Name = "lvSubScripts";
-            this.lvSubScripts.Size = new System.Drawing.Size(174, 381);
-            this.lvSubScripts.TabIndex = 0;
-            this.lvSubScripts.UseCompatibleStateImageBehavior = false;
-            this.lvSubScripts.View = System.Windows.Forms.View.Details;
-            this.lvSubScripts.SelectedIndexChanged += new System.EventHandler(this.lvSubScripts_SelectedIndexChanged);
-            // 
-            // chSubName
-            // 
-            this.chSubName.Text = "Name";
-            // 
-            // chSubFileName
-            // 
-            this.chSubFileName.Text = "File";
-            // 
-            // tpMeshes
-            // 
-            this.tpMeshes.Controls.Add(this.lvMeshes);
-            this.tpMeshes.Location = new System.Drawing.Point(4, 22);
-            this.tpMeshes.Name = "tpMeshes";
-            this.tpMeshes.Size = new System.Drawing.Size(602, 403);
-            this.tpMeshes.TabIndex = 3;
-            this.tpMeshes.Text = "meshes";
-            this.tpMeshes.UseVisualStyleBackColor = true;
-            // 
-            // lvMeshes
-            // 
-            this.lvMeshes.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.chMeshName});
-            this.lvMeshes.Location = new System.Drawing.Point(6, 6);
-            this.lvMeshes.Name = "lvMeshes";
-            this.lvMeshes.Size = new System.Drawing.Size(174, 381);
-            this.lvMeshes.TabIndex = 0;
-            this.lvMeshes.UseCompatibleStateImageBehavior = false;
-            this.lvMeshes.View = System.Windows.Forms.View.Details;
-            this.lvMeshes.SelectedIndexChanged += new System.EventHandler(this.lvMeshes_SelectedIndexChanged);
-            // 
-            // chMeshName
-            // 
-            this.chMeshName.Text = "Name";
-            // 
-            // openFileDialog1
-            // 
-            this.openFileDialog1.FileName = "openFileDialog1";
+            this.btnRotX.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.btnRotX.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnRotX.Font = new System.Drawing.Font("MS UI Gothic", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+            this.btnRotX.ForeColor = System.Drawing.Color.Red;
+            this.btnRotX.Location = new System.Drawing.Point(58, 24);
+            this.btnRotX.Name = "btnRotX";
+            this.btnRotX.Size = new System.Drawing.Size(40, 25);
+            this.btnRotX.TabIndex = 1;
+            this.btnRotX.Text = "X";
+            this.btnRotX.UseVisualStyleBackColor = true;
+            this.btnRotX.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Control_MouseMove);
+            this.btnRotX.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Control_MouseDown);
+            this.btnRotX.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Control_MouseUp);
             // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(634, 453);
-            this.Controls.Add(this.tabControl1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
+            this.ClientSize = new System.Drawing.Size(158, 133);
+            this.Controls.Add(this.btnTraZ);
+            this.Controls.Add(this.btnTraY);
+            this.Controls.Add(this.btnTraX);
+            this.Controls.Add(this.lbTra);
+            this.Controls.Add(this.btnRotZ);
+            this.Controls.Add(this.btnRotY);
+            this.Controls.Add(this.btnRotX);
+            this.Controls.Add(this.lbRot);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "Form2";
-            this.Text = "tso editor";
-            this.tabControl1.ResumeLayout(false);
-            this.tpGeneral.ResumeLayout(false);
-            this.tpNodes.ResumeLayout(false);
-            this.tpTextures.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.pbTexThumbnail)).EndInit();
-            this.tpSubScripts.ResumeLayout(false);
-            this.tpMeshes.ResumeLayout(false);
+            this.Text = "変形操作";
+            this.TopMost = true;
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Control_MouseUp);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Control_MouseDown);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form2_FormClosing);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Control_MouseMove);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tpNodes;
-        private System.Windows.Forms.ListView lvNodes;
-        private System.Windows.Forms.TabPage tpTextures;
-        private System.Windows.Forms.TabPage tpSubScripts;
-        private System.Windows.Forms.TabPage tpMeshes;
-        private System.Windows.Forms.ColumnHeader chNodeName;
-        private System.Windows.Forms.ListView lvTextures;
-        private System.Windows.Forms.ColumnHeader chTexName;
-        private System.Windows.Forms.ListView lvSubScripts;
-        private System.Windows.Forms.ColumnHeader chSubName;
-        private System.Windows.Forms.ListView lvMeshes;
-        private System.Windows.Forms.ColumnHeader chMeshName;
-        private System.Windows.Forms.TabPage tpGeneral;
-        private System.Windows.Forms.ColumnHeader chTexFileName;
-        private System.Windows.Forms.ColumnHeader chSubFileName;
-        private System.Windows.Forms.PictureBox pbTexThumbnail;
-        private System.Windows.Forms.ListView lvTSOFiles;
-        private System.Windows.Forms.ColumnHeader chTSOName;
-        private System.Windows.Forms.Button btnTexSave;
-        private System.Windows.Forms.Button btnTexLoad;
-        private System.Windows.Forms.OpenFileDialog openFileDialog1;
-        private System.Windows.Forms.SaveFileDialog saveFileDialog1;
-        private System.Windows.Forms.Button btnTSOSave;
+        private System.Windows.Forms.Label lbRot;
+        private NotSelectableButton btnRotX;
+        private NotSelectableButton btnRotY;
+        private NotSelectableButton btnRotZ;
+        private NotSelectableButton btnTraZ;
+        private NotSelectableButton btnTraY;
+        private NotSelectableButton btnTraX;
+        private System.Windows.Forms.Label lbTra;
+
     }
 }
-

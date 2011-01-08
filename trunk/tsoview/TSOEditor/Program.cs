@@ -26,23 +26,34 @@ namespace TSOEditor
             Application.SetCompatibleTextRenderingDefault(false);
             using (Form1 form1 = new Form1())
             using (Form2 form2 = new Form2())
+            using (Form3 form3 = new Form3())
             {
+                form2.TopLevel = false;
+                form2.Location = new System.Drawing.Point(0, 26);
+                form1.Controls.Add(form2);
+                form2.BringToFront();
+                form2.viewer = form1.viewer;
                 form1.viewer.FigureEvent += delegate(object sender, EventArgs e)
                 {
                     Figure fig;
                     if (form1.viewer.TryGetFigure(out fig))
                     {
-                        form2.AssignTSOFiles(fig);
+                        form3.AssignTSOFiles(fig);
                     }
                 };
-                form2.OpenTextureEvent += delegate(object sender, EventArgs e)
+                form2.RotationEvent += delegate(object sender, EventArgs e)
                 {
-                    form1.viewer.OpenTexture(form2.GetSelectedTexture());
+                    form1.Invalidate(false);
+                };
+                form3.OpenTextureEvent += delegate(object sender, EventArgs e)
+                {
+                    form1.viewer.OpenTexture(form3.GetSelectedTexture());
                     form1.Invalidate();
                 };
                 form1.InitializeApplication(tso_config, args);
                 form1.Show();
                 form2.Show();
+                form3.Show();
                 Application.Run(form1);
             }
         }
