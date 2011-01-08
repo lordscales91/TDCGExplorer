@@ -64,5 +64,50 @@ namespace TDCG
             lastScreenPoint.X = e.X;
             lastScreenPoint.Y = e.Y;
         }
+
+        internal void BeginNodeCommand()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal bool HasNodeCommand()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void TranslateXOnScreen(int dx, int dy)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void TranslateYOnScreen(int dx, int dy)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void TranslateZOnScreen(int dx, int dy)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RotateXOnScreen(int dx, int dy)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RotateYOnScreen(int dx, int dy)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void RotateZOnScreen(int dx, int dy)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void EndNodeCommand()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
