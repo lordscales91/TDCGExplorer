@@ -187,7 +187,7 @@ public class Morphing
                     Matrix inv_min = Matrix.Invert(min);
                     if (! mmap.ContainsKey(select_node))
                         mmap[select_node] = min;
-                    mmap[select_node] = mmap[select_node] * inv_min * SlideMatrices.GetMatrixRatio(min, max, morph.Ratio);
+                    mmap[select_node] = mmap[select_node] * inv_min * SliderMatrix.GetMatrixRatio(min, max, morph.Ratio);
                 }
             }
         }

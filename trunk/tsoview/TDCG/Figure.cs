@@ -25,7 +25,7 @@ public class Figure : IDisposable
     /// <summary>
     /// スライダ変形行列
     /// </summary>
-    public SlideMatrices slide_matrices = new SlideMatrices();
+    public SliderMatrix slide_matrices = new SliderMatrix();
 
     Vector3 center = Vector3.Empty;
     /// <summary>

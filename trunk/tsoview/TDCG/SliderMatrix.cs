@@ -12,7 +12,7 @@ using Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// スライダ変形行列
-public class SlideMatrices
+public class SliderMatrix
 {
     /// 姉妹スライダ0.0でのlocal scaling factor
     public static Vector3 GetMinLocal()
@@ -518,7 +518,7 @@ m.M44 = 1.000000F;
     /// face_oyaの変形行列
     public static Matrix FaceOyaDefault;
 
-    static SlideMatrices()
+    static SliderMatrix()
     {
         FaceOyaDefault = Matrix.Scaling(1.1045F, 1.064401F, 1.1045F);
     }
@@ -582,7 +582,7 @@ m.M44 = 1.000000F;
     public Matrix EyeL;
 
     /// スライダ変形行列を生成します。
-    public SlideMatrices()
+    public SliderMatrix()
     {
         ArmRatio = 0.5f;
         LegRatio = 0.5f;
