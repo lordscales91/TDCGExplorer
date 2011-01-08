@@ -33,6 +33,7 @@ namespace TSOEditor
                 form1.Controls.Add(form2);
                 form2.BringToFront();
                 form2.viewer = form1.viewer;
+                form3.viewer = form1.viewer;
                 form1.viewer.FigureEvent += delegate(object sender, EventArgs e)
                 {
                     Figure fig;

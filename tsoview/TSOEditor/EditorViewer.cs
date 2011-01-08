@@ -24,6 +24,7 @@ namespace TDCG
                 RenderDerived();
             };
             LineColor = Color.FromArgb(100, 100, 230); //from MikuMikuDance
+            SelectedLineColor = Color.FromArgb(255, 0, 0); //red
         }
 
         /// マウスボタンを押したときに実行するハンドラ
@@ -40,8 +41,7 @@ namespace TDCG
                     else
                         if (!MotionEnabled)
                         {
-                            //if (!SelectVertex())
-                            //    SelectNode();
+                            SelectNode();
                             control.Invalidate(false);
                         }
                     break;
@@ -112,6 +112,75 @@ namespace TDCG
             return true;
         }
 
+        TSOFile selected_tso_file = null;
+        TSONode selected_node = null;
+
+        /// 選択TSOファイル
+        public TSOFile SelectedTSOFile
+        {
+            get { return selected_tso_file; }
+            set
+            {
+                selected_tso_file = value;
+            }
+        }
+
+        /// <summary>
+        /// node選択時に呼び出されるハンドラ
+        /// </summary>
+        public event EventHandler SelectedNodeChanged;
+
+        /// nodeを選択します。
+        /// returns: nodeを見つけたかどうか
+        public bool SelectNode()
+        {
+            bool found = false;
+
+            Figure fig;
+            if (TryGetFigure(out fig))
+            {
+                if (SelectedTSOFile != null)
+                {
+                    //スクリーン座標からnodeを見つけます。
+                    //衝突する頂点の中で最も近い位置にあるnodeを返します。
+
+                    float x = lastScreenPoint.X;
+                    float y = lastScreenPoint.Y;
+
+                    int width = 5;//頂点ハンドルの幅
+                    float min_z = 1e12f;
+
+                    TSONode found_node = null;
+
+                    foreach (TSONode node in SelectedTSOFile.nodes)
+                    {
+                        TMONode bone;
+                        if (fig.nodemap.TryGetValue(node, out bone))
+                        {
+                            Vector3 p2 = GetNodePositionOnScreen(bone);
+                            if (p2.X - width <= x && x <= p2.X + width && p2.Y - width <= y && y <= p2.Y + width)
+                            {
+                                if (p2.Z < min_z)
+                                {
+                                    min_z = p2.Z;
+                                    found = true;
+                                    found_node = node;
+                                }
+                            }
+                        }
+                    }
+
+                    if (found)
+                    {
+                        selected_node = found_node;
+                        if (SelectedNodeChanged != null)
+                            SelectedNodeChanged(this, EventArgs.Empty);
+                    }
+                }
+            }
+            return found;
+        }
+
         /// <summary>
         /// シーンをレンダリングします。
         /// </summary>
@@ -125,6 +194,7 @@ namespace TDCG
             {
                 //nodeを描画する。
                 DrawNodeTree(fig);
+                DrawSelectedNode(fig);
             }
         }
 
@@ -185,6 +255,120 @@ namespace TDCG
         Vector3 GetNodePositionOnScreen(TMONode node)
         {
             Vector3 p1 = GetMatrixTranslation(ref node.combined_matrix);
+            Vector3 p2 = WorldToScreen(p1);
+            p2.Z = 0.0f; //表面に固定
+            return p2;
+        }
+
+        /// 選択node line描画色
+        public Color SelectedLineColor { get; set; }
+
+        /// 選択nodeを描画する。
+        void DrawSelectedNode(Figure fig)
+        {
+            if (selected_node == null)
+                return;
+
+            TMONode bone;
+            if (fig.nodemap.TryGetValue(selected_node, out bone))
+            {
+                Vector3 p1 = GetNodePositionOnScreen(bone);
+
+                if (selected_node.children.Count != 0)
+                {
+                    TMONode child_bone;
+                    if (fig.nodemap.TryGetValue(selected_node.children[0], out child_bone))
+                    {
+                        Line line = new Line(device);
+
+                        Vector3 p0 = GetNodePositionOnScreen(child_bone);
+
+                        Vector3 pd = p0 - p1;
+                        float len = Vector3.Length(pd);
+                        float scale = 4.0f / len;
+                        Vector2 p3 = new Vector2(p1.X + pd.Y * scale, p1.Y - pd.X * scale);
+                        Vector2 p4 = new Vector2(p1.X - pd.Y * scale, p1.Y + pd.X * scale);
+
+                        Vector2[] vertices = new Vector2[3];
+                        vertices[0] = new Vector2(p3.X, p3.Y);
+                        vertices[1] = new Vector2(p0.X, p0.Y);
+                        vertices[2] = new Vector2(p4.X, p4.Y);
+                        line.Draw(vertices, SelectedLineColor);
+
+                        line.Dispose();
+                        line = null;
+                    }
+                }
+
+                {
+                    Vector3 px = GetNodeDirXPositionOnScreen(bone);
+                    Vector3 py = GetNodeDirYPositionOnScreen(bone);
+                    Vector3 pz = GetNodeDirZPositionOnScreen(bone);
+
+                    Color line_color_x = Color.FromArgb(255, 0, 0); //R
+                    Color line_color_y = Color.FromArgb(0, 255, 0); //G
+                    Color line_color_z = Color.FromArgb(0, 0, 255); //B
+                    Line line = new Line(device);
+                    line.Width = 3;
+
+                    Vector2[] vertices = new Vector2[2];
+                    vertices[0] = new Vector2(p1.X, p1.Y);
+                    vertices[1] = new Vector2(px.X, px.Y);
+                    line.Draw(vertices, line_color_x);
+                    vertices[1] = new Vector2(py.X, py.Y);
+                    line.Draw(vertices, line_color_y);
+                    vertices[1] = new Vector2(pz.X, pz.Y);
+                    line.Draw(vertices, line_color_z);
+
+                    line.Dispose();
+                    line = null;
+                }
+
+                Rectangle rect = new Rectangle(16, 16, 15, 15); //node circle
+                Vector3 rect_center = new Vector3(7, 7, 0);
+                sprite.Begin(SpriteFlags.None);
+                sprite.Draw(dot_texture, rect, rect_center, p1, Color.White);
+                sprite.End();
+            }
+        }
+
+        /// 指定行列のX軸先位置を得ます。
+        public static Vector3 GetMatrixDirXTranslation(ref Matrix m, float len)
+        {
+            return new Vector3(m.M11 * len + m.M41, m.M12 * len + m.M42, m.M13 * len + m.M43);
+        }
+
+        /// 指定行列のY軸先位置を得ます。
+        public static Vector3 GetMatrixDirYTranslation(ref Matrix m, float len)
+        {
+            return new Vector3(m.M21 * len + m.M41, m.M22 * len + m.M42, m.M23 * len + m.M43);
+        }
+
+        /// 指定行列のZ軸先位置を得ます。
+        public static Vector3 GetMatrixDirZTranslation(ref Matrix m, float len)
+        {
+            return new Vector3(m.M31 * len + m.M41, m.M32 * len + m.M42, m.M33 * len + m.M43);
+        }
+
+        Vector3 GetNodeDirXPositionOnScreen(TMONode node)
+        {
+            Vector3 p1 = GetMatrixDirXTranslation(ref node.combined_matrix, 1);
+            Vector3 p2 = WorldToScreen(p1);
+            p2.Z = 0.0f; //表面に固定
+            return p2;
+        }
+
+        Vector3 GetNodeDirYPositionOnScreen(TMONode node)
+        {
+            Vector3 p1 = GetMatrixDirYTranslation(ref node.combined_matrix, 1);
+            Vector3 p2 = WorldToScreen(p1);
+            p2.Z = 0.0f; //表面に固定
+            return p2;
+        }
+
+        Vector3 GetNodeDirZPositionOnScreen(TMONode node)
+        {
+            Vector3 p1 = GetMatrixDirZTranslation(ref node.combined_matrix, 1);
             Vector3 p2 = WorldToScreen(p1);
             p2.Z = 0.0f; //表面に固定
             return p2;
