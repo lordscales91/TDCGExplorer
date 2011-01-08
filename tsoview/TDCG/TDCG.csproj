@@ -38,6 +38,7 @@
     <Compile Include="BMPSaveData.cs" />
     <Compile Include="Camera.cs" />
     <Compile Include="Figure.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="IProportion.cs" />
     <Compile Include="Morphing.cs" />
     <Compile Include="NodesRange.cs" />

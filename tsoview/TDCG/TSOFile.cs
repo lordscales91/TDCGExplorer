@@ -1151,7 +1151,7 @@ namespace TDCG
             set {
                 transformation_matrix = value;
                 Matrix m = transformation_matrix;
-                translation = TMOMat.DecomposeMatrix(ref m);
+                translation = Helper.DecomposeMatrix(ref m);
                 rotation = Quaternion.RotationMatrix(m);
             }
         }
