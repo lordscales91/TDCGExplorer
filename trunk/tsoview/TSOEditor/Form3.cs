@@ -14,6 +14,8 @@ namespace TSOEditor
 {
     public partial class Form3 : Form
     {
+        public EditorViewer viewer = null;
+
         public Form3()
         {
             InitializeComponent();
@@ -152,6 +154,7 @@ namespace TSOEditor
             AssignTextures(tso);
             AssignSubScripts(tso);
             AssignMeshes(tso);
+            viewer.SelectedTSOFile = tso;
         }
 
         private void lvNodes_SelectedIndexChanged(object sender, EventArgs e)
