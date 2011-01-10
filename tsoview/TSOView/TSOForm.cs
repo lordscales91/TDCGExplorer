@@ -12,7 +12,7 @@ using TDCG;
 namespace TSOView
 {
 
-public class TSOForm : Form
+public partial class TSOForm : Form
 {
     // キー入力を保持
     internal bool[] keys = new bool[256];
@@ -31,9 +31,6 @@ public class TSOForm : Form
     internal FigureForm fig_form = null;
     
     string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
-
-    private Timer timer1;
-    private System.ComponentModel.IContainer components;
 
     public TSOForm(TSOConfig tso_config, string[] args)
     {
@@ -231,38 +228,6 @@ public class TSOForm : Form
     {
         if ((int)(byte)e.KeyChar == (int)System.Windows.Forms.Keys.Escape)
             this.Dispose(); // Esc was pressed
-    }
-
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing)
-        {
-            viewer.Dispose();
-        }
-        if (disposing && (components != null))
-        {
-            components.Dispose();
-        }
-        base.Dispose(disposing);
-    }
-
-    private void InitializeComponent()
-    {
-        this.components = new System.ComponentModel.Container();
-        this.timer1 = new System.Windows.Forms.Timer(this.components);
-        this.SuspendLayout();
-        // 
-        // timer1
-        // 
-        this.timer1.Interval = 16;
-        this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
-        // 
-        // TSOForm
-        // 
-        this.ClientSize = new System.Drawing.Size(284, 263);
-        this.Name = "TSOForm";
-        this.ResumeLayout(false);
-
     }
 }
 }
