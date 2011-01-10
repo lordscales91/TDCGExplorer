@@ -1160,12 +1160,12 @@ public class Viewer : IDisposable
                     5: つり目たれ目
                     6: やわらか
                  */
-                fig.slide_matrices.TallRatio = ratios[0];
-                fig.slide_matrices.ArmRatio = ratios[1];
-                fig.slide_matrices.LegRatio = ratios[2];
-                fig.slide_matrices.WaistRatio = ratios[3];
-                fig.slide_matrices.BustRatio = ratios[4];
-                fig.slide_matrices.EyeRatio = ratios[5];
+                fig.slider_matrix.TallRatio = ratios[0];
+                fig.slider_matrix.ArmRatio = ratios[1];
+                fig.slider_matrix.LegRatio = ratios[2];
+                fig.slider_matrix.WaistRatio = ratios[3];
+                fig.slider_matrix.BustRatio = ratios[4];
+                fig.slider_matrix.EyeRatio = ratios[5];
 
                 fig.TransformTpo();
             };
@@ -1187,12 +1187,12 @@ public class Viewer : IDisposable
                 BMPSaveData data = new BMPSaveData();
                 data.Read(ms);
 
-                fig.slide_matrices.TallRatio = data.proportions[1];
-                fig.slide_matrices.ArmRatio = data.proportions[2];
-                fig.slide_matrices.LegRatio = data.proportions[3];
-                fig.slide_matrices.WaistRatio = data.proportions[4];
-                fig.slide_matrices.BustRatio = data.proportions[0];
-                fig.slide_matrices.EyeRatio = data.proportions[5];
+                fig.slider_matrix.TallRatio = data.proportions[1];
+                fig.slider_matrix.ArmRatio = data.proportions[2];
+                fig.slider_matrix.LegRatio = data.proportions[3];
+                fig.slider_matrix.WaistRatio = data.proportions[4];
+                fig.slider_matrix.BustRatio = data.proportions[0];
+                fig.slider_matrix.EyeRatio = data.proportions[5];
             }
         }
         catch (Exception ex)
