@@ -36,8 +36,6 @@ public partial class TSOForm : Form
     {
         InitializeComponent();
         this.ClientSize = tso_config.ClientSize;
-        this.Text = "TSOView";
-        this.AllowDrop = true;
 
         for (int i = 0; i < keysEnabled.Length; i++)
         {
