@@ -7,6 +7,7 @@ using Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
+    /// 計算を補助する関数を定義します。
     public class Helper
     {
         /// <summary>
@@ -172,6 +173,12 @@ namespace TDCG
 
             //x移動
             m.M41 = -m.M41;
+        }
+
+        /// 線形補間を行います。
+        public static float Lerp(float value1, float value2, float amount)
+        {
+            return value1 + (value2 - value1) * amount;
         }
     }
 }

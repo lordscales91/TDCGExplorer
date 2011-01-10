@@ -472,13 +472,7 @@ m.M44 = 1.000000F;
     /// 指定比率に比例するscaling factorを得ます。
     public static Vector3 GetVector3Ratio(Vector3 min, Vector3 max, float ratio)
     {
-        Vector3 v = Vector3.Empty;
-
-        v.X = max.X * ratio + min.X * (1 - ratio);
-        v.Y = max.Y * ratio + min.Y * (1 - ratio);
-        v.Z = max.Z * ratio + min.Z * (1 - ratio);
-
-        return v;
+        return Vector3.Lerp(min, max, ratio);
     }
 
     /// 指定比率に比例する変形行列を得ます。
@@ -490,27 +484,27 @@ m.M44 = 1.000000F;
     /// 指定比率に比例する変形行列を得ます。
     public static Matrix GetMatrixRatio(Matrix min, Matrix max, float ratio)
     {
-        Matrix m = Matrix.Identity;
+        Matrix m;
 
-        m.M11 = max.M11 * ratio + min.M11 * (1 - ratio);
-        m.M12 = max.M12 * ratio + min.M12 * (1 - ratio);
-        m.M13 = max.M13 * ratio + min.M13 * (1 - ratio);
-        m.M14 = max.M14 * ratio + min.M14 * (1 - ratio);
+        m.M11 = Helper.Lerp(min.M11, max.M11, ratio);
+        m.M12 = Helper.Lerp(min.M12, max.M12, ratio);
+        m.M13 = Helper.Lerp(min.M13, max.M13, ratio);
+        m.M14 = Helper.Lerp(min.M14, max.M14, ratio);
 
-        m.M21 = max.M21 * ratio + min.M21 * (1 - ratio);
-        m.M22 = max.M22 * ratio + min.M22 * (1 - ratio);
-        m.M23 = max.M23 * ratio + min.M23 * (1 - ratio);
-        m.M24 = max.M24 * ratio + min.M24 * (1 - ratio);
+        m.M21 = Helper.Lerp(min.M21, max.M21, ratio);
+        m.M22 = Helper.Lerp(min.M22, max.M22, ratio);
+        m.M23 = Helper.Lerp(min.M23, max.M23, ratio);
+        m.M24 = Helper.Lerp(min.M24, max.M24, ratio);
 
-        m.M31 = max.M31 * ratio + min.M31 * (1 - ratio);
-        m.M32 = max.M32 * ratio + min.M32 * (1 - ratio);
-        m.M33 = max.M33 * ratio + min.M33 * (1 - ratio);
-        m.M34 = max.M34 * ratio + min.M34 * (1 - ratio);
+        m.M31 = Helper.Lerp(min.M31, max.M31, ratio);
+        m.M32 = Helper.Lerp(min.M32, max.M32, ratio);
+        m.M33 = Helper.Lerp(min.M33, max.M33, ratio);
+        m.M34 = Helper.Lerp(min.M34, max.M34, ratio);
 
-        m.M41 = max.M41 * ratio + min.M41 * (1 - ratio);
-        m.M42 = max.M42 * ratio + min.M42 * (1 - ratio);
-        m.M43 = max.M43 * ratio + min.M43 * (1 - ratio);
-        m.M44 = max.M44 * ratio + min.M44 * (1 - ratio);
+        m.M41 = Helper.Lerp(min.M41, max.M41, ratio);
+        m.M42 = Helper.Lerp(min.M42, max.M42, ratio);
+        m.M43 = Helper.Lerp(min.M43, max.M43, ratio);
+        m.M44 = Helper.Lerp(min.M44, max.M44, ratio);
 
         return m;
     }
