@@ -34,6 +34,11 @@ namespace TDCG
         public Vector3 Translation { get { return translation; } set { translation = value; } }
     
         /// <summary>
+        /// 角度
+        /// </summary>
+        public Vector3 Angle { get { return angle; } set { angle = value; } }
+
+        /// <summary>
         ///更新する必要があるか
         /// </summary>
         public bool NeedUpdate { get { return needUpdate; }}

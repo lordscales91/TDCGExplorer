@@ -52,12 +52,14 @@ public partial class TSOForm : Form
 
         if (viewer.InitializeApplication(this, true))
         {
+            /*
             viewer.FigureEvent += delegate(object sender, EventArgs e)
             {
                 Figure fig;
                 if (viewer.TryGetFigure(out fig))
                     viewer.Camera.SetCenter(fig.Center + fig.Translation);
             };
+            */
             viewer.FigureEvent += delegate(object sender, EventArgs e)
             {
                 Figure fig;
@@ -70,6 +72,7 @@ public partial class TSOForm : Form
                 viewer.LoadAnyFile(arg, true);
             if (viewer.FigureList.Count == 0)
                 viewer.LoadAnyFile(Path.Combine(save_path, "system.tdcgsav.png"), true);
+            viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
 
             string script_file = Path.Combine(Application.StartupPath, "Script.cs");
             if (File.Exists(script_file))
@@ -144,9 +147,12 @@ public partial class TSOForm : Form
         {
             keysEnabled[keyCameraReset] = false;
             viewer.Camera.Reset();
+            /*
             Figure fig;
             if (viewer.TryGetFigure(out fig))
                 viewer.Camera.SetCenter(fig.Center + fig.Translation);
+                */
+            viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
         }
         if (keysEnabled[keyFigureForm] && keys[keyFigureForm])
         {
