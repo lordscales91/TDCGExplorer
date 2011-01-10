@@ -1127,6 +1127,21 @@ public class Viewer : IDisposable
                 fig_list.Add(fig);
                 png_type = type;
             };
+            png.Cami += delegate(Stream dest, int extract_length)
+            {
+                byte[] buf = new byte[extract_length];
+                dest.Read(buf, 0, extract_length);
+
+                List<float> factor = new List<float>();
+                for (int offset = 0; offset < extract_length; offset += sizeof(float))
+                {
+                    float flo = BitConverter.ToSingle(buf, offset);
+                    factor.Add(flo);
+                }
+                camera.Reset();
+                camera.Translation = new Vector3(-factor[0], -factor[1], -factor[2]);
+                camera.Angle = new Vector3(-factor[5], -factor[4], -factor[6]);
+            };
             png.Lgta += delegate(Stream dest, int extract_length)
             {
                 fig = new Figure();
@@ -1167,7 +1182,7 @@ public class Viewer : IDisposable
                 fig.slider_matrix.BustRatio = ratios[4];
                 fig.slider_matrix.EyeRatio = ratios[5];
 
-                fig.TransformTpo();
+                //fig.TransformTpo();
             };
             png.Ftso += delegate(Stream dest, int extract_length, byte[] opt1)
             {
