@@ -1148,6 +1148,12 @@ public class Viewer : IDisposable
             };
             png.Lgta += delegate(Stream dest, int extract_length)
             {
+                if (fig != null)
+                {
+                    foreach (TSOFile tso in fig.TSOList)
+                        tso.lightDir = lightDir;
+                }
+
                 byte[] buf = new byte[extract_length];
                 dest.Read(buf, 0, extract_length);
 
@@ -1180,7 +1186,6 @@ public class Viewer : IDisposable
                 m.M43 = factor[14];
                 m.M44 = factor[15];
 
-                //TODO: assign light direction each figure.
                 lightDir = Vector3.TransformCoordinate(new Vector3(0.0f, 0.0f, -1.0f), m);
                 fig_list.Add(fig);
             };
@@ -1231,8 +1236,8 @@ public class Viewer : IDisposable
             Debug.WriteLine("loading " + source_file);
             png.Load(source_file);
 
+            if (fig != null)
             {
-                //TODO: assign light direction each figure.
                 foreach (TSOFile tso in fig.TSOList)
                     tso.lightDir = lightDir;
             }
