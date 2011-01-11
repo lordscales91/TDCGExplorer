@@ -431,6 +431,8 @@ public class Viewer : IDisposable
             Figure fig;
             if (TryGetFigure(out fig))
             {
+                foreach (TSOFile tso in fig.TSOList)
+                    tso.lightDir = lightDir;
                 fig.Tmo = tmo;
                 fig.TransformTpo();
                 fig.UpdateNodeMapAndBoneMatrices();
@@ -849,9 +851,11 @@ public class Viewer : IDisposable
             effect.SetValue("lightview", Light_View);
         }
 
+        /*
         foreach (Figure fig in FigureList)
         foreach (TSOFile tso in fig.TSOList)
             tso.lightDir = lightDir;
+            */
 
         if (motionEnabled)
         {
@@ -1144,7 +1148,40 @@ public class Viewer : IDisposable
             };
             png.Lgta += delegate(Stream dest, int extract_length)
             {
+                byte[] buf = new byte[extract_length];
+                dest.Read(buf, 0, extract_length);
+
+                List<float> factor = new List<float>();
+                for (int offset = 0; offset < extract_length; offset += sizeof(float))
+                {
+                    float flo = BitConverter.ToSingle(buf, offset);
+                    factor.Add(flo);
+                }
                 fig = new Figure();
+
+                Matrix m;
+                m.M11 = factor[0];
+                m.M12 = factor[1];
+                m.M13 = factor[2];
+                m.M14 = factor[3];
+
+                m.M21 = factor[4];
+                m.M22 = factor[5];
+                m.M23 = factor[6];
+                m.M24 = factor[7];
+
+                m.M31 = factor[8];
+                m.M32 = factor[9];
+                m.M33 = factor[10];
+                m.M34 = factor[11];
+
+                m.M41 = factor[12];
+                m.M42 = factor[13];
+                m.M43 = factor[14];
+                m.M44 = factor[15];
+
+                //TODO: assign light direction each figure.
+                lightDir = Vector3.TransformCoordinate(new Vector3(0.0f, 0.0f, -1.0f), m);
                 fig_list.Add(fig);
             };
             png.Ftmo += delegate(Stream dest, int extract_length)
@@ -1193,6 +1230,12 @@ public class Viewer : IDisposable
             };
             Debug.WriteLine("loading " + source_file);
             png.Load(source_file);
+
+            {
+                //TODO: assign light direction each figure.
+                foreach (TSOFile tso in fig.TSOList)
+                    tso.lightDir = lightDir;
+            }
 
             if (png_type == "HSAV")
             {
