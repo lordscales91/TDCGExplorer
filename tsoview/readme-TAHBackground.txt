@@ -1,6 +1,6 @@
 ダウンロードありがとうございます
 
-●TAHBackground ver 0.3.2
+●TAHBackground ver 0.3.4
 
 これはなに
 tahから背景セーブファイルを作成します。
