@@ -434,7 +434,7 @@ public class Viewer : IDisposable
                 foreach (TSOFile tso in fig.TSOList)
                     tso.lightDir = lightDir;
                 fig.Tmo = tmo;
-                fig.TransformTpo();
+                //fig.TransformTpo();
                 fig.UpdateNodeMapAndBoneMatrices();
                 if (FigureEvent != null)
                     FigureEvent(this, EventArgs.Empty);
