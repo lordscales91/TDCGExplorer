@@ -51,6 +51,7 @@ TSOView.exe [file ... ]
 　Ctrl+Deleteキー：全フィギュアを削除
 
 　0キー：カメラ位置を初期位置に戻す
+　Fキー：カメラ位置を選択フィギュアの root bone (W_Hips) にする
 
 　Shift+↑キー：選択フィギュアをZ軸方向に移動
 　Shift+↓キー：選択フィギュアをZ軸方向に移動
