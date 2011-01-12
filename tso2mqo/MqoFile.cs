@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
@@ -85,6 +84,29 @@ namespace tso2mqo
             throw new Exception("File Format Error: \"" + string.Concat(tokens) + "\"");
         }
 
+        public static Vector3 ParseColor3(string[] t, int begin)
+        {
+            return new Vector3(
+                float.Parse(t[begin + 0]),
+                float.Parse(t[begin + 1]),
+                float.Parse(t[begin + 2]));
+        }
+
+        public static Vector2 ParsePoint2(string[] t, int begin)
+        {
+            return new Vector2(
+                float.Parse(t[begin + 0]),
+                float.Parse(t[begin + 1]));
+        }
+
+        public static Vector3 ParsePoint3(string[] t, int begin)
+        {
+            return new Vector3(
+                float.Parse(t[begin + 0]),
+                float.Parse(t[begin + 1]),
+                float.Parse(t[begin + 2]));
+        }
+
         private bool SectionRoot(string[] tokens)
         {
             switch(tokens[0].ToLower())
@@ -106,13 +128,13 @@ namespace tso2mqo
 
             switch(tokens[0].ToLower())
             {
-            case "pos":         scene.pos           = Point3.Parse(tokens, 1);  return true;
-            case "lookat":      scene.lookat        = Point3.Parse(tokens, 1);  return true;
+                case "pos": scene.pos = ParsePoint3(tokens, 1); return true;
+                case "lookat": scene.lookat = ParsePoint3(tokens, 1); return true;
             case "head":        scene.head          = float .Parse(tokens[1]);  return true;
             case "pich":        scene.pich          = float .Parse(tokens[1]);  return true;
             case "ortho":       scene.ortho         = float .Parse(tokens[1]);  return true;
             case "zoom2":       scene.zoom2         = float .Parse(tokens[1]);  return true;
-            case "amb":         scene.amb           = Color3.Parse(tokens, 1);  return true;
+            case "amb": scene.amb = ParseColor3(tokens, 1); return true;
             case "}":                                                           return false;
           //default:            Error(tokens);                                  return false;
             default:                                                            return true;
@@ -141,7 +163,7 @@ namespace tso2mqo
                 switch(tokens[i].ToLower())
                 {
                 case "shader":  m.shader   = int   .Parse(tokens[++i]);         break;
-                case "col":     m.col      = Color3.Parse(tokens, i+1); i+=4;   break;
+                case "col": m.col = ParseColor3(tokens, i + 1); i += 4; break;
                 case "dif":     m.dif      = float .Parse(tokens[++i]);         break;
                 case "amb":     m.amb      = float .Parse(tokens[++i]);         break;
                 case "emi":     m.emi      = float .Parse(tokens[++i]);         break;
@@ -162,7 +184,7 @@ namespace tso2mqo
             case "locking":     current.locking     = int   .Parse(tokens[1]);  return true;
             case "shading":     current.shading     = int   .Parse(tokens[1]);  return true;
             case "facet":       current.facet       = float .Parse(tokens[1]);  return true;
-            case "color":       current.color       = Color3.Parse(tokens, 1);  return true;
+            case "color": current.color = ParseColor3(tokens, 1); return true;
             case "color_type":  current.color_type  = int   .Parse(tokens[1]);  return true;
             case "vertex":      ParseVertex(tokens);                            return true;
             case "face":        ParseFace(tokens);                              return true;
@@ -177,7 +199,7 @@ namespace tso2mqo
             if(tokens[0] == "}")
                 return false;
 
-            current.vertices.Add(Point3.Parse(tokens, 0));
+            current.vertices.Add(ParsePoint3(tokens, 0));
 
             return true;
         }
@@ -213,9 +235,9 @@ namespace tso2mqo
                     f.mtl   = ushort.Parse(tokens[++i]);
                     break;
                 case "uv":
-                    f.ta    = Point2.Parse(tokens, i+1); i+=2;
-                    f.tb    = Point2.Parse(tokens, i+1); i+=2;
-                    f.tc    = Point2.Parse(tokens, i+1); i+=2;
+                    f.ta = ParsePoint2(tokens, i + 1); i += 2;
+                    f.tb = ParsePoint2(tokens, i + 1); i += 2;
+                    f.tc = ParsePoint2(tokens, i + 1); i += 2;
                     break;
                 }
             }
@@ -264,7 +286,7 @@ namespace tso2mqo
         {
             if(tokens[2].ToLower() != "{")          Error(tokens);
 
-            current.vertices = new List<Vector3>(int.Parse(tokens[1]));
+            current.vertices    = new List<Vector3>(int.Parse(tokens[1]));
             DoRead(SectionVertex);
         }
 
@@ -275,49 +297,17 @@ namespace tso2mqo
             current.faces       = new List<MqoFace>(int.Parse(tokens[1]));
             DoRead(SectionFace);
         }
-
-        public partial struct Color3
-        {
-            public static Vector3 Parse(string[] t, int begin)
-            {
-                return new Vector3(
-                    float.Parse(t[begin + 0]),
-                    float.Parse(t[begin + 1]),
-                    float.Parse(t[begin + 2]));
-            }
-        }
-
-        public partial struct Point2
-        {
-            public static Vector2 Parse(string[] t, int begin)
-            {
-                return new Vector2(
-                    float.Parse(t[begin + 0]),
-                    float.Parse(t[begin + 1]));
-            }
-        }
-
-        public partial struct Point3
-        {
-            public static Vector3 Parse(string[] t, int begin)
-            {
-                return new Vector3(
-                    float.Parse(t[begin + 0]),
-                    float.Parse(t[begin + 1]),
-                    float.Parse(t[begin + 2]));
-            }
-        }
     }
 
     public class MqoScene
     {
-        public Vector3 pos;
-        public Vector3 lookat;
+        public Vector3           pos;
+        public Vector3           lookat;
         public float            head;
         public float            pich;
         public float            ortho;
         public float            zoom2;
-        public Vector3 amb;
+        public Vector3           amb;
 
         public override string ToString()
         {
@@ -337,7 +327,7 @@ namespace tso2mqo
     {
         public string           name;
         public int              shader;
-        public Vector3 col;
+        public Vector3           col;
         public float            dif;
         public float            amb;
         public float            emi;
@@ -371,9 +361,9 @@ namespace tso2mqo
 	    public int              locking;
 	    public int              shading;
 	    public float            facet;
-        public Vector3 color;
+	    public Vector3           color;
 	    public int              color_type;
-        public List<Vector3> vertices;
+        public List<Vector3>     vertices;
         public List<MqoFace>    faces;
 
         public MqoObject()              {           }
@@ -398,7 +388,7 @@ namespace tso2mqo
     public class  MqoFace
     {
         public ushort   a, b, c, mtl;
-        public Vector2 ta, tb, tc;
+        public Vector2   ta, tb, tc;
 
         public MqoFace()
         {
