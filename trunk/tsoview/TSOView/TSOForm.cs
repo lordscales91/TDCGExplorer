@@ -25,6 +25,7 @@ public partial class TSOForm : Form
     internal int keyFigure      = (int)Keys.Tab;
     internal int keyDelete      = (int)Keys.Delete;
     internal int keyCameraReset = (int)Keys.D0;
+    internal int keyCenter      = (int)Keys.F;
     internal int keyFigureForm = (int)Keys.G;
 
     internal Viewer viewer = null;
@@ -52,14 +53,6 @@ public partial class TSOForm : Form
 
         if (viewer.InitializeApplication(this, true))
         {
-            /*
-            viewer.FigureEvent += delegate(object sender, EventArgs e)
-            {
-                Figure fig;
-                if (viewer.TryGetFigure(out fig))
-                    viewer.Camera.SetCenter(fig.Center + fig.Translation);
-            };
-            */
             viewer.FigureEvent += delegate(object sender, EventArgs e)
             {
                 Figure fig;
@@ -147,12 +140,15 @@ public partial class TSOForm : Form
         {
             keysEnabled[keyCameraReset] = false;
             viewer.Camera.Reset();
-            /*
+            viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
+        }
+        if (keysEnabled[keyCenter] && keys[keyCenter])
+        {
+            keysEnabled[keyCenter] = false;
+            viewer.Camera.ResetTranslation();
             Figure fig;
             if (viewer.TryGetFigure(out fig))
                 viewer.Camera.SetCenter(fig.Center + fig.Translation);
-                */
-            viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
         }
         if (keysEnabled[keyFigureForm] && keys[keyFigureForm])
         {
