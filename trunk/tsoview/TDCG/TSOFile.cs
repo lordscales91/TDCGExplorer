@@ -264,7 +264,7 @@ namespace TDCG
                         gs.Write(v.bone_indices);
                         gs.Write(v.normal);
                         gs.Write(v.u);
-                        gs.Write(1.0f - v.v);
+                        gs.Write(v.v);
                     }
                 }
                 dm.UnlockVertexBuffer();
@@ -934,11 +934,30 @@ namespace TDCG
             MemoryStream ms = new MemoryStream();
             using (BinaryWriter bw = new BinaryWriter(ms))
             {
-                if (ext == ".tga")
-                    SaveTGA(bw);
-                else
-                if (ext == ".bmp")
-                    SaveBMP(bw);
+                bw.Write((byte)'B');
+                bw.Write((byte)'M');
+                bw.Write((int)(54 + data.Length));
+                bw.Write((int)0);
+                bw.Write((int)54);
+                bw.Write((int)40);
+                bw.Write((int)width);
+                bw.Write((int)height);
+                bw.Write((short)1);
+                bw.Write((short)(depth*8));
+                bw.Write((int)0);
+                bw.Write((int)data.Length);
+                bw.Write((int)0);
+                bw.Write((int)0);
+                bw.Write((int)0);
+                bw.Write((int)0);
+
+                int count = width * depth;
+                int index = width * height * depth - count;
+                for (int y = 0; y < height; y++)
+                {
+                    bw.Write(data, index, count);
+                    index -= count;
+                }
                 bw.Flush();
                 ms.Seek(0, SeekOrigin.Begin);
                 tex = TextureLoader.FromStream(device, ms);
