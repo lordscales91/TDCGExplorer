@@ -458,6 +458,20 @@ public class Figure : IDisposable
     }
 
     /// <summary>
+    /// 光源方向
+    /// </summary>
+    public Vector3 LightDir { get; set; }
+
+    /// <summary>
+    /// 光源方向ベクトルを得ます。
+    /// </summary>
+    /// <returns></returns>
+    public Vector4 LightDirForced()
+    {
+        return new Vector4(LightDir.X, LightDir.Y, LightDir.Z, 0.0f);
+    }
+
+    /// <summary>
     /// 内部objectを破棄します。
     /// </summary>
     public void Dispose()
