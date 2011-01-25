@@ -29,10 +29,6 @@ public class Viewer : IDisposable
     protected Device device;
 
     /// <summary>
-    /// font
-    /// </summary>
-    protected Direct3D.Font font;
-    /// <summary>
     /// effect
     /// </summary>
     protected Effect effect;
@@ -563,11 +559,6 @@ public class Viewer : IDisposable
 
             device.DeviceLost += new EventHandler(OnDeviceLost);
             device.DeviceReset += new EventHandler(OnDeviceReset);
-
-            FontDescription fd = new FontDescription();
-            fd.Height = 24;
-            fd.FaceName = "MS Gothic";
-            font = new Direct3D.Font(device, fd);
         }
         catch (DirectXException ex)
         {
@@ -1103,8 +1094,6 @@ public class Viewer : IDisposable
             dev_surface.Dispose();
         if (effect != null)
             effect.Dispose();
-        if (font != null)
-            font.Dispose();
         if (device != null)
             device.Dispose();
     }
