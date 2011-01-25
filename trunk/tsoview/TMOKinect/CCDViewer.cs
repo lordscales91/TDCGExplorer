@@ -87,7 +87,7 @@ public class CCDViewer : Viewer
         {
         case MouseButtons.Left:
             if (Control.ModifierKeys == Keys.Control)
-                lightDir = ScreenToOrientation(e.X, e.Y);
+                SetLightDirection(ScreenToOrientation(e.X, e.Y));
             else
                 if (!MotionEnabled)
                 {
@@ -110,7 +110,7 @@ public class CCDViewer : Viewer
         {
         case MouseButtons.Left:
             if (Control.ModifierKeys == Keys.Control)
-                lightDir = ScreenToOrientation(e.X, e.Y);
+                SetLightDirection(ScreenToOrientation(e.X, e.Y));
             else
                 if (!MotionEnabled)
                 {

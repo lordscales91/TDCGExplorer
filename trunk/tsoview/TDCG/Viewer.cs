@@ -88,11 +88,6 @@ public class Viewer : IDisposable
     public List<Figure> FigureList = new List<Figure>();
 
     /// <summary>
-    /// 光源方向
-    /// </summary>
-    protected Vector3 lightDir = new Vector3(0.0f, 0.0f, -1.0f);
-
-    /// <summary>
     /// マウスポイントしているスクリーン座標
     /// </summary>
     protected Point lastScreenPoint = Point.Empty;
@@ -105,6 +100,13 @@ public class Viewer : IDisposable
         ScreenColor = Color.LightGray;
     }
 
+    public void SetLightDirection(Vector3 dir)
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+            fig.LightDir = dir;
+    }
+
     /// マウスボタンを押したときに実行するハンドラ
     protected virtual void form_OnMouseDown(object sender, MouseEventArgs e)
     {
@@ -112,9 +114,7 @@ public class Viewer : IDisposable
         {
         case MouseButtons.Left:
             if (Control.ModifierKeys == Keys.Control)
-            {
-                lightDir = ScreenToOrientation(e.X, e.Y);
-            }
+                SetLightDirection(ScreenToOrientation(e.X, e.Y));
             break;
         }
 
@@ -132,7 +132,7 @@ public class Viewer : IDisposable
         {
         case MouseButtons.Left:
             if (Control.ModifierKeys == Keys.Control)
-                lightDir = ScreenToOrientation(e.X, e.Y);
+                SetLightDirection(ScreenToOrientation(e.X, e.Y));
             else
                 Camera.Move(dx, -dy, 0.0f);
             break;
@@ -418,18 +418,16 @@ public class Viewer : IDisposable
     /// <param name="append">FigureListを消去せずに追加するか</param>
     public void AddFigureFromPNGFile(string source_file, bool append)
     {
-        List<Figure> fig_list = LoadPNGFile(source_file);
-        if (fig_list.Count != 0) //taOb png
-        if (fig_list[0].TSOList.Count == 0) //POSE png
+        List<Figure> figs = LoadPNGFile(source_file);
+        if (figs.Count != 0) //taOb png
+        if (figs[0].TSOList.Count == 0) //POSE png
         {
-            TMOFile tmo = fig_list[0].Tmo;
-            Debug.Assert(tmo != null);
+            Debug.Assert(figs[0].Tmo != null, "figs[0].Tmo should not be null");
             Figure fig;
             if (TryGetFigure(out fig))
             {
-                foreach (TSOFile tso in fig.TSOList)
-                    tso.lightDir = lightDir;
-                fig.Tmo = tmo;
+                fig.LightDir = figs[0].LightDir;
+                fig.Tmo = figs[0].Tmo;
                 //fig.TransformTpo();
                 fig.UpdateNodeMapAndBoneMatrices();
                 if (FigureEvent != null)
@@ -442,7 +440,7 @@ public class Viewer : IDisposable
                 ClearFigureList();
 
             int idx = FigureList.Count;
-            foreach (Figure fig in fig_list)
+            foreach (Figure fig in figs)
             {
                 fig.OpenTSOFile(device, effect);
                 fig.UpdateNodeMapAndBoneMatrices();
@@ -583,6 +581,8 @@ public class Viewer : IDisposable
             }
         }
         handle_LocalBoneMats = effect.GetParameter(null, "LocalBoneMats");
+        handle_LightDirForced = effect.GetParameter(null, "LightDirForced");
+        handle_UVSCR = effect.GetParameter(null, "UVSCR");
         if (shadow_map_enabled)
         {
             handle_ShadowMap = effect.GetTechnique("ShadowMap");
@@ -833,20 +833,17 @@ public class Viewer : IDisposable
 
         if (shadow_map_enabled)
         {
-            float scale = 40.0f;
-
-            Light_View = Matrix.LookAtLH(
-                    lightDir * -scale,
-                    new Vector3( 0.0f, 5.0f, 0.0f ), 
-                    new Vector3( 0.0f, 1.0f, 0.0f ) );
-            effect.SetValue("lightview", Light_View);
+            Figure fig;
+            if (TryGetFigure(out fig))
+            {
+                float scale = 40.0f;
+                Light_View = Matrix.LookAtLH(
+                    fig.LightDir * -scale,
+                    new Vector3(0.0f, 5.0f, 0.0f),
+                    new Vector3(0.0f, 1.0f, 0.0f));
+                effect.SetValue("lightview", Light_View);
+            }
         }
-
-        /*
-        foreach (Figure fig in FigureList)
-        foreach (TSOFile tso in fig.TSOList)
-            tso.lightDir = lightDir;
-            */
 
         if (motionEnabled)
         {
@@ -997,6 +994,19 @@ public class Viewer : IDisposable
     /// スクリーン塗りつぶし色
     public Color ScreenColor { get; set; }
 
+    private EffectHandle handle_LightDirForced;
+    private EffectHandle handle_UVSCR;
+
+    /// <summary>
+    /// UVSCR値を得ます。
+    /// </summary>
+    /// <returns></returns>
+    public Vector4 UVSCR()
+    {
+        float x = Environment.TickCount * 0.000002f;
+        return new Vector4(x, 0.0f, 0.0f, 0.0f);
+    }
+
     /// <summary>
     /// フィギュアを描画します。
     /// </summary>
@@ -1008,29 +1018,33 @@ public class Viewer : IDisposable
         device.DepthStencilSurface = dev_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer | ClearFlags.Stencil, ScreenColor, 1.0f, 0);
 
+        effect.SetValue(handle_UVSCR, UVSCR());
         foreach (Figure fig in FigureList)
-        foreach (TSOFile tso in fig.TSOList)
         {
-            tso.BeginRender();
-
-            foreach (TSOMesh mesh in tso.meshes)
-            foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
+            effect.SetValue(handle_LightDirForced, fig.LightDirForced());
+            foreach (TSOFile tso in fig.TSOList)
             {
-                //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                tso.SwitchShader(sub_mesh);
+                tso.BeginRender();
 
-                effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
+                foreach (TSOMesh mesh in tso.meshes)
+                    foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
+                    {
+                        //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                        tso.SwitchShader(sub_mesh);
 
-                int npass = effect.Begin(0);
-                for (int ipass = 0; ipass < npass; ipass++)
-                {
-                    effect.BeginPass(ipass);
-                    sub_mesh.dm.DrawSubset(0);
-                    effect.EndPass();
-                }
-                effect.End();
+                        effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
+
+                        int npass = effect.Begin(0);
+                        for (int ipass = 0; ipass < npass; ipass++)
+                        {
+                            effect.BeginPass(ipass);
+                            sub_mesh.dm.DrawSubset(0);
+                            effect.EndPass();
+                        }
+                        effect.End();
+                    }
+                tso.EndRender();
             }
-            tso.EndRender();
         }
     }
 
@@ -1137,12 +1151,6 @@ public class Viewer : IDisposable
             };
             png.Lgta += delegate(Stream dest, int extract_length)
             {
-                if (fig != null)
-                {
-                    foreach (TSOFile tso in fig.TSOList)
-                        tso.lightDir = lightDir;
-                }
-
                 byte[] buf = new byte[extract_length];
                 dest.Read(buf, 0, extract_length);
 
@@ -1175,7 +1183,7 @@ public class Viewer : IDisposable
                 m.M43 = factor[14];
                 m.M44 = factor[15];
 
-                lightDir = Vector3.TransformCoordinate(new Vector3(0.0f, 0.0f, -1.0f), m);
+                fig.LightDir = Vector3.TransformCoordinate(new Vector3(0.0f, 0.0f, -1.0f), m);
                 fig_list.Add(fig);
             };
             png.Ftmo += delegate(Stream dest, int extract_length)
@@ -1224,12 +1232,6 @@ public class Viewer : IDisposable
             };
             Debug.WriteLine("loading " + source_file);
             png.Load(source_file);
-
-            if (fig != null)
-            {
-                foreach (TSOFile tso in fig.TSOList)
-                    tso.lightDir = lightDir;
-            }
 
             if (png_type == "HSAV")
             {

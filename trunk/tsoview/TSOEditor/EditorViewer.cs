@@ -35,7 +35,7 @@ namespace TDCG
                 case MouseButtons.Left:
                     if (Control.ModifierKeys == Keys.Control)
                     {
-                        lightDir = ScreenToOrientation(e.X, e.Y);
+                        SetLightDirection(ScreenToOrientation(e.X, e.Y));
                         control.Invalidate(false);
                     }
                     else
@@ -61,7 +61,7 @@ namespace TDCG
             {
                 case MouseButtons.Left:
                     if (Control.ModifierKeys == Keys.Control)
-                        lightDir = ScreenToOrientation(e.X, e.Y);
+                        SetLightDirection(ScreenToOrientation(e.X, e.Y));
                     else
                         Camera.Move(dx, -dy, 0.0f);
                     control.Invalidate(false);

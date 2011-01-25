@@ -1429,8 +1429,6 @@ namespace TDCG
         internal Dictionary<string, TSOTex> texmap;
 
         private EffectHandle handle_LightDir;
-        private EffectHandle handle_LightDirForced;
-        private EffectHandle handle_UVSCR;
 
         /// <summary>
         /// 指定device上で開きます。
@@ -1458,8 +1456,6 @@ namespace TDCG
             handle_ColorTex_texture = effect.GetParameter(null, "ColorTex_texture");
 
             handle_LightDir = effect.GetParameter(null, "LightDir");
-            handle_LightDirForced = effect.GetParameter(null, "LightDirForced");
-            handle_UVSCR = effect.GetParameter(null, "UVSCR");
 
             techmap = new Dictionary<string, EffectHandle>();
 
@@ -1479,26 +1475,6 @@ namespace TDCG
         }
 
         internal Shader current_shader = null;
-        internal Vector3 lightDir = new Vector3(0.0f, 0.0f, -1.0f);
-
-        /// <summary>
-        /// 光源方向ベクトルを得ます。
-        /// </summary>
-        /// <returns></returns>
-        public Vector4 LightDirForced()
-        {
-            return new Vector4(lightDir.X, lightDir.Y, lightDir.Z, 0.0f);
-        }
-
-        /// <summary>
-        /// UVSCR値を得ます。
-        /// </summary>
-        /// <returns></returns>
-        public Vector4 UVSCR()
-        {
-            float x = Environment.TickCount * 0.000002f;
-            return new Vector4(x, 0.0f, 0.0f, 0.0f);
-        }
 
         /// <summary>
         /// レンダリング開始時に呼びます。
@@ -1547,8 +1523,6 @@ namespace TDCG
                 }
             }
             effect.SetValue(handle_LightDir, shader.LightDir);
-            effect.SetValue(handle_LightDirForced, LightDirForced());
-            effect.SetValue(handle_UVSCR, UVSCR());
 
             TSOTex shadeTex;
             if (shader.shadeTex != null && texmap.TryGetValue(shader.ShadeTexName, out shadeTex))
