@@ -285,11 +285,11 @@ public class TPONode
     /// TPONodeを生成します。
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="name"></param>
-    public TPONode(int id, string name)
+    /// <param name="path"></param>
+    public TPONode(int id, string path)
     {
         this.id = id;
-        this.path = name;
+        this.path = path;
         this.name = this.path.Substring(this.path.LastIndexOf('|') + 1);
     }
 
