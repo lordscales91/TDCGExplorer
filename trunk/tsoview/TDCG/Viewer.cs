@@ -100,6 +100,10 @@ public class Viewer : IDisposable
         ScreenColor = Color.LightGray;
     }
 
+    /// <summary>
+    /// 選択フィギュアの光源方向を設定します。
+    /// </summary>
+    /// <param name="dir">選択フィギュアの光源方向</param>
     public void SetLightDirection(Vector3 dir)
     {
         Figure fig;
