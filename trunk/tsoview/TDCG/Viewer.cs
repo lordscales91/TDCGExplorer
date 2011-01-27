@@ -104,7 +104,7 @@ public class Viewer : IDisposable
     {
         Figure fig;
         if (TryGetFigure(out fig))
-            fig.LightDir = dir;
+            fig.LightDirection = dir;
     }
 
     /// マウスボタンを押したときに実行するハンドラ
@@ -426,7 +426,7 @@ public class Viewer : IDisposable
             Figure fig;
             if (TryGetFigure(out fig))
             {
-                fig.LightDir = figs[0].LightDir;
+                fig.LightDirection = figs[0].LightDirection;
                 fig.Tmo = figs[0].Tmo;
                 //fig.TransformTpo();
                 fig.UpdateNodeMapAndBoneMatrices();
@@ -838,7 +838,7 @@ public class Viewer : IDisposable
             {
                 float scale = 40.0f;
                 Light_View = Matrix.LookAtLH(
-                    fig.LightDir * -scale,
+                    fig.LightDirection * -scale,
                     new Vector3(0.0f, 5.0f, 0.0f),
                     new Vector3(0.0f, 1.0f, 0.0f));
                 effect.SetValue("lightview", Light_View);
@@ -1183,7 +1183,7 @@ public class Viewer : IDisposable
                 m.M43 = factor[14];
                 m.M44 = factor[15];
 
-                fig.LightDir = Vector3.TransformCoordinate(new Vector3(0.0f, 0.0f, -1.0f), m);
+                fig.LightDirection = Vector3.TransformCoordinate(new Vector3(0.0f, 0.0f, -1.0f), m);
                 fig_list.Add(fig);
             };
             png.Ftmo += delegate(Stream dest, int extract_length)

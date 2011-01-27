@@ -100,6 +100,7 @@ public class Figure : IDisposable
             TPOConfig config = TPOConfig.Load(config_file);
             tpo_list.SetRatiosFromConfig(config);
         }
+        LightDirection = new Vector3(0.0f, 0.0f, -1.0f);
     }
 
     /// <summary>
@@ -460,7 +461,7 @@ public class Figure : IDisposable
     /// <summary>
     /// 光源方向
     /// </summary>
-    public Vector3 LightDir { get; set; }
+    public Vector3 LightDirection { get; set; }
 
     /// <summary>
     /// 光源方向ベクトルを得ます。
@@ -468,7 +469,7 @@ public class Figure : IDisposable
     /// <returns></returns>
     public Vector4 LightDirForced()
     {
-        return new Vector4(LightDir.X, LightDir.Y, LightDir.Z, 0.0f);
+        return new Vector4(LightDirection.X, LightDirection.Y, LightDirection.Z, 0.0f);
     }
 
     /// <summary>
