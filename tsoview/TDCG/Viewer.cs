@@ -35,18 +35,29 @@ public class Viewer : IDisposable
 
     /// <summary>
     /// effect handle for LocalBoneMats
+    /// since v0.90
     /// </summary>
     protected EffectHandle handle_LocalBoneMats;
+
+    /// <summary>
+    /// effect handle for LightDirForced
+    /// since v0.90
+    /// </summary>
+    protected EffectHandle handle_LightDirForced;
+
+    /// <summary>
+    /// effect handle for UVSCR
+    /// since v0.91
+    /// </summary>
+    protected EffectHandle handle_UVSCR;
+
     /// <summary>
     /// effect handle for ShadowMap
+    /// TSOView extension
     /// </summary>
     protected EffectHandle handle_ShadowMap;
-    /// <summary>
-    /// effect handle for LocalBoneSels
-    /// </summary>
-    protected EffectHandle handle_LocalBoneSels;
 
-    bool shadow_map_enabled = false;
+    bool shadow_map_enabled;
     /// <summary>
     /// シャドウマップを作成するか
     /// </summary>
@@ -590,11 +601,9 @@ public class Viewer : IDisposable
         if (shadow_map_enabled)
         {
             handle_ShadowMap = effect.GetTechnique("ShadowMap");
-            effect.ValidateTechnique(effect.Technique);
         }
         sprite = new Sprite(device);
         line = new Line(device);
-        handle_LocalBoneSels = effect.GetParameter(null, "LocalBoneSels");
         camera.Update();
         OnDeviceReset(device, null);
 
@@ -997,9 +1006,6 @@ public class Viewer : IDisposable
 
     /// スクリーン塗りつぶし色
     public Color ScreenColor { get; set; }
-
-    private EffectHandle handle_LightDirForced;
-    private EffectHandle handle_UVSCR;
 
     /// <summary>
     /// UVSCR値を得ます。

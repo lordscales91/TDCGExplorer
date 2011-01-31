@@ -412,6 +412,12 @@ public class WeightViewer : Viewer
     internal Texture dot_texture = null;
 
     /// <summary>
+    /// effect handle for LocalBoneSels
+    /// TSOWeight extension
+    /// </summary>
+    protected EffectHandle handle_LocalBoneSels;
+
+    /// <summary>
     /// viewerを生成します。
     /// </summary>
     public WeightViewer()
@@ -453,6 +459,7 @@ public class WeightViewer : Viewer
 
         sphere = Mesh.Sphere(device, 0.25f, 8, 4);
         dot_texture = TextureLoader.FromFile(device, GetDotBitmapPath());
+        handle_LocalBoneSels = effect.GetParameter(null, "LocalBoneSels");
 
         return true;
     }
