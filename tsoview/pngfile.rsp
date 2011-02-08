@@ -6,6 +6,7 @@
 /r:ICSharpCode.SharpZipLib.dll
 TDCG\Extensions\BinaryReaderMethods.cs
 TDCG\Extensions\BinaryWriterMethods.cs
+TDCG\Helper.cs
 TDCG\TMOFile.cs
 TDCG\PNGFile.cs
 TDCG\PNGWriter.cs
