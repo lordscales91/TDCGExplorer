@@ -5,6 +5,7 @@
 /r:Microsoft.DirectX.Direct3DX.dll
 TDCG\Extensions\BinaryReaderMethods.cs
 TDCG\Extensions\BinaryWriterMethods.cs
+TDCG\Helper.cs
 TDCG\TMOFile.cs
 TDCG\TSOFile.cs
 TDCG\Shader.cs
