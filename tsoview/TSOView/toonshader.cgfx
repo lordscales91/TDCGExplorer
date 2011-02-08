@@ -706,21 +706,22 @@ float4 toMono( float4 i )
 
 float4 ColRate( float4 ic )
 {
-	return toMono( ic * ColorRate );
+	return toMono( ic );
 }
 
 #else
 
 float4 ColRate( float4 ic )
 {
-	return ic * ColorRate;
+	return ic ;
+	// + float4( ShadowColor.rgb, 0 );//emissive
 }
 
 #endif
 
 float4 cInkPS( cVertexData2 IN ) : COLOR
 {
-	return ColRate( PenColor );
+	return ColRate( PenColor * ColorRate );
 }
 
 //-----------------------------------------------------------
@@ -1025,9 +1026,22 @@ float4 cMainPS( cVertexData IN ) : COLOR//ÉfÉtÉHÉãÉgÉsÉNÉZÉãÉVÉFÅ[É_
         float4 eslight = mul (LightDirForced, view);
         float4 eyedir = {0, 0, -1, 0};
         float4 halfvec = normalize (eyedir + eslight);
-        
-        float ldotn = dot (nnormal, -LightDirForced);
-        float hdotn = dot (esnormal, -halfvec);
+
+		float ldotn = dot( IN.Normal, -LightDirForced );
+		float hdotn = dot (esnormal, -halfvec);
+
+		//tsoviewÉZÉãÉtÉVÉÉÉhÉE
+		float2 texcoord;
+		texcoord.x = ( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
+		texcoord.y = ( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
+		float4 c = tex2D( ShadowMap, texcoord );
+		float z = c.r + (c.g + c.b/256.0)/256.0;
+		if ( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
+		{
+			ldotn = -1.0; /* depth-buffer-shadow */
+			hdotn = -1.0; /* depth-buffer-shadow */
+		}
+                
         float lp = min (1.0, max( 0.0, ( ldotn * 0.6) + (Ambient * 0.01)));
         float hp0 = min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
         float hp = pow (hp0, HighLightPower);
@@ -1090,6 +1104,19 @@ float4 cMainPS3( cVertexData IN ) : COLOR//ShadeTexìKópîÕàÕïœçXÉsÉNÉZÉãÉVÉFÅ[É_
         
         float ldotn = dot (nnormal, -LightDirForced);
         float hdotn = dot (esnormal, -halfvec);
+
+		//tsoviewÉZÉãÉtÉVÉÉÉhÉE
+		float2 texcoord;
+		texcoord.x = ( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
+		texcoord.y = ( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
+		float4 c = tex2D( ShadowMap, texcoord );
+		float z = c.r + (c.g + c.b/256.0)/256.0;
+		if ( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
+		{
+			ldotn = -1.0; /* depth-buffer-shadow */
+			hdotn = -1.0; /* depth-buffer-shadow */
+		}
+                
         float lp = min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
         float hp0 = min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
         float hp = pow (hp0, HighLightPower);
@@ -1124,6 +1151,19 @@ float4 cMainPS4( cVertexData IN ) : COLOR//ShadeTexìKópîÕàÕïœçXÉsÉNÉZÉãÉVÉFÅ[É_
         
         float ldotn = dot (nnormal, -LightDirForced);
         float hdotn = dot (esnormal, -halfvec);
+
+		//tsoviewÉZÉãÉtÉVÉÉÉhÉE
+		float2 texcoord;
+		texcoord.x = ( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
+		texcoord.y = ( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
+		float4 c = tex2D( ShadowMap, texcoord );
+		float z = c.r + (c.g + c.b/256.0)/256.0;
+		if ( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
+		{
+			ldotn = -1.0; /* depth-buffer-shadow */
+			hdotn = -1.0; /* depth-buffer-shadow */
+		}
+                
         float lp = min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
         float hp0 = min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
         float hp = pow (hp0, HighLightPower);
@@ -1138,7 +1178,7 @@ float4 cMainPS4( cVertexData IN ) : COLOR//ShadeTexìKópîÕàÕïœçXÉsÉNÉZÉãÉVÉFÅ[É_
         col -= hl * ( HighLightBlend * 0.0025 );
         col += hlc * ( HighLightBlend * 0.0025 );
 
-        return ColRate( float4(col.rgb, texcol.a ) );
+        return ColRate( float4(col.rgb, texcol.a ) * ColorRate );
 }
 
 //-----------------------------------------------------------
@@ -1166,7 +1206,7 @@ float4 cBHLMainPS( cVertexData IN ) : COLOR //ãtåıÉnÉCÉâÉCÉgÉsÉNÉZÉãÉVÉFÅ[É_
 	col2 = BHLcol;
 	//col2 += hl2;
 
-	return ColRate( float4(shadecol.rgb, BHLcol.a) );
+	return ColRate( float4(shadecol.rgb, BHLcol.a) * ColorRate );
 }
 
 float4 cMainPS_UVROT( cVertexData IN ) : COLOR //UVRotateópÉsÉNÉZÉãÉVÉFÅ[É_
@@ -1185,7 +1225,7 @@ float4 cMainPS_UVROT( cVertexData IN ) : COLOR //UVRotateópÉsÉNÉZÉãÉVÉFÅ[É_
 	col += hl * ( HighLightBlend * 0.0025 ); // old
 	//col += hl * HighLightBlend;
 
-	return ColRate( float4( col.rgb, texcol.a ) );
+	return ColRate( float4( col.rgb, texcol.a ) * ColorRate );
 }
 
 float4 cMainPS_UVFLS( cVertexData IN ) : COLOR //ÉeÉNÉXÉ`ÉÉì_ñ≈ópÉsÉNÉZÉãÉVÉFÅ[É_
@@ -1207,7 +1247,7 @@ float4 cMainPS_UVFLS( cVertexData IN ) : COLOR //ÉeÉNÉXÉ`ÉÉì_ñ≈ópÉsÉNÉZÉãÉVÉFÅ[É
 	col += hl * ( HighLightBlend * 0.0025 ); // old
 	//col += hl * HighLightBlend;
 
-	return ColRate( float4( col.rgb, FlashAlpha ) );
+	return ColRate( float4( col.rgb, FlashAlpha ) * ColorRate );
 }
 
 float4 cMainPS_INV( cVertexData IN ) : COLOR //ÉAÉãÉtÉ@ílïœä∑ÉeÉNÉXÉ`ÉÉópÉsÉNÉZÉãÉVÉFÅ[É_
@@ -1218,7 +1258,7 @@ float4 cMainPS_INV( cVertexData IN ) : COLOR //ÉAÉãÉtÉ@ílïœä∑ÉeÉNÉXÉ`ÉÉópÉsÉNÉZÉ
 	float	invtexcolb = 1 - ( (texcol.r + texcol.g) / 2 );
 	float	invtexalpha = (texcol.r + texcol.g + texcol.b)/3;
 
-	return ColRate( float4( invtexcolr, invtexcolg, invtexcolb, invtexalpha ) );
+	return ColRate( float4( invtexcolr, invtexcolg, invtexcolb, invtexalpha ) * ColorRate );
 }
 
 float4 cMainWashOut( cVertexData IN ) : COLOR //ãtåıÉnÉCÉâÉCÉgâûópó÷äsÇ⁄Ç©ÇµópÉsÉNÉZÉãÉVÉFÅ[É_
@@ -1237,7 +1277,7 @@ float4 cMainWashOut( cVertexData IN ) : COLOR //ãtåıÉnÉCÉâÉCÉgâûópó÷äsÇ⁄Ç©ÇµópÉs
 	col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
 	col += hl * ( HighLightBlend * 0.0025 );
 
-	return ColRate( float4( col.rgb, shadecol.a) );
+	return ColRate( float4( col.rgb, shadecol.a) * ColorRate );
 }
 
 float4 cMainWashoutFlash( cVertexData IN ) : COLOR //ãtåıÉnÉCÉâÉCÉgâûópó÷äsÇ⁄Ç©ÇµÉeÉNÉXÉ`ÉÉì_ñ≈ópÉsÉNÉZÉãÉVÉFÅ[É_
@@ -1259,7 +1299,7 @@ float4 cMainWashoutFlash( cVertexData IN ) : COLOR //ãtåıÉnÉCÉâÉCÉgâûópó÷äsÇ⁄Ç©Ç
 	col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
 	col += hl * ( HighLightBlend * 0.0025 );
 
-	return ColRate( float4( col.rgb, FlashAlpha ) );
+	return ColRate( float4( col.rgb, FlashAlpha ) * ColorRate );
 }
 
 float4 cMainPSDT( cVertexData IN ) : COLOR
@@ -1278,7 +1318,7 @@ float4 cMainPSDT( cVertexData IN ) : COLOR
 	col += hl * ( HighLightBlend * 0.0025 ); // old
 	//col += hl * HighLightBlend;
 
-	return ColRate( float4( col.rgb, texcol.a ) );
+	return ColRate( float4( col.rgb, texcol.a ) * ColorRate );
 }
 
 float4 cMainPS_Moji( cVertexData IN ) : COLOR
@@ -1297,7 +1337,7 @@ float4 cMainPS_Moji( cVertexData IN ) : COLOR
 	col += hl * ( HighLightBlend * 0.0025 ); // old
 	//col += hl * HighLightBlend;
 
-	return ColRate( float4( col.rgb, texcol.a ) );
+	return ColRate( float4( col.rgb, texcol.a ) * ColorRate );
 }
 
 float4 cHohoPS( cVertexData IN ) : COLOR
@@ -1315,7 +1355,7 @@ float4 cHohoPS( cVertexData IN ) : COLOR
 	col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
 	col += hl * ( HighLightBlend * 0.0025 ); // old
 
-	return ColRate( float4( col.rgb, texcol.a * HohoAlpha ) );
+	return ColRate( float4( col.rgb, texcol.a * HohoAlpha ) * ColorRate );
 }
 
 float4 cZamn0PS( cVertexData IN ) : COLOR
@@ -1333,7 +1373,7 @@ float4 cZamn0PS( cVertexData IN ) : COLOR
 	col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
 	col += hl * ( HighLightBlend * 0.0025 ); // old
 
-	return ColRate( float4( col.rgb, texcol.a * ZamenAlpha0 ) );
+	return ColRate( float4( col.rgb, texcol.a * ZamenAlpha0 ) * ColorRate );
 }
 
 float4 cZamn1PS( cVertexData IN ) : COLOR
@@ -1351,7 +1391,7 @@ float4 cZamn1PS( cVertexData IN ) : COLOR
 	col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
 	col += hl * ( HighLightBlend * 0.0025 ); // old
 
-	return ColRate( float4( col.rgb, texcol.a * ZamenAlpha1 ) );
+	return ColRate( float4( col.rgb, texcol.a * ZamenAlpha1 ) * ColorRate );
 }
 
 float4 cZamn2PS( cVertexData IN ) : COLOR
@@ -1369,7 +1409,7 @@ float4 cZamn2PS( cVertexData IN ) : COLOR
 	col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
 	col += hl * ( HighLightBlend * 0.0025 ); // old
 
-	return ColRate( float4( col.rgb, texcol.a * ZamenAlpha2 ) );
+	return ColRate( float4( col.rgb, texcol.a * ZamenAlpha2 ) * ColorRate );
 }
 
 cVertexData2 cShadowVS( appdata IN )
@@ -1384,12 +1424,12 @@ cVertexData2 cShadowVS( appdata IN )
 
 float4 cTrnsPS( cVertexData IN ) : COLOR
 {
-	return ColRate( ManColor );
+	return ColRate( ManColor * ColorRate );
 }
 
 float4 cShadowPS( cVertexData2 IN ) : COLOR
 {
-	return ColRate( ShadowColor );
+	return ColRate( ShadowColor * ColorRate );
 }
 
 //-----------------------------------------------------------
@@ -1436,7 +1476,7 @@ float4 cShadingFurSkinPS (cFurShaderData IN): COLOR
 	col.rgb *= FurSkinColor.rgb;
 	texcol.a *= FurSkinColor.a;
 
-	return ColRate( float4( col.rgb, texcol.a ) );
+	return ColRate( float4( col.rgb, texcol.a ) * ColorRate );
 }
 
 cFurShaderData cFurVS (appdata IN,uniform float ratio)
@@ -1476,7 +1516,7 @@ float4 cShadingFurPS (cFurShaderData IN,uniform float ratio): COLOR
 	col.rgb = col.rgb + (((ratio + 1) * (ratio - 0.5)) * FurBrite);
 	texcol.a *= 1 - (1 - furtex.a) * (ratio + 1);
 
-	return ColRate( float4( col.rgb, texcol.a ) );
+	return ColRate( float4( col.rgb, texcol.a ) * ColorRate );
 }
 
 technique ShadingFurSkin
@@ -1710,8 +1750,8 @@ float4 NormalMap_PS( cNormalMapData IN, float4 inUV : TEXCOORD0, float3 inLightT
 	float SM_Z		 = tex2D( ProjectiveMap, TransTexCoord ).x;
 	if( ZValue < SM_Z ){bright = -1 * max( 0.0f, bright ) + 1;}
 	
-	return ColRate( float4(bright * col.rgb, texcol.a) );
-	//return ColRate( float4(bright * col.rgb, texcol.a) );
+	return ColRate( float4(bright * col.rgb, texcol.a) * ColorRate );
+	//return ColRate( float4(bright * col.rgb, texcol.a) * ColorRate );
 }
 
 technique NormalMap
@@ -6711,7 +6751,7 @@ float4	Emissive
 <	string UIName	= "Emissive";
 	string UIWidget	= "Color";		> = { 0.0f, 0.0f, 0.0f, 0.0f };
 //ÉsÉNÉZÉãÉVÉFÅ[É_
-float4 cMainPS_emissive( cVertexData IN ) : COLOR//ÉfÉtÉHÉãÉgÉsÉNÉZÉãÉVÉFÅ[É_
+float4 cMainPS_emissive( cVertexData IN ) : COLOR//ÉfÉtÉHÉãÉgÉsÉNÉZÉãÉVÉFÅ[É_+emissive
 {
         float4 nnormal = float4 (normalize (IN.Normal), 0.0);
         float4 esnormal = mul (nnormal, view);
@@ -6734,7 +6774,7 @@ float4 cMainPS_emissive( cVertexData IN ) : COLOR//ÉfÉtÉHÉãÉgÉsÉNÉZÉãÉVÉFÅ[É_
         col += hl * ( HighLightBlend * 0.0025 ); // old
         //col += hl * HighLightBlend;
 
-        return ColRate( float4(col.rgb, texcol.a ) + Emissive);
+        return ColRate( float4(col.rgb, texcol.a ) + Emissive );
 }
 
 float4 cMainPS3_emissive( cVertexData IN ) : COLOR//ShadeTexìKópîÕàÕïœçXÉsÉNÉZÉãÉVÉFÅ[É_+emissive
@@ -7770,10 +7810,14 @@ technique Transparent2
 		StencilEnable		= true;
 
 		VertexProgram	= compile PROFILE_VS cMainVS();
-		FragmentProgram	= compile PROFILE_PS cTrnsPS();
+		FragmentProgram	= compile PROFILE_PS cInkPS_TrnsC();
 	}
 
-	pass Ink
+}
+
+technique Transparent3
+{
+	pass Main
 	{
 		ZEnable				= true;
 		ZWriteEnable		= false;
@@ -7789,12 +7833,25 @@ technique Transparent2
 		StencilZFail		= replace;
 		StencilEnable		= true;
 
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cTrnsPS();
+	}
 
-		VertexProgram	= compile PROFILE_VS cInkVS();
-		FragmentProgram	= compile PROFILE_PS cInkPS_TrnsC();
+	pass Pass0
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc        = always;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram = compile PROFILE_PS cBHLMainPS();
 	}
 
 }
+
 
 //-----------------------------------------------------------
 //  transparentâ¸
@@ -7984,5 +8041,191 @@ technique ShadingFur_KAZAN_Emissive
 
 //------------------------------------------------------------------
 // í«â¡technique Fur+KAZAN+EmissiveÇ±Ç±Ç‹Ç≈
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+// í«â¡technique _eyedotn Ç±Ç±Ç©ÇÁ
+//------------------------------------------------------------------
+
+float4 cMainPS5( cVertexData IN ) : COLOR//ÉfÉtÉHÉãÉgÉsÉNÉZÉãÉVÉFÅ[É_
+{
+        float4 nnormal = float4 (normalize (IN.Normal), 0.0);
+        float4 esnormal = mul (nnormal, view);
+        float4 eslight = mul (LightDirForced, view);
+        float4 eyedir = {0, 0, -1, 0};
+        float4 halfvec = normalize (eyedir + eslight);
+        
+        float ldotn = dot (nnormal, -LightDirForced);
+        float hdotn = dot (esnormal, -halfvec);
+
+		//tsoviewÉZÉãÉtÉVÉÉÉhÉE
+		float2 texcoord;
+		texcoord.x = ( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
+		texcoord.y = ( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
+		float4 c = tex2D( ShadowMap, texcoord );
+		float z = c.r + (c.g + c.b/256.0)/256.0;
+		if ( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
+		{
+			ldotn = -1.0; /* depth-buffer-shadow */
+			hdotn = -1.0; /* depth-buffer-shadow */
+		}
+                
+        float lp = min (1.0, max( 0.0, ( ldotn * 0.6) + (Ambient * 0.01)));
+        float hp0 = min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+        float hp = pow (hp0, HighLightPower);
+
+        float4  shadecol = tex2D( ShadeTex, float2( lp, 0.5 ) );
+        float4  texcol   = tex2D( ColorTex, IN.UV  );
+        float4  hl       = float4 ( hp, hp, hp, 1.0 );
+
+        float4  col;
+        col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+        col += hl * ( HighLightBlend * 0.0025 ); // old
+        //col += hl * HighLightBlend;
+
+        float eyedotn = max (0.01, dot (esnormal, -eyedir));
+        float thickness = 1.0 / eyedotn;
+        float alpha = 1.0 - pow (1.0 - texcol.a, thickness);
+
+        return ColRate( float4(col.rgb, alpha ) * ColorRate );
+}
+
+float4 cMainPS6( cVertexData IN ) : COLOR//ShadeTexìKópîÕàÕïœçXÉsÉNÉZÉãÉVÉFÅ[É_
+{
+        float4 nnormal = float4 (normalize (IN.Normal), 0.0);
+        float4 esnormal = mul (nnormal, view);
+        float4 eslight = mul (LightDirForced, view);
+        float4 eyedir = {0, 0, -1, 0};
+        float4 halfvec = normalize (eyedir + eslight);
+        
+        float ldotn = dot (nnormal, -LightDirForced);
+        float hdotn = dot (esnormal, -halfvec);
+
+		//tsoviewÉZÉãÉtÉVÉÉÉhÉE
+		float2 texcoord;
+		texcoord.x = ( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
+		texcoord.y = ( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
+		float4 c = tex2D( ShadowMap, texcoord );
+		float z = c.r + (c.g + c.b/256.0)/256.0;
+		if ( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
+		{
+			ldotn = -1.0; /* depth-buffer-shadow */
+			hdotn = -1.0; /* depth-buffer-shadow */
+		}
+                
+        float lp = min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+        float hp0 = min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+        float hp = pow (hp0, HighLightPower);
+
+        float4  shadecol = tex2D( ShadeTex, float2( lp, 0.1 ) );
+        float4  texcol   = tex2D( ColorTex, IN.UV  );
+        float4  hl       = float4 ( hp, hp, hp, 1.0 );
+
+        float4  col;
+        col = ( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+        col += hl * ( HighLightBlend * 0.0025 ); // old
+        //col += hl * HighLightBlend;
+
+        float eyedotn = max (0.01, dot (esnormal, -eyedir));
+        float thickness = 1.0 / eyedotn;
+        float alpha = 1.0 - pow (1.0 - texcol.a, thickness);
+
+        return ColRate( float4(col.rgb, alpha ) * ColorRate );
+}
+
+technique ShadowOn_eyedotn
+{
+#if SHADOW_SW
+	pass Shadow
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= false;
+		AlphaFunc = greaterequal;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cShadowVS();
+		FragmentProgram	= compile PROFILE_PS cShadowPS();
+	}
+#endif
+#if INK_SW
+	pass Ink
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= cw;
+		AlphaBlendEnable= false;
+		AlphaFunc = greaterequal;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cInkVS();
+		FragmentProgram	= compile PROFILE_PS cInkPS();
+	}
+#endif
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc = greaterequal;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cMainPS5();
+	}
+#endif
+}
+
+technique AllAmb_ShadowOn_eyedotn
+{
+#if SHADOW_SW
+	pass Shadow
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= false;
+		AlphaFunc = greaterequal;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cShadowVS();
+		FragmentProgram	= compile PROFILE_PS cShadowPS();
+	}
+#endif
+#if INK_SW
+	pass Ink
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= cw;
+		AlphaBlendEnable= false;
+		AlphaFunc = greaterequal;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cInkVS();
+		FragmentProgram	= compile PROFILE_PS cInkPS();
+	}
+#endif
+#if MAIN_SW
+	pass Main
+	{
+		DepthTestEnable = true;
+		DepthMask		= true;
+		CullMode		= ccw;
+		AlphaBlendEnable= true;
+		AlphaFunc = greaterequal;
+		StencilEnable	= false;
+
+		VertexProgram	= compile PROFILE_VS cMainVS();
+		FragmentProgram	= compile PROFILE_PS cMainPS6();
+	}
+#endif
+}
+
+//------------------------------------------------------------------
+// í«â¡technique _eyedotn Ç±Ç±Ç‹Ç≈
 //------------------------------------------------------------------
 
