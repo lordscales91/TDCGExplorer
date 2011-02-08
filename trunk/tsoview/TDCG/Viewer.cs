@@ -14,6 +14,29 @@ using Direct3D=Microsoft.DirectX.Direct3D;
 namespace TDCG
 {
     /// <summary>
+    /// セーブファイルの内容を保持します。
+    /// </summary>
+    public class PNGSaveFile
+    {
+        /// <summary>
+        /// タイプ
+        /// </summary>
+        public string type = null;
+        /// <summary>
+        /// 最後に読み込んだライト方向
+        /// </summary>
+        public Vector3 LightDirection;
+        /// <summary>
+        /// 最後に読み込んだtmo
+        /// </summary>
+        public TMOFile Tmo;
+        /// <summary>
+        /// フィギュアリスト
+        /// </summary>
+        public List<Figure> FigureList = new List<Figure>();
+    }
+
+    /// <summary>
     /// TSOFileをDirect3D上でレンダリングします。
     /// </summary>
 public class Viewer : IDisposable
@@ -432,16 +455,16 @@ public class Viewer : IDisposable
     /// <param name="append">FigureListを消去せずに追加するか</param>
     public void AddFigureFromPNGFile(string source_file, bool append)
     {
-        List<Figure> figs = LoadPNGFile(source_file);
-        if (figs.Count != 0) //taOb png
-        if (figs[0].TSOList.Count == 0) //POSE png
+        PNGSaveFile sav = LoadPNGFile(source_file);
+        if (sav.FigureList.Count == 0) //POSE png
         {
-            Debug.Assert(figs[0].Tmo != null, "figs[0].Tmo should not be null");
+            Debug.Assert(sav.Tmo != null, "save.Tmo should not be null");
             Figure fig;
             if (TryGetFigure(out fig))
             {
-                fig.LightDirection = figs[0].LightDirection;
-                fig.Tmo = figs[0].Tmo;
+                if (sav.LightDirection != Vector3.Empty)
+                    fig.LightDirection = sav.LightDirection;
+                fig.Tmo = sav.Tmo;
                 //fig.TransformTpo();
                 fig.UpdateNodeMapAndBoneMatrices();
                 if (FigureEvent != null)
@@ -454,7 +477,7 @@ public class Viewer : IDisposable
                 ClearFigureList();
 
             int idx = FigureList.Count;
-            foreach (Figure fig in figs)
+            foreach (Figure fig in sav.FigureList)
             {
                 fig.OpenTSOFile(device, effect);
                 fig.UpdateNodeMapAndBoneMatrices();
@@ -1125,23 +1148,29 @@ public class Viewer : IDisposable
     /// 指定パスからPNGFileを読み込みフィギュアを作成します。
     /// </summary>
     /// <param name="source_file">PNGFileのパス</param>
-    public List<Figure> LoadPNGFile(string source_file)
+    public PNGSaveFile LoadPNGFile(string source_file)
     {
-        List<Figure> fig_list = new List<Figure>();
+        PNGSaveFile sav = new PNGSaveFile();
 
         if (File.Exists(source_file))
         try
         {
             PNGFile png = new PNGFile();
             Figure fig = null;
-            TMOFile tmo = null;
-            string png_type = null;
 
             png.Hsav += delegate(string type)
             {
+                sav.type = type;
                 fig = new Figure();
-                fig_list.Add(fig);
-                png_type = type;
+                sav.FigureList.Add(fig);
+            };
+            png.Pose += delegate(string type)
+            {
+                sav.type = type;
+            };
+            png.Scne += delegate(string type)
+            {
+                sav.type = type;
             };
             png.Cami += delegate(Stream dest, int extract_length)
             {
@@ -1169,7 +1198,6 @@ public class Viewer : IDisposable
                     float flo = BitConverter.ToSingle(buf, offset);
                     factor.Add(flo);
                 }
-                fig = new Figure();
 
                 Matrix m;
                 m.M11 = factor[0];
@@ -1192,17 +1220,20 @@ public class Viewer : IDisposable
                 m.M43 = factor[14];
                 m.M44 = factor[15];
 
-                fig.LightDirection = Vector3.TransformCoordinate(new Vector3(0.0f, 0.0f, -1.0f), m);
-                fig_list.Add(fig);
+                sav.LightDirection = Vector3.TransformCoordinate(new Vector3(0.0f, 0.0f, -1.0f), m);
             };
             png.Ftmo += delegate(Stream dest, int extract_length)
             {
-                tmo = new TMOFile();
-                tmo.Load(dest);
-                fig.Tmo = tmo;
+                sav.Tmo = new TMOFile();
+                sav.Tmo.Load(dest);
             };
             png.Figu += delegate(Stream dest, int extract_length)
             {
+                fig = new Figure();
+                fig.LightDirection = sav.LightDirection;
+                fig.Tmo = sav.Tmo;
+                sav.FigureList.Add(fig);
+
                 byte[] buf = new byte[extract_length];
                 dest.Read(buf, 0, extract_length);
 
@@ -1242,7 +1273,7 @@ public class Viewer : IDisposable
             Debug.WriteLine("loading " + source_file);
             png.Load(source_file);
 
-            if (png_type == "HSAV")
+            if (sav.type == "HSAV")
             {
                 MemoryStream ms = new MemoryStream();
                 png.Save(ms);
@@ -1262,7 +1293,7 @@ public class Viewer : IDisposable
         {
             Console.WriteLine("Error: " + ex);
         }
-        return fig_list;
+        return sav;
     }
 
     /// <summary>
