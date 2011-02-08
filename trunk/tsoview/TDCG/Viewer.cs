@@ -117,8 +117,7 @@ public class Viewer : IDisposable
     /// <param name="dir">選択フィギュアの光源方向</param>
     public void SetLightDirection(Vector3 dir)
     {
-        Figure fig;
-        if (TryGetFigure(out fig))
+        foreach (Figure fig in FigureList)
             fig.LightDirection = dir;
     }
 
