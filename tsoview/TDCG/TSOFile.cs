@@ -758,10 +758,10 @@ namespace TDCG
         {
             TARGA_HEADER header;
 
-            IntPtr header_ptr = Marshal.AllocHGlobal(sizeof_tga_header);
-            Marshal.Copy(br.ReadBytes(sizeof_tga_header), 0, header_ptr, sizeof_tga_header);
-            header = (TARGA_HEADER)Marshal.PtrToStructure(header_ptr, typeof(TARGA_HEADER));
-            Marshal.FreeHGlobal(header_ptr);
+            byte[] header_buf = br.ReadBytes(sizeof_tga_header);
+            GCHandle header_handle = GCHandle.Alloc(header_buf, GCHandleType.Pinned);
+            header = (TARGA_HEADER)Marshal.PtrToStructure(header_handle.AddrOfPinnedObject(), typeof(TARGA_HEADER));
+            header_handle.Free();
 
             if (header.imagetype != 0x02)
                 throw new Exception("Invalid imagetype: " + file);
@@ -782,15 +782,15 @@ namespace TDCG
             BITMAPFILEHEADER bfh;
             BITMAPINFOHEADER bih;
 
-            IntPtr bfh_ptr = Marshal.AllocHGlobal(sizeof_bfh);
-            Marshal.Copy(br.ReadBytes(sizeof_bfh), 0, bfh_ptr, sizeof_bfh);
-            bfh = (BITMAPFILEHEADER)Marshal.PtrToStructure(bfh_ptr, typeof(BITMAPFILEHEADER));
-            Marshal.FreeHGlobal(bfh_ptr);
+            byte[] bfh_buf = br.ReadBytes(sizeof_bfh);
+            GCHandle bfh_handle = GCHandle.Alloc(bfh_buf, GCHandleType.Pinned);
+            bfh = (BITMAPFILEHEADER)Marshal.PtrToStructure(bfh_handle.AddrOfPinnedObject(), typeof(BITMAPFILEHEADER));
+            bfh_handle.Free();
 
-            IntPtr bih_ptr = Marshal.AllocHGlobal(sizeof_bih);
-            Marshal.Copy(br.ReadBytes(sizeof_bih), 0, bih_ptr, sizeof_bih);
-            bih = (BITMAPINFOHEADER)Marshal.PtrToStructure(bih_ptr, typeof(BITMAPINFOHEADER));
-            Marshal.FreeHGlobal(bih_ptr);
+            byte[] bih_buf = br.ReadBytes(sizeof_bih);
+            GCHandle bih_handle = GCHandle.Alloc(bih_buf, GCHandleType.Pinned);
+            bih = (BITMAPINFOHEADER)Marshal.PtrToStructure(bih_handle.AddrOfPinnedObject(), typeof(BITMAPINFOHEADER));
+            bih_handle.Free();
 
             if (bfh.bfType != 0x4D42)
                 throw new Exception("Invalid imagetype: " + file);
