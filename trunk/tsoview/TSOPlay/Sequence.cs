@@ -16,11 +16,11 @@ namespace TSOPlay
         private List<string> seqlist = null;
         private int seqcount;
         private int nextperiod;
-        Viewer viewer = null;
+        PlayViewer viewer = null;
         Vector3 camrotate;
 
         // シーケンスファイルを指定して読み込む.
-        public void SetSequence(string FileName, Viewer v)
+        public void SetSequence(string FileName, PlayViewer v)
         {
             seqlist = new List<string>();
             seqcount = 0;
@@ -114,6 +114,9 @@ namespace TSOPlay
                             float z = Geometry.DegreeToRadian(float.Parse(args[3]));
                             camrotate = new Vector3(x, y, z);
                         }
+                        break;
+                    case "transition":
+                        viewer.ReadyTransition();
                         break;
                     case "wait":
                         // 次の待ち時間を設定する.

@@ -26,7 +26,7 @@ public partial class TSOForm : Form
     internal int keyCameraReset = (int)Keys.D0;
     internal int keyCenter      = (int)Keys.F;
 
-    internal Viewer viewer = null;
+    internal PlayViewer viewer = null;
 
     internal Sequence seq = new Sequence();
     
@@ -47,7 +47,7 @@ public partial class TSOForm : Form
         this.DragDrop += new DragEventHandler(form_OnDragDrop);
         this.DragOver += new DragEventHandler(form_OnDragOver);
 
-        this.viewer = new Viewer();
+        this.viewer = new PlayViewer();
 
         if (viewer.InitializeApplication(this, true))
         {
