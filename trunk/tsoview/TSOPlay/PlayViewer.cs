@@ -74,7 +74,7 @@ namespace TSOPlay
             int devh = dev_surface.Description.Height;
             Console.WriteLine("dev {0}x{1}", devw, devh);
 
-            tra_tex = new Texture(device, 1024, 1024, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+            tra_tex = new Texture(device, devw, devh, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
             tra_surface = tra_tex.GetSurfaceLevel(0);
 
             int texw = tra_surface.Description.Width;
