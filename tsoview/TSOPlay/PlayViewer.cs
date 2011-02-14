@@ -18,6 +18,14 @@ namespace TSOPlay
         Surface tra_surface = null;
         Sprite tra_sprite = null;
 
+        public PlayViewer()
+        {
+            this.Rendering += delegate()
+            {
+                RenderDerived();
+            };
+        }
+
         /// <summary>
         /// deviceを作成します。
         /// </summary>
@@ -57,7 +65,7 @@ namespace TSOPlay
 
         float w_scale;
         float h_scale;
-        Rectangle tra_tex_rect;
+        Rectangle tra_rect;
 
         private void OnDeviceReset(object sender, EventArgs e)
         {
@@ -75,19 +83,49 @@ namespace TSOPlay
 
             w_scale = (float)devw / texw;
             h_scale = (float)devh / texh;
-            tra_tex_rect = new Rectangle(0, 0, texw, texh);
+            tra_rect = new Rectangle(0, 0, texw, texh);
 
             tra_sprite = new Sprite(device);
         }
 
-        void DrawSprite()
+        int alpha = 0;
+
+        /// <summary>
+        /// シーンをレンダリングします。
+        /// </summary>
+        public void RenderDerived()
+        {
+            if (alpha > 0)
+            {
+                DrawSprite(alpha);
+                alpha -= 4;
+            }
+        }
+
+        public void ReadyTransition()
+        {
+            CopyDeviceSurface();
+            alpha = 255;
+        }
+
+        void CopyDeviceSurface()
+        {
+            int devw = dev_surface.Description.Width;
+            int devh = dev_surface.Description.Height;
+            Console.WriteLine("dev {0}x{1}", devw, devh);
+
+            Rectangle dev_rect = new Rectangle(0, 0, devw, devh);
+            device.StretchRectangle(dev_surface, dev_rect, tra_surface, tra_rect, TextureFilter.None);
+        }
+
+        void DrawSprite(int alpha)
         {
             device.RenderState.AlphaBlendEnable = false;
 
             tra_sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
 
             tra_sprite.Begin(SpriteFlags.AlphaBlend);
-            tra_sprite.Draw(tra_tex, tra_tex_rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.FromArgb(128, Color.White));
+            tra_sprite.Draw(tra_tex, tra_rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.FromArgb(alpha, Color.White));
             tra_sprite.End();
         }
 
