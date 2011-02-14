@@ -13,15 +13,37 @@ namespace TDCG
     /// </summary>
     public class SimpleCamera
     {
-        private Vector3 center = Vector3.Empty;
-        private Vector3 translation = new Vector3(0.0f, 0.0f, +10.0f);
-        private Vector3 dirD = Vector3.Empty; //カメラ移動方向ベクトル
-        private float zD = 0.0f;      //カメラ奥行オフセット値
-        private bool needUpdate = true;
-        private Matrix view = Matrix.Identity;
-        private Vector3 angle = Vector3.Empty;
-        private float rotZD = 0.0f;   //カメラ Z軸回転差分
-        private float angleU = 0.01f;        //移動時回転単位（ラジアン）
+        //角度
+        Vector3 angle;
+        
+        //回転中心
+        Vector3 center;
+        
+        //位置変位
+        Vector3 translation;
+        
+        //カメラ移動方向ベクトル
+        Vector3 dirD;
+        
+        //カメラ奥行オフセット値
+        float zD;
+        
+        //更新する必要があるか
+        bool needUpdate;
+        
+        //view行列
+        Matrix view;
+        
+        //Z軸回転差分
+        float rotZD;
+        
+        //移動時回転単位（ラジアン）
+        float angleU;
+
+        /// <summary>
+        /// 角度
+        /// </summary>
+        public Vector3 Angle { get { return angle; } set { angle = value; } }
 
         /// <summary>
         /// 回転中心
@@ -29,24 +51,35 @@ namespace TDCG
         public Vector3 Center { get { return center; } set { center = value; } }
 
         /// <summary>
-        /// view座標上のカメラの位置
+        /// 位置変位
         /// </summary>
         public Vector3 Translation { get { return translation; } set { translation = value; } }
     
         /// <summary>
-        /// 角度
+        /// 更新する必要があるか
         /// </summary>
-        public Vector3 Angle { get { return angle; } set { angle = value; } }
+        public bool NeedUpdate { get { return needUpdate; } }
 
         /// <summary>
-        ///更新する必要があるか
-        /// </summary>
-        public bool NeedUpdate { get { return needUpdate; }}
-
-        /// <summary>
-        /// ビュー行列
+        /// view行列
         /// </summary>
         public Matrix ViewMatrix { get { return view; } }
+
+        /// <summary>
+        /// カメラを生成します。
+        /// </summary>
+        public SimpleCamera()
+        {
+            angle = Vector3.Empty;
+            center = Vector3.Empty;
+            translation = new Vector3(0.0f, 0.0f, +10.0f);
+            dirD = Vector3.Empty;
+            zD = 0.0f;
+            needUpdate = true;
+            view = Matrix.Identity;
+            rotZD = 0.0f;
+            angleU = 0.01f;
+        }
 
         /// <summary>
         /// カメラの位置と姿勢をリセットします。
@@ -162,14 +195,34 @@ namespace TDCG
             needUpdate = true;
         }
         /// <summary>
-        /// view座標上の位置を設定します。
+        /// 位置変位を設定します。
         /// </summary>
-        /// <param name="x">view座標上の位置x座標</param>
-        /// <param name="y">view座標上の位置y座標</param>
-        /// <param name="z">view座標上の位置z座標</param>
+        /// <param name="x">X変位</param>
+        /// <param name="y">Y変位</param>
+        /// <param name="z">Z変位</param>
         public void SetTranslation(float x, float y, float z)
         {
             SetTranslation(new Vector3(x, y, z));
+        }
+
+        /// <summary>
+        /// 角度を設定します。
+        /// </summary>
+        /// <param name="angle">角度</param>
+        public void SetAngle(Vector3 angle)
+        {
+            this.angle = angle;
+            needUpdate = true;
+        }
+        /// <summary>
+        /// 角度を設定します。
+        /// </summary>
+        /// <param name="x">X軸回転角</param>
+        /// <param name="y">Y軸回転角</param>
+        /// <param name="z">Z軸回転角</param>
+        public void SetAngle(float x, float y, float z)
+        {
+            SetAngle(new Vector3(x, y, z));
         }
 
         /// <summary>

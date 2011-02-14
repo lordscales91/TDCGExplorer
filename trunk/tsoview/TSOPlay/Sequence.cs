@@ -92,13 +92,28 @@ namespace TSOPlay
                         viewer.MotionEnabled = true;
                         break;
                     case "translation":
-                        viewer.Camera.SetTranslation(float.Parse(args[1]), float.Parse(args[2]), float.Parse(args[3]));
+                        {
+                            float x = float.Parse(args[1]);
+                            float y = float.Parse(args[2]);
+                            float z = float.Parse(args[3]);
+                            viewer.Camera.SetTranslation(x, y, z);
+                        }
                         break;
                     case "angle":
-                        viewer.Camera.Angle = new Vector3(float.Parse(args[1]), float.Parse(args[2]), float.Parse(args[3]));
+                        {
+                            float x = float.Parse(args[1]);
+                            float y = float.Parse(args[2]);
+                            float z = float.Parse(args[3]);
+                            viewer.Camera.SetAngle(x, y, z);
+                        }
                         break;
                     case "camtrack":
-                        camrotate = new Vector3(float.Parse(args[1]), float.Parse(args[2]), float.Parse(args[3]));
+                        {
+                            float x = float.Parse(args[1]);
+                            float y = float.Parse(args[2]);
+                            float z = float.Parse(args[3]);
+                            camrotate = new Vector3(x, y, z);
+                        }
                         break;
                     case "wait":
                         // 次の待ち時間を設定する.
@@ -118,7 +133,7 @@ namespace TSOPlay
         // 時間指定コマンドの実行.
         public void DoInterval()
         {
-            viewer.Camera.Angle = new Vector3(viewer.Camera.Angle.X + camrotate.X, viewer.Camera.Angle.Y + camrotate.Y, viewer.Camera.Angle.Z + camrotate.Z);
+            viewer.Camera.Angle += camrotate;
         }
 
         // プレイリストの消去.
