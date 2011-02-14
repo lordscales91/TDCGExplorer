@@ -28,7 +28,7 @@ public partial class TSOForm : Form
     internal int keyCenter      = (int)Keys.F;
     internal int keyFigureForm = (int)Keys.G;
 
-    internal Viewer viewer = null;
+    internal PlayViewer viewer = null;
     internal FigureForm fig_form = null;
     
     string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";

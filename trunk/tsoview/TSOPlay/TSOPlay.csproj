@@ -47,6 +47,7 @@
   </Target>
   -->
   <ItemGroup>
+    <Compile Include="PlayViewer.cs" />
     <Compile Include="Program.cs" />
     <None Include="Script.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
