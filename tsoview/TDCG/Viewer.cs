@@ -90,8 +90,6 @@ public class Viewer : IDisposable
     /// ztexture
     /// </summary>
     protected Texture ztex = null;
-    int ztexw = 0;
-    int ztexh = 0;
     /// <summary>
     /// surface of ztexture
     /// </summary>
@@ -106,6 +104,7 @@ public class Viewer : IDisposable
     internal Line line = null;
     float w_scale = 1.0f;
     float h_scale = 1.0f;
+    Rectangle ztex_rect;
 
     /// <summary>
     /// surface of device
@@ -674,16 +673,15 @@ public class Viewer : IDisposable
             ztex_surface = ztex.GetSurfaceLevel(0);
 
             effect.SetValue("texShadowMap", ztex);
-            {
-                ztexw = ztex_surface.Description.Width;
-                ztexh = ztex_surface.Description.Height;
-            }
-            Console.WriteLine("ztex {0}x{1}", ztexw, ztexh);
+            int texw = ztex_surface.Description.Width;
+            int texh = ztex_surface.Description.Height;
+            Console.WriteLine("ztex {0}x{1}", texw, texh);
 
-            ztex_zbuf = device.CreateDepthStencilSurface(ztexw, ztexh, DepthFormat.D16, MultiSampleType.None, 0, false);
+            ztex_zbuf = device.CreateDepthStencilSurface(texw, texh, DepthFormat.D16, MultiSampleType.None, 0, false);
 
-            w_scale = (float)devw / ztexw;
-            h_scale = (float)devh / ztexh;
+            w_scale = (float)devw / texw;
+            h_scale = (float)devh / texh;
+            ztex_rect = new Rectangle(0, 0, texw, texh);
         }
 
         Transform_Projection = Matrix.PerspectiveFovRH(
@@ -1085,10 +1083,9 @@ public class Viewer : IDisposable
         device.RenderState.AlphaBlendEnable = false;
 
         sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
-        Rectangle rect = new Rectangle(0, 0, ztexw, ztexh);
 
         sprite.Begin(0);
-        sprite.Draw(ztex, rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
+        sprite.Draw(ztex, ztex_rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
         sprite.End();
     }
 
