@@ -55,6 +55,10 @@ namespace TSOPlay
                 tra_tex.Dispose();
         }
 
+        float w_scale;
+        float h_scale;
+        Rectangle tra_tex_rect;
+
         private void OnDeviceReset(object sender, EventArgs e)
         {
             Console.WriteLine("PlayViewer OnDeviceReset");
@@ -65,14 +69,26 @@ namespace TSOPlay
             tra_tex = new Texture(device, 1024, 1024, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
             tra_surface = tra_tex.GetSurfaceLevel(0);
 
-            int texw = ztex_surface.Description.Width;
-            int texh = ztex_surface.Description.Height;
+            int texw = tra_surface.Description.Width;
+            int texh = tra_surface.Description.Height;
             Console.WriteLine("tra_tex {0}x{1}", texw, texh);
 
-            float w_scale = (float)devw / texw;
-            float h_scale = (float)devh / texh;
+            w_scale = (float)devw / texw;
+            h_scale = (float)devh / texh;
+            tra_tex_rect = new Rectangle(0, 0, texw, texh);
 
             tra_sprite = new Sprite(device);
+        }
+
+        void DrawSprite()
+        {
+            device.RenderState.AlphaBlendEnable = false;
+
+            tra_sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
+
+            tra_sprite.Begin(SpriteFlags.AlphaBlend);
+            tra_sprite.Draw(tra_tex, tra_tex_rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.FromArgb(128, Color.White));
+            tra_sprite.End();
         }
 
         /// <summary>
