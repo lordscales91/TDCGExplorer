@@ -101,17 +101,17 @@ namespace TSOPlay
                         break;
                     case "angle":
                         {
-                            float x = float.Parse(args[1]);
-                            float y = float.Parse(args[2]);
-                            float z = float.Parse(args[3]);
+                            float x = Geometry.DegreeToRadian(float.Parse(args[1]));
+                            float y = Geometry.DegreeToRadian(float.Parse(args[2]));
+                            float z = Geometry.DegreeToRadian(float.Parse(args[3]));
                             viewer.Camera.SetAngle(x, y, z);
                         }
                         break;
                     case "camtrack":
                         {
-                            float x = float.Parse(args[1]);
-                            float y = float.Parse(args[2]);
-                            float z = float.Parse(args[3]);
+                            float x = Geometry.DegreeToRadian(float.Parse(args[1]));
+                            float y = Geometry.DegreeToRadian(float.Parse(args[2]));
+                            float z = Geometry.DegreeToRadian(float.Parse(args[3]));
                             camrotate = new Vector3(x, y, z);
                         }
                         break;
@@ -123,8 +123,9 @@ namespace TSOPlay
                         break;
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine("error: " + e.Message);
             }
 
             return false;
@@ -133,7 +134,7 @@ namespace TSOPlay
         // 時間指定コマンドの実行.
         public void DoInterval()
         {
-            viewer.Camera.Angle += camrotate;
+            viewer.Camera.SetAngle(viewer.Camera.Angle + camrotate);
         }
 
         // プレイリストの消去.
