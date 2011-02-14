@@ -107,6 +107,14 @@ namespace TSOPlay
                             viewer.Camera.SetAngle(x, y, z);
                         }
                         break;
+                    case "camfocus":
+                        {
+                            viewer.Camera.ResetTranslation();
+                            Figure fig;
+                            if (viewer.TryGetFigure(out fig))
+                                viewer.Camera.SetCenter(fig.Center + fig.Translation);
+                        }
+                        break;
                     case "camtrack":
                         {
                             float x = Geometry.DegreeToRadian(float.Parse(args[1]));
