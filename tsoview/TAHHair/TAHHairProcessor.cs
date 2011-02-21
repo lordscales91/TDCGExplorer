@@ -286,9 +286,7 @@ namespace TAHHair
                 if (ext == ".tso")
                 {
                     TAHEntry entry = tso_entries[code];
-                    byte[] data_output;
-                    decrypter.ExtractResource(entry, out data_output);
-                    using (MemoryStream tso_stream = new MemoryStream(data_output))
+                    using (MemoryStream tso_stream = new MemoryStream(decrypter.ExtractResource(entry)))
                     {
                         ret_stream = new MemoryStream();
                         ProcessTSOFile(tso_stream, ret_stream, col);
@@ -301,9 +299,7 @@ namespace TAHHair
                     if (col == "00")
                     {
                         TAHEntry entry = psd_entries[code];
-                        byte[] data_output;
-                        decrypter.ExtractResource(entry, out data_output);
-                        ret_stream = new MemoryStream(data_output);
+                        ret_stream = new MemoryStream(decrypter.ExtractResource(entry));
                     }
                     else
                     {

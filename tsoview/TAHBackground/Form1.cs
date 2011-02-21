@@ -46,9 +46,7 @@ namespace TAHBackground
 
                 if (entry.flag % 2 == 1)
                 {
-                    byte[] data_output;
-                    decrypter.ExtractResource(entry, out data_output);
-                    file_name += TAHFileUtils.GetExtensionFromMagic(data_output);
+                    file_name += TAHFileUtils.GetExtensionFromMagic(decrypter.ExtractResource(entry));
                 }
 
                 string ext = Path.GetExtension(file_name).ToLower();
@@ -120,9 +118,7 @@ namespace TAHBackground
 
                 if (entry.flag % 2 == 1)
                 {
-                    byte[] data_output;
-                    decrypter.ExtractResource(entry, out data_output);
-                    file_name += TAHFileUtils.GetExtensionFromMagic(data_output);
+                    file_name += TAHFileUtils.GetExtensionFromMagic(decrypter.ExtractResource(entry));
                 }
 
                 string ext = Path.GetExtension(file_name).ToLower();
@@ -151,17 +147,14 @@ namespace TAHBackground
             foreach (string psd_path in PSDPathList)
             {
                 Console.WriteLine("psd {0}", psd_path);
-                byte[] data_output;
 
                 TAHEntry psd_entry = entries[psd_path];
-                decrypter.ExtractResource(psd_entry, out data_output);
-                MemoryStream psd_stream = new MemoryStream(data_output);
+                MemoryStream psd_stream = new MemoryStream(decrypter.ExtractResource(psd_entry));
 
                 string tbn_path = PngBack.GetTBNPathFromPSDPath(psd_path);
                 Console.WriteLine("tbn {0}", tbn_path);
                 TAHEntry tbn_entry = entries[tbn_path];
-                decrypter.ExtractResource(tbn_entry, out data_output);
-                MemoryStream tbn_stream = new MemoryStream(data_output);
+                MemoryStream tbn_stream = new MemoryStream(decrypter.ExtractResource(tbn_entry));
 
                 PngBack back = new PngBack();
                 back.Load(tbn_stream, psd_stream);
@@ -172,8 +165,7 @@ namespace TAHBackground
                     TAHEntry tso_entry;
                     if (entries.TryGetValue(tso_path, out tso_entry))
                     {
-                        decrypter.ExtractResource(tso_entry, out data_output);
-                        back.AddTSOFile(data_output);
+                        back.AddTSOFile(decrypter.ExtractResource(tso_entry));
                     }
                 }
                 string png_path = Path.GetFileNameWithoutExtension(psd_path) + @".png";
