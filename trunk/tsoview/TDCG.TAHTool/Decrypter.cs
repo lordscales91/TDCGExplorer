@@ -247,7 +247,7 @@ namespace TDCG.TAHTool
             }
         }
 
-        public int ExtractResource(TAHEntry entry, out byte[] data_output)
+        public byte[] ExtractResource(TAHEntry entry)
         {
             //data読み込み長さ
             //-4はdata書き出し長さ格納領域 (UInt32) を減じている
@@ -258,34 +258,21 @@ namespace TDCG.TAHTool
 
             reader.BaseStream.Position = entry.offset;
 
-            try
             {
                 //data書き出し長さ
                 data_output_length = reader.ReadUInt32();
                 data_input = reader.ReadBytes((int)data_input_length);
             }
-            catch (Exception)
-            {
-                System.Console.Out.WriteLine("Error: Cannot read out compressed data of the archive.");
-                data_output = new byte[0];
-                return -1;
-            }
             //-- data読み込み（復号前）完了! --
 
             //data書き出しバッファ
-            data_output = new byte[data_output_length];
+            byte[] data_output = new byte[data_output_length];
 
-            try
             {
                 Decompression.decrypt(ref data_input, data_input_length, ref data_output, data_output_length);
             }
-            catch (Exception)
-            {
-                System.Console.Out.WriteLine("Error: Failed to decrypt data. Possible error in archive.");
-                return -1;
-            }
             //-- data復号完了! --
-            return 0;
+            return data_output;
         }
 
         public string[] GetFiles(string source_file)

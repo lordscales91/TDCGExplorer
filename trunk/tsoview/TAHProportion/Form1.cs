@@ -83,9 +83,7 @@ namespace TAHProportion
 
                 if (entry.flag % 2 == 1)
                 {
-                    byte[] data_output;
-                    decrypter.ExtractResource(entry, out data_output);
-                    file_name += TAHFileUtils.GetExtensionFromMagic(data_output);
+                    file_name += TAHFileUtils.GetExtensionFromMagic(decrypter.ExtractResource(entry));
                 }
 
                 string ext = Path.GetExtension(file_name).ToLower();
@@ -111,14 +109,12 @@ namespace TAHProportion
                 Console.WriteLine("compressing {0}", true_file_name);
                 TAHEntry entry = entries[true_file_name];
                 string ext = Path.GetExtension(true_file_name).ToLower();
-                byte[] data_output;
-                decrypter.ExtractResource(entry, out data_output);
 
                 Stream ret_stream = null;
                 if (ext == ".tmo")
                 {
                     TMOFile tmo = new TMOFile();
-                    MemoryStream tmo_stream = new MemoryStream(data_output);
+                    MemoryStream tmo_stream = new MemoryStream(decrypter.ExtractResource(entry));
                     tmo.Load(tmo_stream);
 
                     if (tmo.nodes[0].Path == "|W_Hips")
@@ -144,7 +140,7 @@ namespace TAHProportion
                 else
                 if (ext == ".png")
                 {
-                    MemoryStream png_stream = new MemoryStream(data_output);
+                    MemoryStream png_stream = new MemoryStream(decrypter.ExtractResource(entry));
                     ret_stream = new MemoryStream();
                     Process(png_stream, ret_stream);
                     ret_stream.Seek(0, SeekOrigin.Begin);
@@ -178,9 +174,7 @@ namespace TAHProportion
 
                 if (entry.flag % 2 == 1)
                 {
-                    byte[] data_output;
-                    decrypter.ExtractResource(entry, out data_output);
-                    file_name += TAHFileUtils.GetExtensionFromMagic(data_output);
+                    file_name += TAHFileUtils.GetExtensionFromMagic(decrypter.ExtractResource(entry));
                 }
 
                 string ext = Path.GetExtension(file_name).ToLower();
