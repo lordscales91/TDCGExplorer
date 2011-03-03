@@ -82,9 +82,9 @@ namespace TDCG
         public Vertex[] vertices;
 
         /// <summary>
-        /// Direct3Dメッシュ
+        /// Direct3D頂点バッファ
         /// </summary>
-        public Mesh dm = null;
+        public VertexBuffer vb = null;
 
         /// <summary>
         /// パレット長さ
@@ -204,7 +204,7 @@ namespace TDCG
             get { return vertices.Length; }
         }
 
-        static VertexElement[] ve = new VertexElement[]
+        public static VertexElement[] ve = new VertexElement[]
         {
             new VertexElement(0,  0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
             new VertexElement(0, 12, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 3),
@@ -214,22 +214,13 @@ namespace TDCG
                 VertexElement.VertexDeclarationEnd
         };
 
-        static AttributeRange ar = new AttributeRange();
-        /*
-        ar.AttributeId = 0;
-        ar.FaceStart = 0;
-        ar.FaceCount = 0;
-        ar.VertexStart = 0;
-        ar.VertexCount = 0;
-        */
-
         /// <summary>
         /// 頂点をDirect3Dバッファに書き込みます。
         /// </summary>
         public void WriteBuffer()
         {
-            if (dm != null)
-                WriteBuffer(dm.Device);
+            if (vb != null)
+                WriteBuffer(vb.Device);
         }
 
         /// <summary>
@@ -241,18 +232,22 @@ namespace TDCG
             int numVertices = vertices.Length;
             int numFaces = numVertices - 2;
 
-            if (dm != null)
-            {
-                dm.Dispose();
-                dm = null;
-            }
-            dm = new Mesh(numFaces, numVertices, MeshFlags.Managed | MeshFlags.WriteOnly, ve, device);
+            if (vb != null)
+                vb.Dispose();
+            vb = new VertexBuffer(typeof(VertexFormat), vertices.Length, device, Usage.Dynamic | Usage.WriteOnly, VertexFormats.None, Pool.Default);
+            vb.Created += new EventHandler(vb_Created);
+            vb_Created(vb, null);
+        }
+
+        void vb_Created(object sender, EventArgs e)
+        {
+            VertexBuffer vb = (VertexBuffer)sender;
 
             //
             // rewrite vertex buffer
             //
             {
-                GraphicsStream gs = dm.LockVertexBuffer(LockFlags.None);
+                GraphicsStream gs = vb.Lock(0, 0, LockFlags.None);
                 {
                     for (int i = 0; i < vertices.Length; i++)
                     {
@@ -267,49 +262,18 @@ namespace TDCG
                         gs.Write(v.v);
                     }
                 }
-                dm.UnlockVertexBuffer();
+                vb.Unlock();
             }
 
-            //
-            // rewrite index buffer
-            //
-            {
-                GraphicsStream gs = dm.LockIndexBuffer(LockFlags.None);
-                {
-                    for (int i = 2; i < vertices.Length; i++)
-                    {
-                        if (i % 2 != 0)
-                        {
-                            gs.Write((short)(i-0));
-                            gs.Write((short)(i-1));
-                            gs.Write((short)(i-2));
-                        }
-                        else
-                        {
-                            gs.Write((short)(i-2));
-                            gs.Write((short)(i-1));
-                            gs.Write((short)(i-0));
-                        }
-                    }
-                }
-                dm.UnlockIndexBuffer();
-            }
-
-            //
-            // rewrite attribute buffer
-            //
-            {
-                dm.SetAttributeTable(new AttributeRange[] { ar }); 
-            }
         }
 
         /// <summary>
-        /// Direct3Dサブメッシュを破棄します。
+        /// Direct3Dバッファを破棄します。
         /// </summary>
         public void Dispose()
         {
-            if (dm != null)
-                dm.Dispose();
+            if (vb != null)
+                vb.Dispose();
         }
     }
 
@@ -399,6 +363,19 @@ namespace TDCG
         }
     }
 
+    public struct VertexFormat
+    {
+        public Vector3 position;
+        public float weight_0;
+        public float weight_1;
+        public float weight_2;
+        public float weight_3;
+        public uint bone_indices;
+        public Vector3 normal;
+        public float u;
+        public float v;
+    }
+
     /// <summary>
     /// 頂点
     /// </summary>
@@ -427,7 +404,7 @@ namespace TDCG
         /// <summary>
         /// ボーンインデックス
         /// </summary>
-        public UInt32 bone_indices;
+        public uint bone_indices;
 
         /// <summary>
         /// 頂点を読みとります。
