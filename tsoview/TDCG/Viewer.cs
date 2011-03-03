@@ -716,6 +716,8 @@ public class Viewer : IDisposable
         device.RenderState.ReferenceAlpha = 0x08;
         device.RenderState.AlphaFunction = Compare.GreaterEqual;
 
+        device.VertexDeclaration = new VertexDeclaration(device, TSOSubMesh.ve);
+
         //device.RenderState.IndexedVertexBlendEnable = true;
     }
 
@@ -1000,6 +1002,7 @@ public class Viewer : IDisposable
             foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
                 //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                device.SetStreamSource(0, sub_mesh.vb, 0);
 
                 //tso.SwitchShader(sub_mesh);
                 effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
@@ -1008,7 +1011,7 @@ public class Viewer : IDisposable
                 for (int ipass = 0; ipass < npass; ipass++)
                 {
                     effect.BeginPass(ipass);
-                    sub_mesh.dm.DrawSubset(0);
+                    device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, sub_mesh.vertices.Length - 2);
                     effect.EndPass();
                 }
                 effect.End();
@@ -1060,15 +1063,16 @@ public class Viewer : IDisposable
                     foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
                     {
                         //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                        tso.SwitchShader(sub_mesh);
+                        device.SetStreamSource(0, sub_mesh.vb, 0);
 
+                        tso.SwitchShader(sub_mesh);
                         effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
 
                         int npass = effect.Begin(0);
                         for (int ipass = 0; ipass < npass; ipass++)
                         {
                             effect.BeginPass(ipass);
-                            sub_mesh.dm.DrawSubset(0);
+                            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, sub_mesh.vertices.Length - 2);
                             effect.EndPass();
                         }
                         effect.End();

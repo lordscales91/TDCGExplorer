@@ -656,16 +656,17 @@ public class WeightViewer : Viewer
     private void DrawSubMeshForToonRendering(Figure fig, TSOFile tso, TSOSubMesh sub_mesh)
     {
         device.RenderState.FillMode = FillMode.Solid;
-        device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-        tso.SwitchShader(sub_mesh);
+        //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+        device.SetStreamSource(0, sub_mesh.vb, 0);
 
+        tso.SwitchShader(sub_mesh);
         effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
 
         int npass = effect.Begin(0);
         for (int ipass = 0; ipass < npass; ipass++)
         {
             effect.BeginPass(ipass);
-            sub_mesh.dm.DrawSubset(0);
+            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, sub_mesh.vertices.Length - 2);
             effect.EndPass();
         }
         effect.End();
@@ -674,10 +675,11 @@ public class WeightViewer : Viewer
     private void DrawSubMeshForWeightHeating(Figure fig, TSOSubMesh sub_mesh)
     {
         device.RenderState.FillMode = FillMode.Solid;
-        device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+        //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+        device.SetStreamSource(0, sub_mesh.vb, 0);
+
         effect.Technique = "BoneCol";
         effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
-
         effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
         effect.SetValue(handle_LocalBoneSels, ClipBoneSelections(sub_mesh, selected_node));
 
@@ -685,7 +687,7 @@ public class WeightViewer : Viewer
         for (int ipass = 0; ipass < npass; ipass++)
         {
             effect.BeginPass(ipass);
-            sub_mesh.dm.DrawSubset(0);
+            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, sub_mesh.vertices.Length - 2);
             effect.EndPass();
         }
         effect.End();
@@ -694,16 +696,17 @@ public class WeightViewer : Viewer
     private void DrawSubMeshForWireFrame(Figure fig, TSOFile tso, TSOSubMesh sub_mesh)
     {
         device.RenderState.FillMode = FillMode.WireFrame;
-        device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-        tso.SwitchShader(sub_mesh);
+        //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+        device.SetStreamSource(0, sub_mesh.vb, 0);
 
+        tso.SwitchShader(sub_mesh);
         effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
 
         int npass = effect.Begin(0);
         for (int ipass = 0; ipass < npass; ipass++)
         {
             effect.BeginPass(ipass);
-            sub_mesh.dm.DrawSubset(0);
+            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, sub_mesh.vertices.Length - 2);
             effect.EndPass();
         }
         effect.End();
