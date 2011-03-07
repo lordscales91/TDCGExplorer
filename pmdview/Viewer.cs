@@ -469,7 +469,7 @@ namespace pmdview
                 Matrix world_view_matrix = world_matrix * Transform_View;
                 Matrix world_view_projection_matrix = world_view_matrix * Transform_Projection;
                 effect.SetValue("WorldMatrix", world_matrix);
-                //effect.SetValue("WorldViewMatrix", world_view_matrix);
+                effect.SetValue("ViewMatrix", Transform_View);
                 effect.SetValue("WorldViewProjMatrix", world_view_projection_matrix);
             }
 
@@ -490,7 +490,10 @@ namespace pmdview
                     effect.SetValue("use_texture", material.use_texture);
                     if (material.use_texture)
                         effect.SetValue("ObjectTexture", pmd.texmap[material.texture_file]);
-                    effect.SetValue("use_toon", material.use_toon);
+                    effect.SetValue("use_toon", material.use_texture);
+                    if (material.use_sphere_map)
+                        effect.SetValue("ObjectSphereMap", pmd.texmap[material.sphere_map_file]);
+                    effect.SetValue("use_sphere_map", material.use_sphere_map);
 
                     int npass = effect.Begin(0);
                     for (int ipass = 0; ipass < npass; ipass++)
