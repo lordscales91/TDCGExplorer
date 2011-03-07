@@ -102,6 +102,7 @@ namespace pmdview
         public int face_vertex_start;
         public int face_vertex_count;
         public string texture_file;
+        public string sphere_map_file;
 
         public int FaceStart
         {
@@ -141,7 +142,11 @@ namespace pmdview
         {
             get { return ! string.IsNullOrEmpty(texture_file); }
         }
-        public bool use_toon = false;
+
+        public bool use_sphere_map
+        {
+            get { return ! string.IsNullOrEmpty(sphere_map_file); }
+        }
 
         public PmdMaterial(int id)
         {
@@ -158,7 +163,25 @@ namespace pmdview
             this.toon_id = reader.ReadByte();
             this.edge = reader.ReadByte();
             this.face_vertex_count = reader.ReadInt32();
-            this.texture_file = reader.ReadCString(20);
+            string[] files = reader.ReadCString(20).Split('*');
+            if (files.Length > 1)
+            {
+                this.texture_file = files[0];
+                this.sphere_map_file = files[1];
+            }
+            else
+            {
+                switch (Path.GetExtension(files[0]))
+                {
+                case ".sph":
+                case ".spa":
+                    this.sphere_map_file = files[0];
+                    break;
+                default:
+                    this.texture_file = files[0];
+                    break;
+                }
+            }
 
             //Console.WriteLine("diffuse:{0}", diffuse);
             //Console.WriteLine("specular:{0}", specular);
@@ -808,14 +831,20 @@ namespace pmdview
 
             foreach (PmdMaterial material in materials)
             {
-                if (string.IsNullOrEmpty(material.texture_file))
-                    continue;
-                if (texmap.ContainsKey(material.texture_file))
-                    continue;
-                string path = Path.Combine(source_dir, material.texture_file);
-                Console.WriteLine("loading {0}", path);
-                Texture tex = TextureLoader.FromFile(device, path);
-                texmap[material.texture_file] = tex;
+                if (!string.IsNullOrEmpty(material.texture_file) && !texmap.ContainsKey(material.texture_file))
+                {
+                    string path = Path.Combine(source_dir, material.texture_file);
+                    Console.WriteLine("loading {0}", path);
+                    Texture tex = TextureLoader.FromFile(device, path);
+                    texmap[material.texture_file] = tex;
+                }
+                if (!string.IsNullOrEmpty(material.sphere_map_file) && !texmap.ContainsKey(material.sphere_map_file))
+                {
+                    string path = Path.Combine(source_dir, material.sphere_map_file);
+                    Console.WriteLine("loading {0}", path);
+                    Texture tex = TextureLoader.FromFile(device, path);
+                    texmap[material.sphere_map_file] = tex;
+                }
             }
         }
 

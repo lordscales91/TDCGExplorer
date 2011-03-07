@@ -9,6 +9,7 @@
 // 座法変換行列
 float4x4 WorldViewProjMatrix      : WORLDVIEWPROJECTION;
 float4x4 WorldMatrix              : WORLD;
+float4x4 ViewMatrix               : VIEW;
 float4x4 LightWorldViewProjMatrix : WORLDVIEWPROJECTION < string Object = "Light"; >;
 
 float3   LightDirection    : DIRECTION < string Object = "Light"; >;
@@ -31,9 +32,11 @@ static float3 SpecularColor = MaterialSpecular * LightSpecular;
 
 bool use_texture;  //テクスチャの有無
 bool use_toon;     //トゥーンの有無
+bool use_sphere_map;     //スフィアマップの有無
 
 bool     parthf;   // パースペクティブフラグ
 bool     transp;   // 半透明フラグ
+bool	 spadd;    // スフィアマップ加算合成フラグ
 #define SKII1    1500
 #define SKII2    8000
 #define Toon     3
@@ -43,6 +46,14 @@ texture ObjectTexture: MATERIALTEXTURE;
 sampler ObjTexSampler = sampler_state
 {
     texture = <ObjectTexture>;
+    MINFILTER = LINEAR;
+    MAGFILTER = LINEAR;
+};
+
+// スフィアマップのテクスチャ
+texture ObjectSphereMap: MATERIALSPHEREMAP;
+sampler ObjSphareSampler = sampler_state {
+    texture = <ObjectSphereMap>;
     MINFILTER = LINEAR;
     MAGFILTER = LINEAR;
 };
@@ -61,6 +72,7 @@ struct VS_OUTPUT
     float2 Tex        : TEXCOORD1;   // テクスチャ
     float3 Normal     : TEXCOORD2;   // 法線
     float3 Eye        : TEXCOORD3;   // カメラとの相対位置
+    float2 SpTex      : TEXCOORD4;	 // スフィアマップテクスチャ座標
     float4 Color      : COLOR0;      // ディフューズ色
 };
 
@@ -83,6 +95,13 @@ VS_OUTPUT Basic_VS(float4 Pos : POSITION, float3 Normal : NORMAL, float2 Tex : T
     
     // テクスチャ座標
     Out.Tex = Tex;
+
+    if ( use_sphere_map ) {
+        // スフィアマップテクスチャ座標
+        float2 NormalWV = mul( Out.Normal, (float3x3)ViewMatrix );
+        Out.SpTex.x = NormalWV.x * 0.5f + 0.5f;
+        Out.SpTex.y = NormalWV.y * -0.5f + 0.5f;
+    }
     
     return Out;
 }
@@ -98,6 +117,11 @@ float4 Basic_PS( VS_OUTPUT IN ) : COLOR0
     if ( use_texture ) {  //※このif文は非効率的
         // テクスチャ適用
         Color *= tex2D( ObjTexSampler, IN.Tex );
+    }
+    if ( use_sphere_map ) {
+        // スフィアマップ適用
+        if(spadd) Color += tex2D(ObjSphareSampler,IN.SpTex);
+        else      Color *= tex2D(ObjSphareSampler,IN.SpTex);
     }
     if ( use_toon ) {  //同上
         // トゥーン適用
