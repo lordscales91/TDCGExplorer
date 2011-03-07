@@ -148,6 +148,11 @@ namespace pmdview
             get { return ! string.IsNullOrEmpty(sphere_map_file); }
         }
 
+        public bool use_toon
+        {
+            get { return true; }
+        }
+
         public PmdMaterial(int id)
         {
             this.id = id;

@@ -490,10 +490,11 @@ namespace pmdview
                     effect.SetValue("use_texture", material.use_texture);
                     if (material.use_texture)
                         effect.SetValue("ObjectTexture", pmd.texmap[material.texture_file]);
-                    effect.SetValue("use_toon", material.use_texture);
+                    effect.SetValue("use_texture", material.use_texture);
                     if (material.use_sphere_map)
                         effect.SetValue("ObjectSphereMap", pmd.texmap[material.sphere_map_file]);
                     effect.SetValue("use_sphere_map", material.use_sphere_map);
+                    effect.SetValue("use_toon", material.use_toon);
 
                     int npass = effect.Begin(0);
                     for (int ipass = 0; ipass < npass; ipass++)
