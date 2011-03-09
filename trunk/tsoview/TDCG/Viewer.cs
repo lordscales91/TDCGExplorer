@@ -710,6 +710,7 @@ public class Viewer : IDisposable
         device.TextureState[0].AlphaArgument1 = TextureArgument.TextureColor;
         device.TextureState[0].AlphaArgument2 = TextureArgument.Current;
 
+        device.RenderState.AlphaBlendEnable = true;
         device.RenderState.SourceBlend = Blend.SourceAlpha; 
         device.RenderState.DestinationBlend = Blend.InvSourceAlpha;
         device.RenderState.AlphaTestEnable = true;
