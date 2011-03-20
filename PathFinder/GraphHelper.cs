@@ -48,8 +48,13 @@ namespace PathFinder
                         newEdge = new GraphEdge(row * numCellsX + col, nodeY * numCellsX + nodeX, dist);
                         graph.AddEdge(newEdge);
 
-                        newEdge = new GraphEdge(nodeY * numCellsX + nodeX, row * numCellsX + col, dist);
-                        graph.AddEdge(newEdge);
+                        //if graph is not a diagraph then an edge needs to be added going
+                        //in the other direction
+                        if (!graph.IsDigraph())
+                        {
+                            newEdge = new GraphEdge(nodeY * numCellsX + nodeX, row * numCellsX + col, dist);
+                            graph.AddEdge(newEdge);
+                        }
                     }
                 }
             }

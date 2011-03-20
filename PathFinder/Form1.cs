@@ -17,7 +17,7 @@ namespace PathFinder
         const int numCellsX = 19;
         const int numCellsY = 19;
 
-        NavGraph graph = new NavGraph();
+        NavGraph graph = new NavGraph(false);//not a digraph
 
         //this vector will store any path returned from a graph search
         LinkedList<int> path = new LinkedList<int>();
@@ -45,7 +45,7 @@ namespace PathFinder
             sourceCell = 200;
             targetCell = 105;
             GraphHelper.CreateGrid(graph, ClientSize.Height, ClientSize.Width, cellsUp, cellsAcross);
-            CreatePathBFS();
+            CreatePathDijkstra();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -54,27 +54,39 @@ namespace PathFinder
 
             foreach (NavGraphNode node in graph.nodes)
             {
+                if (node.Index == -1)
+                    continue;
+
                 int left = (int)(node.Position.X - cellWidth / 2.0f);
                 int top = (int)(node.Position.Y - cellHeight / 2.0f);
+
                 e.Graphics.DrawRectangle(Pens.Black, left, top, cellWidth, cellHeight);
             }
 
             foreach (NavGraphNode node in graph.nodes)
             {
+                if (node.Index == -1)
+                    continue;
+
                 e.Graphics.FillEllipse(Brushes.LightGray, node.Position.X - 2, node.Position.Y - 2, 5, 5);
                 foreach (GraphEdge edge in graph.edges[node.Index])
                 {
                     Vector2 from = node.Position;
                     Vector2 to = graph.GetNode(edge.To).Position;
+
                     e.Graphics.DrawLine(Pens.LightGray, from.X, from.Y, to.X, to.Y);
                 }
             }
 
             foreach (GraphEdge edge in subTree)
             {
-                Vector2 from = graph.GetNode(edge.From).Position;
-                Vector2 to = graph.GetNode(edge.To).Position;
-                e.Graphics.DrawLine(Pens.Red, from.X, from.Y, to.X, to.Y);
+                if (edge != null)
+                {
+                    Vector2 from = graph.GetNode(edge.From).Position;
+                    Vector2 to = graph.GetNode(edge.To).Position;
+
+                    e.Graphics.DrawLine(Pens.Red, from.X, from.Y, to.X, to.Y);
+                }
             }
         }
 
@@ -110,6 +122,13 @@ namespace PathFinder
                 path = BFS.GetPathToTarget();
             }
             subTree = BFS.GetSearchTree();
+        }
+
+        void CreatePathDijkstra()
+        {
+            Graph_SearchDijkstra djk = new Graph_SearchDijkstra(graph, sourceCell, targetCell);
+            path = djk.GetPathToTarget();
+            subTree = djk.GetSPT();
         }
     }
 }
