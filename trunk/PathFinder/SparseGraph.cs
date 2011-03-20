@@ -101,23 +101,32 @@ namespace PathFinder
         //direction will be automatically added.
         public void AddEdge(EdgeType edge)
         {
-            //add the edge, first making sure it is unique
-            if (UniqueEdge(edge.From, edge.To))
-                edges[edge.From].AddLast(edge);
+            //first make sure the from and to nodes exist within the graph 
+            Debug.Assert(edge.From < nextNodeIndex && edge.To < nextNodeIndex,
+                    "<SparseGraph::AddEdge>: invalid node index");
 
-            //if the graph is undirected we must add another connection in the opposite
-            //direction
-            if (!digraph)
+            //make sure both nodes are active before adding the edge
+            if (nodes[edge.To].Index != -1 && nodes[edge.From].Index != -1)
             {
-                //check to make sure the edge is unique before adding
-                if (UniqueEdge(edge.To, edge.From))
+                //add the edge, first making sure it is unique
+                if (UniqueEdge(edge.From, edge.To))
+                    edges[edge.From].AddLast(edge);
+
+                //if the graph is undirected we must add another connection in the opposite
+                //direction
+                if (!digraph)
                 {
-                    EdgeType newEdge = new EdgeType();
+                    //check to make sure the edge is unique before adding
+                    if (UniqueEdge(edge.To, edge.From))
+                    {
+                        EdgeType newEdge = new EdgeType();
 
-                    newEdge.To = edge.From;
-                    newEdge.From = edge.To;
+                        newEdge.To = edge.From;
+                        newEdge.From = edge.To;
+                        newEdge.Cost = edge.Cost;
 
-                    edges[edge.To].AddLast(newEdge);
+                        edges[edge.To].AddLast(newEdge);
+                    }
                 }
             }
         }

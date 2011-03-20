@@ -42,8 +42,8 @@ namespace PathFinder
             int cellsY = cellsUp;
             cellWidth = (float)ClientSize.Width / (float)cellsX;
             cellHeight = (float)ClientSize.Height / (float)cellsY;
-            sourceCell = 200;
-            targetCell = 105;
+            sourceCell = 313;
+            targetCell = 28;
             GraphHelper.CreateGrid(graph, ClientSize.Height, ClientSize.Width, cellsUp, cellsAcross);
             CreatePathDijkstra();
         }
