@@ -70,6 +70,8 @@
     <Compile Include="GraphNode.cs" />
     <Compile Include="Graph_SearchBFS.cs" />
     <Compile Include="Graph_SearchDFS.cs" />
+    <Compile Include="Graph_SearchDijkstra.cs" />
+    <Compile Include="IndexedPriorityQueueLow.cs" />
     <Compile Include="SparseGraph.cs" />
     <Compile Include="NavGraphNode.cs" />
     <Compile Include="Program.cs" />

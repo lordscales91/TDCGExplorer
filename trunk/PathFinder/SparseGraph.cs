@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -12,23 +13,40 @@ namespace PathFinder
         public List<NodeType> nodes = new List<NodeType>();
         public List<LinkedList<EdgeType>> edges = new List<LinkedList<EdgeType>>();
 
-        //the index of the next node to be added
-        int next_node_index;
+        bool digraph;
 
-        public SparseGraph()
+        public bool IsDigraph()
         {
-            next_node_index = 0;
+            return digraph;
+        }
+
+        //the index of the next node to be added
+        int nextNodeIndex;
+
+        public SparseGraph(bool digraph)
+        {
+            this.nextNodeIndex = 0;
+            this.digraph = digraph;
         }
 
         //returns the node at the given index
         public NodeType GetNode(int index)
         {
+            Debug.Assert(index < nodes.Count && index >= 0, 
+                    "<SparseGraph::GetNode>: invalid index");
+
             return nodes[index];
         }
 
         //const method for obtaining a reference to an edge
         public EdgeType GetEdge(int from, int to)
         {
+            Debug.Assert(from < nodes.Count && from >= 0 && nodes[from].Index != -1,
+                    "<SparseGraph::GetEdge>: invalid 'from' index");
+
+            Debug.Assert(to < nodes.Count && to >= 0 && nodes[to].Index != -1,
+                    "<SparseGraph::GetEdge>: invalid 'to' index");
+
             foreach (EdgeType edge in edges[from])
             {
                 if (edge.To == to)
@@ -40,7 +58,7 @@ namespace PathFinder
         //retrieves the next free node index
         public int GetNextFreeNodeIndex()
         {
-            return next_node_index;
+            return nextNodeIndex;
         }
 
         //adds a node to the graph and returns its index
@@ -49,13 +67,13 @@ namespace PathFinder
             if (node.Index < nodes.Count)
             {
                 nodes[node.Index] = node;
-                return next_node_index;
+                return nextNodeIndex;
             }
             else
             {
                 nodes.Add(node);
                 edges.Add(new LinkedList<EdgeType>());
-                return next_node_index++;
+                return nextNodeIndex++;
             }
         }
 
@@ -87,15 +105,20 @@ namespace PathFinder
             if (UniqueEdge(edge.From, edge.To))
                 edges[edge.From].AddLast(edge);
 
-            //check to make sure the edge is unique before adding
-            if (UniqueEdge(edge.To, edge.From))
+            //if the graph is undirected we must add another connection in the opposite
+            //direction
+            if (!digraph)
             {
-                EdgeType newEdge = new EdgeType();
-                
-                newEdge.To = edge.From;
-                newEdge.From = edge.To;
+                //check to make sure the edge is unique before adding
+                if (UniqueEdge(edge.To, edge.From))
+                {
+                    EdgeType newEdge = new EdgeType();
 
-                edges[edge.To].AddLast(newEdge);
+                    newEdge.To = edge.From;
+                    newEdge.From = edge.To;
+
+                    edges[edge.To].AddLast(newEdge);
+                }
             }
         }
 
