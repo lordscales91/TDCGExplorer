@@ -35,6 +35,11 @@ public class StateMachine<entity_type>
             currentState.Execute(owner);
     }
 
+    public bool HandleMessage(Telegram telegram)
+    {
+        return false;
+    }
+
     //change to a new state
     public void ChangeState(State<entity_type> newState)
     {
