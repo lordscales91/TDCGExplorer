@@ -68,6 +68,7 @@
     <Compile Include="GraphEdge.cs" />
     <Compile Include="GraphHelper.cs" />
     <Compile Include="GraphNode.cs" />
+    <Compile Include="Graph_SearchAStar.cs" />
     <Compile Include="Graph_SearchBFS.cs" />
     <Compile Include="Graph_SearchDFS.cs" />
     <Compile Include="Graph_SearchDijkstra.cs" />

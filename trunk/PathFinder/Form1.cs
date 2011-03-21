@@ -45,7 +45,7 @@ namespace PathFinder
             sourceCell = 313;
             targetCell = 28;
             GraphHelper.CreateGrid(graph, ClientSize.Height, ClientSize.Width, cellsUp, cellsAcross);
-            CreatePathDijkstra();
+            CreatePathAStar();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -129,6 +129,13 @@ namespace PathFinder
             Graph_SearchDijkstra djk = new Graph_SearchDijkstra(graph, sourceCell, targetCell);
             path = djk.GetPathToTarget();
             subTree = djk.GetSPT();
+        }
+
+        void CreatePathAStar()
+        {
+            Graph_SearchAStar astar = new Graph_SearchAStar(graph, sourceCell, targetCell);
+            path = astar.GetPathToTarget();
+            subTree = astar.GetSPT();
         }
     }
 }
