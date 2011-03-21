@@ -8,6 +8,17 @@ using System;
 //  to QuenchThirst
 public class EnterMineAndDigForNugget : State
 {
+    static readonly EnterMineAndDigForNugget instance = new EnterMineAndDigForNugget();
+
+    // Explicit static constructor to tell C# compiler
+    // not to mark type as beforefieldinit
+    static EnterMineAndDigForNugget() { }
+
+    EnterMineAndDigForNugget() { }
+
+    //this is a singleton
+    public static EnterMineAndDigForNugget Instance { get { return instance; } }
+    
     public override void Enter(Miner miner)
     {
         if (miner.Location != location_type.goldmine)
@@ -31,12 +42,12 @@ public class EnterMineAndDigForNugget : State
         //if enough gold mined, go and put it in the bank
         if (miner.PocketsFull())
         {
-            miner.ChangeState(new VisitBankAndDepositGold());
+            miner.ChangeState(VisitBankAndDepositGold.Instance);
         }
 
         if (miner.Thirsty())
         {
-            miner.ChangeState(new QuenchThirst());
+            miner.ChangeState(QuenchThirst.Instance);
         }
     }
 
@@ -51,6 +62,17 @@ public class EnterMineAndDigForNugget : State
 //  keep going to get more gold
 public class VisitBankAndDepositGold : State
 {
+    static readonly VisitBankAndDepositGold instance = new VisitBankAndDepositGold();
+
+    // Explicit static constructor to tell C# compiler
+    // not to mark type as beforefieldinit
+    static VisitBankAndDepositGold() { }
+
+    VisitBankAndDepositGold() { }
+
+    //this is a singleton
+    public static VisitBankAndDepositGold Instance { get { return instance; } }
+    
     public override void Enter(Miner miner)
     {
         Console.WriteLine("Goin' to the bank. Yes siree");
@@ -69,11 +91,11 @@ public class VisitBankAndDepositGold : State
         if (miner.Wealth >= Miner.ComfortLevel)
         {
             Console.WriteLine("WooHoo! Rich enough for now. Back home to mah li'lle lady");
-            miner.ChangeState(new GoHomeAndSleepTilRested());
+            miner.ChangeState(GoHomeAndSleepTilRested.Instance);
         }
         else
         {
-            miner.ChangeState(new EnterMineAndDigForNugget());
+            miner.ChangeState(EnterMineAndDigForNugget.Instance);
         }
     }
 
@@ -87,6 +109,17 @@ public class VisitBankAndDepositGold : State
 //  sufficiently
 public class GoHomeAndSleepTilRested : State
 {
+    static readonly GoHomeAndSleepTilRested instance = new GoHomeAndSleepTilRested();
+
+    // Explicit static constructor to tell C# compiler
+    // not to mark type as beforefieldinit
+    static GoHomeAndSleepTilRested() { }
+
+    GoHomeAndSleepTilRested() { }
+
+    //this is a singleton
+    public static GoHomeAndSleepTilRested Instance { get { return instance; } }
+    
     public override void Enter(Miner miner)
     {
         if (miner.Location != location_type.shack)
@@ -101,7 +134,7 @@ public class GoHomeAndSleepTilRested : State
         if (!miner.Fatigued())
         {
             Console.WriteLine("What a God darn fantastic nap! Time to find more gold");
-            miner.ChangeState(new EnterMineAndDigForNugget());
+            miner.ChangeState(EnterMineAndDigForNugget.Instance);
         }
         else
         {
@@ -119,6 +152,17 @@ public class GoHomeAndSleepTilRested : State
 
 public class QuenchThirst : State
 {
+    static readonly QuenchThirst instance = new QuenchThirst();
+
+    // Explicit static constructor to tell C# compiler
+    // not to mark type as beforefieldinit
+    static QuenchThirst() { }
+
+    QuenchThirst() { }
+
+    //this is a singleton
+    public static QuenchThirst Instance { get { return instance; } }
+    
     public override void Enter(Miner miner)
     {
         Console.WriteLine("Boy, ah sure is thusty! Walking to the saloon");
@@ -130,7 +174,7 @@ public class QuenchThirst : State
         {
             miner.BuyAndDrinkAWhiskey();
             Console.WriteLine("That's mighty fine sippin liquer");
-            miner.ChangeState(new EnterMineAndDigForNugget());
+            miner.ChangeState(EnterMineAndDigForNugget.Instance);
         }
     }
 
