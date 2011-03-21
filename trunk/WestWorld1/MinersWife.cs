@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-class MinersWife : BaseGameEntity
+public class MinersWife : BaseGameEntity
 {
     //an instance of the state machine class
     StateMachine<MinersWife> stateMachine;
@@ -24,6 +24,11 @@ class MinersWife : BaseGameEntity
     public void ChangeLocation(location_type loc)
     {
         location = loc;
+    }
+
+    public override bool HandleMessage(Telegram telegram)
+    {
+        return false;
     }
 
     public override void Update()

@@ -89,6 +89,11 @@ public class Miner : BaseGameEntity
         thirst = 0; moneyInBank -= 2;
     }
 
+    public override bool HandleMessage(Telegram telegram)
+    {
+        return false;
+    }
+
     //this must be implemented
     public override void Update()
     {

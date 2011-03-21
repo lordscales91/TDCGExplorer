@@ -33,4 +33,6 @@ abstract public class BaseGameEntity
             nextValidID = id + 1;
         }
     }
+
+    abstract public bool HandleMessage(Telegram telegram);
 }

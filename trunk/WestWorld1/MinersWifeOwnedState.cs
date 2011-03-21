@@ -30,6 +30,11 @@ class WifesGlobalState : State<MinersWife>
     public override void Exit(MinersWife wife)
     {
     }
+
+    public override bool OnMessage(MinersWife entity, Telegram telegram)
+    {
+        return false;
+    }
 }
 
 class DoHouseWork : State<MinersWife>
@@ -70,6 +75,11 @@ class DoHouseWork : State<MinersWife>
     public override void Exit(MinersWife wife)
     {
     }
+
+    public override bool OnMessage(MinersWife wife, Telegram telegram)
+    {
+        return false;
+    }
 }   
 
 class VisitBathroom : State<MinersWife>
@@ -99,5 +109,10 @@ class VisitBathroom : State<MinersWife>
     public override void Exit(MinersWife wife)
     {
         Console.WriteLine("Elsa: Leavin' the Jon");
+    }
+
+    public override bool OnMessage(MinersWife wife, Telegram telegram)
+    {
+        return false;
     }
 }

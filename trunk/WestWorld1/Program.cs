@@ -19,6 +19,10 @@ namespace WestWorld1
             //create his wife
             MinersWife elsa = new MinersWife(1);
 
+            //register them with the entity manager
+            EntityManager.Instance.RegisterEntity(bob);
+            EntityManager.Instance.RegisterEntity(elsa);
+
             //run Bob and Elsa through a few Update calls
             for (int i = 0; i < 20; i++)
             {

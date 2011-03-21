@@ -55,6 +55,11 @@ public class EnterMineAndDigForNugget : State<Miner>
     {
         Console.WriteLine("Miner Bob: Ah'm leavin' the goldmine with mah pockets full o' sweet gold");
     }
+
+    public override bool OnMessage(Miner miner, Telegram telegram)
+    {
+        return false;
+    }
 }
 
 //  Entity will go to a bank and deposit any nuggets he is carrying. If the 
@@ -104,6 +109,11 @@ public class VisitBankAndDepositGold : State<Miner>
     {
         Console.WriteLine("Miner Bob: Leavin' the bank");
     }
+
+    public override bool OnMessage(Miner miner, Telegram telegram)
+    {
+        return false;
+    }
 }
 
 //  miner will go home and sleep until his fatigue is decreased
@@ -149,6 +159,11 @@ public class GoHomeAndSleepTilRested : State<Miner>
     {
         Console.WriteLine("Miner Bob: Leaving the house");
     }
+
+    public override bool OnMessage(Miner miner, Telegram telegram)
+    {
+        return false;
+    }
 }
 
 public class QuenchThirst : State<Miner>
@@ -186,5 +201,10 @@ public class QuenchThirst : State<Miner>
     public override void Exit(Miner miner)
     {
         Console.WriteLine("Miner Bob: Leaving the saloon, feelin' good");
+    }
+
+    public override bool OnMessage(Miner miner, Telegram telegram)
+    {
+        return false;
     }
 }
