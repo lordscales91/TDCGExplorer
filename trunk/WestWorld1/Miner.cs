@@ -14,7 +14,7 @@ public class Miner : BaseGameEntity
     //above this value a miner is sleepy
     public const int TirednessThreshold = 5;
 
-    State<Miner> currentState;
+    StateMachine<Miner> stateMachine;
 
     location_type location;
 
@@ -41,23 +41,8 @@ public class Miner : BaseGameEntity
 
     public Miner(int id) : base(id)
     {
-        currentState = GoHomeAndSleepTilRested.Instance;
-    }
-
-    public void ChangeState(State<Miner> newState)
-    {
-        //make sure both states are both valid before attempting to 
-        //call their methods
-        Debug.Assert(currentState != null && newState != null);
-
-        //call the exit method of the existing state
-        currentState.Exit(this);
-
-        //change state to the new state
-        currentState = newState;
-
-        //call the entry method of the new state
-        currentState.Enter(this);
+        stateMachine = new StateMachine<Miner>(this);
+        stateMachine.CurrentState = GoHomeAndSleepTilRested.Instance;
     }
 
     public int GoldCarried
@@ -108,10 +93,12 @@ public class Miner : BaseGameEntity
     {
         thirst += 1;
 
-        if (currentState != null)
-        {
-            currentState.Execute(this);
-        }
+        stateMachine.Update();
+    }
+
+    public StateMachine<Miner> GetFSM()
+    {
+        return stateMachine;
     }
 
     public bool Fatigued()

@@ -42,12 +42,12 @@ public class EnterMineAndDigForNugget : State<Miner>
         //if enough gold mined, go and put it in the bank
         if (miner.PocketsFull())
         {
-            miner.ChangeState(VisitBankAndDepositGold.Instance);
+            miner.GetFSM().ChangeState(VisitBankAndDepositGold.Instance);
         }
 
         if (miner.Thirsty())
         {
-            miner.ChangeState(QuenchThirst.Instance);
+            miner.GetFSM().ChangeState(QuenchThirst.Instance);
         }
     }
 
@@ -91,11 +91,11 @@ public class VisitBankAndDepositGold : State<Miner>
         if (miner.Wealth >= Miner.ComfortLevel)
         {
             Console.WriteLine("WooHoo! Rich enough for now. Back home to mah li'lle lady");
-            miner.ChangeState(GoHomeAndSleepTilRested.Instance);
+            miner.GetFSM().ChangeState(GoHomeAndSleepTilRested.Instance);
         }
         else
         {
-            miner.ChangeState(EnterMineAndDigForNugget.Instance);
+            miner.GetFSM().ChangeState(EnterMineAndDigForNugget.Instance);
         }
     }
 
@@ -134,7 +134,7 @@ public class GoHomeAndSleepTilRested : State<Miner>
         if (!miner.Fatigued())
         {
             Console.WriteLine("What a God darn fantastic nap! Time to find more gold");
-            miner.ChangeState(EnterMineAndDigForNugget.Instance);
+            miner.GetFSM().ChangeState(EnterMineAndDigForNugget.Instance);
         }
         else
         {
@@ -174,7 +174,7 @@ public class QuenchThirst : State<Miner>
         {
             miner.BuyAndDrinkAWhiskey();
             Console.WriteLine("That's mighty fine sippin liquer");
-            miner.ChangeState(EnterMineAndDigForNugget.Instance);
+            miner.GetFSM().ChangeState(EnterMineAndDigForNugget.Instance);
         }
     }
 
