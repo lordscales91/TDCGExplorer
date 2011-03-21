@@ -23,7 +23,7 @@ public class EnterMineAndDigForNugget : State<Miner>
     {
         if (miner.Location != location_type.goldmine)
         {
-            Console.WriteLine("Walkin' to the goldmine");
+            Console.WriteLine("Miner Bob: Walkin' to the goldmine");
             miner.ChangeLocation(location_type.goldmine);
         }
     }
@@ -37,7 +37,7 @@ public class EnterMineAndDigForNugget : State<Miner>
 
         miner.IncreaseFatigue();
 
-        Console.WriteLine("Pickin' up a nugget");
+        Console.WriteLine("Miner Bob: Pickin' up a nugget");
 
         //if enough gold mined, go and put it in the bank
         if (miner.PocketsFull())
@@ -53,7 +53,7 @@ public class EnterMineAndDigForNugget : State<Miner>
 
     public override void Exit(Miner miner)
     {
-        Console.WriteLine("Ah'm leavin' the goldmine with mah pockets full o' sweet gold");
+        Console.WriteLine("Miner Bob: Ah'm leavin' the goldmine with mah pockets full o' sweet gold");
     }
 }
 
@@ -75,7 +75,8 @@ public class VisitBankAndDepositGold : State<Miner>
     
     public override void Enter(Miner miner)
     {
-        Console.WriteLine("Goin' to the bank. Yes siree");
+        Console.WriteLine("Miner Bob: Goin' to the bank. Yes siree");
+        miner.ChangeLocation(location_type.bank);
     }
 
     public override void Execute(Miner miner)
@@ -85,12 +86,12 @@ public class VisitBankAndDepositGold : State<Miner>
         
         miner.GoldCarried = 0;
 
-        Console.WriteLine("Depositing gold. Total savings now: {0}", miner.Wealth);
+        Console.WriteLine("Miner Bob: Depositing gold. Total savings now: {0}", miner.Wealth);
 
         //wealthy enough to have a well earned rest?
         if (miner.Wealth >= Miner.ComfortLevel)
         {
-            Console.WriteLine("WooHoo! Rich enough for now. Back home to mah li'lle lady");
+            Console.WriteLine("Miner Bob: WooHoo! Rich enough for now. Back home to mah li'lle lady");
             miner.GetFSM().ChangeState(GoHomeAndSleepTilRested.Instance);
         }
         else
@@ -101,7 +102,7 @@ public class VisitBankAndDepositGold : State<Miner>
 
     public override void Exit(Miner miner)
     {
-        Console.WriteLine("Leavin' the bank");
+        Console.WriteLine("Miner Bob: Leavin' the bank");
     }
 }
 
@@ -124,7 +125,7 @@ public class GoHomeAndSleepTilRested : State<Miner>
     {
         if (miner.Location != location_type.shack)
         {
-            Console.WriteLine("Walkin' home");
+            Console.WriteLine("Miner Bob: Walkin' home");
             miner.ChangeLocation(location_type.shack);
         }
     }
@@ -133,20 +134,20 @@ public class GoHomeAndSleepTilRested : State<Miner>
     {
         if (!miner.Fatigued())
         {
-            Console.WriteLine("What a God darn fantastic nap! Time to find more gold");
+            Console.WriteLine("Miner Bob: What a God darn fantastic nap! Time to find more gold");
             miner.GetFSM().ChangeState(EnterMineAndDigForNugget.Instance);
         }
         else
         {
             //sleep
             miner.DecreaseFatigue();
-            Console.WriteLine("ZZZZ... ");
+            Console.WriteLine("Miner Bob: ZZZZ... ");
         }
     }
 
     public override void Exit(Miner miner)
     {
-        Console.WriteLine("Leaving the house");
+        Console.WriteLine("Miner Bob: Leaving the house");
     }
 }
 
@@ -165,7 +166,11 @@ public class QuenchThirst : State<Miner>
     
     public override void Enter(Miner miner)
     {
-        Console.WriteLine("Boy, ah sure is thusty! Walking to the saloon");
+        if (miner.Location != location_type.saloon)
+        {
+            miner.ChangeLocation(location_type.saloon);
+            Console.WriteLine("Miner Bob: Boy, ah sure is thusty! Walking to the saloon");
+        }
     }
 
     public override void Execute(Miner miner)
@@ -173,13 +178,13 @@ public class QuenchThirst : State<Miner>
         if (miner.Thirsty())
         {
             miner.BuyAndDrinkAWhiskey();
-            Console.WriteLine("That's mighty fine sippin liquer");
+            Console.WriteLine("Miner Bob: That's mighty fine sippin liquer");
             miner.GetFSM().ChangeState(EnterMineAndDigForNugget.Instance);
         }
     }
 
     public override void Exit(Miner miner)
     {
-        Console.WriteLine("Leaving the saloon, feelin' good");
+        Console.WriteLine("Miner Bob: Leaving the saloon, feelin' good");
     }
 }
