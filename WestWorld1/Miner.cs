@@ -14,6 +14,7 @@ public class Miner : BaseGameEntity
     //above this value a miner is sleepy
     public const int TirednessThreshold = 5;
 
+    //an instance of the state machine class
     StateMachine<Miner> stateMachine;
 
     location_type location;

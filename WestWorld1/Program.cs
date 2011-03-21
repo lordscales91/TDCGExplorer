@@ -13,11 +13,17 @@ namespace WestWorld1
             TextWriterTraceListener tr1 = new TextWriterTraceListener(System.Console.Out);
             Debug.Listeners.Add(tr1);
 
-            Miner miner = new Miner(0);
-            System.Console.WriteLine("ID:{0}", miner.ID);
+            //create a miner
+            Miner bob = new Miner(0);
+
+            //create his wife
+            MinersWife elsa = new MinersWife(1);
+
+            //run Bob and Elsa through a few Update calls
             for (int i = 0; i < 20; i++)
             {
-                miner.Update();
+                bob.Update();
+                elsa.Update();
             }
         }
     }
