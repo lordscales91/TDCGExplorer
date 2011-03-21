@@ -6,7 +6,7 @@ using System;
 //  of gold. If the miner already has a nugget of gold he'll change state
 //  to VisitBankAndDepositGold. If he gets thirsty he'll change state
 //  to QuenchThirst
-public class EnterMineAndDigForNugget : State
+public class EnterMineAndDigForNugget : State<Miner>
 {
     static readonly EnterMineAndDigForNugget instance = new EnterMineAndDigForNugget();
 
@@ -60,7 +60,7 @@ public class EnterMineAndDigForNugget : State
 //  Entity will go to a bank and deposit any nuggets he is carrying. If the 
 //  miner is subsequently wealthy enough he'll walk home, otherwise he'll
 //  keep going to get more gold
-public class VisitBankAndDepositGold : State
+public class VisitBankAndDepositGold : State<Miner>
 {
     static readonly VisitBankAndDepositGold instance = new VisitBankAndDepositGold();
 
@@ -107,7 +107,7 @@ public class VisitBankAndDepositGold : State
 
 //  miner will go home and sleep until his fatigue is decreased
 //  sufficiently
-public class GoHomeAndSleepTilRested : State
+public class GoHomeAndSleepTilRested : State<Miner>
 {
     static readonly GoHomeAndSleepTilRested instance = new GoHomeAndSleepTilRested();
 
@@ -150,7 +150,7 @@ public class GoHomeAndSleepTilRested : State
     }
 }
 
-public class QuenchThirst : State
+public class QuenchThirst : State<Miner>
 {
     static readonly QuenchThirst instance = new QuenchThirst();
 
