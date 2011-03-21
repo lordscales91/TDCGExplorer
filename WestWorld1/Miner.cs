@@ -14,7 +14,7 @@ public class Miner : BaseGameEntity
     //above this value a miner is sleepy
     public const int TirednessThreshold = 5;
 
-    State currentState;
+    State<Miner> currentState;
 
     location_type location;
 
@@ -44,7 +44,7 @@ public class Miner : BaseGameEntity
         currentState = GoHomeAndSleepTilRested.Instance;
     }
 
-    public void ChangeState(State newState)
+    public void ChangeState(State<Miner> newState)
     {
         //make sure both states are both valid before attempting to 
         //call their methods
