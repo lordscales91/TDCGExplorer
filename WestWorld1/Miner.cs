@@ -41,7 +41,7 @@ public class Miner : BaseGameEntity
 
     public Miner(int id) : base(id)
     {
-        currentState = new GoHomeAndSleepTilRested();
+        currentState = GoHomeAndSleepTilRested.Instance;
     }
 
     public void ChangeState(State newState)
