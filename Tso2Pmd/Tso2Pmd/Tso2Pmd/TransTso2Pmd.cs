@@ -27,11 +27,7 @@ namespace Tso2Pmd
     {
         PmdFileData pmd = new PmdFileData();
 
-        int kami_flag, chichi_flag, skirt_flag;
-
         int bone_flag;
-        bool twist_flag;
-        bool armIK_flag;
 
         bool spheremap_flag;
         bool edge_flag_flag;
@@ -45,28 +41,20 @@ namespace Tso2Pmd
         List<TSOSubMesh> mesh_list;
         T2PMaterialList material_list;
         T2PPhysObjectList physOb_list;
+        TemplateList template_list;
+        CorrespondTableList corTable_list;
 
         public Figure Figure { get { return fig; } set { fig = value; } }
         public PmdFileData Pmd { get { return pmd; } }
-        public int Kami_flag { set { kami_flag = value; } }
-        public int Chichi_flag { set { chichi_flag = value; } }
-        public int Skirt_flag { set { skirt_flag = value; } }
         public int Bone_flag { set { bone_flag = value; } }
-        public bool Twist_flag { set { twist_flag = value; } }
-        public bool ArmIK_flag { set { armIK_flag = value; } }
         public bool Spheremap_flag { set { spheremap_flag = value; } }
         public bool Edge_flag_flag { set { edge_flag_flag = value; } }
         public bool Merge_flag { set { merge_flag = value; } }
         public List<string> Category { set { category = value; } }
         public List<bool> Meshes_flag { set { meshes_flag = value; } }
-
-        // -----------------------------------------------------
-        // 変換表
-        // -----------------------------------------------------
-        CorrespondTable girl2miku = new CorrespondTable("girl2miku");
-        CorrespondTable man2miku = new CorrespondTable("man2miku");
-        CorrespondTable girl2mikuTwist = new CorrespondTable("girl2mikuTwist");
-               
+        public TemplateList TemplateList { set { template_list = value; } }
+        public CorrespondTableList CorTableList { set { corTable_list = value; } }
+          
         // -----------------------------------------------------
         // 表情設定リスト
         // -----------------------------------------------------
@@ -142,7 +130,7 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // 頂点＆マテリアル
             // -----------------------------------------------------
-            MakePMDVertices(2);
+            MakePMDVertices(null, 2);
 
             // 頂点数が上限を超えてないかチェックし、超えていたらエラーを出して終了
             if (pmd.number_of_vertex > 65535)
@@ -229,14 +217,14 @@ namespace Tso2Pmd
 
             if (fig.Tmo.nodes.Length == 227)
             {
-                if (twist_flag == true) cor_table = girl2mikuTwist;
-                else cor_table = girl2miku;
-
+                corTable_list.SetManFlag = false;
+                cor_table = corTable_list.GetCorrespondTable();
                 mod_type = 0;
             }
             else if (fig.Tmo.nodes.Length == 75)
             {
-                cor_table = man2miku;
+                corTable_list.SetManFlag = true;
+                cor_table = corTable_list.GetCorrespondTable();
                 mod_type = 1;
             }
             else
@@ -252,7 +240,7 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // 頂点
             // -----------------------------------------------------
-            MakePMDVertices(mod_type);
+            MakePMDVertices(cor_table, mod_type);
 
             // 頂点数が上限を超えてないかチェックし、超えていたらエラーを出して終了
             if (pmd.number_of_vertex > 65535)
@@ -294,9 +282,10 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             List<PMD_Bone> bone_list = new List<PMD_Bone>();
 
-            foreach (PMD_Bone bone in cor_table.boneStructure)
+            foreach (KeyValuePair<string, PMD_Bone> bone_kvp in cor_table.boneStructure)
             {
                 PMD_Bone pmd_b = new PMD_Bone();
+                PMD_Bone bone = bone_kvp.Value;
 
                 pmd_b.szName = bone.szName;
                 pmd_b.cbKind = bone.cbKind; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
@@ -316,80 +305,16 @@ namespace Tso2Pmd
             }
 
             // -----------------------------------------------------
-            // 腕IKのためのボーンを追加
-            if (armIK_flag == true)
+            // 親と子の前後関係を並び替える
+            for (int i = 0; i < bone_list.Count; i++)
+            for (int j = 0; j < bone_list.Count; j++)
             {
-                PMD_Bone pmd_b = new PMD_Bone();
-                pmd_b.szName = "右腕ＩＫ";
-                pmd_b.cbKind = 2; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd_b.ParentName = null;
-                pmd_b.ChildName = "右腕ＩＫ先";
-                pmd_b.IKTargetName = null;
-                //pmd_b.vec3Position= pmd.getBoneByName("右手首").vec3Position; // モデル原点からの位置
-                bone_list.Add(pmd_b);
-
-                pmd_b = new PMD_Bone();
-                pmd_b.szName = "右腕ＩＫ先";
-                pmd_b.cbKind = 7; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd_b.ParentName = "右腕ＩＫ";
-                pmd_b.ChildName = null;
-                pmd_b.IKTargetName = null;
-                //pmd_b.vec3Position= pmd.getBoneByName("右手首").vec3Position; // モデル原点からの位置
-                bone_list.Add(pmd_b);
-
-                pmd_b = new PMD_Bone();
-                pmd_b.szName = "左腕ＩＫ";
-                pmd_b.cbKind = 2; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd_b.ParentName = null;
-                pmd_b.ChildName = "左腕ＩＫ先";
-                pmd_b.IKTargetName = null;
-                //pmd_b.vec3Position= pmd.getBoneByName("左手首").vec3Position; // モデル原点からの位置
-                bone_list.Add(pmd_b);
-
-                pmd_b = new PMD_Bone();
-                pmd_b.szName = "左腕ＩＫ先";
-                pmd_b.cbKind = 7; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd_b.ParentName = "左腕ＩＫ";
-                pmd_b.ChildName = null;
-                pmd_b.IKTargetName = null;
-                //pmd_b.vec3Position= pmd.getBoneByName("左手首").vec3Position; // モデル原点からの位置
-                bone_list.Add(pmd_b);
- 
-                pmd_b = new PMD_Bone();
-                pmd_b.szName = "右中指ＩＫ";
-                pmd_b.cbKind = 2; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd_b.ParentName = null;
-                pmd_b.ChildName = "右中指ＩＫ先";
-                pmd_b.IKTargetName = null;
-                //pmd_b.vec3Position= pmd.getBoneByName("右手首").vec3Position; // モデル原点からの位置
-                bone_list.Add(pmd_b);
-
-                pmd_b = new PMD_Bone();
-                pmd_b.szName = "右中指ＩＫ先";
-                pmd_b.cbKind = 7; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd_b.ParentName = "右中指ＩＫ";
-                pmd_b.ChildName = null;
-                pmd_b.IKTargetName = null;
-                //pmd_b.vec3Position= pmd.getBoneByName("右手首").vec3Position; // モデル原点からの位置
-                bone_list.Add(pmd_b);
-
-                pmd_b = new PMD_Bone();
-                pmd_b.szName = "左中指ＩＫ";
-                pmd_b.cbKind = 2; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd_b.ParentName = null;
-                pmd_b.ChildName = "左中指ＩＫ先";
-                pmd_b.IKTargetName = null;
-                //pmd_b.vec3Position= pmd.getBoneByName("左手首").vec3Position; // モデル原点からの位置
-                bone_list.Add(pmd_b);
-
-                pmd_b = new PMD_Bone();
-                pmd_b.szName = "左中指ＩＫ先";
-                pmd_b.cbKind = 7; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd_b.ParentName = "左中指ＩＫ";
-                pmd_b.ChildName = null;
-                pmd_b.IKTargetName = null;
-                //pmd_b.vec3Position= pmd.getBoneByName("左手首").vec3Position; // モデル原点からの位置
-                bone_list.Add(pmd_b);
+                if (bone_list[i].szName == bone_list[j].ParentName)
+                if (i > j)
+                {
+                    bone_list.Insert(j, bone_list[i]);
+                    bone_list.RemoveAt(i+1);
+                }
             }
 
             // -----------------------------------------------------
@@ -427,102 +352,6 @@ namespace Tso2Pmd
             }
 
             // -----------------------------------------------------
-            // 腕IKボーンの位置調整及び、ターゲットの調整
-            if (armIK_flag == true)
-            {
-                pmd.getBoneByName("右腕ＩＫ").vec3Position
-                    = pmd.getBoneByName("右手首").vec3Position; // モデル原点からの位置
-                pmd.getBoneByName("左腕ＩＫ").vec3Position
-                    = pmd.getBoneByName("左手首").vec3Position; // モデル原点からの位置
-                pmd.getBoneByName("右腕ＩＫ先").vec3Position
-                    = new MmdVector3(
-                        pmd.getBoneByName("右腕ＩＫ").vec3Position.x,
-                        pmd.getBoneByName("右腕ＩＫ").vec3Position.y,
-                        pmd.getBoneByName("右腕ＩＫ").vec3Position.z /*+ 2.0f*/);
-                pmd.getBoneByName("左腕ＩＫ先").vec3Position
-                    = new MmdVector3(
-                        pmd.getBoneByName("左腕ＩＫ").vec3Position.x,
-                        pmd.getBoneByName("左腕ＩＫ").vec3Position.y,
-                        pmd.getBoneByName("左腕ＩＫ").vec3Position.z /*+ 2.0f*/);
-
-                pmd.getBoneByName("右中指ＩＫ").vec3Position
-                    = new MmdVector3(
-                        pmd.getBoneByName("右中指先").vec3Position.x + 0.2f,
-                        pmd.getBoneByName("右中指先").vec3Position.y + 0.2f,
-                        pmd.getBoneByName("右中指先").vec3Position.z);
-                pmd.getBoneByName("左中指ＩＫ").vec3Position
-                    = new MmdVector3(
-                        pmd.getBoneByName("左中指先").vec3Position.x + 0.2f,
-                        pmd.getBoneByName("左中指先").vec3Position.y + 0.2f,
-                        pmd.getBoneByName("左中指先").vec3Position.z);
-                pmd.getBoneByName("右中指ＩＫ先").vec3Position
-                    = new MmdVector3(
-                        pmd.getBoneByName("右中指ＩＫ").vec3Position.x,
-                        pmd.getBoneByName("右中指ＩＫ").vec3Position.y,
-                        pmd.getBoneByName("右中指ＩＫ").vec3Position.z);
-                pmd.getBoneByName("左中指ＩＫ先").vec3Position
-                    = new MmdVector3(
-                        pmd.getBoneByName("左中指ＩＫ").vec3Position.x,
-                        pmd.getBoneByName("左中指ＩＫ").vec3Position.y,
-                        pmd.getBoneByName("左中指ＩＫ").vec3Position.z);
-
-                pmd.getBoneByName("右手首").IKTargetName = "右腕ＩＫ";
-                pmd.getBoneByName("左手首").IKTargetName = "左腕ＩＫ";
-                pmd.getBoneByName("右中指先").IKTargetName = "右中指ＩＫ";
-                pmd.getBoneByName("左中指先").IKTargetName = "左中指ＩＫ";
-
-                pmd.getBoneByName("右肩").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右腕").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右ひじ").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右手首").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右手先").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右小指１").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右小指２").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右小指３").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右薬指１").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右薬指２").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右薬指３").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右中指１").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右中指２").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右中指３").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右人指１").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右人指２").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右人指３").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右親指１").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右親指２").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右親指先").cbKind = 6; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右人差指先").cbKind = 6; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右中指先").cbKind = 6; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右薬指先").cbKind = 6; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("右小指先").cbKind = 6; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-
-                pmd.getBoneByName("左肩").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左腕").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左ひじ").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左手首").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左手先").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左小指１").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左小指２").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左小指３").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左薬指１").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左薬指２").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左薬指３").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左中指１").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左中指２").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左中指３").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左人指１").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左人指２").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左人指３").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左親指１").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左親指２").cbKind = 4; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左親指先").cbKind = 6; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左人差指先").cbKind = 6; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左中指先").cbKind = 6; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左薬指先").cbKind = 6; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                pmd.getBoneByName("左小指先").cbKind = 6; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-            }
-
-            // -----------------------------------------------------
             // IK先ボーンの位置調整
             pmd.getBoneByName("左足ＩＫ先").vec3Position
                 = new MmdVector3(
@@ -554,97 +383,8 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // IK配列
             // -----------------------------------------------------
-            pmd.number_of_ik = 4;
-            if (armIK_flag == true) pmd.number_of_ik += 4;
-
-            pmd.pmd_ik = new PMD_IK[pmd.number_of_ik];
-
-            int n_ik = 0; // 通し番号
-
-            if (armIK_flag == true) 
-            {
-                pmd.pmd_ik[n_ik] = new PMD_IK();
-                pmd.pmd_ik[n_ik].nTargetName = "右腕ＩＫ";	// IKボーン番号
-                pmd.pmd_ik[n_ik].nEffName = "右手首";		// IKターゲットボーン番号 // IKボーンが最初に接続するボーン
-                pmd.pmd_ik[n_ik].cbNumLink = 3;	// IKチェーンの長さ(子の数)
-                pmd.pmd_ik[n_ik].unCount = 40;      // 再帰演算回数 // IK値1
-                pmd.pmd_ik[n_ik].fFact = 0.5f;       // IKの影響度 // IK値2
-                string[] tem_array_armR = { "右ひじ", "右腕", "右肩" }; // IK影響下のボーン番号
-                pmd.pmd_ik[n_ik++].punLinkName = tem_array_armR;
-
-                pmd.pmd_ik[n_ik] = new PMD_IK();
-                pmd.pmd_ik[n_ik].nTargetName = "左腕ＩＫ";	// IKボーン番号
-                pmd.pmd_ik[n_ik].nEffName = "左手首";		// IKターゲットボーン番号 // IKボーンが最初に接続するボーン
-                pmd.pmd_ik[n_ik].cbNumLink = 3;	// IKチェーンの長さ(子の数)
-                pmd.pmd_ik[n_ik].unCount = 40;      // 再帰演算回数 // IK値1
-                pmd.pmd_ik[n_ik].fFact = 0.5f;       // IKの影響度 // IK値2
-                string[] tem_array_armL = { "左ひじ", "左腕", "左肩" }; // IK影響下のボーン番号
-                pmd.pmd_ik[n_ik++].punLinkName = tem_array_armL;
-
-                pmd.pmd_ik[n_ik] = new PMD_IK();
-                pmd.pmd_ik[n_ik].nTargetName = "右中指ＩＫ";	// IKボーン番号
-                pmd.pmd_ik[n_ik].nEffName = "右中指先";		// IKターゲットボーン番号 // IKボーンが最初に接続するボーン
-                pmd.pmd_ik[n_ik].cbNumLink = 19;	// IKチェーンの長さ(子の数)
-                pmd.pmd_ik[n_ik].unCount = 1;      // 再帰演算回数 // IK値1
-                pmd.pmd_ik[n_ik].fFact = 0.000001f;       // IKの影響度 // IK値2
-                string[] tem_array_fingR = { 
-                        "右小指先", "右小指３", "右小指２", "右小指１", 
-                        "右薬指先", "右薬指３", "右薬指２",  "右薬指１",  
-                        "右中指３", "右中指２", "右中指１", 
-                        "右人差指先", "右人指３", "右人指２", "右人指１",
-                        "右親指先", "右親指２", "右親指１", "右手先"}; // IK影響下のボーン番号
-                pmd.pmd_ik[n_ik++].punLinkName = tem_array_fingR;
-
-                pmd.pmd_ik[n_ik] = new PMD_IK();
-                pmd.pmd_ik[n_ik].nTargetName = "左中指ＩＫ";	// IKボーン番号
-                pmd.pmd_ik[n_ik].nEffName = "左中指先";		// IKターゲットボーン番号 // IKボーンが最初に接続するボーン
-                pmd.pmd_ik[n_ik].cbNumLink = 19;	// IKチェーンの長さ(子の数)
-                pmd.pmd_ik[n_ik].unCount = 1;      // 再帰演算回数 // IK値1
-                pmd.pmd_ik[n_ik].fFact = 0.000001f;       // IKの影響度 // IK値2
-                string[] tem_array_fingL = {
-                        "左小指先", "左小指３", "左小指２", "左小指１", 
-                        "左薬指先", "左薬指３", "左薬指２",  "左薬指１",  
-                        "左中指３", "左中指２", "左中指１", 
-                        "左人差指先", "左人指３", "左人指２", "左人指１",
-                        "左親指先", "左親指２", "左親指１", "左手先"}; // IK影響下のボーン番号
-                pmd.pmd_ik[n_ik++].punLinkName = tem_array_fingL;
-            }
-
-            pmd.pmd_ik[n_ik] = new PMD_IK();
-            pmd.pmd_ik[n_ik].nTargetName = "右足ＩＫ";	// IKボーン番号
-            pmd.pmd_ik[n_ik].nEffName = "右足首";		// IKターゲットボーン番号 // IKボーンが最初に接続するボーン
-            pmd.pmd_ik[n_ik].cbNumLink = 2;	// IKチェーンの長さ(子の数)
-            pmd.pmd_ik[n_ik].unCount = 40;      // 再帰演算回数 // IK値1
-            pmd.pmd_ik[n_ik].fFact = 0.5f;       // IKの影響度 // IK値2
-            string[] tem_array1 = { "右ひざ", "右足" }; // IK影響下のボーン番号
-            pmd.pmd_ik[n_ik++].punLinkName = tem_array1;
-
-            pmd.pmd_ik[n_ik] = new PMD_IK();
-            pmd.pmd_ik[n_ik].nTargetName = "左足ＩＫ";	// IKボーン番号
-            pmd.pmd_ik[n_ik].nEffName = "左足首";		// IKターゲットボーン番号 // IKボーンが最初に接続するボーン
-            pmd.pmd_ik[n_ik].cbNumLink = 2;	// IKチェーンの長さ(子の数)
-            pmd.pmd_ik[n_ik].unCount = 40;      // 再帰演算回数 // IK値1
-            pmd.pmd_ik[n_ik].fFact = 0.5f;       // IKの影響度 // IK値2
-            string[] tem_array2 = { "左ひざ", "左足" }; // IK影響下のボーン番号
-            pmd.pmd_ik[n_ik++].punLinkName = tem_array2;
-
-            pmd.pmd_ik[n_ik] = new PMD_IK();
-            pmd.pmd_ik[n_ik].nTargetName = "右つま先ＩＫ";	// IKボーン番号
-            pmd.pmd_ik[n_ik].nEffName = "右つま先";		// IKターゲットボーン番号 // IKボーンが最初に接続するボーン
-            pmd.pmd_ik[n_ik].cbNumLink = 1;	// IKチェーンの長さ(子の数)
-            pmd.pmd_ik[n_ik].unCount = 3;      // 再帰演算回数 // IK値1
-            pmd.pmd_ik[n_ik].fFact = 1;       // IKの影響度 // IK値2
-            string[] tem_array3 = { "右足首" }; // IK影響下のボーン番号
-            pmd.pmd_ik[n_ik++].punLinkName = tem_array3;
-
-            pmd.pmd_ik[n_ik] = new PMD_IK();
-            pmd.pmd_ik[n_ik].nTargetName = "左つま先ＩＫ";	// IKボーン番号
-            pmd.pmd_ik[n_ik].nEffName = "左つま先";		// IKターゲットボーン番号 // IKボーンが最初に接続するボーン
-            pmd.pmd_ik[n_ik].cbNumLink = 1;	// IKチェーンの長さ(子の数)
-            pmd.pmd_ik[n_ik].unCount = 3;      // 再帰演算回数 // IK値1
-            pmd.pmd_ik[n_ik].fFact = 1;       // IKの影響度 // IK値2
-            string[] tem_array4 = { "左足首" }; // IK影響下のボーン番号
-            pmd.pmd_ik[n_ik++].punLinkName = tem_array4;
+            pmd.number_of_ik = cor_table.IKBone.Count;
+            pmd.pmd_ik = (PMD_IK[])cor_table.IKBone.ToArray();
 
             // -----------------------------------------------------
             // ボーン枠用枠名リスト
@@ -693,59 +433,8 @@ namespace Tso2Pmd
             physOb_list = new T2PPhysObjectList(bone_list);
 
             // -----------------------------------------------------
-            // 身体
-            physOb_list.MakeBodyFromBone("下半身", 4);
-
-            physOb_list.MakeBodyFromBone("上半身", 4);
-            physOb_list.GetBodyByName("上半身").shape_type = 1; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-            physOb_list.GetBodyByName("上半身").shape_w = 1.0f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-            physOb_list.GetBodyByName("上半身").shape_h *= 0.5f;
-            physOb_list.GetBodyByName("上半身").shape_d = 0.5f; // 形状：奥行 // CD CC CC 3D // 0.1
-
-            physOb_list.MakeBodyFromBone("上半身２", 4);
-            physOb_list.GetBodyByName("上半身２").shape_type = 1; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-            physOb_list.GetBodyByName("上半身２").shape_w = 1.0f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-            physOb_list.GetBodyByName("上半身２").shape_h *= 0.5f;
-            physOb_list.GetBodyByName("上半身２").shape_d = 0.5f; // 形状：奥行 // CD CC CC 3D // 0.1
- 
-            physOb_list.MakeBodyFromBone("上半身３", 4);
-            physOb_list.GetBodyByName("上半身３").shape_type = 1; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-            physOb_list.GetBodyByName("上半身３").shape_w = 1.0f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-            physOb_list.GetBodyByName("上半身３").shape_h *= 0.5f;
-            physOb_list.GetBodyByName("上半身３").shape_d = 0.5f; // 形状：奥行 // CD CC CC 3D // 0.1
-
-            physOb_list.MakeBodyFromBone("頭", 4);
-
-            physOb_list.MakeBodyFromBone("左肩", 4);
-
-            physOb_list.MakeBodyFromBone("左腕", 4);
-
-            physOb_list.MakeBodyFromBone("左ひじ", 4);
-
-            physOb_list.MakeBodyFromBone("右肩", 4);
-
-            physOb_list.MakeBodyFromBone("右腕", 4);
-
-            physOb_list.MakeBodyFromBone("右ひじ", 4);
-
-            physOb_list.MakeBodyFromBone("左足", 4);
-            physOb_list.GetBodyByName("左足").shape_w = 0.75f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-
-            physOb_list.MakeBodyFromBone("左ひざ", 4);
-
-            physOb_list.MakeBodyFromBone("右足", 4);
-            physOb_list.GetBodyByName("右足").shape_w = 0.75f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-
-            physOb_list.MakeBodyFromBone("右ひざ", 4);
-
-            // -----------------------------------------------------
-            // 身体以外
-            if (mod_type == 0)
-            {
-                if (kami_flag > 0) MakeKamiPhysObject();
-                if (chichi_flag > 0) MakeChichiPhysObject();
-                if (skirt_flag > 0) MakeSkirtPhysObject();
-            }
+            // テンプレートを適用
+            template_list.PhysObExecute(ref physOb_list);
 
             // -----------------------------------------------------
             // 剛体＆ジョイントを配列に代入し直す
@@ -846,7 +535,7 @@ namespace Tso2Pmd
         // -----------------------------------------------------
         // 頂点を作成
         // -----------------------------------------------------
-        private void MakePMDVertices(int mod_type)
+        private void MakePMDVertices(CorrespondTable cor_table, int mod_type)
         {
             List<PMD_Vertex> vertex_list = new List<PMD_Vertex>();
             List<short> indices = new List<short>(); // インデックスリスト
@@ -916,10 +605,8 @@ namespace Tso2Pmd
                     {
                         TSONode tso_bone = sub_mesh.bones[(int)vertex.skin_weights[i].bone_index];
                         string bone_name;
-                        if (mod_type == 0)
-                            bone_name = girl2miku.skinning[tso_bone.Name];
-                        else if (mod_type == 1)
-                            bone_name = man2miku.skinning[tso_bone.Name];
+                        if (mod_type == 0 || mod_type == 1)
+                            bone_name = cor_table.skinning[tso_bone.Name];
                         else
                             bone_name = "センター";
 
@@ -1275,225 +962,6 @@ namespace Tso2Pmd
             fig.TPOList.Transform();
             morph.Morph(fig.Tmo);
             fig.UpdateBoneMatricesWithoutTMOFrame();
-        }
-
-        private void MakeKamiPhysObject()
-        {
-            // (151, kami_Back_Mid1) - (155, kami_Back_Mid4_End)
-            physOb_list.MakeChain("中髪後１", 0);
-            physOb_list.GetBodyByName("中髪後１").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetBodyByName("中髪後２").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetJointByName("中髪後２-中髪後３").constrain_rot_1.x = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("中髪後２-中髪後３").constrain_rot_2.x = (float)((30.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("中髪後３-中髪後４").constrain_rot_1.x = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("中髪後３-中髪後４").constrain_rot_2.x = (float)((30.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-
-            // (156, kami_Front_L1) - (160, kami_Front_L4_End)
-            physOb_list.MakeChain("左髪横１", 0);
-            physOb_list.GetBodyByName("左髪横１").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetBodyByName("左髪横２").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetBodyByName("左髪横３").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-
-            // (161, kami_Front_R1) - (165, kami_Front_R4_End)
-            physOb_list.MakeChain("右髪横１", 0);
-            physOb_list.GetBodyByName("右髪横１").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetBodyByName("右髪横２").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetBodyByName("右髪横３").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-
-            // (166, kami_Back_L1) - (170, kami_Back_L4_End)
-            physOb_list.MakeChain("左髪後１", 0);
-            physOb_list.GetBodyByName("左髪後１").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetBodyByName("左髪後２").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetJointByName("左髪後２-左髪後３").constrain_rot_1.x = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("左髪後２-左髪後３").constrain_rot_2.x = (float)((30.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("左髪後３-左髪後４").constrain_rot_1.x = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("左髪後３-左髪後４").constrain_rot_2.x = (float)((30.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-
-            // (171, kami_Back_R1) - (175, kami_Back_R4_End)
-            physOb_list.MakeChain("右髪後１", 0);
-            physOb_list.GetBodyByName("右髪後１").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetBodyByName("右髪後２").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetJointByName("右髪後２-右髪後３").constrain_rot_1.x = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("右髪後２-右髪後３").constrain_rot_2.x = (float)((30.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("右髪後３-右髪後４").constrain_rot_1.x = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("右髪後３-右髪後４").constrain_rot_2.x = (float)((30.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-
-            // (176, kami_Front_Mid1_L) - (179, kami_Front_Mid3_End_L)
-            physOb_list.MakeChain("左髪前１", 0);
-            physOb_list.GetBodyByName("左髪前１").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetBodyByName("左髪前２").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetBodyByName("左髪前３").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetBodyByName("左髪前先").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-
-            // (180, kami_Front_Mid1_R) - (183, kami_Front_Mid3_End_R)
-            physOb_list.MakeChain("右髪前１", 0);
-            physOb_list.GetBodyByName("右髪前１").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetBodyByName("右髪前２").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetBodyByName("右髪前３").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            physOb_list.GetBodyByName("右髪前先").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-
-            if (kami_flag == 2)
-            {
-                foreach (PMD_RigidBody rb in physOb_list.body_list)
-                {
-                    if (rb.rigidbody_name.Length >= 2)
-                    if (rb.rigidbody_name[1] == '髪')
-                    {
-                        rb.rigidbody_weight = 1.0f;
-                        rb.rigidbody_pos_dim = 0.9f;
-                        rb.rigidbody_rot_dim = 0.9f;
-                    }
-                }
-            }
-        }
-
-        private void MakeChichiPhysObject()
-        {
-            // (184, Chichi_Right1) - (189, Chichi_Right5_end)
-            physOb_list.MakeChain("右乳１", 1);
-            physOb_list.GetBodyByName("右乳１").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-
-            // (190, Chichi_Left1) - (195, Chichi_Left5_End)
-            physOb_list.MakeChain("左乳１", 1);
-            physOb_list.GetBodyByName("左乳１").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-
-            if (chichi_flag == 1)
-            {
-                physOb_list.GetBodyByName("右乳２").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-                physOb_list.GetBodyByName("左乳２").rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-            }
-            if (chichi_flag == 3)
-            {
-                physOb_list.GetJointByName("右乳１-右乳２").constrain_rot_1.x = (float)((-10.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("右乳１-右乳２").constrain_rot_2.x = (float)((10.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("右乳１-右乳２").constrain_rot_1.y = (float)((-10.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("右乳１-右乳２").constrain_rot_2.y = (float)((10.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("右乳１-右乳２").constrain_rot_1.z = (float)((-10.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("右乳１-右乳２").constrain_rot_2.z = (float)((10.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-
-                physOb_list.GetJointByName("左乳１-左乳２").constrain_rot_1.x = (float)((-10.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("左乳１-左乳２").constrain_rot_2.x = (float)((10.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("左乳１-左乳２").constrain_rot_1.y = (float)((-10.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("左乳１-左乳２").constrain_rot_2.y = (float)((10.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("左乳１-左乳２").constrain_rot_1.z = (float)((-10.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("左乳１-左乳２").constrain_rot_2.z = (float)((10.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-
-                physOb_list.GetJointByName("右乳２-右乳３").constrain_rot_1.x = (float)((-10.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("右乳２-右乳３").constrain_rot_2.x = (float)((10.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("右乳２-右乳３").constrain_rot_1.y = (float)((-10.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("右乳２-右乳３").constrain_rot_2.y = (float)((10.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("右乳２-右乳３").constrain_rot_1.z = (float)((-10.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("右乳２-右乳３").constrain_rot_2.z = (float)((10.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-
-                physOb_list.GetJointByName("左乳２-左乳３").constrain_rot_1.x = (float)((-10.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("左乳２-左乳３").constrain_rot_2.x = (float)((10.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("左乳２-左乳３").constrain_rot_1.y = (float)((-10.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("左乳２-左乳３").constrain_rot_2.y = (float)((10.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("左乳２-左乳３").constrain_rot_1.z = (float)((-10.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                physOb_list.GetJointByName("左乳２-左乳３").constrain_rot_2.z = (float)((10.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            }
-        }
-
-        private void MakeSkirtPhysObject()
-        {
-            // (196, skirt_LeftB01) - (199, skirt_LeftB03_end)
-            physOb_list.MakeChain("左ス後１", 2);
-            physOb_list.GetJointByName("下半身-左ス後１").constrain_rot_1.x = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス後１").constrain_rot_2.x = (float)((60.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス後１").constrain_rot_1.y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス後１").constrain_rot_2.y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス後１").constrain_rot_1.z = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス後１").constrain_rot_2.z = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス後１").spring_rot.x = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス後１").spring_rot.y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス後１").spring_rot.z = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-
-            // (200, skirt_RightB01) - (203, skirt_RightB03_end)
-            physOb_list.MakeChain("右ス後１", 2);
-            physOb_list.GetJointByName("下半身-右ス後１").constrain_rot_1.x = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス後１").constrain_rot_2.x = (float)((60.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス後１").constrain_rot_1.y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス後１").constrain_rot_2.y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス後１").constrain_rot_1.z = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス後１").constrain_rot_2.z = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス後１").spring_rot.x = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス後１").spring_rot.y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス後１").spring_rot.z = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-
-            // (204, skirt_RightS01) - (207, skirt_RightS03_end)
-            physOb_list.MakeChain("右ス横１", 3);
-            physOb_list.GetJointByName("下半身-右ス横１").constrain_rot_1.x = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス横１").constrain_rot_2.x = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス横１").constrain_rot_1.y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス横１").constrain_rot_2.y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス横１").constrain_rot_1.z = (float)((-15.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス横１").constrain_rot_2.z = (float)((60.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス横１").spring_rot.x = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス横１").spring_rot.y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス横１").spring_rot.z = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
-
-            // (208, skirt_RightF01) - (211, skirt_RightF03_end)
-            physOb_list.MakeChain("右ス前１", 2);
-            physOb_list.GetJointByName("下半身-右ス前１").constrain_rot_1.x = (float)((-120.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス前１").constrain_rot_2.x = (float)((20.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス前１").constrain_rot_1.y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス前１").constrain_rot_2.y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス前１").constrain_rot_1.z = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス前１").constrain_rot_2.z = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス前１").spring_rot.x = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス前１").spring_rot.y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-右ス前１").spring_rot.z = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-
-            // (212, skirt_LeftF01) - (215, skirt_LeftF03_end)
-            physOb_list.MakeChain("左ス前１", 2);
-            physOb_list.GetJointByName("下半身-左ス前１").constrain_rot_1.x = (float)((-120.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス前１").constrain_rot_2.x = (float)((20.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス前１").constrain_rot_1.y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス前１").constrain_rot_2.y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス前１").constrain_rot_1.z = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス前１").constrain_rot_2.z = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス前１").spring_rot.x = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス前１").spring_rot.y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス前１").spring_rot.z = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-
-            // (216, skirt_LeftS01) - (219, skirt_LeftS03_end)
-            physOb_list.MakeChain("左ス横１", 3);
-            physOb_list.GetJointByName("下半身-左ス横１").constrain_rot_1.x = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス横１").constrain_rot_2.x = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス横１").constrain_rot_1.y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス横１").constrain_rot_2.y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス横１").constrain_rot_1.z = (float)((-60.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス横１").constrain_rot_2.z = (float)((15.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス横１").spring_rot.x = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス横１").spring_rot.y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            physOb_list.GetJointByName("下半身-左ス横１").spring_rot.z = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
-
-            // スカートの先を隣同士でジョイントする
-            physOb_list.MakeJointFromTwoBones("左ス前２", "右ス前２");
-            physOb_list.MakeJointFromTwoBones("右ス前２", "右ス横２");
-            physOb_list.MakeJointFromTwoBones("右ス横２", "右ス後２");
-            physOb_list.MakeJointFromTwoBones("右ス後２", "左ス後２");
-            physOb_list.MakeJointFromTwoBones("左ス後２", "左ス横２");
-            physOb_list.MakeJointFromTwoBones("左ス横２", "左ス前２");
-            physOb_list.MakeJointFromTwoBones("左ス前３", "右ス前３");
-            physOb_list.MakeJointFromTwoBones("右ス前３", "右ス横３");
-            physOb_list.MakeJointFromTwoBones("右ス横３", "右ス後３");
-            physOb_list.MakeJointFromTwoBones("右ス後３", "左ス後３");
-            physOb_list.MakeJointFromTwoBones("左ス後３", "左ス横３");
-            physOb_list.MakeJointFromTwoBones("左ス横３", "左ス前３");
-
-            if (skirt_flag == 2)
-            {
-                foreach (PMD_RigidBody rb in physOb_list.body_list)
-                {
-                    if (rb.rigidbody_name.Length >= 2)
-                    if (rb.rigidbody_name[1] == 'ス')
-                    {
-                        rb.rigidbody_weight = 1.0f;
-                        rb.rigidbody_pos_dim = 0.9f;
-                    }
-                }
-            }
         }
     }
 }

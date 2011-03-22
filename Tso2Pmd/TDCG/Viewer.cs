@@ -72,10 +72,6 @@ public class Viewer : IDisposable
 
     ProportionList pro_list = new ProportionList();
 
-// 改変--ここから--
-    public ProportionList ProportionList { get { return pro_list; } }
-// 改変--ここまで--
-
     /// <summary>
     /// viewerを生成します。
     /// </summary>
@@ -86,6 +82,8 @@ public class Viewer : IDisposable
     }
 
 // 改変--ここから--
+
+    public ProportionList ProportionList { get { return pro_list; } }
 
     /// <summary>
     /// viewerを生成します。
@@ -102,6 +100,15 @@ public class Viewer : IDisposable
             pro_list.Load_onlyInitPose();
             Figure.ProportionList = pro_list;
         }
+    }
+
+    /// <summary>
+    /// viewerを生成します。
+    /// </summary>
+    public Viewer(List<IProportion> items)
+    {
+        this.pro_list.items = items;
+        Figure.ProportionList = pro_list;
     }
 
 // 改変--ここまで--

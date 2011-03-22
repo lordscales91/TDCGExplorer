@@ -16,6 +16,7 @@ namespace Tso2Pmd
 {
     public partial class MainForm : Form
     {
+        TemplateList template_list = null;
         Viewer viewer = null;
         TSOForm view_form = null;
         TransTso2Pmd t2p = null;
@@ -33,20 +34,32 @@ namespace Tso2Pmd
             pd.Show();
             pd.Message = "Tso2Pmdを起動しています。";
 
-            try
-            {
+            //try
+            //{
+
+                // テンプレートリストを初期化
+                template_list = new TemplateList();
+                pd.Value += 15;
 
                 // Viewerクラスを初期化
-                viewer = new Viewer();
-                pd.Value += 25;
+                viewer = new Viewer(template_list.proportion_items);
+                pd.Value += 15;
 
                 // Tso2Pmdクラスを初期化
                 t2p = new TransTso2Pmd();
-                pd.Value += 25;
+                pd.Value += 15;
+
+                // スプリクトを読みとる
+                if (!template_list.Load())
+                {
+                    pd.Dispose();
+                    this.Dispose();
+                }
+                pd.Value += 30;
 
                 // T2POptionControlの初期化
-                t2POptionControl1.Initialize(ref viewer);
-                pd.Value += 25;
+                t2POptionControl1.Initialize(ref viewer, template_list);
+                pd.Value += 20;
 
                 // ビューアーフォームの初期化
                 view_form = new TSOForm(viewer, this);
@@ -56,7 +69,7 @@ namespace Tso2Pmd
                 System.Threading.Thread.Sleep(1000);
                 pd.Dispose();
 
-            }
+            /*}
             catch
             {
                 // お待ちくださいダイアログを閉じる
@@ -65,7 +78,7 @@ namespace Tso2Pmd
                 MessageBox.Show("Tso2Pmdを正常に起動できませんでした。\nProportionファルダや表情フォルダに、\n不正なファイルが含まれていないか確認してください。");
 
                 this.Dispose();
-            }
+            }*/
         }
 
         private void panel1_DragEnter(object sender, DragEventArgs e)
@@ -117,7 +130,7 @@ namespace Tso2Pmd
                     pd.Show(this);
                     pd.Message = "ファイルを読み込んでいます。";
 
-                    try {
+                    //try {
 
                         //ドロップされたファイルを読み込む
                         viewer.ClearFigureList();
@@ -131,14 +144,14 @@ namespace Tso2Pmd
                         System.Threading.Thread.Sleep(1000);
                         pd.Dispose();
 
-                    }
+                    /*}
                     catch
                     {
                         // お待ちくださいダイアログを閉じる
                         pd.Dispose();
 
                         MessageBox.Show("ファイルを読み込むことができませんでした。\nファイルが正常であるか確認してください。");
-                    }
+                    }*/
                 }
                 else
                 {
@@ -229,7 +242,7 @@ namespace Tso2Pmd
             pd.Show(this);
             pd.Message = "ファイルを変換しています。";
 
-            try {
+            //try {
 
                 string em;
 
@@ -278,14 +291,14 @@ namespace Tso2Pmd
                 // 初期の表情にする
                 t2p.DefaultFace();
 
-            }
+            /*}
             catch
             {
                 // お待ちくださいダイアログを閉じる
                 pd.Dispose(); 
 
                 MessageBox.Show("エラーにより、変換できませんでした。");
-            }
+            }*/
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)

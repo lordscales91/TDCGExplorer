@@ -51,39 +51,40 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(15, 159);
+            this.label9.Location = new System.Drawing.Point(14, 159);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(110, 24);
-            this.label9.TabIndex = 39;
+            this.label9.TabIndex = 45;
             this.label9.Text = "＊　複数の物理テンプ\r\nレートを選択できます";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(10, 132);
+            this.label6.Location = new System.Drawing.Point(9, 132);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(36, 12);
-            this.label6.TabIndex = 38;
+            this.label6.TabIndex = 44;
             this.label6.Text = "その他";
             // 
             // checkedListBox1
             // 
+            this.checkedListBox1.CheckOnClick = true;
             this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(129, 129);
+            this.checkedListBox1.Location = new System.Drawing.Point(128, 129);
             this.checkedListBox1.Name = "checkedListBox1";
             this.checkedListBox1.ScrollAlwaysVisible = true;
             this.checkedListBox1.Size = new System.Drawing.Size(189, 60);
-            this.checkedListBox1.TabIndex = 37;
+            this.checkedListBox1.TabIndex = 43;
             // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.comboBox3);
             this.groupBox3.Controls.Add(this.radioButton_Skirt1);
             this.groupBox3.Controls.Add(this.radioButton_Skirt0);
-            this.groupBox3.Location = new System.Drawing.Point(4, 87);
+            this.groupBox3.Location = new System.Drawing.Point(3, 87);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(317, 36);
-            this.groupBox3.TabIndex = 34;
+            this.groupBox3.TabIndex = 40;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "スカート";
             // 
@@ -124,10 +125,10 @@
             this.groupBox1.Controls.Add(this.comboBox2);
             this.groupBox1.Controls.Add(this.radioButton_Chichi1);
             this.groupBox1.Controls.Add(this.radioButton_Chichi0);
-            this.groupBox1.Location = new System.Drawing.Point(4, 45);
+            this.groupBox1.Location = new System.Drawing.Point(3, 45);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(317, 36);
-            this.groupBox1.TabIndex = 35;
+            this.groupBox1.TabIndex = 41;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "乳";
             // 
@@ -168,10 +169,10 @@
             this.groupBox2.Controls.Add(this.comboBox1);
             this.groupBox2.Controls.Add(this.radioButton_Kami1);
             this.groupBox2.Controls.Add(this.radioButton_Kami0);
-            this.groupBox2.Location = new System.Drawing.Point(4, 3);
+            this.groupBox2.Location = new System.Drawing.Point(3, 3);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(317, 36);
-            this.groupBox2.TabIndex = 36;
+            this.groupBox2.TabIndex = 42;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "髪";
             // 
@@ -218,7 +219,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.groupBox2);
             this.Name = "PhysicsControl";
-            this.Size = new System.Drawing.Size(324, 192);
+            this.Size = new System.Drawing.Size(323, 193);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox1.ResumeLayout(false);

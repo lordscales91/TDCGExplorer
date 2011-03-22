@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Windows.Forms;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
+using System.IO;
 
 using TDCG;
 using jp.nyatla.nymmd.cs.struct_type.pmd;
@@ -21,43 +21,45 @@ namespace TDCGUtils
     {
         public Dictionary<string, string> skinning = new Dictionary<string, string>();
         public Dictionary<string, string> bonePosition = new Dictionary<string, string>();
-        public List<PMD_Bone> boneStructure = new List<PMD_Bone>();
-        public Dictionary<string, PMD_Bone> boneStructure_dic = new Dictionary<string, PMD_Bone>();
+        public Dictionary<string, PMD_Bone> boneStructure = new Dictionary<string, PMD_Bone>();
         public List<DispBoneGroup> dispBoneGroup = new List<DispBoneGroup>();
+        public List<PMD_IK> IKBone = new List<PMD_IK>();
 
-        //public Dictionary<string, string> boneCorrespond_v2t = new Dictionary<string, string>();
+        public CorrespondTable()
+        {
+        }
 
-        public CorrespondTable(string name)
+        public CorrespondTable(string path)
         {
             System.IO.StreamReader sr;
 
             //内容を一行ずつ読み込む
             sr = new System.IO.StreamReader(
-                Application.StartupPath + @"/CorrespondTable/" + name + "_skinning.txt",
+                Path.Combine(path, @"skinning.txt"),
                 System.Text.Encoding.GetEncoding("shift_jis"));
             while (sr.Peek() > -1)
             {
                 string line = sr.ReadLine();
                 string[] data = line.Split(',');
-                skinning.Add(data[1].Trim(), data[2].Trim());
+                skinning.Add(data[0].Trim(), data[1].Trim());
             }
             sr.Close();
 
             //内容を一行ずつ読み込む
             sr = new System.IO.StreamReader(
-                Application.StartupPath + @"/CorrespondTable/" + name + "_bonePosition.txt",
+                Path.Combine(path, @"bonePosition.txt"),
                 System.Text.Encoding.GetEncoding("shift_jis"));
             while (sr.Peek() > -1)
             {
                 string line = sr.ReadLine();
                 string[] data = line.Split(',');
-                bonePosition.Add(data[2].Trim(), data[1].Trim());
+                bonePosition.Add(data[1].Trim(), data[0].Trim());
             }
             sr.Close();
 
             //内容を一行ずつ読み込む
             sr = new System.IO.StreamReader(
-                Application.StartupPath + @"/CorrespondTable/" + name + "_boneStructure.txt",
+                Path.Combine(path, @"boneStructure.txt"),
                 System.Text.Encoding.GetEncoding("shift_jis"));
             while (sr.Peek() > -1)
             {
@@ -76,8 +78,7 @@ namespace TDCGUtils
                 if (data[4] == "") pmd_b.IKTargetName = null;
                 else pmd_b.IKTargetName = data[4].Trim();
 
-                boneStructure.Add(pmd_b);
-                boneStructure_dic.Add(pmd_b.szName, pmd_b);
+                boneStructure.Add(pmd_b.szName, pmd_b);
 
                 // 枠に表示するボーン名の設定
                 if (data[5].Trim() != "")
@@ -104,19 +105,91 @@ namespace TDCGUtils
             }
             sr.Close();
 
-            /*//内容を一行ずつ読み込む
+            //内容を一行ずつ読み込む
             sr = new System.IO.StreamReader(
-                Application.StartupPath + @"/CorrespondTable/" + name + "_vmd2tmo.txt",
+                Path.Combine(path, @"IKBone.txt"),
                 System.Text.Encoding.GetEncoding("shift_jis"));
             while (sr.Peek() > -1)
             {
                 string line = sr.ReadLine();
                 string[] data = line.Split(',');
 
-                boneCorrespond_v2t.Add(data[0].Trim(), data[1].Trim());
-            }
-            sr.Close();*/
+                PMD_IK pmd_ik = new PMD_IK();
 
+                pmd_ik.nTargetName = data[0].Trim();	// IKボーン番号
+                pmd_ik.nEffName = data[1].Trim();		// IKターゲットボーン番号 // IKボーンが最初に接続するボーン
+                pmd_ik.cbNumLink = int.Parse(data[2].Trim());	// IKチェーンの長さ(子の数)
+                pmd_ik.unCount = int.Parse(data[3].Trim());      // 再帰演算回数 // IK値1
+                pmd_ik.fFact = float.Parse(data[4].Trim());       // IKの影響度 // IK値2
+
+                List<string> tem_list = new List<string>();
+                for (int i = 5; i < data.Length; i++) tem_list.Add(data[i].Trim());
+                pmd_ik.punLinkName = (string[])tem_list.ToArray();
+
+                IKBone.Add(pmd_ik);
+            }
+            sr.Close();
+        }
+
+        public void Add(CorrespondTable ct)
+        {
+            foreach (KeyValuePair<string, string> kvp in ct.skinning)
+            {
+                if (skinning.ContainsKey(kvp.Key))
+                    skinning[kvp.Key] = kvp.Value;
+                else
+                    skinning.Add(kvp.Key, kvp.Value);
+            }
+
+            foreach (KeyValuePair<string, string> kvp in ct.bonePosition)
+            {
+                if (bonePosition.ContainsKey(kvp.Key))
+                    bonePosition[kvp.Key] = kvp.Value;
+                else
+                    bonePosition.Add(kvp.Key, kvp.Value);
+            }
+
+            foreach (KeyValuePair<string, PMD_Bone> kvp in ct.boneStructure)
+            {
+                if (boneStructure.ContainsKey(kvp.Key))
+                    boneStructure[kvp.Key] = kvp.Value;
+                else
+                    boneStructure.Add(kvp.Key, kvp.Value);
+            }
+
+            /*// 枠に表示するボーン名の設定
+            if (data[5].Trim() != "")
+            {
+                bool flag = false;
+                foreach (DispBoneGroup dbg in ct.dispBoneGroup)
+                {
+                    if (dbg.group_name == data[5].Trim())
+                    {
+                        dbg.bone_name_list.Add(data[0].Trim());
+                        flag = true;
+                    }
+                }
+
+                if (flag == false)
+                {
+                    DispBoneGroup dbg = new DispBoneGroup();
+                    dbg.group_name = data[5].Trim();
+                    dbg.bone_name_list = new List<string>();
+                    dbg.bone_name_list.Add(data[0].Trim());
+                    dispBoneGroup.Add(dbg);
+                }
+            }*/
+
+            // Konoa added.
+            foreach (DispBoneGroup dbg in ct.dispBoneGroup)
+            {
+                dispBoneGroup.Add(dbg);
+            }
+
+            foreach (PMD_IK ik in ct.IKBone)
+            {
+                IKBone.Add(ik);
+            }
         }
     }
 }
