@@ -37,6 +37,14 @@ public class StateMachine<entity_type>
 
     public bool HandleMessage(Telegram telegram)
     {
+        if (currentState != null && currentState.OnMessage(owner, telegram))
+        {
+            return true;
+        }
+        if (globalState != null && globalState.OnMessage(owner, telegram))
+        {
+            return true;
+        }
         return false;
     }
 

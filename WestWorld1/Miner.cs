@@ -91,7 +91,7 @@ public class Miner : BaseGameEntity
 
     public override bool HandleMessage(Telegram telegram)
     {
-        return false;
+        return stateMachine.HandleMessage(telegram);
     }
 
     //this must be implemented

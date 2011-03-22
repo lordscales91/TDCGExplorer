@@ -28,7 +28,7 @@ public class MinersWife : BaseGameEntity
 
     public override bool HandleMessage(Telegram telegram)
     {
-        return false;
+        return stateMachine.HandleMessage(telegram);
     }
 
     public override void Update()
