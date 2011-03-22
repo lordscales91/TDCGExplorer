@@ -28,6 +28,8 @@ namespace WestWorld1
             {
                 bob.Update();
                 elsa.Update();
+                MessageDispatcher.Instance.DispatchDelayedMessages();
+                System.Threading.Thread.Sleep(500);
             }
         }
     }

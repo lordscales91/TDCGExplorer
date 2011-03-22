@@ -25,7 +25,7 @@ class MessageDispatcher
     //this is a singleton
     public static MessageDispatcher Instance { get { return instance; } }
 
-    public void DispatchMessage(double time, int senderID, int receiverID, int messageID)
+    public void DispatchMessage(long time, int senderID, int receiverID, int messageID)
     {
         BaseGameEntity receiver = EntityManager.Instance.GetEntityFromID(receiverID);
         Telegram telegram = new Telegram(time, senderID, receiverID, messageID);
@@ -35,7 +35,7 @@ class MessageDispatcher
         }
         else
         {
-            double currentTime = Stopwatch.GetTimestamp();
+            long currentTime = Stopwatch.GetTimestamp();
             telegram.Time = currentTime + time;
             queue.Add(telegram);
             queue.Sort(CompareByTime);
@@ -49,7 +49,7 @@ class MessageDispatcher
 
     public void DispatchDelayedMessages()
     {
-        double currentTime = Stopwatch.GetTimestamp();
+        long currentTime = Stopwatch.GetTimestamp();
         
         while (queue.Count > 0 && queue[0].Time < currentTime && queue[0].Time > 0)
         {

@@ -8,7 +8,9 @@ public class MinersWife : BaseGameEntity
     StateMachine<MinersWife> stateMachine;
     
     location_type location;
-    
+
+    public bool Cooking { get; set; }
+
     public MinersWife(int id) : base(id)
     {
         stateMachine = new StateMachine<MinersWife>(this);
