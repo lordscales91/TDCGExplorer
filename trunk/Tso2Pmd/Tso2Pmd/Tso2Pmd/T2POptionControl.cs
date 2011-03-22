@@ -17,19 +17,31 @@ namespace Tso2Pmd
     {
         string file_name;
 
+        TemplateList template_list;
+        CorrespondTableList correspondTable_list = new CorrespondTableList();
+
         public T2POptionControl()
         {
             InitializeComponent();
         }
 
-        public void Initialize(ref Viewer viewer)
+        public void Initialize(ref Viewer viewer, TemplateList template_list)
         {
             // 出力フォルダ設定
             radioButton1.Checked = true;
             textBox_Folder.Enabled = false;
             button_Folder.Enabled = false;
 
+            // -----------------------------------------------------
+            this.template_list = template_list;
             taikeiControl1.Initialize(ref viewer);
+            physicsControl1.Initialize(template_list);
+
+            // -----------------------------------------------------
+            // ボーンの変換表を読みとる
+            correspondTable_list.Load();
+            foreach (string name in correspondTable_list.NameList)
+                checkedListBox1.Items.Add(name);
         }
 
         private void button_Folder_Click(object sender, EventArgs e)
@@ -51,28 +63,15 @@ namespace Tso2Pmd
         // フォームより各パラメータを得て、設定
         public string SetupOption(TransTso2Pmd t2p)
         {
-            if (radioButton_Kami0.Checked == true) t2p.Kami_flag = 0;
-            else if (radioButton_Kami1.Checked == true) t2p.Kami_flag = 1;
-            else if (radioButton_Kami2.Checked == true) t2p.Kami_flag = 2;
-
-            if (radioButton_Chichi0.Checked == true) t2p.Chichi_flag = 0;
-            else if (radioButton_Chichi1.Checked == true) t2p.Chichi_flag = 1;
-            else if (radioButton_Chichi2.Checked == true) t2p.Chichi_flag = 2;
-            else if (radioButton_Chichi3.Checked == true) t2p.Chichi_flag = 3;
-
-            if (radioButton_Skirt0.Checked == true) t2p.Skirt_flag = 0;
-            else if (radioButton_Skirt1.Checked == true) t2p.Skirt_flag = 1;
-            else if (radioButton_Skirt2.Checked == true) t2p.Skirt_flag = 2;
-
-            if (radioButton_Bone0.Checked == true) t2p.Bone_flag = 0;
-            else if (radioButton_Bone1.Checked == true) t2p.Bone_flag = 1;
-
-            t2p.Twist_flag = checkBox1.Checked;
-            t2p.ArmIK_flag = checkBox2.Checked;
-
             t2p.Spheremap_flag = checkBox_Spheremap.Checked;
             t2p.Edge_flag_flag = checkBox_Edge.Checked;
             t2p.Merge_flag = checkBox_Merge.Checked;
+
+            physicsControl1.SetPhysFlag();
+            t2p.TemplateList = template_list;
+            t2p.CorTableList = correspondTable_list;
+
+            t2p.Bone_flag = radioButton_Bone1.Checked ? 1 : 0; 
 
             string em;
 
@@ -142,15 +141,22 @@ namespace Tso2Pmd
             taikeiControl1.SaveTPOConfig(path);
         }
 
-        private void radioButton_Bone0_CheckedChanged(object sender, EventArgs e)
-        {
-            checkBox1.Enabled = radioButton_Bone0.Checked;
-            checkBox2.Enabled = radioButton_Bone0.Checked;
-        }
-
         private void radioButton_Bone1_CheckedChanged(object sender, EventArgs e)
         {
+            checkedListBox1.Enabled = false;
+        }
 
+        private void radioButton_Bone0_CheckedChanged(object sender, EventArgs e)
+        {
+            checkedListBox1.Enabled = true;
+        }
+
+        private void checkedListBox1_ItemCheck(object sender, ItemCheckEventArgs e)
+        {
+            if (e.NewValue == CheckState.Checked)
+                correspondTable_list.Flag[checkedListBox1.Items[e.Index].ToString()] = true;
+            else if (e.NewValue == CheckState.Unchecked)
+                correspondTable_list.Flag[checkedListBox1.Items[e.Index].ToString()] = false;
         }
     }
 }

@@ -31,7 +31,7 @@ namespace Tso2Pmd
             foreach (IProportion ip in viewer.ProportionList.items)
             {
                 if (ip.ToString().IndexOf("TDCG.Proportion.AAA") < 0)
-                    comboBox1.Items.Add(ip.ToString());
+                    listBox1.Items.Add(ip.ToString());
             }
 
             // 割合を初期状態にする
@@ -44,15 +44,15 @@ namespace Tso2Pmd
         private void trackBar1_ValueChanged(object sender, EventArgs e)
         {
             label_TaikeiValue.Text = (trackBar1.Value * 5.0f).ToString("000") + "%";
-            pro_ratio[comboBox1.SelectedItem.ToString()]
+            pro_ratio[listBox1.SelectedItem.ToString()]
                 = (float)trackBar1.Value * 0.05f;
 
             SetupTPOListRatio();
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-            trackBar1.Value = (int)(pro_ratio[comboBox1.SelectedItem.ToString()] * 20.0f);
+            trackBar1.Value = (int)(pro_ratio[listBox1.SelectedItem.ToString()] * 20.0f);
         }
 
         // 割合を初期状態にする
@@ -67,8 +67,8 @@ namespace Tso2Pmd
             pro_ratio["TDCG.Proportion.AAA_PMDInitPoseM"] = 1.0f;
 
             SetupTPOListRatio();
-            if (comboBox1.SelectedIndex < 0) comboBox1.SelectedIndex = 0;
-            trackBar1.Value = (int)(pro_ratio[comboBox1.SelectedItem.ToString()] * 20.0f);
+            if (listBox1.SelectedIndex < 0) listBox1.SelectedIndex = 0;
+            trackBar1.Value = (int)(pro_ratio[listBox1.SelectedItem.ToString()] * 20.0f);
         }
 
         // pro_ratioより、fig.TPOListへ、体型レシピを更新
@@ -122,7 +122,7 @@ namespace Tso2Pmd
                 }
 
                 SetupTPOListRatio();
-                trackBar1.Value = (int)(pro_ratio[comboBox1.SelectedItem.ToString()] * 20.0f);
+                trackBar1.Value = (int)(pro_ratio[listBox1.SelectedItem.ToString()] * 20.0f);
             }
         }
 
@@ -154,7 +154,7 @@ namespace Tso2Pmd
             InitProRatio();
         }
 
-        private void panel1_DragEnter(object sender, DragEventArgs e)
+        private void listBox1_DragEnter(object sender, DragEventArgs e)
         {
             //コントロール内にドラッグされたとき実行される
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -165,7 +165,7 @@ namespace Tso2Pmd
                 e.Effect = DragDropEffects.None;
         }
 
-        private void panel1_DragDrop(object sender, DragEventArgs e)
+        private void listBox1_DragDrop(object sender, DragEventArgs e)
         {
             //ドロップされたデータがファイルか調べる
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -190,6 +190,21 @@ namespace Tso2Pmd
                     MessageBox.Show("拡張子が適正ではありません。");
                 }
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            trackBar1.Value++;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            trackBar1.Value--;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            trackBar1.Value = 0;
         }
     }
 }

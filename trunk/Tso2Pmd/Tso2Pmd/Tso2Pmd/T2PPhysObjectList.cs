@@ -15,7 +15,7 @@ using jp.nyatla.nymmd.cs.struct_type.pmd;
 
 namespace Tso2Pmd
 {
-    class T2PPhysObjectList
+    public class T2PPhysObjectList
     {
         List<PMD_Bone> bone_list;
         public List<PMD_RigidBody> body_list = new List<PMD_RigidBody>();
@@ -61,45 +61,80 @@ namespace Tso2Pmd
         {
             return bone_list[GetBoneIDByName(name)];
         }
-        // 名前からボーンを得る
+        // 名前から剛体を得る
         public PMD_RigidBody GetBodyByName(string name)
         {
             return body_list[GetBodyIDByName(name)];
         }
-        // 名前からボーンを得る
+        // 名前からジョイントを得る
         public PMD_Joint GetJointByName(string name)
         {
             return joint_list[GetJointIDByName(name)];
+        }
+
+        // 正規表現から剛体リストを得る
+        public List<PMD_RigidBody> GetBodyListByName(string exp)
+        {
+            List<PMD_RigidBody> list = new List<PMD_RigidBody>();
+
+            for (int i = 0; i < body_list.Count; i++)
+            {
+                if (System.Text.RegularExpressions.Regex.IsMatch(
+                    body_list[i].rigidbody_name,
+                    exp))
+                {
+                    list.Add(body_list[i]);
+                }
+            }
+
+            return list;
+        }
+        // 正規表現からジョイントリストを得る
+        public List<PMD_Joint> GetJointListByName(string exp)
+        {
+            List<PMD_Joint> list = new List<PMD_Joint>();
+
+            for (int i = 0; i < joint_list.Count; i++)
+            {
+                if (System.Text.RegularExpressions.Regex.IsMatch(
+                    joint_list[i].joint_name,
+                    exp))
+                {
+                    list.Add(joint_list[i]);
+                }
+            }
+
+            return list;
         }
 
         // ①(指定したボーン→その子ボーン)にフィットするような剛体を生成
         // ②(生成した剛体)と(指定したボーンの親ボーンの剛体)を、指定したボーンの位置でジョイントする
         // ③次に、指定したボーンの子ボーンに対しても同じ処理を行う
         // ④(①～③)を子ボーンがなくなるまで繰り返す
-        public void MakeChain(string name, int flag)
+        public void MakeChain(string name)
         {
             if (GetBoneByName(name).ChildName != null)
             {
-                MakeBodyFromBone(name, flag);
-                MakeJointFromBone(name, flag);
+                MakeBodyFromBone(name);
+                MakeJointFromBone(name);
 
-                MakeChain(GetBoneByName(name).ChildName, flag);
+                MakeChain(GetBoneByName(name).ChildName);
             }
             else
             {
-                MakeBodyFromBoneEnd(name, flag);
-                MakeJointFromBone(name, flag);
+                MakeBodyFromBoneEnd(name);
+                MakeJointFromBone(name);
             }
         }
 
         // 指定したボーン位置に合わせた剛体を生成
-        public void MakeBodyFromBoneEnd(string bone_name, int flag)
+        public void MakeBodyFromBoneEnd(string bone_name)
         {
-            MakeBodyFromBoneEnd(GetBoneIDByName(bone_name), flag);
+            MakeBodyFromBoneEnd(GetBoneIDByName(bone_name));
         }
 
         // 指定したボーン位置に合わせた剛体を生成
-        public void MakeBodyFromBoneEnd(int bone_num, int flag)
+        public void MakeBodyFromBoneEnd(int bone_num)
         {
             PMD_RigidBody rigidbody = new PMD_RigidBody();
 
@@ -109,94 +144,32 @@ namespace Tso2Pmd
             rigidbody.pos_pos.y = 0.0f;
             rigidbody.pos_pos.z = 0.0f;
 
-            switch (flag)
-            {
-                case 0: // 髪
-                    rigidbody.rigidbody_group_index = 2; // 諸データ：グループ // 00
-                    rigidbody.rigidbody_group_target = 1; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
-                    rigidbody.shape_type = 0; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-                    rigidbody.shape_w = 0.3f; // 形状：半径(幅) // CD CC CC 3F // 1.6
+            rigidbody.rigidbody_group_index = 0; // 諸データ：グループ // 00
+            rigidbody.rigidbody_group_target = -1; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
+            rigidbody.shape_type = 0; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
+            rigidbody.shape_w = 0.4f; // 形状：半径(幅) // CD CC CC 3F // 1.6
 
-                    rigidbody.rigidbody_weight = 1.0f; // 諸データ：質量 // 00 00 80 3F // 1.0
-                    rigidbody.rigidbody_pos_dim = 0.8f; // 諸データ：移動減 // 00 00 00 00
-                    rigidbody.rigidbody_rot_dim = 0.8f; // 諸データ：回転減 // 00 00 00 00
-                    rigidbody.rigidbody_recoil = 0.0f; // 諸データ：反発力 // 00 00 00 00
-                    rigidbody.rigidbody_friction = 0.8f; // 諸データ：摩擦力 // 00 00 00 00
-                    rigidbody.rigidbody_type = 1; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-                    break;
-
-                case 1: // 乳
-                    rigidbody.rigidbody_group_index = 3; // 諸データ：グループ // 00
-                    rigidbody.rigidbody_group_target = 1; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
-                    rigidbody.shape_type = 0; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-                    rigidbody.shape_w = 0.2f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-
-                    rigidbody.rigidbody_weight = 0.01f; // 諸データ：質量 // 00 00 80 3F // 1.0
-                    rigidbody.rigidbody_pos_dim = 0.5f; // 諸データ：移動減 // 00 00 00 00
-                    rigidbody.rigidbody_rot_dim = 0.5f; // 諸データ：回転減 // 00 00 00 00
-                    rigidbody.rigidbody_recoil = 0.0f; // 諸データ：反発力 // 00 00 00 00
-                    rigidbody.rigidbody_friction = 0.0f; // 諸データ：摩擦力 // 00 00 00 00
-                    rigidbody.rigidbody_type = 1; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-                    break;
-
-                case 2: // スカート
-                    rigidbody.rigidbody_group_index = 4; // 諸データ：グループ // 00
-                    rigidbody.rigidbody_group_target = 1; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
-                    rigidbody.shape_type = 0; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-                    rigidbody.shape_w = 0.2f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-
-                    rigidbody.rigidbody_weight = 0.5f; // 諸データ：質量 // 00 00 80 3F // 1.0
-                    rigidbody.rigidbody_pos_dim = 0.5f; // 諸データ：移動減 // 00 00 00 00
-                    rigidbody.rigidbody_rot_dim = 0.9f; // 諸データ：回転減 // 00 00 00 00
-                    rigidbody.rigidbody_recoil = 0.0f; // 諸データ：反発力 // 00 00 00 00
-                    rigidbody.rigidbody_friction = 0.0f; // 諸データ：摩擦力 // 00 00 00 00
-                    rigidbody.rigidbody_type = 1; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-                    break;
-
-                case 3: // スカートサイド
-                    rigidbody.rigidbody_group_index = 4; // 諸データ：グループ // 00
-                    rigidbody.rigidbody_group_target = 1; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
-                    rigidbody.shape_type = 0; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-                    rigidbody.shape_w = 0.2f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-
-                    rigidbody.rigidbody_weight = 0.5f; // 諸データ：質量 // 00 00 80 3F // 1.0
-                    rigidbody.rigidbody_pos_dim = 0.5f; // 諸データ：移動減 // 00 00 00 00
-                    rigidbody.rigidbody_rot_dim = 0.9f; // 諸データ：回転減 // 00 00 00 00
-                    rigidbody.rigidbody_recoil = 0.0f; // 諸データ：反発力 // 00 00 00 00
-                    rigidbody.rigidbody_friction = 0.0f; // 諸データ：摩擦力 // 00 00 00 00
-                    rigidbody.rigidbody_type = 1; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-                    break;
-
-                case 4: // 身体
-                    rigidbody.rigidbody_group_index = 0; // 諸データ：グループ // 00
-                    rigidbody.rigidbody_group_target = -1; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
-                    rigidbody.shape_type = 0; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-                    rigidbody.shape_w = 0.4f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-
-                    rigidbody.rigidbody_weight = 0.5f; // 諸データ：質量 // 00 00 80 3F // 1.0
-                    rigidbody.rigidbody_pos_dim = 0.5f; // 諸データ：移動減 // 00 00 00 00
-                    rigidbody.rigidbody_rot_dim = 0.5f; // 諸データ：回転減 // 00 00 00 00
-                    rigidbody.rigidbody_recoil = 0.0f; // 諸データ：反発力 // 00 00 00 00
-                    rigidbody.rigidbody_friction = 0.0f; // 諸データ：摩擦力 // 00 00 00 00
-                    rigidbody.rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-                    break;
-            }
+            rigidbody.rigidbody_weight = 0.5f; // 諸データ：質量 // 00 00 80 3F // 1.0
+            rigidbody.rigidbody_pos_dim = 0.5f; // 諸データ：移動減 // 00 00 00 00
+            rigidbody.rigidbody_rot_dim = 0.5f; // 諸データ：回転減 // 00 00 00 00
+            rigidbody.rigidbody_recoil = 0.0f; // 諸データ：反発力 // 00 00 00 00
+            rigidbody.rigidbody_friction = 0.0f; // 諸データ：摩擦力 // 00 00 00 00
+            rigidbody.rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
 
             body_list.Add(rigidbody);
         }
 
         // (指定したボーン→その子ボーン)にフィットするような剛体を生成
-        public void MakeBodyFromBone(string bone_name, int flag)
+        public void MakeBodyFromBone(string bone_name)
         {
             MakeBodyFromTwoVector(
                 bone_name, 
                 GetBoneByName(bone_name).vec3Position,
-                GetBoneByName(GetBoneByName(bone_name).ChildName).vec3Position,
-                flag);
+                GetBoneByName(GetBoneByName(bone_name).ChildName).vec3Position);
         }
  
         // (ベクトル１→ベクトル２)にフィットするような剛体を生成
-        public void MakeBodyFromTwoVector(string bone_name, MmdVector3 v1, MmdVector3 v2, int flag)
+        public void MakeBodyFromTwoVector(string bone_name, MmdVector3 v1, MmdVector3 v2)
         {
             PMD_RigidBody rigidbody = new PMD_RigidBody();
 
@@ -218,99 +191,32 @@ namespace Tso2Pmd
             if (y1 >= y2) rigidbody.pos_rot.z = (float)Math.Asin(-(x1 - x2) / L); // 位置：回転(rad(x), rad(y), rad(z))
             else rigidbody.pos_rot.z = (float)Math.Asin(-(x2 - x1) / L);
 
-            switch (flag)
-            {
-                case 0: // 髪
-                    rigidbody.rigidbody_group_index = 2; // 諸データ：グループ // 00
-                    rigidbody.rigidbody_group_target = 1; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
-                    rigidbody.shape_type = 2; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-                    rigidbody.shape_w = 0.4f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-                    rigidbody.shape_h = (float)(L * 0.5); // 形状：高さ // CD CC CC 3D // 0.1
+            rigidbody.rigidbody_group_index = 0; // 諸データ：グループ // 00
+            rigidbody.rigidbody_group_target = -1; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
+            rigidbody.shape_type = 2; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
+            rigidbody.shape_w = 0.4f; // 形状：半径(幅) // CD CC CC 3F // 1.6
+            rigidbody.shape_h = (float)(L * 0.8); // 形状：高さ // CD CC CC 3D // 0.1
 
-                    rigidbody.rigidbody_weight = 0.5f; // 諸データ：質量 // 00 00 80 3F // 1.0
-                    rigidbody.rigidbody_pos_dim = 0.8f; // 諸データ：移動減 // 00 00 00 00
-                    rigidbody.rigidbody_rot_dim = 0.8f; // 諸データ：回転減 // 00 00 00 00
-                    rigidbody.rigidbody_recoil = 0.0f; // 諸データ：反発力 // 00 00 00 00
-                    rigidbody.rigidbody_friction = 0.8f; // 諸データ：摩擦力 // 00 00 00 00
-                    rigidbody.rigidbody_type = 1; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-                    break;
-
-                case 1: // 乳
-                    rigidbody.rigidbody_group_index = 3; // 諸データ：グループ // 00
-                    rigidbody.rigidbody_group_target = 1; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
-                    rigidbody.shape_type = 2; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-                    rigidbody.shape_w = 0.2f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-                    rigidbody.shape_h = (float)(L * 0.9); // 形状：高さ // CD CC CC 3D // 0.1
-
-                    rigidbody.rigidbody_weight = 0.1f; // 諸データ：質量 // 00 00 80 3F // 1.0
-                    rigidbody.rigidbody_pos_dim = 0.5f; // 諸データ：移動減 // 00 00 00 00
-                    rigidbody.rigidbody_rot_dim = 0.5f; // 諸データ：回転減 // 00 00 00 00
-                    rigidbody.rigidbody_recoil = 0.0f; // 諸データ：反発力 // 00 00 00 00
-                    rigidbody.rigidbody_friction = 0.0f; // 諸データ：摩擦力 // 00 00 00 00
-                    rigidbody.rigidbody_type = 1; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-                    break;
-
-                case 2: // スカート
-                    rigidbody.rigidbody_group_index = 4; // 諸データ：グループ // 00
-                    rigidbody.rigidbody_group_target = 1; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
-                    rigidbody.shape_type = 1; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-                    rigidbody.shape_w = 0.8f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-                    rigidbody.shape_h = (float)(L * 0.5); // 形状：高さ // CD CC CC 3D // 0.1
-                    rigidbody.shape_d = 0.2f; // 形状：奥行 // CD CC CC 3D // 0.1
-
-                    rigidbody.rigidbody_weight = 0.5f; // 諸データ：質量 // 00 00 80 3F // 1.0
-                    rigidbody.rigidbody_pos_dim = 0.5f; // 諸データ：移動減 // 00 00 00 00
-                    rigidbody.rigidbody_rot_dim = 0.9f; // 諸データ：回転減 // 00 00 00 00
-                    rigidbody.rigidbody_recoil = 0.0f; // 諸データ：反発力 // 00 00 00 00
-                    rigidbody.rigidbody_friction = 0.0f; // 諸データ：摩擦力 // 00 00 00 00
-                    rigidbody.rigidbody_type = 1; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-                    break;
-
-                case 3: // スカートサイド
-                    rigidbody.rigidbody_group_index = 4; // 諸データ：グループ // 00
-                    rigidbody.rigidbody_group_target = 1; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
-                    rigidbody.shape_type = 1; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-                    rigidbody.shape_w = 0.2f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-                    rigidbody.shape_h = (float)(L * 0.5); // 形状：高さ // CD CC CC 3D // 0.1
-                    rigidbody.shape_d = 0.8f; // 形状：奥行 // CD CC CC 3D // 0.1
-
-                    rigidbody.rigidbody_weight = 0.5f; // 諸データ：質量 // 00 00 80 3F // 1.0
-                    rigidbody.rigidbody_pos_dim = 0.5f; // 諸データ：移動減 // 00 00 00 00
-                    rigidbody.rigidbody_rot_dim = 0.9f; // 諸データ：回転減 // 00 00 00 00
-                    rigidbody.rigidbody_recoil = 0.0f; // 諸データ：反発力 // 00 00 00 00
-                    rigidbody.rigidbody_friction = 0.0f; // 諸データ：摩擦力 // 00 00 00 00
-                    rigidbody.rigidbody_type = 1; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-                    break;
-
-                case 4: // 身体
-                    rigidbody.rigidbody_group_index = 0; // 諸データ：グループ // 00
-                    rigidbody.rigidbody_group_target = -1; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
-                    rigidbody.shape_type = 2; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-                    rigidbody.shape_w = 0.4f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-                    rigidbody.shape_h = (float)(L * 0.8); // 形状：高さ // CD CC CC 3D // 0.1
-
-                    rigidbody.rigidbody_weight = 0.5f; // 諸データ：質量 // 00 00 80 3F // 1.0
-                    rigidbody.rigidbody_pos_dim = 0.5f; // 諸データ：移動減 // 00 00 00 00
-                    rigidbody.rigidbody_rot_dim = 0.5f; // 諸データ：回転減 // 00 00 00 00
-                    rigidbody.rigidbody_recoil = 0.0f; // 諸データ：反発力 // 00 00 00 00
-                    rigidbody.rigidbody_friction = 0.0f; // 諸データ：摩擦力 // 00 00 00 00
-                    rigidbody.rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
-                    break;
-            }
+            rigidbody.rigidbody_weight = 0.5f; // 諸データ：質量 // 00 00 80 3F // 1.0
+            rigidbody.rigidbody_pos_dim = 0.5f; // 諸データ：移動減 // 00 00 00 00
+            rigidbody.rigidbody_rot_dim = 0.5f; // 諸データ：回転減 // 00 00 00 00
+            rigidbody.rigidbody_recoil = 0.0f; // 諸データ：反発力 // 00 00 00 00
+            rigidbody.rigidbody_friction = 0.0f; // 諸データ：摩擦力 // 00 00 00 00
+            rigidbody.rigidbody_type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
 
             body_list.Add(rigidbody);
         }
 
         // (指定したボーンにフィットさせた剛体)と、(その親ボーンにフィットさせた剛体)を、
         // 指定したボーンの位置でジョイントする
-        public void MakeJointFromBone(string bone_name, int flag)
+        public void MakeJointFromBone(string bone_name)
         {
-            MakeJointFromBone(GetBoneIDByName(bone_name), flag);
+            MakeJointFromBone(GetBoneIDByName(bone_name));
         }
 
         // (指定したボーンにフィットさせた剛体)と、(その親ボーンにフィットさせた剛体)を、
         // 指定したボーンの位置でジョイントする
-        public void MakeJointFromBone(int bone_num, int flag)
+        public void MakeJointFromBone(int bone_num)
         {
             PMD_Joint joint = new PMD_Joint();
 
@@ -342,35 +248,6 @@ namespace Tso2Pmd
             joint.spring_rot.x = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
             joint.spring_rot.y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
             joint.spring_rot.z = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-
-            switch (flag)
-            {
-                case 0: // 髪
-                    joint.constrain_rot_1.x = (float)((-20.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                    joint.constrain_rot_2.x = (float)((20.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-                    joint.constrain_rot_1.z = (float)((-20.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                    joint.constrain_rot_2.z = (float)((20.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-                    joint.spring_rot.x = 10.0f; // ばね：回転(rad(x), rad(y), rad(z))
-                    joint.spring_rot.y = 10.0f; // ばね：回転(rad(x), rad(y), rad(z))
-                    joint.spring_rot.z = 10.0f; // ばね：回転(rad(x), rad(y), rad(z))
-                    break;
-
-                case 1: // 乳
-                    joint.spring_rot.x = 200.0f; // ばね：回転(rad(x), rad(y), rad(z))
-                    joint.spring_rot.y = 200.0f; // ばね：回転(rad(x), rad(y), rad(z))
-                    joint.spring_rot.z = 200.0f; // ばね：回転(rad(x), rad(y), rad(z))
-                    break;
-
-                case 2: // スカート
-                    joint.constrain_rot_1.x = (float)((-15.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                    joint.constrain_rot_2.x = (float)((15.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-                    joint.constrain_rot_1.z = (float)((-15.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                    joint.constrain_rot_2.z = (float)((15.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-                    joint.spring_rot.x = 20.0f; // ばね：回転(rad(x), rad(y), rad(z))
-                    joint.spring_rot.y = 20.0f; // ばね：回転(rad(x), rad(y), rad(z))
-                    joint.spring_rot.z = 20.0f; // ばね：回転(rad(x), rad(y), rad(z))
-                    break;
-            }
 
             joint_list.Add(joint);
         }

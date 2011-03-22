@@ -11,28 +11,28 @@ namespace Tso2Pmd
 {
     public partial class PhysicsControl : UserControl
     {
-        // 物理テンプレート設定リスト
-        PhysObTemplateList pTemplate_list = new PhysObTemplateList();
-        public PhysObTemplateList PhysTemplateList { get { return pTemplate_list; } }
+        TemplateList template_list;
 
         public PhysicsControl()
         {
             InitializeComponent();
         }
 
-        public void Initialize()
+        public void Initialize(TemplateList template_list)
         {
-            // 物理テンプレート設定リストを読み込む
-            pTemplate_list.Load();
+            this.template_list = template_list;
 
-            foreach (IPhysObTemplate i in pTemplate_list.items)
+            foreach (IPhysObTemplate i in template_list.phys_items)
             {
                 switch (i.Group())
                 {
                     case 0: comboBox1.Items.Add(i.Name()); break;
                     case 1: comboBox2.Items.Add(i.Name()); break;
                     case 2: comboBox3.Items.Add(i.Name()); break;
-                    case 3: checkedListBox1.Items.Add(i.Name()); break;
+                    case 3: checkedListBox1.Items.Add(i.Name()); 
+                            checkedListBox1.SetItemChecked(checkedListBox1.Items.Count - 1, true);
+                            break;
+                    case 4: checkedListBox1.Items.Add(i.Name()); break;
                 }
             }
 
@@ -44,52 +44,85 @@ namespace Tso2Pmd
         private void radioButton_Kami0_CheckedChanged(object sender, EventArgs e)
         {
             comboBox1.Enabled = false;
-
-            //foreach (IPhysObTemplate i in pTemplate_list.items)
-            //    if (i.Group() == 0) pTemplate_list.flag[i] = false;
         }
 
         private void radioButton_Kami1_CheckedChanged(object sender, EventArgs e)
         {
             comboBox1.Enabled = true;
-         
-            //foreach (IPhysObTemplate i in pTemplate_list.items)
-            //    if (i.Group() == 0 && i.Name() == comboBox1.SelectedItem.ToString())
-            //        pTemplate_list.flag[i] = true;
         }
 
         private void radioButton_Chichi0_CheckedChanged(object sender, EventArgs e)
         {
             comboBox2.Enabled = false;
-
-            //foreach (IPhysObTemplate i in pTemplate_list.items)
-            //    if (i.Group() == 1) pTemplate_list.flag[i] = false;
         }
 
         private void radioButton_Chichi1_CheckedChanged(object sender, EventArgs e)
         {
             comboBox2.Enabled = true;
-
-            //foreach (IPhysObTemplate i in pTemplate_list.items)
-            //    if (i.Group() == 1 && i.Name() == comboBox2.SelectedItem.ToString())
-            //        pTemplate_list.flag[i] = true;
         }
 
         private void radioButton_Skirt0_CheckedChanged(object sender, EventArgs e)
         {
             comboBox3.Enabled = false;
-
-            //foreach (IPhysObTemplate i in pTemplate_list.items)
-            //    if (i.Group() == 2) pTemplate_list.flag[i] = false;
         }
 
         private void radioButton_Skirt1_CheckedChanged(object sender, EventArgs e)
         {
             comboBox3.Enabled = true;
+        }
 
-            //foreach (IPhysObTemplate i in pTemplate_list.items)
-            //    if (i.Group() == 2 && i.Name() == comboBox3.SelectedItem.ToString())
-            //        pTemplate_list.flag[i] = true;
+        public void SetPhysFlag()
+        {
+            foreach (IPhysObTemplate i in template_list.phys_items)
+            {
+                switch( i.Group() )
+                {
+                    case 0:
+                        if (radioButton_Kami1.Checked == true &&
+                            i.Name() == comboBox1.SelectedItem.ToString())
+                        {
+                            template_list.phys_flag[i] = true;
+                        }
+                        else
+                        {
+                            template_list.phys_flag[i] = false;
+                        }
+                        break;
+
+                    case 1:
+                        if (radioButton_Chichi1.Checked == true &&
+                            i.Name() == comboBox2.SelectedItem.ToString())
+                        {
+                            template_list.phys_flag[i] = true;
+                        }
+                        else
+                        {
+                            template_list.phys_flag[i] = false;
+                        }
+                        break;
+
+                    case 2:
+                        if (radioButton_Skirt1.Checked == true &&
+                            i.Name() == comboBox3.SelectedItem.ToString())
+                        {
+                            template_list.phys_flag[i] = true;
+                        }
+                        else
+                        {
+                            template_list.phys_flag[i] = false;
+                        }
+                        break;
+
+                    case 3:
+                        template_list.phys_flag[i] = false;
+                        for (int j = 0; j < checkedListBox1.CheckedItems.Count; j++)
+                        {
+                            if (i.Name() == checkedListBox1.CheckedItems[j].ToString())
+                                template_list.phys_flag[i] = true;
+                        }
+                        break;
+                }
+            }
         }
     }
 }

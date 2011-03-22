@@ -1,7 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using TDCG;
-using TDCGUtils;
+using System.Linq;
+using System.Text;
 
 namespace Tso2Pmd
 {
@@ -11,12 +11,17 @@ namespace Tso2Pmd
     public interface IPhysObTemplate
     {
         /// <summary>
-        /// 物理オブジェクトnode辞書
+        /// 枠表示名
         /// </summary>
-        //T2PPhysObjectList PhysOb { set; }
+        string Name();
 
         /// <summary>
-        /// TPONodeに変形係数を設定します。
+        /// 枠表示グループ
+        /// </summary>
+        int Group();
+
+        /// <summary>
+        /// 物理オブジェクトを変更する。
         /// </summary>
         void Execute(ref T2PPhysObjectList physOb_list);
     }
