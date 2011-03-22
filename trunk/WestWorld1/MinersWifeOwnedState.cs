@@ -31,8 +31,15 @@ class WifesGlobalState : State<MinersWife>
     {
     }
 
-    public override bool OnMessage(MinersWife entity, Telegram telegram)
+    public override bool OnMessage(MinersWife wife, Telegram telegram)
     {
+        switch (telegram.MessageID)
+        {
+            case 0:
+                Console.WriteLine("Elsa: Hi honey. Let me make you some of mah fine country stew");
+                wife.GetFSM().ChangeState(CookStew.Instance);
+                return true;
+        }
         return false;
     }
 }
@@ -108,11 +115,59 @@ class VisitBathroom : State<MinersWife>
 
     public override void Exit(MinersWife wife)
     {
-        Console.WriteLine("Elsa: Leavin' the Jon");
+        Console.WriteLine("Elsa: Leavin' the john");
     }
 
     public override bool OnMessage(MinersWife wife, Telegram telegram)
     {
+        return false;
+    }
+}
+
+class CookStew : State<MinersWife>
+{
+    static readonly CookStew instance = new CookStew();
+
+    // Explicit static constructor to tell C# compiler
+    // not to mark type as beforefieldinit
+    static CookStew() { }
+
+    CookStew() { }
+
+    //this is a singleton
+    public static CookStew Instance { get { return instance; } }
+
+    public override void Enter(MinersWife wife)
+    {
+        if (!wife.Cooking)
+        {
+            Console.WriteLine("Elsa: Putting the stew in the oven");
+            MessageDispatcher.Instance.DispatchMessage(1500000, wife.ID, 1, 1);
+            wife.Cooking = true;
+        }
+    }
+
+    public override void Execute(MinersWife wife)
+    {
+        Console.WriteLine("Elsa: Fussin' over food");
+    }
+
+    public override void Exit(MinersWife wife)
+    {
+        Console.WriteLine("Elsa: Puttin' the stew on the table");
+    }
+
+    public override bool OnMessage(MinersWife wife, Telegram telegram)
+    {
+        switch (telegram.MessageID)
+        {
+            case 1:
+                Console.WriteLine("Elsa: Stew ready! Let's eat");
+                MessageDispatcher.Instance.DispatchMessage(0, wife.ID, 0, 1);
+                wife.Cooking = false;
+                wife.GetFSM().ChangeState(DoHouseWork.Instance);
+                return true;
+        }
         return false;
     }
 }

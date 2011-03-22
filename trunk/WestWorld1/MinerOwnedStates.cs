@@ -137,6 +137,7 @@ public class GoHomeAndSleepTilRested : State<Miner>
         {
             Console.WriteLine("Miner Bob: Walkin' home");
             miner.ChangeLocation(location_type.shack);
+            MessageDispatcher.Instance.DispatchMessage(0, miner.ID, 1, 0);
         }
     }
 
@@ -157,11 +158,17 @@ public class GoHomeAndSleepTilRested : State<Miner>
 
     public override void Exit(Miner miner)
     {
-        Console.WriteLine("Miner Bob: Leaving the house");
     }
 
     public override bool OnMessage(Miner miner, Telegram telegram)
     {
+        switch (telegram.MessageID)
+        {
+            case 1:
+                Console.WriteLine("Miner Bob: Okay Hun, ahm a-comin'!");
+                miner.GetFSM().ChangeState(EatStew.Instance);
+                return true;
+        }
         return false;
     }
 }
@@ -201,6 +208,41 @@ public class QuenchThirst : State<Miner>
     public override void Exit(Miner miner)
     {
         Console.WriteLine("Miner Bob: Leaving the saloon, feelin' good");
+    }
+
+    public override bool OnMessage(Miner miner, Telegram telegram)
+    {
+        return false;
+    }
+}
+
+class EatStew : State<Miner>
+{
+    static readonly EatStew instance = new EatStew();
+
+    // Explicit static constructor to tell C# compiler
+    // not to mark type as beforefieldinit
+    static EatStew() { }
+
+    EatStew() { }
+
+    //this is a singleton
+    public static EatStew Instance { get { return instance; } }
+
+    public override void Enter(Miner miner)
+    {
+        Console.WriteLine("Miner Bob: Smells Reaaal goood Elsa!");
+    }
+    
+    public override void Execute(Miner miner)
+    {
+        Console.WriteLine("Miner Bob: Tastes real good too!");
+        miner.GetFSM().RevertToPreviousState();
+    }
+    
+    public override void Exit(Miner miner)
+    {
+        Console.WriteLine("Miner Bob: Thankya li'lle lady. Ah better get back to whatever ah wuz doin'");
     }
 
     public override bool OnMessage(Miner miner, Telegram telegram)

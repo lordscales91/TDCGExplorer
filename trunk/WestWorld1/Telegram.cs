@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 public class Telegram
 {
-    public double Time { get; set; }
+    public long Time { get; set; }
     public int SenderID { get; set; }
     public int ReceiverID { get; set; }
     public int MessageID { get; set; }
@@ -16,7 +16,7 @@ public class Telegram
         MessageID = -1;
     }
 
-    public Telegram(double time, int senderID, int receiverID, int messageID)
+    public Telegram(long time, int senderID, int receiverID, int messageID)
     {
         this.Time = time;
         this.SenderID = senderID;
