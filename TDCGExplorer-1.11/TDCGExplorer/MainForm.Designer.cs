@@ -153,76 +153,86 @@
             this.exitToolStripMenuItem});
             this.tDCGExplorerToolStripMenuItem.Name = "tDCGExplorerToolStripMenuItem";
             this.tDCGExplorerToolStripMenuItem.Size = new System.Drawing.Size(68, 22);
-            this.tDCGExplorerToolStripMenuItem.Text = TextResource.FileMenu;
+            this.tDCGExplorerToolStripMenuItem.Text = global::TDCGExplorer.TextResource.FileMenu;
             // 
             // extractZipFileToolStripMenuItem1
             // 
             this.extractZipFileToolStripMenuItem1.Name = "extractZipFileToolStripMenuItem1";
-            this.extractZipFileToolStripMenuItem1.Size = new System.Drawing.Size(244, 22);
-            this.extractZipFileToolStripMenuItem1.Text = TextResource.ExtractZipFile;
+            this.extractZipFileToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F5;
+            this.extractZipFileToolStripMenuItem1.Size = new System.Drawing.Size(266, 22);
+            this.extractZipFileToolStripMenuItem1.Text = global::TDCGExplorer.TextResource.ExtractZipFile;
             this.extractZipFileToolStripMenuItem1.Click += new System.EventHandler(this.extractZipFileToolStripMenuItem1_Click_1);
             // 
             // ResearchAssumptionArchiveToolStripMenuItem
             // 
             this.ResearchAssumptionArchiveToolStripMenuItem.Name = "ResearchAssumptionArchiveToolStripMenuItem";
-            this.ResearchAssumptionArchiveToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.ResearchAssumptionArchiveToolStripMenuItem.Text = TextResource.ResearchAssumptionArchive;
+            this.ResearchAssumptionArchiveToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F6;
+            this.ResearchAssumptionArchiveToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.ResearchAssumptionArchiveToolStripMenuItem.Text = global::TDCGExplorer.TextResource.ResearchAssumptionArchive;
             this.ResearchAssumptionArchiveToolStripMenuItem.Click += new System.EventHandler(this.LookupMODRefToolStripMenuItem_Click);
             // 
             // InstallPreferredModsToolStripMenuItem
             // 
             this.InstallPreferredModsToolStripMenuItem.Name = "InstallPreferredModsToolStripMenuItem";
-            this.InstallPreferredModsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.InstallPreferredModsToolStripMenuItem.Text = TextResource.InstallPreferredMods;
+            this.InstallPreferredModsToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F7;
+            this.InstallPreferredModsToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.InstallPreferredModsToolStripMenuItem.Text = global::TDCGExplorer.TextResource.InstallPreferredMods;
             this.InstallPreferredModsToolStripMenuItem.Click += new System.EventHandler(this.ExtractPreferZipMainMenuToolStripMenuItem_Click);
             // 
             // OpenArchiveToolStripMenuItem
             // 
             this.OpenArchiveToolStripMenuItem.Name = "OpenArchiveToolStripMenuItem";
-            this.OpenArchiveToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.OpenArchiveToolStripMenuItem.Text = TextResource.OpenArchive;
+            this.OpenArchiveToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F8;
+            this.OpenArchiveToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.OpenArchiveToolStripMenuItem.Text = global::TDCGExplorer.TextResource.OpenArchive;
             this.OpenArchiveToolStripMenuItem.Click += new System.EventHandler(this.OpenArchiveToolStripMenuItem_Click);
             // 
             // findNoBaseModToolStripMenuItem
             // 
             this.findNoBaseModToolStripMenuItem.Name = "findNoBaseModToolStripMenuItem";
-            this.findNoBaseModToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.findNoBaseModToolStripMenuItem.Text = TextResource.FindNoBaseMod;
+            this.findNoBaseModToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F3)));
+            this.findNoBaseModToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.findNoBaseModToolStripMenuItem.Text = global::TDCGExplorer.TextResource.FindNoBaseMod;
             this.findNoBaseModToolStripMenuItem.Click += new System.EventHandler(this.findNoBaseModToolStripMenuItem_Click);
             // 
             // labelSearchToolStripMenuItem
             // 
             this.labelSearchToolStripMenuItem.Name = "labelSearchToolStripMenuItem";
-            this.labelSearchToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.labelSearchToolStripMenuItem.Text = TextResource.Search;
+            this.labelSearchToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F3;
+            this.labelSearchToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.labelSearchToolStripMenuItem.Text = global::TDCGExplorer.TextResource.Search;
             this.labelSearchToolStripMenuItem.Click += new System.EventHandler(this.labelSearchToolStripMenuItem_Click);
             // 
             // tahfilesearchToolStripMenuItem
             // 
             this.tahfilesearchToolStripMenuItem.Name = "tahfilesearchToolStripMenuItem";
-            this.tahfilesearchToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.tahfilesearchToolStripMenuItem.Text = TextResource.tahfilesearch;
+            this.tahfilesearchToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F3)));
+            this.tahfilesearchToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.tahfilesearchToolStripMenuItem.Text = global::TDCGExplorer.TextResource.tahfilesearch;
             this.tahfilesearchToolStripMenuItem.Click += new System.EventHandler(this.tahfilesearchToolStripMenuItem_Click);
             // 
             // EditAnnotationToolStripMenuItem1
             // 
             this.EditAnnotationToolStripMenuItem1.Name = "EditAnnotationToolStripMenuItem1";
-            this.EditAnnotationToolStripMenuItem1.Size = new System.Drawing.Size(244, 22);
-            this.EditAnnotationToolStripMenuItem1.Text = TextResource.EditAnnotation;
+            this.EditAnnotationToolStripMenuItem1.ShortcutKeys = System.Windows.Forms.Keys.F9;
+            this.EditAnnotationToolStripMenuItem1.Size = new System.Drawing.Size(266, 22);
+            this.EditAnnotationToolStripMenuItem1.Text = global::TDCGExplorer.TextResource.EditAnnotation;
             this.EditAnnotationToolStripMenuItem1.Click += new System.EventHandler(this.EditAnnotationToolStripMenuItem1_Click);
             // 
             // OpenFolderToolStripMenuItem
             // 
             this.OpenFolderToolStripMenuItem.Name = "OpenFolderToolStripMenuItem";
-            this.OpenFolderToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.OpenFolderToolStripMenuItem.Text = TextResource.OpenFolder;
+            this.OpenFolderToolStripMenuItem.ShortcutKeys = System.Windows.Forms.Keys.F10;
+            this.OpenFolderToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.OpenFolderToolStripMenuItem.Text = global::TDCGExplorer.TextResource.OpenFolder;
             this.OpenFolderToolStripMenuItem.Click += new System.EventHandler(this.OpenFolderToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.exitToolStripMenuItem.Text = TextResource.Exit;
+            this.exitToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F4)));
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(266, 22);
+            this.exitToolStripMenuItem.Text = global::TDCGExplorer.TextResource.Exit;
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
             // databaseToolStripMenuItem
@@ -233,35 +243,40 @@
             this.displayUpdateToolStripMenuItem,
             this.editSystemDatabaseToolStripMenuItem});
             this.databaseToolStripMenuItem.Name = "databaseToolStripMenuItem";
+            this.databaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
             this.databaseToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
-            this.databaseToolStripMenuItem.Text = TextResource.DataBaseMenu;
+            this.databaseToolStripMenuItem.Text = global::TDCGExplorer.TextResource.DataBaseMenu;
             // 
             // createFromArcsToolStripMenuItem
             // 
             this.createFromArcsToolStripMenuItem.Name = "createFromArcsToolStripMenuItem";
-            this.createFromArcsToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.createFromArcsToolStripMenuItem.Text = TextResource.DataBaseUpdate;
+            this.createFromArcsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
+            this.createFromArcsToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
+            this.createFromArcsToolStripMenuItem.Text = global::TDCGExplorer.TextResource.DataBaseUpdate;
             this.createFromArcsToolStripMenuItem.Click += new System.EventHandler(this.createFromArcsToolStripMenuItem_Click);
             // 
             // downloadLatestArcsnameszipToolStripMenuItem
             // 
             this.downloadLatestArcsnameszipToolStripMenuItem.Name = "downloadLatestArcsnameszipToolStripMenuItem";
-            this.downloadLatestArcsnameszipToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.downloadLatestArcsnameszipToolStripMenuItem.Text = TextResource.DownloadLatestArcsnameszip;
+            this.downloadLatestArcsnameszipToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F8)));
+            this.downloadLatestArcsnameszipToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
+            this.downloadLatestArcsnameszipToolStripMenuItem.Text = global::TDCGExplorer.TextResource.DownloadLatestArcsnameszip;
             this.downloadLatestArcsnameszipToolStripMenuItem.Click += new System.EventHandler(this.downloadLatestDBZipToolStripMenuItem_Click_1);
             // 
             // displayUpdateToolStripMenuItem
             // 
             this.displayUpdateToolStripMenuItem.Name = "displayUpdateToolStripMenuItem";
-            this.displayUpdateToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.displayUpdateToolStripMenuItem.Text = TextResource.DisplayUpdate;
+            this.displayUpdateToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F9)));
+            this.displayUpdateToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
+            this.displayUpdateToolStripMenuItem.Text = global::TDCGExplorer.TextResource.DisplayUpdate;
             this.displayUpdateToolStripMenuItem.Click += new System.EventHandler(this.displayUpdateToolStripMenuItem_Click);
             // 
             // editSystemDatabaseToolStripMenuItem
             // 
             this.editSystemDatabaseToolStripMenuItem.Name = "editSystemDatabaseToolStripMenuItem";
-            this.editSystemDatabaseToolStripMenuItem.Size = new System.Drawing.Size(244, 22);
-            this.editSystemDatabaseToolStripMenuItem.Text = TextResource.EditSystemDatabase;
+            this.editSystemDatabaseToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
+            this.editSystemDatabaseToolStripMenuItem.Size = new System.Drawing.Size(297, 22);
+            this.editSystemDatabaseToolStripMenuItem.Text = global::TDCGExplorer.TextResource.EditSystemDatabase;
             this.editSystemDatabaseToolStripMenuItem.Click += new System.EventHandler(this.editSystemDatabaseToolStripMenuItem_Click_1);
             // 
             // tSOViewToolStripMenuItem
@@ -270,21 +285,26 @@
             this.resetTSOViewerToolStripMenuItem,
             this.switchToMortionEnabledToolStripMenuItem});
             this.tSOViewToolStripMenuItem.Name = "tSOViewToolStripMenuItem";
+            this.tSOViewToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Space)));
             this.tSOViewToolStripMenuItem.Size = new System.Drawing.Size(93, 22);
-            this.tSOViewToolStripMenuItem.Text = TextResource.TSOViewerMenu;
+            this.tSOViewToolStripMenuItem.Text = global::TDCGExplorer.TextResource.TSOViewerMenu;
             // 
             // resetTSOViewerToolStripMenuItem
             // 
             this.resetTSOViewerToolStripMenuItem.Name = "resetTSOViewerToolStripMenuItem";
-            this.resetTSOViewerToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.resetTSOViewerToolStripMenuItem.Text = TextResource.ResetTsoViwer;
+            this.resetTSOViewerToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+                        | System.Windows.Forms.Keys.R)));
+            this.resetTSOViewerToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
+            this.resetTSOViewerToolStripMenuItem.Text = global::TDCGExplorer.TextResource.ResetTsoViwer;
             this.resetTSOViewerToolStripMenuItem.Click += new System.EventHandler(this.resetTSOViewerToolStripMenuItem_Click);
             // 
             // switchToMortionEnabledToolStripMenuItem
             // 
             this.switchToMortionEnabledToolStripMenuItem.Name = "switchToMortionEnabledToolStripMenuItem";
-            this.switchToMortionEnabledToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
-            this.switchToMortionEnabledToolStripMenuItem.Text = TextResource.SwitchToMortionEnabled;
+            this.switchToMortionEnabledToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+                        | System.Windows.Forms.Keys.Space)));
+            this.switchToMortionEnabledToolStripMenuItem.Size = new System.Drawing.Size(295, 22);
+            this.switchToMortionEnabledToolStripMenuItem.Text = global::TDCGExplorer.TextResource.SwitchToMortionEnabled;
             this.switchToMortionEnabledToolStripMenuItem.Click += new System.EventHandler(this.switchToMortionEnabledToolStripMenuItem_Click);
             // 
             // WindowMenuToolStripMenuItem
@@ -294,28 +314,33 @@
             this.NewTabToolStripMenuItem1,
             this.CloseTabToolStripMenuItem});
             this.WindowMenuToolStripMenuItem.Name = "WindowMenuToolStripMenuItem";
+            this.WindowMenuToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.End)));
             this.WindowMenuToolStripMenuItem.Size = new System.Drawing.Size(80, 22);
-            this.WindowMenuToolStripMenuItem.Text = TextResource.WindowMenu;
+            this.WindowMenuToolStripMenuItem.Text = global::TDCGExplorer.TextResource.WindowMenu;
             // 
             // ExpandTreeToolStripMenuItem
             // 
             this.ExpandTreeToolStripMenuItem.Name = "ExpandTreeToolStripMenuItem";
-            this.ExpandTreeToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.ExpandTreeToolStripMenuItem.Text = TextResource.ExpandTree;
+            this.ExpandTreeToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
+            this.ExpandTreeToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.ExpandTreeToolStripMenuItem.Text = global::TDCGExplorer.TextResource.ExpandTree;
             this.ExpandTreeToolStripMenuItem.Click += new System.EventHandler(this.ExpandTreeToolStripMenuItem_Click);
             // 
             // NewTabToolStripMenuItem1
             // 
             this.NewTabToolStripMenuItem1.Name = "NewTabToolStripMenuItem1";
-            this.NewTabToolStripMenuItem1.Size = new System.Drawing.Size(172, 22);
-            this.NewTabToolStripMenuItem1.Text = TextResource.NewTab;
+            this.NewTabToolStripMenuItem1.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.NewTabToolStripMenuItem1.Size = new System.Drawing.Size(233, 22);
+            this.NewTabToolStripMenuItem1.Text = global::TDCGExplorer.TextResource.NewTab;
             this.NewTabToolStripMenuItem1.Click += new System.EventHandler(this.NewTabToolStripMenuItem1_Click);
             // 
             // CloseTabToolStripMenuItem
             // 
             this.CloseTabToolStripMenuItem.Name = "CloseTabToolStripMenuItem";
-            this.CloseTabToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.CloseTabToolStripMenuItem.Text = TextResource.CloseTab;
+            this.CloseTabToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+                        | System.Windows.Forms.Keys.N)));
+            this.CloseTabToolStripMenuItem.Size = new System.Drawing.Size(233, 22);
+            this.CloseTabToolStripMenuItem.Text = global::TDCGExplorer.TextResource.CloseTab;
             this.CloseTabToolStripMenuItem.Click += new System.EventHandler(this.CloseTabToolStripMenuItem_Click);
             // 
             // HelpToolStripMenuItem
@@ -324,21 +349,24 @@
             this.ShowManualToolStripMenuItem,
             this.ShowVersionToolStripMenuItem});
             this.HelpToolStripMenuItem.Name = "HelpToolStripMenuItem";
+            this.HelpToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F1)));
             this.HelpToolStripMenuItem.Size = new System.Drawing.Size(56, 22);
-            this.HelpToolStripMenuItem.Text = TextResource.HelpMenu;
+            this.HelpToolStripMenuItem.Text = global::TDCGExplorer.TextResource.HelpMenu;
             // 
             // ShowManualToolStripMenuItem
             // 
             this.ShowManualToolStripMenuItem.Name = "ShowManualToolStripMenuItem";
-            this.ShowManualToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.ShowManualToolStripMenuItem.Text = TextResource.ShowManual;
+            this.ShowManualToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F1)));
+            this.ShowManualToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+            this.ShowManualToolStripMenuItem.Text = global::TDCGExplorer.TextResource.ShowManual;
             this.ShowManualToolStripMenuItem.Click += new System.EventHandler(this.ShowManualToolStripMenuItem_Click);
             // 
             // ShowVersionToolStripMenuItem
             // 
             this.ShowVersionToolStripMenuItem.Name = "ShowVersionToolStripMenuItem";
-            this.ShowVersionToolStripMenuItem.Size = new System.Drawing.Size(172, 22);
-            this.ShowVersionToolStripMenuItem.Text = TextResource.ShowVersion;
+            this.ShowVersionToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Alt | System.Windows.Forms.Keys.F1)));
+            this.ShowVersionToolStripMenuItem.Size = new System.Drawing.Size(225, 22);
+            this.ShowVersionToolStripMenuItem.Text = global::TDCGExplorer.TextResource.ShowVersion;
             this.ShowVersionToolStripMenuItem.Click += new System.EventHandler(this.ShowVersionToolStripMenuItem_Click);
             // 
             // treeViewArcs
@@ -374,49 +402,49 @@
             // 
             this.expandAllToolStripMenuItem.Name = "expandAllToolStripMenuItem";
             this.expandAllToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
-            this.expandAllToolStripMenuItem.Text = TextResource.ExpandTree;
+            this.expandAllToolStripMenuItem.Text = global::TDCGExplorer.TextResource.ExpandTree;
             this.expandAllToolStripMenuItem.Click += new System.EventHandler(this.expandAllToolStripMenuItem1_Click);
             // 
             // extractZipToolStripMenuItem
             // 
             this.extractZipToolStripMenuItem.Name = "extractZipToolStripMenuItem";
             this.extractZipToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
-            this.extractZipToolStripMenuItem.Text = TextResource.ExtractZipFile;
+            this.extractZipToolStripMenuItem.Text = global::TDCGExplorer.TextResource.ExtractZipFile;
             this.extractZipToolStripMenuItem.Click += new System.EventHandler(this.extractZipToolStripMenuItem_Click);
             // 
             // InstallPreferredModToolStripMenuItem
             // 
             this.InstallPreferredModToolStripMenuItem.Name = "InstallPreferredModToolStripMenuItem";
             this.InstallPreferredModToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
-            this.InstallPreferredModToolStripMenuItem.Text = TextResource.InstallPreferredMods;
+            this.InstallPreferredModToolStripMenuItem.Text = global::TDCGExplorer.TextResource.InstallPreferredMods;
             this.InstallPreferredModToolStripMenuItem.Click += new System.EventHandler(this.ExtractPreferZipToolStripMenuItem_Click);
             // 
             // EditAnnotationToolStripMenuItem
             // 
             this.EditAnnotationToolStripMenuItem.Name = "EditAnnotationToolStripMenuItem";
             this.EditAnnotationToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
-            this.EditAnnotationToolStripMenuItem.Text = TextResource.EditAnnotation;
+            this.EditAnnotationToolStripMenuItem.Text = global::TDCGExplorer.TextResource.EditAnnotation;
             this.EditAnnotationToolStripMenuItem.Click += new System.EventHandler(this.EditAnnotationToolStripMenuItem_Click);
             // 
             // LookUpModrefToolStripMenuItem
             // 
             this.LookUpModrefToolStripMenuItem.Name = "LookUpModrefToolStripMenuItem";
             this.LookUpModrefToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
-            this.LookUpModrefToolStripMenuItem.Text = TextResource.ResearchAssumptionArchive;
+            this.LookUpModrefToolStripMenuItem.Text = global::TDCGExplorer.TextResource.ResearchAssumptionArchive;
             this.LookUpModrefToolStripMenuItem.Click += new System.EventHandler(this.LookupModRefToolStripMenuItem_Click);
             // 
             // OpenFolderCXToolStripMenuItem
             // 
             this.OpenFolderCXToolStripMenuItem.Name = "OpenFolderCXToolStripMenuItem";
             this.OpenFolderCXToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
-            this.OpenFolderCXToolStripMenuItem.Text = TextResource.OpenFolder;
+            this.OpenFolderCXToolStripMenuItem.Text = global::TDCGExplorer.TextResource.OpenFolder;
             this.OpenFolderCXToolStripMenuItem.Click += new System.EventHandler(this.OpenFolderCXToolStripMenuItem_Click);
             // 
             // OpenAllTAHToolStripMenuItem
             // 
             this.OpenAllTAHToolStripMenuItem.Name = "OpenAllTAHToolStripMenuItem";
             this.OpenAllTAHToolStripMenuItem.Size = new System.Drawing.Size(340, 22);
-            this.OpenAllTAHToolStripMenuItem.Text = TextResource.OpenAllTAH;
+            this.OpenAllTAHToolStripMenuItem.Text = global::TDCGExplorer.TextResource.OpenAllTAH;
             this.OpenAllTAHToolStripMenuItem.Click += new System.EventHandler(this.OpenAllTAHToolStripMenuItem_Click);
             // 
             // StatusStrip
@@ -466,7 +494,7 @@
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
             this.closeToolStripMenuItem.Size = new System.Drawing.Size(148, 22);
-            this.closeToolStripMenuItem.Text = TextResource.CloseTab;
+            this.closeToolStripMenuItem.Text = global::TDCGExplorer.TextResource.CloseTab;
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
             // splitContainerV
@@ -518,7 +546,7 @@
             this.tabPageArcs.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageArcs.Size = new System.Drawing.Size(165, 306);
             this.tabPageArcs.TabIndex = 0;
-            this.tabPageArcs.Text = TextResource.ArcsTabName;
+            this.tabPageArcs.Text = global::TDCGExplorer.TextResource.ArcsTabName;
             this.tabPageArcs.UseVisualStyleBackColor = true;
             // 
             // tabPageZips
@@ -529,7 +557,7 @@
             this.tabPageZips.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageZips.Size = new System.Drawing.Size(165, 306);
             this.tabPageZips.TabIndex = 1;
-            this.tabPageZips.Text = TextResource.ZipsTabName;
+            this.tabPageZips.Text = global::TDCGExplorer.TextResource.ZipsTabName;
             this.tabPageZips.UseVisualStyleBackColor = true;
             // 
             // treeViewZips
@@ -556,7 +584,7 @@
             this.tabPageIntalled.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageIntalled.Size = new System.Drawing.Size(165, 306);
             this.tabPageIntalled.TabIndex = 2;
-            this.tabPageIntalled.Text = TextResource.InstalledModsTabName;
+            this.tabPageIntalled.Text = global::TDCGExplorer.TextResource.InstalledModsTabName;
             this.tabPageIntalled.UseVisualStyleBackColor = true;
             // 
             // treeViewInstalled
@@ -583,7 +611,7 @@
             this.tabPageCollsion.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageCollsion.Size = new System.Drawing.Size(165, 306);
             this.tabPageCollsion.TabIndex = 3;
-            this.tabPageCollsion.Text = TextResource.CollisionsTabName;
+            this.tabPageCollsion.Text = global::TDCGExplorer.TextResource.CollisionsTabName;
             this.tabPageCollsion.UseVisualStyleBackColor = true;
             // 
             // treeViewCollision
@@ -610,7 +638,7 @@
             this.tabPageTag.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageTag.Size = new System.Drawing.Size(165, 306);
             this.tabPageTag.TabIndex = 4;
-            this.tabPageTag.Text = TextResource.TagsTabName;
+            this.tabPageTag.Text = global::TDCGExplorer.TextResource.TagsTabName;
             this.tabPageTag.UseVisualStyleBackColor = true;
             // 
             // treeViewTag
@@ -637,7 +665,7 @@
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(165, 306);
             this.tabPage1.TabIndex = 5;
-            this.tabPage1.Text = TextResource.SaveFilesTabName;
+            this.tabPage1.Text = global::TDCGExplorer.TextResource.SaveFilesTabName;
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // treeViewSaveFile
@@ -730,21 +758,21 @@
             // 
             this.NewTabToolStripMenuItem.Name = "NewTabToolStripMenuItem";
             this.NewTabToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.NewTabToolStripMenuItem.Text = TextResource.NewTab;
+            this.NewTabToolStripMenuItem.Text = global::TDCGExplorer.TextResource.NewTab;
             this.NewTabToolStripMenuItem.Click += new System.EventHandler(this.NewTabPageToolStripMenuItem_Click);
             // 
             // ExpandTahFileToolStripMenuItem
             // 
             this.ExpandTahFileToolStripMenuItem.Name = "ExpandTahFileToolStripMenuItem";
             this.ExpandTahFileToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.ExpandTahFileToolStripMenuItem.Text = TextResource.EditTahFile;
+            this.ExpandTahFileToolStripMenuItem.Text = global::TDCGExplorer.TextResource.EditTahFile;
             this.ExpandTahFileToolStripMenuItem.Click += new System.EventHandler(this.TahDecryptToolStripMenuItem_Click);
             // 
             // ExtractTahFileDirectToolStripMenuItem
             // 
             this.ExtractTahFileDirectToolStripMenuItem.Name = "ExtractTahFileDirectToolStripMenuItem";
             this.ExtractTahFileDirectToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
-            this.ExtractTahFileDirectToolStripMenuItem.Text = TextResource.ExtractTahFile;
+            this.ExtractTahFileDirectToolStripMenuItem.Text = global::TDCGExplorer.TextResource.ExtractTahFile;
             this.ExtractTahFileDirectToolStripMenuItem.Click += new System.EventHandler(this.ExtractTahFileToolStripMenuItem_Click);
             // 
             // pictureBoxImage
@@ -770,35 +798,35 @@
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(280, 22);
-            this.toolStripMenuItem1.Text = TextResource.NewTab;
+            this.toolStripMenuItem1.Text = global::TDCGExplorer.TextResource.NewTab;
             this.toolStripMenuItem1.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // ToolStripMenuItemRename
             // 
             this.ToolStripMenuItemRename.Name = "ToolStripMenuItemRename";
             this.ToolStripMenuItemRename.Size = new System.Drawing.Size(280, 22);
-            this.ToolStripMenuItemRename.Text = TextResource.Rename;
+            this.ToolStripMenuItemRename.Text = global::TDCGExplorer.TextResource.Rename;
             this.ToolStripMenuItemRename.Click += new System.EventHandler(this.ToolStripMenuItemRename_Click);
             // 
             // toolStripMenuItemTouch
             // 
             this.toolStripMenuItemTouch.Name = "toolStripMenuItemTouch";
             this.toolStripMenuItemTouch.Size = new System.Drawing.Size(280, 22);
-            this.toolStripMenuItemTouch.Text = TextResource.Touch;
+            this.toolStripMenuItemTouch.Text = global::TDCGExplorer.TextResource.Touch;
             this.toolStripMenuItemTouch.Click += new System.EventHandler(this.toolStripMenuItemTouch_Click);
             // 
             // toolStripMenuItemTouchAll
             // 
             this.toolStripMenuItemTouchAll.Name = "toolStripMenuItemTouchAll";
             this.toolStripMenuItemTouchAll.Size = new System.Drawing.Size(280, 22);
-            this.toolStripMenuItemTouchAll.Text = TextResource.TouchAll;
+            this.toolStripMenuItemTouchAll.Text = global::TDCGExplorer.TextResource.TouchAll;
             this.toolStripMenuItemTouchAll.Click += new System.EventHandler(this.toolStripMenuItemTouchAll_Click);
             // 
             // makeThumbToolStripMenuItem
             // 
             this.makeThumbToolStripMenuItem.Name = "makeThumbToolStripMenuItem";
             this.makeThumbToolStripMenuItem.Size = new System.Drawing.Size(280, 22);
-            this.makeThumbToolStripMenuItem.Text = TextResource.MakeThumbnail;
+            this.makeThumbToolStripMenuItem.Text = global::TDCGExplorer.TextResource.MakeThumbnail;
             this.makeThumbToolStripMenuItem.Click += new System.EventHandler(this.makeThumbToolStripMenuItem_Click);
             // 
             // MainForm
