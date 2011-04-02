@@ -7,7 +7,7 @@ namespace Steering
 {
     public class GameWorld
     {
-        Vehicle vehicle;
+        List<Vehicle> vehicles = new List<Vehicle>();
 
         //the position of the crosshair
         Vector2 crosshair;
@@ -21,8 +21,10 @@ namespace Steering
             Vector2 spawn_pos0 = new Vector2(
                 (float)(200.0 * RandomClamped() + 200.0),
                 (float)(200.0 * RandomClamped() + 200.0));
-            vehicle = new Vehicle(this, spawn_pos0, (float)(random.NextDouble() * 2.0 * Math.PI), Vector2.Empty, 1);
-            vehicle.Steering.SeekOn();
+            Vehicle vehicle0 = new Vehicle(this, spawn_pos0, (float)(random.NextDouble() * 2.0 * Math.PI), Vector2.Empty, 1);
+            vehicle0.Steering.SeekOn();
+            vehicles.Add(vehicle0);
+
             crosshair = new Vector2(200, 200);
         }
 
@@ -33,13 +35,19 @@ namespace Steering
 
         public void Update(double time_elapsed)
         {
-            vehicle.Update(time_elapsed);
+            foreach (Vehicle vehicle in vehicles)
+            {
+                vehicle.Update(time_elapsed);
+            }
         }
 
         public void Render(Graphics graphics)
         {
             graphics.Clear(Color.White);
-            vehicle.Render(graphics);
+            foreach (Vehicle vehicle in vehicles)
+            {
+                vehicle.Render(graphics);
+            }
             Crosshair_Render(graphics);
         }
 
