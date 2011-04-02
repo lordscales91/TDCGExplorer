@@ -38,7 +38,7 @@ namespace Steering
         Vector2 steeringForce;
 
         //these can be used to keep track of friends, pursuers, or prey
-        Vehicle targetAgent1;
+        public Vehicle TargetAgent1 { get; set; }
         //Vehicle targetAgent2;
 
         //the current target
@@ -55,7 +55,7 @@ namespace Steering
         {
             this.vehicle = vehicle;
             this.flags = behavior_type.none;
-            this.targetAgent1 = null;
+            this.TargetAgent1 = null;
             //this.targetAgent2 = null;
             this.target = Vector2.Empty;
         }
@@ -79,7 +79,7 @@ namespace Steering
                 steeringForce += Arrive(vehicle.World.Crosshair, 2) * weightArrive;
 
             if (On(behavior_type.pursuit))
-                steeringForce += Pursuit(targetAgent1) * weightPursuit;
+                steeringForce += Pursuit(TargetAgent1) * weightPursuit;
 
             Truncate(ref steeringForce, vehicle.MaxForce);
             return steeringForce;
@@ -154,6 +154,11 @@ namespace Steering
             flags |= behavior_type.arrive;
         }
 
+        public void PursuitOn()
+        {
+            flags |= behavior_type.pursuit;
+        }
+
         public void FleeOff()
         {
             if (On(behavior_type.flee))
@@ -170,6 +175,12 @@ namespace Steering
         {
             if (On(behavior_type.arrive))
                 flags ^= behavior_type.arrive;
+        }
+
+        public void PursuitOff()
+        {
+            if (On(behavior_type.pursuit))
+                flags ^= behavior_type.pursuit;
         }
     }
 }
