@@ -22,6 +22,7 @@ namespace Steering
                 (float)(200.0 * RandomClamped() + 200.0),
                 (float)(200.0 * RandomClamped() + 200.0));
             vehicle = new Vehicle(this, spawn_pos0, (float)(random.NextDouble() * 2.0 * Math.PI), Vector2.Empty, 1);
+            vehicle.Steering.SeekOn();
             crosshair = new Vector2(200, 200);
         }
 
