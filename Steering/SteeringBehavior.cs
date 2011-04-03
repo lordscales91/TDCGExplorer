@@ -81,16 +81,8 @@ namespace Steering
             if (On(behavior_type.pursuit))
                 steeringForce += Pursuit(TargetAgent1) * weightPursuit;
 
-            Truncate(ref steeringForce, vehicle.MaxForce);
+            Helper2.Truncate(ref steeringForce, vehicle.MaxForce);
             return steeringForce;
-        }
-        public void Truncate(ref Vector2 v, float max)
-        {
-            if (v.Length() > max)
-            {
-                v.Normalize();
-                v *= max;
-            }
         }
 
         public Vector2 Seek(Vector2 targetPos)

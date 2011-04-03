@@ -90,6 +90,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="SteeringBehavior.cs" />
+    <Compile Include="Helper2.cs" />
     <Compile Include="Vehicle.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
