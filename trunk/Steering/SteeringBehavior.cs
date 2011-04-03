@@ -50,6 +50,7 @@ namespace Steering
         public const float weightFlee = 1.0f * steeringForceTweaker;
         public const float weightArrive = 1.0f * steeringForceTweaker;
         public const float weightPursuit = 1.0f * steeringForceTweaker;
+        public const float weightEvade = 1.0f * steeringForceTweaker;
 
         public SteeringBehavior(Vehicle vehicle)
         {
@@ -80,6 +81,9 @@ namespace Steering
 
             if (On(behavior_type.pursuit))
                 steeringForce += Pursuit(TargetAgent1) * weightPursuit;
+
+            if (On(behavior_type.evade))
+                steeringForce += Evade(TargetAgent1) * weightEvade;
 
             Helper2.Truncate(ref steeringForce, vehicle.MaxForce);
             return steeringForce;
@@ -126,6 +130,13 @@ namespace Steering
             return Seek(evader.Position + evader.Velocity * lookAheadTime);
         }
 
+        public Vector2 Evade(Vehicle pursuer)
+        {
+            Vector2 toPursuer = pursuer.Position - vehicle.Position;
+            float lookAheadTime = toPursuer.Length() / (vehicle.MaxSpeed + pursuer.Speed);
+            return Flee(pursuer.Position + pursuer.Velocity * lookAheadTime);
+        }
+
         bool On(behavior_type bt)
         {
             return (flags & bt) == bt;
@@ -151,6 +162,11 @@ namespace Steering
             flags |= behavior_type.pursuit;
         }
 
+        public void EvadeOn()
+        {
+            flags |= behavior_type.evade;
+        }
+
         public void FleeOff()
         {
             if (On(behavior_type.flee))
@@ -173,6 +189,12 @@ namespace Steering
         {
             if (On(behavior_type.pursuit))
                 flags ^= behavior_type.pursuit;
+        }
+
+        public void EvadeOff()
+        {
+            if (On(behavior_type.evade))
+                flags ^= behavior_type.evade;
         }
     }
 }
