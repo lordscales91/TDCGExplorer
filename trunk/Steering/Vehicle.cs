@@ -67,8 +67,12 @@ namespace Steering
             return transformed;
         }
 
+        public double TimeElapsed;
+
         public void Update(double time_elapsed)
         {
+            this.TimeElapsed = time_elapsed;
+
             //calculate the combined force from each steering behavior in the 
             //vehicle's list
             Vector2 steeringForce = steering.Calculate();
@@ -91,6 +95,9 @@ namespace Steering
                 heading = Vector2.Normalize(velocity);
                 side = Helper2.Perp(heading);
             }
+
+            //treat the screen as a toroid
+            Helper2.WrapRound(ref position, world.cxClient, world.cyClient);
         }
 
         public void Render(Graphics graphics)

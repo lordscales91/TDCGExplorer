@@ -19,5 +19,17 @@ namespace Steering
                 v *= max;
             }
         }
+
+        public static void WrapRound(ref Vector2 pos, int maxX, int maxY)
+        {
+            if (pos.X > maxX)
+                pos.X = 0.0f;
+            if (pos.X < 0)
+                pos.X = maxX;
+            if (pos.Y < 0)
+                pos.Y = maxY;
+            if (pos.Y > maxX)
+                pos.Y = 0.0f;
+        }
     }
 }
