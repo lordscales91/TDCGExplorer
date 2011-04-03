@@ -41,16 +41,11 @@ namespace Steering
             this.world = world;
             this.position = position;
             this.heading = new Vector2((float)+Math.Sin(rotation), (float)-Math.Cos(rotation));
-            this.side = Perp(this.heading);
+            this.side = Helper2.Perp(this.heading);
             steering = new SteeringBehavior(this);
             this.mass = mass;
             this.maxSpeed = 150.0f;
             this.maxForce = 2.0f * SteeringBehavior.steeringForceTweaker;
-        }
-
-        public Vector2 Perp(Vector2 v)
-        {
-            return new Vector2(-v.Y, +v.X);
         }
 
         public PointF[] WorldTransform(Vector2[] points, Vector2 pos, Vector2 scale)
@@ -85,7 +80,7 @@ namespace Steering
             velocity += acceleration * (float)time_elapsed;
 
             //make sure vehicle does not exceed maximum velocity
-            Truncate(ref velocity, maxSpeed);
+            Helper2.Truncate(ref velocity, maxSpeed);
 
             //update the position
             position += velocity * (float)time_elapsed;
@@ -94,16 +89,7 @@ namespace Steering
             if (velocity.LengthSq() > 0.00000001)
             {
                 heading = Vector2.Normalize(velocity);
-                side = Perp(heading);
-            }
-        }
-
-        public void Truncate(ref Vector2 v, float max)
-        {
-            if (v.Length() > max)
-            {
-                v.Normalize();
-                v *= max;
+                side = Helper2.Perp(heading);
             }
         }
 
