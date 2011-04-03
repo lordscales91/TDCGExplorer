@@ -16,7 +16,7 @@ namespace Steering
             SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.Opaque | ControlStyles.OptimizedDoubleBuffer, true);
             ClientSize = new Size(400, 400);
             InitializeComponent();
-            world = new GameWorld();
+            world = new GameWorld(400, 400);
             stopwatch = new Stopwatch();
         }
 

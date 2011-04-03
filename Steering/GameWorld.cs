@@ -16,13 +16,19 @@ namespace Steering
 
         Random random = new Random();
 
-        public GameWorld()
+        public int cxClient;
+        public int cyClient;
+
+        public GameWorld(int cx, int cy)
         {
+            this.cxClient = cx;
+            this.cyClient = cy;
+
             Vector2 spawn_pos0 = new Vector2(
                 (float)(200.0 * RandomClamped() + 200.0),
                 (float)(200.0 * RandomClamped() + 200.0));
             Vehicle vehicle0 = new Vehicle(this, spawn_pos0, (float)(random.NextDouble() * 2.0 * Math.PI), Vector2.Empty, 1);
-            vehicle0.Steering.SeekOn();
+            vehicle0.Steering.WanderOn();
             vehicles.Add(vehicle0);
 
             crosshair = new Vector2(200, 200);

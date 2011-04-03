@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Microsoft.DirectX;
 
@@ -51,6 +51,14 @@ namespace Steering
         public const float weightArrive = 1.0f * steeringForceTweaker;
         public const float weightPursuit = 1.0f * steeringForceTweaker;
         public const float weightEvade = 1.0f * steeringForceTweaker;
+        public const float weightWander = 1.0f * steeringForceTweaker;
+
+        Random random = new Random();
+
+        double RandomClamped()
+        {
+            return random.NextDouble() - random.NextDouble();
+        }
 
         public SteeringBehavior(Vehicle vehicle)
         {
@@ -59,6 +67,13 @@ namespace Steering
             this.TargetAgent1 = null;
             //this.targetAgent2 = null;
             this.target = Vector2.Empty;
+
+            //stuff for the wander behavior
+            double theta = random.NextDouble() * 2.0 * Math.PI;
+
+            //create a vector to a target position on the wander circle
+            wanderTarget = new Vector2((float)(wanderRadius * Math.Cos(theta)), 
+                (float)(wanderRadius * Math.Sin(theta)));
         }
 
         //calculates and sums the steering forces from any active behaviors
@@ -84,6 +99,9 @@ namespace Steering
 
             if (On(behavior_type.evade))
                 steeringForce += Evade(TargetAgent1) * weightEvade;
+
+            if (On(behavior_type.wander))
+                steeringForce += Wander() * weightWander;
 
             Helper2.Truncate(ref steeringForce, vehicle.MaxForce);
             return steeringForce;
@@ -137,6 +155,49 @@ namespace Steering
             return Flee(pursuer.Position + pursuer.Velocity * lookAheadTime);
         }
 
+        const float wanderRadius = 1.2f;
+        const float wanderDistance = 2.0f;
+        const double wanderJitter = 80.0;
+        Vector2 wanderTarget;
+
+        public Vector2 Wander()
+        {
+            //this behavior is dependent on the update rate, so this line must
+            //be included when using time independent framerate.
+            double jitterThisTimeSlice = wanderJitter * vehicle.TimeElapsed;
+
+            //first, add a small random vector to the target's position
+            wanderTarget += new Vector2((float)(RandomClamped() * jitterThisTimeSlice),
+                (float)(RandomClamped() * jitterThisTimeSlice));
+
+            //reproject this new vector back on to a unit circle
+            wanderTarget.Normalize();
+
+            //increase the length of the vector to the same as the radius
+            //of the wander circle
+            wanderTarget *= wanderRadius;
+
+            //move the target into a position WanderDist in front of the agent
+            Vector2 targetLocal = wanderTarget + new Vector2(wanderDistance, 0);
+
+            //project the target into world space
+            Vector2 targetWorld = PointToWorldSpace(targetLocal, vehicle.Heading, vehicle.Side, vehicle.Position);
+
+            //and steer towards it
+            return targetWorld - vehicle.Position;
+        }
+
+        Vector2 PointToWorldSpace(Vector2 point, Vector2 heading, Vector2 side, Vector2 pos)
+        {
+            Matrix m = Matrix.Identity;
+            m.M11 = heading.X; m.M12 = heading.Y;
+            m.M21 = side.X; m.M22 = side.Y;
+            m.M41 = pos.X;
+            m.M42 = pos.Y;
+
+            return Vector2.TransformCoordinate(point, m);
+        }
+
         bool On(behavior_type bt)
         {
             return (flags & bt) == bt;
@@ -167,6 +228,11 @@ namespace Steering
             flags |= behavior_type.evade;
         }
 
+        public void WanderOn()
+        {
+            flags |= behavior_type.wander;
+        }
+
         public void FleeOff()
         {
             if (On(behavior_type.flee))
@@ -195,6 +261,12 @@ namespace Steering
         {
             if (On(behavior_type.evade))
                 flags ^= behavior_type.evade;
+        }
+
+        public void WanderOff()
+        {
+            if (On(behavior_type.wander))
+                flags ^= behavior_type.wander;
         }
     }
 }
