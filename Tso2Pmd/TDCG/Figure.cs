@@ -100,6 +100,7 @@ public class Figure : IDisposable
             TPOConfig config = TPOConfig.Load(config_file);
             tpo_list.SetRatiosFromConfig(config);
         }
+        LightDirection = new Vector3(0.0f, 0.0f, -1.0f);
     }
 
     /// <summary>
@@ -455,6 +456,20 @@ public class Figure : IDisposable
                 clipped_boneMatrices[numPalettes] = tso_node.offset_matrix * tmo_node.combined_matrix;
         }
         return clipped_boneMatrices;
+    }
+
+    /// <summary>
+    /// 光源方向
+    /// </summary>
+    public Vector3 LightDirection { get; set; }
+
+    /// <summary>
+    /// 光源方向ベクトルを得ます。
+    /// </summary>
+    /// <returns></returns>
+    public Vector4 LightDirForced()
+    {
+        return new Vector4(LightDirection.X, LightDirection.Y, LightDirection.Z, 0.0f);
     }
 
     /// <summary>
