@@ -11,6 +11,29 @@ namespace TDCG
     /// </summary>
 public class ProportionList
 {
+    static readonly ProportionList instance = new ProportionList();
+
+    // Explicit static constructor to tell C# compiler
+    // not to mark type as beforefieldinit
+    static ProportionList()
+    {
+    }
+
+    ProportionList()
+    {
+    }
+
+    /// <summary>
+    /// 体型リスト
+    /// </summary>
+    public static ProportionList Instance
+    {
+        get
+        {
+            return instance;
+        }
+    }
+    
     /// <summary>
     /// 体型スクリプトのリスト
     /// </summary>
@@ -27,9 +50,13 @@ public class ProportionList
 
     /// <summary>
     /// 体型スクリプトを読み込みます。
+    /// 2回目は読み込みません。
     /// </summary>
     public void Load()
     {
+        if (items.Count != 0)
+            return;
+
         string proportion_path = GetProportionPath();
         if (! Directory.Exists(proportion_path))
             return;
