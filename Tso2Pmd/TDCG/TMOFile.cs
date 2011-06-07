@@ -982,6 +982,27 @@ namespace TDCG
         {
             return ToAngleXYZ(Matrix.RotationQuaternion(q));
         }
+
+        /// 左右反転します。
+        public void Flip()
+        {
+            FlipMatrix(ref m);
+        }
+
+        /// 左右反転します。
+        public static void FlipMatrix(ref Matrix m)
+        {
+            //y回転
+            m.M31 = -m.M31;
+            m.M13 = -m.M13;
+
+            //z回転
+            m.M21 = -m.M21;
+            m.M12 = -m.M12;
+
+            //x移動
+            m.M41 = -m.M41;
+        }
     }
 
     /// <summary>
@@ -989,13 +1010,21 @@ namespace TDCG
     /// </summary>
     public class TMOFrame
     {
-        internal int id;
-        internal TMOMat[] matrices;
+        int id;
 
 // 改変 --ここから--
-        public int ID { set { id = value; } get { return id; } }
         public TMOMat[] Matrices { set { matrices = value; } get { return matrices; } }
 // 改変 --ここまで--
+
+        /// <summary>
+        /// 行列の配列
+        /// </summary>
+        public TMOMat[] matrices;
+
+        /// <summary>
+        /// ID
+        /// </summary>
+        public int ID { get { return id; } }
 
         /// <summary>
         /// フレームを生成します。

@@ -74,7 +74,17 @@ public class TPOFileList
     }
 
     /// <summary>
-    /// 体型リストを設定します。
+    /// 体型スクリプトを読み込みtpoを追加します。
+    /// </summary>
+    public void Load()
+    {
+        ProportionList pro_list = ProportionList.Instance;
+        pro_list.Load();
+        SetProportionList(pro_list);
+    }
+
+    /// <summary>
+    /// 体型リストを元にtpoを追加します。
     /// </summary>
     /// <param name="pro_list">体型リスト</param>
     public void SetProportionList(ProportionList pro_list)

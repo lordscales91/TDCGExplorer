@@ -28,7 +28,7 @@ namespace Tso2Pmd
             this.viewer = viewer;
 
             // 特殊体型メニューを設定
-            foreach (IProportion ip in viewer.ProportionList.items)
+            foreach (IProportion ip in ProportionList.Instance.items)
             {
                 if (ip.ToString().IndexOf("TDCG.Proportion.AAA") < 0)
                     listBox1.Items.Add(ip.ToString());
@@ -60,7 +60,7 @@ namespace Tso2Pmd
         {
             pro_ratio = new Dictionary<string, float>();
 
-            foreach (IProportion ip in viewer.ProportionList.items)
+            foreach (IProportion ip in ProportionList.Instance.items)
                 pro_ratio.Add(ip.ToString(), 0.0f);
 
             pro_ratio["TDCG.Proportion.AAA_PMDInitPose"] = 1.0f;

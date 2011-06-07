@@ -42,7 +42,7 @@ namespace Tso2Pmd
                 pd.Value += 15;
 
                 // Viewerクラスを初期化
-                viewer = new Viewer(template_list.proportion_items);
+                viewer = new Viewer();
                 pd.Value += 15;
 
                 // Tso2Pmdクラスを初期化
