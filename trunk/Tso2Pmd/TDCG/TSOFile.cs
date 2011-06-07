@@ -17,6 +17,23 @@ namespace TDCG
     using LONG  = Int32;
 
     [StructLayout(LayoutKind.Sequential, Pack=1)]
+    struct TARGA_HEADER
+    {
+	    public BYTE     id;
+	    public BYTE		colormap;
+	    public BYTE		imagetype;
+	    public WORD		colormaporigin;
+	    public WORD		colormaplength;
+	    public BYTE		colormapdepth;
+	    public WORD		x;
+	    public WORD		y;
+	    public WORD		width;
+	    public WORD		height;
+	    public BYTE		depth;
+	    public BYTE		type;
+    };
+
+    [StructLayout(LayoutKind.Sequential, Pack=1)]
     struct BITMAPFILEHEADER
     {
         public WORD    bfType;
@@ -52,7 +69,7 @@ namespace TDCG
         /// </summary>
         public int spec;
         /// <summary>
-        /// ボーン参照リスト
+        /// ボーン参照配列
         /// </summary>
         public int[] bone_indices;
         /// <summary>
@@ -64,7 +81,10 @@ namespace TDCG
         /// </summary>
         public Vertex[] vertices;
 
-        internal Mesh dm = null;
+        /// <summary>
+        /// Direct3Dメッシュ
+        /// </summary>
+        public Mesh dm = null;
 
         /// <summary>
         /// パレット長さ
@@ -132,6 +152,39 @@ namespace TDCG
             {
                 this.vertices[i].Write(bw);
             }
+        }
+
+        /// <summary>
+        /// 指定ボーン参照を追加します。
+        /// 注意：this.bonesは更新しません。
+        /// </summary>
+        /// <param name="bone_index">ボーン参照</param>
+        /// <returns>ボーン参照配列の添字</returns>
+        public int AddBoneIndex(int bone_index)
+        {
+            if (bone_indices.Length >= 16)
+                return -1;
+
+            Array.Resize(ref bone_indices, bone_indices.Length + 1);
+            maxPalettes++;
+            
+            int end = bone_indices.Length - 1;
+            bone_indices[end] = bone_index;
+            
+            return end;
+        }
+
+        /// <summary>
+        /// 指定nodeを追加します。
+        /// </summary>
+        /// <param name="node">node</param>
+        /// <returns>ボーン参照配列の添字</returns>
+        public int AddBone(TSONode node)
+        {
+            int end = AddBoneIndex(node.ID);
+            if (end != -1)
+                bones.Add(node);
+            return end;
         }
 
         /// <summary>
@@ -211,7 +264,7 @@ namespace TDCG
                         gs.Write(v.bone_indices);
                         gs.Write(v.normal);
                         gs.Write(v.u);
-                        gs.Write(v.v);
+                        gs.Write(1.0f - v.v);
                     }
                 }
                 dm.UnlockVertexBuffer();
@@ -600,6 +653,14 @@ namespace TDCG
         /// <summary>
         /// サブスクリプトを書き出します。
         /// </summary>
+        public void Save(string dest_file)
+        {
+            File.WriteAllLines(dest_file, this.lines);
+        }
+
+        /// <summary>
+        /// サブスクリプトを書き出します。
+        /// </summary>
         public void Write(BinaryWriter bw)
         {
             bw.WriteCString(this.name);
@@ -674,32 +735,62 @@ namespace TDCG
         /// </summary>
         public void Load(string source_file)
         {
-            using (FileStream stream = File.OpenRead(source_file))
+            string ext = Path.GetExtension(source_file).ToLower();
+            using (BinaryReader br = new BinaryReader(File.OpenRead(source_file)))
             {
-                this.file = "\"" + Path.GetFileName(source_file) + "\"";
-                Load(stream);
+                if (ext == ".tga")
+                    LoadTGA(br);
+                else
+                if (ext == ".bmp")
+                    LoadBMP(br);
             }
+            this.file = "\"" + Path.GetFileName(source_file) + "\"";
         }
 
+        static readonly int sizeof_tga_header = Marshal.SizeOf(typeof(TARGA_HEADER));
         static readonly int sizeof_bfh = Marshal.SizeOf(typeof(BITMAPFILEHEADER));
         static readonly int sizeof_bih = Marshal.SizeOf(typeof(BITMAPINFOHEADER));
 
         /// <summary>
-        /// テクスチャを読み込みます。
+        /// TGA形式のテクスチャを読み込みます。
         /// </summary>
-        public void Load(Stream stream)
+        public void LoadTGA(BinaryReader br)
         {
-            BinaryReader br = new BinaryReader(stream);
+            TARGA_HEADER header;
+
+            IntPtr header_ptr = Marshal.AllocHGlobal(sizeof_tga_header);
+            Marshal.Copy(br.ReadBytes(sizeof_tga_header), 0, header_ptr, sizeof_tga_header);
+            header = (TARGA_HEADER)Marshal.PtrToStructure(header_ptr, typeof(TARGA_HEADER));
+            Marshal.FreeHGlobal(header_ptr);
+
+            if (header.imagetype != 0x02)
+                throw new Exception("Invalid imagetype: " + file);
+            if (header.depth != 24 && header.depth != 32)
+                throw new Exception("Invalid depth: " + file);
+
+            this.width = header.width;
+            this.height = header.height;
+            this.depth = header.depth / 8;
+            this.data = br.ReadBytes( this.width * this.height * this.depth );
+        }
+
+        /// <summary>
+        /// BMP形式のテクスチャを読み込みます。
+        /// </summary>
+        public void LoadBMP(BinaryReader br)
+        {
             BITMAPFILEHEADER bfh;
             BITMAPINFOHEADER bih;
 
             IntPtr bfh_ptr = Marshal.AllocHGlobal(sizeof_bfh);
             Marshal.Copy(br.ReadBytes(sizeof_bfh), 0, bfh_ptr, sizeof_bfh);
             bfh = (BITMAPFILEHEADER)Marshal.PtrToStructure(bfh_ptr, typeof(BITMAPFILEHEADER));
+            Marshal.FreeHGlobal(bfh_ptr);
 
             IntPtr bih_ptr = Marshal.AllocHGlobal(sizeof_bih);
             Marshal.Copy(br.ReadBytes(sizeof_bih), 0, bih_ptr, sizeof_bih);
             bih = (BITMAPINFOHEADER)Marshal.PtrToStructure(bih_ptr, typeof(BITMAPINFOHEADER));
+            Marshal.FreeHGlobal(bih_ptr);
 
             if (bfh.bfType != 0x4D42)
                 throw new Exception("Invalid imagetype: " + file);
@@ -733,6 +824,79 @@ namespace TDCG
         }
 
         /// <summary>
+        /// TGA形式のテクスチャを書き出します。
+        /// </summary>
+        public void SaveTGA(BinaryWriter bw)
+        {
+            TARGA_HEADER header;
+
+            header.id = 0;
+            header.colormap = 0;
+            header.imagetype = 2;
+            header.colormaporigin = 0;
+            header.colormaplength = 0;
+            header.colormapdepth = 0;
+            header.x = 0;
+            header.y = 0;
+            header.width = (ushort)width;
+            header.height = (ushort)height;
+            header.depth = (byte)(depth * 8);
+            header.type = 0;
+
+            IntPtr header_ptr = Marshal.AllocHGlobal(sizeof_tga_header);
+            Marshal.StructureToPtr(header, header_ptr, false);
+            byte[] header_buf = new byte[sizeof_tga_header];
+            Marshal.Copy(header_ptr, header_buf, 0, sizeof_tga_header);
+            Marshal.FreeHGlobal(header_ptr);
+            bw.Write(header_buf);
+
+            bw.Write(data, 0, data.Length);
+        }
+
+        /// <summary>
+        /// BMP形式のテクスチャを書き出します。
+        /// </summary>
+        public void SaveBMP(BinaryWriter bw)
+        {
+            BITMAPFILEHEADER bfh;
+            BITMAPINFOHEADER bih;
+
+            bfh.bfType = 0x4D42;
+            bfh.bfSize = (uint)(54 + data.Length);
+            bfh.bfReserved1 = 0;
+            bfh.bfReserved2 = 0;
+            bfh.bfOffBits = 54;
+
+            IntPtr bfh_ptr = Marshal.AllocHGlobal(sizeof_bfh);
+            Marshal.StructureToPtr(bfh, bfh_ptr, false);
+            byte[] bfh_buf = new byte[sizeof_bfh];
+            Marshal.Copy(bfh_ptr, bfh_buf, 0, sizeof_bfh);
+            Marshal.FreeHGlobal(bfh_ptr);
+            bw.Write(bfh_buf);
+
+            bih.biSize = 40;
+            bih.biWidth = width;
+            bih.biHeight = height;
+            bih.biPlanes = 1;
+            bih.biBitCount = (ushort)(depth * 8);
+            bih.biCompression = 0;
+            bih.biSizeImage = (uint)data.Length;
+            bih.biXPelsPerMeter = 0;
+            bih.biYPelsPerMeter = 0;
+            bih.biClrUsed = 0;
+            bih.biClrImportant = 0;
+
+            IntPtr bih_ptr = Marshal.AllocHGlobal(sizeof_bih);
+            Marshal.StructureToPtr(bih, bih_ptr, false);
+            byte[] bih_buf = new byte[sizeof_bih];
+            Marshal.Copy(bih_ptr, bih_buf, 0, sizeof_bih);
+            Marshal.FreeHGlobal(bih_ptr);
+            bw.Write(bih_buf);
+
+            bw.Write(data, 0, data.Length);
+        }
+
+        /// <summary>
         /// テクスチャを書き出します。
         /// </summary>
         public void Write(BinaryWriter bw)
@@ -761,41 +925,21 @@ namespace TDCG
         /// <param name="device">device</param>
         public void Open(Device device)
         {
-            if (file.Trim('"') == "")
+            string dest_file = file.Trim('"');
+            if (dest_file == "")
                 return;
             if (data.Length == 0)
                 return;
+            string ext = Path.GetExtension(dest_file).ToLower();
             MemoryStream ms = new MemoryStream();
             using (BinaryWriter bw = new BinaryWriter(ms))
             {
-                {
-                    bw.Write((byte)'B');
-                    bw.Write((byte)'M');
-                    bw.Write((int)(54 + data.Length));
-                    bw.Write((int)0);
-                    bw.Write((int)54);
-                    bw.Write((int)40);
-                    bw.Write((int)width);
-                    bw.Write((int)height);
-                    bw.Write((short)1);
-                    bw.Write((short)(depth*8));
-                    bw.Write((int)0);
-                    bw.Write((int)data.Length);
-                    bw.Write((int)0);
-                    bw.Write((int)0);
-                    bw.Write((int)0);
-                    bw.Write((int)0);
-                }
-
-                int count = width * depth;
-                int index = width * height * depth - count;
-                for (int y = 0; y < height; y++)
-                {
-                    bw.Write(data, index, count);
-                    index -= count;
-                }
+                if (ext == ".tga")
+                    SaveTGA(bw);
+                else
+                if (ext == ".bmp")
+                    SaveBMP(bw);
                 bw.Flush();
-
                 ms.Seek(0, SeekOrigin.Begin);
                 tex = TextureLoader.FromStream(device, ms);
             }
@@ -1018,7 +1162,7 @@ namespace TDCG
             set {
                 transformation_matrix = value;
                 Matrix m = transformation_matrix;
-                translation = TMOMat.DecomposeMatrix(ref m);
+                translation = Helper.DecomposeMatrix(ref m);
                 rotation = Quaternion.RotationMatrix(m);
             }
         }
@@ -1029,11 +1173,6 @@ namespace TDCG
     /// </summary>
     public class TSOFile : IDisposable
     {
-        /// <summary>
-        /// バイナリ値として読み取ります。
-        /// </summary>
-        protected BinaryReader reader;
-
         /// <summary>
         /// bone配列
         /// </summary>
@@ -1055,7 +1194,10 @@ namespace TDCG
         /// </summary>
         public TSOMesh[] meshes;
 
-        internal Dictionary<string, TSONode> nodemap;
+        /// <summary>
+        /// bone名称とboneを関連付ける辞書
+        /// </summary>
+        public Dictionary<string, TSONode> nodemap;
 
         /// <summary>
         /// 指定パスに保存します。
@@ -1130,14 +1272,11 @@ namespace TDCG
         /// <param name="source_stream">ストリーム</param>
         public void Load(Stream source_stream)
         {
-            reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
+            BinaryReader reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
 
             byte[] magic = reader.ReadBytes(4);
 
-            if(magic[0] != (byte)'T'
-            || magic[1] != (byte)'S'
-            || magic[2] != (byte)'O'
-            || magic[3] != (byte)'1')
+            if (magic[0] != (byte)'T' || magic[1] != (byte)'S' || magic[2] != (byte)'O' || magic[3] != (byte)'1')
                 throw new Exception("File is not TSO");
 
             int node_count = reader.ReadInt32();
@@ -1384,12 +1523,12 @@ namespace TDCG
 
                 switch (p.type)
                 {
-                case ShaderParameter.Type.String:
+                case ShaderParameterType.String:
                     effect.SetValue(p.name, p.GetString());
                     break;
-                case ShaderParameter.Type.Float:
-                case ShaderParameter.Type.Float3:
-                case ShaderParameter.Type.Float4:
+                case ShaderParameterType.Float:
+                case ShaderParameterType.Float3:
+                case ShaderParameterType.Float4:
                     effect.SetValue(p.name, new float[]{ p.F1, p.F2, p.F3, p.F4 });
                     break;
                     /*

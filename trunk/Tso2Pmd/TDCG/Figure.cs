@@ -25,7 +25,7 @@ public class Figure : IDisposable
     /// <summary>
     /// スライダ変形行列
     /// </summary>
-    public SlideMatrices slide_matrices = new SlideMatrices();
+    public SliderMatrix slider_matrix = new SliderMatrix();
 
     Vector3 center = Vector3.Empty;
     /// <summary>
@@ -322,7 +322,7 @@ public class Figure : IDisposable
         if (tmo.w_hips_node != null)
         {
             //姉妹スライダによる変形
-            Matrix local = Matrix.Scaling(slide_matrices.Local);
+            Matrix local = Matrix.Scaling(slider_matrix.Local);
 
             //移動変位を設定
             local.M41 = translation.X;
@@ -358,26 +358,26 @@ public class Figure : IDisposable
         }
         Matrix m = tmo_node.TransformationMatrix;
 
-        bool is_chichi = re_chichi.IsMatch(tmo_node.Name);
+        bool chichi_p = re_chichi.IsMatch(tmo_node.Name);
 
-        if (is_chichi)
+        if (chichi_p)
         {
-            if (slide_matrices.Flat())
-                slide_matrices.TransformChichiFlat(tmo_node, ref m);
+            if (slider_matrix.Flat())
+                slider_matrix.TransformChichiFlat(tmo_node, ref m);
         }
         else
-            slide_matrices.TransformFace(tmo_node, ref m);
+            slider_matrix.TransformFace(tmo_node, ref m);
 
         matrixStack.MultiplyMatrixLocal(m);
         m = matrixStack.Top;
 
-        if (is_chichi)
+        if (chichi_p)
         {
-            if (! slide_matrices.Flat())
-                slide_matrices.ScaleChichi(ref m);
+            if (! slider_matrix.Flat())
+                slider_matrix.ScaleChichi(ref m);
         }
         else
-            slide_matrices.Scale(tmo_node, ref m);
+            slider_matrix.Scale(tmo_node, ref m);
 
         tmo_node.combined_matrix = m;
 

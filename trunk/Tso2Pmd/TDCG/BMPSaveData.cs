@@ -35,17 +35,17 @@ class BMPSaveData
         // Unlock the bits.
         bmp.UnlockBits(bmpData);
 
-        int w = bmp.Width * 3;
-        int h = bmp.Height;
+        int stride = bmpData.Stride;
+        int height = bmpData.Height;
 
-        byte[] data = new byte[w * h / 8];
+        byte[] data = new byte[stride * height / 8];
         int offset = 0;
 
-        for (int y = h-1; y >=0; y--)
+        for (int y = height-1; y >=0; y--)
         {
-            for (int x = 0; x < w; x += 8)
+            for (int x = 0; x < stride; x += 8)
             {
-                int i = y * w + x;
+                int i = y * stride + x;
                 byte c = (byte)(bytes[i + 0] & 0x1);
                 c |= (byte)((bytes[i + 1] & 0x1) << 1);
                 c |= (byte)((bytes[i + 2] & 0x1) << 2);

@@ -124,17 +124,17 @@ public class TSOForm : Form
         if (keysEnabled[keyMotion] && keys[keyMotion])
         {
             keysEnabled[keyMotion] = false;
-            viewer.SwitchMotionEnabled();
+            viewer.MotionEnabled = !viewer.MotionEnabled;
         }
         if (keysEnabled[keyShadow] && keys[keyShadow])
         {
             keysEnabled[keyShadow] = false;
-            viewer.SwitchShadowShown();
+            viewer.ShadowShown = !viewer.ShadowShown;
         }
         if (keysEnabled[keySprite] && keys[keySprite])
         {
             keysEnabled[keySprite] = false;
-            viewer.SwitchSpriteShown();
+            viewer.SpriteShown = !viewer.SpriteShown;
         }
         if (keysEnabled[keyFigure] && keys[keyFigure])
         {
