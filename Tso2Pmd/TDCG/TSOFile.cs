@@ -82,9 +82,9 @@ namespace TDCG
         public Vertex[] vertices;
 
         /// <summary>
-        /// Direct3Dメッシュ
+        /// Direct3D頂点バッファ
         /// </summary>
-        public Mesh dm = null;
+        public VertexBuffer vb = null;
 
         /// <summary>
         /// パレット長さ
@@ -204,7 +204,8 @@ namespace TDCG
             get { return vertices.Length; }
         }
 
-        static VertexElement[] ve = new VertexElement[]
+        /// toonshader.cgfx に渡す頂点要素
+        public static VertexElement[] ve = new VertexElement[]
         {
             new VertexElement(0,  0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
             new VertexElement(0, 12, DeclarationType.Float4, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 3),
@@ -214,22 +215,13 @@ namespace TDCG
                 VertexElement.VertexDeclarationEnd
         };
 
-        static AttributeRange ar = new AttributeRange();
-        /*
-        ar.AttributeId = 0;
-        ar.FaceStart = 0;
-        ar.FaceCount = 0;
-        ar.VertexStart = 0;
-        ar.VertexCount = 0;
-        */
-
         /// <summary>
         /// 頂点をDirect3Dバッファに書き込みます。
         /// </summary>
         public void WriteBuffer()
         {
-            if (dm != null)
-                WriteBuffer(dm.Device);
+            if (vb != null)
+                WriteBuffer(vb.Device);
         }
 
         /// <summary>
@@ -241,18 +233,22 @@ namespace TDCG
             int numVertices = vertices.Length;
             int numFaces = numVertices - 2;
 
-            if (dm != null)
-            {
-                dm.Dispose();
-                dm = null;
-            }
-            dm = new Mesh(numFaces, numVertices, MeshFlags.Managed | MeshFlags.WriteOnly, ve, device);
+            if (vb != null)
+                vb.Dispose();
+            vb = new VertexBuffer(typeof(VertexFormat), vertices.Length, device, Usage.Dynamic | Usage.WriteOnly, VertexFormats.None, Pool.Default);
+            vb.Created += new EventHandler(vb_Created);
+            vb_Created(vb, null);
+        }
+
+        void vb_Created(object sender, EventArgs e)
+        {
+            VertexBuffer vb = (VertexBuffer)sender;
 
             //
             // rewrite vertex buffer
             //
             {
-                GraphicsStream gs = dm.LockVertexBuffer(LockFlags.None);
+                GraphicsStream gs = vb.Lock(0, 0, LockFlags.None);
                 {
                     for (int i = 0; i < vertices.Length; i++)
                     {
@@ -267,49 +263,18 @@ namespace TDCG
                         gs.Write(v.v);
                     }
                 }
-                dm.UnlockVertexBuffer();
+                vb.Unlock();
             }
 
-            //
-            // rewrite index buffer
-            //
-            {
-                GraphicsStream gs = dm.LockIndexBuffer(LockFlags.None);
-                {
-                    for (int i = 2; i < vertices.Length; i++)
-                    {
-                        if (i % 2 != 0)
-                        {
-                            gs.Write((short)(i-0));
-                            gs.Write((short)(i-1));
-                            gs.Write((short)(i-2));
-                        }
-                        else
-                        {
-                            gs.Write((short)(i-2));
-                            gs.Write((short)(i-1));
-                            gs.Write((short)(i-0));
-                        }
-                    }
-                }
-                dm.UnlockIndexBuffer();
-            }
-
-            //
-            // rewrite attribute buffer
-            //
-            {
-                dm.SetAttributeTable(new AttributeRange[] { ar }); 
-            }
         }
 
         /// <summary>
-        /// Direct3Dサブメッシュを破棄します。
+        /// Direct3Dバッファを破棄します。
         /// </summary>
         public void Dispose()
         {
-            if (dm != null)
-                dm.Dispose();
+            if (vb != null)
+                vb.Dispose();
         }
     }
 
@@ -399,6 +364,29 @@ namespace TDCG
         }
     }
 
+    /// 頂点構造体
+    public struct VertexFormat
+    {
+        /// 位置
+        public Vector3 position;
+        /// スキンウェイト0
+        public float weight_0;
+        /// スキンウェイト1
+        public float weight_1;
+        /// スキンウェイト2
+        public float weight_2;
+        /// スキンウェイト3
+        public float weight_3;
+        /// ボーンインデックス
+        public uint bone_indices;
+        /// 法線
+        public Vector3 normal;
+        /// テクスチャU座標
+        public float u;
+        /// テクスチャV座標
+        public float v;
+    }
+
     /// <summary>
     /// 頂点
     /// </summary>
@@ -427,7 +415,7 @@ namespace TDCG
         /// <summary>
         /// ボーンインデックス
         /// </summary>
-        public UInt32 bone_indices;
+        public uint bone_indices;
 
         /// <summary>
         /// 頂点を読みとります。
@@ -758,10 +746,10 @@ namespace TDCG
         {
             TARGA_HEADER header;
 
-            IntPtr header_ptr = Marshal.AllocHGlobal(sizeof_tga_header);
-            Marshal.Copy(br.ReadBytes(sizeof_tga_header), 0, header_ptr, sizeof_tga_header);
-            header = (TARGA_HEADER)Marshal.PtrToStructure(header_ptr, typeof(TARGA_HEADER));
-            Marshal.FreeHGlobal(header_ptr);
+            byte[] header_buf = br.ReadBytes(sizeof_tga_header);
+            GCHandle header_handle = GCHandle.Alloc(header_buf, GCHandleType.Pinned);
+            header = (TARGA_HEADER)Marshal.PtrToStructure(header_handle.AddrOfPinnedObject(), typeof(TARGA_HEADER));
+            header_handle.Free();
 
             if (header.imagetype != 0x02)
                 throw new Exception("Invalid imagetype: " + file);
@@ -782,15 +770,15 @@ namespace TDCG
             BITMAPFILEHEADER bfh;
             BITMAPINFOHEADER bih;
 
-            IntPtr bfh_ptr = Marshal.AllocHGlobal(sizeof_bfh);
-            Marshal.Copy(br.ReadBytes(sizeof_bfh), 0, bfh_ptr, sizeof_bfh);
-            bfh = (BITMAPFILEHEADER)Marshal.PtrToStructure(bfh_ptr, typeof(BITMAPFILEHEADER));
-            Marshal.FreeHGlobal(bfh_ptr);
+            byte[] bfh_buf = br.ReadBytes(sizeof_bfh);
+            GCHandle bfh_handle = GCHandle.Alloc(bfh_buf, GCHandleType.Pinned);
+            bfh = (BITMAPFILEHEADER)Marshal.PtrToStructure(bfh_handle.AddrOfPinnedObject(), typeof(BITMAPFILEHEADER));
+            bfh_handle.Free();
 
-            IntPtr bih_ptr = Marshal.AllocHGlobal(sizeof_bih);
-            Marshal.Copy(br.ReadBytes(sizeof_bih), 0, bih_ptr, sizeof_bih);
-            bih = (BITMAPINFOHEADER)Marshal.PtrToStructure(bih_ptr, typeof(BITMAPINFOHEADER));
-            Marshal.FreeHGlobal(bih_ptr);
+            byte[] bih_buf = br.ReadBytes(sizeof_bih);
+            GCHandle bih_handle = GCHandle.Alloc(bih_buf, GCHandleType.Pinned);
+            bih = (BITMAPINFOHEADER)Marshal.PtrToStructure(bih_handle.AddrOfPinnedObject(), typeof(BITMAPINFOHEADER));
+            bih_handle.Free();
 
             if (bfh.bfType != 0x4D42)
                 throw new Exception("Invalid imagetype: " + file);
