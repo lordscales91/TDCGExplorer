@@ -6,7 +6,6 @@ using System.Diagnostics;
 //using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
-using CSScriptLibrary;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using TDCG;
@@ -86,13 +85,6 @@ public class TSOForm : Form
                 else
                     fig_form.Clear();
             };
-
-            /*string script_file = Path.Combine(Application.StartupPath, "Script.cs");
-            if (File.Exists(script_file))
-            {
-                var script = CSScript.Load(script_file).CreateInstance("TDCG.Script").AlignToInterface<IScript>();
-                script.Hello(viewer);
-            }*/
 
             this.timer1.Enabled = true;
 

@@ -88,23 +88,6 @@ public class Viewer : IDisposable
     /// <summary>
     /// viewerを生成します。
     /// </summary>
-    public Viewer(bool flag)
-    {
-        if (flag == true)
-        {
-            pro_list.Load();
-            Figure.ProportionList = pro_list;
-        }
-        else
-        {
-            pro_list.Load_onlyInitPose();
-            Figure.ProportionList = pro_list;
-        }
-    }
-
-    /// <summary>
-    /// viewerを生成します。
-    /// </summary>
     public Viewer(List<IProportion> items)
     {
         this.pro_list.items = items;
