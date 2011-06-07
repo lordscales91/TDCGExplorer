@@ -13,16 +13,35 @@ namespace TDCG
     /// </summary>
 public class Camera
 {
-    private Vector3 center = Vector3.Empty;
-    private Vector3 translation = Vector3.Empty;
-    private Vector3 localP = new Vector3(0.0f, 0.0f, +10.0f);
-    private Vector3 dirD = Vector3.Empty; //カメラ移動方向ベクトル
-    private float zD = 0.0f;      //カメラ奥行オフセット値
-    private bool needUpdate = true;
-    private Matrix view = Matrix.Identity;  //ビュー行列
-    private Matrix pose = Matrix.Identity;
-    private float rotZD = 0.0f;   //カメラ Z軸回転差分
-    private float angleU = 0.02f;        //移動時回転単位（ラジアン）
+    //回転中心
+    Vector3 center;
+
+    //位置変位
+    Vector3 translation;
+    
+    //注視点を原点とした座標上のカメラの位置
+    Vector3 localP;
+    
+    //カメラ移動方向ベクトル
+    Vector3 dirD;
+    
+    //カメラ奥行オフセット値
+    float zD;
+
+    //更新する必要があるか
+    bool needUpdate;
+    
+    //view行列
+    Matrix view;
+    
+    //姿勢行列
+    Matrix pose;
+    
+    //Z軸回転差分
+    float rotZD;
+    
+    //移動時回転単位（ラジアン）
+    float angleU;
 
     /// <summary>
     /// 回転中心
@@ -30,7 +49,7 @@ public class Camera
     public Vector3 Center { get { return center; } set { center = value; } }
 
     /// <summary>
-    /// view座標上のカメラの位置
+    /// 位置変位
     /// </summary>
     public Vector3 Translation { get { return translation; } set { translation = value; } }
 
@@ -42,15 +61,15 @@ public class Camera
     /// <summary>
     ///更新する必要があるか
     /// </summary>
-    public bool NeedUpdate { get { return needUpdate; }}
+    public bool NeedUpdate { get { return needUpdate; } }
 
     /// <summary>
-    /// ビュー行列
+    /// view行列
     /// </summary>
     public Matrix ViewMatrix { get { return view; } }
 
     /// <summary>
-    /// カメラの姿勢行列
+    /// 姿勢行列
     /// </summary>
     public Matrix PoseMatrix { get { return pose; } set { pose = value; } }
 
@@ -59,6 +78,16 @@ public class Camera
     /// </summary>
     public Camera()
     {
+        center = Vector3.Empty;
+        translation = Vector3.Empty;
+        localP = new Vector3(0.0f, 0.0f, +10.0f);
+        dirD = Vector3.Empty;
+        zD = 0.0f;
+        needUpdate = true;
+        view = Matrix.Identity;
+        pose = Matrix.Identity;
+        rotZD = 0.0f;
+        angleU = 0.02f;
     }
 
     /// <summary>

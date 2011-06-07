@@ -9,7 +9,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
-using Direct3D=Microsoft.DirectX.Direct3D;
+using Direct3D = Microsoft.DirectX.Direct3D;
 
 namespace TDCG
 {
@@ -88,8 +88,6 @@ public class Viewer : IDisposable
     /// ztexture
     /// </summary>
     protected Texture ztex = null;
-    int ztexw = 0;
-    int ztexh = 0;
     /// <summary>
     /// surface of ztexture
     /// </summary>
@@ -104,6 +102,7 @@ public class Viewer : IDisposable
     internal Line line = null;
     float w_scale = 1.0f;
     float h_scale = 1.0f;
+    Rectangle ztex_rect;
 
     /// <summary>
     /// surface of device
@@ -676,16 +675,15 @@ public class Viewer : IDisposable
             ztex_surface = ztex.GetSurfaceLevel(0);
 
             effect.SetValue("texShadowMap", ztex);
-            {
-                ztexw = ztex_surface.Description.Width;
-                ztexh = ztex_surface.Description.Height;
-            }
-            Console.WriteLine("ztex {0}x{1}", ztexw, ztexh);
+            int texw = ztex_surface.Description.Width;
+            int texh = ztex_surface.Description.Height;
+            Console.WriteLine("ztex {0}x{1}", texw, texh);
 
-            ztex_zbuf = device.CreateDepthStencilSurface(ztexw, ztexh, DepthFormat.D16, MultiSampleType.None, 0, false);
+            ztex_zbuf = device.CreateDepthStencilSurface(texw, texh, DepthFormat.D16, MultiSampleType.None, 0, false);
 
-            w_scale = (float)devw / ztexw;
-            h_scale = (float)devh / ztexh;
+            w_scale = (float)devw / texw;
+            h_scale = (float)devh / texh;
+            ztex_rect = new Rectangle(0, 0, texw, texh);
         }
 
         Transform_Projection = Matrix.PerspectiveFovRH(
@@ -719,11 +717,14 @@ public class Viewer : IDisposable
         device.TextureState[0].AlphaArgument1 = TextureArgument.TextureColor;
         device.TextureState[0].AlphaArgument2 = TextureArgument.Current;
 
+        device.RenderState.AlphaBlendEnable = true;
         device.RenderState.SourceBlend = Blend.SourceAlpha; 
         device.RenderState.DestinationBlend = Blend.InvSourceAlpha;
         device.RenderState.AlphaTestEnable = true;
         device.RenderState.ReferenceAlpha = 0x08;
         device.RenderState.AlphaFunction = Compare.GreaterEqual;
+
+        device.VertexDeclaration = new VertexDeclaration(device, TSOSubMesh.ve);
 
         //device.RenderState.IndexedVertexBlendEnable = true;
     }
@@ -1009,6 +1010,7 @@ public class Viewer : IDisposable
             foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
                 //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                device.SetStreamSource(0, sub_mesh.vb, 0);
 
                 //tso.SwitchShader(sub_mesh);
                 effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
@@ -1017,7 +1019,7 @@ public class Viewer : IDisposable
                 for (int ipass = 0; ipass < npass; ipass++)
                 {
                     effect.BeginPass(ipass);
-                    sub_mesh.dm.DrawSubset(0);
+                    device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, sub_mesh.vertices.Length - 2);
                     effect.EndPass();
                 }
                 effect.End();
@@ -1064,8 +1066,8 @@ public class Viewer : IDisposable
         device.DepthStencilSurface = dev_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer | ClearFlags.Stencil, ScreenColor, 1.0f, 0);
 
-        int i = 0;
         effect.SetValue(handle_UVSCR, UVSCR());
+    int i = 0;
         foreach (Figure fig in FigureList)
         {
             effect.SetValue(handle_LightDirForced, fig.LightDirForced());
@@ -1073,34 +1075,33 @@ public class Viewer : IDisposable
             {
                 tso.BeginRender();
 
-                for (int script_num = 0; script_num < tso.sub_scripts.Length; script_num++)
+    for (int script_num = 0; script_num < tso.sub_scripts.Length; script_num++)
                 foreach (TSOMesh mesh in tso.meshes)
-                foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
-                {
-                    if (sub_mesh.spec == script_num)
-                    if (visible_meshes_flag == null || visible_meshes_flag[i++] == true)
+                    foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
                     {
-                        //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                        tso.SwitchShader(sub_mesh);
 
+        if (sub_mesh.spec == script_num)
+        if (visible_meshes_flag == null || visible_meshes_flag[i++] == true)
+        {
+                        //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
+                        device.SetStreamSource(0, sub_mesh.vb, 0);
+
+                        tso.SwitchShader(sub_mesh);
                         effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
 
                         int npass = effect.Begin(0);
                         for (int ipass = 0; ipass < npass; ipass++)
                         {
                             effect.BeginPass(ipass);
-                            sub_mesh.dm.DrawSubset(0);
+                            device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, sub_mesh.vertices.Length - 2);
                             effect.EndPass();
                         }
                         effect.End();
+        }
                     }
-                }
                 tso.EndRender();
             }
         }
-
-        // 線を描画
-        DrawLine();
     }
 
     VertexBuffer _lineVertexBuffer = null;
@@ -1174,10 +1175,9 @@ public class Viewer : IDisposable
         device.RenderState.AlphaBlendEnable = false;
 
         sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
-        Rectangle rect = new Rectangle(0, 0, ztexw, ztexh);
 
         sprite.Begin(0);
-        sprite.Draw(ztex, rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
+        sprite.Draw(ztex, ztex_rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
         sprite.End();
     }
 
