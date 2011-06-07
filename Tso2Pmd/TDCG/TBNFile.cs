@@ -66,10 +66,7 @@ namespace TDCG
 
             byte[] magic = reader.ReadBytes(4);
 
-            if (magic[0] != (byte)'B'
-            || magic[1] != (byte)'B'
-            || magic[2] != (byte)'B'
-            || magic[3] != (byte)'B')
+            if (magic[0] != (byte)'B' || magic[1] != (byte)'B' || magic[2] != (byte)'B' || magic[3] != (byte)'B')
                 throw new Exception("File is not TBN");
 
             float opt1 = reader.ReadSingle();

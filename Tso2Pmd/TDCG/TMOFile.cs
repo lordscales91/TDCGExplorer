@@ -43,7 +43,11 @@ namespace TDCG
         /// </summary>
         public byte[] footer;
 
-        internal Dictionary<string, TMONode> nodemap;
+        /// <summary>
+        /// bone名称とboneを関連付ける辞書
+        /// </summary>
+        public Dictionary<string, TMONode> nodemap;
+
         internal TMONode w_hips_node = null;
         internal List<TMONode> root_nodes_except_w_hips;
 
@@ -109,10 +113,7 @@ namespace TDCG
 
             byte[] magic = reader.ReadBytes(4);
 
-            if(magic[0] != (byte)'T'
-            || magic[1] != (byte)'M'
-            || magic[2] != (byte)'O'
-            || magic[3] != (byte)'1')
+            if (magic[0] != (byte)'T' || magic[1] != (byte)'M' || magic[2] != (byte)'O' || magic[3] != (byte)'1')
                 throw new Exception("File is not TMO");
 
             this.header = reader.ReadBytes(8);
@@ -171,7 +172,7 @@ namespace TDCG
 
             foreach (TMONode node in root_nodes)
             {
-                if (node.Name == "|W_Hips")
+                if (node.Path == "|W_Hips")
                     w_hips_node = node;
                 else
                     root_nodes_except_w_hips.Add(node);
@@ -522,7 +523,7 @@ namespace TDCG
     }
 
     /// <summary>
-    /// Direct3D Matrixのラッパ
+    /// 変形行列を扱います。
     /// </summary>
     public class TMOMat
     {
@@ -815,68 +816,6 @@ namespace TDCG
         }
 
         /// <summary>
-        /// 回転行列と位置ベクトルに分割します。
-        /// </summary>
-        /// <param name="m">元の行列（戻り値は回転行列）</param>
-        /// <returns>位置ベクトル</returns>
-        public static Vector3 DecomposeMatrix(ref Matrix m)
-        {
-            Vector3 t = new Vector3(m.M41, m.M42, m.M43);
-            m.M41 = 0;
-            m.M42 = 0;
-            m.M43 = 0;
-            return t;
-        }
-
-        /// <summary>
-        /// 拡大縮小ベクトルと回転行列と位置ベクトルに分割します。
-        /// </summary>
-        /// <param name="m">元の行列（戻り値は回転行列）</param>
-        /// <param name="scaling">拡大縮小ベクトル</param>
-        /// <returns>位置ベクトル</returns>
-        public static Vector3 DecomposeMatrix(ref Matrix m, out Vector3 scaling)
-        {
-            Vector3 vx = new Vector3(m.M11, m.M12, m.M13);
-            Vector3 vy = new Vector3(m.M21, m.M22, m.M23);
-            Vector3 vz = new Vector3(m.M31, m.M32, m.M33);
-            Vector3 vt = new Vector3(m.M41, m.M42, m.M43);
-            float scax = vx.Length();
-            float scay = vy.Length();
-            float scaz = vz.Length();
-            scaling = new Vector3(scax, scay, scaz);
-            vx.Normalize();
-            vy.Normalize();
-            vz.Normalize();
-            m.M11 = vx.X;
-            m.M12 = vx.Y;
-            m.M13 = vx.Z;
-            m.M21 = vy.X;
-            m.M22 = vy.Y;
-            m.M23 = vy.Z;
-            m.M31 = vz.X;
-            m.M32 = vz.Y;
-            m.M33 = vz.Z;
-            m.M41 = 0;
-            m.M42 = 0;
-            m.M43 = 0;
-            return vt;
-        }
-
-        /// <summary>
-        /// 拡大縮小ベクトルと回転quaternionと位置ベクトルに分割します。
-        /// </summary>
-        /// <param name="m">元の行列（戻り値は回転行列）</param>
-        /// <param name="scaling">拡大縮小ベクトル</param>
-        /// <param name="rotation">回転quaternion</param>
-        /// <returns>位置ベクトル</returns>
-        public static Vector3 DecomposeMatrix(ref Matrix m, out Vector3 scaling, out Quaternion rotation)
-        {
-            Vector3 translation = DecomposeMatrix(ref m, out scaling);
-            rotation = Quaternion.RotationMatrix(m);
-            return translation;
-        }
-
-        /// <summary>
         /// 加減算を行います。
         /// </summary>
         /// <param name="mat0">行列0</param>
@@ -888,120 +827,17 @@ namespace TDCG
             Matrix m0 = mat0.m;
             Matrix m1 = mat1.m;
             Matrix m2 = mat2.m;
-            Vector3 t0 = DecomposeMatrix(ref m0);
-            Vector3 t1 = DecomposeMatrix(ref m1);
-            Vector3 t2 = DecomposeMatrix(ref m2);
+            Vector3 t0 = Helper.DecomposeMatrix(ref m0);
+            Vector3 t1 = Helper.DecomposeMatrix(ref m1);
+            Vector3 t2 = Helper.DecomposeMatrix(ref m2);
             Matrix m = m1 * Matrix.Invert(m2) * m0 * Matrix.Translation(t1 - t2 + t0);
             return new TMOMat(ref m);
-        }
-
-        /// euler角 (zxy回転) をquaternionに変換
-        public static Quaternion ToQuaternionZXY(Vector3 angle)
-        {
-            Quaternion qx, qy, qz;
-            qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), Geometry.DegreeToRadian(angle.X));
-            qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), Geometry.DegreeToRadian(angle.Y));
-            qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), Geometry.DegreeToRadian(angle.Z));
-            return qy * qx * qz;
-        }
-
-        /// 回転行列をeuler角 (zxy回転) に変換
-        public static Vector3 ToAngleZXY(Matrix m)
-        {
-            Vector3 angle;
-            if (m.M23 < +1.0f - float.Epsilon)
-            {
-                if (m.M23 > -1.0f + float.Epsilon)
-                {
-                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(-m.M21, m.M22));
-                    angle.X = Geometry.RadianToDegree((float)Math.Asin(m.M23));
-                    angle.Y = Geometry.RadianToDegree((float)Math.Atan2(-m.M13, m.M33));
-                }
-                else
-                {
-                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
-                    angle.X = -90.0f;
-                    angle.Y = 0.0f;
-                }
-            }
-            else
-            {
-                angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
-                angle.X = +90.0f;
-                angle.Y = 0.0f;
-            }
-            return angle;
-        }
-
-        /// quaternionをeuler角 (zxy回転) に変換
-        public static Vector3 ToAngleZXY(Quaternion q)
-        {
-            return ToAngleZXY(Matrix.RotationQuaternion(q));
-        }
-
-        /// euler角 (xyz回転) をquaternionに変換
-        public static Quaternion ToQuaternionXYZ(Vector3 angle)
-        {
-            Quaternion qx, qy, qz;
-            qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), Geometry.DegreeToRadian(angle.X));
-            qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), Geometry.DegreeToRadian(angle.Y));
-            qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), Geometry.DegreeToRadian(angle.Z));
-            return qz * qy * qx;
-        }
-
-        /// 回転行列をeuler角 (xyz回転) に変換
-        public static Vector3 ToAngleXYZ(Matrix m)
-        {
-            Vector3 angle;
-            if (m.M31 < +1.0f - float.Epsilon)
-            {
-                if (m.M31 > -1.0f + float.Epsilon)
-                {
-                    angle.X = Geometry.RadianToDegree((float)Math.Atan2(-m.M32, m.M33));
-                    angle.Y = Geometry.RadianToDegree((float)Math.Asin(m.M31));
-                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(-m.M21, m.M11));
-                }
-                else
-                {
-                    angle.X = Geometry.RadianToDegree((float)Math.Atan2(m.M21, m.M22));
-                    angle.Y = -90.0f;
-                    angle.Z = 0.0f;
-                }
-            }
-            else
-            {
-                angle.X = Geometry.RadianToDegree((float)Math.Atan2(m.M21, m.M22));
-                angle.Y = +90.0f;
-                angle.Z = 0.0f;
-            }
-            return angle;
-        }
-
-        /// quaternionをeuler角 (xyz回転) に変換
-        public static Vector3 ToAngleXYZ(Quaternion q)
-        {
-            return ToAngleXYZ(Matrix.RotationQuaternion(q));
         }
 
         /// 左右反転します。
         public void Flip()
         {
-            FlipMatrix(ref m);
-        }
-
-        /// 左右反転します。
-        public static void FlipMatrix(ref Matrix m)
-        {
-            //y回転
-            m.M31 = -m.M31;
-            m.M13 = -m.M13;
-
-            //z回転
-            m.M21 = -m.M21;
-            m.M12 = -m.M12;
-
-            //x移動
-            m.M41 = -m.M41;
+            Helper.FlipMatrix(ref m);
         }
     }
 
@@ -1505,7 +1341,7 @@ namespace TDCG
             set {
                 transformation_matrix = value;
                 Matrix m = transformation_matrix;
-                translation = TMOMat.DecomposeMatrix(ref m);
+                translation = Helper.DecomposeMatrix(ref m);
                 rotation = Quaternion.RotationMatrix(m);
             }
         }

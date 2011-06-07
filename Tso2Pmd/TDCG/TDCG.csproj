@@ -37,9 +37,8 @@
   <ItemGroup>
     <Compile Include="BMPSaveData.cs" />
     <Compile Include="Camera.cs" />
-    <Compile Include="CCDSolver.cs" />
-    <Compile Include="CCDViewer.cs" />
     <Compile Include="Figure.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="IProportion.cs" />
     <Compile Include="Morphing.cs" />
     <Compile Include="NodesRange.cs" />
@@ -50,16 +49,14 @@
     <Compile Include="SimpleCamera.cs" />
     <Compile Include="Extensions\BinaryReaderMethods.cs" />
     <Compile Include="Extensions\BinaryWriterMethods.cs" />
-    <Compile Include="SlideMatrices.cs" />
+    <Compile Include="SliderMatrix.cs" />
     <Compile Include="TBNFile.cs" />
-    <Compile Include="TMOConstraint.cs" />
     <Compile Include="TMOFile.cs" />
     <Compile Include="TPOConfig.cs" />
     <Compile Include="TPOFile.cs" />
     <Compile Include="TPOFileList.cs" />
     <Compile Include="TSOFile.cs" />
     <Compile Include="Viewer.cs" />
-    <Compile Include="WeightViewer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="CSScriptLibrary, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
