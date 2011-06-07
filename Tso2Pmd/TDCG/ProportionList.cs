@@ -42,25 +42,5 @@ public class ProportionList
             items.Add(script);
         }
     }
-
-// 改変--ここから--
-
-    /// <summary>
-    /// 体型スクリプトを読み込みます（初期ポーズのみ）。
-    /// </summary>
-    public void Load_onlyInitPose()
-    {
-        string proportion_path = GetProportionPath();
-        if (!Directory.Exists(proportion_path))
-            return;
-
-        string script_file = Path.Combine(proportion_path, @"AAA_PMDInitPose.cs");
-        string class_name = "TDCG.Proportion." + Path.GetFileNameWithoutExtension(script_file);
-        var script = CSScript.Load(script_file).CreateInstance(class_name).AlignToInterface<IProportion>();
-        items.Add(script);
-    }
-
-// 改変--ここまで--
-
 }
 }
