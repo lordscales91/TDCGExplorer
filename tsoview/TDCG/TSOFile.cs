@@ -204,6 +204,7 @@ namespace TDCG
             get { return vertices.Length; }
         }
 
+        /// toonshader.cgfx に渡す頂点要素
         public static VertexElement[] ve = new VertexElement[]
         {
             new VertexElement(0,  0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
@@ -363,16 +364,26 @@ namespace TDCG
         }
     }
 
+    /// 頂点構造体
     public struct VertexFormat
     {
+        /// 位置
         public Vector3 position;
+        /// スキンウェイト0
         public float weight_0;
+        /// スキンウェイト1
         public float weight_1;
+        /// スキンウェイト2
         public float weight_2;
+        /// スキンウェイト3
         public float weight_3;
+        /// ボーンインデックス
         public uint bone_indices;
+        /// 法線
         public Vector3 normal;
+        /// テクスチャU座標
         public float u;
+        /// テクスチャV座標
         public float v;
     }
 
