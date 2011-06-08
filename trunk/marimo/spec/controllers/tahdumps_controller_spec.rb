@@ -5,6 +5,10 @@ describe TahdumpsController do
     controller.stub!(:current_user).and_return(mock_user)
   end
 
+  def mock_user(stubs={})
+    @_mock_user ||= mock_model(User, stubs)
+  end
+
   describe "GET 'show'" do
     it "should be successful" do
       get 'show'
