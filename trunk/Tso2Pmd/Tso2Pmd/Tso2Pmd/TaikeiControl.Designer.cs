@@ -50,7 +50,8 @@
             this.groupBox5.Size = new System.Drawing.Size(325, 178);
             this.groupBox5.TabIndex = 36;
             this.groupBox5.TabStop = false;
-            this.groupBox5.Text = "特殊体型（TPOConfig.xmlをドラッグ＆ドロップ可）";
+            //this.groupBox5.Text = "特殊体型（TPOConfig.xmlをドラッグ＆ドロップ可）";
+            this.groupBox5.Text = "特殊体型";
             // 
             // panel1
             // 
