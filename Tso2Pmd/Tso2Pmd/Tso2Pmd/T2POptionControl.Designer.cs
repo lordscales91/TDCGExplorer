@@ -116,7 +116,7 @@
             this.textBox_Comment.Size = new System.Drawing.Size(290, 99);
             this.textBox_Comment.TabIndex = 11;
             this.textBox_Comment.Text = "PolyMo用モデルデータ : カスタム少女\r\n(物理演算対応モデル)\r\n\r\nモデル編集者 : ---\r\nMOD作成者 : ---\r\nデータ変換 : Tso2Pm" +
-                "d Ver. 0.2.3\r\nCopyright : TechArts3D & ---";
+                "d Ver. 0.2.4\r\nCopyright : TechArts3D & ---";
             // 
             // label7
             // 
