@@ -30,13 +30,13 @@
         {
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button4 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.button1 = new System.Windows.Forms.Button();
             this.label_TaikeiValue = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
             this.groupBox5.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
@@ -50,8 +50,7 @@
             this.groupBox5.Size = new System.Drawing.Size(325, 178);
             this.groupBox5.TabIndex = 36;
             this.groupBox5.TabStop = false;
-            //this.groupBox5.Text = "特殊体型（TPOConfig.xmlをドラッグ＆ドロップ可）";
-            this.groupBox5.Text = "特殊体型";
+			this.groupBox5.Text = "特殊体型（TPOConfig.xmlをドラッグ＆ドロップ可）";
             // 
             // panel1
             // 
@@ -68,6 +67,38 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(319, 160);
             this.panel1.TabIndex = 4;
+            this.panel1.DragDrop += new System.Windows.Forms.DragEventHandler(this.listBox1_DragDrop);
+            this.panel1.DragEnter += new System.Windows.Forms.DragEventHandler(this.listBox1_DragEnter);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(254, 126);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(58, 25);
+            this.button4.TabIndex = 38;
+            this.button4.Text = "Reset";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
+            // button3
+            // 
+            this.button3.Location = new System.Drawing.Point(254, 91);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(26, 29);
+            this.button3.TabIndex = 37;
+            this.button3.Text = "<";
+            this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
+            // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(286, 91);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(26, 29);
+            this.button2.TabIndex = 37;
+            this.button2.Text = ">";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // listBox1
             // 
@@ -113,36 +144,6 @@
             this.trackBar1.TabIndex = 1;
             this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.Both;
             this.trackBar1.ValueChanged += new System.EventHandler(this.trackBar1_ValueChanged);
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(286, 91);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(26, 29);
-            this.button2.TabIndex = 37;
-            this.button2.Text = ">";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(254, 91);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(26, 29);
-            this.button3.TabIndex = 37;
-            this.button3.Text = "<";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(254, 126);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(58, 25);
-            this.button4.TabIndex = 38;
-            this.button4.Text = "Reset";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
             // 
             // TaikeiControl
             // 
