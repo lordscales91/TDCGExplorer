@@ -49,6 +49,8 @@ public partial class TSOForm : Form
         this.DragOver += new DragEventHandler(form_OnDragOver);
 
         this.viewer = new Viewer();
+        viewer.ScreenColor = tso_config.ScreenColor;
+
         this.fig_form = new FigureForm();
 
         if (viewer.InitializeApplication(this, true))
