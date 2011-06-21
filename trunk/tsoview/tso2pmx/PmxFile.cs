@@ -2,12 +2,16 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 using tso2pmx.Extensions;
 
 namespace tso2pmx
 {
     class PmxFile
     {
+        PmxVertex[] vertices;
+
         /// <summary>
         /// 指定パスに保存します。
         /// </summary>
@@ -34,7 +38,7 @@ namespace tso2pmx
             bw.Write((byte)4); //頂点Indexサイズ
             bw.Write((byte)1); //テクスチャIndexサイズ
             bw.Write((byte)1); //材質Indexサイズ
-            bw.Write((byte)1); //ボーンIndexサイズ
+            bw.Write((byte)2); //ボーンIndexサイズ
             bw.Write((byte)1); //モーフIndexサイズ
             bw.Write((byte)1); //剛体Indexサイズ
 
@@ -43,7 +47,11 @@ namespace tso2pmx
             bw.WritePString("comment ja");
             bw.WritePString("comment en");
 
-            bw.Write((int)0);//#vertices
+            bw.Write(vertices.Length);
+            foreach (PmxVertex v in vertices)
+            {
+                v.Write(bw);
+            }
             bw.Write((int)0);//#faces
             bw.Write((int)0);//#textures
             bw.Write((int)0);//#materials
@@ -64,6 +72,66 @@ namespace tso2pmx
             bw.Write((byte)0x58);
             bw.Write((byte)0x20);
             bw.Write(2.0f);
+        }
+
+        public PmxFile()
+        {
+            vertices = new PmxVertex[1];
+            vertices[0] = new PmxVertex();
+        }
+    }
+
+    /// スキンウェイト
+    public class PmxSkinWeight
+    {
+        public short bone_index;
+        public float weight;
+
+        /// <summary>
+        /// スキンウェイトを生成します。
+        /// </summary>
+        /// <param name="bone_index">ボーンインデックス</param>
+        /// <param name="weight">ウェイト</param>
+        public PmxSkinWeight(short bone_index, float weight)
+        {
+            this.bone_index = bone_index;
+            this.weight = weight;
+        }
+    }
+
+    /// 頂点
+    public class PmxVertex
+    {
+        public Vector3 position;
+        public Vector3 normal;
+        public float u;
+        public float v;
+        public PmxSkinWeight[] skin_weights;
+
+        public PmxVertex()
+        {
+            skin_weights = new PmxSkinWeight[4];
+            for (int i = 0; i < 4; i++)
+            {
+                skin_weights[i] = new PmxSkinWeight(0, 0.0f);
+            }
+        }
+
+        /// <summary>
+        /// 頂点を書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.Write(ref this.position);
+            bw.Write(ref this.normal);
+            bw.Write(this.u);
+            bw.Write(this.v);
+            bw.Write((byte)2); //変形方式 2:BDEF4
+            for (int i = 0; i < 4; i++)
+            {
+                bw.Write(skin_weights[i].bone_index);
+                bw.Write(skin_weights[i].weight);
+            }
         }
     }
 }
