@@ -76,8 +76,10 @@ namespace tso2pmx
 
         public PmxFile()
         {
-            vertices = new PmxVertex[1];
+            vertices = new PmxVertex[3];
             vertices[0] = new PmxVertex();
+            vertices[1] = new PmxVertex();
+            vertices[2] = new PmxVertex();
         }
     }
 
@@ -107,6 +109,7 @@ namespace tso2pmx
         public float u;
         public float v;
         public PmxSkinWeight[] skin_weights;
+        public float edge_scale;
 
         public PmxVertex()
         {
@@ -115,6 +118,7 @@ namespace tso2pmx
             {
                 skin_weights[i] = new PmxSkinWeight(0, 0.0f);
             }
+            edge_scale = 1.0f;
         }
 
         /// <summary>
@@ -130,8 +134,12 @@ namespace tso2pmx
             for (int i = 0; i < 4; i++)
             {
                 bw.Write(skin_weights[i].bone_index);
+            }
+            for (int i = 0; i < 4; i++)
+            {
                 bw.Write(skin_weights[i].weight);
             }
+            bw.Write(this.edge_scale);
         }
     }
 }
