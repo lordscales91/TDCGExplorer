@@ -84,8 +84,11 @@ namespace tso2pmx
         {
             vertices = new PmxVertex[3];
             vertices[0] = new PmxVertex();
+            vertices[0].position = new Vector3(0, 0, 0);
             vertices[1] = new PmxVertex();
+            vertices[1].position = new Vector3(5, 0, 0);
             vertices[2] = new PmxVertex();
+            vertices[2].position = new Vector3(0, 5, 0);
             vindices = new int[3];
             vindices[0] = 0;
             vindices[1] = 1;
