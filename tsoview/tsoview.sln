@@ -116,6 +116,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TMOKinect", "TMOKinect\TMOK
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TSOPlay", "TSOPlay\TSOPlay.csproj", "{9F30625E-5777-4695-A8AE-F91754BD98B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "tso2pmx", "tso2pmx\tso2pmx.csproj", "{BA6AD0D2-CC9F-411F-8C4E-7EEF1A0D5F32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -226,6 +228,10 @@ Global
 		{9F30625E-5777-4695-A8AE-F91754BD98B4}.Debug|x86.Build.0 = Debug|x86
 		{9F30625E-5777-4695-A8AE-F91754BD98B4}.Release|x86.ActiveCfg = Release|x86
 		{9F30625E-5777-4695-A8AE-F91754BD98B4}.Release|x86.Build.0 = Release|x86
+		{BA6AD0D2-CC9F-411F-8C4E-7EEF1A0D5F32}.Debug|x86.ActiveCfg = Debug|x86
+		{BA6AD0D2-CC9F-411F-8C4E-7EEF1A0D5F32}.Debug|x86.Build.0 = Debug|x86
+		{BA6AD0D2-CC9F-411F-8C4E-7EEF1A0D5F32}.Release|x86.ActiveCfg = Release|x86
+		{BA6AD0D2-CC9F-411F-8C4E-7EEF1A0D5F32}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
