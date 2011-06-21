@@ -11,6 +11,7 @@ namespace tso2pmx
     class PmxFile
     {
         PmxVertex[] vertices;
+        int[] vindices;
 
         /// <summary>
         /// 指定パスに保存します。
@@ -52,7 +53,12 @@ namespace tso2pmx
             {
                 v.Write(bw);
             }
-            bw.Write((int)0);//#faces
+            bw.Write(vindices.Length);
+            foreach (int i in vindices)
+            {
+                bw.Write(i);
+            }
+
             bw.Write((int)0);//#textures
             bw.Write((int)0);//#materials
             bw.Write((int)0);//#nodes
@@ -80,6 +86,10 @@ namespace tso2pmx
             vertices[0] = new PmxVertex();
             vertices[1] = new PmxVertex();
             vertices[2] = new PmxVertex();
+            vindices = new int[3];
+            vindices[0] = 0;
+            vindices[1] = 1;
+            vindices[2] = 2;
         }
     }
 
