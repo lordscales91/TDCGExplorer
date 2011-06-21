@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using tso2pmx.Extensions;
 
 namespace tso2pmx
 {
@@ -15,12 +16,6 @@ namespace tso2pmx
         {
             using (Stream dest_stream = File.Create(dest_file))
                 Save(dest_stream);
-        }
-
-        public void WritePString(BinaryWriter bw, string str)
-        {
-            bw.Write((int)str.Length);
-            bw.Write(Encoding.UTF8.GetBytes(str));
         }
 
         /// <summary>
@@ -43,10 +38,10 @@ namespace tso2pmx
             bw.Write((byte)1); //モーフIndexサイズ
             bw.Write((byte)1); //剛体Indexサイズ
 
-            WritePString(bw, "model name ja");
-            WritePString(bw, "model name en");
-            WritePString(bw, "comment ja");
-            WritePString(bw, "comment en");
+            bw.WritePString("model name ja");
+            bw.WritePString("model name en");
+            bw.WritePString("comment ja");
+            bw.WritePString("comment en");
 
             bw.Write((int)0);//#vertices
             bw.Write((int)0);//#faces
