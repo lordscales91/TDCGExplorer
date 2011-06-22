@@ -60,7 +60,8 @@ namespace tso2pmx
                 bw.Write(i);
             }
 
-            bw.Write((int)0);//#textures
+            bw.Write((int)1);
+            bw.WritePString("chip0.bmp");
 
             bw.Write(materials.Length);
             foreach (PmxMaterial m in materials)
@@ -89,19 +90,43 @@ namespace tso2pmx
 
         public PmxFile()
         {
-            vertices = new PmxVertex[3];
+            vertices = new PmxVertex[4];
+
             vertices[0] = new PmxVertex();
             vertices[0].position = new Vector3(0, 0, 0);
+            vertices[0].u = 0.0f;
+            vertices[0].v = 0.0f;
+
             vertices[1] = new PmxVertex();
             vertices[1].position = new Vector3(0, 5, 0);
+            vertices[1].u = 0.0f;
+            vertices[1].v = 1.0f;
+
             vertices[2] = new PmxVertex();
             vertices[2].position = new Vector3(5, 0, 0);
-            vindices = new int[3];
+            vertices[2].u = 1.0f;
+            vertices[2].v = 0.0f;
+
+            vertices[3] = new PmxVertex();
+            vertices[3].position = new Vector3(5, 5, 0);
+            vertices[3].u = 1.0f;
+            vertices[3].v = 1.0f;
+
+            vindices = new int[6];
+
             vindices[0] = 0;
             vindices[1] = 1;
             vindices[2] = 2;
+
+            vindices[3] = 1;
+            vindices[4] = 3;
+            vindices[5] = 2;
+
             materials = new PmxMaterial[1];
+
             materials[0] = new PmxMaterial();
+            materials[0].tex_id = 0;
+            materials[0].vertices_count = 6;
         }
     }
 
@@ -168,26 +193,26 @@ namespace tso2pmx
     /// 材質
     public class PmxMaterial
     {
-        string name_ja;
-        string name_en;
+        public string name_ja;
+        public string name_en;
         
-        Vector4 diffuse;
-        Vector4 specular;
-        Vector3 ambient;
+        public Vector4 diffuse;
+        public Vector4 specular;
+        public Vector3 ambient;
         
-        byte flags;
+        public byte flags;
         
-        Vector4 edge_color;
-        float edge_width;
+        public Vector4 edge_color;
+        public float edge_width;
         
-        sbyte tex_id = -1;
-        sbyte sphere_tex_id = -1;
-        byte sphere_mode = 0;
-        byte toon_flag = 0;
-        sbyte toon_tex_id = -1;
+        public sbyte tex_id = -1;
+        public sbyte sphere_tex_id = -1;
+        public byte sphere_mode = 0;
+        public byte toon_flag = 0;
+        public sbyte toon_tex_id = -1;
         
-        string memo;
-        int vertices_count;
+        public string memo;
+        public int vertices_count;
 
         public PmxMaterial()
         {
@@ -199,8 +224,8 @@ namespace tso2pmx
             flags = (byte)0x10;//描画フラグ 0x10:エッジ描画
             edge_color = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
             edge_width = 1.0f;
+
             memo = "memo";
-            vertices_count = 3;
         }
 
         public void Write(BinaryWriter bw)
