@@ -12,6 +12,7 @@ namespace tso2pmx
     {
         PmxVertex[] vertices;
         int[] vindices;
+        PmxMaterial[] materials;
 
         /// <summary>
         /// 指定パスに保存します。
@@ -60,7 +61,13 @@ namespace tso2pmx
             }
 
             bw.Write((int)0);//#textures
-            bw.Write((int)0);//#materials
+
+            bw.Write(materials.Length);
+            foreach (PmxMaterial m in materials)
+            {
+                m.Write(bw);
+            }
+
             bw.Write((int)0);//#nodes
             bw.Write((int)0);//#morphs
             bw.Write((int)0);//#labels
@@ -86,13 +93,15 @@ namespace tso2pmx
             vertices[0] = new PmxVertex();
             vertices[0].position = new Vector3(0, 0, 0);
             vertices[1] = new PmxVertex();
-            vertices[1].position = new Vector3(5, 0, 0);
+            vertices[1].position = new Vector3(0, 5, 0);
             vertices[2] = new PmxVertex();
-            vertices[2].position = new Vector3(0, 5, 0);
+            vertices[2].position = new Vector3(5, 0, 0);
             vindices = new int[3];
             vindices[0] = 0;
             vindices[1] = 1;
             vindices[2] = 2;
+            materials = new PmxMaterial[1];
+            materials[0] = new PmxMaterial();
         }
     }
 
@@ -153,6 +162,64 @@ namespace tso2pmx
                 bw.Write(skin_weights[i].weight);
             }
             bw.Write(this.edge_scale);
+        }
+    }
+
+    /// 材質
+    public class PmxMaterial
+    {
+        string name_ja;
+        string name_en;
+        
+        Vector4 diffuse;
+        Vector4 specular;
+        Vector3 ambient;
+        
+        byte flags;
+        
+        Vector4 edge_color;
+        float edge_width;
+        
+        sbyte tex_id = -1;
+        sbyte sphere_tex_id = -1;
+        byte sphere_mode = 0;
+        byte toon_flag = 0;
+        sbyte toon_tex_id = -1;
+        
+        string memo;
+        int vertices_count;
+
+        public PmxMaterial()
+        {
+            name_ja = "material ja";
+            name_en = "material en";
+            diffuse = new Vector4(0.800f, 0.712f, 0.624f, 1.0f);
+            specular = new Vector4(0.150f, 0.150f, 0.150f, 6.0f);
+            ambient = new Vector3(0.500f, 0.445f, 0.390f);
+            flags = (byte)0x10;//描画フラグ 0x10:エッジ描画
+            edge_color = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
+            edge_width = 1.0f;
+            memo = "memo";
+            vertices_count = 3;
+        }
+
+        public void Write(BinaryWriter bw)
+        {
+            bw.WritePString(name_ja);
+            bw.WritePString(name_en);
+            bw.Write(ref diffuse);
+            bw.Write(ref specular);
+            bw.Write(ref ambient);
+            bw.Write(flags);
+            bw.Write(ref edge_color);
+            bw.Write(edge_width);
+            bw.Write(tex_id);
+            bw.Write(sphere_tex_id);
+            bw.Write(sphere_mode);
+            bw.Write(toon_flag);
+            bw.Write(toon_tex_id);
+            bw.WritePString(memo);
+            bw.Write(vertices_count);
         }
     }
 }

@@ -36,6 +36,19 @@ namespace tso2pmx.Extensions
         }
 
         /// <summary>
+        /// 指定ライタにベクトルを書き出します。
+        /// </summary>
+        /// <param name="bw">BinaryWriter</param>
+        /// <param name="v">ベクトル</param>
+        public static void Write(this BinaryWriter bw, ref Vector4 v)
+        {
+            bw.Write(v.X);
+            bw.Write(v.Y);
+            bw.Write(v.Z);
+            bw.Write(v.W);
+        }
+
+        /// <summary>
         /// 指定ライタに行列を書き出します。
         /// </summary>
         /// <param name="bw">BinaryWriter</param>
