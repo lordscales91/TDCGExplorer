@@ -15,6 +15,9 @@ namespace tso2pmx
         public PmxMaterial[] materials;
         public PmxNode[] nodes;
 
+        public PmxRigidBody[] rigid_bodies;
+        public PmxJoint[] joints;
+
         /// <summary>
         /// 指定パスに保存します。
         /// </summary>
@@ -78,8 +81,19 @@ namespace tso2pmx
 
             bw.Write((int)0);//#morphs
             bw.Write((int)0);//#labels
-            bw.Write((int)0);//#rbodies
-            bw.Write((int)0);//#joints
+
+            bw.Write(rigid_bodies.Length);
+            foreach (PmxRigidBody b in rigid_bodies)
+            {
+                b.Write(bw);
+            }
+
+            bw.Write(joints.Length);
+            foreach (PmxJoint j in joints)
+            {
+                j.Write(bw);
+            }
+
         }
 
         /// <summary>
@@ -116,6 +130,8 @@ namespace tso2pmx
     /// 頂点
     public class PmxVertex
     {
+        public int id;
+
         public Vector3 position;
         public Vector3 normal;
         public float u;
@@ -158,6 +174,8 @@ namespace tso2pmx
     /// 材質
     public class PmxMaterial
     {
+        public short id;
+
         public string name_ja;
         public string name_en;
         
@@ -216,6 +234,8 @@ namespace tso2pmx
     /// ボーン
     public class PmxNode
     {
+        public short id;
+
         string name_ja;
         string name_en;
         Vector3 position;
@@ -247,6 +267,104 @@ namespace tso2pmx
             bw.Write(flags_lo);
             bw.Write(flags_hi);
             bw.Write(tail_node_id);
+        }
+    }
+
+    /// 剛体
+    public class PmxRigidBody
+    {
+        public short id;
+
+        public string name_ja;
+        public string name_en;
+
+        public short rel_bone_id;
+        
+        public byte group_id;
+        public ushort group_non_collision;
+        
+        public byte shape_id;
+        public Vector3 size;
+
+        public Vector3 position;
+        public Vector3 rotation;
+        
+        public float weight;
+        public float position_dim;
+        public float rotation_dim;
+        public float recoil;
+        public float friction;
+        
+        public byte type;
+
+        public void Write(BinaryWriter bw)
+        {
+            bw.WritePString(name_ja);
+            bw.WritePString(name_en);
+
+            bw.Write(rel_bone_id);
+
+            bw.Write(group_id);
+            bw.Write(group_non_collision);
+
+            bw.Write(shape_id);
+            bw.Write(ref size);
+
+            bw.Write(ref position);
+            bw.Write(ref rotation);
+
+            bw.Write(weight);
+            bw.Write(position_dim);
+            bw.Write(rotation_dim);
+            bw.Write(recoil);
+            bw.Write(friction);
+
+            bw.Write(type);
+        }
+    }
+
+    /// ジョイント
+    public class PmxJoint
+    {
+        public string name_ja;
+        public string name_en;
+        
+        public byte type = 0;
+        
+        public short rigid_body_a_id;
+        public short rigid_body_b_id;
+        
+        public Vector3 position;
+        public Vector3 rotation;
+
+        public Vector3 position_min;
+        public Vector3 position_max;
+        public Vector3 rotation_min;
+        public Vector3 rotation_max;
+        
+        public Vector3 spring_position;
+        public Vector3 spring_rotation;
+
+        public void Write(BinaryWriter bw)
+        {
+            bw.WritePString(name_ja);
+            bw.WritePString(name_en);
+
+            bw.Write(type);
+
+            bw.Write(rigid_body_a_id);
+            bw.Write(rigid_body_b_id);
+
+            bw.Write(ref position);
+            bw.Write(ref rotation);
+
+            bw.Write(ref position_min);
+            bw.Write(ref position_max);
+            bw.Write(ref rotation_min);
+            bw.Write(ref rotation_max);
+
+            bw.Write(ref spring_position);
+            bw.Write(ref spring_rotation);
         }
     }
 }
