@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace TDCGUtils
@@ -170,11 +171,9 @@ namespace TDCGUtils
             ownerForm = owner;
 
             //スレッドを作成
-            thread = new System.Threading.Thread(
-                new System.Threading.ThreadStart(Run));
+            thread = new Thread(new ThreadStart(Run));
             thread.IsBackground = true;
-            this.thread.ApartmentState =
-                System.Threading.ApartmentState.STA;
+            this.thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
             //フォームが表示されるまで待機する

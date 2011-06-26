@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Drawing;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 
 using TDCG;
 using TDCGUtils;
-using jp.nyatla.nymmd.cs.types;
-using jp.nyatla.nymmd.cs.struct_type.pmd;
 
 namespace Tso2Pmd
 {
@@ -66,20 +65,23 @@ namespace Tso2Pmd
             Shader shader = new Shader();
             shader.Load(TSOList[tso_num].sub_scripts[script_num].lines);
 
-            pmd_m.col4Diffuse = new MmdColor4(1.0f, 1.0f, 1.0f, 1.0f);
-            pmd_m.fShininess = 6.0f;
-            pmd_m.col3Specular = new MmdColor3(0.15f, 0.15f, 0.15f);
-            pmd_m.col3Ambient = new MmdColor3(0.5f, 0.5f, 0.5f);
+            pmd_m.diffuse = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+            pmd_m.specular = new Vector4(0.15f, 0.15f, 0.15f, 6.0f);
+            pmd_m.ambient = new Vector3(0.5f, 0.5f, 0.5f);
 
-            if (edge == true) pmd_m.edge_flag = 1;
-            else pmd_m.edge_flag = 0;
+            if (edge == true)
+                pmd_m.edge_width = 1;
+            else
+                pmd_m.edge_width = 0;
 
             // 頂点インデックス数（0となっているため、後に設定する必要がある）
-            pmd_m.ulNumIndices = 0;
+            pmd_m.vindices_count = 0;
 
             // colorテクスチャ
+            /*
             pmd_m.szTextureFileName = tex_list.GetFileName(tso_num, shader.ColorTexName);
-
+            */
+            
             // toonテクスチャ
             string toon_file = tex_list.GetFileName(tso_num, shader.ShadeTexName);
             if (toon_file != null) // 存在しないtoonテクスチャを参照しているパーツがあるのでこれを確認
@@ -87,7 +89,7 @@ namespace Tso2Pmd
                 if (toon_name_list.IndexOf(toon_file) != -1)
                 {
                     // toonテクスチャファイル中でのインデックス
-                    pmd_m.toon_index = toon_name_list.IndexOf(toon_file);
+                    pmd_m.toon_tex_id = (sbyte)toon_name_list.IndexOf(toon_file);
                 }
                 else
                 {
@@ -98,7 +100,7 @@ namespace Tso2Pmd
                         toon_name_list.Add(toon_file);
 
                         // toonテクスチャファイル中でのインデックス
-                        pmd_m.toon_index = toon_name_list.Count - 1;
+                        pmd_m.toon_tex_id = (sbyte)(toon_name_list.Count - 1);
                     }
                     else
                     {
@@ -107,11 +109,12 @@ namespace Tso2Pmd
                         toon_name_list.Add("toon10.bmp"); // 10以上は無理なので、それ以上は全てtoon10.bmp
 
                         // toonテクスチャファイル中でのインデックス
-                        pmd_m.toon_index = 9; // 10以上は無理なので、それ以上は全て9
+                        pmd_m.toon_tex_id = 9; // 10以上は無理なので、それ以上は全て9
                     }
                 }
 
                 // スフィアマップ
+                /*
                 if (spheremap_flag == true)
                 {
                     // toonテクスチャが256×16のサイズなら、スフィアマップを指定する
@@ -124,10 +127,11 @@ namespace Tso2Pmd
                             = pmd_m.szTextureFileName + "*" + sphere_file;
                     }
                 }
+                */
             }
             else
             {
-                pmd_m.toon_index = 9;
+                pmd_m.toon_tex_id = 9;
             }
 
             // 要素を追加
@@ -141,29 +145,26 @@ namespace Tso2Pmd
         {
             for (int i = 0; i < material_list.Count - 1; i++)
             {
-                if (EqualMaterial(material_list[i], material_list[i+1]) == 0)
+                if (Equals(material_list[i], material_list[i + 1]))
                 {
-                    material_list[i].ulNumIndices += material_list[i+1].ulNumIndices;
-                    material_list.RemoveAt(i+1);
-                    name_list.RemoveAt(i+1);
+                    material_list[i].vindices_count += material_list[i + 1].vindices_count;
+                    material_list.RemoveAt(i + 1);
+                    name_list.RemoveAt(i + 1);
                     i = 0;
                 }
             }
         }
 
         // ２つのマテリアルが等しいか判定する
-        public int EqualMaterial(PMD_Material m1, PMD_Material m2)
+        public bool Equals(PMD_Material m1, PMD_Material m2)
         {
-            // edge_flag
-            if (m1.edge_flag != m2.edge_flag) return -1;
-
-            // colorテクスチャ
-            if (m1.szTextureFileName != m2.szTextureFileName) return -1;
-
-            // toonテクスチャ
-            if (m1.toon_index != m2.toon_index) return -1;
-
-            return 0;
+            if (m1.edge_width != m2.edge_width)
+                return false;
+            if (m1.tex_id != m2.tex_id)
+                return false;
+            if (m1.toon_tex_id != m2.toon_tex_id)
+                return false;
+            return true;
         }
 
         // トゥーンテクスチャファイル名を得る

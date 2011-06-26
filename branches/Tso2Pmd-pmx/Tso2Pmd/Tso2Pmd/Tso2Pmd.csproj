@@ -212,10 +212,6 @@
     <Content Include="DefaultGirl.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\NyMmd\NyMmd\NyMmd.csproj">
-      <Project>{6E0B0B92-0394-4537-8096-8EEB0DF619D4}</Project>
-      <Name>NyMmd</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\TDCGUtils\TDCGUtils.csproj">
       <Project>{8C373BC2-E91E-4395-B550-2B0D4D84FB17}</Project>
       <Name>TDCGUtils</Name>
