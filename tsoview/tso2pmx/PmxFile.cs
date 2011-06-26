@@ -15,7 +15,7 @@ namespace tso2pmx
         public PmxMaterial[] materials;
         public PmxNode[] nodes;
 
-        public PmxRigidBody[] rigid_bodies;
+        public PmxRBody[] rbodies;
         public PmxJoint[] joints;
 
         /// <summary>
@@ -82,8 +82,8 @@ namespace tso2pmx
             bw.Write((int)0);//#morphs
             bw.Write((int)0);//#labels
 
-            bw.Write(rigid_bodies.Length);
-            foreach (PmxRigidBody b in rigid_bodies)
+            bw.Write(rbodies.Length);
+            foreach (PmxRBody b in rbodies)
             {
                 b.Write(bw);
             }
@@ -195,7 +195,7 @@ namespace tso2pmx
         public sbyte toon_tex_id = -1;
         
         public string memo;
-        public int vertices_count;
+        public int vindices_count;
 
         public PmxMaterial()
         {
@@ -227,7 +227,7 @@ namespace tso2pmx
             bw.Write(toon_flag);
             bw.Write(toon_tex_id);
             bw.WritePString(memo);
-            bw.Write(vertices_count);
+            bw.Write(vindices_count);
         }
     }
 
@@ -271,7 +271,7 @@ namespace tso2pmx
     }
 
     /// 剛体
-    public class PmxRigidBody
+    public class PmxRBody
     {
         public short id;
 
@@ -331,8 +331,8 @@ namespace tso2pmx
         
         public byte type = 0;
         
-        public short rigid_body_a_id;
-        public short rigid_body_b_id;
+        public short rbody_a_id;
+        public short rbody_b_id;
         
         public Vector3 position;
         public Vector3 rotation;
@@ -352,8 +352,8 @@ namespace tso2pmx
 
             bw.Write(type);
 
-            bw.Write(rigid_body_a_id);
-            bw.Write(rigid_body_b_id);
+            bw.Write(rbody_a_id);
+            bw.Write(rbody_b_id);
 
             bw.Write(ref position);
             bw.Write(ref rotation);
