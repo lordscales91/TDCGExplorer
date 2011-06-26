@@ -10,9 +10,9 @@ namespace tso2pmx
 {
     class PmxFile
     {
-        PmxVertex[] vertices;
-        int[] vindices;
-        PmxMaterial[] materials;
+        public PmxVertex[] vertices;
+        public int[] vindices;
+        public PmxMaterial[] materials;
 
         /// <summary>
         /// 指定パスに保存します。
@@ -86,47 +86,6 @@ namespace tso2pmx
             bw.Write((byte)0x58);
             bw.Write((byte)0x20);
             bw.Write(2.0f);
-        }
-
-        public PmxFile()
-        {
-            vertices = new PmxVertex[4];
-
-            vertices[0] = new PmxVertex();
-            vertices[0].position = new Vector3(0, 0, 0);
-            vertices[0].u = 0.0f;
-            vertices[0].v = 0.0f;
-
-            vertices[1] = new PmxVertex();
-            vertices[1].position = new Vector3(0, 5, 0);
-            vertices[1].u = 0.0f;
-            vertices[1].v = 1.0f;
-
-            vertices[2] = new PmxVertex();
-            vertices[2].position = new Vector3(5, 0, 0);
-            vertices[2].u = 1.0f;
-            vertices[2].v = 0.0f;
-
-            vertices[3] = new PmxVertex();
-            vertices[3].position = new Vector3(5, 5, 0);
-            vertices[3].u = 1.0f;
-            vertices[3].v = 1.0f;
-
-            vindices = new int[6];
-
-            vindices[0] = 0;
-            vindices[1] = 1;
-            vindices[2] = 2;
-
-            vindices[3] = 1;
-            vindices[4] = 3;
-            vindices[5] = 2;
-
-            materials = new PmxMaterial[1];
-
-            materials[0] = new PmxMaterial();
-            materials[0].tex_id = 0;
-            materials[0].vertices_count = 6;
         }
     }
 
