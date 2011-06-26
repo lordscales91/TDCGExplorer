@@ -7,7 +7,6 @@ using Microsoft.DirectX.Direct3D;
 using System.IO;
 
 using TDCG;
-using jp.nyatla.nymmd.cs.struct_type.pmd;
 
 namespace TDCGUtils
 {
@@ -67,18 +66,33 @@ namespace TDCGUtils
                 string[] data = line.Split(',');
 
                 // PMD_Boneデータを生成
-                PMD_Bone pmd_b = new PMD_Bone();
+                PMD_Bone pmd_b = new PMD_Bone((short)boneStructure.Count);
 
-                pmd_b.szName = data[0].Trim();
-                pmd_b.cbKind = int.Parse(data[1].Trim()); // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                if (data[2] == "") pmd_b.ParentName = null;
-                else pmd_b.ParentName = data[2].Trim();
-                if (data[3] == "") pmd_b.ChildName = null;
-                else pmd_b.ChildName = data[3].Trim();
-                if (data[4] == "") pmd_b.IKTargetName = null;
-                else pmd_b.IKTargetName = data[4].Trim();
+                pmd_b.name_ja = data[0].Trim();
+                int kind = int.Parse(data[1].Trim());
+                // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
+                
+                if (data[2] == "")
+                    pmd_b.parent_node_id = -1;
+                /*
+                else
+                    pmd_b.parent_node_id = data[2].Trim();
+                */
+                if (data[3] == "")
+                    pmd_b.tail_node_id = -1;
+                /*
+                else
+                    pmd_b.tail_node_id = data[3].Trim();
+                */
+                
+                /*
+                if (data[4] == "")
+                    pmd_b.IKTargetName = null;
+                else
+                    pmd_b.IKTargetName = data[4].Trim();
+                */
 
-                boneStructure.Add(pmd_b.szName, pmd_b);
+                boneStructure.Add(pmd_b.name_ja, pmd_b);
 
                 // 枠に表示するボーン名の設定
                 if (data[5].Trim() != "")
@@ -114,17 +128,20 @@ namespace TDCGUtils
                 string line = sr.ReadLine();
                 string[] data = line.Split(',');
 
-                PMD_IK pmd_ik = new PMD_IK();
+                //TODO: ボーン番号を直せ！
+                PMD_IK pmd_ik = new PMD_IK((short)IKBone.Count);
+                pmd_ik.id = short.Parse(data[0].Trim());	// IKボーン番号
+                pmd_ik.target_node_id = short.Parse(data[1].Trim());		// IKターゲットボーン番号 // IKボーンが最初に接続するボーン
+                int numLink = int.Parse(data[2].Trim());	// IKチェーンの長さ(子の数)
+                pmd_ik.links = new PMD_IL[numLink];
+                pmd_ik.loop_count = int.Parse(data[3].Trim());      // 再帰演算回数 // IK値1
+                pmd_ik.cons_angle = float.Parse(data[4].Trim()) * 4;       // IKの影響度 // IK値2
 
-                pmd_ik.nTargetName = data[0].Trim();	// IKボーン番号
-                pmd_ik.nEffName = data[1].Trim();		// IKターゲットボーン番号 // IKボーンが最初に接続するボーン
-                pmd_ik.cbNumLink = int.Parse(data[2].Trim());	// IKチェーンの長さ(子の数)
-                pmd_ik.unCount = int.Parse(data[3].Trim());      // 再帰演算回数 // IK値1
-                pmd_ik.fFact = float.Parse(data[4].Trim());       // IKの影響度 // IK値2
-
-                List<string> tem_list = new List<string>();
-                for (int i = 5; i < data.Length; i++) tem_list.Add(data[i].Trim());
-                pmd_ik.punLinkName = (string[])tem_list.ToArray();
+                for (int i = 5; i < data.Length; i++)
+                {
+                    pmd_ik.links[i] = new PMD_IL();
+                    pmd_ik.links[i].node_id = short.Parse(data[i].Trim());
+                }
 
                 IKBone.Add(pmd_ik);
             }
@@ -156,29 +173,6 @@ namespace TDCGUtils
                 else
                     boneStructure.Add(kvp.Key, kvp.Value);
             }
-
-            /*// 枠に表示するボーン名の設定
-            if (data[5].Trim() != "")
-            {
-                bool flag = false;
-                foreach (DispBoneGroup dbg in ct.dispBoneGroup)
-                {
-                    if (dbg.group_name == data[5].Trim())
-                    {
-                        dbg.bone_name_list.Add(data[0].Trim());
-                        flag = true;
-                    }
-                }
-
-                if (flag == false)
-                {
-                    DispBoneGroup dbg = new DispBoneGroup();
-                    dbg.group_name = data[5].Trim();
-                    dbg.bone_name_list = new List<string>();
-                    dbg.bone_name_list.Add(data[0].Trim());
-                    dispBoneGroup.Add(dbg);
-                }
-            }*/
 
             // Konoa added.
             foreach (DispBoneGroup dbg in ct.dispBoneGroup)
