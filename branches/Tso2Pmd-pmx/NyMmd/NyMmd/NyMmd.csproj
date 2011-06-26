@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6E0B0B92-0394-4537-8096-8EEB0DF619D4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NyMmd</RootNamespace>
+    <AssemblyName>NyMmd</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <OutputPath>bin\x86\Release\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <PlatformTarget>x64</PlatformTarget>
+    <OutputPath>bin\x64\Release\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.DirectX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.Direct3D, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="Microsoft.DirectX.Direct3DX, Version=1.0.2902.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
+    <Reference Include="System" />
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="jp\nyatla\nymmd\cs\core\PmdBone.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\core\PmdFace.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\core\PmdIK.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\IMmdDataIo.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\IMmdPmdRender.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\MmdException.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\MmdMotionPlayer.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\PmdFileData.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\MmdVmdMotion.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\DataReader.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\pmd\PMD_Bone.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\pmd\PMD_FACE.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\pmd\PMD_FACE_VTX.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\pmd\PMD_Header.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\pmd\PMD_IK.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\pmd\PMD_Material.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\pmd\PMD_Vertex.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\pmd\PMD_BoneDisp.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\pmd\PMD_RigidBody.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\pmd\PMD_Joint.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\StructReader.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\StructType.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\vmd\VMD_Face.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\vmd\VMD_Header.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\vmd\VMD_Motion.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\StructWriter.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\struct_type\DataWriter.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\types\BoneKeyFrame.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\types\MmdColor3.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\types\MmdColor4.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\types\FaceData.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\types\FaceKeyFrame.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\types\MmdMatrix.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\types\PmdMaterial.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\types\MotionData.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\MmdPmdModel.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\types\PmdSkinInfo.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\types\MmdTexUV.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\types\MmdVector3.cs" />
+    <Compile Include="jp\nyatla\nymmd\cs\types\MmdVector4.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
