@@ -13,6 +13,7 @@ namespace tso2pmx
         public PmxVertex[] vertices;
         public int[] vindices;
         public PmxMaterial[] materials;
+        public PmxNode[] nodes;
 
         /// <summary>
         /// 指定パスに保存します。
@@ -69,7 +70,12 @@ namespace tso2pmx
                 m.Write(bw);
             }
 
-            bw.Write((int)0);//#nodes
+            bw.Write(nodes.Length);
+            foreach (PmxNode n in nodes)
+            {
+                n.Write(bw);
+            }
+
             bw.Write((int)0);//#morphs
             bw.Write((int)0);//#labels
             bw.Write((int)0);//#rbodies
@@ -204,6 +210,43 @@ namespace tso2pmx
             bw.Write(toon_tex_id);
             bw.WritePString(memo);
             bw.Write(vertices_count);
+        }
+    }
+
+    /// ボーン
+    public class PmxNode
+    {
+        string name_ja;
+        string name_en;
+        Vector3 position;
+        short parent_node_id;
+        int calc_order;
+        byte flags_hi;
+        byte flags_lo;
+        short tail_node_id;
+
+        public PmxNode()
+        {
+            name_ja = "node ja";
+            name_en = "node en";
+            position = new Vector3(0, 5, 0);
+            parent_node_id = -1;
+            calc_order = 0;//変形階層
+            flags_hi = (byte)0x00;//上位フラグ
+            flags_lo = (byte)0x09;//下位フラグ 0x01: 接続先 1:ボーンで指定 0x08: 表示
+            tail_node_id = -1;
+        }
+
+        public void Write(BinaryWriter bw)
+        {
+            bw.WritePString(name_ja);
+            bw.WritePString(name_en);
+            bw.Write(ref position);
+            bw.Write(parent_node_id);
+            bw.Write(calc_order);
+            bw.Write(flags_lo);
+            bw.Write(flags_hi);
+            bw.Write(tail_node_id);
         }
     }
 }
