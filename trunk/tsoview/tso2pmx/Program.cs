@@ -70,6 +70,9 @@ namespace tso2pmx
             pmx.materials[0].tex_id = 0;
             pmx.materials[0].vertices_count = 6;
 
+            pmx.nodes = new PmxNode[1];
+            pmx.nodes[0] = new PmxNode();
+
             string dest_file = "out.pmx";
             Console.WriteLine("Save File: " + dest_file);
             pmx.Save(dest_file);
