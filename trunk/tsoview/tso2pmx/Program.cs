@@ -73,6 +73,10 @@ namespace tso2pmx
             pmx.nodes = new PmxNode[1];
             pmx.nodes[0] = new PmxNode();
 
+            pmx.rigid_bodies = new PmxRigidBody[0];
+
+            pmx.joints = new PmxJoint[0];
+
             string dest_file = "out.pmx";
             Console.WriteLine("Save File: " + dest_file);
             pmx.Save(dest_file);
