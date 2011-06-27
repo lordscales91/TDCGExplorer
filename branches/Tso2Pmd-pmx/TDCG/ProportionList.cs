@@ -64,8 +64,9 @@ public class ProportionList
         string[] script_files = Directory.GetFiles(proportion_path, "*.cs");
         foreach (string script_file in script_files)
         {
+            string assembly_file = Path.GetTempFileName();
             string class_name = "TDCG.Proportion." + Path.GetFileNameWithoutExtension(script_file);
-            var script = CSScript.Load(script_file).CreateInstance(class_name).AlignToInterface<IProportion>();
+            var script = CSScript.Load(script_file, assembly_file, true, null).CreateInstance(class_name).AlignToInterface<IProportion>();
             items.Add(script);
         }
     }

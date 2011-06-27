@@ -110,6 +110,7 @@
     <Compile Include="PhysicsControl.Designer.cs">
       <DependentUpon>PhysicsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="PhysObTemplateList.cs" />
     <Compile Include="TemplateList.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
