@@ -123,10 +123,15 @@ namespace TDCGUtils
             // ボーン名をIDに置き換え
             foreach (PMD_Vertex vertex in vertices)
             {
-                if (vertex.unBoneName[0] == null) vertex.unBoneNo[0] = -1;
-                else vertex.unBoneNo[0] = getBoneIDByName(vertex.unBoneName[0]);
-                if (vertex.unBoneName[1] == null) vertex.unBoneNo[1] = -1;
-                else vertex.unBoneNo[1] = getBoneIDByName(vertex.unBoneName[1]);
+                if (vertex.unBoneName[0] == null)
+                    vertex.bone_indices[0] = -1;
+                else
+                    vertex.bone_indices[0] = GetBoneIDByName(vertex.unBoneName[0]);
+                
+                if (vertex.unBoneName[1] == null)
+                    vertex.bone_indices[1] = -1;
+                else
+                    vertex.bone_indices[1] = GetBoneIDByName(vertex.unBoneName[1]);
             }
 
             // 頂点配列
@@ -162,12 +167,20 @@ namespace TDCGUtils
             // ボーン名をIDに置き換え
             foreach (PMD_Bone bone in nodes)
             {
-                if (bone.ParentName == null) bone.nParentNo = -1;
-                else bone.nParentNo = getBoneIDByName(bone.ParentName);
-                if (bone.ChildName == null) bone.nChildNo = 0;
-                else bone.nChildNo = getBoneIDByName(bone.ChildName);
-                if (bone.IKTargetName == null) bone.unIKTarget = 0;
-                else bone.unIKTarget = getBoneIDByName(bone.IKTargetName);
+                if (bone.ParentName == null)
+                    bone.nParentNo = -1;
+                else
+                    bone.nParentNo = GetBoneIDByName(bone.ParentName);
+                
+                if (bone.TailName == null)
+                    bone.nTailNo = 0;
+                else
+                    bone.nTailNo = GetBoneIDByName(bone.TailName);
+                
+                if (bone.IKTargetName == null)
+                    bone.unIKTarget = 0;
+                else
+                    bone.unIKTarget = GetBoneIDByName(bone.IKTargetName);
             }
 
             // Bone配列
@@ -185,20 +198,32 @@ namespace TDCGUtils
                 // ボーン名をIDに置き換え
                 foreach (PMD_IK ik in pmd_ik)
                 {
-                    if (ik.nTargetName == null) ik.nTargetNo = -1;
-                    else ik.nTargetNo = getBoneIDByName(ik.nTargetName);
-                    if (ik.nEffName == null) ik.nEffNo = -1;
-                    else ik.nEffNo = getBoneIDByName(ik.nEffName);
+                    if (ik.nTargetName == null)
+                        ik.nTargetNo = -1;
+                    else
+                        ik.nTargetNo = GetBoneIDByName(ik.nTargetName);
+                    
+                    if (ik.nEffName == null)
+                        ik.nEffNo = -1;
+                    else
+                        ik.nEffNo = GetBoneIDByName(ik.nEffName);
 
-                    if (ik.nTargetNo <= -1) ik.nTargetName = null;
-                    else ik.nTargetName = nodes[ik.nTargetNo].szName;
-                    if (ik.nEffNo <= -1) ik.nEffName = null;
-                    else ik.nEffName = nodes[ik.nEffNo].szName;
+                    if (ik.nTargetNo <= -1)
+                        ik.nTargetName = null;
+                    else
+                        ik.nTargetName = nodes[ik.nTargetNo].name;
+                    
+                    if (ik.nEffNo <= -1)
+                        ik.nEffName = null;
+                    else
+                        ik.nEffName = nodes[ik.nEffNo].name;
 
                     for (int i = 0; i < ik.cbNumLink; i++)
                     {
-                        if (ik.punLinkName[i] == null) ik.punLinkNo[i] = -1;
-                        else ik.punLinkNo[i] = getBoneIDByName(ik.punLinkName[i]);
+                        if (ik.punLinkName[i] == null)
+                            ik.punLinkNo[i] = -1;
+                        else
+                            ik.punLinkNo[i] = GetBoneIDByName(ik.punLinkName[i]);
                     }
                 }
 
@@ -224,12 +249,9 @@ namespace TDCGUtils
             bw.Write((byte)skin_disp_count);
 
             // 表情番号
-            if (skin_disp_count > 0)
+            for (int i = 0; i < skin_disp_count; i++)
             {
-                for (int i = 0; i < skin_disp_count; i++)
-                {
-                    bw.Write((short)skin_disp_index[i]);
-                }
+                bw.Write((short)skin_disp_index[i]);
             }
 
             // -----------------------------------------------------
@@ -239,12 +261,9 @@ namespace TDCGUtils
             bw.Write((byte)bone_disp_name_count);
 
             // 枠名(50Bytes/枠)
-            if (bone_disp_name_count > 0)
+            for (int i = 0; i < bone_disp_name_count; i++)
             {
-                for (int i = 0; i < bone_disp_name_count; i++)
-                {
-                    bw.WriteCString(disp_name[i], 50);
-                }
+                bw.WriteCString(disp_name[i], 50);
             }
 
             // -----------------------------------------------------
@@ -256,16 +275,13 @@ namespace TDCGUtils
             // ボーン名をIDに置き換え
             for (int i = 0; i < bone_disp.Length; i++)
             {
-                bone_disp[i].bone_index = getBoneIDByName(bone_disp[i].bone_name);
+                bone_disp[i].bone_index = GetBoneIDByName(bone_disp[i].bone_name);
             }
 
             // 枠用ボーンデータ (3Bytes/bone)
-            if (bone_disp_count > 0)
+            for (int i = 0; i < bone_disp_count; i++)
             {
-                for (int i = 0; i < bone_disp_count; i++)
-                {
-                    bone_disp[i].Write(bw);
-                }
+                bone_disp[i].Write(bw);
             }
 
             // -----------------------------------------------------
@@ -288,12 +304,9 @@ namespace TDCGUtils
             bw.Write((int)rbody_count);
 
             // 剛体データ(83Bytes/rigidbody)
-            if (rbody_count > 0)
+            for (int i = 0; i < rbody_count; i++)
             {
-                for (int i = 0; i < rbody_count; i++)
-                {
-                    bodies[i].Write(bw);
-                }
+                bodies[i].Write(bw);
             }
 
             // -----------------------------------------------------
@@ -302,28 +315,29 @@ namespace TDCGUtils
             // ジョイント数
             bw.Write((int)joint_count);
 
-            // ジョイントデータ(124Bytes/joint)
-            if (joint_count > 0)
+            for (int i = 0; i < joint_count; i++)
             {
-                for (int i = 0; i < joint_count; i++)
-                {
-                    joints[i].Write(bw);
-                }
+                joints[i].Write(bw);
             }
         }
-        public PMD_Bone getBoneByName(string name)
-        {
-            foreach (PMD_Bone bone in this.nodes)
-                if (bone.szName == name) return bone;
 
+        public PMD_Bone GetBoneByName(string name)
+        {
+            foreach (PMD_Bone bone in nodes)
+            {
+                if (bone.name == name)
+                    return bone;
+            }
             return null;
         }
 
-        int getBoneIDByName(string name)
+        int GetBoneIDByName(string name)
         {
-            for (int i = 0; i < this.nodes.Length; i++)
-                if (nodes[i].szName == name) return i;
-
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                if (nodes[i].name == name)
+                    return i;
+            }
             return -1;
         }
     }
@@ -331,42 +345,52 @@ namespace TDCGUtils
     public class PMD_Header
     {
         public const int SIZE_OF_STRUCT = 3 + 4 + 20 + 256;
-        public String szMagic;
-        public float fVersion;
-        public String szName;
-        public String szComment;
+        public String magic;
+        public float version;
+        public String name;
+        public String comment;
 
         internal void Write(BinaryWriter writer)
         {
-            writer.WriteCString(this.szMagic, 3);
-            writer.Write(this.fVersion);
-            writer.WriteCString(this.szName, 20);
-            writer.WriteCString(this.szComment, 256);
+            writer.WriteCString(this.magic, 3);
+            writer.Write(this.version);
+            writer.WriteCString(this.name, 20);
+            writer.WriteCString(this.comment, 256);
         }
     }
 
     public class PMD_Vertex
     {
-        public Vector3 vec3Pos = Vector3.Empty;	// 座標
-        public Vector3 vec3Normal = Vector3.Empty;	// 法線ベクトル
-        public float u, v;		// テクスチャ座標
+        // 座標
+        public Vector3 position = Vector3.Empty;
 
-        internal int[] unBoneNo = new int[2];	// ボーン番号
-        public int cbWeight;		// ブレンドの重み (0～100％)
-        public int cbEdge;			// エッジフラグ
+        // 法線ベクトル
+        public Vector3 normal = Vector3.Empty;
+
+        // テクスチャ座標
+        public float u, v;
+
+        // ボーン番号
+        internal int[] bone_indices = new int[2];
+
+        // ブレンドの重み (0～100％)
+        public int weight;	
+
+        // エッジフラグ
+        public int edge;	
 
         public string[] unBoneName = new string[2];	// ボーン番号
 
         internal void Write(BinaryWriter writer)
         {
-            writer.Write(ref this.vec3Pos);
-            writer.Write(ref this.vec3Normal);
+            writer.Write(ref this.position);
+            writer.Write(ref this.normal);
             writer.Write(u);
             writer.Write(v);
-            writer.Write((ushort)this.unBoneNo[0]);
-            writer.Write((ushort)this.unBoneNo[1]);
-            writer.Write((sbyte)this.cbWeight);
-            writer.Write((sbyte)this.cbEdge);
+            writer.Write((ushort)this.bone_indices[0]);
+            writer.Write((ushort)this.bone_indices[1]);
+            writer.Write((sbyte)this.weight);
+            writer.Write((sbyte)this.edge);
         }
     }
 
@@ -396,41 +420,71 @@ namespace TDCGUtils
 
     public class PMD_Bone
     {
-        public String szName;			// ボーン名 (0x00 終端，余白は 0xFD)
-        internal int nParentNo;			// 親ボーン番号 (なければ -1)
-        internal int nChildNo;			// 子ボーン番号
-        public int cbKind;		// ボーンの種類
-        internal int unIKTarget;	// IK時のターゲットボーン
-        public Vector3 vec3Position = Vector3.Empty;	// モデル原点からの位置
+        // ボーン名 (0x00 終端，余白は 0xFD)
+        public String name;
 
-        public string ParentName;	// 親ボーン名(なければ null)
-        public string ChildName;	// 子ボーン名(なければ null)
-        public string IKTargetName;	// IK時のターゲットボーン(なければ null)
+        // 親ボーン番号 (なければ -1)
+        internal int nParentNo;
+
+        // 子ボーン番号
+        internal int nTailNo;
+
+        // ボーンの種類
+        public int cbKind;
+
+        // IK時のターゲットボーン
+        internal int unIKTarget;
+
+        // モデル原点からの位置
+        public Vector3 position = Vector3.Empty;
+
+        // 親ボーン名(なければ null)
+        public string ParentName;
+
+        // 子ボーン名(なければ null)
+        public string TailName;
+
+        // IK時のターゲットボーン(なければ null)
+        public string IKTargetName;
 
         internal void Write(BinaryWriter writer)
         {
-            writer.WriteCString(this.szName, 20);
+            writer.WriteCString(this.name, 20);
             writer.Write((short)this.nParentNo);
-            writer.Write((short)this.nChildNo);
+            writer.Write((short)this.nTailNo);
             writer.Write((byte)this.cbKind);
             writer.Write((short)this.unIKTarget);
-            writer.Write(ref this.vec3Position);
+            writer.Write(ref this.position);
         }
     }
 
     public class PMD_IK
     {
-        internal int nTargetNo;	// IKターゲットボーン番号
-        internal int nEffNo;		// IK先端ボーン番号
-        public int cbNumLink;	// IKを構成するボーンの数
+        // IKターゲットボーン番号
+        internal int nTargetNo;
+        
+        // IK先端ボーン番号
+        internal int nEffNo;
+        
+        // IKを構成するボーンの数
+        public int cbNumLink;
+        
         public int unCount;
+        
         public float fFact;
-        internal int[] punLinkNo = new int[128];// IKを構成するボーンの配列(可変長配列)
-
-        public string nTargetName;	// IKターゲットボーン名
-        public string nEffName;		// IK先端ボーン名
-        public string[] punLinkName = new string[128];// IKを構成するボーンの配列(可変長配列)
-
+        
+        // IKを構成するボーンの配列(可変長配列)
+        internal int[] punLinkNo = new int[128];
+        
+        // IKターゲットボーン名
+        public string nTargetName;
+        
+        // IK先端ボーン名
+        public string nEffName;
+        
+        // IKを構成するボーンの配列(可変長配列)
+        public string[] punLinkName = new string[128];
+        
         internal void Write(BinaryWriter writer)
         {
             writer.Write((short)this.nTargetNo);
@@ -452,10 +506,17 @@ namespace TDCGUtils
 
     public class PMD_FACE
     {
-        public String szName;		// 表情名 (0x00 終端，余白は 0xFD)
-        private int numVertices;	// 表情頂点数
-        public int cbType;			// 分類 (0：base、1：まゆ、2：目、3：リップ、4：その他)
-        public PMD_FACE_VTX[] pVertices = PMD_FACE_VTX.createArray(64);// 表情頂点データ
+        // 表情名 (0x00 終端，余白は 0xFD)
+        public String name;
+
+        // 表情頂点数
+        private int numVertices;
+        
+        // 分類 (0：base、1：まゆ、2：目、3：リップ、4：その他)
+        public int cbType;
+
+        // 表情頂点データ
+        public PMD_FACE_VTX[] pVertices = PMD_FACE_VTX.createArray(64);
 
         public PMD_FACE(int n)
         {
@@ -469,7 +530,7 @@ namespace TDCGUtils
 
         internal void Write(BinaryWriter writer)
         {
-            writer.WriteCString(this.szName, 20);
+            writer.WriteCString(this.name, 20);
             writer.Write(this.numVertices);
             writer.Write((sbyte)this.cbType);
 
@@ -504,15 +565,18 @@ namespace TDCGUtils
 
     public class PMD_BoneDisp
     {
-        internal int bone_index; // 枠用ボーン番号
-        public int bone_disp_frame_index; // 表示枠番号
+        // 枠用ボーン番号
+        internal int bone_index;
+        
+        // 表示枠番号
+        public int bone_disp_frame_index; 
 
         public string bone_name;
 
         internal void Write(BinaryWriter writer)
         {
-            writer.Write((ushort)this.bone_index); // 枠用ボーン番号
-            writer.Write((byte)this.bone_disp_frame_index); // 表示枠番号
+            writer.Write((ushort)this.bone_index);
+            writer.Write((byte)this.bone_disp_frame_index);
         }
     }
 
@@ -540,22 +604,22 @@ namespace TDCGUtils
 
         internal void Write(BinaryWriter writer)
         {
-            writer.WriteCString(this.name, 20); // 諸データ：名称 // 頭
-            writer.Write((short)this.rel_bone_id); // 諸データ：関連ボーン番号 // 03 00 == 3 // 頭
-            writer.Write((byte)this.group_id); // 諸データ：グループ // 00
-            writer.Write((short)this.group_non_collision); // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
-            writer.Write((byte)this.shape_id); // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-            writer.Write(this.shape_w); // 形状：半径(幅) // CD CC CC 3F // 1.6
-            writer.Write(this.shape_h); // 形状：高さ // CD CC CC 3D // 0.1
-            writer.Write(this.shape_d); // 形状：奥行 // CD CC CC 3D // 0.1
-            writer.Write(ref this.position); // 位置：位置(x, y, z)
-            writer.Write(ref this.rotation); // 位置：回転(rad(x), rad(y), rad(z))
-            writer.Write(this.weight); // 諸データ：質量 // 00 00 80 3F // 1.0
-            writer.Write(this.position_dim); // 諸データ：移動減 // 00 00 00 00
-            writer.Write(this.rotation_dim); // 諸データ：回転減 // 00 00 00 00
-            writer.Write(this.recoil); // 諸データ：反発力 // 00 00 00 00
-            writer.Write(this.friction); // 諸データ：摩擦力 // 00 00 00 00
-            writer.Write((byte)this.type); // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
+            writer.WriteCString(this.name, 20);
+            writer.Write((short)this.rel_bone_id);
+            writer.Write((byte)this.group_id);
+            writer.Write((short)this.group_non_collision);
+            writer.Write((byte)this.shape_id);
+            writer.Write(this.shape_w);
+            writer.Write(this.shape_h);
+            writer.Write(this.shape_d);
+            writer.Write(ref this.position);
+            writer.Write(ref this.rotation);
+            writer.Write(this.weight);
+            writer.Write(this.position_dim);
+            writer.Write(this.rotation_dim);
+            writer.Write(this.recoil);
+            writer.Write(this.friction);
+            writer.Write((byte)this.type);
         }
     }
 
@@ -575,17 +639,17 @@ namespace TDCGUtils
 
         internal void Write(BinaryWriter writer)
         {
-            writer.WriteCString(this.name, 20); // 諸データ：名称 // 右髪1
-            writer.Write(this.rbody_a_id); // 諸データ：剛体A
-            writer.Write(this.rbody_b_id); // 諸データ：剛体B
-            writer.Write(ref this.position); // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
-            writer.Write(ref this.rotation); // 諸データ：回転(rad(x), rad(y), rad(z))
-            writer.Write(ref this.position_min); // 制限：移動1(x, y, z)
-            writer.Write(ref this.position_max); // 制限：移動2(x, y, z)
-            writer.Write(ref this.rotation_min); // 制限：回転1(rad(x), rad(y), rad(z))
-            writer.Write(ref this.rotation_max); // 制限：回転2(rad(x), rad(y), rad(z))
-            writer.Write(ref this.spring_position); // ばね：移動(x, y, z)
-            writer.Write(ref this.spring_rotation); // ばね：回転(rad(x), rad(y), rad(z))
+            writer.WriteCString(this.name, 20);
+            writer.Write(this.rbody_a_id);
+            writer.Write(this.rbody_b_id);
+            writer.Write(ref this.position);
+            writer.Write(ref this.rotation);
+            writer.Write(ref this.position_min);
+            writer.Write(ref this.position_max);
+            writer.Write(ref this.rotation_min);
+            writer.Write(ref this.rotation_max);
+            writer.Write(ref this.spring_position);
+            writer.Write(ref this.spring_rotation);
         }
     }
 }
