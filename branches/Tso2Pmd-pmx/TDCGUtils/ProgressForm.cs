@@ -38,7 +38,7 @@ namespace TDCGUtils
         //ダイアログフォーム
         private volatile ProgressForm form;
         //フォームが表示されるまで待機するための待機ハンドル
-        private System.Threading.ManualResetEvent startEvent;
+        private ManualResetEvent startEvent;
         //フォームが一度表示されたか
         private bool showed = false;
         //フォームをコードで閉じているか
@@ -47,7 +47,7 @@ namespace TDCGUtils
         private Form ownerForm;
 
         //別処理をするためのスレッド
-        private System.Threading.Thread thread;
+        private Thread thread;
 
         //フォームのタイトル
         private volatile string _title = "進行状況";
@@ -167,7 +167,7 @@ namespace TDCGUtils
             showed = true;
 
             _canceled = false;
-            startEvent = new System.Threading.ManualResetEvent(false);
+            startEvent = new ManualResetEvent(false);
             ownerForm = owner;
 
             //スレッドを作成
