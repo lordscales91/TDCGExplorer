@@ -48,12 +48,12 @@ namespace TDCGUtils
         }
         public PMD_IK[] pmd_ik; // IK配列
 
-        // Face数
-        public int number_of_face
+        // 表情数
+        public int number_of_skin
         {
-            get { return pmd_face.Length; }
+            get { return skins.Length; }
         }
-        public PMD_FACE[] pmd_face; // Face配列
+        public PMD_Skin[] skins; // Face配列
 
         // 表情枠に表示する表情数
         public int skin_disp_count
@@ -235,12 +235,12 @@ namespace TDCGUtils
 
             // -----------------------------------------------------
             // Face数
-            bw.Write((short)number_of_face);
+            bw.Write((short)number_of_skin);
 
             // Face配列
-            for (int i = 0; i < number_of_face; i++)
+            for (int i = 0; i < number_of_skin; i++)
             {
-                pmd_face[i].Write(bw);
+                skins[i].Write(bw);
             }
 
             // -----------------------------------------------------
@@ -504,62 +504,62 @@ namespace TDCGUtils
         }
     }
 
-    public class PMD_FACE
+    public class PMD_Skin
     {
         // 表情名 (0x00 終端，余白は 0xFD)
         public String name;
 
         // 表情頂点数
-        private int numVertices;
+        int vertices_count;
         
         // 分類 (0：base、1：まゆ、2：目、3：リップ、4：その他)
-        public int cbType;
+        public int panel_id;
 
         // 表情頂点データ
-        public PMD_FACE_VTX[] pVertices = PMD_FACE_VTX.createArray(64);
+        public PMD_SkinVertex[] vertices = PMD_SkinVertex.createArray(64);
 
-        public PMD_FACE(int n)
+        public PMD_Skin(int n)
         {
-            this.numVertices = n;
+            this.vertices_count = n;
 
-            if (this.numVertices > this.pVertices.Length)
+            if (this.vertices_count > this.vertices.Length)
             {
-                this.pVertices = PMD_FACE_VTX.createArray(this.numVertices);
+                this.vertices = PMD_SkinVertex.createArray(this.vertices_count);
             }
         }
 
         internal void Write(BinaryWriter writer)
         {
             writer.WriteCString(this.name, 20);
-            writer.Write(this.numVertices);
-            writer.Write((sbyte)this.cbType);
+            writer.Write(this.vertices_count);
+            writer.Write((sbyte)this.panel_id);
 
-            for (int i = 0; i < this.numVertices; i++)
+            for (int i = 0; i < this.vertices_count; i++)
             {
-                this.pVertices[i].Write(writer);
+                this.vertices[i].Write(writer);
             }
         }
     }
 
-    public class PMD_FACE_VTX
+    public class PMD_SkinVertex
     {
-        public int ulIndex;
-        public Vector3 vec3Pos = Vector3.Empty;
+        public int vertex_id;
+        public Vector3 position = Vector3.Empty;
 
-        public static PMD_FACE_VTX[] createArray(int i_length)
+        public static PMD_SkinVertex[] createArray(int i_length)
         {
-            PMD_FACE_VTX[] ret = new PMD_FACE_VTX[i_length];
+            PMD_SkinVertex[] ret = new PMD_SkinVertex[i_length];
             for (int i = 0; i < i_length; i++)
             {
-                ret[i] = new PMD_FACE_VTX();
+                ret[i] = new PMD_SkinVertex();
             }
             return ret;
         }
 
         internal void Write(BinaryWriter writer)
         {
-            writer.Write(this.ulIndex);
-            writer.Write(ref this.vec3Pos);
+            writer.Write(this.vertex_id);
+            writer.Write(ref this.position);
         }
     }
 
