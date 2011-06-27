@@ -321,8 +321,8 @@ namespace TDCGUtils
             writer.Write(v);
             writer.Write((ushort)this.unBoneNo[0]);
             writer.Write((ushort)this.unBoneNo[1]);
-            writer.Write(this.cbWeight);
-            writer.Write(this.cbEdge);
+            writer.Write((sbyte)this.cbWeight);
+            writer.Write((sbyte)this.cbEdge);
         }
     }
 
@@ -345,7 +345,7 @@ namespace TDCGUtils
             writer.Write(ref this.col3Ambient);
             writer.Write((byte)this.toon_index); // toon??.bmp // 0.bmp:0xFF, 1(01).bmp:0x00 ・・・ 10.bmp:0x09
             writer.Write((byte)this.edge_flag); // 輪郭、影
-            writer.Write((int)this.ulNumIndices);
+            writer.Write(this.ulNumIndices);
             writer.WriteCString(this.szTextureFileName, 20);
         }
     }
@@ -391,7 +391,7 @@ namespace TDCGUtils
         {
             writer.Write((short)this.nTargetNo);
             writer.Write((short)this.nEffNo);
-            writer.Write(this.cbNumLink);
+            writer.Write((sbyte)this.cbNumLink);
             writer.Write((ushort)this.unCount);
             writer.Write(this.fFact);
 
@@ -426,8 +426,8 @@ namespace TDCGUtils
         internal void Write(BinaryWriter writer)
         {
             writer.WriteCString(this.szName, 20);
-            writer.Write((int)this.numVertices);
-            writer.Write(this.cbType);
+            writer.Write(this.numVertices);
+            writer.Write((sbyte)this.cbType);
 
             for (int i = 0; i < this.numVertices; i++)
             {
