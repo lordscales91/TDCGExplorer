@@ -81,11 +81,11 @@ namespace Tso2Pmd
                         if (radioButton_Kami1.Checked == true &&
                             i.Name() == comboBox1.SelectedItem.ToString())
                         {
-                            template_list.phys_flag[i] = true;
+                            template_list.phys_flags[i] = true;
                         }
                         else
                         {
-                            template_list.phys_flag[i] = false;
+                            template_list.phys_flags[i] = false;
                         }
                         break;
 
@@ -93,11 +93,11 @@ namespace Tso2Pmd
                         if (radioButton_Chichi1.Checked == true &&
                             i.Name() == comboBox2.SelectedItem.ToString())
                         {
-                            template_list.phys_flag[i] = true;
+                            template_list.phys_flags[i] = true;
                         }
                         else
                         {
-                            template_list.phys_flag[i] = false;
+                            template_list.phys_flags[i] = false;
                         }
                         break;
 
@@ -105,20 +105,20 @@ namespace Tso2Pmd
                         if (radioButton_Skirt1.Checked == true &&
                             i.Name() == comboBox3.SelectedItem.ToString())
                         {
-                            template_list.phys_flag[i] = true;
+                            template_list.phys_flags[i] = true;
                         }
                         else
                         {
-                            template_list.phys_flag[i] = false;
+                            template_list.phys_flags[i] = false;
                         }
                         break;
 
                     case 3:
-                        template_list.phys_flag[i] = false;
+                        template_list.phys_flags[i] = false;
                         for (int j = 0; j < checkedListBox1.CheckedItems.Count; j++)
                         {
                             if (i.Name() == checkedListBox1.CheckedItems[j].ToString())
-                                template_list.phys_flag[i] = true;
+                                template_list.phys_flags[i] = true;
                         }
                         break;
                 }
