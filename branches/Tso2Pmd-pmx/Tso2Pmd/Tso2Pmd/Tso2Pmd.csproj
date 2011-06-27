@@ -229,4 +229,8 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>robocopy $(ProjectDir)..\..\Share\ $(TargetDir) /S /XD .svn /XO /NP /LOG+:$(ProjectDir)robocopy.log
+exit 0</PostBuildEvent>
+  </PropertyGroup>
 </Project>
