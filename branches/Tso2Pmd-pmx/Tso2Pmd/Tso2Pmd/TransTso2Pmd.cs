@@ -474,7 +474,7 @@ namespace Tso2Pmd
 
             // -----------------------------------------------------
             // 剛体＆ジョイントを配列に代入し直す
-            pmd.rbodies = (PMD_RBody[])physOb_list.rbody_list.ToArray();
+            pmd.bodies = (PMD_RBody[])physOb_list.rbody_list.ToArray();
 
             pmd.joints = (PMD_Joint[])physOb_list.joint_list.ToArray();
 
@@ -841,6 +841,7 @@ namespace Tso2Pmd
                             && sub_mesh.bone_indices[skin_w.bone_index] <= FACE_BONE_MAX)
                         {
                             // 表情の頂点情報（base）
+                            pmd.skins[0].vertices[n_vertex] = new PMD_SkinVertex();
                             pmd.skins[0].vertices[n_vertex].vertex_id = idx; // 表情用の頂点の番号(頂点リストにある番号)
                             pmd.skins[0].vertices[n_vertex].position = pmd_v.position;
 
