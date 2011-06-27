@@ -69,18 +69,20 @@ namespace TDCGUtils
                 PMD_Bone pmd_b = new PMD_Bone();
 
                 pmd_b.name = data[0].Trim();
-                pmd_b.cbKind = int.Parse(data[1].Trim()); // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                
+
+                // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
+                pmd_b.kind = int.Parse(data[1].Trim());
+
                 if (data[2] == "")
                     pmd_b.ParentName = null;
                 else
                     pmd_b.ParentName = data[2].Trim();
-                
+
                 if (data[3] == "")
                     pmd_b.TailName = null;
                 else
                     pmd_b.TailName = data[3].Trim();
-                
+
                 if (data[4] == "")
                     pmd_b.IKTargetName = null;
                 else
@@ -124,18 +126,16 @@ namespace TDCGUtils
 
                 PMD_IK pmd_ik = new PMD_IK();
 
-                pmd_ik.nTargetName = data[0].Trim();
-                pmd_ik.nEffName = data[1].Trim();
-                pmd_ik.cbNumLink = int.Parse(data[2].Trim());
-                pmd_ik.unCount = int.Parse(data[3].Trim());
-                pmd_ik.fFact = float.Parse(data[4].Trim());
+                pmd_ik.target_node_name = data[0].Trim();
+                pmd_ik.effector_node_name = data[1].Trim();
+                int chain_length = int.Parse(data[2].Trim());
+                pmd_ik.niteration = int.Parse(data[3].Trim());
+                pmd_ik.weight = float.Parse(data[4].Trim());
 
-                List<string> tmp_list = new List<string>();
                 for (int i = 5; i < data.Length; i++)
                 {
-                    tmp_list.Add(data[i].Trim());
+                    pmd_ik.chain_node_names.Add(data[i].Trim());
                 }
-                pmd_ik.punLinkName = (string[])tmp_list.ToArray();
 
                 IKBone.Add(pmd_ik);
             }
@@ -168,30 +168,6 @@ namespace TDCGUtils
                     boneStructure.Add(kvp.Key, kvp.Value);
             }
 
-            /*// 枠に表示するボーン名の設定
-            if (data[5].Trim() != "")
-            {
-                bool flag = false;
-                foreach (DispBoneGroup dbg in ct.dispBoneGroup)
-                {
-                    if (dbg.group_name == data[5].Trim())
-                    {
-                        dbg.bone_name_list.Add(data[0].Trim());
-                        flag = true;
-                    }
-                }
-
-                if (flag == false)
-                {
-                    DispBoneGroup dbg = new DispBoneGroup();
-                    dbg.group_name = data[5].Trim();
-                    dbg.bone_name_list = new List<string>();
-                    dbg.bone_name_list.Add(data[0].Trim());
-                    dispBoneGroup.Add(dbg);
-                }
-            }*/
-
-            // Konoa added.
             foreach (DispBoneGroup dbg in ct.dispBoneGroup)
             {
                 dispBoneGroup.Add(dbg);

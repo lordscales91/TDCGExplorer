@@ -143,7 +143,7 @@ namespace Tso2Pmd
             // センター
             pmd.nodes[0] = new TDCGUtils.PMD_Bone();
             pmd.nodes[0].name = "センター";
-            pmd.nodes[0].cbKind = 1; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
+            pmd.nodes[0].kind = 1; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
             pmd.nodes[0].ParentName = null;
             pmd.nodes[0].TailName = "センター先";
             pmd.nodes[0].IKTargetName = null;
@@ -154,7 +154,7 @@ namespace Tso2Pmd
             // センター先
             pmd.nodes[1] = new TDCGUtils.PMD_Bone();
             pmd.nodes[1].name = "センター先";
-            pmd.nodes[1].cbKind = 7; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
+            pmd.nodes[1].kind = 7; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
             pmd.nodes[1].ParentName = "センター";
             pmd.nodes[1].TailName = null;
             pmd.nodes[1].IKTargetName = null;
@@ -276,7 +276,7 @@ namespace Tso2Pmd
                 TDCGUtils.PMD_Bone bone = bone_kvp.Value;
 
                 pmd_b.name = bone.name;
-                pmd_b.cbKind = bone.cbKind; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
+                pmd_b.kind = bone.kind; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
                 pmd_b.ParentName = bone.ParentName;
                 pmd_b.TailName = bone.TailName;
                 pmd_b.IKTargetName = bone.IKTargetName;

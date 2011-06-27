@@ -198,32 +198,33 @@ namespace TDCGUtils
                 // ボーン名をIDに置き換え
                 foreach (PMD_IK ik in pmd_ik)
                 {
-                    if (ik.nTargetName == null)
+                    if (ik.target_node_name == null)
                         ik.nTargetNo = -1;
                     else
-                        ik.nTargetNo = GetBoneIDByName(ik.nTargetName);
+                        ik.nTargetNo = GetBoneIDByName(ik.target_node_name);
                     
-                    if (ik.nEffName == null)
+                    if (ik.effector_node_name == null)
                         ik.nEffNo = -1;
                     else
-                        ik.nEffNo = GetBoneIDByName(ik.nEffName);
+                        ik.nEffNo = GetBoneIDByName(ik.effector_node_name);
 
                     if (ik.nTargetNo <= -1)
-                        ik.nTargetName = null;
+                        ik.target_node_name = null;
                     else
-                        ik.nTargetName = nodes[ik.nTargetNo].name;
+                        ik.target_node_name = nodes[ik.nTargetNo].name;
                     
                     if (ik.nEffNo <= -1)
-                        ik.nEffName = null;
+                        ik.effector_node_name = null;
                     else
-                        ik.nEffName = nodes[ik.nEffNo].name;
+                        ik.effector_node_name = nodes[ik.nEffNo].name;
 
-                    for (int i = 0; i < ik.cbNumLink; i++)
+                    ik.chain_node_ids = new int[ik.chain_node_names.Count];
+                    for (int i = 0; i < ik.chain_length; i++)
                     {
-                        if (ik.punLinkName[i] == null)
-                            ik.punLinkNo[i] = -1;
+                        if (ik.chain_node_names[i] == null)
+                            ik.chain_node_ids[i] = -1;
                         else
-                            ik.punLinkNo[i] = GetBoneIDByName(ik.punLinkName[i]);
+                            ik.chain_node_ids[i] = GetBoneIDByName(ik.chain_node_names[i]);
                     }
                 }
 
@@ -430,7 +431,7 @@ namespace TDCGUtils
         internal int nTailNo;
 
         // ボーンの種類
-        public int cbKind;
+        public int kind;
 
         // IK時のターゲットボーン
         internal int unIKTarget;
@@ -438,13 +439,13 @@ namespace TDCGUtils
         // モデル原点からの位置
         public Vector3 position = Vector3.Empty;
 
-        // 親ボーン名(なければ null)
+        // 親ボーン名
         public string ParentName;
 
-        // 子ボーン名(なければ null)
+        // 子ボーン名
         public string TailName;
 
-        // IK時のターゲットボーン(なければ null)
+        // IK時のターゲットボーン
         public string IKTargetName;
 
         internal void Write(BinaryWriter writer)
@@ -452,7 +453,7 @@ namespace TDCGUtils
             writer.WriteCString(this.name, 20);
             writer.Write((short)this.nParentNo);
             writer.Write((short)this.nTailNo);
-            writer.Write((byte)this.cbKind);
+            writer.Write((byte)this.kind);
             writer.Write((short)this.unIKTarget);
             writer.Write(ref this.position);
         }
@@ -467,39 +468,38 @@ namespace TDCGUtils
         internal int nEffNo;
         
         // IKを構成するボーンの数
-        public int cbNumLink;
+        public int chain_length
+        {
+            get { return chain_node_ids.Length; }
+        }
         
-        public int unCount;
+        public int niteration;
         
-        public float fFact;
+        public float weight;
         
-        // IKを構成するボーンの配列(可変長配列)
-        internal int[] punLinkNo = new int[128];
+        // IKを構成するボーンの配列
+        internal int[] chain_node_ids;
         
         // IKターゲットボーン名
-        public string nTargetName;
+        public string target_node_name;
         
         // IK先端ボーン名
-        public string nEffName;
+        public string effector_node_name;
         
-        // IKを構成するボーンの配列(可変長配列)
-        public string[] punLinkName = new string[128];
+        // IKを構成するボーンの配列
+        public List<string> chain_node_names = new List<string>();
         
         internal void Write(BinaryWriter writer)
         {
             writer.Write((short)this.nTargetNo);
             writer.Write((short)this.nEffNo);
-            writer.Write((sbyte)this.cbNumLink);
-            writer.Write((ushort)this.unCount);
-            writer.Write(this.fFact);
+            writer.Write((sbyte)this.chain_length);
+            writer.Write((ushort)this.niteration);
+            writer.Write(this.weight);
 
-            if (this.cbNumLink > this.punLinkNo.Length)
+            for (int i = 0; i < this.chain_length; i++)
             {
-                this.punLinkNo = new int[this.cbNumLink];
-            }
-            for (int i = 0; i < this.cbNumLink; i++)
-            {
-                writer.Write((ushort)this.punLinkNo[i]);
+                writer.Write((ushort)this.chain_node_ids[i]);
             }
         }
     }
