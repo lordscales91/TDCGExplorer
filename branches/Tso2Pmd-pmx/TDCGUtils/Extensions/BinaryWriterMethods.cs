@@ -19,8 +19,14 @@ namespace TDCGUtils.Extensions
         /// <param name="s">文字列</param>
         public static void WritePString(this BinaryWriter bw, string s)
         {
-            bw.Write((int)s.Length);
-            bw.Write(Encoding.UTF8.GetBytes(s));
+            if (s == null)
+            {
+                bw.Write((int)0);
+                return;
+            }
+            byte[] buf = Encoding.UTF8.GetBytes(s);
+            bw.Write(buf.Length);
+            bw.Write(buf);
         }
 
         /// <summary>

@@ -403,6 +403,19 @@ namespace Tso2Pmd
                 pmd.disp_names[i] = cor_table.boneDispGroups[i].name + Convert.ToChar(Convert.ToInt16("0A", 16));
             //PMDEditorを使う場合は、枠名を0x0A00で終わらせる必要があります(0x00のみだと表示されません)。
             */
+            pmd.disp_groups = new PMD_DispGroup[2];
+
+            pmd.disp_groups[0] = new PMD_DispGroup();
+            pmd.disp_groups[0].name = "Root";
+            pmd.disp_groups[0].name_en = "Root";
+            pmd.disp_groups[0].flags = 1;
+            pmd.disp_groups[0].disps = new PMD_Disp[0];
+
+            pmd.disp_groups[1] = new PMD_DispGroup();
+            pmd.disp_groups[1].name = "表情";
+            pmd.disp_groups[1].name_en = "Skin";
+            pmd.disp_groups[1].flags = 1;
+            pmd.disp_groups[1].disps = new PMD_Disp[0];
 
             // -----------------------------------------------------
             // ボーン枠用表示リスト
