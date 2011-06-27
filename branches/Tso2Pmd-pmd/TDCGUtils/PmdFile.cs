@@ -44,8 +44,8 @@ namespace TDCGUtils
 
         public string[] toon_file_name;//[100][10]; // トゥーンテクスチャファイル名
 
-        public int rigidbody_count; // 剛体数 // 2D 00 00 00 == 45
-        public PMD_RigidBody[] rigidbody;//[rigidbody_count]; // 剛体データ(83Bytes/rigidbody)
+        public int count; // 剛体数 // 2D 00 00 00 == 45
+        public PMD_RBody[] rigidbody;//[count]; // 剛体データ(83Bytes/rigidbody)
 
         public int joint_count; // ジョイント数 // 1B 00 00 00 == 27
         public PMD_Joint[] joint;//[joint_count]; // ジョイントデータ(124Bytes/joint)
@@ -241,12 +241,12 @@ namespace TDCGUtils
             // 剛体
             // -----------------------------------------------------
             // 剛体数
-            bw.Write((int)rigidbody_count);
+            bw.Write((int)count);
 
             // 剛体データ(83Bytes/rigidbody)
-            if (rigidbody_count > 0)
+            if (count > 0)
             {
-                for (int i = 0; i < rigidbody_count; i++)
+                for (int i = 0; i < count; i++)
                 {
                     rigidbody[i].Write(bw);
                 }
@@ -472,73 +472,76 @@ namespace TDCGUtils
         }
     }
 
-    public class PMD_RigidBody
+    public class PMD_RBody
     {
-        public String rigidbody_name; // 諸データ：名称 // 頭
-        public int rigidbody_rel_bone_index; // 諸データ：関連ボーン番号 // 03 00 == 3 // 頭
-        public int rigidbody_group_index; // 諸データ：グループ // 00
-        public int rigidbody_group_target; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
-        public int shape_type; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
+        public String name; // 諸データ：名称 // 頭
+        public int rel_bone_id; // 諸データ：関連ボーン番号 // 03 00 == 3 // 頭
+        public int group_id; // 諸データ：グループ // 00
+        public int group_non_collision; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
+        public int shape_id; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
+        
         public float shape_w; // 形状：半径(幅) // CD CC CC 3F // 1.6
         public float shape_h; // 形状：高さ // CD CC CC 3D // 0.1
         public float shape_d; // 形状：奥行 // CD CC CC 3D // 0.1
-        public Vector3 pos_pos = Vector3.Empty; // 位置：位置(x, y, z)
-        public Vector3 pos_rot = Vector3.Empty; // 位置：回転(rad(x), rad(y), rad(z))
-        public float rigidbody_weight; // 諸データ：質量 // 00 00 80 3F // 1.0
-        public float rigidbody_pos_dim; // 諸データ：移動減 // 00 00 00 00
-        public float rigidbody_rot_dim; // 諸データ：回転減 // 00 00 00 00
-        public float rigidbody_recoil; // 諸データ：反発力 // 00 00 00 00
-        public float rigidbody_friction; // 諸データ：摩擦力 // 00 00 00 00
-        public int rigidbody_type; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
+        public Vector3 size = Vector3.Empty;
+        
+        public Vector3 position = Vector3.Empty; // 位置：位置(x, y, z)
+        public Vector3 rotation = Vector3.Empty; // 位置：回転(rad(x), rad(y), rad(z))
+        public float weight; // 諸データ：質量 // 00 00 80 3F // 1.0
+        public float position_dim; // 諸データ：移動減 // 00 00 00 00
+        public float rotation_dim; // 諸データ：回転減 // 00 00 00 00
+        public float recoil; // 諸データ：反発力 // 00 00 00 00
+        public float friction; // 諸データ：摩擦力 // 00 00 00 00
+        public int type; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
 
         internal void Write(BinaryWriter writer)
         {
-            writer.WriteCString(this.rigidbody_name, 20); // 諸データ：名称 // 頭
-            writer.Write((short)this.rigidbody_rel_bone_index); // 諸データ：関連ボーン番号 // 03 00 == 3 // 頭
-            writer.Write((byte)this.rigidbody_group_index); // 諸データ：グループ // 00
-            writer.Write((short)this.rigidbody_group_target); // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
-            writer.Write((byte)this.shape_type); // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
+            writer.WriteCString(this.name, 20); // 諸データ：名称 // 頭
+            writer.Write((short)this.rel_bone_id); // 諸データ：関連ボーン番号 // 03 00 == 3 // 頭
+            writer.Write((byte)this.group_id); // 諸データ：グループ // 00
+            writer.Write((short)this.group_non_collision); // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
+            writer.Write((byte)this.shape_id); // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
             writer.Write(this.shape_w); // 形状：半径(幅) // CD CC CC 3F // 1.6
             writer.Write(this.shape_h); // 形状：高さ // CD CC CC 3D // 0.1
             writer.Write(this.shape_d); // 形状：奥行 // CD CC CC 3D // 0.1
-            writer.Write(ref this.pos_pos); // 位置：位置(x, y, z)
-            writer.Write(ref this.pos_rot); // 位置：回転(rad(x), rad(y), rad(z))
-            writer.Write(this.rigidbody_weight); // 諸データ：質量 // 00 00 80 3F // 1.0
-            writer.Write(this.rigidbody_pos_dim); // 諸データ：移動減 // 00 00 00 00
-            writer.Write(this.rigidbody_rot_dim); // 諸データ：回転減 // 00 00 00 00
-            writer.Write(this.rigidbody_recoil); // 諸データ：反発力 // 00 00 00 00
-            writer.Write(this.rigidbody_friction); // 諸データ：摩擦力 // 00 00 00 00
-            writer.Write((byte)this.rigidbody_type); // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
+            writer.Write(ref this.position); // 位置：位置(x, y, z)
+            writer.Write(ref this.rotation); // 位置：回転(rad(x), rad(y), rad(z))
+            writer.Write(this.weight); // 諸データ：質量 // 00 00 80 3F // 1.0
+            writer.Write(this.position_dim); // 諸データ：移動減 // 00 00 00 00
+            writer.Write(this.rotation_dim); // 諸データ：回転減 // 00 00 00 00
+            writer.Write(this.recoil); // 諸データ：反発力 // 00 00 00 00
+            writer.Write(this.friction); // 諸データ：摩擦力 // 00 00 00 00
+            writer.Write((byte)this.type); // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
         }
     }
 
     public class PMD_Joint
     {
-        public String joint_name; // 諸データ：名称 // 右髪1
-        public int joint_rigidbody_a; // 諸データ：剛体A
-        public int joint_rigidbody_b; // 諸データ：剛体B
-        public Vector3 joint_pos = Vector3.Empty; // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
-        public Vector3 joint_rot = Vector3.Empty; // 諸データ：回転(rad(x), rad(y), rad(z))
-        public Vector3 constrain_pos_1 = Vector3.Empty; // 制限：移動1(x, y, z)
-        public Vector3 constrain_pos_2 = Vector3.Empty; // 制限：移動2(x, y, z)
-        public Vector3 constrain_rot_1 = Vector3.Empty; // 制限：回転1(rad(x), rad(y), rad(z))
-        public Vector3 constrain_rot_2 = Vector3.Empty; // 制限：回転2(rad(x), rad(y), rad(z))
-        public Vector3 spring_pos = Vector3.Empty; // ばね：移動(x, y, z)
-        public Vector3 spring_rot = Vector3.Empty; // ばね：回転(rad(x), rad(y), rad(z))
+        public String name; // 諸データ：名称 // 右髪1
+        public int rbody_a_id; // 諸データ：剛体A
+        public int rbody_b_id; // 諸データ：剛体B
+        public Vector3 position = Vector3.Empty; // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
+        public Vector3 rotation = Vector3.Empty; // 諸データ：回転(rad(x), rad(y), rad(z))
+        public Vector3 position_min = Vector3.Empty; // 制限：移動1(x, y, z)
+        public Vector3 position_max = Vector3.Empty; // 制限：移動2(x, y, z)
+        public Vector3 rotation_min = Vector3.Empty; // 制限：回転1(rad(x), rad(y), rad(z))
+        public Vector3 rotation_max = Vector3.Empty; // 制限：回転2(rad(x), rad(y), rad(z))
+        public Vector3 spring_position = Vector3.Empty; // ばね：移動(x, y, z)
+        public Vector3 spring_rotation = Vector3.Empty; // ばね：回転(rad(x), rad(y), rad(z))
 
         internal void Write(BinaryWriter writer)
         {
-            writer.WriteCString(this.joint_name, 20); // 諸データ：名称 // 右髪1
-            writer.Write(this.joint_rigidbody_a); // 諸データ：剛体A
-            writer.Write(this.joint_rigidbody_b); // 諸データ：剛体B
-            writer.Write(ref this.joint_pos); // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
-            writer.Write(ref this.joint_rot); // 諸データ：回転(rad(x), rad(y), rad(z))
-            writer.Write(ref this.constrain_pos_1); // 制限：移動1(x, y, z)
-            writer.Write(ref this.constrain_pos_2); // 制限：移動2(x, y, z)
-            writer.Write(ref this.constrain_rot_1); // 制限：回転1(rad(x), rad(y), rad(z))
-            writer.Write(ref this.constrain_rot_2); // 制限：回転2(rad(x), rad(y), rad(z))
-            writer.Write(ref this.spring_pos); // ばね：移動(x, y, z)
-            writer.Write(ref this.spring_rot); // ばね：回転(rad(x), rad(y), rad(z))
+            writer.WriteCString(this.name, 20); // 諸データ：名称 // 右髪1
+            writer.Write(this.rbody_a_id); // 諸データ：剛体A
+            writer.Write(this.rbody_b_id); // 諸データ：剛体B
+            writer.Write(ref this.position); // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
+            writer.Write(ref this.rotation); // 諸データ：回転(rad(x), rad(y), rad(z))
+            writer.Write(ref this.position_min); // 制限：移動1(x, y, z)
+            writer.Write(ref this.position_max); // 制限：移動2(x, y, z)
+            writer.Write(ref this.rotation_min); // 制限：回転1(rad(x), rad(y), rad(z))
+            writer.Write(ref this.rotation_max); // 制限：回転2(rad(x), rad(y), rad(z))
+            writer.Write(ref this.spring_position); // ばね：移動(x, y, z)
+            writer.Write(ref this.spring_rotation); // ばね：回転(rad(x), rad(y), rad(z))
         }
     }
 }

@@ -194,7 +194,7 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // 剛体＆ジョイント
             // -----------------------------------------------------
-            pmd.rigidbody_count = 0;
+            pmd.count = 0;
             pmd.joint_count = 0;
 
             // -----------------------------------------------------
@@ -433,8 +433,8 @@ namespace Tso2Pmd
 
             // -----------------------------------------------------
             // 剛体＆ジョイントを配列に代入し直す
-            pmd.rigidbody_count = physOb_list.body_list.Count;
-            pmd.rigidbody = (TDCGUtils.PMD_RigidBody[])physOb_list.body_list.ToArray();
+            pmd.count = physOb_list.body_list.Count;
+            pmd.rigidbody = (TDCGUtils.PMD_RBody[])physOb_list.body_list.ToArray();
 
             pmd.joint_count = physOb_list.joint_list.Count;
             pmd.joint = (TDCGUtils.PMD_Joint[])physOb_list.joint_list.ToArray();
