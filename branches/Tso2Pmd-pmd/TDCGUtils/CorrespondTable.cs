@@ -7,7 +7,6 @@ using Microsoft.DirectX.Direct3D;
 using System.IO;
 
 using TDCG;
-using jp.nyatla.nymmd.cs.struct_type.pmd;
 
 namespace TDCGUtils
 {

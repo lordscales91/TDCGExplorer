@@ -5,9 +5,6 @@ using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
-using TDCG;
-using jp.nyatla.nymmd.cs.types;
-
 namespace TDCGUtils
 {
     public class Trans
