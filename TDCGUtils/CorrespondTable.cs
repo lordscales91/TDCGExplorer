@@ -119,6 +119,7 @@ namespace TDCGUtils
             }
             sr.Close();
 
+            /*
             //内容を一行ずつ読み込む
             sr = new System.IO.StreamReader(
                 Path.Combine(path, @"IKBone.txt"),
@@ -146,6 +147,7 @@ namespace TDCGUtils
                 IKBone.Add(pmd_ik);
             }
             sr.Close();
+            */
         }
 
         public void Add(CorrespondTable ct)

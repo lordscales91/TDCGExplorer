@@ -17,7 +17,7 @@ namespace TDCGUtils
         public PMD_IK[] iks;
         public PMD_Skin[] skins;
 
-        public PMD_RBody[] rbodies;
+        public PMD_RBody[] bodies;
         public PMD_Joint[] joints;
 
         /// <summary>
@@ -89,8 +89,8 @@ namespace TDCGUtils
 
             bw.Write((int)0);//#labels
 
-            bw.Write(rbodies.Length);
-            foreach (PMD_RBody b in rbodies)
+            bw.Write(bodies.Length);
+            foreach (PMD_RBody b in bodies)
             {
                 b.Write(bw);
             }
