@@ -8,11 +8,6 @@ using Microsoft.DirectX.Direct3D;
 using TDCG;
 using TDCGUtils;
 
-using jp.nyatla.nymmd.cs.types;
-using jp.nyatla.nymmd.cs.core;
-using jp.nyatla.nymmd.cs.struct_type;
-using jp.nyatla.nymmd.cs.struct_type.pmd;
-
 namespace Tso2Pmd
 {
     public class T2PPhysObjectList
