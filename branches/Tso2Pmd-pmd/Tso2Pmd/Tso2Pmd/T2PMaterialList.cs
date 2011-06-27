@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Drawing;
+using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
@@ -14,7 +13,7 @@ namespace Tso2Pmd
     class T2PMaterialList
     {
         public List<string> name_list = new List<string>();
-        public List<TDCGUtils.PMD_Material> material_list = new List<TDCGUtils.PMD_Material>();
+        public List<PMD_Material> material_list = new List<PMD_Material>();
 
         List<TSOFile> TSOList = new List<TSOFile>();
         List<string> cateList = new List<string>();
@@ -60,25 +59,27 @@ namespace Tso2Pmd
         // (ただし、頂点インデックス数は0となっているため、後に設定する必要がある)
         public void Add(int tso_num, int script_num, bool edge, bool spheremap_flag)
         {
-            TDCGUtils.PMD_Material pmd_m = new TDCGUtils.PMD_Material();
+            PMD_Material pmd_m = new PMD_Material();
 
             // スクリプトよりシェーダパラメータを取得
             Shader shader = new Shader();
             shader.Load(TSOList[tso_num].sub_scripts[script_num].lines);
 
-            pmd_m.col4Diffuse = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-            pmd_m.fShininess = 6.0f;
-            pmd_m.col3Specular = new Vector3(0.15f, 0.15f, 0.15f);
-            pmd_m.col3Ambient = new Vector3(0.5f, 0.5f, 0.5f);
+            pmd_m.diffuse = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
+            pmd_m.shininess = 6.0f;
+            pmd_m.specular = new Vector3(0.15f, 0.15f, 0.15f);
+            pmd_m.ambient = new Vector3(0.5f, 0.5f, 0.5f);
 
-            if (edge == true) pmd_m.edge_flag = 1;
-            else pmd_m.edge_flag = 0;
+            if (edge == true)
+                pmd_m.edge = 1;
+            else
+                pmd_m.edge = 0;
 
             // 頂点インデックス数（0となっているため、後に設定する必要がある）
-            pmd_m.ulNumIndices = 0;
+            pmd_m.vindices_count = 0;
 
             // colorテクスチャ
-            pmd_m.szTextureFileName = tex_list.GetFileName(tso_num, shader.ColorTexName);
+            pmd_m.tex_path = tex_list.GetFileName(tso_num, shader.ColorTexName);
 
             // toonテクスチャ
             string toon_file = tex_list.GetFileName(tso_num, shader.ShadeTexName);
@@ -87,7 +88,7 @@ namespace Tso2Pmd
                 if (toon_name_list.IndexOf(toon_file) != -1)
                 {
                     // toonテクスチャファイル中でのインデックス
-                    pmd_m.toon_index = toon_name_list.IndexOf(toon_file);
+                    pmd_m.toon_tex_id = (sbyte)toon_name_list.IndexOf(toon_file);
                 }
                 else
                 {
@@ -98,7 +99,7 @@ namespace Tso2Pmd
                         toon_name_list.Add(toon_file);
 
                         // toonテクスチャファイル中でのインデックス
-                        pmd_m.toon_index = toon_name_list.Count - 1;
+                        pmd_m.toon_tex_id = (sbyte)(toon_name_list.Count - 1);
                     }
                     else
                     {
@@ -107,7 +108,7 @@ namespace Tso2Pmd
                         toon_name_list.Add("toon10.bmp"); // 10以上は無理なので、それ以上は全てtoon10.bmp
 
                         // toonテクスチャファイル中でのインデックス
-                        pmd_m.toon_index = 9; // 10以上は無理なので、それ以上は全て9
+                        pmd_m.toon_tex_id = 9; // 10以上は無理なので、それ以上は全て9
                     }
                 }
 
@@ -120,14 +121,14 @@ namespace Tso2Pmd
                     {
                         string sphere_file
                             = System.Text.RegularExpressions.Regex.Replace(toon_file, ".bmp", ".sph");
-                        pmd_m.szTextureFileName
-                            = pmd_m.szTextureFileName + "*" + sphere_file;
+                        pmd_m.tex_path
+                            = pmd_m.tex_path + "*" + sphere_file;
                     }
                 }
             }
             else
             {
-                pmd_m.toon_index = 9;
+                pmd_m.toon_tex_id = 9;
             }
 
             // 要素を追加
@@ -141,29 +142,29 @@ namespace Tso2Pmd
         {
             for (int i = 0; i < material_list.Count - 1; i++)
             {
-                if (EqualMaterial(material_list[i], material_list[i+1]) == 0)
+                if (EqualMaterials(material_list[i], material_list[i + 1]))
                 {
-                    material_list[i].ulNumIndices += material_list[i+1].ulNumIndices;
-                    material_list.RemoveAt(i+1);
-                    name_list.RemoveAt(i+1);
+                    material_list[i].vindices_count += material_list[i + 1].vindices_count;
+                    material_list.RemoveAt(i + 1);
+                    name_list.RemoveAt(i + 1);
                     i = 0;
                 }
             }
         }
 
         // ２つのマテリアルが等しいか判定する
-        public int EqualMaterial(TDCGUtils.PMD_Material m1, TDCGUtils.PMD_Material m2)
+        public bool EqualMaterials(PMD_Material m1, PMD_Material m2)
         {
-            // edge_flag
-            if (m1.edge_flag != m2.edge_flag) return -1;
+            if (m1.edge != m2.edge)
+                return false;
 
-            // colorテクスチャ
-            if (m1.szTextureFileName != m2.szTextureFileName) return -1;
+            if (m1.tex_path != m2.tex_path)
+                return false;
 
-            // toonテクスチャ
-            if (m1.toon_index != m2.toon_index) return -1;
+            if (m1.toon_tex_id != m2.toon_tex_id)
+                return false;
 
-            return 0;
+            return true;
         }
 
         // トゥーンテクスチャファイル名を得る
