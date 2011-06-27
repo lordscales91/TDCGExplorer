@@ -15,17 +15,17 @@ namespace TDCGUtils
         /// <summary>
         /// Tso -> Pmdにおいて、マイナスをつけるなどの変換を踏まえた上でコピー
         /// </summary>
-        public static MmdVector3 CopyPos(Vector3 pos)
+        public static Vector3 CopyPos(Vector3 pos)
         {
-            return new MmdVector3(pos.X, pos.Y, -pos.Z);
+            return new Vector3(pos.X, pos.Y, -pos.Z);
         }
 
         /// <summary>
         /// Tso -> Pmdにおいて、マイナスをつけるなどの変換を踏まえた上でコピー
         /// </summary>
-        public static MmdVector3 CopyMat2Pos(Matrix mat)
+        public static Vector3 CopyMat2Pos(Matrix mat)
         {
-            return new MmdVector3(mat.M41, mat.M42, -mat.M43);
+            return new Vector3(mat.M41, mat.M42, -mat.M43);
         }
     }
 }

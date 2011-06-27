@@ -8,11 +8,6 @@ using TDCG;
 using TDCGUtils;
 using Tso2Pmd;
 
-using jp.nyatla.nymmd.cs.types;
-using jp.nyatla.nymmd.cs.core;
-using jp.nyatla.nymmd.cs.struct_type;
-using jp.nyatla.nymmd.cs.struct_type.pmd;
-
 namespace TDCG.PhysObTemplate
 {
     public class Chichi_Default : IPhysObTemplate
@@ -75,9 +70,9 @@ namespace TDCG.PhysObTemplate
         {
             foreach (PMD_Joint joint in joint_list)
             {
-                joint.spring_rot.x = 200.0f; // ‚Î‚ËF‰ñ“](rad(x), rad(y), rad(z))
-                joint.spring_rot.y = 200.0f; // ‚Î‚ËF‰ñ“](rad(x), rad(y), rad(z))
-                joint.spring_rot.z = 200.0f; // ‚Î‚ËF‰ñ“](rad(x), rad(y), rad(z))
+                joint.spring_rot.X = 200.0f; // ‚Î‚ËF‰ñ“](rad(x), rad(y), rad(z))
+                joint.spring_rot.Y = 200.0f; // ‚Î‚ËF‰ñ“](rad(x), rad(y), rad(z))
+                joint.spring_rot.Z = 200.0f; // ‚Î‚ËF‰ñ“](rad(x), rad(y), rad(z))
             }
         }
     }

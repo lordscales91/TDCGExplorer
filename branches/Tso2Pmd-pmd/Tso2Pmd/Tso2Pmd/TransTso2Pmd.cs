@@ -25,7 +25,7 @@ namespace Tso2Pmd
 {
     public class TransTso2Pmd
     {
-        PmdFileData pmd = new PmdFileData();
+        PmdFile pmd = new PmdFile();
 
         int bone_flag;
 
@@ -45,7 +45,7 @@ namespace Tso2Pmd
         CorrespondTableList corTable_list;
 
         public Figure Figure { get { return fig; } set { fig = value; } }
-        public PmdFileData Pmd { get { return pmd; } }
+        public PmdFile Pmd { get { return pmd; } }
         public int Bone_flag { set { bone_flag = value; } }
         public bool Spheremap_flag { set { spheremap_flag = value; } }
         public bool Edge_flag_flag { set { edge_flag_flag = value; } }
@@ -81,7 +81,7 @@ namespace Tso2Pmd
         // -----------------------------------------------------
         public string InputHeader(string name, string comment)
         { 
-            pmd.pmd_header = new PMD_Header();
+            pmd.pmd_header = new TDCGUtils.PMD_Header();
             pmd.pmd_header.szMagic = "Pmd";
             pmd.pmd_header.fVersion = 1.0f;
 
@@ -145,29 +145,29 @@ namespace Tso2Pmd
             // ボーン情報
             // -----------------------------------------------------
             pmd.number_of_bone = 2;
-            pmd.pmd_bone = new PMD_Bone[pmd.number_of_bone];
+            pmd.pmd_bone = new TDCGUtils.PMD_Bone[pmd.number_of_bone];
 
             // センター
-            pmd.pmd_bone[0] = new PMD_Bone();
+            pmd.pmd_bone[0] = new TDCGUtils.PMD_Bone();
             pmd.pmd_bone[0].szName = "センター";
             pmd.pmd_bone[0].cbKind = 1; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
             pmd.pmd_bone[0].ParentName = null;
             pmd.pmd_bone[0].ChildName = "センター先";
             pmd.pmd_bone[0].IKTargetName = null;
-            pmd.pmd_bone[0].vec3Position.x = 0.0f;	// モデル原点からの位置
-            pmd.pmd_bone[0].vec3Position.y = 5.0f;	// モデル原点からの位置
-            pmd.pmd_bone[0].vec3Position.z = 0.0f;	// モデル原点からの位置
+            pmd.pmd_bone[0].vec3Position.X = 0.0f;	// モデル原点からの位置
+            pmd.pmd_bone[0].vec3Position.Y = 5.0f;	// モデル原点からの位置
+            pmd.pmd_bone[0].vec3Position.Z = 0.0f;	// モデル原点からの位置
 
             // センター先
-            pmd.pmd_bone[1] = new PMD_Bone();
+            pmd.pmd_bone[1] = new TDCGUtils.PMD_Bone();
             pmd.pmd_bone[1].szName = "センター先";
             pmd.pmd_bone[1].cbKind = 7; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
             pmd.pmd_bone[1].ParentName = "センター";
             pmd.pmd_bone[1].ChildName = null;
             pmd.pmd_bone[1].IKTargetName = null;
-            pmd.pmd_bone[1].vec3Position.x = 0.0f;	// モデル原点からの位置
-            pmd.pmd_bone[1].vec3Position.y = 0.0f;	// モデル原点からの位置
-            pmd.pmd_bone[1].vec3Position.z = 0.0f;	// モデル原点からの位置
+            pmd.pmd_bone[1].vec3Position.X = 0.0f;	// モデル原点からの位置
+            pmd.pmd_bone[1].vec3Position.Y = 0.0f;	// モデル原点からの位置
+            pmd.pmd_bone[1].vec3Position.Z = 0.0f;	// モデル原点からの位置
 
             // -----------------------------------------------------
             // IK配列
@@ -186,8 +186,8 @@ namespace Tso2Pmd
             // ボーン枠用表示リスト
             // -----------------------------------------------------
             pmd.bone_disp_count = 1;
-            pmd.bone_disp = new PMD_BoneDisp[pmd.bone_disp_count]; // 枠用ボーンデータ (3Bytes/bone)
-            pmd.bone_disp[0] = new PMD_BoneDisp();
+            pmd.bone_disp = new TDCGUtils.PMD_BoneDisp[pmd.bone_disp_count]; // 枠用ボーンデータ (3Bytes/bone)
+            pmd.bone_disp[0] = new TDCGUtils.PMD_BoneDisp();
             pmd.bone_disp[0].bone_name = "センター"; // 枠用ボーン名
             pmd.bone_disp[0].bone_disp_frame_index = 0; // 表示枠番号
 
@@ -280,12 +280,12 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // ボーン情報
             // -----------------------------------------------------
-            List<PMD_Bone> bone_list = new List<PMD_Bone>();
+            List<TDCGUtils.PMD_Bone> bone_list = new List<TDCGUtils.PMD_Bone>();
 
-            foreach (KeyValuePair<string, PMD_Bone> bone_kvp in cor_table.boneStructure)
+            foreach (KeyValuePair<string, TDCGUtils.PMD_Bone> bone_kvp in cor_table.boneStructure)
             {
-                PMD_Bone pmd_b = new PMD_Bone();
-                PMD_Bone bone = bone_kvp.Value;
+                TDCGUtils.PMD_Bone pmd_b = new TDCGUtils.PMD_Bone();
+                TDCGUtils.PMD_Bone bone = bone_kvp.Value;
 
                 pmd_b.szName = bone.szName;
                 pmd_b.cbKind = bone.cbKind; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
@@ -320,17 +320,17 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // リストを配列に代入し直す
             pmd.number_of_bone = bone_list.Count;
-            pmd.pmd_bone = (PMD_Bone[])bone_list.ToArray();
+            pmd.pmd_bone = (TDCGUtils.PMD_Bone[])bone_list.ToArray();
 
             // -----------------------------------------------------
             // センターボーンの位置調整
             pmd.getBoneByName("センター").vec3Position
-                = new MmdVector3(
+                = new Vector3(
                     0.0f, 
-                    pmd.getBoneByName("下半身").vec3Position.y * 0.65f, 
+                    pmd.getBoneByName("下半身").vec3Position.Y * 0.65f, 
                     0.0f);
             pmd.getBoneByName("センター先").vec3Position
-                = new MmdVector3(
+                = new Vector3(
                     0.0f, 
                     0.0f, 
                     0.0f);
@@ -340,51 +340,51 @@ namespace Tso2Pmd
             if (mod_type == 0)
             {
                 pmd.getBoneByName("両目").vec3Position
-                    = new MmdVector3(
+                    = new Vector3(
                         0.0f,
-                        pmd.getBoneByName("左目").vec3Position.y + pmd.getBoneByName("左目").vec3Position.x * 4.0f,
-                        pmd.getBoneByName("左目").vec3Position.z - pmd.getBoneByName("左目").vec3Position.x * 2.0f);
+                        pmd.getBoneByName("左目").vec3Position.Y + pmd.getBoneByName("左目").vec3Position.X * 4.0f,
+                        pmd.getBoneByName("左目").vec3Position.Z - pmd.getBoneByName("左目").vec3Position.X * 2.0f);
                 pmd.getBoneByName("両目先").vec3Position
-                    = new MmdVector3(
-                        pmd.getBoneByName("両目").vec3Position.x,
-                        pmd.getBoneByName("両目").vec3Position.y,
-                        pmd.getBoneByName("両目").vec3Position.z - 1.0f);
+                    = new Vector3(
+                        pmd.getBoneByName("両目").vec3Position.X,
+                        pmd.getBoneByName("両目").vec3Position.Y,
+                        pmd.getBoneByName("両目").vec3Position.Z - 1.0f);
             }
 
             // -----------------------------------------------------
             // IK先ボーンの位置調整
             pmd.getBoneByName("左足ＩＫ先").vec3Position
-                = new MmdVector3(
-                    pmd.getBoneByName("左足ＩＫ").vec3Position.x,
-                    pmd.getBoneByName("左足ＩＫ").vec3Position.y,
-                    pmd.getBoneByName("左足ＩＫ").vec3Position.z + 1.7f);
+                = new Vector3(
+                    pmd.getBoneByName("左足ＩＫ").vec3Position.X,
+                    pmd.getBoneByName("左足ＩＫ").vec3Position.Y,
+                    pmd.getBoneByName("左足ＩＫ").vec3Position.Z + 1.7f);
             pmd.getBoneByName("右足ＩＫ先").vec3Position
-                = new MmdVector3(
-                    pmd.getBoneByName("右足ＩＫ").vec3Position.x,
-                    pmd.getBoneByName("右足ＩＫ").vec3Position.y,
-                    pmd.getBoneByName("右足ＩＫ").vec3Position.z + 1.7f);
+                = new Vector3(
+                    pmd.getBoneByName("右足ＩＫ").vec3Position.X,
+                    pmd.getBoneByName("右足ＩＫ").vec3Position.Y,
+                    pmd.getBoneByName("右足ＩＫ").vec3Position.Z + 1.7f);
 
-            pmd.getBoneByName("左つま先").vec3Position.y = 0.0f;
-            pmd.getBoneByName("左つま先ＩＫ").vec3Position.y = 0.0f;
+            pmd.getBoneByName("左つま先").vec3Position.Y = 0.0f;
+            pmd.getBoneByName("左つま先ＩＫ").vec3Position.Y = 0.0f;
             pmd.getBoneByName("左つま先ＩＫ先").vec3Position
-                = new MmdVector3(
-                    pmd.getBoneByName("左つま先ＩＫ").vec3Position.x,
-                    pmd.getBoneByName("左つま先ＩＫ").vec3Position.y - 1.0f,
-                    pmd.getBoneByName("左つま先ＩＫ").vec3Position.z);
+                = new Vector3(
+                    pmd.getBoneByName("左つま先ＩＫ").vec3Position.X,
+                    pmd.getBoneByName("左つま先ＩＫ").vec3Position.Y - 1.0f,
+                    pmd.getBoneByName("左つま先ＩＫ").vec3Position.Z);
 
-            pmd.getBoneByName("右つま先").vec3Position.y = 0.0f;
-            pmd.getBoneByName("右つま先ＩＫ").vec3Position.y = 0.0f;
+            pmd.getBoneByName("右つま先").vec3Position.Y = 0.0f;
+            pmd.getBoneByName("右つま先ＩＫ").vec3Position.Y = 0.0f;
             pmd.getBoneByName("右つま先ＩＫ先").vec3Position
-                = new MmdVector3(
-                    pmd.getBoneByName("右つま先ＩＫ").vec3Position.x,
-                    pmd.getBoneByName("右つま先ＩＫ").vec3Position.y - 1.0f,
-                    pmd.getBoneByName("右つま先ＩＫ").vec3Position.z);
+                = new Vector3(
+                    pmd.getBoneByName("右つま先ＩＫ").vec3Position.X,
+                    pmd.getBoneByName("右つま先ＩＫ").vec3Position.Y - 1.0f,
+                    pmd.getBoneByName("右つま先ＩＫ").vec3Position.Z);
           
             // -----------------------------------------------------
             // IK配列
             // -----------------------------------------------------
             pmd.number_of_ik = cor_table.IKBone.Count;
-            pmd.pmd_ik = (PMD_IK[])cor_table.IKBone.ToArray();
+            pmd.pmd_ik = (TDCGUtils.PMD_IK[])cor_table.IKBone.ToArray();
 
             // -----------------------------------------------------
             // ボーン枠用枠名リスト
@@ -405,7 +405,7 @@ namespace Tso2Pmd
                 pmd.bone_disp_count += cor_table.dispBoneGroup[i].bone_name_list.Count;
             
             // 枠用ボーンデータ (3Bytes/bone)
-            pmd.bone_disp = new PMD_BoneDisp[pmd.bone_disp_count]; 
+            pmd.bone_disp = new TDCGUtils.PMD_BoneDisp[pmd.bone_disp_count]; 
 
             int n = 0; // 通し番号
             int n_disp = 1;
@@ -413,7 +413,7 @@ namespace Tso2Pmd
             {
                 foreach (string name in dbg.bone_name_list)
                 {
-                    pmd.bone_disp[n] = new PMD_BoneDisp();
+                    pmd.bone_disp[n] = new TDCGUtils.PMD_BoneDisp();
                     pmd.bone_disp[n].bone_name = name; // 枠用ボーン名
                     pmd.bone_disp[n++].bone_disp_frame_index = n_disp; // 表示枠番号
                 }
@@ -439,10 +439,10 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // 剛体＆ジョイントを配列に代入し直す
             pmd.rigidbody_count = physOb_list.body_list.Count;
-            pmd.rigidbody = (PMD_RigidBody[])physOb_list.body_list.ToArray();
+            pmd.rigidbody = (TDCGUtils.PMD_RigidBody[])physOb_list.body_list.ToArray();
 
             pmd.joint_count = physOb_list.joint_list.Count;
-            pmd.joint = (PMD_Joint[])physOb_list.joint_list.ToArray();
+            pmd.joint = (TDCGUtils.PMD_Joint[])physOb_list.joint_list.ToArray();
 
             // -----------------------------------------------------
             // 終了
@@ -461,20 +461,20 @@ namespace Tso2Pmd
             // 表情数
             foreach (MorphGroup mg in morph.Groups)
                 pmd.number_of_face += mg.Items.Count;
-            pmd.pmd_face = new PMD_FACE[pmd.number_of_face];
+            pmd.pmd_face = new TDCGUtils.PMD_FACE[pmd.number_of_face];
 
             // 表情に関連するboneに影響を受ける頂点を数え上げる
             int numFaceVertices = CalcNumFaceVertices(fig.Tmo);
 
             // baseの表情
-            pmd.pmd_face[n_face++] = new PMD_FACE(numFaceVertices);
+            pmd.pmd_face[n_face++] = new TDCGUtils.PMD_FACE(numFaceVertices);
 
             // base以外の表情
             foreach (MorphGroup mg in morph.Groups)
             {
                 foreach (Morph m in mg.Items)
                 {
-                    pmd.pmd_face[n_face] = new PMD_FACE(numFaceVertices);
+                    pmd.pmd_face[n_face] = new TDCGUtils.PMD_FACE(numFaceVertices);
                     pmd.pmd_face[n_face].szName = m.Name; // 表情名 (0x00 終端，余白は 0xFD)
 
                     // 分類 (0：base、1：まゆ、2：目、3：リップ、4：その他)
@@ -537,7 +537,7 @@ namespace Tso2Pmd
         // -----------------------------------------------------
         private void MakePMDVertices(CorrespondTable cor_table, int mod_type)
         {
-            List<PMD_Vertex> vertex_list = new List<PMD_Vertex>();
+            List<TDCGUtils.PMD_Vertex> vertex_list = new List<TDCGUtils.PMD_Vertex>();
             List<short> indices = new List<short>(); // インデックスリスト
             inList_indices.Clear();
 
@@ -587,12 +587,12 @@ namespace Tso2Pmd
 
                     // -----------------------------------------------------
                     // 頂点情報をコピー
-                    PMD_Vertex pmd_v = new PMD_Vertex();
+                    TDCGUtils.PMD_Vertex pmd_v = new TDCGUtils.PMD_Vertex();
 
                     pmd_v.vec3Pos = Trans.CopyPos(pos);
                     pmd_v.vec3Normal = Trans.CopyPos(Vector3.Normalize(nor));
-                    pmd_v.uvTex.u = vertex.u;
-                    pmd_v.uvTex.v = vertex.v;
+                    pmd_v.u = vertex.u;
+                    pmd_v.v = vertex.v;
 
                     pmd_v.cbEdge = 0;
 
@@ -649,14 +649,14 @@ namespace Tso2Pmd
                     int idx = -1;
                     for (int i = prevNumVertices; i < vertex_list.Count; i++)
                     {
-                        if (vertex_list[i].vec3Pos.x == pmd_v.vec3Pos.x &&
-                            vertex_list[i].vec3Pos.y == pmd_v.vec3Pos.y &&
-                            vertex_list[i].vec3Pos.z == pmd_v.vec3Pos.z &&
-                            vertex_list[i].vec3Normal.x == pmd_v.vec3Normal.x &&
-                            vertex_list[i].vec3Normal.y == pmd_v.vec3Normal.y &&
-                            vertex_list[i].vec3Normal.z == pmd_v.vec3Normal.z &&
-                            vertex_list[i].uvTex.u == pmd_v.uvTex.u &&
-                            vertex_list[i].uvTex.v == pmd_v.uvTex.v)
+                        if (vertex_list[i].vec3Pos.X == pmd_v.vec3Pos.X &&
+                            vertex_list[i].vec3Pos.Y == pmd_v.vec3Pos.Y &&
+                            vertex_list[i].vec3Pos.Z == pmd_v.vec3Pos.Z &&
+                            vertex_list[i].vec3Normal.X == pmd_v.vec3Normal.X &&
+                            vertex_list[i].vec3Normal.Y == pmd_v.vec3Normal.Y &&
+                            vertex_list[i].vec3Normal.Z == pmd_v.vec3Normal.Z &&
+                            vertex_list[i].u == pmd_v.u &&
+                            vertex_list[i].v == pmd_v.v)
                         {
                             idx = i;
                             break;
@@ -680,15 +680,15 @@ namespace Tso2Pmd
                     // 隣合うインデックスが参照する頂点位置の重複を判定し、
                     // 重複している場合はインデックスの追加を省略する
                     if ((n_inMesh >= 2) &&
-                        !((vertex_list[a].vec3Pos.x == vertex_list[b].vec3Pos.x &&
-                           vertex_list[a].vec3Pos.y == vertex_list[b].vec3Pos.y &&
-                           vertex_list[a].vec3Pos.z == vertex_list[b].vec3Pos.z) ||
-                          (vertex_list[b].vec3Pos.x == vertex_list[c].vec3Pos.x &&
-                           vertex_list[b].vec3Pos.y == vertex_list[c].vec3Pos.y &&
-                           vertex_list[b].vec3Pos.z == vertex_list[c].vec3Pos.z) ||
-                          (vertex_list[c].vec3Pos.x == vertex_list[a].vec3Pos.x &&
-                           vertex_list[c].vec3Pos.y == vertex_list[a].vec3Pos.y &&
-                           vertex_list[c].vec3Pos.z == vertex_list[a].vec3Pos.z)))
+                        !((vertex_list[a].vec3Pos.X == vertex_list[b].vec3Pos.X &&
+                           vertex_list[a].vec3Pos.Y == vertex_list[b].vec3Pos.Y &&
+                           vertex_list[a].vec3Pos.Z == vertex_list[b].vec3Pos.Z) ||
+                          (vertex_list[b].vec3Pos.X == vertex_list[c].vec3Pos.X &&
+                           vertex_list[b].vec3Pos.Y == vertex_list[c].vec3Pos.Y &&
+                           vertex_list[b].vec3Pos.Z == vertex_list[c].vec3Pos.Z) ||
+                          (vertex_list[c].vec3Pos.X == vertex_list[a].vec3Pos.X &&
+                           vertex_list[c].vec3Pos.Y == vertex_list[a].vec3Pos.Y &&
+                           vertex_list[c].vec3Pos.Z == vertex_list[a].vec3Pos.Z)))
                     {
                         if (n_inMesh % 2 == 0)
                         {
@@ -715,14 +715,14 @@ namespace Tso2Pmd
             // リストを配列に代入し直す
             // 頂点情報
             pmd.number_of_vertex = vertex_list.Count;
-            pmd.pmd_vertex = (PMD_Vertex[])vertex_list.ToArray();
+            pmd.pmd_vertex = (TDCGUtils.PMD_Vertex[])vertex_list.ToArray();
             // 頂点インデックス
             pmd.number_of_indices = indices.Count;
             pmd.indices_array = (short[])indices.ToArray();
             // マテリアル
             if (merge_flag == true) material_list.MergeMaterials();
             pmd.number_of_materials = material_list.material_list.Count;
-            pmd.pmd_material = (PMD_Material[])material_list.material_list.ToArray();
+            pmd.pmd_material = (TDCGUtils.PMD_Material[])material_list.material_list.ToArray();
             // Toonテクスチャファイル名
             pmd.toon_file_name = material_list.GetToonFileNameList();
         }
@@ -744,7 +744,7 @@ namespace Tso2Pmd
                     if (idx == -1)
                         continue;
 
-                    PMD_Vertex pmd_v = pmd.pmd_vertex[idx];
+                    TDCGUtils.PMD_Vertex pmd_v = pmd.pmd_vertex[idx];
 
                     // -----------------------------------------------------
                     // 表情情報
@@ -780,7 +780,7 @@ namespace Tso2Pmd
                     int idx = inList_indices[n_inList];
                     if (idx == -1)
                         continue;
-                    PMD_Vertex pmd_v = pmd.pmd_vertex[idx];
+                    TDCGUtils.PMD_Vertex pmd_v = pmd.pmd_vertex[idx];
 
                     // -----------------------------------------------------
                     // 表情情報
@@ -871,7 +871,7 @@ namespace Tso2Pmd
                     if (idx == -1)
                         continue;
 
-                    PMD_Vertex pmd_v = pmd.pmd_vertex[idx];
+                    TDCGUtils.PMD_Vertex pmd_v = pmd.pmd_vertex[idx];
 
                     // 表情に関連するboneに影響を受ける頂点であれば、情報を記憶する
                     foreach (SkinWeight skin_w in vertex.skin_weights)
@@ -887,10 +887,10 @@ namespace Tso2Pmd
                                 pmd.pmd_face[i].pVertices[n_vertex].ulIndex = n_vertex;
 
                                 // bace以外は相対位置で指定
-                                MmdVector3 pmd_face_pos = Trans.CopyPos(verPos_face[i - 1][n_inMesh]);
-                                pmd.pmd_face[i].pVertices[n_vertex].vec3Pos.x = pmd_face_pos.x - pmd_v.vec3Pos.x;
-                                pmd.pmd_face[i].pVertices[n_vertex].vec3Pos.y = pmd_face_pos.y - pmd_v.vec3Pos.y;
-                                pmd.pmd_face[i].pVertices[n_vertex].vec3Pos.z = pmd_face_pos.z - pmd_v.vec3Pos.z;
+                                Vector3 pmd_face_pos = Trans.CopyPos(verPos_face[i - 1][n_inMesh]);
+                                pmd.pmd_face[i].pVertices[n_vertex].vec3Pos.X = pmd_face_pos.X - pmd_v.vec3Pos.X;
+                                pmd.pmd_face[i].pVertices[n_vertex].vec3Pos.Y = pmd_face_pos.Y - pmd_v.vec3Pos.Y;
+                                pmd.pmd_face[i].pVertices[n_vertex].vec3Pos.Z = pmd_face_pos.Z - pmd_v.vec3Pos.Z;
                             }
 
                             n_vertex++;

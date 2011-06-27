@@ -8,11 +8,6 @@ using TDCG;
 using TDCGUtils;
 using Tso2Pmd;
 
-using jp.nyatla.nymmd.cs.types;
-using jp.nyatla.nymmd.cs.core;
-using jp.nyatla.nymmd.cs.struct_type;
-using jp.nyatla.nymmd.cs.struct_type.pmd;
-
 namespace TDCG.PhysObTemplate
 {
     public class Kami_Twin : IPhysObTemplate
@@ -46,17 +41,17 @@ namespace TDCG.PhysObTemplate
 
             phys_list.GetBodyByName("¶”¯Œã‚P").rigidbody_type = 0; // ”ƒf[ƒ^Fƒ^ƒCƒv(0:Bone’Ç]A1:•¨—‰‰ZA2:•¨—‰‰Z(BoneˆÊ’u‡‚¹)) // 00 // Bone’Ç]
             phys_list.GetBodyByName("¶”¯Œã‚Q").rigidbody_type = 0; // ”ƒf[ƒ^Fƒ^ƒCƒv(0:Bone’Ç]A1:•¨—‰‰ZA2:•¨—‰‰Z(BoneˆÊ’u‡‚¹)) // 00 // Bone’Ç]
-            phys_list.GetJointByName("¶”¯Œã‚Q-¶”¯Œã‚R").constrain_rot_1.x = (float)((-5.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("¶”¯Œã‚Q-¶”¯Œã‚R").constrain_rot_2.x = (float)((30.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("¶”¯Œã‚R-¶”¯Œã‚S").constrain_rot_1.x = (float)((-5.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("¶”¯Œã‚R-¶”¯Œã‚S").constrain_rot_2.x = (float)((30.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("¶”¯Œã‚Q-¶”¯Œã‚R").constrain_rot_1.X = (float)((-5.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("¶”¯Œã‚Q-¶”¯Œã‚R").constrain_rot_2.X = (float)((30.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("¶”¯Œã‚R-¶”¯Œã‚S").constrain_rot_1.X = (float)((-5.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("¶”¯Œã‚R-¶”¯Œã‚S").constrain_rot_2.X = (float)((30.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]2(rad(x), rad(y), rad(z))
 
             phys_list.GetBodyByName("‰E”¯Œã‚P").rigidbody_type = 0; // ”ƒf[ƒ^Fƒ^ƒCƒv(0:Bone’Ç]A1:•¨—‰‰ZA2:•¨—‰‰Z(BoneˆÊ’u‡‚¹)) // 00 // Bone’Ç]
             phys_list.GetBodyByName("‰E”¯Œã‚Q").rigidbody_type = 0; // ”ƒf[ƒ^Fƒ^ƒCƒv(0:Bone’Ç]A1:•¨—‰‰ZA2:•¨—‰‰Z(BoneˆÊ’u‡‚¹)) // 00 // Bone’Ç]
-            phys_list.GetJointByName("‰E”¯Œã‚Q-‰E”¯Œã‚R").constrain_rot_1.x = (float)((-5.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("‰E”¯Œã‚Q-‰E”¯Œã‚R").constrain_rot_2.x = (float)((30.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("‰E”¯Œã‚R-‰E”¯Œã‚S").constrain_rot_1.x = (float)((-5.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("‰E”¯Œã‚R-‰E”¯Œã‚S").constrain_rot_2.x = (float)((30.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("‰E”¯Œã‚Q-‰E”¯Œã‚R").constrain_rot_1.X = (float)((-5.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("‰E”¯Œã‚Q-‰E”¯Œã‚R").constrain_rot_2.X = (float)((30.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("‰E”¯Œã‚R-‰E”¯Œã‚S").constrain_rot_1.X = (float)((-5.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("‰E”¯Œã‚R-‰E”¯Œã‚S").constrain_rot_2.X = (float)((30.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]2(rad(x), rad(y), rad(z))
 
             phys_list.GetBodyByName("¶”¯‘O‚P").rigidbody_type = 0; // ”ƒf[ƒ^Fƒ^ƒCƒv(0:Bone’Ç]A1:•¨—‰‰ZA2:•¨—‰‰Z(BoneˆÊ’u‡‚¹)) // 00 // Bone’Ç]
             phys_list.GetBodyByName("¶”¯‘O‚Q").rigidbody_type = 0; // ”ƒf[ƒ^Fƒ^ƒCƒv(0:Bone’Ç]A1:•¨—‰‰ZA2:•¨—‰‰Z(BoneˆÊ’u‡‚¹)) // 00 // Bone’Ç]
@@ -110,13 +105,13 @@ namespace TDCG.PhysObTemplate
         {
             foreach (PMD_Joint joint in joint_list)
             {
-                joint.constrain_rot_1.x = (float)((-20.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]1(rad(x), rad(y), rad(z))
-                joint.constrain_rot_2.x = (float)((20.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]2(rad(x), rad(y), rad(z))
-                joint.constrain_rot_1.z = (float)((-20.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]1(rad(x), rad(y), rad(z))
-                joint.constrain_rot_2.z = (float)((20.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]2(rad(x), rad(y), rad(z))
-                joint.spring_rot.x = 10.0f; // ‚Î‚ËF‰ñ“](rad(x), rad(y), rad(z))
-                joint.spring_rot.y = 10.0f; // ‚Î‚ËF‰ñ“](rad(x), rad(y), rad(z))
-                joint.spring_rot.z = 10.0f; // ‚Î‚ËF‰ñ“](rad(x), rad(y), rad(z))
+                joint.constrain_rot_1.X = (float)((-20.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]1(rad(x), rad(y), rad(z))
+                joint.constrain_rot_2.X = (float)((20.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]2(rad(x), rad(y), rad(z))
+                joint.constrain_rot_1.Z = (float)((-20.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]1(rad(x), rad(y), rad(z))
+                joint.constrain_rot_2.Z = (float)((20.0 / 180.0) * Math.PI); // §ŒÀF‰ñ“]2(rad(x), rad(y), rad(z))
+                joint.spring_rot.X = 10.0f; // ‚Î‚ËF‰ñ“](rad(x), rad(y), rad(z))
+                joint.spring_rot.Y = 10.0f; // ‚Î‚ËF‰ñ“](rad(x), rad(y), rad(z))
+                joint.spring_rot.Z = 10.0f; // ‚Î‚ËF‰ñ“](rad(x), rad(y), rad(z))
             }
         }
     }

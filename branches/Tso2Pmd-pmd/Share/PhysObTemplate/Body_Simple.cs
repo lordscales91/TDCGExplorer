@@ -8,11 +8,6 @@ using TDCG;
 using TDCGUtils;
 using Tso2Pmd;
 
-using jp.nyatla.nymmd.cs.types;
-using jp.nyatla.nymmd.cs.core;
-using jp.nyatla.nymmd.cs.struct_type;
-using jp.nyatla.nymmd.cs.struct_type.pmd;
-
 namespace TDCG.PhysObTemplate
 {
     public class Body_Simple : IPhysObTemplate

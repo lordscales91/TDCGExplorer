@@ -8,11 +8,6 @@ using TDCG;
 using TDCGUtils;
 using Tso2Pmd;
 
-using jp.nyatla.nymmd.cs.types;
-using jp.nyatla.nymmd.cs.core;
-using jp.nyatla.nymmd.cs.struct_type;
-using jp.nyatla.nymmd.cs.struct_type.pmd;
-
 namespace TDCG.PhysObTemplate
 {
     public class Skirt_Default : IPhysObTemplate
@@ -38,65 +33,65 @@ namespace TDCG.PhysObTemplate
             SetParameterSideEnd(phys_list.GetBodyListByName(".ス横先"));
             SetParameter(phys_list.GetJointListByName(".ス.."));
 
-            phys_list.GetJointByName("下半身-左ス後１").constrain_rot_1.x = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス後１").constrain_rot_2.x = (float)((60.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス後１").constrain_rot_1.y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス後１").constrain_rot_2.y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス後１").constrain_rot_1.z = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス後１").constrain_rot_2.z = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス後１").spring_rot.x = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス後１").spring_rot.y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス後１").spring_rot.z = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス後１").constrain_rot_1.X = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス後１").constrain_rot_2.X = (float)((60.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス後１").constrain_rot_1.Y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス後１").constrain_rot_2.Y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス後１").constrain_rot_1.Z = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス後１").constrain_rot_2.Z = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス後１").spring_rot.X = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス後１").spring_rot.Y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス後１").spring_rot.Z = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
 
-            phys_list.GetJointByName("下半身-右ス後１").constrain_rot_1.x = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス後１").constrain_rot_2.x = (float)((60.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス後１").constrain_rot_1.y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス後１").constrain_rot_2.y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス後１").constrain_rot_1.z = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス後１").constrain_rot_2.z = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス後１").spring_rot.x = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス後１").spring_rot.y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス後１").spring_rot.z = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス後１").constrain_rot_1.X = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス後１").constrain_rot_2.X = (float)((60.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス後１").constrain_rot_1.Y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス後１").constrain_rot_2.Y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス後１").constrain_rot_1.Z = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス後１").constrain_rot_2.Z = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス後１").spring_rot.X = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス後１").spring_rot.Y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス後１").spring_rot.Z = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
 
-            phys_list.GetJointByName("下半身-右ス横１").constrain_rot_1.x = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス横１").constrain_rot_2.x = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス横１").constrain_rot_1.y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス横１").constrain_rot_2.y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス横１").constrain_rot_1.z = (float)((-15.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス横１").constrain_rot_2.z = (float)((60.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス横１").spring_rot.x = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス横１").spring_rot.y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス横１").spring_rot.z = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス横１").constrain_rot_1.X = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス横１").constrain_rot_2.X = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス横１").constrain_rot_1.Y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス横１").constrain_rot_2.Y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス横１").constrain_rot_1.Z = (float)((-15.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス横１").constrain_rot_2.Z = (float)((60.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス横１").spring_rot.X = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス横１").spring_rot.Y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス横１").spring_rot.Z = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
 
-            phys_list.GetJointByName("下半身-右ス前１").constrain_rot_1.x = (float)((-120.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス前１").constrain_rot_2.x = (float)((20.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス前１").constrain_rot_1.y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス前１").constrain_rot_2.y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス前１").constrain_rot_1.z = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス前１").constrain_rot_2.z = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス前１").spring_rot.x = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス前１").spring_rot.y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-右ス前１").spring_rot.z = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス前１").constrain_rot_1.X = (float)((-120.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス前１").constrain_rot_2.X = (float)((20.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス前１").constrain_rot_1.Y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス前１").constrain_rot_2.Y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス前１").constrain_rot_1.Z = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス前１").constrain_rot_2.Z = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス前１").spring_rot.X = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス前１").spring_rot.Y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-右ス前１").spring_rot.Z = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
 
-            phys_list.GetJointByName("下半身-左ス前１").constrain_rot_1.x = (float)((-120.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス前１").constrain_rot_2.x = (float)((20.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス前１").constrain_rot_1.y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス前１").constrain_rot_2.y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス前１").constrain_rot_1.z = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス前１").constrain_rot_2.z = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス前１").spring_rot.x = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス前１").spring_rot.y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス前１").spring_rot.z = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス前１").constrain_rot_1.X = (float)((-120.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス前１").constrain_rot_2.X = (float)((20.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス前１").constrain_rot_1.Y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス前１").constrain_rot_2.Y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス前１").constrain_rot_1.Z = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス前１").constrain_rot_2.Z = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス前１").spring_rot.X = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス前１").spring_rot.Y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス前１").spring_rot.Z = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
 
-            phys_list.GetJointByName("下半身-左ス横１").constrain_rot_1.x = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス横１").constrain_rot_2.x = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス横１").constrain_rot_1.y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス横１").constrain_rot_2.y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス横１").constrain_rot_1.z = (float)((-60.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス横１").constrain_rot_2.z = (float)((15.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス横１").spring_rot.x = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス横１").spring_rot.y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
-            phys_list.GetJointByName("下半身-左ス横１").spring_rot.z = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス横１").constrain_rot_1.X = (float)((-5.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス横１").constrain_rot_2.X = (float)((5.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス横１").constrain_rot_1.Y = (float)((-0.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス横１").constrain_rot_2.Y = (float)((0.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス横１").constrain_rot_1.Z = (float)((-60.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス横１").constrain_rot_2.Z = (float)((15.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス横１").spring_rot.X = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス横１").spring_rot.Y = 0.0f; // ばね：回転(rad(x), rad(y), rad(z))
+            phys_list.GetJointByName("下半身-左ス横１").spring_rot.Z = 50.0f; // ばね：回転(rad(x), rad(y), rad(z))
 
             phys_list.MakeJointFromTwoBones("左ス前２", "右ス前２");
             phys_list.MakeJointFromTwoBones("右ス前２", "右ス横２");
@@ -196,13 +191,13 @@ namespace TDCG.PhysObTemplate
         {
             foreach (PMD_Joint joint in joint_list)
             {
-                joint.constrain_rot_1.x = (float)((-15.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                joint.constrain_rot_2.x = (float)((15.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-                joint.constrain_rot_1.z = (float)((-15.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
-                joint.constrain_rot_2.z = (float)((15.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
-                joint.spring_rot.x = 20.0f; // ばね：回転(rad(x), rad(y), rad(z))
-                joint.spring_rot.y = 20.0f; // ばね：回転(rad(x), rad(y), rad(z))
-                joint.spring_rot.z = 20.0f; // ばね：回転(rad(x), rad(y), rad(z))
+                joint.constrain_rot_1.X = (float)((-15.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+                joint.constrain_rot_2.X = (float)((15.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+                joint.constrain_rot_1.Z = (float)((-15.0 / 180.0) * Math.PI); // 制限：回転1(rad(x), rad(y), rad(z))
+                joint.constrain_rot_2.Z = (float)((15.0 / 180.0) * Math.PI); // 制限：回転2(rad(x), rad(y), rad(z))
+                joint.spring_rot.X = 20.0f; // ばね：回転(rad(x), rad(y), rad(z))
+                joint.spring_rot.Y = 20.0f; // ばね：回転(rad(x), rad(y), rad(z))
+                joint.spring_rot.Z = 20.0f; // ばね：回転(rad(x), rad(y), rad(z))
             }
         }
     }
