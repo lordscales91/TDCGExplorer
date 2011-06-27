@@ -6,7 +6,6 @@ using System.IO;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using System.Windows.Forms;
-using CSScriptLibrary;
 
 using TDCG;
 
@@ -171,29 +170,4 @@ namespace TDCGUtils
             return q;
         }
     }
-
-    // -----------------------------------------------------
-    // ProportionListクラスに追加メソッド
-    // -----------------------------------------------------
-    public static class ProportionListUtils
-    {
-        /// <summary>
-        /// 体型スクリプトを読み込みます。
-        /// </summary>
-        public static void Load(this TDCG.ProportionList pl, string folder)
-        {
-            string proportion_path = Path.Combine(Application.StartupPath, folder);
-            if (!Directory.Exists(proportion_path))
-                return;
-
-            string[] script_files = Directory.GetFiles(proportion_path, "*.cs");
-            foreach (string script_file in script_files)
-            {
-                string class_name = "TDCG.Proportion." + Path.GetFileNameWithoutExtension(script_file);
-                var script = CSScript.Load(script_file).CreateInstance(class_name).AlignToInterface<IProportion>();
-                pl.items.Add(script);
-            }
-        }
-    }
-
 }
