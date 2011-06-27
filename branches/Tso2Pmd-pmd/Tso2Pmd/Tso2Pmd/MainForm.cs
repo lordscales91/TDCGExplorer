@@ -266,9 +266,7 @@ namespace Tso2Pmd
                 string file_path = t2POptionControl1.GetOutputFilePath();
 
                 // PMDファイルを出力
-                StreamWriter sw = new StreamWriter(file_path + "/" + t2POptionControl1.GetModelName() + ".pmd");
-                t2p.Pmd.WritePmdFile(sw);
-                sw.Close();
+                t2p.Pmd.Save(file_path + "/" + t2POptionControl1.GetModelName() + ".pmd");
 
                 // マテリアル関係のファイルを出力
                 t2p.OutputMaterialFile(file_path, t2POptionControl1.GetModelName());
