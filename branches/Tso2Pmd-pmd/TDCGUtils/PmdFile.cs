@@ -588,9 +588,9 @@ namespace TDCGUtils
         public int group_non_collision; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
         public int shape_id; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
         
-        public float shape_w; // 形状：半径(幅) // CD CC CC 3F // 1.6
-        public float shape_h; // 形状：高さ // CD CC CC 3D // 0.1
-        public float shape_d; // 形状：奥行 // CD CC CC 3D // 0.1
+        // 形状：半径(幅) // CD CC CC 3F // 1.6
+        // 形状：高さ // CD CC CC 3D // 0.1
+        // 形状：奥行 // CD CC CC 3D // 0.1
         public Vector3 size = Vector3.Empty;
         
         public Vector3 position = Vector3.Empty; // 位置：位置(x, y, z)
@@ -609,9 +609,7 @@ namespace TDCGUtils
             writer.Write((byte)this.group_id);
             writer.Write((short)this.group_non_collision);
             writer.Write((byte)this.shape_id);
-            writer.Write(this.shape_w);
-            writer.Write(this.shape_h);
-            writer.Write(this.shape_d);
+            writer.Write(ref this.size);
             writer.Write(ref this.position);
             writer.Write(ref this.rotation);
             writer.Write(this.weight);
