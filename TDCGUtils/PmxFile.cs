@@ -16,7 +16,7 @@ namespace TDCGUtils
         public PMD_Bone[] nodes;
         public PMD_IK[] iks;
         public PMD_Skin[] skins;
-
+        public PMD_DispGroup[] disp_groups;
         public PMD_RBody[] bodies;
         public PMD_Joint[] joints;
 
@@ -87,7 +87,11 @@ namespace TDCGUtils
                 s.Write(bw);
             }
 
-            bw.Write((int)0);//#labels
+            bw.Write(disp_groups.Length);
+            foreach (PMD_DispGroup g in disp_groups)
+            {
+                g.Write(bw);
+            }
 
             bw.Write(bodies.Length);
             foreach (PMD_RBody b in bodies)
@@ -359,8 +363,6 @@ namespace TDCGUtils
     /// 表情
     public class PMD_Skin
     {
-        public sbyte id;
-
         public string name;
         public string name_en;
 
@@ -368,11 +370,6 @@ namespace TDCGUtils
         public byte type = 1;//モーフ種類 1:頂点
 
         public PMD_SkinVertex[] vertices;
-
-        public PMD_Skin(sbyte id)
-        {
-            this.id = id;
-        }
 
         public void Write(BinaryWriter bw)
         {
@@ -398,11 +395,57 @@ namespace TDCGUtils
         public Vector3 position;
     }
 
+    public class PMD_DispGroup
+    {
+        public string name;
+        public string name_en;
+        public byte flags;
+        public PMD_Disp[] disps;
+
+        public void Write(BinaryWriter bw)
+        {
+            bw.WritePString(name);
+            bw.WritePString(name_en);
+
+            bw.Write(flags);
+            bw.Write(disps.Length);
+            foreach (PMD_Disp disp in disps)
+            {
+                disp.Write(bw);
+            }
+        }
+    }
+    
+    public abstract class PMD_Disp
+    {
+        public abstract void Write(BinaryWriter bw);
+    }
+    
+    public class PMD_BoneDisp : PMD_Disp
+    {
+        public short bone_id;
+
+        public override void Write(BinaryWriter bw)
+        {
+            bw.Write((byte)0);
+            bw.Write(bone_id);
+        }
+    }
+
+    public class PMD_SkinDisp : PMD_Disp
+    {
+        public sbyte skin_id;
+
+        public override void Write(BinaryWriter bw)
+        {
+            bw.Write((byte)1);
+            bw.Write(skin_id);
+        }
+    }
+
     /// 剛体
     public class PMD_RBody
     {
-        public sbyte id;
-
         public string name;
         public string name_en;
 
