@@ -26,7 +26,7 @@ namespace Tso2Pmd
         {
             for (short i = 0; i < (short)bone_list.Count; i++)
             {
-                if (bone_list[i].name_ja == name) return i;
+                if (bone_list[i].name == name) return i;
             }
 
             return -1;
@@ -36,7 +36,7 @@ namespace Tso2Pmd
         {
             for (sbyte i = 0; i < (sbyte)rbody_list.Count; i++)
             {
-                if (rbody_list[i].name_ja == name) return i;
+                if (rbody_list[i].name == name) return i;
             }
 
             return -1;
@@ -46,7 +46,7 @@ namespace Tso2Pmd
         {
             for (sbyte i = 0; i < (sbyte)joint_list.Count; i++)
             {
-                if (joint_list[i].name_ja == name) return i;
+                if (joint_list[i].name == name) return i;
             }
 
             return -1;
@@ -75,7 +75,7 @@ namespace Tso2Pmd
             for (int i = 0; i < rbody_list.Count; i++)
             {
                 if (System.Text.RegularExpressions.Regex.IsMatch(
-                    rbody_list[i].name_ja,
+                    rbody_list[i].name,
                     exp))
                 {
                     list.Add(rbody_list[i]);
@@ -92,7 +92,7 @@ namespace Tso2Pmd
             for (int i = 0; i < joint_list.Count; i++)
             {
                 if (System.Text.RegularExpressions.Regex.IsMatch(
-                    joint_list[i].name_ja,
+                    joint_list[i].name,
                     exp))
                 {
                     list.Add(joint_list[i]);
@@ -133,7 +133,7 @@ namespace Tso2Pmd
         {
             PMD_RBody rbody = new PMD_RBody();
 
-            rbody.name_ja = bone_list[bone_num].name_ja; // 諸データ：名称 // 頭
+            rbody.name = bone_list[bone_num].name; // 諸データ：名称 // 頭
             rbody.rel_bone_id = bone_num; // 諸データ：関連ボーン番号 // 03 00 == 3 // 頭
             rbody.position = new Vector3(0.0f, 0.0f, 0.0f);
 
@@ -166,7 +166,7 @@ namespace Tso2Pmd
         {
             PMD_RBody rbody = new PMD_RBody();
 
-            rbody.name_ja = bone_name; // 諸データ：名称 // 頭
+            rbody.name = bone_name; // 諸データ：名称 // 頭
             rbody.rel_bone_id = GetBoneIDByName(bone_name); // 諸データ：関連ボーン番号 // 03 00 == 3 // 頭
  
             float x1 = v1.X;
@@ -223,11 +223,11 @@ namespace Tso2Pmd
         {
             PMD_Joint joint = new PMD_Joint();
 
-            joint.name_ja = GetBoneByName(bone_list[bone_num].ParentName).name_ja
-                + "-" + bone_list[bone_num].name_ja; // 諸データ：名称 // 右髪1
+            joint.name = GetBoneByName(bone_list[bone_num].ParentName).name
+                + "-" + bone_list[bone_num].name; // 諸データ：名称 // 右髪1
 
-            joint.rbody_a_id = GetBodyIDByName(GetBoneByName(bone_list[bone_num].ParentName).name_ja); // 諸データ：剛体A
-            joint.rbody_b_id = GetBodyIDByName(bone_list[bone_num].name_ja); // 諸データ：剛体B
+            joint.rbody_a_id = GetBodyIDByName(GetBoneByName(bone_list[bone_num].ParentName).name); // 諸データ：剛体A
+            joint.rbody_b_id = GetBodyIDByName(bone_list[bone_num].name); // 諸データ：剛体B
 
             joint.position = bone_list[bone_num].position;
             joint.rotation = Vector3.Empty;
@@ -255,11 +255,11 @@ namespace Tso2Pmd
             PMD_Joint joint = new PMD_Joint();
 
             // 諸データ：名称 // 右髪1
-            joint.name_ja = bone_list[bone_num1].name_ja + "-" + bone_list[bone_num2].name_ja;
+            joint.name = bone_list[bone_num1].name + "-" + bone_list[bone_num2].name;
             joint.name_en = bone_list[bone_num1].name_en + "-" + bone_list[bone_num2].name_en;
             
-            joint.rbody_a_id = GetBodyIDByName(bone_list[bone_num1].name_ja); // 諸データ：剛体A
-            joint.rbody_b_id = GetBodyIDByName(bone_list[bone_num2].name_ja); // 諸データ：剛体B
+            joint.rbody_a_id = GetBodyIDByName(bone_list[bone_num1].name); // 諸データ：剛体A
+            joint.rbody_b_id = GetBodyIDByName(bone_list[bone_num2].name); // 諸データ：剛体B
 
             // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
             joint.position.X = 0.5f * (bone_list[bone_num1].position.X + bone_list[bone_num2].position.X);
