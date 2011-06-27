@@ -177,21 +177,23 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // ボーン枠用枠名リスト
             // -----------------------------------------------------
-            /*
-            pmd.disp_name = new string[1]; // 枠名(50Bytes/枠)
-            pmd.disp_name[0] = "センター" + Convert.ToChar(Convert.ToInt16("0A", 16));
-            //PMDEditorを使う場合は、枠名を0x0A00で終わらせる必要があります(0x00のみだと表示されません)。
-            */
+            pmd.disp_groups = new PMD_DispGroup[2];
+
+            pmd.disp_groups[0] = new PMD_DispGroup();
+            pmd.disp_groups[0].name = "Root";
+            pmd.disp_groups[0].name_en = "Root";
+            pmd.disp_groups[0].flags = 1;
+            pmd.disp_groups[0].disps = new PMD_Disp[0];
+
+            pmd.disp_groups[1] = new PMD_DispGroup();
+            pmd.disp_groups[1].name = "表情";
+            pmd.disp_groups[1].name_en = "Skin";
+            pmd.disp_groups[1].flags = 1;
+            pmd.disp_groups[1].disps = new PMD_Disp[0];
 
             // -----------------------------------------------------
             // ボーン枠用表示リスト
             // -----------------------------------------------------
-            /*
-            pmd.bone_disp = new PMD_BoneDisp[1]; // 枠用ボーンデータ (3Bytes/bone)
-            pmd.bone_disp[0] = new PMD_BoneDisp();
-            pmd.bone_disp[0].bone_name = "センター"; // 枠用ボーン名
-            pmd.bone_disp[0].bone_disp_frame_index = 0; // 表示枠番号
-            */
 
             // -----------------------------------------------------
             // 英名対応(0:英名対応なし, 1:英名対応あり)
@@ -482,7 +484,7 @@ namespace Tso2Pmd
             int numFaceVertices = CalcNumFaceVertices(fig.Tmo);
 
             // baseの表情
-            pmd.skins[n_face] = new PMD_Skin(n_face);
+            pmd.skins[n_face] = new PMD_Skin();
             pmd.skins[n_face].name = "base";
             pmd.skins[n_face].name_en = "base";
             pmd.skins[n_face].vertices = new PMD_SkinVertex[numFaceVertices];
@@ -494,7 +496,7 @@ namespace Tso2Pmd
             {
                 foreach (Morph m in mg.Items)
                 {
-                    pmd.skins[n_face] = new PMD_Skin(n_face);
+                    pmd.skins[n_face] = new PMD_Skin();
                     pmd.skins[n_face].name = m.Name;
                     pmd.skins[n_face].vertices = new PMD_SkinVertex[numFaceVertices];
 
