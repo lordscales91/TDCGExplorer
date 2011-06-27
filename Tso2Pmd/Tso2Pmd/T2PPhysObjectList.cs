@@ -13,7 +13,7 @@ namespace Tso2Pmd
     public class T2PPhysObjectList
     {
         List<TDCGUtils.PMD_Bone> bone_list;
-        public List<TDCGUtils.PMD_RBody> body_list = new List<TDCGUtils.PMD_RBody>();
+        public List<TDCGUtils.PMD_RBody> rbody_list = new List<TDCGUtils.PMD_RBody>();
         public List<TDCGUtils.PMD_Joint> joint_list = new List<TDCGUtils.PMD_Joint>();
 
         public T2PPhysObjectList(List<TDCGUtils.PMD_Bone> bone_list)
@@ -34,9 +34,9 @@ namespace Tso2Pmd
         // 名前から剛体IDを得る
         private int GetBodyIDByName(string name)
         {
-            for (int i = 0; i < body_list.Count; i++)
+            for (int i = 0; i < rbody_list.Count; i++)
             {
-                if (body_list[i].name == name) return i;
+                if (rbody_list[i].name == name) return i;
             }
 
             return -1;
@@ -59,7 +59,7 @@ namespace Tso2Pmd
         // 名前から剛体を得る
         public TDCGUtils.PMD_RBody GetBodyByName(string name)
         {
-            return body_list[GetBodyIDByName(name)];
+            return rbody_list[GetBodyIDByName(name)];
         }
         // 名前からジョイントを得る
         public TDCGUtils.PMD_Joint GetJointByName(string name)
@@ -72,13 +72,13 @@ namespace Tso2Pmd
         {
             List<TDCGUtils.PMD_RBody> list = new List<TDCGUtils.PMD_RBody>();
 
-            for (int i = 0; i < body_list.Count; i++)
+            for (int i = 0; i < rbody_list.Count; i++)
             {
                 if (System.Text.RegularExpressions.Regex.IsMatch(
-                    body_list[i].name,
+                    rbody_list[i].name,
                     exp))
                 {
-                    list.Add(body_list[i]);
+                    list.Add(rbody_list[i]);
                 }
             }
 
@@ -151,7 +151,7 @@ namespace Tso2Pmd
             rigidbody.friction = 0.0f; // 諸データ：摩擦力 // 00 00 00 00
             rigidbody.type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
 
-            body_list.Add(rigidbody);
+            rbody_list.Add(rigidbody);
         }
 
         // (指定したボーン→その子ボーン)にフィットするような剛体を生成
@@ -199,7 +199,7 @@ namespace Tso2Pmd
             rigidbody.friction = 0.0f; // 諸データ：摩擦力 // 00 00 00 00
             rigidbody.type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
 
-            body_list.Add(rigidbody);
+            rbody_list.Add(rigidbody);
         }
 
         // (指定したボーンにフィットさせた剛体)と、(その親ボーンにフィットさせた剛体)を、
