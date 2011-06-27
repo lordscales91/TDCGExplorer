@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
-using Tso2Pmd.Extensions;
+using TDCGUtils.Extensions;
 
 namespace TDCGUtils
 {
@@ -183,7 +183,7 @@ namespace TDCGUtils
     {
         public short id;
 
-        public string name_ja;
+        public string name;
         public string name_en;
         
         public Vector4 diffuse;
@@ -206,7 +206,7 @@ namespace TDCGUtils
 
         public PMD_Material()
         {
-            name_ja = "material ja";
+            name = "material ja";
             name_en = "material en";
             diffuse = new Vector4(0.800f, 0.712f, 0.624f, 1.0f);
             specular = new Vector4(0.150f, 0.150f, 0.150f, 6.0f);
@@ -220,7 +220,7 @@ namespace TDCGUtils
 
         public void Write(BinaryWriter bw)
         {
-            bw.WritePString(name_ja);
+            bw.WritePString(name);
             bw.WritePString(name_en);
             bw.Write(ref diffuse);
             bw.Write(ref specular);
@@ -241,9 +241,7 @@ namespace TDCGUtils
     /// ボーン
     public class PMD_Bone
     {
-        public short id;
-
-        public string name_ja;
+        public string name;
         public string name_en;
         public Vector3 position;
         public short parent_node_id;
@@ -252,11 +250,9 @@ namespace TDCGUtils
         public byte flags_lo;
         public short tail_node_id;
 
-        public PMD_Bone(short id)
+        public PMD_Bone()
         {
-            this.id = id;
-
-            name_ja = "node ja";
+            name = "node ja";
             name_en = "node en";
             position = new Vector3(0, 5, 0);
             parent_node_id = -1;
@@ -268,7 +264,7 @@ namespace TDCGUtils
 
         public void Write(BinaryWriter bw)
         {
-            bw.WritePString(name_ja);
+            bw.WritePString(name);
             bw.WritePString(name_en);
             bw.Write(ref position);
             bw.Write(parent_node_id);
@@ -278,23 +274,23 @@ namespace TDCGUtils
             bw.Write(tail_node_id);
         }
 
-        public string ParentName
-        {
-            get { return null; }
-        }
+        // ボーンの種類
+        public int kind;
 
-        public string TailName
-        {
-            get { return null; }
-        }
+        // 親ボーン名
+        public string ParentName;
+
+        // 子ボーン名
+        public string TailName;
+
+        // IK時のターゲットボーン
+        public string IKTargetName;
     }
 
     /// IK
     public class PMD_IK
     {
-        public short id;
-
-        public string name_ja;
+        public string name;
         public string name_en;
         public Vector3 position;
         public short parent_node_id;
@@ -304,16 +300,14 @@ namespace TDCGUtils
         public short tail_node_id;
 
         public int target_node_id;
-        public int loop_count;
-        public float cons_angle;
+        public int niteration;
+        public float weight;
 
-        public PMD_IL[] links;
+        public PMD_IKNode[] chain_nodes;
 
-        public PMD_IK(short id)
+        public PMD_IK()
         {
-            this.id = id;
-
-            name_ja = "node ja";
+            name = "node ja";
             name_en = "node en";
             position = new Vector3(0, 5, 0);
             parent_node_id = -1;
@@ -325,7 +319,7 @@ namespace TDCGUtils
 
         public void Write(BinaryWriter bw)
         {
-            bw.WritePString(name_ja);
+            bw.WritePString(name);
             bw.WritePString(name_en);
             bw.Write(ref position);
             bw.Write(parent_node_id);
@@ -335,19 +329,28 @@ namespace TDCGUtils
             bw.Write(tail_node_id);
 
             bw.Write(target_node_id);
-            bw.Write(loop_count);
-            bw.Write(cons_angle);
+            bw.Write(niteration);
+            bw.Write(weight);
 
-            bw.Write(links.Length);
-            foreach (PMD_IL l in links)
+            bw.Write(chain_nodes.Length);
+            foreach (PMD_IKNode l in chain_nodes)
             {
                 bw.Write(l.node_id);
                 bw.Write(l.cons);
             }
         }
+    
+        // IKターゲットボーン名
+        public string target_node_name;
+
+        // IK先端ボーン名
+        public string effector_node_name;
+
+        // IKを構成するボーンの配列
+        public List<string> chain_node_names = new List<string>();
     }
 
-    public class PMD_IL
+    public class PMD_IKNode
     {
         public short node_id;
         public byte cons = 0;
@@ -358,7 +361,7 @@ namespace TDCGUtils
     {
         public sbyte id;
 
-        public string name_ja;
+        public string name;
         public string name_en;
 
         public byte panel_id;
@@ -373,7 +376,7 @@ namespace TDCGUtils
 
         public void Write(BinaryWriter bw)
         {
-            bw.WritePString(name_ja);
+            bw.WritePString(name);
             bw.WritePString(name_en);
 
             bw.Write(panel_id);
@@ -400,7 +403,7 @@ namespace TDCGUtils
     {
         public sbyte id;
 
-        public string name_ja;
+        public string name;
         public string name_en;
 
         public short rel_bone_id;
@@ -424,7 +427,7 @@ namespace TDCGUtils
 
         public void Write(BinaryWriter bw)
         {
-            bw.WritePString(name_ja);
+            bw.WritePString(name);
             bw.WritePString(name_en);
 
             bw.Write(rel_bone_id);
@@ -451,7 +454,7 @@ namespace TDCGUtils
     /// ジョイント
     public class PMD_Joint
     {
-        public string name_ja;
+        public string name;
         public string name_en;
         
         public byte type = 0;
@@ -472,7 +475,7 @@ namespace TDCGUtils
 
         public void Write(BinaryWriter bw)
         {
-            bw.WritePString(name_ja);
+            bw.WritePString(name);
             bw.WritePString(name_en);
 
             bw.Write(type);

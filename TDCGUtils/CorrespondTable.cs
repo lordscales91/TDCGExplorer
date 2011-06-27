@@ -66,33 +66,29 @@ namespace TDCGUtils
                 string[] data = line.Split(',');
 
                 // PMD_Boneデータを生成
-                PMD_Bone pmd_b = new PMD_Bone((short)boneStructure.Count);
+                PMD_Bone pmd_b = new PMD_Bone();
 
-                pmd_b.name_ja = data[0].Trim();
-                int kind = int.Parse(data[1].Trim());
+                pmd_b.name = data[0].Trim();
+
                 // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                
+                pmd_b.kind = int.Parse(data[1].Trim());
+
                 if (data[2] == "")
-                    pmd_b.parent_node_id = -1;
-                /*
+                    pmd_b.ParentName = null;
                 else
-                    pmd_b.parent_node_id = data[2].Trim();
-                */
+                    pmd_b.ParentName = data[2].Trim();
+
                 if (data[3] == "")
-                    pmd_b.tail_node_id = -1;
-                /*
+                    pmd_b.TailName = null;
                 else
-                    pmd_b.tail_node_id = data[3].Trim();
-                */
-                
-                /*
+                    pmd_b.TailName = data[3].Trim();
+
                 if (data[4] == "")
                     pmd_b.IKTargetName = null;
                 else
                     pmd_b.IKTargetName = data[4].Trim();
-                */
 
-                boneStructure.Add(pmd_b.name_ja, pmd_b);
+                boneStructure.Add(pmd_b.name, pmd_b);
 
                 // 枠に表示するボーン名の設定
                 if (data[5].Trim() != "")
@@ -119,7 +115,6 @@ namespace TDCGUtils
             }
             sr.Close();
 
-            /*
             //内容を一行ずつ読み込む
             sr = new System.IO.StreamReader(
                 Path.Combine(path, @"IKBone.txt"),
@@ -129,25 +124,22 @@ namespace TDCGUtils
                 string line = sr.ReadLine();
                 string[] data = line.Split(',');
 
-                //TODO: ボーン番号を直せ！
-                PMD_IK pmd_ik = new PMD_IK((short)IKBone.Count);
-                pmd_ik.id = short.Parse(data[0].Trim());	// IKボーン番号
-                pmd_ik.target_node_id = short.Parse(data[1].Trim());		// IKターゲットボーン番号 // IKボーンが最初に接続するボーン
-                int numLink = int.Parse(data[2].Trim());	// IKチェーンの長さ(子の数)
-                pmd_ik.links = new PMD_IL[numLink];
-                pmd_ik.loop_count = int.Parse(data[3].Trim());      // 再帰演算回数 // IK値1
-                pmd_ik.cons_angle = float.Parse(data[4].Trim()) * 4;       // IKの影響度 // IK値2
+                PMD_IK pmd_ik = new PMD_IK();
+
+                pmd_ik.target_node_name = data[0].Trim();
+                pmd_ik.effector_node_name = data[1].Trim();
+                int chain_length = int.Parse(data[2].Trim());
+                pmd_ik.niteration = int.Parse(data[3].Trim());
+                pmd_ik.weight = float.Parse(data[4].Trim());
 
                 for (int i = 5; i < data.Length; i++)
                 {
-                    pmd_ik.links[i] = new PMD_IL();
-                    pmd_ik.links[i].node_id = short.Parse(data[i].Trim());
+                    pmd_ik.chain_node_names.Add(data[i].Trim());
                 }
 
                 IKBone.Add(pmd_ik);
             }
             sr.Close();
-            */
         }
 
         public void Add(CorrespondTable ct)
@@ -176,7 +168,6 @@ namespace TDCGUtils
                     boneStructure.Add(kvp.Key, kvp.Value);
             }
 
-            // Konoa added.
             foreach (DispBoneGroup dbg in ct.dispBoneGroup)
             {
                 dispBoneGroup.Add(dbg);
