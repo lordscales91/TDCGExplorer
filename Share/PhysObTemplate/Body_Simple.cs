@@ -23,22 +23,31 @@ namespace TDCG.PhysObTemplate
             phys_list.MakeBodyFromBone("下半身");
 
             phys_list.MakeBodyFromBone("上半身");
-            phys_list.GetBodyByName("上半身").shape_type = 1; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-            phys_list.GetBodyByName("上半身").shape_w = 1.0f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-            phys_list.GetBodyByName("上半身").shape_h *= 0.5f;
-            phys_list.GetBodyByName("上半身").shape_d = 0.5f; // 形状：奥行 // CD CC CC 3D // 0.1
+            {
+                PMD_RBody body = phys_list.GetBodyByName("上半身");
+                body.shape_id = 1;
+                body.size.X = 1.0f;
+                body.size.Y *= 0.5f;
+                body.size.Z = 0.5f;
+            }
 
             phys_list.MakeBodyFromBone("上半身２");
-            phys_list.GetBodyByName("上半身２").shape_type = 1; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-            phys_list.GetBodyByName("上半身２").shape_w = 1.0f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-            phys_list.GetBodyByName("上半身２").shape_h *= 0.5f;
-            phys_list.GetBodyByName("上半身２").shape_d = 0.5f; // 形状：奥行 // CD CC CC 3D // 0.1
+            {
+                PMD_RBody body = phys_list.GetBodyByName("上半身２");
+                body.shape_id = 1;
+                body.size.X = 1.0f;
+                body.size.Y *= 0.5f;
+                body.size.Z = 0.5f;
+            }
 
             phys_list.MakeBodyFromBone("上半身３");
-            phys_list.GetBodyByName("上半身３").shape_type = 1; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
-            phys_list.GetBodyByName("上半身３").shape_w = 1.0f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-            phys_list.GetBodyByName("上半身３").shape_h *= 0.5f;
-            phys_list.GetBodyByName("上半身３").shape_d = 0.5f; // 形状：奥行 // CD CC CC 3D // 0.1
+            {
+                PMD_RBody body = phys_list.GetBodyByName("上半身３");
+                body.shape_id = 1;
+                body.size.X = 1.0f;
+                body.size.Y *= 0.5f;
+                body.size.Z = 0.5f;
+            }
 
             phys_list.MakeBodyFromBone("頭");
 
@@ -55,13 +64,13 @@ namespace TDCG.PhysObTemplate
             phys_list.MakeBodyFromBone("右ひじ");
 
             phys_list.MakeBodyFromBone("左足");
-            phys_list.GetBodyByName("左足").shape_w = 0.75f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-
+            phys_list.GetBodyByName("左足").size.X = 0.75f;
+            
             phys_list.MakeBodyFromBone("左ひざ");
 
             phys_list.MakeBodyFromBone("右足");
-            phys_list.GetBodyByName("右足").shape_w = 0.75f; // 形状：半径(幅) // CD CC CC 3F // 1.6
-
+            phys_list.GetBodyByName("右足").size.X = 0.75f;
+            
             phys_list.MakeBodyFromBone("右ひざ");
         }
     }
