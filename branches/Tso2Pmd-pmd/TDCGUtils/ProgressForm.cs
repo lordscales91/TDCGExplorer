@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace TDCGUtils
@@ -37,7 +38,7 @@ namespace TDCGUtils
         //ダイアログフォーム
         private volatile ProgressForm form;
         //フォームが表示されるまで待機するための待機ハンドル
-        private System.Threading.ManualResetEvent startEvent;
+        private ManualResetEvent startEvent;
         //フォームが一度表示されたか
         private bool showed = false;
         //フォームをコードで閉じているか
@@ -46,7 +47,7 @@ namespace TDCGUtils
         private Form ownerForm;
 
         //別処理をするためのスレッド
-        private System.Threading.Thread thread;
+        private Thread thread;
 
         //フォームのタイトル
         private volatile string _title = "進行状況";
@@ -166,15 +167,13 @@ namespace TDCGUtils
             showed = true;
 
             _canceled = false;
-            startEvent = new System.Threading.ManualResetEvent(false);
+            startEvent = new ManualResetEvent(false);
             ownerForm = owner;
 
             //スレッドを作成
-            thread = new System.Threading.Thread(
-                new System.Threading.ThreadStart(Run));
+            thread = new Thread(new ThreadStart(Run));
             thread.IsBackground = true;
-            this.thread.ApartmentState =
-                System.Threading.ApartmentState.STA;
+            this.thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
 
             //フォームが表示されるまで待機する
