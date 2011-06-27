@@ -68,16 +68,25 @@ namespace TDCGUtils
                 // PMD_Boneデータを生成
                 PMD_Bone pmd_b = new PMD_Bone();
 
-                pmd_b.szName = data[0].Trim();
+                pmd_b.name = data[0].Trim();
                 pmd_b.cbKind = int.Parse(data[1].Trim()); // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-                if (data[2] == "") pmd_b.ParentName = null;
-                else pmd_b.ParentName = data[2].Trim();
-                if (data[3] == "") pmd_b.ChildName = null;
-                else pmd_b.ChildName = data[3].Trim();
-                if (data[4] == "") pmd_b.IKTargetName = null;
-                else pmd_b.IKTargetName = data[4].Trim();
+                
+                if (data[2] == "")
+                    pmd_b.ParentName = null;
+                else
+                    pmd_b.ParentName = data[2].Trim();
+                
+                if (data[3] == "")
+                    pmd_b.TailName = null;
+                else
+                    pmd_b.TailName = data[3].Trim();
+                
+                if (data[4] == "")
+                    pmd_b.IKTargetName = null;
+                else
+                    pmd_b.IKTargetName = data[4].Trim();
 
-                boneStructure.Add(pmd_b.szName, pmd_b);
+                boneStructure.Add(pmd_b.name, pmd_b);
 
                 // 枠に表示するボーン名の設定
                 if (data[5].Trim() != "")
@@ -115,15 +124,18 @@ namespace TDCGUtils
 
                 PMD_IK pmd_ik = new PMD_IK();
 
-                pmd_ik.nTargetName = data[0].Trim();	// IKボーン番号
-                pmd_ik.nEffName = data[1].Trim();		// IKターゲットボーン番号 // IKボーンが最初に接続するボーン
-                pmd_ik.cbNumLink = int.Parse(data[2].Trim());	// IKチェーンの長さ(子の数)
-                pmd_ik.unCount = int.Parse(data[3].Trim());      // 再帰演算回数 // IK値1
-                pmd_ik.fFact = float.Parse(data[4].Trim());       // IKの影響度 // IK値2
+                pmd_ik.nTargetName = data[0].Trim();
+                pmd_ik.nEffName = data[1].Trim();
+                pmd_ik.cbNumLink = int.Parse(data[2].Trim());
+                pmd_ik.unCount = int.Parse(data[3].Trim());
+                pmd_ik.fFact = float.Parse(data[4].Trim());
 
-                List<string> tem_list = new List<string>();
-                for (int i = 5; i < data.Length; i++) tem_list.Add(data[i].Trim());
-                pmd_ik.punLinkName = (string[])tem_list.ToArray();
+                List<string> tmp_list = new List<string>();
+                for (int i = 5; i < data.Length; i++)
+                {
+                    tmp_list.Add(data[i].Trim());
+                }
+                pmd_ik.punLinkName = (string[])tmp_list.ToArray();
 
                 IKBone.Add(pmd_ik);
             }

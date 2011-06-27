@@ -26,7 +26,7 @@ namespace Tso2Pmd
         {
             for (int i = 0; i < bone_list.Count; i++)
             {
-                if (bone_list[i].szName == name) return i;
+                if (bone_list[i].name == name) return i;
             }
 
             return -1;
@@ -108,12 +108,12 @@ namespace Tso2Pmd
         // ④(①～③)を子ボーンがなくなるまで繰り返す
         public void MakeChain(string name)
         {
-            if (GetBoneByName(name).ChildName != null)
+            if (GetBoneByName(name).TailName != null)
             {
                 MakeBodyFromBone(name);
                 MakeJointFromBone(name);
 
-                MakeChain(GetBoneByName(name).ChildName);
+                MakeChain(GetBoneByName(name).TailName);
             }
             else
             {
@@ -133,7 +133,7 @@ namespace Tso2Pmd
         {
             TDCGUtils.PMD_RBody rigidbody = new TDCGUtils.PMD_RBody();
 
-            rigidbody.name = bone_list[bone_num].szName; // 諸データ：名称 // 頭
+            rigidbody.name = bone_list[bone_num].name; // 諸データ：名称 // 頭
             rigidbody.rel_bone_id = bone_num; // 諸データ：関連ボーン番号 // 03 00 == 3 // 頭
             rigidbody.position.X = 0.0f;
             rigidbody.position.Y = 0.0f;
@@ -159,8 +159,8 @@ namespace Tso2Pmd
         {
             MakeBodyFromTwoVector(
                 bone_name, 
-                GetBoneByName(bone_name).vec3Position,
-                GetBoneByName(GetBoneByName(bone_name).ChildName).vec3Position);
+                GetBoneByName(bone_name).position,
+                GetBoneByName(GetBoneByName(bone_name).TailName).position);
         }
  
         // (ベクトル１→ベクトル２)にフィットするような剛体を生成
@@ -215,13 +215,13 @@ namespace Tso2Pmd
         {
             TDCGUtils.PMD_Joint joint = new TDCGUtils.PMD_Joint();
 
-            joint.name = GetBoneByName(bone_list[bone_num].ParentName).szName
-                + "-" + bone_list[bone_num].szName; // 諸データ：名称 // 右髪1
-            joint.rbody_a_id = GetBodyIDByName(GetBoneByName(bone_list[bone_num].ParentName).szName); // 諸データ：剛体A
-            joint.rbody_b_id = GetBodyIDByName(bone_list[bone_num].szName); // 諸データ：剛体B
-            joint.position.X = bone_list[bone_num].vec3Position.X; // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
-            joint.position.Y = bone_list[bone_num].vec3Position.Y; // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
-            joint.position.Z = bone_list[bone_num].vec3Position.Z; // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
+            joint.name = GetBoneByName(bone_list[bone_num].ParentName).name
+                + "-" + bone_list[bone_num].name; // 諸データ：名称 // 右髪1
+            joint.rbody_a_id = GetBodyIDByName(GetBoneByName(bone_list[bone_num].ParentName).name); // 諸データ：剛体A
+            joint.rbody_b_id = GetBodyIDByName(bone_list[bone_num].name); // 諸データ：剛体B
+            joint.position.X = bone_list[bone_num].position.X; // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
+            joint.position.Y = bone_list[bone_num].position.Y; // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
+            joint.position.Z = bone_list[bone_num].position.Z; // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
             joint.rotation.X = 0.0f; // 諸データ：回転(rad(x), rad(y), rad(z))
             joint.rotation.Y = 0.0f; // 諸データ：回転(rad(x), rad(y), rad(z))
             joint.rotation.Z = 0.0f; // 諸データ：回転(rad(x), rad(y), rad(z))
@@ -258,12 +258,12 @@ namespace Tso2Pmd
         {
             TDCGUtils.PMD_Joint joint = new TDCGUtils.PMD_Joint();
 
-            joint.name = bone_list[bone_num1].szName + "-" + bone_list[bone_num2].szName; // 諸データ：名称 // 右髪1
-            joint.rbody_a_id = GetBodyIDByName(bone_list[bone_num1].szName); // 諸データ：剛体A
-            joint.rbody_b_id = GetBodyIDByName(bone_list[bone_num2].szName); // 諸データ：剛体B
-            joint.position.X = 0.5f * (bone_list[bone_num1].vec3Position.X + bone_list[bone_num2].vec3Position.X); // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
-            joint.position.Y = 0.5f * (bone_list[bone_num1].vec3Position.Y + bone_list[bone_num2].vec3Position.Y); // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
-            joint.position.Z = 0.5f * (bone_list[bone_num1].vec3Position.Z + bone_list[bone_num2].vec3Position.Z); // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
+            joint.name = bone_list[bone_num1].name + "-" + bone_list[bone_num2].name; // 諸データ：名称 // 右髪1
+            joint.rbody_a_id = GetBodyIDByName(bone_list[bone_num1].name); // 諸データ：剛体A
+            joint.rbody_b_id = GetBodyIDByName(bone_list[bone_num2].name); // 諸データ：剛体B
+            joint.position.X = 0.5f * (bone_list[bone_num1].position.X + bone_list[bone_num2].position.X); // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
+            joint.position.Y = 0.5f * (bone_list[bone_num1].position.Y + bone_list[bone_num2].position.Y); // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
+            joint.position.Z = 0.5f * (bone_list[bone_num1].position.Z + bone_list[bone_num2].position.Z); // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
             joint.rotation.X = 0.0f; // 諸データ：回転(rad(x), rad(y), rad(z))
             joint.rotation.Y = 0.0f; // 諸データ：回転(rad(x), rad(y), rad(z))
             joint.rotation.Z = 0.0f; // 諸データ：回転(rad(x), rad(y), rad(z))
