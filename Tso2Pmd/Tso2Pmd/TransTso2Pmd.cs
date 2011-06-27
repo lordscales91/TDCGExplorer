@@ -138,16 +138,10 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // 表情枠
             // -----------------------------------------------------
-            /*
-            pmd.skin_disp_count = 0; // 表情枠に表示する表情数
-            */
 
             // -----------------------------------------------------
             // ボーン情報
             // -----------------------------------------------------
-            /*
-            pmd.number_of_bone = 2;
-            */
             pmd.nodes = new PMD_Bone[2];
 
             // センター
@@ -179,16 +173,12 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // IK配列
             // -----------------------------------------------------
-            /*
-            pmd.number_of_ik = 0;
-            */
 
             // -----------------------------------------------------
             // ボーン枠用枠名リスト
             // -----------------------------------------------------
             /*
-            pmd.bone_disp_name_count = 1; // ボーン枠用の枠名数
-            pmd.disp_name = new string[pmd.bone_disp_name_count]; // 枠名(50Bytes/枠)
+            pmd.disp_name = new string[1]; // 枠名(50Bytes/枠)
             pmd.disp_name[0] = "センター" + Convert.ToChar(Convert.ToInt16("0A", 16));
             //PMDEditorを使う場合は、枠名を0x0A00で終わらせる必要があります(0x00のみだと表示されません)。
             */
@@ -197,8 +187,7 @@ namespace Tso2Pmd
             // ボーン枠用表示リスト
             // -----------------------------------------------------
             /*
-            pmd.bone_disp_count = 1;
-            pmd.bone_disp = new PMD_BoneDisp[pmd.bone_disp_count]; // 枠用ボーンデータ (3Bytes/bone)
+            pmd.bone_disp = new PMD_BoneDisp[1]; // 枠用ボーンデータ (3Bytes/bone)
             pmd.bone_disp[0] = new PMD_BoneDisp();
             pmd.bone_disp[0].bone_name = "センター"; // 枠用ボーン名
             pmd.bone_disp[0].bone_disp_frame_index = 0; // 表示枠番号
@@ -214,10 +203,6 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // 剛体＆ジョイント
             // -----------------------------------------------------
-            /*
-            pmd.rigidbody_count = 0;
-            pmd.joint_count = 0;
-            */
 
             // -----------------------------------------------------
             // 終了
@@ -289,14 +274,12 @@ namespace Tso2Pmd
             /*
             if (mod_type == 0)
             {
-                pmd.skin_disp_count = pmd.number_of_face - 1; // 表情枠に表示する表情数
-                pmd.skin_index = new int[pmd.skin_disp_count];
+                pmd.skin_index = new int[pmd.number_of_face - 1];
                 for (int i = 0; i < pmd.skin_disp_count; i++)
                     pmd.skin_index[i] = i + 1; // 表情番号
             }
             else if (mod_type == 1)
             {
-                pmd.skin_disp_count = 0; // 表情枠に表示する表情数
             }
             */
 
@@ -412,7 +395,6 @@ namespace Tso2Pmd
             // IK配列
             // -----------------------------------------------------
             /*
-            pmd.number_of_ik = cor_table.IKBone.Count;
             pmd.pmd_ik = (PMD_IK[])cor_table.IKBone.ToArray();
             */
 
@@ -420,10 +402,9 @@ namespace Tso2Pmd
             // ボーン枠用枠名リスト
             // -----------------------------------------------------
             /*
-            pmd.bone_disp_name_count = cor_table.dispBoneGroup.Count; // ボーン枠用の枠名数
-            pmd.disp_name = new string[pmd.bone_disp_name_count]; // 枠名(50Bytes/枠)
+            pmd.disp_name = new string[cor_table.dispBoneGroup.Count]; // 枠名(50Bytes/枠)
 
-            for (int i = 0; i < cor_table.dispBoneGroup.Count; i++)
+            for (int i = 0; i < pmd.bone_disp_name_count; i++)
                 pmd.disp_name[i] = cor_table.dispBoneGroup[i].group_name + Convert.ToChar(Convert.ToInt16("0A", 16));
             //PMDEditorを使う場合は、枠名を0x0A00で終わらせる必要があります(0x00のみだと表示されません)。
             */
@@ -433,12 +414,12 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             /*
             // 枠に表示するボーン数
-            pmd.bone_disp_count = 0;
+            int bone_disp_count = 0;
             for (int i = 0; i < cor_table.dispBoneGroup.Count; i++)
-                pmd.bone_disp_count += cor_table.dispBoneGroup[i].bone_name_list.Count;
+                bone_disp_count += cor_table.dispBoneGroup[i].bone_name_list.Count;
             
             // 枠用ボーンデータ (3Bytes/bone)
-            pmd.bone_disp = new PMD_BoneDisp[pmd.bone_disp_count]; 
+            pmd.bone_disp = new PMD_BoneDisp[bone_disp_count]; 
 
             int n = 0; // 通し番号
             int n_disp = 1;
