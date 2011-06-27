@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Drawing;
 using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
@@ -78,9 +78,7 @@ namespace Tso2Pmd
             pmd_m.vindices_count = 0;
 
             // colorテクスチャ
-            /*
-            pmd_m.szTextureFileName = tex_list.GetFileName(tso_num, shader.ColorTexName);
-            */
+            pmd_m.tex_path = tex_list.GetFileName(tso_num, shader.ColorTexName);
             
             // toonテクスチャ
             string toon_file = tex_list.GetFileName(tso_num, shader.ShadeTexName);
@@ -114,7 +112,6 @@ namespace Tso2Pmd
                 }
 
                 // スフィアマップ
-                /*
                 if (spheremap_flag == true)
                 {
                     // toonテクスチャが256×16のサイズなら、スフィアマップを指定する
@@ -123,11 +120,10 @@ namespace Tso2Pmd
                     {
                         string sphere_file
                             = System.Text.RegularExpressions.Regex.Replace(toon_file, ".bmp", ".sph");
-                        pmd_m.szTextureFileName
-                            = pmd_m.szTextureFileName + "*" + sphere_file;
+                        pmd_m.tex_path
+                            = pmd_m.tex_path + "*" + sphere_file;
                     }
                 }
-                */
             }
             else
             {
@@ -145,7 +141,7 @@ namespace Tso2Pmd
         {
             for (int i = 0; i < material_list.Count - 1; i++)
             {
-                if (Equals(material_list[i], material_list[i + 1]))
+                if (EqualMaterials(material_list[i], material_list[i + 1]))
                 {
                     material_list[i].vindices_count += material_list[i + 1].vindices_count;
                     material_list.RemoveAt(i + 1);
@@ -156,14 +152,17 @@ namespace Tso2Pmd
         }
 
         // ２つのマテリアルが等しいか判定する
-        public bool Equals(PMD_Material m1, PMD_Material m2)
+        public bool EqualMaterials(PMD_Material m1, PMD_Material m2)
         {
             if (m1.edge_width != m2.edge_width)
                 return false;
-            if (m1.tex_id != m2.tex_id)
+
+            if (m1.tex_path != m2.tex_path)
                 return false;
+            
             if (m1.toon_tex_id != m2.toon_tex_id)
                 return false;
+            
             return true;
         }
 

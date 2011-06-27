@@ -118,6 +118,16 @@ namespace TDCGUtils
             bw.Write((byte)0x20);
             bw.Write(2.0f);
         }
+
+        public PMD_Bone GetBoneByName(string name)
+        {
+            foreach (PMD_Bone bone in nodes)
+            {
+                if (bone.name == name)
+                    return bone;
+            }
+            return null;
+        }
     }
 
     /// スキンウェイト
@@ -240,6 +250,8 @@ namespace TDCGUtils
             bw.WritePString(memo);
             bw.Write(vindices_count);
         }
+
+        public String tex_path;
     }
 
     /// ボーン

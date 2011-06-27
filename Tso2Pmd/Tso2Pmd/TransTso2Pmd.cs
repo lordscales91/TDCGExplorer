@@ -150,11 +150,9 @@ namespace Tso2Pmd
             // 1:回転と移動
             pmd.nodes[1].flags_hi = (byte)0x00;
             pmd.nodes[1].flags_lo = (byte)0x1F;
-            pmd.nodes[0].parent_node_id = -1;
-            pmd.nodes[0].tail_node_id = 1;
-            /*
+            pmd.nodes[0].ParentName = null;
+            pmd.nodes[0].TailName = "センター先";
             pmd.nodes[0].IKTargetName = null;
-            */
             pmd.nodes[0].position = new Vector3(0.0f, 5.0f, 0.0f);	// モデル原点からの位置
 
             // センター先
@@ -163,11 +161,9 @@ namespace Tso2Pmd
             // 7:非表示
             pmd.nodes[1].flags_hi = (byte)0x00;
             pmd.nodes[1].flags_lo = (byte)0x11;
-            pmd.nodes[1].parent_node_id = 0;
-            pmd.nodes[1].tail_node_id = -1;
-            /*
+            pmd.nodes[1].ParentName = "センター";
+            pmd.nodes[1].TailName = null;
             pmd.nodes[1].IKTargetName = null;
-            */
             pmd.nodes[1].position = new Vector3(0.0f, 0.0f, 0.0f);	// モデル原点からの位置
 
             // -----------------------------------------------------
@@ -276,12 +272,13 @@ namespace Tso2Pmd
             /*
             if (mod_type == 0)
             {
-                pmd.skin_disp_index = new int[pmd.number_of_skin - 1];
+                pmd.skin_disp_indices = new int[pmd.number_of_skin - 1];
                 for (int i = 0; i < pmd.skin_disp_count; i++)
-                    pmd.skin_disp_index[i] = i + 1; // 表情番号
+                    pmd.skin_disp_indices[i] = i + 1; // 表情番号
             }
             else if (mod_type == 1)
             {
+                pmd.skin_disp_indices = new int[0];
             }
             */
 
@@ -299,11 +296,9 @@ namespace Tso2Pmd
                 pmd_b.name_en = bone.name_en;
                 pmd_b.flags_hi = bone.flags_hi;
                 pmd_b.flags_lo = bone.flags_lo;
-                pmd_b.parent_node_id = bone.parent_node_id;
-                pmd_b.tail_node_id = bone.tail_node_id;
-                /*
+                pmd_b.ParentName = bone.ParentName;
+                pmd_b.TailName = bone.TailName;
                 pmd_b.IKTargetName = bone.IKTargetName;
-                */
 
                 string bone_name = null;
                 cor_table.bonePosition.TryGetValue(pmd_b.name, out bone_name);
@@ -333,7 +328,6 @@ namespace Tso2Pmd
             // リストを配列に代入し直す
             pmd.nodes = (PMD_Bone[])bone_list.ToArray();
 
-            /*
             // -----------------------------------------------------
             // センターボーンの位置調整
             pmd.GetBoneByName("センター").position
@@ -391,7 +385,6 @@ namespace Tso2Pmd
                     pmd.GetBoneByName("右つま先ＩＫ").position.X,
                     pmd.GetBoneByName("右つま先ＩＫ").position.Y - 1.0f,
                     pmd.GetBoneByName("右つま先ＩＫ").position.Z);
-            */
 
             // -----------------------------------------------------
             // IK配列
@@ -404,10 +397,10 @@ namespace Tso2Pmd
             // ボーン枠用枠名リスト
             // -----------------------------------------------------
             /*
-            pmd.disp_name = new string[cor_table.dispBoneGroup.Count]; // 枠名(50Bytes/枠)
+            pmd.disp_names = new string[cor_table.boneDispGroups.Count]; // 枠名(50Bytes/枠)
 
             for (int i = 0; i < pmd.bone_disp_name_count; i++)
-                pmd.disp_name[i] = cor_table.dispBoneGroup[i].group_name + Convert.ToChar(Convert.ToInt16("0A", 16));
+                pmd.disp_names[i] = cor_table.boneDispGroups[i].name + Convert.ToChar(Convert.ToInt16("0A", 16));
             //PMDEditorを使う場合は、枠名を0x0A00で終わらせる必要があります(0x00のみだと表示されません)。
             */
 
@@ -417,26 +410,27 @@ namespace Tso2Pmd
             /*
             // 枠に表示するボーン数
             int bone_disp_count = 0;
-            for (int i = 0; i < cor_table.dispBoneGroup.Count; i++)
-                bone_disp_count += cor_table.dispBoneGroup[i].bone_name_list.Count;
+            for (int i = 0; i < cor_table.boneDispGroups.Count; i++)
+                bone_disp_count += cor_table.boneDispGroups[i].bone_names.Count;
             
             // 枠用ボーンデータ (3Bytes/bone)
-            pmd.bone_disp = new PMD_BoneDisp[bone_disp_count]; 
+            pmd.bone_disps = new PMD_BoneDisp[bone_disp_count]; 
 
-            int n = 0; // 通し番号
-            int n_disp = 1;
-            foreach (DispBoneGroup dbg in cor_table.dispBoneGroup)
+            int idx = 0; // 通し番号
+            int group_idx = 1;
+            foreach (BoneDispGroup group in cor_table.boneDispGroups)
             {
-                foreach (string name in dbg.bone_name_list)
+                foreach (string name in group.bone_names)
                 {
-                    pmd.bone_disp[n] = new PMD_BoneDisp();
-                    pmd.bone_disp[n].bone_name = name; // 枠用ボーン名
-                    pmd.bone_disp[n++].bone_disp_frame_index = n_disp; // 表示枠番号
+                    pmd.bone_disps[idx] = new PMD_BoneDisp();
+                    pmd.bone_disps[idx].bone_name = name; // 枠用ボーン名
+                    pmd.bone_disps[idx].disp_group_id = group_idx; // 表示枠番号
+                    idx++;
                 }
-                n_disp++;
+                group_idx++;
             }
             */
-            
+
             // -----------------------------------------------------
             // 英名対応(0:英名対応なし, 1:英名対応あり)
             // -----------------------------------------------------

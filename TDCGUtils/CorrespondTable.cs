@@ -10,10 +10,10 @@ using TDCG;
 
 namespace TDCGUtils
 {
-    public struct DispBoneGroup
+    public struct BoneDispGroup
     {
-        public string group_name;
-        public List<string> bone_name_list;
+        public string name;
+        public List<string> bone_names;
     }
 
     public class CorrespondTable
@@ -21,8 +21,8 @@ namespace TDCGUtils
         public Dictionary<string, string> skinning = new Dictionary<string, string>();
         public Dictionary<string, string> bonePosition = new Dictionary<string, string>();
         public Dictionary<string, PMD_Bone> boneStructure = new Dictionary<string, PMD_Bone>();
-        public List<DispBoneGroup> dispBoneGroup = new List<DispBoneGroup>();
-        public List<PMD_IK> IKBone = new List<PMD_IK>();
+        public List<BoneDispGroup> boneDispGroups = new List<BoneDispGroup>();
+        public List<PMD_IK> iks = new List<PMD_IK>();
 
         public CorrespondTable()
         {
@@ -94,22 +94,22 @@ namespace TDCGUtils
                 if (data[5].Trim() != "")
                 {
                     bool flag = false;
-                    foreach (DispBoneGroup dbg in dispBoneGroup)
+                    foreach (BoneDispGroup dbg in boneDispGroups)
                     {
-                        if (dbg.group_name == data[5].Trim())
+                        if (dbg.name == data[5].Trim())
                         {
-                            dbg.bone_name_list.Add(data[0].Trim());
+                            dbg.bone_names.Add(data[0].Trim());
                             flag = true;
                         }
                     }
 
                     if (flag == false)
                     {
-                        DispBoneGroup dbg = new DispBoneGroup();
-                        dbg.group_name = data[5].Trim();
-                        dbg.bone_name_list = new List<string>();
-                        dbg.bone_name_list.Add(data[0].Trim());
-                        dispBoneGroup.Add(dbg);
+                        BoneDispGroup dbg = new BoneDispGroup();
+                        dbg.name = data[5].Trim();
+                        dbg.bone_names = new List<string>();
+                        dbg.bone_names.Add(data[0].Trim());
+                        boneDispGroups.Add(dbg);
                     }
                 }
             }
@@ -137,7 +137,7 @@ namespace TDCGUtils
                     pmd_ik.chain_node_names.Add(data[i].Trim());
                 }
 
-                IKBone.Add(pmd_ik);
+                iks.Add(pmd_ik);
             }
             sr.Close();
         }
@@ -168,14 +168,14 @@ namespace TDCGUtils
                     boneStructure.Add(kvp.Key, kvp.Value);
             }
 
-            foreach (DispBoneGroup dbg in ct.dispBoneGroup)
+            foreach (BoneDispGroup dbg in ct.boneDispGroups)
             {
-                dispBoneGroup.Add(dbg);
+                boneDispGroups.Add(dbg);
             }
 
-            foreach (PMD_IK ik in ct.IKBone)
+            foreach (PMD_IK ik in ct.iks)
             {
-                IKBone.Add(ik);
+                iks.Add(ik);
             }
         }
     }
