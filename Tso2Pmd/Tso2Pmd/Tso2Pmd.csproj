@@ -85,6 +85,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\..\Share\PhysObTemplate\Body_Simple.cs">
+      <Link>PhysObTemplate\Body_Simple.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Share\PhysObTemplate\Chichi_Default.cs">
+      <Link>PhysObTemplate\Chichi_Default.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Share\PhysObTemplate\Chichi_Hard.cs">
+      <Link>PhysObTemplate\Chichi_Hard.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Share\PhysObTemplate\Chichi_Soft.cs">
+      <Link>PhysObTemplate\Chichi_Soft.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Share\PhysObTemplate\Kami_Default.cs">
+      <Link>PhysObTemplate\Kami_Default.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Share\PhysObTemplate\Kami_Twin.cs">
+      <Link>PhysObTemplate\Kami_Twin.cs</Link>
+    </Compile>
+    <Compile Include="..\..\Share\PhysObTemplate\Skirt_Default.cs">
+      <Link>PhysObTemplate\Skirt_Default.cs</Link>
+    </Compile>
     <Compile Include="ClippingVertexForm.cs">
       <SubType>Form</SubType>
     </Compile>
