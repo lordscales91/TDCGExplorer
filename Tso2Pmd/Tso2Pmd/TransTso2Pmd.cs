@@ -143,24 +143,22 @@ namespace Tso2Pmd
             // センター
             pmd.nodes[0] = new PMD_Bone();
             pmd.nodes[0].name = "センター";
-            pmd.nodes[0].kind = 1; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
+            // 1:回転と移動
+            pmd.nodes[0].kind = 1;
             pmd.nodes[0].ParentName = null;
             pmd.nodes[0].TailName = "センター先";
             pmd.nodes[0].IKTargetName = null;
-            pmd.nodes[0].position.X = 0.0f;	// モデル原点からの位置
-            pmd.nodes[0].position.Y = 5.0f;	// モデル原点からの位置
-            pmd.nodes[0].position.Z = 0.0f;	// モデル原点からの位置
+            pmd.nodes[0].position = new Vector3(0.0f, 5.0f, 0.0f);	// モデル原点からの位置
 
             // センター先
             pmd.nodes[1] = new PMD_Bone();
             pmd.nodes[1].name = "センター先";
-            pmd.nodes[1].kind = 7; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
+            // 7:非表示
+            pmd.nodes[1].kind = 7;
             pmd.nodes[1].ParentName = "センター";
             pmd.nodes[1].TailName = null;
             pmd.nodes[1].IKTargetName = null;
-            pmd.nodes[1].position.X = 0.0f;	// モデル原点からの位置
-            pmd.nodes[1].position.Y = 0.0f;	// モデル原点からの位置
-            pmd.nodes[1].position.Z = 0.0f;	// モデル原点からの位置
+            pmd.nodes[1].position = new Vector3(0.0f, 0.0f, 0.0f);	// モデル原点からの位置
 
             // -----------------------------------------------------
             // IK配列
@@ -169,17 +167,17 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // ボーン枠用枠名リスト
             // -----------------------------------------------------
-            pmd.disp_name = new string[1]; // 枠名(50Bytes/枠)
-            pmd.disp_name[0] = "センター" + Convert.ToChar(Convert.ToInt16("0A", 16));
+            pmd.disp_names = new string[1]; // 枠名(50Bytes/枠)
+            pmd.disp_names[0] = "センター" + Convert.ToChar(Convert.ToInt16("0A", 16));
             //PMDEditorを使う場合は、枠名を0x0A00で終わらせる必要があります(0x00のみだと表示されません)。
 
             // -----------------------------------------------------
             // ボーン枠用表示リスト
             // -----------------------------------------------------
-            pmd.bone_disp = new PMD_BoneDisp[1]; // 枠用ボーンデータ (3Bytes/bone)
-            pmd.bone_disp[0] = new PMD_BoneDisp();
-            pmd.bone_disp[0].bone_name = "センター"; // 枠用ボーン名
-            pmd.bone_disp[0].bone_disp_frame_index = 0; // 表示枠番号
+            pmd.bone_disps = new PMD_BoneDisp[1]; // 枠用ボーンデータ (3Bytes/bone)
+            pmd.bone_disps[0] = new PMD_BoneDisp();
+            pmd.bone_disps[0].bone_name = "センター"; // 枠用ボーン名
+            pmd.bone_disps[0].disp_group_id = 0; // 表示枠番号
 
             // -----------------------------------------------------
             // 英名対応(0:英名対応なし, 1:英名対応あり)
@@ -257,12 +255,13 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             if (mod_type == 0)
             {
-                pmd.skin_disp_index = new int[pmd.number_of_skin - 1];
+                pmd.skin_disp_indices = new int[pmd.number_of_skin - 1];
                 for (int i = 0; i < pmd.skin_disp_count; i++)
-                    pmd.skin_disp_index[i] = i + 1; // 表情番号
+                    pmd.skin_disp_indices[i] = i + 1; // 表情番号
             }
             else if (mod_type == 1)
             {
+                pmd.skin_disp_indices = new int[0];
             }
 
             // -----------------------------------------------------
@@ -272,11 +271,11 @@ namespace Tso2Pmd
 
             foreach (KeyValuePair<string, PMD_Bone> bone_kvp in cor_table.boneStructure)
             {
-                PMD_Bone pmd_b = new PMD_Bone();
                 PMD_Bone bone = bone_kvp.Value;
+                PMD_Bone pmd_b = new PMD_Bone();
 
                 pmd_b.name = bone.name;
-                pmd_b.kind = bone.kind; // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
+                pmd_b.kind = bone.kind;
                 pmd_b.ParentName = bone.ParentName;
                 pmd_b.TailName = bone.TailName;
                 pmd_b.IKTargetName = bone.IKTargetName;
@@ -370,15 +369,15 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // IK配列
             // -----------------------------------------------------
-            pmd.pmd_ik = (PMD_IK[])cor_table.IKBone.ToArray();
+            pmd.pmd_ik = (PMD_IK[])cor_table.iks.ToArray();
 
             // -----------------------------------------------------
             // ボーン枠用枠名リスト
             // -----------------------------------------------------
-            pmd.disp_name = new string[cor_table.dispBoneGroup.Count]; // 枠名(50Bytes/枠)
+            pmd.disp_names = new string[cor_table.boneDispGroups.Count]; // 枠名(50Bytes/枠)
 
             for (int i = 0; i < pmd.bone_disp_name_count; i++)
-                pmd.disp_name[i] = cor_table.dispBoneGroup[i].group_name + Convert.ToChar(Convert.ToInt16("0A", 16));
+                pmd.disp_names[i] = cor_table.boneDispGroups[i].name + Convert.ToChar(Convert.ToInt16("0A", 16));
             //PMDEditorを使う場合は、枠名を0x0A00で終わらせる必要があります(0x00のみだと表示されません)。
 
             // -----------------------------------------------------
@@ -386,23 +385,24 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // 枠に表示するボーン数
             int bone_disp_count = 0;
-            for (int i = 0; i < cor_table.dispBoneGroup.Count; i++)
-                bone_disp_count += cor_table.dispBoneGroup[i].bone_name_list.Count;
+            for (int i = 0; i < cor_table.boneDispGroups.Count; i++)
+                bone_disp_count += cor_table.boneDispGroups[i].bone_names.Count;
             
             // 枠用ボーンデータ (3Bytes/bone)
-            pmd.bone_disp = new PMD_BoneDisp[bone_disp_count]; 
+            pmd.bone_disps = new PMD_BoneDisp[bone_disp_count]; 
 
-            int n = 0; // 通し番号
-            int n_disp = 1;
-            foreach (DispBoneGroup dbg in cor_table.dispBoneGroup)
+            int idx = 0; // 通し番号
+            int group_idx = 1;
+            foreach (BoneDispGroup group in cor_table.boneDispGroups)
             {
-                foreach (string name in dbg.bone_name_list)
+                foreach (string name in group.bone_names)
                 {
-                    pmd.bone_disp[n] = new PMD_BoneDisp();
-                    pmd.bone_disp[n].bone_name = name; // 枠用ボーン名
-                    pmd.bone_disp[n++].bone_disp_frame_index = n_disp; // 表示枠番号
+                    pmd.bone_disps[idx] = new PMD_BoneDisp();
+                    pmd.bone_disps[idx].bone_name = name; // 枠用ボーン名
+                    pmd.bone_disps[idx].disp_group_id = (sbyte)group_idx; // 表示枠番号
+                    idx++;
                 }
-                n_disp++;
+                group_idx++;
             }
 
             // -----------------------------------------------------
@@ -621,7 +621,7 @@ namespace Tso2Pmd
                         pmd_v.unBoneName[1] = tmp_b[tmp_w.IndexOf(w1)];
                     }
 
-                    pmd_v.weight = (int)(w0 * 100 / (w0 + w1));
+                    pmd_v.weight = (sbyte)(w0 * 100 / (w0 + w1));
 
                     // -----------------------------------------------------
                     // 頂点リストに頂点を追加
@@ -690,7 +690,7 @@ namespace Tso2Pmd
                 }
 
                 // meshごとのインデックス数を記録
-                material_list.material_list[n_mesh++].ulNumIndices = indices.Count - prevNumIndices;
+                material_list.material_list[n_mesh++].vindices_count = indices.Count - prevNumIndices;
                 prevNumIndices = indices.Count;
                 prevNumVertices = vertex_list.Count;
             }

@@ -58,23 +58,23 @@ namespace TDCGUtils
         // 表情枠に表示する表情数
         public int skin_disp_count
         {
-            get { return skin_disp_index.Length; }
+            get { return skin_disp_indices.Length; }
         }
-        public int[] skin_disp_index; // 表情番号
+        public int[] skin_disp_indices; // 表情番号
 
         // ボーン枠用の枠名数
         public int bone_disp_name_count
         {
-            get { return disp_name.Length; }
+            get { return disp_names.Length; }
         }
-        public string[] disp_name; // 枠名(50Bytes/枠)
+        public string[] disp_names; // 枠名(50Bytes/枠)
 
         // ボーン枠に表示するボーン数 (枠0(センター)を除く、すべてのボーン枠の合計)
         public int bone_disp_count
         {
-            get { return bone_disp.Length; }
+            get { return bone_disps.Length; }
         }
-        public PMD_BoneDisp[] bone_disp; // 枠用ボーンデータ (3Bytes/bone)
+        public PMD_BoneDisp[] bone_disps; // 枠用ボーンデータ (3Bytes/bone)
 
         public int english_name_compatibility; // 英名対応(01:英名対応あり)
 
@@ -252,7 +252,7 @@ namespace TDCGUtils
             // 表情番号
             for (int i = 0; i < skin_disp_count; i++)
             {
-                bw.Write((short)skin_disp_index[i]);
+                bw.Write((short)skin_disp_indices[i]);
             }
 
             // -----------------------------------------------------
@@ -264,7 +264,7 @@ namespace TDCGUtils
             // 枠名(50Bytes/枠)
             for (int i = 0; i < bone_disp_name_count; i++)
             {
-                bw.WriteCString(disp_name[i], 50);
+                bw.WriteCString(disp_names[i], 50);
             }
 
             // -----------------------------------------------------
@@ -274,15 +274,15 @@ namespace TDCGUtils
             bw.Write((int)bone_disp_count);
 
             // ボーン名をIDに置き換え
-            for (int i = 0; i < bone_disp.Length; i++)
+            for (int i = 0; i < bone_disps.Length; i++)
             {
-                bone_disp[i].bone_index = GetBoneIDByName(bone_disp[i].bone_name);
+                bone_disps[i].bone_index = GetBoneIDByName(bone_disps[i].bone_name);
             }
 
             // 枠用ボーンデータ (3Bytes/bone)
             for (int i = 0; i < bone_disp_count; i++)
             {
-                bone_disp[i].Write(bw);
+                bone_disps[i].Write(bw);
             }
 
             // -----------------------------------------------------
@@ -332,9 +332,9 @@ namespace TDCGUtils
             return null;
         }
 
-        int GetBoneIDByName(string name)
+        short GetBoneIDByName(string name)
         {
-            for (int i = 0; i < nodes.Length; i++)
+            for (short i = 0; i < nodes.Length; i++)
             {
                 if (nodes[i].name == name)
                     return i;
@@ -375,10 +375,10 @@ namespace TDCGUtils
         internal int[] bone_indices = new int[2];
 
         // ブレンドの重み (0～100％)
-        public int weight;	
+        public sbyte weight;	
 
         // エッジフラグ
-        public int edge;	
+        public sbyte edge;	
 
         public string[] unBoneName = new string[2];	// ボーン番号
 
@@ -390,32 +390,32 @@ namespace TDCGUtils
             writer.Write(v);
             writer.Write((ushort)this.bone_indices[0]);
             writer.Write((ushort)this.bone_indices[1]);
-            writer.Write((sbyte)this.weight);
-            writer.Write((sbyte)this.edge);
+            writer.Write(this.weight);
+            writer.Write(this.edge);
         }
     }
 
     public class PMD_Material
     {
-        public Vector4 col4Diffuse = Vector4.Empty;
-        public float fShininess;
-        public Vector3 col3Specular = Vector3.Empty;
-        public Vector3 col3Ambient = Vector3.Empty;
-        public int toon_index; // toon??.bmp // 0.bmp:0xFF, 1(01).bmp:0x00 ・・・ 10.bmp:0x09
-        public int edge_flag; // 輪郭、影
-        public int ulNumIndices;		// この材質に対応する頂点数
-        public String szTextureFileName;	// テクスチャファイル名
+        public Vector4 diffuse = Vector4.Empty;
+        public float shininess;
+        public Vector3 specular = Vector3.Empty;
+        public Vector3 ambient = Vector3.Empty;
+        public sbyte toon_tex_id; // toon??.bmp // 0.bmp:0xFF, 1(01).bmp:0x00 ・・・ 10.bmp:0x09
+        public sbyte edge; // 輪郭、影
+        public int vindices_count;		// この材質に対応する頂点数
+        public String tex_path;	// テクスチャファイル名
 
         internal void Write(BinaryWriter writer)
         {
-            writer.Write(ref this.col4Diffuse);
-            writer.Write(this.fShininess);
-            writer.Write(ref this.col3Specular);
-            writer.Write(ref this.col3Ambient);
-            writer.Write((byte)this.toon_index); // toon??.bmp // 0.bmp:0xFF, 1(01).bmp:0x00 ・・・ 10.bmp:0x09
-            writer.Write((byte)this.edge_flag); // 輪郭、影
-            writer.Write(this.ulNumIndices);
-            writer.WriteCString(this.szTextureFileName, 20);
+            writer.Write(ref this.diffuse);
+            writer.Write(this.shininess);
+            writer.Write(ref this.specular);
+            writer.Write(ref this.ambient);
+            writer.Write(this.toon_tex_id);
+            writer.Write(this.edge);
+            writer.Write(this.vindices_count);
+            writer.WriteCString(this.tex_path, 20);
         }
     }
 
@@ -566,17 +566,17 @@ namespace TDCGUtils
     public class PMD_BoneDisp
     {
         // 枠用ボーン番号
-        internal int bone_index;
+        internal short bone_index;
         
         // 表示枠番号
-        public int bone_disp_frame_index; 
+        public sbyte disp_group_id; 
 
         public string bone_name;
 
         internal void Write(BinaryWriter writer)
         {
-            writer.Write((ushort)this.bone_index);
-            writer.Write((byte)this.bone_disp_frame_index);
+            writer.Write(bone_index);
+            writer.Write(disp_group_id);
         }
     }
 
