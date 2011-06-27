@@ -1,0 +1,3719 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TDCG</name>
+    </assembly>
+    <members>
+        <member name="T:TDCG.TPOFile">
+            <summary>
+            TPOファイルを扱います。
+            </summary>
+        </member>
+        <member name="F:TDCG.TPOFile.nodes">
+            <summary>
+            bone配列
+            </summary>
+        </member>
+        <member name="M:TDCG.TPOFile.#ctor">
+            <summary>
+            tpoを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TPOFile.ExecuteProportion">
+            <summary>
+            TPONodeに変形係数を設定します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TPOFile.Transform">
+            <summary>
+            全てのフレームに含まれるモーション行列値を変形します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TPOFile.Transform(System.Int32)">
+            <summary>
+            指定番号のフレームに含まれるモーション行列値を変形します。
+            </summary>
+            <param name="frame_index">フレーム番号</param>
+        </member>
+        <member name="P:TDCG.TPOFile.Ratio">
+            <summary>
+            TPONodeの変形係数に乗ずる変形比率
+            </summary>
+        </member>
+        <member name="P:TDCG.TPOFile.Tmo">
+            <summary>
+            tmo
+            </summary>
+        </member>
+        <member name="P:TDCG.TPOFile.Proportion">
+            <summary>
+            体型
+            </summary>
+        </member>
+        <member name="P:TDCG.TPOFile.ProportionName">
+            <summary>
+            体型の名前を得ます。
+            </summary>
+        </member>
+        <member name="T:TDCG.TPOCommandType">
+            <summary>
+            操作タイプ
+            </summary>
+        </member>
+        <member name="F:TDCG.TPOCommandType.Scale">
+            <summary>
+            拡大
+            </summary>
+        </member>
+        <member name="F:TDCG.TPOCommandType.Scale1">
+            <summary>
+            拡大（子boneはそれぞれ縮小）
+            </summary>
+        </member>
+        <member name="F:TDCG.TPOCommandType.Scale0">
+            <summary>
+            縮小
+            </summary>
+        </member>
+        <member name="F:TDCG.TPOCommandType.Rotate">
+            <summary>
+            回転
+            </summary>
+        </member>
+        <member name="F:TDCG.TPOCommandType.Move">
+            <summary>
+            移動
+            </summary>
+        </member>
+        <member name="T:TDCG.TPOCommand">
+            <summary>
+            体型変更操作
+            </summary>
+        </member>
+        <member name="M:TDCG.TPOCommand.GetVector3">
+            変位ベクトルを得ます。
+        </member>
+        <member name="P:TDCG.TPOCommand.Type">
+            操作タイプ
+        </member>
+        <member name="P:TDCG.TPOCommand.X">
+            X座標変位
+        </member>
+        <member name="P:TDCG.TPOCommand.Y">
+            Y座標変位
+        </member>
+        <member name="P:TDCG.TPOCommand.Z">
+            Z座標変位
+        </member>
+        <member name="T:TDCG.TPONode">
+            <summary>
+            boneを扱います。
+            </summary>
+        </member>
+        <member name="F:TDCG.TPONode.commands">
+            変形操作リスト
+        </member>
+        <member name="M:TDCG.TPONode.AddCommand(TDCG.TPOCommand)">
+            <summary>
+            変形操作を追加します。
+            </summary>
+            <param name="command"></param>
+        </member>
+        <member name="M:TDCG.TPONode.AddCommand(TDCG.TPOCommandType,System.Single,System.Single,System.Single)">
+            <summary>
+            変形操作を追加します。
+            </summary>
+            <param name="type"></param>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+        </member>
+        <member name="M:TDCG.TPONode.#ctor(System.Int32,System.String)">
+            <summary>
+            TPONodeを生成します。
+            </summary>
+            <param name="id"></param>
+            <param name="name"></param>
+        </member>
+        <member name="M:TDCG.TPONode.Transform(TDCG.TMOMat,System.Single)">
+            <summary>
+            モーション行列を指定比率で変形します。
+            </summary>
+            <param name="mat">モーション行列</param>
+            <param name="ratio">比率</param>
+        </member>
+        <member name="M:TDCG.TPONode.Scale(System.Single,System.Single,System.Single)">
+            <summary>
+            拡大します。
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+        </member>
+        <member name="M:TDCG.TPONode.Scale1(System.Single,System.Single,System.Single)">
+            <summary>
+            拡大します。同時に子boneはそれぞれ縮小します。
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+        </member>
+        <member name="M:TDCG.TPONode.Scale0(System.Single,System.Single,System.Single)">
+            <summary>
+            縮小します。
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+        </member>
+        <member name="M:TDCG.TPONode.RotateX(System.Single)">
+            <summary>
+            X軸回転を行います。
+            </summary>
+            <param name="angle"></param>
+        </member>
+        <member name="M:TDCG.TPONode.RotateY(System.Single)">
+            <summary>
+            Y軸回転を行います。
+            </summary>
+            <param name="angle"></param>
+        </member>
+        <member name="M:TDCG.TPONode.RotateZ(System.Single)">
+            <summary>
+            Z軸回転を行います。
+            </summary>
+            <param name="angle"></param>
+        </member>
+        <member name="M:TDCG.TPONode.Move(System.Single,System.Single,System.Single)">
+            <summary>
+            移動します。
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <param name="z"></param>
+        </member>
+        <member name="M:TDCG.TPONode.FindScalingCommand">
+            拡大操作を得ます。
+        </member>
+        <member name="M:TDCG.TPONode.FindInverseScalingCommand">
+            縮小操作を得ます。
+        </member>
+        <member name="M:TDCG.TPONode.LastScalingOrInverseScalingCommand">
+            拡大操作または縮小操作を得ます。
+        </member>
+        <member name="M:TDCG.TPONode.FindRotationCommand">
+            回転操作を得ます。
+        </member>
+        <member name="M:TDCG.TPONode.LastScalingOrInverseScalingOrRotationCommand">
+            拡大操作または縮小操作または回転操作を得ます。
+        </member>
+        <member name="M:TDCG.TPONode.FindTranslationCommand">
+            移動操作を得ます。
+        </member>
+        <member name="M:TDCG.TPONode.GetScaling(System.Boolean@)">
+            拡大変位を得ます。
+        </member>
+        <member name="M:TDCG.TPONode.GetAngle">
+            回転角を得ます。
+        </member>
+        <member name="M:TDCG.TPONode.GetTranslation">
+            移動変位を得ます。
+        </member>
+        <member name="M:TDCG.TPONode.SetScaling(Microsoft.DirectX.Vector3,System.Boolean)">
+            拡大変位を設定します。
+        </member>
+        <member name="M:TDCG.TPONode.SetInverseScaling(Microsoft.DirectX.Vector3)">
+            縮小変位を設定します。
+        </member>
+        <member name="M:TDCG.TPONode.SetAngle(Microsoft.DirectX.Vector3)">
+            回転角を設定します。
+        </member>
+        <member name="M:TDCG.TPONode.SetTranslation(Microsoft.DirectX.Vector3)">
+            移動変位を設定します。
+        </member>
+        <member name="M:TDCG.TPONode.RemoveScaling">
+            拡大操作を削除します。
+        </member>
+        <member name="M:TDCG.TPONode.RemoveInverseScaling">
+            縮小操作を削除します。
+        </member>
+        <member name="M:TDCG.TPONode.RemoveAngle">
+            回転操作を削除します。
+        </member>
+        <member name="M:TDCG.TPONode.RemoveTranslation">
+            移動操作を削除します。
+        </member>
+        <member name="P:TDCG.TPONode.ID">
+            <summary>
+            ID
+            </summary>
+        </member>
+        <member name="P:TDCG.TPONode.Path">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:TDCG.TPONode.Name">
+            <summary>
+            名称（短い形式）
+            </summary>
+        </member>
+        <member name="T:TDCG.Extensions.BinaryWriterMethods">
+            <summary>
+            BinaryWriterの拡張メソッドを定義します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Extensions.BinaryWriterMethods.WriteCString(System.IO.BinaryWriter,System.String)">
+            <summary>
+            指定ライタにnull終端文字列を書き出します。
+            </summary>
+            <param name="bw">BinaryWriter</param>
+            <param name="s">null終端文字列</param>
+        </member>
+        <member name="M:TDCG.Extensions.BinaryWriterMethods.Write(System.IO.BinaryWriter,Microsoft.DirectX.Vector3@)">
+            <summary>
+            指定ライタにベクトルを書き出します。
+            </summary>
+            <param name="bw">BinaryWriter</param>
+            <param name="v">ベクトル</param>
+        </member>
+        <member name="M:TDCG.Extensions.BinaryWriterMethods.Write(System.IO.BinaryWriter,Microsoft.DirectX.Matrix@)">
+            <summary>
+            指定ライタに行列を書き出します。
+            </summary>
+            <param name="bw">BinaryWriter</param>
+            <param name="m">行列</param>
+        </member>
+        <member name="T:TDCG.SkinWeightAttr">
+            スキンウェイト属性
+        </member>
+        <member name="F:TDCG.SkinWeightAttr.bone_index">
+            ボーン参照インデックス
+        </member>
+        <member name="F:TDCG.SkinWeightAttr.weight">
+            ウェイト値
+        </member>
+        <member name="T:TDCG.SkinWeightCommand">
+            スキンウェイト操作
+        </member>
+        <member name="F:TDCG.SkinWeightCommand.skin_weight">
+            スキンウェイト
+        </member>
+        <member name="F:TDCG.SkinWeightCommand.old_attr">
+            変更前の属性
+        </member>
+        <member name="F:TDCG.SkinWeightCommand.new_attr">
+            変更後の属性
+        </member>
+        <member name="T:TDCG.VertexCommand">
+            頂点操作
+        </member>
+        <member name="F:TDCG.VertexCommand.vertex">
+            頂点
+        </member>
+        <member name="F:TDCG.VertexCommand.skin_weight_commands">
+            スキンウェイト操作リスト
+        </member>
+        <member name="T:TDCG.SubMeshCommand">
+            サブメッシュ操作
+        </member>
+        <member name="F:TDCG.SubMeshCommand.sub_mesh">
+            サブメッシュ
+        </member>
+        <member name="F:TDCG.SubMeshCommand.vertex_commands">
+            頂点操作リスト
+        </member>
+        <member name="T:TDCG.MeshCommand">
+            メッシュ操作
+        </member>
+        <member name="F:TDCG.MeshCommand.mesh">
+            メッシュ
+        </member>
+        <member name="F:TDCG.MeshCommand.sub_mesh_commands">
+            サブメッシュ操作リスト
+        </member>
+        <member name="T:TDCG.WeightViewer">
+            <summary>
+            TSOFileをDirect3D上でレンダリングします。
+            </summary>
+        </member>
+        <member name="T:TDCG.Viewer">
+            <summary>
+            TSOFileをDirect3D上でレンダリングします。
+            </summary>
+        </member>
+        <member name="F:TDCG.Viewer.handle_LocalBoneMats">
+            <summary>
+            effect handle for LocalBoneMats
+            </summary>
+        </member>
+        <member name="F:TDCG.Viewer.handle_ShadowMap">
+            <summary>
+            effect handle for ShadowMap
+            </summary>
+        </member>
+        <member name="F:TDCG.Viewer.handle_LocalBoneSels">
+            <summary>
+            effect handle for LocalBoneSels
+            </summary>
+        </member>
+        <member name="F:TDCG.Viewer.sprite">
+            sprite
+        </member>
+        <member name="F:TDCG.Viewer.FigureList">
+            <summary>
+            viewerが保持しているフィギュアリスト
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.#ctor">
+            <summary>
+            viewerを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.form_OnMouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+            マウスボタンを押したときに実行するハンドラ
+        </member>
+        <member name="M:TDCG.Viewer.form_OnMouseMove(System.Object,System.Windows.Forms.MouseEventArgs)">
+            マウスを移動したときに実行するハンドラ
+        </member>
+        <member name="M:TDCG.Viewer.SetControl(System.Windows.Forms.Control)">
+            <summary>
+            controlを保持します。スクリーンの中心座標を更新します。
+            </summary>
+            <param name="control">control</param>
+        </member>
+        <member name="M:TDCG.Viewer.ScreenToOrientation(System.Single,System.Single)">
+            <summary>
+            指定スクリーン座標からスクリーン中心へ向かうベクトルを得ます。
+            </summary>
+            <param name="screenPointX">スクリーンX座標</param>
+            <param name="screenPointY">スクリーンY座標</param>
+            <returns>方向ベクトル</returns>
+        </member>
+        <member name="M:TDCG.Viewer.LoadAnyFile(System.String)">
+            <summary>
+            任意のファイルを読み込みます。
+            </summary>
+            <param name="source_file">任意のパス</param>
+        </member>
+        <member name="M:TDCG.Viewer.LoadAnyFile(System.String,System.Boolean)">
+            <summary>
+            任意のファイルを読み込みます。
+            </summary>
+            <param name="source_file">任意のパス</param>
+            <param name="append">FigureListを消去せずに追加するか</param>
+        </member>
+        <member name="M:TDCG.Viewer.SetFigureIndex(System.Int32)">
+            <summary>
+            フィギュアを選択します。
+            </summary>
+            <param name="fig_index">フィギュア番号</param>
+        </member>
+        <member name="M:TDCG.Viewer.AddFigureFromTSODirectory(System.String)">
+            <summary>
+            指定ディレクトリからフィギュアを作成して追加します。
+            </summary>
+            <param name="source_file">TSOFileを含むディレクトリ</param>
+        </member>
+        <member name="M:TDCG.Viewer.GetSelectedFigure">
+            <summary>
+            選択フィギュアを得ます。
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.GetSelectedOrCreateFigure">
+            <summary>
+            選択フィギュアを得ます。なければ作成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.LoadTSOFile(System.String)">
+            <summary>
+            指定パスからTSOFileを読み込みます。
+            </summary>
+            <param name="source_file">パス</param>
+        </member>
+        <member name="M:TDCG.Viewer.LoadTSOFile(System.IO.Stream)">
+            <summary>
+            指定ストリームからTSOFileを読み込みます。
+            </summary>
+            <param name="source_stream">ストリーム</param>
+        </member>
+        <member name="M:TDCG.Viewer.TryGetFigure(TDCG.Figure@)">
+            <summary>
+            選択フィギュアを得ます。
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.NextFigure">
+            次のフィギュアを選択します。
+        </member>
+        <member name="M:TDCG.Viewer.LoadTMOFile(System.String)">
+            <summary>
+            指定パスからTMOFileを読み込みます。
+            </summary>
+            <param name="source_file">パス</param>
+        </member>
+        <member name="M:TDCG.Viewer.LoadTMOFile(System.IO.Stream)">
+            <summary>
+            指定ストリームからTMOFileを読み込みます。
+            </summary>
+            <param name="source_stream">ストリーム</param>
+        </member>
+        <member name="M:TDCG.Viewer.AddFigureFromPNGFile(System.String,System.Boolean)">
+            <summary>
+            指定パスからPNGFileを読み込みフィギュアを作成して追加します。
+            </summary>
+            <param name="source_file">PNGFile のパス</param>
+            <param name="append">FigureListを消去せずに追加するか</param>
+        </member>
+        <member name="M:TDCG.Viewer.AddFigureFromPNGFile(System.IO.Stream,System.Boolean)">
+            <summary>
+            指定パスからPNGFileを読み込みフィギュアを作成して追加します。
+            </summary>
+            <param name="source_file">PNGFile のパス</param>
+            <param name="append">FigureListを消去せずに追加するか</param>
+        </member>
+        <member name="M:TDCG.Viewer.InitializeApplication(System.Windows.Forms.Control)">
+            <summary>
+            deviceを作成します。
+            </summary>
+            <param name="control">レンダリング先となるcontrol</param>
+            <returns>deviceの作成に成功したか</returns>
+        </member>
+        <member name="M:TDCG.Viewer.InitializeApplication(System.Windows.Forms.Control,System.Boolean)">
+            <summary>
+            deviceを作成します。
+            </summary>
+            <param name="control">レンダリング先となるcontrol</param>
+            <param name="shadow_map_enabled">シャドウマップを作成するか</param>
+            <returns>deviceの作成に成功したか</returns>
+        </member>
+        <member name="M:TDCG.Viewer.ClearFigureList">
+            <summary>
+            全フィギュアを削除します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.RemoveSelectedFigure">
+            <summary>
+            選択フィギュアを削除します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.IsMotionEnabled">
+            <summary>
+            モーションが有効であるか。
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.SwitchMotionEnabled">
+            <summary>
+            モーションの有無を切り替えます。
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.SwitchShadowShown">
+            <summary>
+            シャドウマップの有無を切り替えます。
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.SwitchSpriteShown">
+            <summary>
+            スプライトの有無を切り替えます。
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.FrameMove">
+            <summary>
+            次のシーンフレームに進みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.FrameMove(System.Int32)">
+            <summary>
+            指定シーンフレームに進みます。
+            </summary>
+            <param name="frame_index">フレーム番号</param>
+        </member>
+        <member name="M:TDCG.Viewer.GetMaxFrameLength">
+            <summary>
+            tmo file中で最大のフレーム長さを得ます。
+            </summary>
+            <returns>フレーム長さ</returns>
+        </member>
+        <member name="F:TDCG.Viewer.Rendering">
+            <summary>
+            レンダリングするハンドラ
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.Render">
+            <summary>
+            シーンをレンダリングします。
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.ClipBoneMatrices(TDCG.Figure,TDCG.TSOSubMesh)">
+            <summary>
+            スキン変形行列の配列を得ます。
+            </summary>
+            <param name="fig">フィギュア</param>
+            <param name="sub_mesh">サブメッシュ</param>
+            <returns>スキン変形行列の配列</returns>
+        </member>
+        <member name="M:TDCG.Viewer.ClipBoneSelections(TDCG.Figure,TDCG.TSOSubMesh,TDCG.TSONode)">
+            <summary>
+            ボーン選択の配列を得ます。
+            </summary>
+            <param name="fig">フィギュア</param>
+            <param name="sub_mesh">サブメッシュ</param>
+            <param name="selected_node">選択ボーン</param>
+            <returns>ボーン選択の配列</returns>
+        </member>
+        <member name="M:TDCG.Viewer.DrawFigure">
+            <summary>
+            フィギュアを描画します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.DrawMesh(Microsoft.DirectX.Direct3D.Mesh,Microsoft.DirectX.Matrix,Microsoft.DirectX.Vector4)">
+            <summary>
+            Direct3Dメッシュを描画します。
+            </summary>
+            <param name="mesh">メッシュ</param>
+            <param name="wld">ワールド変換行列</param>
+            <param name="color">描画色</param>
+        </member>
+        <member name="M:TDCG.Viewer.Dispose">
+            <summary>
+            内部objectを破棄します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Viewer.LoadPNGFile(System.String)">
+            <summary>
+            指定パスからPNGFileを読み込みフィギュアを作成します。
+            </summary>
+            <param name="source_file">PNGFileのパス</param>
+        </member>
+        <member name="M:TDCG.Viewer.LoadPNGFile(System.IO.Stream)">
+            <summary>
+            指定パスからPNGFileを読み込みフィギュアを作成します。
+            </summary>
+            <param name="source_file">PNGFileのパス</param>
+        </member>
+        <member name="M:TDCG.Viewer.SaveToBitmap(System.String)">
+            <summary>
+            バックバッファをBMP形式でファイルに保存します。
+            </summary>
+            <param name="file">ファイル名</param>
+        </member>
+        <member name="M:TDCG.Viewer.SaveToPng(System.String)">
+            <summary>
+            バックバッファをPNG形式でファイルに保存します。
+            </summary>
+            <param name="file">ファイル名</param>
+        </member>
+        <member name="P:TDCG.Viewer.ShadowMapEnabled">
+            <summary>
+            シャドウマップを作成するか
+            </summary>
+        </member>
+        <member name="E:TDCG.Viewer.FigureEvent">
+            <summary>
+            フィギュア選択時に呼び出されるハンドラ
+            </summary>
+        </member>
+        <member name="P:TDCG.Viewer.Camera">
+            <summary>
+            カメラ
+            </summary>
+        </member>
+        <member name="P:TDCG.Viewer.FrameIndex">
+            <summary>
+            フレーム番号
+            </summary>
+        </member>
+        <member name="T:TDCG.Viewer.RenderingHandler">
+            <summary>
+            レンダリングするのに用いるデリゲート型
+            </summary>
+        </member>
+        <member name="M:TDCG.WeightViewer.#ctor">
+            <summary>
+            viewerを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.WeightViewer.DetectSphereRayCollision(System.Single,Microsoft.DirectX.Vector3@,Microsoft.DirectX.Vector3@,Microsoft.DirectX.Vector3@,Microsoft.DirectX.Vector3@,System.Single@)">
+            球とレイの衝突を見つけます。
+        </member>
+        <member name="M:TDCG.WeightViewer.CreateViewportMatrix(Microsoft.DirectX.Direct3D.Viewport)">
+            <summary>
+            viewport行列を作成します。
+            </summary>
+            <param name="viewport">viewport</param>
+            <returns>viewport行列</returns>
+        </member>
+        <member name="M:TDCG.WeightViewer.ScreenToWorld(System.Single,System.Single,System.Single,Microsoft.DirectX.Direct3D.Viewport,Microsoft.DirectX.Matrix,Microsoft.DirectX.Matrix)">
+            スクリーン位置をワールド座標へ変換します。
+        </member>
+        <member name="M:TDCG.WeightViewer.ScreenToWorld(System.Single,System.Single,System.Single)">
+            スクリーン位置をワールド座標へ変換します。
+        </member>
+        <member name="M:TDCG.WeightViewer.WorldToScreen(Microsoft.DirectX.Vector3,Microsoft.DirectX.Direct3D.Viewport,Microsoft.DirectX.Matrix,Microsoft.DirectX.Matrix)">
+            ワールド座標をスクリーン位置へ変換します。
+        </member>
+        <member name="M:TDCG.WeightViewer.WorldToScreen(Microsoft.DirectX.Vector3)">
+            ワールド座標をスクリーン位置へ変換します。
+        </member>
+        <member name="M:TDCG.WeightViewer.GetDotBitmapPath">
+            get path to dot.bmp
+        </member>
+        <member name="M:TDCG.WeightViewer.InitializeApplication(System.Windows.Forms.Control)">
+            <summary>
+            deviceを作成します。
+            </summary>
+            <param name="control">レンダリング先となるcontrol</param>
+            <returns>deviceの作成に成功したか</returns>
+        </member>
+        <member name="M:TDCG.WeightViewer.InitializeApplication(System.Windows.Forms.Control,System.Boolean)">
+            <summary>
+            deviceを作成します。
+            </summary>
+            <param name="control">レンダリング先となるcontrol</param>
+            <param name="shadowMapEnabled">シャドウマップを作成するか</param>
+            <returns>deviceの作成に成功したか</returns>
+        </member>
+        <member name="F:TDCG.WeightViewer.mesh_view_mode">
+            <summary>
+            メッシュ描画モード
+            </summary>
+        </member>
+        <member name="F:TDCG.WeightViewer.mesh_selection_mode">
+            <summary>
+            描画メッシュ選択モード
+            </summary>
+        </member>
+        <member name="F:TDCG.WeightViewer.vertex_selection_mode">
+            <summary>
+            頂点描画モード
+            </summary>
+        </member>
+        <member name="M:TDCG.WeightViewer.DrawFigure">
+            <summary>
+            フィギュアを描画します。
+            </summary>
+        </member>
+        <member name="M:TDCG.WeightViewer.RenderDerived">
+            <summary>
+            シーンをレンダリングします。
+            </summary>
+        </member>
+        <member name="M:TDCG.WeightViewer.DrawFigureVertices">
+            頂点を描画する。
+        </member>
+        <member name="F:TDCG.WeightViewer.radius">
+            半径
+        </member>
+        <member name="M:TDCG.WeightViewer.DrawVertices(TDCG.Figure,TDCG.TSOSubMesh)">
+            頂点を描画する。
+        </member>
+        <member name="M:TDCG.WeightViewer.DrawSelectedVertex(TDCG.Figure)">
+            選択頂点を描画する。
+        </member>
+        <member name="M:TDCG.WeightViewer.GainSkinWeight(TDCG.TSONode)">
+            選択ボーンに対応するウェイトを加算する。
+        </member>
+        <member name="M:TDCG.WeightViewer.GainSkinWeight(TDCG.Figure,TDCG.TSOSubMesh,TDCG.TSONode,TDCG.MeshCommand)">
+            選択ボーンに対応するウェイトを加算する。
+        </member>
+        <member name="F:TDCG.WeightViewer.weight">
+            加算ウェイト値
+        </member>
+        <member name="F:TDCG.WeightViewer.mesh_commands">
+            メッシュ操作リスト
+        </member>
+        <member name="M:TDCG.WeightViewer.GainSkinWeight(TDCG.TSOSubMesh,TDCG.TSONode,TDCG.Vertex,TDCG.SubMeshCommand)">
+            選択ボーンに対応するウェイトを加算する。
+            returns: ウェイトを変更したか
+        </member>
+        <member name="M:TDCG.WeightViewer.ClearCommands">
+            操作を消去します。
+        </member>
+        <member name="M:TDCG.WeightViewer.CanUndo">
+            ひとつ前の操作による変更を元に戻せるか。
+        </member>
+        <member name="M:TDCG.WeightViewer.Undo">
+            ひとつ前の操作による変更を元に戻す。
+        </member>
+        <member name="M:TDCG.WeightViewer.Undo(TDCG.MeshCommand)">
+            指定操作による変更を元に戻す。
+        </member>
+        <member name="M:TDCG.WeightViewer.CanRedo">
+            ひとつ前の操作による変更をやり直せるか。
+        </member>
+        <member name="M:TDCG.WeightViewer.Redo">
+            ひとつ前の操作による変更をやり直す。
+        </member>
+        <member name="M:TDCG.WeightViewer.Redo(TDCG.MeshCommand)">
+            指定操作による変更をやり直す。
+        </member>
+        <member name="M:TDCG.WeightViewer.CalcSkindeformPosition(TDCG.Vertex,Microsoft.DirectX.Matrix[])">
+            <summary>
+            スキン変形後の指定頂点の位置を得ます。
+            </summary>
+            <param name="v">頂点</param>
+            <param name="boneMatrices">スキン変形行列の配列</param>
+            <returns></returns>
+        </member>
+        <member name="M:TDCG.WeightViewer.form_OnMouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+            マウスボタンを押したときに実行するハンドラ
+        </member>
+        <member name="M:TDCG.WeightViewer.form_OnMouseMove(System.Object,System.Windows.Forms.MouseEventArgs)">
+            マウスを移動したときに実行するハンドラ
+        </member>
+        <member name="M:TDCG.WeightViewer.FindVertexOnScreenPoint(System.Single,System.Single,TDCG.Figure,TDCG.TSOSubMesh)">
+            スクリーン座標から頂点を見つけます。
+            衝突する頂点の中で最も近い位置にある頂点を返します。
+        </member>
+        <member name="M:TDCG.WeightViewer.Dispose">
+            <summary>
+            内部objectを破棄します。
+            </summary>
+        </member>
+        <member name="P:TDCG.WeightViewer.SelectedTSOFile">
+            選択TSOファイル
+        </member>
+        <member name="P:TDCG.WeightViewer.SelectedMesh">
+            選択メッシュ
+        </member>
+        <member name="P:TDCG.WeightViewer.SelectedSubMesh">
+            選択サブメッシュ
+        </member>
+        <member name="P:TDCG.WeightViewer.SelectedNode">
+            選択ボーン
+        </member>
+        <member name="P:TDCG.WeightViewer.SelectedVertex">
+            選択頂点id
+        </member>
+        <member name="E:TDCG.WeightViewer.SubMeshEvent">
+            <summary>
+            サブメッシュ選択時に呼び出されるハンドラ
+            </summary>
+        </member>
+        <member name="E:TDCG.WeightViewer.VertexEvent">
+            <summary>
+            頂点選択時に呼び出されるハンドラ
+            </summary>
+        </member>
+        <member name="T:TDCG.WeightViewer.MeshViewMode">
+            <summary>
+            メッシュ描画モード
+            </summary>
+        </member>
+        <member name="F:TDCG.WeightViewer.MeshViewMode.Toon">
+            <summary>
+            トゥーン描画
+            </summary>
+        </member>
+        <member name="F:TDCG.WeightViewer.MeshViewMode.Weight">
+            <summary>
+            ウェイト描画
+            </summary>
+        </member>
+        <member name="F:TDCG.WeightViewer.MeshViewMode.Wire">
+            <summary>
+            ワイヤー描画
+            </summary>
+        </member>
+        <member name="T:TDCG.WeightViewer.MeshSelectionMode">
+            <summary>
+            描画メッシュ選択モード
+            </summary>
+        </member>
+        <member name="F:TDCG.WeightViewer.MeshSelectionMode.AllMeshes">
+            <summary>
+            全てのメッシュを描画
+            </summary>
+        </member>
+        <member name="F:TDCG.WeightViewer.MeshSelectionMode.SelectedMesh">
+            <summary>
+            選択メッシュのみ描画
+            </summary>
+        </member>
+        <member name="T:TDCG.WeightViewer.VertexSelectionMode">
+            <summary>
+            頂点描画モード
+            </summary>
+        </member>
+        <member name="F:TDCG.WeightViewer.VertexSelectionMode.AllVertices">
+            <summary>
+            全ての頂点を描画
+            </summary>
+        </member>
+        <member name="F:TDCG.WeightViewer.VertexSelectionMode.CCWVertices">
+            <summary>
+            表面頂点のみ描画
+            </summary>
+        </member>
+        <member name="F:TDCG.WeightViewer.VertexSelectionMode.None">
+            <summary>
+            頂点を描画しない
+            </summary>
+        </member>
+        <member name="T:TDCG.ProportionList">
+            <summary>
+            体型スクリプトのリストを扱います。
+            </summary>
+        </member>
+        <member name="F:TDCG.ProportionList.items">
+            <summary>
+            体型スクリプトのリスト
+            </summary>
+        </member>
+        <member name="M:TDCG.ProportionList.GetProportionPath">
+            <summary>
+            体型スクリプトフォルダのパスを得ます。
+            </summary>
+            <returns>体型スクリプトフォルダのパス</returns>
+        </member>
+        <member name="M:TDCG.ProportionList.Load">
+            <summary>
+            体型スクリプトを読み込みます。
+            </summary>
+        </member>
+        <member name="T:TDCG.PNGFile">
+            <summary>
+            PNGファイルを扱います。
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.reader">
+            <summary>
+            バイナリ値として読み取ります。
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.crc">
+            <summary>
+            CSCチェックを行うオブジェクト
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.WriteTaOb">
+            <summary>
+            TaObチャンクを書き出すハンドラ
+            </summary>
+        </member>
+        <member name="M:TDCG.PNGFile.Save(System.String)">
+            <summary>
+            指定パスに保存します。
+            </summary>
+            <param name="dest_file">パス</param>
+        </member>
+        <member name="M:TDCG.PNGFile.Save(System.IO.Stream)">
+            <summary>
+            指定ストリームに保存します。
+            </summary>
+            <param name="dest_stream">ストリーム</param>
+        </member>
+        <member name="F:TDCG.PNGFile.Header">
+            <summary>
+            pngヘッダを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Ihdr">
+            <summary>
+            IHDRチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Idat">
+            <summary>
+            IDATチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Iend">
+            <summary>
+            IENDチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="M:TDCG.PNGFile.Load(System.String)">
+            <summary>
+            指定パスから読み込みます。
+            </summary>
+            <param name="source_file">パス</param>
+        </member>
+        <member name="M:TDCG.PNGFile.Load(System.IO.Stream)">
+            <summary>
+            指定ストリームから読み込みます。
+            </summary>
+            <param name="source_stream">ストリーム</param>
+        </member>
+        <member name="F:TDCG.PNGFile.Hsav">
+            <summary>
+            Hsavチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Pose">
+            <summary>
+            Poseチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Scne">
+            <summary>
+            Scneチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Cami">
+            <summary>
+            Camiチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Lgta">
+            <summary>
+            Lgtaチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Figu">
+            <summary>
+            Figuチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Ftmo">
+            <summary>
+            Ftmoチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGFile.Ftso">
+            <summary>
+            Ftsoチャンクのデータを処理するハンドラ
+            </summary>
+        </member>
+        <member name="M:TDCG.PNGFile.ReadTaOb(System.Byte[])">
+            <summary>
+            TaObチャンクを読みとります。
+            </summary>
+            <param name="chunk_data">チャンク</param>
+        </member>
+        <member name="T:TDCG.PNGFile.BinaryWriterHandler">
+            <summary>
+            バイナリ書き込みに用いるデリゲート型
+            </summary>
+            <param name="bw"></param>
+        </member>
+        <member name="T:TDCG.PNGFile.PngHeaderHandler">
+            <summary>
+            pngヘッダを処理するのに用いるデリゲート型
+            </summary>
+            <param name="header">ヘッダ</param>
+        </member>
+        <member name="T:TDCG.PNGFile.PngDataHandler">
+            <summary>
+            pngデータを処理するのに用いるデリゲート型
+            </summary>
+            <param name="data">データ</param>
+        </member>
+        <member name="T:TDCG.PNGFile.TaobTypeHandler">
+            <summary>
+            Typeチャンクを読み込むのに用いるデリゲート型
+            </summary>
+            <param name="type">type</param>
+        </member>
+        <member name="T:TDCG.PNGFile.TaobCamiHandler">
+            <summary>
+            Camiチャンクを読み込むのに用いるデリゲート型
+            </summary>
+            <param name="stream">ストリーム</param>
+            <param name="length">データ長さ</param>
+        </member>
+        <member name="T:TDCG.PNGFile.TaobLgtaHandler">
+            <summary>
+            Lgtaチャンクを読み込むのに用いるデリゲート型
+            </summary>
+            <param name="stream">ストリーム</param>
+            <param name="length">データ長さ</param>
+        </member>
+        <member name="T:TDCG.PNGFile.TaobFiguHandler">
+            <summary>
+            Figuチャンクを読み込むのに用いるデリゲート型
+            </summary>
+            <param name="stream">ストリーム</param>
+            <param name="length">データ長さ</param>
+        </member>
+        <member name="T:TDCG.PNGFile.TaobFtmoHandler">
+            <summary>
+            Ftmoチャンクを読み込むのに用いるデリゲート型
+            </summary>
+            <param name="stream">ストリーム</param>
+            <param name="length">データ長さ</param>
+        </member>
+        <member name="T:TDCG.PNGFile.TaobFtsoHandler">
+            <summary>
+            Ftsoチャンクを読み込むのに用いるデリゲート型
+            </summary>
+            <param name="stream">ストリーム</param>
+            <param name="length">データ長さ</param>
+            <param name="opt1">opt1</param>
+        </member>
+        <member name="T:TDCG.TSOSubMesh">
+            <summary>
+            サブメッシュ
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOSubMesh.spec">
+            <summary>
+            シェーダ設定番号
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOSubMesh.bone_indices">
+            <summary>
+            ボーン参照リスト
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOSubMesh.bones">
+            <summary>
+            ボーン参照リスト
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOSubMesh.vertices">
+            <summary>
+            頂点配列
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOSubMesh.maxPalettes">
+            <summary>
+            パレット長さ
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOSubMesh.GetBone(System.Int32)">
+            <summary>
+            指定indexにあるボーンを得ます。
+            </summary>
+            <param name="i">index</param>
+            <returns>ボーン</returns>
+        </member>
+        <member name="M:TDCG.TSOSubMesh.Read(System.IO.BinaryReader)">
+            <summary>
+            サブメッシュを読み込みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOSubMesh.Write(System.IO.BinaryWriter)">
+            <summary>
+            サブメッシュを書き出します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOSubMesh.LinkBones(TDCG.TSONode[])">
+            <summary>
+            ボーン参照リストを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOSubMesh.WriteBuffer(Microsoft.DirectX.Direct3D.Device)">
+            <summary>
+            頂点をDirect3Dバッファに書き込みます。
+            </summary>
+            <param name="device">device</param>
+        </member>
+        <member name="M:TDCG.TSOSubMesh.Dispose">
+            <summary>
+            Direct3Dサブメッシュを破棄します。
+            </summary>
+        </member>
+        <member name="P:TDCG.TSOSubMesh.NumberBones">
+            <summary>
+            ボーン数
+            </summary>
+        </member>
+        <member name="P:TDCG.TSOSubMesh.VerticesCount">
+            頂点数
+        </member>
+        <member name="T:TDCG.TSOMesh">
+            <summary>
+            メッシュ
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOMesh.transform_matrix">
+            <summary>
+            変形行列
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOMesh.unknown1">
+            <summary>
+            unknown1
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOMesh.sub_meshes">
+            <summary>
+            サブメッシュ配列
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOMesh.Read(System.IO.BinaryReader)">
+            <summary>
+            メッシュを読み込みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOMesh.Write(System.IO.BinaryWriter)">
+            <summary>
+            メッシュを書き出します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOMesh.LinkBones(TDCG.TSONode[])">
+            <summary>
+            ボーン参照リストを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOMesh.SumVerticesCount">
+            頂点数の合計を得ます。
+        </member>
+        <member name="M:TDCG.TSOMesh.Dispose">
+            <summary>
+            内部objectを破棄します。
+            </summary>
+        </member>
+        <member name="P:TDCG.TSOMesh.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="T:TDCG.Vertex">
+            <summary>
+            頂点
+            </summary>
+        </member>
+        <member name="F:TDCG.Vertex.position">
+            <summary>
+            位置
+            </summary>
+        </member>
+        <member name="F:TDCG.Vertex.normal">
+            <summary>
+            法線
+            </summary>
+        </member>
+        <member name="F:TDCG.Vertex.u">
+            <summary>
+            テクスチャU座標
+            </summary>
+        </member>
+        <member name="F:TDCG.Vertex.v">
+            <summary>
+            テクスチャV座標
+            </summary>
+        </member>
+        <member name="F:TDCG.Vertex.skin_weights">
+            <summary>
+            スキンウェイト配列
+            </summary>
+        </member>
+        <member name="F:TDCG.Vertex.bone_indices">
+            <summary>
+            ボーンインデックス
+            </summary>
+        </member>
+        <member name="M:TDCG.Vertex.Read(System.IO.BinaryReader)">
+            <summary>
+            頂点を読みとります。
+            </summary>
+        </member>
+        <member name="M:TDCG.Vertex.FillSkinWeights">
+            <summary>
+            スキンウェイト配列を充填します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Vertex.GenerateBoneIndices">
+            <summary>
+            ボーンインデックスを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Vertex.Write(System.IO.BinaryWriter)">
+            <summary>
+            頂点を書き出します。
+            </summary>
+        </member>
+        <member name="T:TDCG.SkinWeight">
+            <summary>
+            スキンウェイト
+            </summary>
+        </member>
+        <member name="F:TDCG.SkinWeight.bone_index">
+            <summary>
+            ボーンインデックス
+            </summary>
+        </member>
+        <member name="F:TDCG.SkinWeight.weight">
+            <summary>
+            ウェイト
+            </summary>
+        </member>
+        <member name="M:TDCG.SkinWeight.#ctor(System.Int32,System.Single)">
+            <summary>
+            スキンウェイトを生成します。
+            </summary>
+            <param name="bone_index">ボーンインデックス</param>
+            <param name="weight">ウェイト</param>
+        </member>
+        <member name="M:TDCG.SkinWeight.CompareTo(System.Object)">
+            <summary>
+            比較関数
+            </summary>
+            <param name="obj">比較対象スキンウェイト</param>
+            <returns>比較結果</returns>
+        </member>
+        <member name="T:TDCG.TSOScript">
+            <summary>
+            スクリプト
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOScript.name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOScript.lines">
+            <summary>
+            テキスト行配列
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOScript.Read(System.IO.BinaryReader)">
+            <summary>
+            スクリプトを読み込みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOScript.Write(System.IO.BinaryWriter)">
+            <summary>
+            スクリプトを書き出します。
+            </summary>
+        </member>
+        <member name="T:TDCG.TSOSubScript">
+            <summary>
+            サブスクリプト
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOSubScript.lines">
+            <summary>
+            テキスト行配列
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOSubScript.shader">
+            <summary>
+            シェーダ設定
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOSubScript.Load(System.String)">
+            <summary>
+            サブスクリプトを読み込みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOSubScript.Read(System.IO.BinaryReader)">
+            <summary>
+            サブスクリプトを読み込みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOSubScript.Write(System.IO.BinaryWriter)">
+            <summary>
+            サブスクリプトを書き出します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOSubScript.GenerateShader">
+            <summary>
+            シェーダ設定を生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOSubScript.SaveShader">
+            <summary>
+            シェーダ設定を保存します。
+            </summary>
+        </member>
+        <member name="P:TDCG.TSOSubScript.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:TDCG.TSOSubScript.FileName">
+            <summary>
+            ファイル名
+            </summary>
+        </member>
+        <member name="T:TDCG.TSOTex">
+            <summary>
+            テクスチャ
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOTex.name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOTex.file">
+            <summary>
+            ファイル名
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOTex.width">
+            <summary>
+            幅
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOTex.height">
+            <summary>
+            高さ
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOTex.depth">
+            <summary>
+            色深度
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOTex.data">
+            <summary>
+            ビットマップ配列
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOTex.Load(System.String)">
+            <summary>
+            テクスチャを読み込みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOTex.Load(System.IO.Stream)">
+            <summary>
+            テクスチャを読み込みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOTex.Read(System.IO.BinaryReader)">
+            <summary>
+            テクスチャを読み込みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOTex.Write(System.IO.BinaryWriter)">
+            <summary>
+            テクスチャを書き出します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOTex.Open(Microsoft.DirectX.Direct3D.Device)">
+            <summary>
+            指定deviceで開きます。
+            </summary>
+            <param name="device">device</param>
+        </member>
+        <member name="M:TDCG.TSOTex.Dispose">
+            <summary>
+            Direct3Dテクスチャを破棄します。
+            </summary>
+        </member>
+        <member name="P:TDCG.TSOTex.Name">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:TDCG.TSOTex.FileName">
+            <summary>
+            ファイル名
+            </summary>
+        </member>
+        <member name="T:TDCG.TSONode">
+            <summary>
+            node (bone)
+            </summary>
+        </member>
+        <member name="M:TDCG.TSONode.#ctor(System.Int32)">
+            <summary>
+            TSONodeを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSONode.Read(System.IO.BinaryReader)">
+            <summary>
+            TSONodeを読み込みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSONode.Write(System.IO.BinaryWriter)">
+            <summary>
+            TSONodeを書き出します。
+            </summary>
+        </member>
+        <member name="F:TDCG.TSONode.children">
+            <summary>
+            子nodeリスト
+            </summary>
+        </member>
+        <member name="F:TDCG.TSONode.parent">
+            <summary>
+            親node
+            </summary>
+        </member>
+        <member name="F:TDCG.TSONode.offset_matrix">
+            <summary>
+            オフセット行列。これはワールド座標系をboneローカル座標系に変換します。
+            </summary>
+        </member>
+        <member name="F:TDCG.TSONode.combined_matrix">
+            <summary>
+            ワールド座標系での位置と向きを表します。これはviewerから更新されます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSONode.GetOffsetMatrix(TDCG.TSONode)">
+            <summary>
+            指定nodeに対するオフセット行列を計算します。
+            </summary>
+            <param name="node">node</param>
+        </member>
+        <member name="M:TDCG.TSONode.ComputeOffsetMatrix">
+            <summary>
+            オフセット行列を計算します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSONode.GetWorldPosition">
+            <summary>
+            ワールド座標系での位置を得ます。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TDCG.TSONode.GetWorldCoordinate">
+            <summary>
+            ワールド座標系での位置と向きを得ます。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:TDCG.TSONode.Rotation">
+            <summary>
+            回転変位
+            </summary>
+        </member>
+        <member name="P:TDCG.TSONode.Translation">
+            <summary>
+            位置変位
+            </summary>
+        </member>
+        <member name="P:TDCG.TSONode.ID">
+            <summary>
+            ID
+            </summary>
+        </member>
+        <member name="P:TDCG.TSONode.Path">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:TDCG.TSONode.Name">
+            <summary>
+            名称の短い形式。これはTSOFile中で重複する可能性があります。
+            </summary>
+        </member>
+        <member name="P:TDCG.TSONode.OffsetMatrix">
+            <summary>
+            オフセット行列を得ます。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:TDCG.TSONode.RotationMatrix">
+            <summary>
+            回転行列
+            </summary>
+        </member>
+        <member name="P:TDCG.TSONode.TranslationMatrix">
+            <summary>
+            位置行列
+            </summary>
+        </member>
+        <member name="P:TDCG.TSONode.TransformationMatrix">
+            <summary>
+            変形行列。これは 回転行列 x 位置行列 です。
+            </summary>
+        </member>
+        <member name="T:TDCG.TSOFile">
+            <summary>
+            TSOファイルを扱います。
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOFile.reader">
+            <summary>
+            バイナリ値として読み取ります。
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOFile.nodes">
+            <summary>
+            bone配列
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOFile.textures">
+            <summary>
+            テクスチャ配列
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOFile.scripts">
+            <summary>
+            スクリプト配列
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOFile.sub_scripts">
+            <summary>
+            サブスクリプト配列
+            </summary>
+        </member>
+        <member name="F:TDCG.TSOFile.meshes">
+            <summary>
+            メッシュ配列
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOFile.Save(System.String)">
+            <summary>
+            指定パスに保存します。
+            </summary>
+            <param name="dest_file">パス</param>
+        </member>
+        <member name="M:TDCG.TSOFile.Save(System.IO.Stream)">
+            <summary>
+            指定ストリームに保存します。
+            </summary>
+            <param name="dest_stream">ストリーム</param>
+        </member>
+        <member name="M:TDCG.TSOFile.WriteMagic(System.IO.BinaryWriter)">
+            <summary>
+            'TSO1' を書き出します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOFile.Load(System.String)">
+            <summary>
+            指定パスから読み込みます。
+            </summary>
+            <param name="source_file">パス</param>
+        </member>
+        <member name="M:TDCG.TSOFile.Load(System.IO.Stream)">
+            <summary>
+            指定ストリームから読み込みます。
+            </summary>
+            <param name="source_stream">ストリーム</param>
+        </member>
+        <member name="M:TDCG.TSOFile.GenerateTMO">
+            <summary>
+            tmoを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOFile.SumVerticesCount">
+            頂点数の合計を得ます。
+        </member>
+        <member name="M:TDCG.TSOFile.Open(Microsoft.DirectX.Direct3D.Device,Microsoft.DirectX.Direct3D.Effect)">
+            <summary>
+            指定device上で開きます。
+            </summary>
+            <param name="device">device</param>
+            <param name="effect">effect</param>
+        </member>
+        <member name="M:TDCG.TSOFile.LightDirForced">
+            <summary>
+            光源方向ベクトルを得ます。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TDCG.TSOFile.UVSCR">
+            <summary>
+            UVSCR値を得ます。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TDCG.TSOFile.BeginRender">
+            <summary>
+            レンダリング開始時に呼びます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOFile.SwitchShader(TDCG.Shader)">
+            <summary>
+            シェーダ設定を切り替えます。
+            </summary>
+            <param name="shader">シェーダ設定</param>
+        </member>
+        <member name="M:TDCG.TSOFile.SwitchShader(TDCG.TSOSubMesh)">
+            <summary>
+            シェーダ設定を切り替えます。
+            </summary>
+            <param name="sub_mesh">切り替え対象となるサブメッシュ</param>
+        </member>
+        <member name="M:TDCG.TSOFile.EndRender">
+            <summary>
+            レンダリング終了時に呼びます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TSOFile.Dispose">
+            <summary>
+            内部objectを破棄します。
+            </summary>
+        </member>
+        <member name="T:TDCG.TBNFile">
+            <summary>
+            TBNファイルを扱います。
+            </summary>
+        </member>
+        <member name="F:TDCG.TBNFile.reader">
+            <summary>
+            バイナリ値として読み取ります。
+            </summary>
+        </member>
+        <member name="M:TDCG.TBNFile.Load(System.String)">
+            <summary>
+            指定パスから読み込みます。
+            </summary>
+            <param name="source_file">パス</param>
+        </member>
+        <member name="M:TDCG.TBNFile.Load(System.IO.Stream)">
+            <summary>
+            指定ストリームから読み込みます。
+            </summary>
+            <param name="source_stream">ストリーム</param>
+        </member>
+        <member name="M:TDCG.TBNFile.Save(System.String)">
+            <summary>
+            指定パスに保存します。
+            </summary>
+            <param name="dest_file">パス</param>
+        </member>
+        <member name="M:TDCG.TBNFile.Save(System.IO.Stream)">
+            <summary>
+            指定ストリームに保存します。
+            </summary>
+            <param name="dest_stream">ストリーム</param>
+        </member>
+        <member name="M:TDCG.TBNFile.Dump">
+            <summary>
+            文字列を書き出します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TBNFile.GetStringList">
+            <summary>
+            文字列リストを得ます。
+            </summary>
+            <returns>文字列リスト</returns>
+        </member>
+        <member name="M:TDCG.TBNFile.GetStringDictionary">
+            <summary>
+            文字列の辞書を得ます。
+            </summary>
+            <returns>文字列の辞書</returns>
+        </member>
+        <member name="M:TDCG.TBNFile.SetString(System.UInt32,System.String)">
+            <summary>
+            文字列を設定します。
+            </summary>
+        </member>
+        <member name="T:TDCG.NodesRange">
+            ノード範囲
+        </member>
+        <member name="F:TDCG.NodesRange.root_names">
+            <summary>
+            ルートノード名
+            </summary>
+        </member>
+        <member name="M:TDCG.NodesRange.#ctor">
+            <summary>
+            ノード範囲を生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.NodesRange.Dump">
+            <summary>
+            ノード範囲を書き出します。
+            </summary>
+        </member>
+        <member name="M:TDCG.NodesRange.Save(System.String)">
+            <summary>
+            ノード範囲を保存します。
+            </summary>
+            <param name="dest_file">ファイル名</param>
+        </member>
+        <member name="M:TDCG.NodesRange.Load(System.String)">
+            <summary>
+            ノード範囲を読み込みます。
+            </summary>
+            <param name="source_file">ファイル名</param>
+            <returns></returns>
+        </member>
+        <member name="T:TDCG.Figure">
+            <summary>
+            フィギュア
+            </summary>
+        </member>
+        <member name="F:TDCG.Figure.TSOList">
+            <summary>
+            フィギュアが保持しているtsoリスト
+            </summary>
+        </member>
+        <member name="F:TDCG.Figure.slide_matrices">
+            <summary>
+            スライダ変形行列
+            </summary>
+        </member>
+        <member name="F:TDCG.Figure.nodemap">
+            tso nodeからtmo nodeを導出する辞書
+        </member>
+        <member name="M:TDCG.Figure.GetTPOConfigPath">
+            <summary>
+            体型レシピのファイル名
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TDCG.Figure.#ctor">
+            <summary>
+            フィギュアを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Figure.TransformTpo">
+            <summary>
+            体型変形を行います。
+            </summary>
+        </member>
+        <member name="M:TDCG.Figure.TransformTpo(System.Int32)">
+            <summary>
+            体型変形を行います。
+            </summary>
+            <param name="frame_index">フレーム番号</param>
+        </member>
+        <member name="M:TDCG.Figure.Move(System.Single,System.Single,System.Single)">
+            <summary>
+            フィギュアを移動します（相対座標）。
+            </summary>
+            <param name="dx">X軸変位</param>
+            <param name="dy">Y軸変位</param>
+            <param name="dz">Z軸変位</param>
+        </member>
+        <member name="M:TDCG.Figure.Move(Microsoft.DirectX.Vector3)">
+            <summary>
+            フィギュアを移動します（相対座標）。
+            </summary>
+            <param name="delta">変位</param>
+        </member>
+        <member name="M:TDCG.Figure.SwapAt(System.Int32,System.Int32)">
+            <summary>
+            指定位置にあるtsoの位置を入れ替えます。描画順を変更します。
+            </summary>
+            <param name="aidx">リスト上の位置a</param>
+            <param name="bidx">リスト上の位置b</param>
+        </member>
+        <member name="M:TDCG.Figure.UpdateNodeMapAndBoneMatrices">
+            <summary>
+            nodemapとbone行列を更新します。
+            tmoが読み込まれていない場合は先頭のtsoからtmoを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Figure.RegenerateTMO">
+            <summary>
+            先頭のtsoからtmoを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Figure.AddNodeMap(TDCG.TSOFile)">
+            <summary>
+            tsoに対するnodemapを追加します。
+            </summary>
+            <param name="tso">tso</param>
+        </member>
+        <member name="M:TDCG.Figure.ResetFrameIndex">
+            <summary>
+            フレーム番号を0に設定します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Figure.SetCenterToHips">
+            <summary>
+            中心点を腰boneの位置に設定します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Figure.NextTMOFrame">
+            <summary>
+            次のフレームに進みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.Figure.GetTMOFrame">
+            <summary>
+            現在のフレームを得ます。
+            </summary>
+            <returns>現在のtmo frame</returns>
+        </member>
+        <member name="M:TDCG.Figure.GetFrameIndex">
+            <summary>
+            現在のフレーム番号を得ます。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TDCG.Figure.AddTSO(TDCG.TSOFile)">
+            <summary>
+            tsoをTSOListに追加します。
+            </summary>
+            <param name="tso">tso</param>
+        </member>
+        <member name="M:TDCG.Figure.UpdateBoneMatricesWithoutTMOFrame">
+            <summary>
+            bone行列を更新します。
+            ただしtmo frameを無視します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Figure.UpdateBoneMatrices">
+            <summary>
+            bone行列を更新します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Figure.UpdateBoneMatrices(System.Boolean)">
+            <summary>
+            bone行列を更新します。
+            </summary>
+            <param name="forced">falseの場合frame indexに変更なければ更新しません。</param>
+        </member>
+        <member name="M:TDCG.Figure.UpdateBoneMatrices(TDCG.TMOFile,TDCG.TMOFrame)">
+            <summary>
+            bone行列を更新します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Figure.UpdateBoneMatrices(TDCG.TMONode,TDCG.TMOFrame)">
+            <summary>
+            bone行列を更新します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Figure.OpenTSOFile(Microsoft.DirectX.Direct3D.Device,Microsoft.DirectX.Direct3D.Effect)">
+            <summary>
+            TSOFileを指定device上で開きます。
+            </summary>
+            <param name="device">device</param>
+            <param name="effect">effect</param>
+        </member>
+        <member name="M:TDCG.Figure.SetFrameIndex(System.Int32)">
+            <summary>
+            指定モーションフレームに進みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.Figure.Dispose">
+            <summary>
+            内部objectを破棄します。
+            </summary>
+        </member>
+        <member name="P:TDCG.Figure.Center">
+            <summary>
+            中心座標
+            </summary>
+        </member>
+        <member name="P:TDCG.Figure.Translation">
+            <summary>
+            移動変位
+            </summary>
+        </member>
+        <member name="P:TDCG.Figure.Tmo">
+            <summary>
+            tmo
+            </summary>
+        </member>
+        <member name="P:TDCG.Figure.ProportionList">
+            <summary>
+            体型スクリプトのリスト
+            </summary>
+        </member>
+        <member name="P:TDCG.Figure.TPOList">
+            <summary>
+            TPOファイルのリスト
+            </summary>
+        </member>
+        <member name="T:TDCG.TMOFile">
+            <summary>
+            TMOファイルを扱います。
+            </summary>
+        </member>
+        <member name="F:TDCG.TMOFile.reader">
+            <summary>
+            バイナリ値として読み取ります。
+            </summary>
+        </member>
+        <member name="F:TDCG.TMOFile.header">
+            <summary>
+            ヘッダ
+            </summary>
+        </member>
+        <member name="F:TDCG.TMOFile.opt0">
+            <summary>
+            オプション値0
+            </summary>
+        </member>
+        <member name="F:TDCG.TMOFile.opt1">
+            <summary>
+            オプション値1
+            </summary>
+        </member>
+        <member name="F:TDCG.TMOFile.nodes">
+            <summary>
+            bone配列
+            </summary>
+        </member>
+        <member name="F:TDCG.TMOFile.frames">
+            <summary>
+            フレーム配列
+            </summary>
+        </member>
+        <member name="F:TDCG.TMOFile.footer">
+            <summary>
+            フッタ
+            </summary>
+        </member>
+        <member name="M:TDCG.TMOFile.Save(System.String)">
+            <summary>
+            指定パスに保存します。
+            </summary>
+            <param name="dest_file">パス</param>
+        </member>
+        <member name="M:TDCG.TMOFile.Save(System.IO.Stream)">
+            <summary>
+            指定ストリームに保存します。
+            </summary>
+            <param name="dest_stream">ストリーム</param>
+        </member>
+        <member name="M:TDCG.TMOFile.WriteMagic(System.IO.BinaryWriter)">
+            <summary>
+            'TMO1' を書き出します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMOFile.Load(System.String)">
+            <summary>
+            指定パスから読み込みます。
+            </summary>
+            <param name="source_file">パス</param>
+        </member>
+        <member name="M:TDCG.TMOFile.Load(System.IO.Stream)">
+            <summary>
+            指定ストリームから読み込みます。
+            </summary>
+            <param name="source_stream">ストリーム</param>
+        </member>
+        <member name="M:TDCG.TMOFile.GetTMOMat(System.String,System.Int32)">
+            <summary>
+            行列を得ます。
+            </summary>
+            <param name="name">bone名称</param>
+            <param name="frame_index">フレーム番号</param>
+            <returns></returns>
+        </member>
+        <member name="M:TDCG.TMOFile.CreateNodeIdPair(TDCG.TMOFile)">
+            <summary>
+            node idのペアを作成します。
+            ペアのキーはnode id
+            ペアの値はもうひとつのtmoにおいて名称（短い形式）が一致するnode idになります。
+            </summary>
+            <param name="motion">もうひとつのtmo</param>
+            <returns>tmo frame indexのペア</returns>
+        </member>
+        <member name="M:TDCG.TMOFile.AppendFrameFrom(TDCG.TMOFile)">
+            <summary>
+            指定tmoからフレームを追加します。
+            </summary>
+            <param name="motion">tmo</param>
+        </member>
+        <member name="M:TDCG.TMOFile.SlerpFrameEndTo(TDCG.TMOFile,System.Int32,System.Single)">
+            <summary>
+            指定tmoへフレームを補間します。
+            </summary>
+            <param name="motion">tmo</param>
+            <param name="append_length">補間するフレーム長さ</param>
+            <param name="p1">補間速度係数</param>
+        </member>
+        <member name="M:TDCG.TMOFile.SlerpFrameEndTo(TDCG.TMOFile,System.Int32)">
+            <summary>
+            指定tmoへフレームを補間します。
+            </summary>
+            <param name="motion">tmo</param>
+            <param name="append_length">補間するフレーム長さ</param>
+        </member>
+        <member name="M:TDCG.TMOFile.SlerpFrameEndTo(TDCG.TMOFile)">
+            <summary>
+            指定tmoへフレームを補間します。
+            </summary>
+            <param name="motion">tmo</param>
+        </member>
+        <member name="M:TDCG.TMOFile.TruncateFrame(System.Int32)">
+            <summary>
+            フレームを指定indexのみに切り詰めます。
+            </summary>
+            <param name="frame_index">index</param>
+        </member>
+        <member name="M:TDCG.TMOFile.SaveTransformationMatrixToFrame(System.Int32)">
+            <summary>
+            現在の行列を指定フレームに保存します。
+            </summary>
+            <param name="frame_index">index</param>
+        </member>
+        <member name="M:TDCG.TMOFile.LoadTransformationMatrixFromFrame(System.Int32)">
+            <summary>
+            指定フレームの行列を保持します。
+            </summary>
+            <param name="frame_index">index</param>
+        </member>
+        <member name="M:TDCG.TMOFile.FindNodeByName(System.String)">
+            <summary>
+            指定名称（短い形式）を持つnodeを検索します。
+            </summary>
+            <param name="name">node名称（短い形式）</param>
+            <returns></returns>
+        </member>
+        <member name="M:TDCG.TMOFile.CopyMotionFrom(TDCG.TMOFile)">
+            <summary>
+            指定tmoのモーション（開始フレームからの変位）を複写します。
+            </summary>
+            <param name="motion">tmo</param>
+        </member>
+        <member name="M:TDCG.TMOFile.CopyChildrenNodeFrom(TDCG.TMOFile,System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            指定tmoにある指定名称（短い形式）のnodeを同じ名称のnodeに複写します。
+            ただし複写の対象は子node以降です。指定nodeは複写しません。
+            また、除外node以降のnodeは複写しません。
+            </summary>
+            <param name="motion">tmo</param>
+            <param name="name">node名称（短い形式）</param>
+            <param name="except_names">除外node名称（短い形式）リスト</param>
+        </member>
+        <member name="M:TDCG.TMOFile.CopyNodeFrom(TDCG.TMOFile,System.String)">
+            <summary>
+            指定tmoにある指定名称（短い形式）のnodeを同じ名称のnodeに複写します。
+            </summary>
+            <param name="motion">tmo</param>
+            <param name="name">node名称（短い形式）</param>
+        </member>
+        <member name="M:TDCG.TMOFile.IsSameNodeTree(TDCG.TMOFile)">
+            <summary>
+            指定tmoと同じnode treeを持つか。
+            </summary>
+            <param name="motion">tmo</param>
+            <returns></returns>
+        </member>
+        <member name="M:TDCG.TMOFile.Dup">
+            <summary>
+            tmoからtmoを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMOFile.GenerateTMOFromTransformationMatrix">
+            <summary>
+            tmoからtmoを生成します。
+            </summary>
+        </member>
+        <member name="T:TDCG.TMOMat">
+            <summary>
+            Direct3D Matrixのラッパ
+            </summary>
+        </member>
+        <member name="F:TDCG.TMOMat.m">
+            Direct3D Matrix
+        </member>
+        <member name="M:TDCG.TMOMat.#ctor">
+            <summary>
+            TMOMatを作成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMOMat.Read(System.IO.BinaryReader)">
+            <summary>
+            行列を読み込みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMOMat.Write(System.IO.BinaryWriter)">
+            <summary>
+            行列を書き出します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMOMat.#ctor(Microsoft.DirectX.Matrix@)">
+            <summary>
+            TMOMatを作成します。
+            </summary>
+            <param name="m">matrix</param>
+        </member>
+        <member name="M:TDCG.TMOMat.Scale(System.Single,System.Single,System.Single)">
+            <summary>
+            指定比率で拡大します。
+            </summary>
+            <param name="x">X軸拡大比率</param>
+            <param name="y">Y軸拡大比率</param>
+            <param name="z">Z軸拡大比率</param>
+        </member>
+        <member name="M:TDCG.TMOMat.Scale(Microsoft.DirectX.Matrix)">
+            <summary>
+            指定行列で拡大します。
+            </summary>
+            <param name="scaling">scaling matrix</param>
+        </member>
+        <member name="M:TDCG.TMOMat.Scale0(Microsoft.DirectX.Matrix)">
+            <summary>
+            指定行列で縮小します。位置は変更しません。
+            </summary>
+            <param name="scaling">scaling matrix</param>
+        </member>
+        <member name="M:TDCG.TMOMat.Scale1(Microsoft.DirectX.Matrix)">
+            <summary>
+            指定行列で拡大します。位置は変更しません。
+            </summary>
+            <param name="scaling">scaling matrix</param>
+        </member>
+        <member name="M:TDCG.TMOMat.RotateX(System.Single)">
+            <summary>
+            指定角度でX軸回転します。
+            </summary>
+            <param name="angle">角度（ラジアン）</param>
+        </member>
+        <member name="M:TDCG.TMOMat.RotateY(System.Single)">
+            <summary>
+            指定角度でY軸回転します。
+            </summary>
+            <param name="angle">角度（ラジアン）</param>
+        </member>
+        <member name="M:TDCG.TMOMat.RotateZ(System.Single)">
+            <summary>
+            指定角度でZ軸回転します。
+            </summary>
+            <param name="angle">角度（ラジアン）</param>
+        </member>
+        <member name="M:TDCG.TMOMat.RotateWorldY(System.Single)">
+            <summary>
+            ワールド座標系において指定角度でY軸回転します。
+            </summary>
+            <param name="angle">角度（ラジアン）</param>
+        </member>
+        <member name="M:TDCG.TMOMat.Move(Microsoft.DirectX.Vector3)">
+            <summary>
+            指定変位だけ移動します。
+            </summary>
+            <param name="translation">変位</param>
+        </member>
+        <member name="M:TDCG.TMOMat.Slerp(TDCG.TMOMat,TDCG.TMOMat,TDCG.TMOMat,TDCG.TMOMat,System.Int32)">
+            <summary>
+            補間を行います。
+            </summary>
+            <param name="mat0">行列0</param>
+            <param name="mat1">行列1</param>
+            <param name="mat2">行列2</param>
+            <param name="mat3">行列3</param>
+            <param name="length">分割数</param>
+            <returns>分割数だけTMOMatを持つ配列</returns>
+        </member>
+        <member name="M:TDCG.TMOMat.Slerp(TDCG.TMOMat,TDCG.TMOMat,TDCG.TMOMat,TDCG.TMOMat,System.Int32,System.Single)">
+            <summary>
+            補間を行います。
+            </summary>
+            <param name="mat0">行列0</param>
+            <param name="mat1">行列1</param>
+            <param name="mat2">行列2</param>
+            <param name="mat3">行列3</param>
+            <param name="length">分割数</param>
+            <param name="p1">補間速度係数</param>
+            <returns>分割数だけTMOMatを持つ配列</returns>
+        </member>
+        <member name="M:TDCG.TMOMat.DecomposeMatrix(Microsoft.DirectX.Matrix@)">
+            <summary>
+            回転行列と位置ベクトルに分割します。
+            </summary>
+            <param name="m">元の行列（戻り値は回転行列）</param>
+            <returns>位置ベクトル</returns>
+        </member>
+        <member name="M:TDCG.TMOMat.DecomposeMatrix(Microsoft.DirectX.Matrix@,Microsoft.DirectX.Vector3@)">
+            <summary>
+            拡大縮小ベクトルと回転行列と位置ベクトルに分割します。
+            </summary>
+            <param name="m">元の行列（戻り値は回転行列）</param>
+            <param name="scaling">拡大縮小ベクトル</param>
+            <returns>位置ベクトル</returns>
+        </member>
+        <member name="M:TDCG.TMOMat.DecomposeMatrix(Microsoft.DirectX.Matrix@,Microsoft.DirectX.Vector3@,Microsoft.DirectX.Quaternion@)">
+            <summary>
+            拡大縮小ベクトルと回転quaternionと位置ベクトルに分割します。
+            </summary>
+            <param name="m">元の行列（戻り値は回転行列）</param>
+            <param name="scaling">拡大縮小ベクトル</param>
+            <param name="rotation">回転quaternion</param>
+            <returns>位置ベクトル</returns>
+        </member>
+        <member name="M:TDCG.TMOMat.AddSub(TDCG.TMOMat,TDCG.TMOMat,TDCG.TMOMat)">
+            <summary>
+            加減算を行います。
+            </summary>
+            <param name="mat0">行列0</param>
+            <param name="mat1">行列1</param>
+            <param name="mat2">行列2</param>
+            <returns>行列1 - 行列2 + 行列0</returns>
+        </member>
+        <member name="M:TDCG.TMOMat.ToQuaternionZXY(Microsoft.DirectX.Vector3)">
+            euler角 (zxy回転) をquaternionに変換
+        </member>
+        <member name="M:TDCG.TMOMat.ToAngleZXY(Microsoft.DirectX.Matrix)">
+            回転行列をeuler角 (zxy回転) に変換
+        </member>
+        <member name="M:TDCG.TMOMat.ToAngleZXY(Microsoft.DirectX.Quaternion)">
+            quaternionをeuler角 (zxy回転) に変換
+        </member>
+        <member name="M:TDCG.TMOMat.ToQuaternionXYZ(Microsoft.DirectX.Vector3)">
+            euler角 (xyz回転) をquaternionに変換
+        </member>
+        <member name="M:TDCG.TMOMat.ToAngleXYZ(Microsoft.DirectX.Matrix)">
+            回転行列をeuler角 (xyz回転) に変換
+        </member>
+        <member name="M:TDCG.TMOMat.ToAngleXYZ(Microsoft.DirectX.Quaternion)">
+            quaternionをeuler角 (xyz回転) に変換
+        </member>
+        <member name="T:TDCG.TMOFrame">
+            <summary>
+            フレームを扱います。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMOFrame.#ctor(System.Int32)">
+            <summary>
+            フレームを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMOFrame.Read(System.IO.BinaryReader)">
+            <summary>
+            フレームを読み込みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMOFrame.Write(System.IO.BinaryWriter)">
+            <summary>
+            フレームを書き出します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMOFrame.Slerp(TDCG.TMOFrame,TDCG.TMOFrame,TDCG.TMOFrame,TDCG.TMOFrame,System.Int32,System.Single,System.Int32[])">
+            <summary>
+            フレームを補間します。
+            </summary>
+            <param name="frame0">フレーム0</param>
+            <param name="frame1">フレーム1</param>
+            <param name="frame2">フレーム2</param>
+            <param name="frame3">フレーム3</param>
+            <param name="length">分割数</param>
+            <param name="p1">補間速度係数</param>
+            <param name="id_pair">node idのペア</param>
+            <returns></returns>
+        </member>
+        <member name="M:TDCG.TMOFrame.Select(TDCG.TMOFrame,TDCG.TMOFrame,System.Int32[])">
+            <summary>
+            frame1の行列で構成された新たなframeを得ます。
+            新たなframeはframe0と同じnode並びとなります。
+            </summary>
+            <param name="frame0"></param>
+            <param name="frame1"></param>
+            <param name="id_pair">node idのペア</param>
+            <returns>新たなframe</returns>
+        </member>
+        <member name="M:TDCG.TMOFrame.AddSub(TDCG.TMOFrame,TDCG.TMOFrame,TDCG.TMOFrame,System.Int32[])">
+            <summary>
+            加減算の結果として新たなframeを得ます。
+            新たなframeはframe0と同じnode並びとなります。
+            </summary>
+            <param name="frame0">frame0</param>
+            <param name="frame1">frame1</param>
+            <param name="frame2">frame2</param>
+            <param name="id_pair">node idのペア</param>
+            <returns>新たなframe</returns>
+        </member>
+        <member name="T:TDCG.TMONode">
+            <summary>
+            boneを扱います。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMONode.#ctor(System.Int32)">
+            <summary>
+            TMONodeを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMONode.Read(System.IO.BinaryReader)">
+            <summary>
+            TMONodeを読み込みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMONode.Write(System.IO.BinaryWriter)">
+            <summary>
+            TMONodeを書き出します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMONode.LinkMatrices(TDCG.TMOFrame[])">
+            <summary>
+            行列をリンクします。
+            </summary>
+        </member>
+        <member name="F:TDCG.TMONode.children">
+            <summary>
+            子nodeリスト
+            </summary>
+        </member>
+        <member name="F:TDCG.TMONode.parent">
+            <summary>
+            親node
+            </summary>
+        </member>
+        <member name="F:TDCG.TMONode.matrices">
+            <summary>
+            行列リスト
+            </summary>
+        </member>
+        <member name="F:TDCG.TMONode.combined_matrix">
+            <summary>
+            ワールド座標系での位置と向きを表します。これはviewerから更新されます。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMONode.FindChildByName(System.String)">
+            <summary>
+            指定名称（短い形式）を持つ子nodeを検索します。
+            </summary>
+            <param name="name">名称（短い形式）</param>
+            <returns></returns>
+        </member>
+        <member name="M:TDCG.TMONode.CopyThisMatFrom(TDCG.TMONode)">
+            <summary>
+            指定nodeから行列を複写します。
+            </summary>
+            <param name="motion">node</param>
+        </member>
+        <member name="M:TDCG.TMONode.CopyChildrenMatFrom(TDCG.TMONode,System.Collections.Generic.List{System.String})">
+            <summary>
+            指定nodeから行列を複写します。
+            ただし複写の対象は子node以降です。指定nodeは複写しません。
+            また、除外node以降のnodeは複写しません。
+            </summary>
+            <param name="motion">node</param>
+            <param name="except_names">除外node名称（短い形式）リスト</param>
+        </member>
+        <member name="M:TDCG.TMONode.CopyMatFrom(TDCG.TMONode)">
+            <summary>
+            指定nodeから行列を複写します。
+            </summary>
+            <param name="motion">node</param>
+        </member>
+        <member name="M:TDCG.TMONode.Scale(System.Single,System.Single,System.Single)">
+            <summary>
+            指定変位だけ拡大します。
+            </summary>
+            <param name="x">X軸変位</param>
+            <param name="y">Y軸変位</param>
+            <param name="z">Z軸変位</param>
+        </member>
+        <member name="M:TDCG.TMONode.Scale0(System.Single,System.Single,System.Single)">
+            <summary>
+            指定変位だけ縮小します。
+            </summary>
+            <param name="x">X軸変位</param>
+            <param name="y">Y軸変位</param>
+            <param name="z">Z軸変位</param>
+        </member>
+        <member name="M:TDCG.TMONode.Scale1(System.Single,System.Single,System.Single)">
+            <summary>
+            指定変位だけ拡大します。さらに各子nodeを縮小します。
+            </summary>
+            <param name="x">X軸変位</param>
+            <param name="y">Y軸変位</param>
+            <param name="z">Z軸変位</param>
+        </member>
+        <member name="M:TDCG.TMONode.RotateX(System.Single)">
+            <summary>
+            指定角度でX軸回転します。
+            </summary>
+            <param name="angle">角度（ラジアン）</param>
+        </member>
+        <member name="M:TDCG.TMONode.RotateY(System.Single)">
+            <summary>
+            指定角度でY軸回転します。
+            </summary>
+            <param name="angle">角度（ラジアン）</param>
+        </member>
+        <member name="M:TDCG.TMONode.RotateZ(System.Single)">
+            <summary>
+            指定角度でZ軸回転します。
+            </summary>
+            <param name="angle">角度（ラジアン）</param>
+        </member>
+        <member name="M:TDCG.TMONode.RotateWorldY(System.Single)">
+            <summary>
+            ワールド座標系において指定角度でY軸回転します。
+            </summary>
+            <param name="angle">角度（ラジアン）</param>
+        </member>
+        <member name="M:TDCG.TMONode.Move(System.Single,System.Single,System.Single)">
+            <summary>
+            指定変位だけ移動します。
+            </summary>
+            <param name="x">X軸変位</param>
+            <param name="y">Y軸変位</param>
+            <param name="z">Z軸変位</param>
+        </member>
+        <member name="M:TDCG.TMONode.GetWorldPosition">
+            <summary>
+            ワールド座標系での位置を得ます。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:TDCG.TMONode.GetWorldCoordinate">
+            <summary>
+            ワールド座標系での位置と向きを得ます。
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:TDCG.TMONode.Rotation">
+            <summary>
+            回転変位
+            </summary>
+        </member>
+        <member name="P:TDCG.TMONode.Translation">
+            <summary>
+            位置変位
+            </summary>
+        </member>
+        <member name="P:TDCG.TMONode.ID">
+            <summary>
+            ID
+            </summary>
+        </member>
+        <member name="P:TDCG.TMONode.Path">
+            <summary>
+            名称
+            </summary>
+        </member>
+        <member name="P:TDCG.TMONode.Name">
+            <summary>
+            名称の短い形式。これはTMOFile中で重複する可能性があります。
+            </summary>
+        </member>
+        <member name="P:TDCG.TMONode.RotationMatrix">
+            <summary>
+            回転行列
+            </summary>
+        </member>
+        <member name="P:TDCG.TMONode.TranslationMatrix">
+            <summary>
+            位置行列
+            </summary>
+        </member>
+        <member name="P:TDCG.TMONode.TransformationMatrix">
+            <summary>
+            変形行列。これは 回転行列 x 位置行列 です。
+            </summary>
+        </member>
+        <member name="T:TDCG.IProportion">
+            <summary>
+            体型を扱います。
+            </summary>
+        </member>
+        <member name="M:TDCG.IProportion.Execute">
+            <summary>
+            TPONodeに変形係数を設定します。
+            </summary>
+        </member>
+        <member name="P:TDCG.IProportion.Nodes">
+            <summary>
+            体型node辞書
+            </summary>
+        </member>
+        <member name="T:TDCG.TPOFileList">
+            <summary>
+            TPOファイルのリストです。
+            </summary>
+        </member>
+        <member name="F:TDCG.TPOFileList.files">
+            TPOファイルリスト
+        </member>
+        <member name="M:TDCG.TPOFileList.Add(TDCG.TPOFile)">
+            <summary>
+            tpoを追加します。
+            </summary>
+            <param name="tpo"></param>
+        </member>
+        <member name="M:TDCG.TPOFileList.Clear">
+            <summary>
+            TPOファイルリストを消去します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TPOFileList.SetProportionList(TDCG.ProportionList)">
+            <summary>
+            体型リストを設定します。
+            </summary>
+            <param name="pro_list">体型リスト</param>
+        </member>
+        <member name="M:TDCG.TPOFileList.SetRatiosFromConfig(TDCG.TPOConfig)">
+            <summary>
+            体型レシピから変形比率を設定します。
+            </summary>
+            <param name="config">体型レシピ</param>
+        </member>
+        <member name="M:TDCG.TPOFileList.ClearRatios">
+            <summary>
+            変形比率を消去します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TPOFileList.Transform">
+            <summary>
+            全てのフレームに含まれるモーション行列値を変形します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TPOFileList.Transform(System.Int32)">
+            <summary>
+            指定番号のフレームに含まれるモーション行列値を変形します。
+            </summary>
+            <param name="frame_index">フレーム番号</param>
+        </member>
+        <member name="M:TDCG.TPOFileList.LoadMatrix">
+            <summary>
+            退避モーション行列値をtmoに戻します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TPOFileList.SaveMatrix">
+            <summary>
+            モーション行列値をtmoから退避します。
+            </summary>
+        </member>
+        <member name="P:TDCG.TPOFileList.Item(System.Int32)">
+            <summary>
+            インデクサ
+            </summary>
+            <param name="i">index</param>
+            <returns>tpo</returns>
+        </member>
+        <member name="P:TDCG.TPOFileList.Item(System.String)">
+            <summary>
+            インデクサ
+            </summary>
+            <param name="name">proportion name</param>
+            <returns>tpo</returns>
+        </member>
+        <member name="P:TDCG.TPOFileList.Count">
+            <summary>
+            要素数
+            </summary>
+        </member>
+        <member name="P:TDCG.TPOFileList.Tmo">
+            <summary>
+            tmo
+            </summary>
+        </member>
+        <member name="T:TDCG.CCDViewer">
+            <summary>
+            TSOFileをDirect3D上でレンダリングします。
+            </summary>
+        </member>
+        <member name="M:TDCG.CCDViewer.#ctor">
+            <summary>
+            viewerを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.CCDViewer.form_OnMouseDown(System.Object,System.Windows.Forms.MouseEventArgs)">
+            マウスボタンを押したときに実行するハンドラ
+        </member>
+        <member name="M:TDCG.CCDViewer.form_OnMouseMove(System.Object,System.Windows.Forms.MouseEventArgs)">
+            マウスを移動したときに実行するハンドラ
+        </member>
+        <member name="M:TDCG.CCDViewer.FrameMoveDerived">
+            <summary>
+            指定シーンフレームに進みます。
+            </summary>
+        </member>
+        <member name="M:TDCG.CCDViewer.RenderDerived">
+            <summary>
+            シーンをレンダリングします。
+            </summary>
+        </member>
+        <member name="M:TDCG.CCDViewer.SetTargetOnScreen(System.Single,System.Single)">
+            <summary>
+            逆運動学における目標をスクリーン座標で指定します。
+            </summary>
+        </member>
+        <member name="M:TDCG.CCDViewer.DetectSphereRayCollision(System.Single,Microsoft.DirectX.Vector3@,Microsoft.DirectX.Vector3@,Microsoft.DirectX.Vector3@,Microsoft.DirectX.Vector3@,System.Single@)">
+            球とレイの衝突を見つけます。
+        </member>
+        <member name="M:TDCG.CCDViewer.CreateViewportMatrix(Microsoft.DirectX.Direct3D.Viewport)">
+            <summary>
+            viewport行列を作成します。
+            </summary>
+            <param name="viewport">viewport</param>
+            <returns>viewport行列</returns>
+        </member>
+        <member name="M:TDCG.CCDViewer.ScreenToWorld(System.Single,System.Single,System.Single,Microsoft.DirectX.Direct3D.Viewport,Microsoft.DirectX.Matrix,Microsoft.DirectX.Matrix)">
+            スクリーン位置をワールド座標へ変換します。
+        </member>
+        <member name="M:TDCG.CCDViewer.ScreenToWorld(System.Single,System.Single,System.Single)">
+            スクリーン位置をワールド座標へ変換します。
+        </member>
+        <member name="M:TDCG.CCDViewer.WorldToScreen(Microsoft.DirectX.Vector3,Microsoft.DirectX.Direct3D.Viewport,Microsoft.DirectX.Matrix,Microsoft.DirectX.Matrix)">
+            ワールド座標をスクリーン位置へ変換します。
+        </member>
+        <member name="M:TDCG.CCDViewer.WorldToScreen(Microsoft.DirectX.Vector3)">
+            ワールド座標をスクリーン位置へ変換します。
+        </member>
+        <member name="M:TDCG.CCDViewer.InitializeApplication(System.Windows.Forms.Control)">
+            <summary>
+            deviceを作成します。
+            </summary>
+            <param name="control">レンダリング先となるcontrol</param>
+            <returns>deviceの作成に成功したか</returns>
+        </member>
+        <member name="M:TDCG.CCDViewer.InitializeApplication(System.Windows.Forms.Control,System.Boolean)">
+            <summary>
+            deviceを作成します。
+            </summary>
+            <param name="control">レンダリング先となるcontrol</param>
+            <param name="shadowMapEnabled">シャドウマップを作成するか</param>
+            <returns>deviceの作成に成功したか</returns>
+        </member>
+        <member name="M:TDCG.CCDViewer.FindEffectorOnScreenPoint(System.Single,System.Single,TDCG.TMONode@)">
+            スクリーン座標からエフェクタを見つけます。
+            衝突するエフェクタの中で最も近い位置にあるエフェクタを返します。
+        </member>
+        <member name="M:TDCG.CCDViewer.Dispose">
+            <summary>
+            内部objectを破棄します。
+            </summary>
+        </member>
+        <member name="P:TDCG.CCDViewer.Solver">
+            <summary>
+            逆運動学の解法
+            </summary>
+        </member>
+        <member name="P:TDCG.CCDViewer.LimitRotationEnabled">
+            <summary>
+            回転角制限が有効であるか。
+            </summary>
+        </member>
+        <member name="P:TDCG.CCDViewer.FloorEnabled">
+            <summary>
+            接地が有効であるか。
+            </summary>
+        </member>
+        <member name="T:TDCG.Proportion">
+            <summary>
+            体型レシピ要素
+            </summary>
+        </member>
+        <member name="P:TDCG.Proportion.ClassName">
+            <summary>
+            体型スクリプト名
+            </summary>
+        </member>
+        <member name="P:TDCG.Proportion.Ratio">
+            <summary>
+            変形比率
+            </summary>
+        </member>
+        <member name="T:TDCG.TPOConfig">
+            <summary>
+            体型レシピを扱います。
+            </summary>
+        </member>
+        <member name="M:TDCG.TPOConfig.#ctor">
+            <summary>
+            体型レシピを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TPOConfig.Dump">
+            <summary>
+            体型レシピを書き出します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TPOConfig.Load(System.String)">
+            <summary>
+            体型レシピを読み込みます。
+            </summary>
+            <param name="source_file">ファイル名</param>
+            <returns>体型レシピ</returns>
+        </member>
+        <member name="M:TDCG.TPOConfig.Save(System.String)">
+            <summary>
+            体型レシピを保存します。
+            </summary>
+            <param name="dest_file">保存ファイル名</param>
+        </member>
+        <member name="P:TDCG.TPOConfig.Proportions">
+            <summary>
+            体型レシピ要素の配列
+            </summary>
+        </member>
+        <member name="T:TDCG.SlideMatrices">
+            スライダ変形行列
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinLocal">
+            姉妹スライダ0.0でのlocal scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMaxLocal">
+            姉妹スライダ1.0でのlocal scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinFaceOya">
+            姉妹スライダ0.0でのface_oya scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMaxFaceOya">
+            姉妹スライダ1.0でのface_oya scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinSpineDummy">
+            胴まわりスライダ0.0でのW_Spine_Dummy scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMaxSpineDummy">
+            胴まわりスライダ1.0でのW_Spine_Dummy scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinSpine1">
+            胴まわりスライダ0.0でのW_Spine1 scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMaxSpine1">
+            胴まわりスライダ1.0でのW_Spine1 scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinHipsDummy">
+            あしスライダ0.0でのW_(LR)Hips_Dummy scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMaxHipsDummy">
+            あしスライダ1.0でのW_(LR)Hips_Dummy scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinUpLeg">
+            あしスライダ0.0でのW_(LR)UpLeg scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMaxUpLeg">
+            あしスライダ1.0でのW_(LR)UpLeg scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinUpLegRoll">
+            あしスライダ0.0でのW_(LR)UpLegRoll scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMaxUpLegRoll">
+            あしスライダ1.0でのW_(LR)UpLegRoll scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinLegRoll">
+            あしスライダ0.0でのW_(LR)LegRoll scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMaxLegRoll">
+            あしスライダ1.0でのW_(LR)LegRoll scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinArmDummy">
+            うでスライダ0.0でのW_(LR)Arm_Dummy scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMaxArmDummy">
+            うでスライダ1.0でのW_(LR)Arm_Dummy scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinArm">
+            うでスライダ0.0でのW_(LR)Arm scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMaxArm">
+            うでスライダ1.0でのW_(LR)Arm scaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinChichiR1">
+            変形行列 ChichiR1 0.0
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinChichiR2">
+            変形行列 ChichiR2 0.0
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinChichiR3">
+            変形行列 ChichiR3 0.0
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinChichiR4">
+            変形行列 ChichiR4 0.0
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinChichiR5">
+            変形行列 ChichiR5 0.0
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinChichiR5E">
+            変形行列 ChichiR5_end 0.0
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinChichiL1">
+            変形行列 ChichiL1 0.0
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinChichiL2">
+            変形行列 ChichiL2 0.0
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinChichiL3">
+            変形行列 ChichiL3 0.0
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinChichiL4">
+            変形行列 ChichiL4 0.0
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinChichiL5">
+            変形行列 ChichiL5 0.0
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinChichiL5E">
+            変形行列 ChichiL5_End 0.0
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinChichi">
+            おっぱいスライダ0.225でのscaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMaxChichi">
+            おっぱいスライダ1.0でのscaling factor
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinEyeR">
+            たれ目つり目スライダ0.0での変形
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMaxEyeR">
+            たれ目つり目スライダ1.0での変形
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMinEyeL">
+            たれ目つり目スライダ0.0での変形
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMaxEyeL">
+            たれ目つり目スライダ1.0での変形
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetVector3Ratio(Microsoft.DirectX.Vector3,Microsoft.DirectX.Vector3,System.Single)">
+            指定比率に比例するscaling factorを得ます。
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMatrixRatio(Microsoft.DirectX.Vector3,Microsoft.DirectX.Vector3,System.Single)">
+            指定比率に比例する変形行列を得ます。
+        </member>
+        <member name="M:TDCG.SlideMatrices.GetMatrixRatio(Microsoft.DirectX.Matrix,Microsoft.DirectX.Matrix,System.Single)">
+            指定比率に比例する変形行列を得ます。
+        </member>
+        <member name="F:TDCG.SlideMatrices.FaceOyaDefault">
+            face_oyaの変形行列
+        </member>
+        <member name="F:TDCG.SlideMatrices.Local">
+            拡大変位
+        </member>
+        <member name="F:TDCG.SlideMatrices.FaceOya">
+            拡大変位
+        </member>
+        <member name="F:TDCG.SlideMatrices.SpineDummy">
+            拡大変位
+        </member>
+        <member name="F:TDCG.SlideMatrices.Spine1">
+            拡大変位
+        </member>
+        <member name="F:TDCG.SlideMatrices.HipsDummy">
+            拡大変位
+        </member>
+        <member name="F:TDCG.SlideMatrices.UpLeg">
+            拡大変位
+        </member>
+        <member name="F:TDCG.SlideMatrices.UpLegRoll">
+            拡大変位
+        </member>
+        <member name="F:TDCG.SlideMatrices.LegRoll">
+            拡大変位
+        </member>
+        <member name="F:TDCG.SlideMatrices.ArmDummy">
+            拡大変位
+        </member>
+        <member name="F:TDCG.SlideMatrices.Arm">
+            拡大変位
+        </member>
+        <member name="F:TDCG.SlideMatrices.ChichiR1">
+            変形行列
+        </member>
+        <member name="F:TDCG.SlideMatrices.ChichiR2">
+            変形行列
+        </member>
+        <member name="F:TDCG.SlideMatrices.ChichiR3">
+            変形行列
+        </member>
+        <member name="F:TDCG.SlideMatrices.ChichiR4">
+            変形行列
+        </member>
+        <member name="F:TDCG.SlideMatrices.ChichiR5">
+            変形行列
+        </member>
+        <member name="F:TDCG.SlideMatrices.ChichiR5E">
+            変形行列
+        </member>
+        <member name="F:TDCG.SlideMatrices.ChichiL1">
+            変形行列
+        </member>
+        <member name="F:TDCG.SlideMatrices.ChichiL2">
+            変形行列
+        </member>
+        <member name="F:TDCG.SlideMatrices.ChichiL3">
+            変形行列
+        </member>
+        <member name="F:TDCG.SlideMatrices.ChichiL4">
+            変形行列
+        </member>
+        <member name="F:TDCG.SlideMatrices.ChichiL5">
+            変形行列
+        </member>
+        <member name="F:TDCG.SlideMatrices.ChichiL5E">
+            変形行列
+        </member>
+        <member name="F:TDCG.SlideMatrices.Chichi">
+            拡大変位
+        </member>
+        <member name="F:TDCG.SlideMatrices.EyeR">
+            変形行列
+        </member>
+        <member name="F:TDCG.SlideMatrices.EyeL">
+            変形行列
+        </member>
+        <member name="M:TDCG.SlideMatrices.#ctor">
+            スライダ変形行列を生成します。
+        </member>
+        <member name="M:TDCG.SlideMatrices.Flat">
+            貧乳であるか
+        </member>
+        <member name="F:TDCG.SlideMatrices.FlatRatio">
+            貧乳境界比率
+        </member>
+        <member name="P:TDCG.SlideMatrices.ArmRatio">
+            うでスライダ比率
+        </member>
+        <member name="P:TDCG.SlideMatrices.LegRatio">
+            あしスライダ比率
+        </member>
+        <member name="P:TDCG.SlideMatrices.WaistRatio">
+            胴まわりスライダ比率
+        </member>
+        <member name="P:TDCG.SlideMatrices.BustRatio">
+            おっぱいスライダ比率
+        </member>
+        <member name="P:TDCG.SlideMatrices.TallRatio">
+            姉妹スライダ比率
+        </member>
+        <member name="P:TDCG.SlideMatrices.EyeRatio">
+            たれ目つり目スライダ比率
+        </member>
+        <member name="T:TDCG.SimpleCamera">
+            <summary>
+            カメラ
+            </summary>
+        </member>
+        <member name="M:TDCG.SimpleCamera.Reset">
+            <summary>
+            カメラの位置と姿勢をリセットします。
+            </summary>
+        </member>
+        <member name="M:TDCG.SimpleCamera.ResetTranslation">
+            <summary>
+            view座標上のカメラの位置をリセットします。
+            </summary>
+        </member>
+        <member name="M:TDCG.SimpleCamera.Move(System.Single,System.Single,System.Single)">
+            <summary>
+            カメラの位置を更新します。
+            </summary>
+            <param name="dirX">移動方向（経度）</param>
+            <param name="dirY">移動方向（緯度）</param>
+            <param name="dirZ">移動方向（奥行）</param>
+        </member>
+        <member name="M:TDCG.SimpleCamera.RotZ(System.Single)">
+            <summary>
+            カメラをZ軸回転します。
+            </summary>
+            <param name="angle">回転角度（ラジアン）</param>
+        </member>
+        <member name="M:TDCG.SimpleCamera.Update">
+            <summary>
+            カメラの位置と姿勢を更新します。
+            </summary>
+        </member>
+        <member name="M:TDCG.SimpleCamera.GetViewMatrix">
+            <summary>
+            view行列を取得します。
+            </summary>
+        </member>
+        <member name="M:TDCG.SimpleCamera.SetCenter(Microsoft.DirectX.Vector3)">
+            <summary>
+            回転中心を設定します。
+            </summary>
+            <param name="center">回転中心</param>
+        </member>
+        <member name="M:TDCG.SimpleCamera.SetCenter(System.Single,System.Single,System.Single)">
+            <summary>
+            回転中心を設定します。
+            </summary>
+            <param name="x">回転中心x座標</param>
+            <param name="y">回転中心y座標</param>
+            <param name="z">回転中心z座標</param>
+        </member>
+        <member name="M:TDCG.SimpleCamera.SetTranslation(Microsoft.DirectX.Vector3)">
+            <summary>
+            view座標上の位置を設定します。
+            </summary>
+            <param name="translation">view座標上の位置</param>
+        </member>
+        <member name="M:TDCG.SimpleCamera.SetTranslation(System.Single,System.Single,System.Single)">
+            <summary>
+            view座標上の位置を設定します。
+            </summary>
+            <param name="x">view座標上の位置x座標</param>
+            <param name="y">view座標上の位置y座標</param>
+            <param name="z">view座標上の位置z座標</param>
+        </member>
+        <member name="M:TDCG.SimpleCamera.MoveView(System.Single,System.Single)">
+            <summary>
+            view座標上で移動します。
+            </summary>
+            <param name="dx">X軸移動距離</param>
+            <param name="dy">Y軸移動距離</param>
+        </member>
+        <member name="M:TDCG.SimpleCamera.ResetDefValue">
+            <summary>
+            差分をリセットします。
+            </summary>
+        </member>
+        <member name="P:TDCG.SimpleCamera.Center">
+            <summary>
+            回転中心
+            </summary>
+        </member>
+        <member name="P:TDCG.SimpleCamera.Translation">
+            <summary>
+            view座標上のカメラの位置
+            </summary>
+        </member>
+        <member name="P:TDCG.SimpleCamera.NeedUpdate">
+             <summary>
+            更新する必要があるか
+             </summary>
+        </member>
+        <member name="P:TDCG.SimpleCamera.ViewMatrix">
+            <summary>
+            ビュー行列
+            </summary>
+        </member>
+        <member name="T:TDCG.CCDSolver">
+            <summary>
+            逆運動学の解法
+            </summary>
+        </member>
+        <member name="M:TDCG.CCDSolver.MoveTarget(System.Single,System.Single,System.Single)">
+            <summary>
+            逆運動学における目標を移動します。
+            </summary>
+        </member>
+        <member name="M:TDCG.CCDSolver.#ctor">
+            <summary>
+            逆運動学の解法を生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.CCDSolver.SaveFloorTargets(TDCG.TMOFile)">
+            <summary>
+            接地の目標を設定します。
+            </summary>
+            <param name="tmo">tmo</param>
+        </member>
+        <member name="M:TDCG.CCDSolver.SolveRootNode(TDCG.TMOFile,System.String)">
+            <summary>
+            root nodeに対する解を得ます。
+            </summary>
+            <param name="tmo">tmo</param>
+            <param name="effector_name">エフェクタnode名称</param>
+        </member>
+        <member name="F:TDCG.CCDSolver.TMONodeRotation">
+            <summary>
+            nodeを回転したときに呼び出すハンドラ
+            </summary>
+        </member>
+        <member name="M:TDCG.CCDSolver.Solve(TDCG.TMOFile,System.String,Microsoft.DirectX.Vector3)">
+            <summary>
+            逆運動学による解を得ます。
+            </summary>
+            <param name="tmo">tmo</param>
+            <param name="effector_name">エフェクタnode名称</param>
+            <param name="target">目標</param>
+        </member>
+        <member name="M:TDCG.CCDSolver.Solve(TDCG.TMONode,TDCG.TMONode,Microsoft.DirectX.Vector3)">
+            <summary>
+            Cyclic-Coordinate-Descent (CCD) 法による逆運動学の実装です。
+            </summary>
+            <param name="effector">エフェクタnode</param>
+            <param name="node">対象node</param>
+            <param name="target">目標</param>
+        </member>
+        <member name="M:TDCG.CCDSolver.RotationVectorToVector(Microsoft.DirectX.Vector3,Microsoft.DirectX.Vector3,Microsoft.DirectX.Quaternion@)">
+            <summary>
+            v1をv2に合わせる回転を得ます。
+            </summary>
+            <param name="v1">v1</param>
+            <param name="v2">v2</param>
+            <param name="q">q</param>
+            <returns>回転が必要であるか</returns>
+        </member>
+        <member name="P:TDCG.CCDSolver.Target">
+            <summary>
+            逆運動学における目標
+            </summary>
+        </member>
+        <member name="P:TDCG.CCDSolver.FloorEnabled">
+            <summary>
+            接地が有効であるか。
+            </summary>
+        </member>
+        <member name="P:TDCG.CCDSolver.Solved">
+            <summary>
+            逆運動学による解を得られたか。
+            </summary>
+        </member>
+        <member name="P:TDCG.CCDSolver.EachEffecterNames">
+            <summary>
+            各エフェクタの名称を返します。
+            </summary>
+        </member>
+        <member name="T:TDCG.CCDSolver.TMONodeHandler">
+            <summary>
+            nodeを扱うデリゲート型
+            </summary>
+            <param name="node"></param>
+        </member>
+        <member name="T:TDCG.Camera">
+            <summary>
+            カメラ
+            </summary>
+        </member>
+        <member name="M:TDCG.Camera.#ctor">
+            <summary>
+            カメラを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Camera.Dump">
+            <summary>
+            カメラの位置と姿勢を標準出力へ書き出します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Camera.Save(System.String)">
+            <summary>
+            カメラの位置と姿勢を指定パスへ書き出します。
+            </summary>
+            <param name="dest_file">パス</param>
+        </member>
+        <member name="M:TDCG.Camera.Load(System.String)">
+            <summary>
+            カメラの位置と姿勢を指定パスから読み込みます。
+            </summary>
+            <param name="source_file">パス</param>
+            <returns>カメラ</returns>
+        </member>
+        <member name="M:TDCG.Camera.Reset">
+            <summary>
+            カメラの位置と姿勢をリセットします。
+            </summary>
+        </member>
+        <member name="M:TDCG.Camera.Move(System.Single,System.Single,System.Single)">
+            <summary>
+            カメラの位置を更新します。
+            </summary>
+            <param name="dirX">移動方向（経度）</param>
+            <param name="dirY">移動方向（緯度）</param>
+            <param name="dirZ">移動方向（奥行）</param>
+        </member>
+        <member name="M:TDCG.Camera.RotZ(System.Single)">
+            <summary>
+            カメラをZ軸回転します。
+            </summary>
+            <param name="angle">回転角度（ラジアン）</param>
+        </member>
+        <member name="M:TDCG.Camera.LookAt(Microsoft.DirectX.Vector3,Microsoft.DirectX.Vector3,Microsoft.DirectX.Vector3)">
+            <summary>
+            カメラの位置と姿勢を更新します。
+            マウスの回転中心は原点にリセットします。
+            注意：この操作は Move() RotZ() Update() とは異なる系統です。
+            </summary>
+            <param name="eye">注視点</param>
+            <param name="center">view座標上のカメラの位置</param>
+            <param name="up">上方ベクトル</param>
+        </member>
+        <member name="M:TDCG.Camera.LookAt(Microsoft.DirectX.Vector3,Microsoft.DirectX.Vector3)">
+            <summary>
+            カメラの位置と姿勢を更新します。
+            マウスの回転中心は原点にリセットします。
+            注意：この操作は Move() RotZ() Update() とは異なる系統です。
+            </summary>
+            <param name="eye">注視点</param>
+            <param name="center">view座標上のカメラの位置</param>
+        </member>
+        <member name="M:TDCG.Camera.GetZAxis">
+            <summary>
+            カメラのZ軸方向を得ます。
+            </summary>
+            <returns>Z軸方向</returns>
+        </member>
+        <member name="M:TDCG.Camera.GetYAxis">
+            <summary>
+            カメラのY軸方向を得ます。
+            </summary>
+            <returns>Y軸方向</returns>
+        </member>
+        <member name="M:TDCG.Camera.Update">
+            <summary>
+            カメラの位置と姿勢を更新します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Camera.SetCenter(Microsoft.DirectX.Vector3)">
+            <summary>
+            回転中心を設定します。
+            </summary>
+            <param name="center">回転中心</param>
+        </member>
+        <member name="M:TDCG.Camera.SetCenter(System.Single,System.Single,System.Single)">
+            <summary>
+            回転中心を設定します。
+            </summary>
+            <param name="x">回転中心x座標</param>
+            <param name="y">回転中心y座標</param>
+            <param name="z">回転中心z座標</param>
+        </member>
+        <member name="M:TDCG.Camera.SetTranslation(Microsoft.DirectX.Vector3)">
+            <summary>
+            view座標上の位置を設定します。
+            </summary>
+            <param name="translation">view座標上の位置</param>
+        </member>
+        <member name="M:TDCG.Camera.SetTranslation(System.Single,System.Single,System.Single)">
+            <summary>
+            view座標上の位置を設定します。
+            </summary>
+            <param name="x">view座標上の位置x座標</param>
+            <param name="y">view座標上の位置y座標</param>
+            <param name="z">view座標上の位置z座標</param>
+        </member>
+        <member name="M:TDCG.Camera.MoveView(System.Single,System.Single)">
+            <summary>
+            view座標上で移動します。
+            </summary>
+            <param name="dx">X軸移動距離</param>
+            <param name="dy">Y軸移動距離</param>
+        </member>
+        <member name="M:TDCG.Camera.ResetDefValue">
+            <summary>
+            差分をリセットします。
+            </summary>
+        </member>
+        <member name="P:TDCG.Camera.Center">
+            <summary>
+            回転中心
+            </summary>
+        </member>
+        <member name="P:TDCG.Camera.Translation">
+            <summary>
+            view座標上のカメラの位置
+            </summary>
+        </member>
+        <member name="P:TDCG.Camera.LocalPosition">
+            <summary>
+            注視点を原点とした座標上のカメラの位置
+            </summary>
+        </member>
+        <member name="P:TDCG.Camera.NeedUpdate">
+             <summary>
+            更新する必要があるか
+             </summary>
+        </member>
+        <member name="P:TDCG.Camera.ViewMatrix">
+            <summary>
+            ビュー行列
+            </summary>
+        </member>
+        <member name="P:TDCG.Camera.PoseMatrix">
+            <summary>
+            カメラの姿勢行列
+            </summary>
+        </member>
+        <member name="T:TDCG.Extensions.BinaryReaderMethods">
+            <summary>
+            BinaryReaderの拡張メソッドを定義します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Extensions.BinaryReaderMethods.ReadCString(System.IO.BinaryReader)">
+            <summary>
+            null終端文字列を読みとります。
+            </summary>
+            <returns>文字列</returns>
+        </member>
+        <member name="M:TDCG.Extensions.BinaryReaderMethods.ReadMatrix(System.IO.BinaryReader,Microsoft.DirectX.Matrix@)">
+            <summary>
+            Matrixを読みとります。
+            </summary>
+            <param name="reader">BinaryReader</param>
+            <param name="m">Matrix</param>
+        </member>
+        <member name="M:TDCG.Extensions.BinaryReaderMethods.ReadVector3(System.IO.BinaryReader,Microsoft.DirectX.Vector3@)">
+            <summary>
+            Vector3を読みとります。
+            </summary>
+            <param name="reader">BinaryReader</param>
+            <param name="v">Vector3</param>
+        </member>
+        <member name="T:TDCG.ShaderParameter">
+            <summary>
+            シェーダ設定パラメータ
+            </summary>
+        </member>
+        <member name="M:TDCG.ShaderParameter.Parse(System.String)">
+            <summary>
+            シェーダ設定ファイルの行を解析してシェーダ設定パラメータを生成します。
+            </summary>
+            <param name="line">シェーダ設定ファイルの行</param>
+            <returns>シェーダ設定パラメータ</returns>
+        </member>
+        <member name="M:TDCG.ShaderParameter.#ctor">
+            <summary>
+            シェーダ設定パラメータを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.ShaderParameter.#ctor(System.String,System.String,System.String)">
+            <summary>
+            シェーダ設定パラメータを生成します。
+            </summary>
+            <param name="type_string">型名</param>
+            <param name="name">名称</param>
+            <param name="value">値</param>
+        </member>
+        <member name="M:TDCG.ShaderParameter.ToString">
+            文字列として表現します。
+        </member>
+        <member name="M:TDCG.ShaderParameter.GetTypeName">
+            型名を文字列として得ます。
+        </member>
+        <member name="M:TDCG.ShaderParameter.GetValueString">
+            <summary>
+            値を文字列として得ます。
+            </summary>
+        </member>
+        <member name="M:TDCG.ShaderParameter.GetString">
+            <summary>
+            文字列を取得します。
+            </summary>
+            <returns>文字列</returns>
+        </member>
+        <member name="M:TDCG.ShaderParameter.SetString(System.String)">
+            <summary>
+            文字列を設定します。
+            </summary>
+            <param name="value">文字列表現</param>
+        </member>
+        <member name="M:TDCG.ShaderParameter.SetFloatDim(System.String,System.Int32)">
+            <summary>
+            float値の配列を設定します。
+            </summary>
+            <param name="value">float配列値の文字列表現</param>
+            <param name="dim">次元数</param>
+        </member>
+        <member name="M:TDCG.ShaderParameter.GetFloat">
+            <summary>
+            float値を取得します。
+            </summary>
+            <returns>float値</returns>
+        </member>
+        <member name="M:TDCG.ShaderParameter.SetFloat(System.String)">
+            <summary>
+            float値を設定します。
+            </summary>
+            <param name="value">float値の文字列表現</param>
+        </member>
+        <member name="M:TDCG.ShaderParameter.GetFloat3">
+            <summary>
+            float3値を取得します。
+            </summary>
+            <returns>float3値</returns>
+        </member>
+        <member name="M:TDCG.ShaderParameter.SetFloat3(System.String)">
+            <summary>
+            float3値を設定します。
+            </summary>
+            <param name="value">float3値の文字列表現</param>
+        </member>
+        <member name="M:TDCG.ShaderParameter.GetFloat4">
+            <summary>
+            float4値を取得します。
+            </summary>
+            <returns>float4値</returns>
+        </member>
+        <member name="M:TDCG.ShaderParameter.SetFloat4(System.String)">
+            <summary>
+            float4値を設定します。
+            </summary>
+            <param name="value">float4値の文字列表現</param>
+        </member>
+        <member name="M:TDCG.ShaderParameter.GetTexture">
+            <summary>
+            テクスチャ名を取得します。
+            </summary>
+            <returns>テクスチャ名</returns>
+        </member>
+        <member name="M:TDCG.ShaderParameter.SetTexture(System.String)">
+            <summary>
+            テクスチャ名を設定します。
+            </summary>
+            <param name="value">テクスチャ名</param>
+        </member>
+        <member name="P:TDCG.ShaderParameter.Name">
+            <summary>
+            パラメータの名称
+            </summary>
+        </member>
+        <member name="P:TDCG.ShaderParameter.F1">
+            <summary>
+            float値1
+            </summary>
+        </member>
+        <member name="P:TDCG.ShaderParameter.F2">
+            <summary>
+            float値2
+            </summary>
+        </member>
+        <member name="P:TDCG.ShaderParameter.F3">
+            <summary>
+            float値3
+            </summary>
+        </member>
+        <member name="P:TDCG.ShaderParameter.F4">
+            <summary>
+            float値4
+            </summary>
+        </member>
+        <member name="P:TDCG.ShaderParameter.Dimension">
+            <summary>
+            float次元数
+            </summary>
+        </member>
+        <member name="T:TDCG.ShaderParameter.Type">
+            <summary>
+            シェーダ設定の型名
+            </summary>
+        </member>
+        <member name="F:TDCG.ShaderParameter.Type.Unknown">
+            <summary>
+            わからない
+            </summary>
+        </member>
+        <member name="F:TDCG.ShaderParameter.Type.String">
+            <summary>
+            string
+            </summary>
+        </member>
+        <member name="F:TDCG.ShaderParameter.Type.Float">
+            <summary>
+            float
+            </summary>
+        </member>
+        <member name="F:TDCG.ShaderParameter.Type.Float3">
+            <summary>
+            float3
+            </summary>
+        </member>
+        <member name="F:TDCG.ShaderParameter.Type.Float4">
+            <summary>
+            float4
+            </summary>
+        </member>
+        <member name="F:TDCG.ShaderParameter.Type.Texture">
+            <summary>
+            テクスチャ
+            </summary>
+        </member>
+        <member name="T:TDCG.Shader">
+            <summary>
+            シェーダ設定
+            </summary>
+        </member>
+        <member name="F:TDCG.Shader.shader_parameters">
+            <summary>
+            シェーダ設定パラメータの配列
+            </summary>
+        </member>
+        <member name="M:TDCG.Shader.Load(System.String[])">
+            <summary>
+            シェーダ設定を読み込みます。
+            </summary>
+            <param name="lines">テキスト行配列</param>
+        </member>
+        <member name="M:TDCG.Shader.GetLines">
+            <summary>
+            シェーダ設定を文字列の配列として得ます。
+            </summary>
+        </member>
+        <member name="P:TDCG.Shader.LightDir">
+            <summary>
+            光源方向ベクトル
+            </summary>
+        </member>
+        <member name="P:TDCG.Shader.ShadeTexName">
+            <summary>
+            陰テクスチャのファイル名
+            </summary>
+        </member>
+        <member name="P:TDCG.Shader.ColorTexName">
+            <summary>
+            色テクスチャのファイル名
+            </summary>
+        </member>
+        <member name="T:TDCG.Morph">
+            モーフ
+        </member>
+        <member name="M:TDCG.Morph.#ctor(System.String,TDCG.TMOFile)">
+            <summary>
+            モーフを生成します。
+            </summary>
+        </member>
+        <member name="P:TDCG.Morph.Name">
+            名前
+        </member>
+        <member name="P:TDCG.Morph.Tmo">
+            tmo
+        </member>
+        <member name="P:TDCG.Morph.Ratio">
+            変形割合
+        </member>
+        <member name="T:TDCG.MorphGroup">
+            モーフグループ
+        </member>
+        <member name="M:TDCG.MorphGroup.#ctor(System.String,TDCG.NodesRange)">
+            <summary>
+            モーフグループを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.MorphGroup.ClearRatios">
+            変形割合を消去します。
+        </member>
+        <member name="M:TDCG.MorphGroup.FindItemByName(System.String)">
+            指定した名前を持つモーフを検索します。
+        </member>
+        <member name="M:TDCG.MorphGroup.SelectNodes(TDCG.TMOFile)">
+            <summary>
+            モーフ変形の対象となるノードを選択します。
+            </summary>
+            <param name="tmo">対象tmo</param>
+            <returns>ノードリスト</returns>
+        </member>
+        <member name="P:TDCG.MorphGroup.Name">
+            名前
+        </member>
+        <member name="P:TDCG.MorphGroup.Items">
+            モーフリスト
+        </member>
+        <member name="T:TDCG.Morphing">
+            モーフィング
+        </member>
+        <member name="M:TDCG.Morphing.#ctor">
+            <summary>
+            モーフィングを生成します。
+            </summary>
+        </member>
+        <member name="M:TDCG.Morphing.Load(System.String)">
+            <summary>
+            モーフライブラリを読み込みます。
+            </summary>
+            <param name="source_path">フォルダ名</param>
+        </member>
+        <member name="M:TDCG.Morphing.Morph(TDCG.TMOFile)">
+            <summary>
+            モーフ変形を実行します。
+            </summary>
+            <param name="tmo">対象tmo</param>
+        </member>
+        <member name="P:TDCG.Morphing.Groups">
+            モーフグループリスト
+        </member>
+        <member name="T:TDCG.TMOConstraintItem">
+            <summary>
+            nodeの回転角度制限要素
+            </summary>
+        </member>
+        <member name="M:TDCG.TMOConstraintItem.Limit(Microsoft.DirectX.Vector3)">
+            euler角の範囲を制限します。
+        </member>
+        <member name="P:TDCG.TMOConstraintItem.Name">
+            <summary>
+            node名（短い形式）
+            </summary>
+        </member>
+        <member name="P:TDCG.TMOConstraintItem.Min">
+            <summary>
+            角度の最小値
+            </summary>
+        </member>
+        <member name="P:TDCG.TMOConstraintItem.Max">
+            <summary>
+            角度の最大値
+            </summary>
+        </member>
+        <member name="P:TDCG.TMOConstraintItem.SectorX">
+            象限X
+        </member>
+        <member name="P:TDCG.TMOConstraintItem.SectorY">
+            象限Y
+        </member>
+        <member name="P:TDCG.TMOConstraintItem.SectorZ">
+            象限Z
+        </member>
+        <member name="T:TDCG.TMOConstraint">
+            <summary>
+            nodeの回転角度制限
+            </summary>
+        </member>
+        <member name="F:TDCG.TMOConstraint.items">
+            要素の配列
+        </member>
+        <member name="M:TDCG.TMOConstraint.Dump">
+            <summary>
+            xml形式で出力します。
+            </summary>
+        </member>
+        <member name="M:TDCG.TMOConstraint.Load(System.String)">
+            <summary>
+            xml形式ファイルから生成します。
+            </summary>
+            <param name="source_file">xmlファイル名</param>
+        </member>
+        <member name="M:TDCG.TMOConstraint.AddItemFromTMODirectory(System.String)">
+            <summary>
+            tmoファイルを含むディレクトリから要素を追加します。
+            </summary>
+            <param name="source_file">tmoファイルを含むディレクトリ名</param>
+        </member>
+        <member name="M:TDCG.TMOConstraint.GetItem(System.String)">
+            <summary>
+            node名（短い形式）に対応する要素を得ます。
+            </summary>
+            <param name="name">node名（短い形式）</param>
+        </member>
+        <member name="T:TDCG.PNGWriter">
+            <summary>
+            PNGFileを書き出すメソッド群
+            </summary>
+        </member>
+        <member name="F:TDCG.PNGWriter.crc">
+            <summary>
+            CSCチェックを行うオブジェクト
+            </summary>
+        </member>
+        <member name="M:TDCG.PNGWriter.Write(System.IO.BinaryWriter,System.Byte[])">
+            <summary>
+            指定ライタにbyte配列を書き出します。
+            </summary>
+            <param name="bw">ライタ</param>
+            <param name="bytes">bute配列</param>
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteChunk(System.IO.BinaryWriter,System.String,System.Byte[])">
+            <summary>
+            指定ライタにチャンクを書き出します。
+            </summary>
+            <param name="bw">ライタ</param>
+            <param name="type">チャンクタイプ</param>
+            <param name="chunk_data">チャンク</param>
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteIHDR(System.IO.BinaryWriter,System.Byte[])">
+            <summary>
+            指定ライタにIHDRチャンクを書き出します。
+            </summary>
+            <param name="bw">ライタ</param>
+            <param name="chunk_data">チャンク</param>
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteIDAT(System.IO.BinaryWriter,System.Byte[])">
+            <summary>
+            指定ライタにIDATチャンクを書き出します。
+            </summary>
+            <param name="bw">ライタ</param>
+            <param name="chunk_data">チャンク</param>
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteIEND(System.IO.BinaryWriter)">
+            <summary>
+            指定ライタにIENDチャンクを書き出します。
+            </summary>
+            <param name="bw">ライタ</param>
+        </member>
+        <member name="F:TDCG.PNGWriter.writer">
+            書き出し先となるライタ
+        </member>
+        <member name="M:TDCG.PNGWriter.#ctor(System.IO.BinaryWriter)">
+            PNGWriterを生成します。
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteTaOb(System.String,System.UInt32,System.UInt32,System.Byte[])">
+            TaObチャンクを書き込みます。
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteTaOb(System.String,System.Byte[])">
+            TaObチャンクを書き込みます。
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteTDCG">
+            TDCGチャンクを書き込みます。
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteHSAV">
+            HSAVチャンクを書き込みます。
+        </member>
+        <member name="M:TDCG.PNGWriter.WritePOSE">
+            POSEチャンクを書き込みます。
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteSCNE(System.Int32)">
+            SCNEチャンクを書き込みます。
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteCAMI(System.Byte[])">
+            CAMIチャンクを書き込みます。
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteLGTA(System.Byte[])">
+            LGTAチャンクを書き込みます。
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteFIGU(System.Byte[])">
+            FIGUチャンクを書き込みます。
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteFile(System.String,System.UInt32,System.UInt32,System.IO.Stream)">
+            ファイルを書き込みます。
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteFTMO(TDCG.TMOFile)">
+            FTMOチャンクを書き込みます。
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteFTMO(System.IO.Stream)">
+            FTMOチャンクを書き込みます。
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteFTSO(System.UInt32,System.Byte[])">
+            FTSOチャンクを書き込みます。
+        </member>
+        <member name="M:TDCG.PNGWriter.WriteFTSO(System.UInt32,System.IO.Stream)">
+            FTSOチャンクを書き込みます。
+        </member>
+    </members>
+</doc>
