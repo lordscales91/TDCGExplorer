@@ -290,7 +290,7 @@ namespace TDCGUtils
         public int vindices_count;
 
         // テクスチャファイル名
-        public String tex_path;
+        public String tex_file;
 
         internal void Write(BinaryWriter writer)
         {
@@ -300,10 +300,10 @@ namespace TDCGUtils
             writer.Write(specular.Y);
             writer.Write(specular.Z);
             writer.Write(ref this.ambient);
-            writer.Write(this.toon_tex_id);
-            writer.Write(this.edge_width);
-            writer.Write(this.vindices_count);
-            writer.WriteCString(this.tex_path, 20);
+            writer.Write(toon_tex_id);
+            writer.Write(edge_width);
+            writer.Write(vindices_count);
+            writer.WriteCString(tex_file, 20);
         }
     }
 
