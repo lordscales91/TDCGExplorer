@@ -60,8 +60,8 @@ namespace Tso2Pmd
             }
         }
 
-        // フォームより各パラメータを得て、設定
-        public string SetupOption(TransTso2Pmd t2p)
+        /// フォームからパラメータを得て設定します。
+        public void SetupOptions(TransTso2Pmd t2p)
         {
             t2p.Spheremap_flag = checkBox_Spheremap.Checked;
             t2p.Edge_flag_flag = checkBox_Edge.Checked;
@@ -73,13 +73,7 @@ namespace Tso2Pmd
 
             t2p.Bone_flag = radioButton_Bone1.Checked ? 1 : 0; 
 
-            string em;
-
-            // ヘッダ情報を入力
-            if ((em = t2p.InputHeader(textBox_ModelName.Text, textBox_Comment.Text)) != "")
-                return em;
-
-            return "";
+            t2p.InputHeader(textBox_ModelName.Text, textBox_Comment.Text);
         }
 
         public void SetFileName(string file_name)

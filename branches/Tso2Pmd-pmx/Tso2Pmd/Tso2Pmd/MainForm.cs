@@ -217,31 +217,23 @@ namespace Tso2Pmd
             pd.Show(this);
             pd.Message = "ファイルを変換しています。";
 
-            string em;
-
-            // コントロールより、オプションをセットアップ
-            if ((em = t2POptionControl1.SetupOption(t2p)) != "")
+            try
             {
-                pd.Dispose();
-                MessageBox.Show(em);
-                return;
+                t2POptionControl1.SetupOptions(t2p);
+                t2p.UpdatePmdFromFigure();
             }
-
-            // 変換
-            if ((em = t2p.Figure2PmdFileData()) != "")
+            catch (FormatException ex)
             {
                 pd.Dispose();
-                MessageBox.Show(em);
+                MessageBox.Show(ex.Message);
                 return;
             }
 
             // 出力フォルダのパスを得る
             string file_path = t2POptionControl1.GetOutputFilePath();
 
-            // PMDファイルを出力
-            t2p.Pmd.Save(file_path + "/" + t2POptionControl1.GetModelName() + ".pmx");
+            t2p.SavePmdFile(file_path + "/" + t2POptionControl1.GetModelName() + ".pmx");
 
-            // マテリアル関係のファイルを出力
             t2p.OutputMaterialFile(file_path, t2POptionControl1.GetModelName());
 
             // 体型レシピを出力
