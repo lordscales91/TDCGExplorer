@@ -32,6 +32,8 @@ namespace TDCGUtils
         // 表情配列
         public PMD_Skin[] skins;
 
+        public PMD_DispGroup[] disp_groups;
+
         // 表情枠：表情インデックス配列
         public int[] skin_disp_indices;
 
@@ -410,25 +412,54 @@ namespace TDCGUtils
         }
     }
 
-    public class PMD_BoneDisp
+    public class PMD_DispGroup
+    {
+        public string name;
+        public string name_en;
+        public byte flags;
+        public PMD_Disp[] disps;
+
+        public void Write(BinaryWriter bw)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public abstract class PMD_Disp
+    {
+        public abstract void Write(BinaryWriter bw);
+    }
+
+    public class PMD_BoneDisp : PMD_Disp
     {
         // 枠用ボーン番号
-        internal short bone_index;
+        internal short bone_id;
         
         // 表示枠番号
         public sbyte disp_group_id; 
 
         public string bone_name;
 
-        internal void Write(BinaryWriter writer)
+        public override void Write(BinaryWriter writer)
         {
-            writer.Write(bone_index);
+            writer.Write(bone_id);
             writer.Write(disp_group_id);
         }
 
         public void SetBoneIDFromName(PmdFile pmd)
         {
-            bone_index = pmd.GetBoneIDByName(bone_name);
+            bone_id = pmd.GetBoneIDByName(bone_name);
+        }
+    }
+
+    public class PMD_SkinDisp : PMD_Disp
+    {
+        public sbyte skin_id;
+
+        public override void Write(BinaryWriter bw)
+        {
+            bw.Write((byte)1);
+            bw.Write(skin_id);
         }
     }
 
