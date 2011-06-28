@@ -147,7 +147,7 @@ namespace Tso2Pmd
             pmd.nodes[0].kind = 1;
             pmd.nodes[0].ParentName = null;
             pmd.nodes[0].TailName = "センター先";
-            pmd.nodes[0].IKTargetName = null;
+            pmd.nodes[0].TargetName = null;
             pmd.nodes[0].position = new Vector3(0.0f, 5.0f, 0.0f);	// モデル原点からの位置
 
             // センター先
@@ -157,7 +157,7 @@ namespace Tso2Pmd
             pmd.nodes[1].kind = 7;
             pmd.nodes[1].ParentName = "センター";
             pmd.nodes[1].TailName = null;
-            pmd.nodes[1].IKTargetName = null;
+            pmd.nodes[1].TargetName = null;
             pmd.nodes[1].position = new Vector3(0.0f, 0.0f, 0.0f);	// モデル原点からの位置
 
             // -----------------------------------------------------
@@ -280,7 +280,7 @@ namespace Tso2Pmd
                 pmd_b.kind = bone.kind;
                 pmd_b.ParentName = bone.ParentName;
                 pmd_b.TailName = bone.TailName;
-                pmd_b.IKTargetName = bone.IKTargetName;
+                pmd_b.TargetName = bone.TargetName;
 
                 string bone_name = null;
                 cor_table.bonePosition.TryGetValue(pmd_b.name, out bone_name);

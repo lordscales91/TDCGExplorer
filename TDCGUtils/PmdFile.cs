@@ -74,23 +74,9 @@ namespace TDCGUtils
             pmd_header.Write(bw);
 
             bw.Write(vertices.Length);
-
-            // ボーン名をIDに置き換え
-            foreach (PMD_Vertex vertex in vertices)
-            {
-                if (vertex.unBoneName[0] == null)
-                    vertex.bone_indices[0] = -1;
-                else
-                    vertex.bone_indices[0] = GetBoneIDByName(vertex.unBoneName[0]);
-                
-                if (vertex.unBoneName[1] == null)
-                    vertex.bone_indices[1] = -1;
-                else
-                    vertex.bone_indices[1] = GetBoneIDByName(vertex.unBoneName[1]);
-            }
-
             for (int i = 0; i < vertices.Length; i++)
             {
+                vertices[i].SetBoneIDFromName(this);
                 vertices[i].Write(bw);
             }
 
@@ -107,68 +93,18 @@ namespace TDCGUtils
             }
 
             bw.Write((short)nodes.Length);
-
-            // ボーン名をIDに置き換え
-            foreach (PMD_Bone bone in nodes)
-            {
-                if (bone.ParentName == null)
-                    bone.nParentNo = -1;
-                else
-                    bone.nParentNo = GetBoneIDByName(bone.ParentName);
-                
-                if (bone.TailName == null)
-                    bone.nTailNo = 0;
-                else
-                    bone.nTailNo = GetBoneIDByName(bone.TailName);
-                
-                if (bone.IKTargetName == null)
-                    bone.unIKTarget = 0;
-                else
-                    bone.unIKTarget = GetBoneIDByName(bone.IKTargetName);
-            }
-
             for (int i = 0; i < nodes.Length; i++)
             {
+                nodes[i].SetBoneIDFromName(this);
                 nodes[i].Write(bw);
             }
 
             bw.Write((short)iks.Length);
-
-            // ボーン名をIDに置き換え
-            foreach (PMD_IK ik in iks)
-            {
-                if (ik.target_node_name == null)
-                    ik.nTargetNo = -1;
-                else
-                    ik.nTargetNo = GetBoneIDByName(ik.target_node_name);
-                
-                if (ik.effector_node_name == null)
-                    ik.nEffNo = -1;
-                else
-                    ik.nEffNo = GetBoneIDByName(ik.effector_node_name);
-
-                if (ik.nTargetNo <= -1)
-                    ik.target_node_name = null;
-                else
-                    ik.target_node_name = nodes[ik.nTargetNo].name;
-                
-                if (ik.nEffNo <= -1)
-                    ik.effector_node_name = null;
-                else
-                    ik.effector_node_name = nodes[ik.nEffNo].name;
-
-                ik.chain_node_ids = new int[ik.chain_node_names.Count];
-                for (int i = 0; i < ik.chain_length; i++)
-                {
-                    if (ik.chain_node_names[i] == null)
-                        ik.chain_node_ids[i] = -1;
-                    else
-                        ik.chain_node_ids[i] = GetBoneIDByName(ik.chain_node_names[i]);
-                }
-            }
-
             for (int i = 0; i < iks.Length; i++)
+            {
+                iks[i].SetBoneIDFromName(this);
                 iks[i].Write(bw);
+            }
 
             bw.Write((short)skins.Length);
             for (int i = 0; i < skins.Length; i++)
@@ -189,15 +125,9 @@ namespace TDCGUtils
             }
 
             bw.Write(bone_disps.Length);
-
-            // ボーン名をIDに置き換え
             for (int i = 0; i < bone_disps.Length; i++)
             {
-                bone_disps[i].bone_index = GetBoneIDByName(bone_disps[i].bone_name);
-            }
-
-            for (int i = 0; i < bone_disps.Length; i++)
-            {
+                bone_disps[i].SetBoneIDFromName(this);
                 bone_disps[i].Write(bw);
             }
 
@@ -223,21 +153,23 @@ namespace TDCGUtils
 
         public PMD_Bone GetBoneByName(string name)
         {
-            foreach (PMD_Bone bone in nodes)
-            {
-                if (bone.name == name)
-                    return bone;
-            }
+            if (name != null)
+                foreach (PMD_Bone bone in nodes)
+                {
+                    if (bone.name == name)
+                        return bone;
+                }
             return null;
         }
 
-        short GetBoneIDByName(string name)
+        public short GetBoneIDByName(string name)
         {
-            for (short i = 0; i < nodes.Length; i++)
-            {
-                if (nodes[i].name == name)
-                    return i;
-            }
+            if (name != null)
+                for (short i = 0; i < nodes.Length; i++)
+                {
+                    if (nodes[i].name == name)
+                        return i;
+                }
             return -1;
         }
     }
@@ -292,6 +224,13 @@ namespace TDCGUtils
             writer.Write(this.weight);
             writer.Write(this.edge);
         }
+
+        // ボーン名をIDに置き換える
+        public void SetBoneIDFromName(PmdFile pmd)
+        {
+            bone_indices[0] = pmd.GetBoneIDByName(unBoneName[0]);
+            bone_indices[1] = pmd.GetBoneIDByName(unBoneName[1]);
+        }
     }
 
     public class PMD_Material
@@ -323,17 +262,17 @@ namespace TDCGUtils
         // ボーン名 (0x00 終端，余白は 0xFD)
         public String name;
 
-        // 親ボーン番号 (なければ -1)
-        internal int nParentNo;
+        // 親ボーン番号
+        public short parent_node_id;
 
         // 子ボーン番号
-        internal int nTailNo;
+        public short tail_node_id;
 
         // ボーンの種類
         public int kind;
 
         // IK時のターゲットボーン
-        internal int unIKTarget;
+        public short target_node_id;
 
         // モデル原点からの位置
         public Vector3 position = Vector3.Empty;
@@ -345,26 +284,34 @@ namespace TDCGUtils
         public string TailName;
 
         // IK時のターゲットボーン
-        public string IKTargetName;
+        public string TargetName;
 
         internal void Write(BinaryWriter writer)
         {
             writer.WriteCString(this.name, 20);
-            writer.Write((short)this.nParentNo);
-            writer.Write((short)this.nTailNo);
+            writer.Write(parent_node_id);
+            writer.Write(tail_node_id);
             writer.Write((byte)this.kind);
-            writer.Write((short)this.unIKTarget);
+            writer.Write(target_node_id);
             writer.Write(ref this.position);
+        }
+
+        // ボーン名をIDに置き換える
+        public void SetBoneIDFromName(PmdFile pmd)
+        {
+            parent_node_id = pmd.GetBoneIDByName(ParentName);
+            tail_node_id = pmd.GetBoneIDByName(TailName);
+            target_node_id = pmd.GetBoneIDByName(TargetName);
         }
     }
 
     public class PMD_IK
     {
         // IKターゲットボーン番号
-        internal int nTargetNo;
+        internal int target_node_id;
         
         // IK先端ボーン番号
-        internal int nEffNo;
+        internal int effector_node_id;
         
         // IKを構成するボーンの数
         public int chain_length
@@ -390,8 +337,8 @@ namespace TDCGUtils
         
         internal void Write(BinaryWriter writer)
         {
-            writer.Write((short)this.nTargetNo);
-            writer.Write((short)this.nEffNo);
+            writer.Write((short)this.target_node_id);
+            writer.Write((short)this.effector_node_id);
             writer.Write((sbyte)this.chain_length);
             writer.Write((ushort)this.niteration);
             writer.Write(this.weight);
@@ -401,6 +348,20 @@ namespace TDCGUtils
                 writer.Write((ushort)this.chain_node_ids[i]);
             }
         }
+
+        // ボーン名をIDに置き換える
+        public void SetBoneIDFromName(PmdFile pmd)
+        {
+            target_node_id = pmd.GetBoneIDByName(target_node_name);
+            effector_node_id = pmd.GetBoneIDByName(effector_node_name);
+
+            chain_node_ids = new int[chain_node_names.Count];
+            for (int i = 0; i < chain_length; i++)
+            {
+                chain_node_ids[i] = pmd.GetBoneIDByName(chain_node_names[i]);
+            }
+        }
+
     }
 
     public class PMD_Skin
@@ -476,6 +437,11 @@ namespace TDCGUtils
         {
             writer.Write(bone_index);
             writer.Write(disp_group_id);
+        }
+
+        public void SetBoneIDFromName(PmdFile pmd)
+        {
+            bone_index = pmd.GetBoneIDByName(bone_name);
         }
     }
 
