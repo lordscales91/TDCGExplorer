@@ -63,7 +63,7 @@ namespace Tso2Pmd
         /// フォームからパラメータを得て設定します。
         public void SetupOptions(TransTso2Pmd t2p)
         {
-            t2p.Spheremap_flag = checkBox_Spheremap.Checked;
+            t2p.Spheremap_used = checkBox_Spheremap.Checked;
             t2p.Edge_flag_flag = checkBox_Edge.Checked;
             t2p.Merge_flag = checkBox_Merge.Checked;
 
