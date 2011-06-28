@@ -22,9 +22,9 @@ namespace Tso2Pmd
         }
 
         // 名前からボーンIDを得る
-        private int GetBoneIDByName(string name)
+        private short GetBoneIDByName(string name)
         {
-            for (int i = 0; i < bone_list.Count; i++)
+            for (short i = 0; i < (short)bone_list.Count; i++)
             {
                 if (bone_list[i].name == name) return i;
             }
@@ -32,9 +32,9 @@ namespace Tso2Pmd
             return -1;
         }
         // 名前から剛体IDを得る
-        private int GetBodyIDByName(string name)
+        private sbyte GetBodyIDByName(string name)
         {
-            for (int i = 0; i < rbody_list.Count; i++)
+            for (sbyte i = 0; i < (sbyte)rbody_list.Count; i++)
             {
                 if (rbody_list[i].name == name) return i;
             }
@@ -42,9 +42,9 @@ namespace Tso2Pmd
             return -1;
         }
         // 名前からジョイントIDを得る
-        private int GetJointIDByName(string name)
+        private sbyte GetJointIDByName(string name)
         {
-            for (int i = 0; i < joint_list.Count; i++)
+            for (sbyte i = 0; i < (sbyte)joint_list.Count; i++)
             {
                 if (joint_list[i].name == name) return i;
             }
@@ -129,7 +129,7 @@ namespace Tso2Pmd
         }
 
         // 指定したボーン位置に合わせた剛体を生成
-        public void MakeBodyFromBoneEnd(int bone_num)
+        public void MakeBodyFromBoneEnd(short bone_num)
         {
             PMD_RBody rbody = new PMD_RBody();
 
