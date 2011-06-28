@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Runtime.InteropServices;
 
 using TDCG;
@@ -66,9 +65,7 @@ namespace Tso2Pmd
                     if (spheremap_flag == true)
                     {
                         Bitmap sphere_bmp = MakeSphereBitmap(bmp);
-                        string sphere_file_name
-                            = System.Text.RegularExpressions.Regex.Replace(
-                                file_name[bmp], ".bmp", ".sph");
+                        string sphere_file_name = Path.ChangeExtension(file_name[bmp], ".sph");
                         sphere_bmp.Save(outputFilePath + "/" + sphere_file_name,
                             System.Drawing.Imaging.ImageFormat.Bmp);
                     }
@@ -107,7 +104,7 @@ namespace Tso2Pmd
             Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
             System.Drawing.Imaging.BitmapData bmpData =
                 bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite,
-                PixelFormat.Format32bppArgb);
+                bmp.PixelFormat);
 
             // Bitmapの先頭アドレスを取得
             IntPtr ptr = bmpData.Scan0;

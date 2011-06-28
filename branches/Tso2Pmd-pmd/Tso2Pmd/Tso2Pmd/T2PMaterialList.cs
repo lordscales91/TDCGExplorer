@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
+using System.IO;
 using System.Text;
+using System.Drawing;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 
@@ -118,10 +119,8 @@ namespace Tso2Pmd
                     Bitmap toon_bmp = tex_list.GetBitmap(tso_num, shader.ShadeTexName);
                     if (toon_bmp.Width == 256 && toon_bmp.Height == 16)
                     {
-                        string sphere_file
-                            = System.Text.RegularExpressions.Regex.Replace(toon_file, ".bmp", ".sph");
-                        pmd_m.tex_path
-                            = pmd_m.tex_path + "*" + sphere_file;
+                        string sphere_file = Path.ChangeExtension(toon_file, ".sph");
+                        pmd_m.tex_path = pmd_m.tex_path + "*" + sphere_file;
                     }
                 }
             }
