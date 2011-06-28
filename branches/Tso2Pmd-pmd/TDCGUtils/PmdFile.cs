@@ -34,9 +34,6 @@ namespace TDCGUtils
 
         public List<PMD_DispGroup> disp_groups = new List<PMD_DispGroup>();
 
-        // 表情枠：表情インデックス配列
-        public int[] skin_disp_indices;
-
         // 英名対応(01:英名対応あり)
         public int english_name_compatibility;
 
@@ -108,10 +105,21 @@ namespace TDCGUtils
                 skins[i].Write(bw);
             }
 
-            bw.Write((byte)skin_disp_indices.Length);
-            for (int i = 0; i < skin_disp_indices.Length; i++)
+            List<PMD_SkinDisp> skin_disps = new List<PMD_SkinDisp>();
             {
-                bw.Write((short)skin_disp_indices[i]);
+                PMD_DispGroup disp_group = disp_groups[1];
+
+                foreach (PMD_Disp disp in disp_group.disps)
+                {
+                    if (disp is PMD_SkinDisp)
+                        skin_disps.Add((PMD_SkinDisp)disp);
+                }
+            }
+
+            bw.Write((byte)skin_disps.Count);
+            foreach (PMD_SkinDisp skin_disp in skin_disps)
+            {
+                skin_disp.Write(bw);
             }
 
             UpdateBoneDispGroupID();
@@ -484,11 +492,10 @@ namespace TDCGUtils
 
     public class PMD_SkinDisp : PMD_Disp
     {
-        public sbyte skin_id;
+        public short skin_id;
 
         public override void Write(BinaryWriter bw)
         {
-            bw.Write((byte)1);
             bw.Write(skin_id);
         }
     }
