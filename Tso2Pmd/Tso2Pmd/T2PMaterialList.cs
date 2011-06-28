@@ -70,9 +70,9 @@ namespace Tso2Pmd
             pmd_m.ambient = new Vector3(0.5f, 0.5f, 0.5f);
 
             if (edge == true)
-                pmd_m.edge = 1;
+                pmd_m.edge_width = 1;
             else
-                pmd_m.edge = 0;
+                pmd_m.edge_width = 0;
 
             // 頂点インデックス数（0となっているため、後に設定する必要がある）
             pmd_m.vindices_count = 0;
@@ -154,7 +154,7 @@ namespace Tso2Pmd
         // ２つのマテリアルが等しいか判定する
         public bool EqualMaterials(PMD_Material m1, PMD_Material m2)
         {
-            if (m1.edge != m2.edge)
+            if (m1.edge_width != m2.edge_width)
                 return false;
 
             if (m1.tex_path != m2.tex_path)
