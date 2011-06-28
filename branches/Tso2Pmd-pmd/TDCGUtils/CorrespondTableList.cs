@@ -7,52 +7,71 @@ using System.Windows.Forms;
 
 namespace TDCGUtils
 {
+    /// <summary>
+    /// ボーン対応表リストを扱います。
+    /// </summary>
     public class CorrespondTableList
     {
-        List<string> name_list = new List<string>();
-        bool man_flag = false;
-        Dictionary<string, bool> flag
-            = new Dictionary<string, bool>();
-        Dictionary<string, CorrespondTable> ct_dic
-            = new Dictionary<string, CorrespondTable>();
+        Dictionary<string, CorrespondTable> ct_dic = new Dictionary<string, CorrespondTable>();
 
-        public List<string> NameList { get { return name_list; } }
-        public bool SetManFlag { set { man_flag = value; } }
-        public Dictionary<string, bool> Flag { get { return flag; } set { flag = value; } }
+        public List<string> NameList
+        {
+            get { return Used.Keys.ToList(); }
+        }
+        public bool ManUsed { get; set; }
+        public Dictionary<string, bool> Used { get; set; }
 
+        public CorrespondTableList()
+        {
+            ManUsed = false;
+            Used = new Dictionary<string, bool>();
+        }
+
+        /// 使うボーン対応表を結合して得ます。
         public CorrespondTable GetCorrespondTable()
         {
             CorrespondTable ct = new CorrespondTable();
 
-            if (man_flag == false)
+            if (!ManUsed)
             {
-                ct.Add(ct_dic["Girl2Miku_Default"]);
+                ct.Update(ct_dic["Girl2Miku_Default"]);
 
-                foreach (KeyValuePair<string, bool> kvp in flag)
-                    if (kvp.Value == true) ct.Add(ct_dic[kvp.Key]);
+                foreach (string name in Used.Keys)
+                {
+                    if (Used[name])
+                        ct.Update(ct_dic[name]);
+                }
             }
             else
             {
-                ct.Add(ct_dic["Man2Miku_Default"]);
+                ct.Update(ct_dic["Man2Miku_Default"]);
             }
 
             return ct;
         }
 
+        public string GetSourcePath()
+        {
+            return Path.Combine(Application.StartupPath, @"CorrespondTable");
+        }
+
+        static string[] DefaultNameList = new string[] { "Girl2Miku_Default", "Man2Miku_Default" };
+
+        /// ボーン対応表を読み込みます。
         public void Load()
         {
-            string source_path = Path.Combine(Application.StartupPath, @"CorrespondTable");
-            foreach (string path in Directory.GetDirectories(source_path))
+            foreach (string path in Directory.GetDirectories(GetSourcePath()))
             {
-                string name = Path.GetFileName(path);
-                CorrespondTable ct = new CorrespondTable(path);
-
-                if (!(name == "Girl2Miku_Default" || name == "Man2Miku_Default"))
-                {
-                    name_list.Add(name);
-                    flag.Add(name, false);
-                }
+                CorrespondTable ct = new CorrespondTable();
                 
+                ct.Load(path);
+
+                string name = Path.GetFileName(path);
+                
+                if (!DefaultNameList.Contains(name))
+                {
+                    Used.Add(name, false);
+                }
                 ct_dic.Add(name, ct);
             }
         }

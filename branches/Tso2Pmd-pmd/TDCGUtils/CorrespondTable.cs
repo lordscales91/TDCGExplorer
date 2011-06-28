@@ -16,6 +16,9 @@ namespace TDCGUtils
         public List<string> bone_names;
     }
 
+    /// <summary>
+    /// ボーン対応表を扱います。
+    /// </summary>
     public class CorrespondTable
     {
         public Dictionary<string, string> skinning = new Dictionary<string, string>();
@@ -24,11 +27,7 @@ namespace TDCGUtils
         public List<BoneDispGroup> boneDispGroups = new List<BoneDispGroup>();
         public List<PMD_IK> iks = new List<PMD_IK>();
 
-        public CorrespondTable()
-        {
-        }
-
-        public CorrespondTable(string path)
+        public void Load(string path)
         {
             System.IO.StreamReader sr;
 
@@ -70,7 +69,6 @@ namespace TDCGUtils
 
                 pmd_b.name = data[0].Trim();
 
-                // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
                 pmd_b.kind = int.Parse(data[1].Trim());
 
                 if (data[2] == "")
@@ -142,7 +140,11 @@ namespace TDCGUtils
             sr.Close();
         }
 
-        public void Add(CorrespondTable ct)
+        /// <summary>
+        /// 指定対応表を結合します。
+        /// </summary>
+        /// <param name="ct">結合する対応表</param>
+        public void Update(CorrespondTable ct)
         {
             foreach (KeyValuePair<string, string> kvp in ct.skinning)
             {
