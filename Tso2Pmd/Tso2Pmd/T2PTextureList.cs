@@ -12,41 +12,40 @@ namespace Tso2Pmd
     public class T2PTextureList
     {
         // テクスチャBitmapのリスト（同一イメージの重複を許さない）
-        List<Bitmap> bmp_list = new List<Bitmap>();
+        List<Bitmap> bmps = new List<Bitmap>();
         // tso番号+テクスチャ名より、bmp_listへのインデックス
         // （Bitmapはアドレスの情報しか持たないので，実体は重複している可能性あり）
-        Dictionary<string, Bitmap> bmp_index = new Dictionary<string, Bitmap>();
+        Dictionary<string, Bitmap> bmap = new Dictionary<string, Bitmap>();
         // bmp_listより、出力ファイル名へのインデックス
-        Dictionary<Bitmap, string> file_name = new Dictionary<Bitmap, string>();
+        Dictionary<Bitmap, string> file_names = new Dictionary<Bitmap, string>();
 
         // テクスチャを指定し、Bitmapとして記憶し、参照可能なようにインデックス
         // をつける。ただし、以前記憶したものの中に同じBitmapがあるなら、新規の
         // Bitmapは作成せず、インデックスのみつける。
         public void Add(TSOTex tex, int tso_id)
         {
-            // 幅が0な、不正なテクスチャの場合処理しない
-            if (tex.width == 0 || tex.height == 0) return;
+            if (tex.width == 0 || tex.height == 0)
+                return;
 
-            // byte列をBitmapに変換
             Bitmap bmp = new Bitmap(tex.width, tex.height);
-            ByteArray2Bitmap(tex.data, bmp);
+            SetBitmapBytes(bmp, tex.data);
 
             // bmp_listと比較して、同じものがあればそれのアドレスのみ参照しておく
-            foreach (Bitmap tmp_bmp in bmp_list)
+            foreach (Bitmap tmp_bmp in bmps)
             {
-                if (EqualBitmaps(bmp, tmp_bmp) == 0)
+                if (EqualBitmaps(bmp, tmp_bmp))
                 {
-                    bmp_index.Add(tso_id.ToString() + "-" + tex.Name, tmp_bmp);
+                    bmap.Add(tso_id.ToString() + "-" + tex.Name, tmp_bmp);
                     return;
                 }
             }
 
             // 同じものがなければ、新規にbmp_listにBitmapを追加
-            bmp_list.Add(bmp);
-            bmp_index.Add(tso_id.ToString() + "-" + tex.Name, bmp);
+            bmps.Add(bmp);
+            bmap.Add(tso_id.ToString() + "-" + tex.Name, bmp);
 
             // 同時にこれを出力するときのファイル名を作成
-            file_name.Add(bmp, "t" + (bmp_list.Count - 1).ToString("000") + ".bmp");
+            file_names.Add(bmp, "t" + (bmps.Count - 1).ToString("000") + ".bmp");
         }
 
         /// <summary>
@@ -56,27 +55,27 @@ namespace Tso2Pmd
         /// <param name="spheremap_used">スフィアマップを使うか</param>
         public void Save(string dest_path, bool spheremap_used)
         {
-            foreach (Bitmap bmp in bmp_list)
+            foreach (Bitmap bmp in bmps)
             {
                 if (bmp.Width == 256 && bmp.Height == 16)
                 {
                     // テクスチャがtoonテクスチャなら加工（最適化）してから、書き出す
                     Bitmap toon_bmp = TurnBitmap(bmp);
-                    toon_bmp.Save(dest_path + "/" + file_name[bmp],
+                    toon_bmp.Save(dest_path + "/" + file_names[bmp],
                         System.Drawing.Imaging.ImageFormat.Bmp);
 
                     // 色飛び補完用のスフィアマップを書き出す
                     if (spheremap_used)
                     {
                         Bitmap sphere_bmp = MakeSphereBitmap(bmp);
-                        string sphere_file_name = Path.ChangeExtension(file_name[bmp], ".sph");
+                        string sphere_file_name = Path.ChangeExtension(file_names[bmp], ".sph");
                         sphere_bmp.Save(dest_path + "/" + sphere_file_name,
                             System.Drawing.Imaging.ImageFormat.Bmp);
                     }
                 }
                 else
                 {
-                    bmp.Save(dest_path + "/" + file_name[bmp],
+                    bmp.Save(dest_path + "/" + file_names[bmp],
                         System.Drawing.Imaging.ImageFormat.Bmp);
                 }
             }
@@ -86,7 +85,7 @@ namespace Tso2Pmd
         public Bitmap GetBitmap(int tso_id, string tex_name)
         {
             Bitmap bmp;
-            bmp_index.TryGetValue(tso_id.ToString() + "-" + tex_name, out bmp);
+            bmap.TryGetValue(tso_id.ToString() + "-" + tex_name, out bmp);
             return bmp;
         }
 
@@ -94,16 +93,16 @@ namespace Tso2Pmd
         public string GetFileName(int tso_id, string tex_name)
         {
             Bitmap bmp; 
-            bmp_index.TryGetValue(tso_id.ToString() + "-" + tex_name, out bmp);
+            bmap.TryGetValue(tso_id.ToString() + "-" + tex_name, out bmp);
             if (bmp == null) return null;
 
             string str;
-            file_name.TryGetValue(bmp, out str);
+            file_names.TryGetValue(bmp, out str);
             return str;
         }
 
         // byte[]をBitmapに変換する
-        private void ByteArray2Bitmap(byte[] rgbValues, Bitmap bmp)
+        private void SetBitmapBytes(Bitmap bmp, byte[] bytes)
         {
             Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
             System.Drawing.Imaging.BitmapData bmpData =
@@ -114,27 +113,23 @@ namespace Tso2Pmd
             IntPtr ptr = bmpData.Scan0;
 
             // Bitmapへコピー
-            Marshal.Copy(rgbValues, 0, ptr, rgbValues.Length);
+            Marshal.Copy(bytes, 0, ptr, bytes.Length);
 
             bmp.UnlockBits(bmpData);
         }
 
         // ２つのBitmapが等しいか判定する
-        private int EqualBitmaps(Bitmap bmp1, Bitmap bmp2)
+        private bool EqualBitmaps(Bitmap bmp1, Bitmap bmp2)
         {
-            if (bmp1.Height != bmp2.Height) return -1;
+            if (bmp1.Size != bmp2.Size)
+                return false;
 
-            if (bmp1.Width != bmp2.Width) return -1;
+            for (int x = 0; x < bmp1.Width; x++)
+                for (int y = 0; y < bmp1.Height; y++)
+                    if (bmp1.GetPixel(x, y) != bmp2.GetPixel(x, y)) 
+                        return false;
 
-            for (int i = 0; i < bmp1.Width; i++)
-            {
-                for (int j = 0; j < bmp1.Height; j++)
-                {
-                    if (bmp1.GetPixel(i, j) != bmp2.GetPixel(i, j)) return -1;
-                }
-            }
-
-            return 0;
+            return true;
         }
 
         // toonテクスチャを最適化する
