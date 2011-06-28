@@ -64,10 +64,13 @@ namespace TDCGUtils
                 string line = sr.ReadLine();
                 string[] data = line.Split(',');
 
+                string bone_name = data[0].Trim();
+                string disp_name = data[5].Trim();
+
                 // PMD_Boneデータを生成
                 PMD_Bone pmd_b = new PMD_Bone();
 
-                pmd_b.name = data[0].Trim();
+                pmd_b.name = bone_name;
 
                 pmd_b.kind = int.Parse(data[1].Trim());
 
@@ -89,24 +92,24 @@ namespace TDCGUtils
                 boneStructure.Add(pmd_b.name, pmd_b);
 
                 // 枠に表示するボーン名の設定
-                if (data[5].Trim() != "")
+                if (disp_name != "")
                 {
-                    bool flag = false;
+                    bool found = false;
                     foreach (BoneDispGroup group in boneDispGroups)
                     {
-                        if (group.name == data[5].Trim())
+                        if (group.name == disp_name)
                         {
-                            group.bone_names.Add(data[0].Trim());
-                            flag = true;
+                            group.bone_names.Add(bone_name);
+                            found = true;
                         }
                     }
 
-                    if (flag == false)
+                    if (!found)
                     {
                         BoneDispGroup group = new BoneDispGroup();
-                        group.name = data[5].Trim();
+                        group.name = disp_name;
                         group.bone_names = new List<string>();
-                        group.bone_names.Add(data[0].Trim());
+                        group.bone_names.Add(bone_name);
                         boneDispGroups.Add(group);
                     }
                 }
