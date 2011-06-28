@@ -228,10 +228,14 @@ namespace Tso2Pmd
             }
 
             // 変換
-            if ((em = t2p.Figure2PmdFileData()) != "")
+            try
+            {
+                t2p.UpdatePmdFromFigure();
+            }
+            catch (FormatException ex)
             {
                 pd.Dispose();
-                MessageBox.Show(em);
+                MessageBox.Show(ex.Message);
                 return;
             }
 

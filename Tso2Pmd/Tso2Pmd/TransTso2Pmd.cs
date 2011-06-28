@@ -101,25 +101,18 @@ namespace Tso2Pmd
             material_list.Save(path, name, spheremap_flag);
         }
 
-        // -----------------------------------------------------
-        // FigureデータよりPmdFileデータを作成
-        // -----------------------------------------------------
-        public string Figure2PmdFileData()
+        /// Figureを元にPmdFileを更新します。
+        public void UpdatePmdFromFigure()
         {
             if (bone_flag == 0)
-            {
-                return Figure2PmdFileDataWithHumanBone();
-            }
+                UpdatePmdFromFigureWithHumanBone();
             else
-            {
-                return Figure2PmdFileDataWithOneBone();
-            }
+                UpdatePmdFromFigureWithOneBone();
         }
 
-        // -----------------------------------------------------
-        // FigureデータよりPmdFileデータを作成
-        // -----------------------------------------------------
-        public string Figure2PmdFileDataWithOneBone()
+        /// Figureを元にPmdFileを更新します。
+        /// ボーンはセンターのみです。
+        public void UpdatePmdFromFigureWithOneBone()
         {
             // -----------------------------------------------------
             // 予め、情報をコピーするmeshを選定し、並び替えておく
@@ -132,8 +125,8 @@ namespace Tso2Pmd
             MakePMDVertices(null, 2);
 
             // 頂点数が上限を超えてないかチェックし、超えていたらエラーを出して終了
-            if (pmd.vertices.Length > 65535)
-                return "頂点数(" + pmd.vertices.Length.ToString() + ")が上限(65535)を超えています。";
+            if (pmd.vertices.Length > ushort.MaxValue)
+                throw new FormatException(string.Format("頂点数({0})が上限({1})を超えています。", pmd.vertices.Length, ushort.MaxValue));
 
             // -----------------------------------------------------
             // 表情枠
@@ -172,14 +165,11 @@ namespace Tso2Pmd
             pmd.bone_disps[0].disp_group_id = 0; // 表示枠番号
 
             pmd.english_name_compatibility = 0;
-
-            return "";
         }
 
-        // -----------------------------------------------------
-        // FigureデータよりPmdFileデータを作成
-        // -----------------------------------------------------
-        public string Figure2PmdFileDataWithHumanBone()
+        /// Figureを元にPmdFileを更新します。
+        /// ボーンは人型です。
+        public void UpdatePmdFromFigureWithHumanBone()
         {
             CorrespondTable cor_table = null;
             int mod_type = 0;
@@ -198,7 +188,7 @@ namespace Tso2Pmd
             }
             else
             {
-                return "未対応のボーン構造です。\n人型以外を変換する場合は、\n出力ボーンに”1ボーン”を指定してください。";
+                throw new FormatException("未対応のボーン構造です。\n人型以外を変換する場合は、\n出力ボーンに\"1ボーン\"を指定してください。");
             }
  
             // -----------------------------------------------------
@@ -212,8 +202,8 @@ namespace Tso2Pmd
             MakePMDVertices(cor_table, mod_type);
 
             // 頂点数が上限を超えてないかチェックし、超えていたらエラーを出して終了
-            if (pmd.vertices.Length > 65535)
-                return "頂点数(" + pmd.vertices.Length.ToString() + ")が上限(65535)を超えています。";
+            if (pmd.vertices.Length > ushort.MaxValue)
+                throw new FormatException(string.Format("頂点数({0})が上限({1})を超えています。", pmd.vertices.Length, ushort.MaxValue));
 
             // -----------------------------------------------------
             // 表情
@@ -389,8 +379,6 @@ namespace Tso2Pmd
 
             pmd.bodies = (PMD_RBody[])physOb_list.rbody_list.ToArray();
             pmd.joints = (PMD_Joint[])physOb_list.joint_list.ToArray();
-
-            return "";
         }
 
         // -----------------------------------------------------
