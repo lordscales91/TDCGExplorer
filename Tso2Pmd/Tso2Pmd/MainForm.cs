@@ -186,7 +186,7 @@ namespace Tso2Pmd
                 category = new List<string>();
                 category.Add("カテゴリーなし");
             }
-            t2p.Category = category;
+            t2p.Categories = category;
 
             // コントロールより、体型リストをセットアップ
             t2POptionControl1.SetupTPOListRatio();

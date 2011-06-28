@@ -34,7 +34,7 @@ namespace Tso2Pmd
             AllChecked(true);
 
             viewer.visible_meshes_flag = meshes_flag;
-            t2p.Meshes_flag = meshes_flag;
+            t2p.UseMeshes = meshes_flag;
         }
 
         // -----------------------------------------------------

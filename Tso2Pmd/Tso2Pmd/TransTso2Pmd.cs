@@ -22,15 +22,8 @@ namespace Tso2Pmd
     {
         PmdFile pmd = new PmdFile();
 
-        int bone_flag;
-
-        bool spheremap_used;
-        bool edge_flag_flag;
-        bool merge_flag;
-
         List<string> categories;
-
-        List<bool> meshes_flag = new List<bool>();
+        List<bool> use_meshes = new List<bool>();
 
         Figure fig;
         List<TSOSubMesh> meshes;
@@ -41,12 +34,12 @@ namespace Tso2Pmd
 
         public Figure Figure { get { return fig; } set { fig = value; } }
         //public PmdFile Pmd { get { return pmd; } }
-        public int Bone_flag { set { bone_flag = value; } }
-        public bool Spheremap_used { set { spheremap_used = value; } }
-        public bool Edge_flag_flag { set { edge_flag_flag = value; } }
-        public bool Merge_flag { set { merge_flag = value; } }
-        public List<string> Category { set { categories = value; } }
-        public List<bool> Meshes_flag { set { meshes_flag = value; } }
+        public bool UseOneBone { get;  set; }
+        public bool UseSpheremap { get; set; }
+        public bool UseEdge { get; set; }
+        public bool UniqueMaterial { get; set; }
+        public List<string> Categories { set { categories = value; } }
+        public List<bool> UseMeshes { set { use_meshes = value; } }
         public TemplateList TemplateList { set { template_list = value; } }
         public CorrespondTableList CorTableList { set { cor_table_list = value; } }
           
@@ -88,16 +81,16 @@ namespace Tso2Pmd
         /// マテリアル関係のファイルを出力します。
         public void OutputMaterialFile(string path, string name)
         {
-            material_list.Save(path, name, spheremap_used);
+            material_list.Save(path, name, UseSpheremap);
         }
 
         /// Figureを元にPmdFileを更新します。
         public void UpdatePmdFromFigure()
         {
-            if (bone_flag == 0)
-                UpdatePmdFromFigureWithHumanBone();
-            else
+            if (UseOneBone)
                 UpdatePmdFromFigureWithOneBone();
+            else
+                UpdatePmdFromFigureWithHumanBone();
         }
 
         /// Figureを元にPmdFileを更新します。
@@ -260,7 +253,7 @@ namespace Tso2Pmd
 
             // -----------------------------------------------------
             // リストを配列に代入し直す
-            pmd.nodes = (PMD_Bone[])bone_list.ToArray();
+            pmd.nodes = bone_list.ToArray();
 
             UpdateRootBonePosition();
 
@@ -317,8 +310,8 @@ namespace Tso2Pmd
 
             template_list.PhysObExecute(ref physOb_list);
 
-            pmd.bodies = (PMD_RBody[])physOb_list.rbody_list.ToArray();
-            pmd.joints = (PMD_Joint[])physOb_list.joint_list.ToArray();
+            pmd.bodies = physOb_list.rbody_list.ToArray();
+            pmd.joints = physOb_list.joint_list.ToArray();
         }
 
         /// <summary>
@@ -483,10 +476,10 @@ namespace Tso2Pmd
                 foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
                 {
                     if (sub_mesh.spec == script_num)
-                    if (meshes_flag[sub_mesh_num++] == true)
+                    if (use_meshes[sub_mesh_num++] == true)
                     {
                         meshes.Add(sub_mesh);
-                        material_list.Add(tso_num, script_num, edge_flag_flag, spheremap_used);
+                        material_list.Add(tso_num, script_num, UseEdge, UseSpheremap);
                     }
                 }
                 tso_num++;
@@ -689,13 +682,13 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // リストを配列に代入し直す
             // 頂点情報
-            pmd.vertices = (PMD_Vertex[])vertices.ToArray();
+            pmd.vertices = vertices.ToArray();
             // 頂点インデックス
-            pmd.vindices = (short[])indices.ToArray();
+            pmd.vindices = indices.ToArray();
             // マテリアル
-            if (merge_flag == true)
-                material_list.MergeMaterials();
-            pmd.materials = (PMD_Material[])material_list.materials.ToArray();
+            if (UniqueMaterial)
+                material_list.UniqueMaterials();
+            pmd.materials = material_list.materials.ToArray();
             // Toonテクスチャファイル名
             pmd.toon_file_names = material_list.GetToonFileNameList();
         }
