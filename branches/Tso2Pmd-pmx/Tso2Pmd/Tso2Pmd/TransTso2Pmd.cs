@@ -155,22 +155,7 @@ namespace Tso2Pmd
             // IK配列
             // -----------------------------------------------------
 
-            // -----------------------------------------------------
-            // ボーン枠用枠名リスト
-            // -----------------------------------------------------
-            pmd.disp_groups = new PMD_DispGroup[2];
-
-            pmd.disp_groups[0] = new PMD_DispGroup();
-            pmd.disp_groups[0].name = "Root";
-            pmd.disp_groups[0].name_en = "Root";
-            pmd.disp_groups[0].flags = 1;
-            pmd.disp_groups[0].disps = new PMD_Disp[0];
-
-            pmd.disp_groups[1] = new PMD_DispGroup();
-            pmd.disp_groups[1].name = "表情";
-            pmd.disp_groups[1].name_en = "Skin";
-            pmd.disp_groups[1].flags = 1;
-            pmd.disp_groups[1].disps = new PMD_Disp[0];
+            AssignDispGroups();
 
             // -----------------------------------------------------
             // ボーン枠用表示リスト
@@ -304,72 +289,20 @@ namespace Tso2Pmd
             // リストを配列に代入し直す
             pmd.nodes = (PMD_Bone[])bone_list.ToArray();
 
-            // -----------------------------------------------------
-            // センターボーンの位置調整
-            pmd.GetBoneByName("センター").position
-                = new Vector3(
-                    0.0f, 
-                    pmd.GetBoneByName("下半身").position.Y * 0.65f, 
-                    0.0f);
-            pmd.GetBoneByName("センター先").position
-                = new Vector3(
-                    0.0f, 
-                    0.0f, 
-                    0.0f);
+            UpdateRootBonePosition();
 
-            // -----------------------------------------------------
-            // 両目ボーンの位置調整
             if (mod_type == 0)
             {
-                pmd.GetBoneByName("両目").position
-                    = new Vector3(
-                        0.0f,
-                        pmd.GetBoneByName("左目").position.Y + pmd.GetBoneByName("左目").position.X * 4.0f,
-                        pmd.GetBoneByName("左目").position.Z - pmd.GetBoneByName("左目").position.X * 2.0f);
-                pmd.GetBoneByName("両目先").position
-                    = new Vector3(
-                        pmd.GetBoneByName("両目").position.X,
-                        pmd.GetBoneByName("両目").position.Y,
-                        pmd.GetBoneByName("両目").position.Z - 1.0f);
+                UpdateEyesBonePosition();
             }
 
-            // -----------------------------------------------------
-            // IK先ボーンの位置調整
-            pmd.GetBoneByName("左足ＩＫ先").position
-                = new Vector3(
-                    pmd.GetBoneByName("左足ＩＫ").position.X,
-                    pmd.GetBoneByName("左足ＩＫ").position.Y,
-                    pmd.GetBoneByName("左足ＩＫ").position.Z + 1.7f);
-            pmd.GetBoneByName("右足ＩＫ先").position
-                = new Vector3(
-                    pmd.GetBoneByName("右足ＩＫ").position.X,
-                    pmd.GetBoneByName("右足ＩＫ").position.Y,
-                    pmd.GetBoneByName("右足ＩＫ").position.Z + 1.7f);
-
-            pmd.GetBoneByName("左つま先").position.Y = 0.0f;
-            pmd.GetBoneByName("左つま先ＩＫ").position.Y = 0.0f;
-            pmd.GetBoneByName("左つま先ＩＫ先").position
-                = new Vector3(
-                    pmd.GetBoneByName("左つま先ＩＫ").position.X,
-                    pmd.GetBoneByName("左つま先ＩＫ").position.Y - 1.0f,
-                    pmd.GetBoneByName("左つま先ＩＫ").position.Z);
-
-            pmd.GetBoneByName("右つま先").position.Y = 0.0f;
-            pmd.GetBoneByName("右つま先ＩＫ").position.Y = 0.0f;
-            pmd.GetBoneByName("右つま先ＩＫ先").position
-                = new Vector3(
-                    pmd.GetBoneByName("右つま先ＩＫ").position.X,
-                    pmd.GetBoneByName("右つま先ＩＫ").position.Y - 1.0f,
-                    pmd.GetBoneByName("右つま先ＩＫ").position.Z);
+            UpdateIKTailBonePosition();
 
             // -----------------------------------------------------
             // IK配列
             // -----------------------------------------------------
             pmd.iks = (PMD_IK[])cor_table.iks.ToArray();
 
-            // -----------------------------------------------------
-            // ボーン枠用枠名リスト
-            // -----------------------------------------------------
             /*
             pmd.disp_names = new string[cor_table.boneDispGroups.Count]; // 枠名(50Bytes/枠)
 
@@ -378,19 +311,7 @@ namespace Tso2Pmd
             //PMDEditorを使う場合は、枠名を0x0A00で終わらせる必要があります(0x00のみだと表示されません)。
             */
 
-            pmd.disp_groups = new PMD_DispGroup[2];
-
-            pmd.disp_groups[0] = new PMD_DispGroup();
-            pmd.disp_groups[0].name = "Root";
-            pmd.disp_groups[0].name_en = "Root";
-            pmd.disp_groups[0].flags = 1;
-            pmd.disp_groups[0].disps = new PMD_Disp[0];
-
-            pmd.disp_groups[1] = new PMD_DispGroup();
-            pmd.disp_groups[1].name = "表情";
-            pmd.disp_groups[1].name_en = "Skin";
-            pmd.disp_groups[1].flags = 1;
-            pmd.disp_groups[1].disps = new PMD_Disp[0];
+            AssignDispGroups();
             
             // -----------------------------------------------------
             // ボーン枠用表示リスト
@@ -437,11 +358,96 @@ namespace Tso2Pmd
             // テンプレートを適用
             template_list.PhysObExecute(ref physOb_list);
 
-            // -----------------------------------------------------
-            // 剛体＆ジョイントを配列に代入し直す
             pmd.bodies = (PMD_RBody[])physOb_list.rbody_list.ToArray();
 
             pmd.joints = (PMD_Joint[])physOb_list.joint_list.ToArray();
+        }
+
+        /// <summary>
+        /// センターボーンの位置調整
+        /// </summary>
+        void UpdateRootBonePosition()
+        {
+            pmd.GetBoneByName("センター").position
+                = new Vector3(
+                    0.0f,
+                    pmd.GetBoneByName("下半身").position.Y * 0.65f,
+                    0.0f);
+            pmd.GetBoneByName("センター先").position
+                = new Vector3(
+                    0.0f,
+                    0.0f,
+                    0.0f);
+        }
+
+        /// <summary>
+        /// 両目ボーンの位置調整
+        /// </summary>
+        void UpdateEyesBonePosition()
+        {
+            pmd.GetBoneByName("両目").position
+                = new Vector3(
+                    0.0f,
+                    pmd.GetBoneByName("左目").position.Y + pmd.GetBoneByName("左目").position.X * 4.0f,
+                    pmd.GetBoneByName("左目").position.Z - pmd.GetBoneByName("左目").position.X * 2.0f);
+            pmd.GetBoneByName("両目先").position
+                = new Vector3(
+                    pmd.GetBoneByName("両目").position.X,
+                    pmd.GetBoneByName("両目").position.Y,
+                    pmd.GetBoneByName("両目").position.Z - 1.0f);
+        }
+
+        /// <summary>
+        /// IK先ボーンの位置調整
+        /// </summary>
+        void UpdateIKTailBonePosition()
+        {
+            pmd.GetBoneByName("左足ＩＫ先").position
+                = new Vector3(
+                    pmd.GetBoneByName("左足ＩＫ").position.X,
+                    pmd.GetBoneByName("左足ＩＫ").position.Y,
+                    pmd.GetBoneByName("左足ＩＫ").position.Z + 1.7f);
+            pmd.GetBoneByName("右足ＩＫ先").position
+                = new Vector3(
+                    pmd.GetBoneByName("右足ＩＫ").position.X,
+                    pmd.GetBoneByName("右足ＩＫ").position.Y,
+                    pmd.GetBoneByName("右足ＩＫ").position.Z + 1.7f);
+
+            pmd.GetBoneByName("左つま先").position.Y = 0.0f;
+            pmd.GetBoneByName("左つま先ＩＫ").position.Y = 0.0f;
+            pmd.GetBoneByName("左つま先ＩＫ先").position
+                = new Vector3(
+                    pmd.GetBoneByName("左つま先ＩＫ").position.X,
+                    pmd.GetBoneByName("左つま先ＩＫ").position.Y - 1.0f,
+                    pmd.GetBoneByName("左つま先ＩＫ").position.Z);
+
+            pmd.GetBoneByName("右つま先").position.Y = 0.0f;
+            pmd.GetBoneByName("右つま先ＩＫ").position.Y = 0.0f;
+            pmd.GetBoneByName("右つま先ＩＫ先").position
+                = new Vector3(
+                    pmd.GetBoneByName("右つま先ＩＫ").position.X,
+                    pmd.GetBoneByName("右つま先ＩＫ").position.Y - 1.0f,
+                    pmd.GetBoneByName("右つま先ＩＫ").position.Z);
+        }
+
+        /// <summary>
+        /// ボーン枠用枠名リストを設定します。
+        /// </summary>
+        void AssignDispGroups()
+        {
+            pmd.disp_groups = new PMD_DispGroup[2];
+
+            pmd.disp_groups[0] = new PMD_DispGroup();
+            pmd.disp_groups[0].name = "Root";
+            pmd.disp_groups[0].name_en = "Root";
+            pmd.disp_groups[0].flags = 1;
+            pmd.disp_groups[0].disps = new PMD_Disp[0];
+
+            pmd.disp_groups[1] = new PMD_DispGroup();
+            pmd.disp_groups[1].name = "表情";
+            pmd.disp_groups[1].name_en = "Skin";
+            pmd.disp_groups[1].flags = 1;
+            pmd.disp_groups[1].disps = new PMD_Disp[0];
         }
 
         // -----------------------------------------------------
