@@ -255,7 +255,7 @@ namespace TDCGUtils
             bw.Write(vindices_count);
         }
 
-        public String tex_path;
+        public String tex_file;
     }
 
     /// ボーン
