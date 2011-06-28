@@ -121,8 +121,14 @@ namespace Tso2Pmd
                 throw new FormatException(string.Format("頂点数({0})が上限({1})を超えています。", pmd.vertices.Length, ushort.MaxValue));
 
             // -----------------------------------------------------
+            // 表情
+            // -----------------------------------------------------
+            pmd.skins = new PMD_Skin[0];
+
+            // -----------------------------------------------------
             // 表情枠
             // -----------------------------------------------------
+            //pmd.skin_disp_indices = new int[0];
 
             // -----------------------------------------------------
             // ボーン情報
@@ -133,8 +139,8 @@ namespace Tso2Pmd
             pmd.nodes[0] = new PMD_Bone();
             pmd.nodes[0].name = "センター";
             // 1:回転と移動
-            pmd.nodes[1].flags_hi = (byte)0x00;
-            pmd.nodes[1].flags_lo = (byte)0x1F;
+            pmd.nodes[0].flags_hi = (byte)0x00;
+            pmd.nodes[0].flags_lo = (byte)0x1F;
             pmd.nodes[0].ParentName = null;
             pmd.nodes[0].TailName = "センター先";
             pmd.nodes[0].TargetName = null;
@@ -154,19 +160,16 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // IK配列
             // -----------------------------------------------------
+            pmd.iks = new PMD_IK[0];
 
             AssignDispGroups();
 
-            // -----------------------------------------------------
-            // ボーン枠用表示リスト
-            // -----------------------------------------------------
-
-            // -----------------------------------------------------
-            // 英名対応(0:英名対応なし, 1:英名対応あり)
-            // -----------------------------------------------------
             /*
             pmd.english_name_compatibility = 0;
             */
+
+            pmd.bodies = new PMD_RBody[0];
+            pmd.joints = new PMD_Joint[0];
         }
 
         /// Figureを元にPmdFileを更新します。
@@ -220,9 +223,7 @@ namespace Tso2Pmd
             {
                 InitializePMDFaces();
                 MakePMDBaseFace();
-                /*
-                pmd.number_of_skin = 0;
-                */
+                pmd.skins = new PMD_Skin[0];
             }
 
             // -----------------------------------------------------
@@ -303,42 +304,21 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             pmd.iks = (PMD_IK[])cor_table.iks.ToArray();
 
-            /*
-            pmd.disp_names = new string[cor_table.boneDispGroups.Count]; // 枠名(50Bytes/枠)
-
-            for (int i = 0; i < pmd.bone_disp_name_count; i++)
-                pmd.disp_names[i] = cor_table.boneDispGroups[i].name + Convert.ToChar(Convert.ToInt16("0A", 16));
-            //PMDEditorを使う場合は、枠名を0x0A00で終わらせる必要があります(0x00のみだと表示されません)。
-            */
-
             AssignDispGroups();
             
-            // -----------------------------------------------------
-            // ボーン枠用表示リスト
-            // -----------------------------------------------------
-            /*
-            // 枠に表示するボーン数
-            int bone_disp_count = 0;
-            for (int i = 0; i < cor_table.boneDispGroups.Count; i++)
-                bone_disp_count += cor_table.boneDispGroups[i].bone_names.Count;
-            
-            // 枠用ボーンデータ (3Bytes/bone)
-            pmd.bone_disps = new PMD_BoneDisp[bone_disp_count]; 
-
-            int idx = 0; // 通し番号
-            int group_idx = 1;
             foreach (BoneDispGroup group in cor_table.boneDispGroups)
             {
+                PMD_DispGroup disp_group = new PMD_DispGroup();
+                disp_group.name = group.name;
+
                 foreach (string name in group.bone_names)
                 {
-                    pmd.bone_disps[idx] = new PMD_BoneDisp();
-                    pmd.bone_disps[idx].bone_name = name; // 枠用ボーン名
-                    pmd.bone_disps[idx].disp_group_id = group_idx; // 表示枠番号
-                    idx++;
+                    PMD_BoneDisp bone_disp = new PMD_BoneDisp();
+                    bone_disp.bone_name = name;
+                    disp_group.disps.Add(bone_disp);
                 }
-                group_idx++;
+                pmd.disp_groups.Add(disp_group);
             }
-            */
 
             // -----------------------------------------------------
             // 英名対応(0:英名対応なし, 1:英名対応あり)
@@ -435,19 +415,23 @@ namespace Tso2Pmd
         /// </summary>
         void AssignDispGroups()
         {
-            pmd.disp_groups = new PMD_DispGroup[2];
+            pmd.disp_groups.Clear();
 
-            pmd.disp_groups[0] = new PMD_DispGroup();
-            pmd.disp_groups[0].name = "Root";
-            pmd.disp_groups[0].name_en = "Root";
-            pmd.disp_groups[0].flags = 1;
-            pmd.disp_groups[0].disps = new PMD_Disp[0];
+            {
+                PMD_DispGroup disp_group = new PMD_DispGroup();
+                disp_group.name = "Root";
+                disp_group.name_en = "Root";
+                disp_group.spec = 1;
+                pmd.disp_groups.Add(disp_group);
+            }
 
-            pmd.disp_groups[1] = new PMD_DispGroup();
-            pmd.disp_groups[1].name = "表情";
-            pmd.disp_groups[1].name_en = "Skin";
-            pmd.disp_groups[1].flags = 1;
-            pmd.disp_groups[1].disps = new PMD_Disp[0];
+            {
+                PMD_DispGroup disp_group = new PMD_DispGroup();
+                disp_group.name = "表情";
+                disp_group.name_en = "Skin";
+                disp_group.spec = 1;
+                pmd.disp_groups.Add(disp_group);
+            }
         }
 
         // -----------------------------------------------------
