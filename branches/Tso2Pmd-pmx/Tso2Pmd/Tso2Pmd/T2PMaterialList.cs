@@ -38,9 +38,9 @@ namespace Tso2Pmd
             }
         }
 
-        public void Save(string dest_path, string file_name, bool spheremap_used)
+        public void Save(string dest_path, string file_name, bool use_spheremap)
         {
-            tex_list.Save(dest_path, spheremap_used);
+            tex_list.Save(dest_path, use_spheremap);
             WriteNames(dest_path, file_name);
         }
 
@@ -61,7 +61,7 @@ namespace Tso2Pmd
         
         // TSOSubScriptより、PMD_Materialを生成する
         // (ただし、頂点インデックス数は0となっているため、後に設定する必要がある)
-        public void Add(int tso_num, int script_num, bool edge, bool spheremap_used)
+        public void Add(int tso_num, int script_num, bool use_edge, bool use_spheremap)
         {
             PMD_Material pmd_m = new PMD_Material();
 
@@ -73,7 +73,7 @@ namespace Tso2Pmd
             pmd_m.specular = new Vector4(0.15f, 0.15f, 0.15f, 6.0f);
             pmd_m.ambient = new Vector3(0.5f, 0.5f, 0.5f);
 
-            if (edge == true)
+            if (use_edge)
                 pmd_m.edge_width = 1;
             else
                 pmd_m.edge_width = 0;
@@ -116,7 +116,7 @@ namespace Tso2Pmd
                 }
 
                 // スフィアマップを使う
-                if (spheremap_used)
+                if (use_spheremap)
                 {
                     // toonテクスチャが256×16のサイズなら、スフィアマップを指定する
                     Bitmap toon_bmp = tex_list.GetBitmap(tso_num, shader.ShadeTexName);
@@ -138,7 +138,7 @@ namespace Tso2Pmd
         }
 
         // 隣り合う同一のマテリアルを統合する
-        public void MergeMaterials()
+        public void UniqueMaterials()
         {
             for (int i = 0; i < materials.Count - 1; i++)
             {
