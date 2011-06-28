@@ -13,58 +13,61 @@ namespace Tso2Pmd
 {
     class T2PMaterialList
     {
-        public List<string> name_list = new List<string>();
-        public List<PMD_Material> material_list = new List<PMD_Material>();
+        public List<string> names = new List<string>();
+        public List<PMD_Material> materials = new List<PMD_Material>();
 
-        List<TSOFile> TSOList = new List<TSOFile>();
-        List<string> cateList = new List<string>();
+        List<TSOFile> tsos = new List<TSOFile>();
+        List<string> categories = new List<string>();
         T2PTextureList tex_list = new T2PTextureList();
-        List<string> toon_name_list = new List<string>();
+        List<string> toon_names = new List<string>();
 
-        public T2PMaterialList(List<TSOFile> TSOList, List<string> cateList)
+        public T2PMaterialList(List<TSOFile> tsos, List<string> categories)
         {
-            this.TSOList = TSOList;
-            this.cateList = cateList;
+            this.tsos = tsos;
+            this.categories = categories;
 
-            // テクスチャの準備
-            for (int tso_num = 0; tso_num < TSOList.Count; tso_num++)
-            foreach (TSOTex tex in TSOList[tso_num].textures)
+            // テクスチャを準備
+            int tso_num = 0;
+            foreach (TSOFile tso in tsos)
             {
-                tex_list.Add(tex, tso_num);
+                foreach (TSOTex tex in tso.textures)
+                {
+                    tex_list.Add(tex, tso_num);
+                }
+                tso_num++;
             }
         }
 
-        public void Save(string path, string file_name, bool spheremap_flag)
+        public void Save(string dest_path, string file_name, bool spheremap_used)
         {
-            // -----------------------------------------------------
-            // テクスチャをBitmapファイルに出力
-            tex_list.Save(path, spheremap_flag);
+            tex_list.Save(dest_path, spheremap_used);
+            WriteNames(dest_path, file_name);
+        }
 
-            // -----------------------------------------------------
-            // マテリアル名のリストが書かれたファイルを出力
-            // ファイルを開く
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(
-                path + "/" + file_name + ".txt",
-                false,
-                System.Text.Encoding.GetEncoding("shift_jis"));
-
-            // 書き出す
-            foreach (string name in name_list)
-                sw.WriteLine(name);
-
-            //閉じる
-            sw.Close();
+        /// <summary>
+        /// マテリアル名のリストを書き出します。
+        /// </summary>
+        /// <param name="dest_path">出力先パス</param>
+        /// <param name="file_name">ファイル名</param>
+        void WriteNames(string dest_path, string file_name)
+        {
+            using (StreamWriter sw = new StreamWriter(dest_path + "/" + file_name + ".txt", false,
+                System.Text.Encoding.GetEncoding("shift_jis")))
+            {
+                foreach (string name in names)
+                    sw.WriteLine(name);
+            }
         }
         
         // TSOSubScriptより、PMD_Materialを生成する
         // (ただし、頂点インデックス数は0となっているため、後に設定する必要がある)
-        public void Add(int tso_num, int script_num, bool edge, bool spheremap_flag)
+        public void Add(int tso_num, int script_num, bool edge, bool spheremap_used)
         {
             PMD_Material pmd_m = new PMD_Material();
 
             // スクリプトよりシェーダパラメータを取得
             Shader shader = new Shader();
-            shader.Load(TSOList[tso_num].sub_scripts[script_num].lines);
+            shader.Load(tsos[tso_num].sub_scripts[script_num].lines);
 
             pmd_m.diffuse = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
             pmd_m.specular = new Vector4(0.15f, 0.15f, 0.15f, 6.0f);
@@ -85,35 +88,35 @@ namespace Tso2Pmd
             string toon_file = tex_list.GetFileName(tso_num, shader.ShadeTexName);
             if (toon_file != null) // 存在しないtoonテクスチャを参照しているパーツがあるのでこれを確認
             {
-                if (toon_name_list.IndexOf(toon_file) != -1)
+                if (toon_names.IndexOf(toon_file) != -1)
                 {
                     // toonテクスチャファイル中でのインデックス
-                    pmd_m.toon_tex_id = (sbyte)toon_name_list.IndexOf(toon_file);
+                    pmd_m.toon_tex_id = (sbyte)toon_names.IndexOf(toon_file);
                 }
                 else
                 {
-                    if (toon_name_list.Count <= 9)
+                    if (toon_names.Count <= 9)
                     {
                         // toonテクスチャとするテクスチャ名を記憶
                         // 後にtoonテクスチャファイル名を出力するときに使用。
-                        toon_name_list.Add(toon_file);
+                        toon_names.Add(toon_file);
 
                         // toonテクスチャファイル中でのインデックス
-                        pmd_m.toon_tex_id = (sbyte)(toon_name_list.Count - 1);
+                        pmd_m.toon_tex_id = (sbyte)(toon_names.Count - 1);
                     }
                     else
                     {
                         // toonテクスチャとするテクスチャ名を記憶
                         // 後にtoonテクスチャファイル名を出力するときに使用。
-                        toon_name_list.Add("toon10.bmp"); // 10以上は無理なので、それ以上は全てtoon10.bmp
+                        toon_names.Add("toon10.bmp"); // 10以上は無理なので、それ以上は全てtoon10.bmp
 
                         // toonテクスチャファイル中でのインデックス
                         pmd_m.toon_tex_id = 9; // 10以上は無理なので、それ以上は全て9
                     }
                 }
 
-                // スフィアマップ
-                if (spheremap_flag == true)
+                // スフィアマップを使う
+                if (spheremap_used)
                 {
                     // toonテクスチャが256×16のサイズなら、スフィアマップを指定する
                     Bitmap toon_bmp = tex_list.GetBitmap(tso_num, shader.ShadeTexName);
@@ -130,21 +133,20 @@ namespace Tso2Pmd
             }
 
             // 要素を追加
-            name_list.Add(cateList[tso_num] + " " 
-                    + TSOList[tso_num].sub_scripts[script_num].Name);
-            material_list.Add(pmd_m);
+            names.Add(categories[tso_num] + " " + tsos[tso_num].sub_scripts[script_num].Name);
+            materials.Add(pmd_m);
         }
 
         // 隣り合う同一のマテリアルを統合する
         public void MergeMaterials()
         {
-            for (int i = 0; i < material_list.Count - 1; i++)
+            for (int i = 0; i < materials.Count - 1; i++)
             {
-                if (EqualMaterials(material_list[i], material_list[i + 1]))
+                if (EqualMaterials(materials[i], materials[i + 1]))
                 {
-                    material_list[i].vindices_count += material_list[i + 1].vindices_count;
-                    material_list.RemoveAt(i + 1);
-                    name_list.RemoveAt(i + 1);
+                    materials[i].vindices_count += materials[i + 1].vindices_count;
+                    materials.RemoveAt(i + 1);
+                    names.RemoveAt(i + 1);
                     i = 0;
                 }
             }
@@ -170,13 +172,13 @@ namespace Tso2Pmd
         {
             string[] name_list = new string[10];
 
-            if (toon_name_list.Count <= 10)
+            if (toon_names.Count <= 10)
             {
-                for (int i = 0; i < toon_name_list.Count; i++)
+                for (int i = 0; i < toon_names.Count; i++)
                 {
-                    name_list[i] = toon_name_list[i];
+                    name_list[i] = toon_names[i];
                 }
-                for (int i = toon_name_list.Count; i < 10; i++)
+                for (int i = toon_names.Count; i < 10; i++)
                 {
                     name_list[i] = "toon" + i.ToString("00") + ".bmp";
                 }
@@ -185,7 +187,7 @@ namespace Tso2Pmd
             {
                 for (int i = 0; i < 10; i++)
                 {
-                    name_list[i] = toon_name_list[i];
+                    name_list[i] = toon_names[i];
                 }
             }
 
