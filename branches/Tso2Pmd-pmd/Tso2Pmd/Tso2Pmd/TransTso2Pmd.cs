@@ -128,8 +128,8 @@ namespace Tso2Pmd
             MakePMDVertices(null, 2);
 
             // 頂点数が上限を超えてないかチェックし、超えていたらエラーを出して終了
-            if (pmd.number_of_vertex > 65535)
-                return "頂点数(" + pmd.number_of_vertex.ToString() + ")が上限(65535)を超えています。";
+            if (pmd.vertices.Length > 65535)
+                return "頂点数(" + pmd.vertices.Length.ToString() + ")が上限(65535)を超えています。";
 
             // -----------------------------------------------------
             // 表情枠
@@ -229,8 +229,8 @@ namespace Tso2Pmd
             MakePMDVertices(cor_table, mod_type);
 
             // 頂点数が上限を超えてないかチェックし、超えていたらエラーを出して終了
-            if (pmd.number_of_vertex > 65535)
-                return "頂点数(" + pmd.number_of_vertex.ToString() + ")が上限(65535)を超えています。";
+            if (pmd.vertices.Length > 65535)
+                return "頂点数(" + pmd.vertices.Length.ToString() + ")が上限(65535)を超えています。";
 
             // -----------------------------------------------------
             // 表情
@@ -255,9 +255,11 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             if (mod_type == 0)
             {
-                pmd.skin_disp_indices = new int[pmd.number_of_skin - 1];
-                for (int i = 0; i < pmd.skin_disp_count; i++)
-                    pmd.skin_disp_indices[i] = i + 1; // 表情番号
+                pmd.skin_disp_indices = new int[pmd.skins.Length - 1];
+                for (int i = 0; i < pmd.skin_disp_indices.Length; i++)
+                {
+                    pmd.skin_disp_indices[i] = i + 1;
+                }
             }
             else if (mod_type == 1)
             {
@@ -366,17 +368,11 @@ namespace Tso2Pmd
                     pmd.GetBoneByName("右つま先ＩＫ").position.Y - 1.0f,
                     pmd.GetBoneByName("右つま先ＩＫ").position.Z);
           
-            // -----------------------------------------------------
-            // IK配列
-            // -----------------------------------------------------
-            pmd.pmd_ik = (PMD_IK[])cor_table.iks.ToArray();
+            pmd.iks = (PMD_IK[])cor_table.iks.ToArray();
 
-            // -----------------------------------------------------
-            // ボーン枠用枠名リスト
-            // -----------------------------------------------------
-            pmd.disp_names = new string[cor_table.boneDispGroups.Count]; // 枠名(50Bytes/枠)
+            pmd.disp_names = new string[cor_table.boneDispGroups.Count];
 
-            for (int i = 0; i < pmd.bone_disp_name_count; i++)
+            for (int i = 0; i < pmd.disp_names.Length; i++)
                 pmd.disp_names[i] = cor_table.boneDispGroups[i].name + Convert.ToChar(Convert.ToInt16("0A", 16));
             //PMDEditorを使う場合は、枠名を0x0A00で終わらせる必要があります(0x00のみだと表示されません)。
 
@@ -861,7 +857,7 @@ namespace Tso2Pmd
                             && sub_mesh.bone_indices[skin_w.bone_index] <= FACE_BONE_MAX)
                         {
                             // 表情の頂点情報（base以外）
-                            for (int i = 1; i < pmd.number_of_skin; i++)
+                            for (int i = 1; i < pmd.skins.Length; i++)
                             {
                                 // 表情用の頂点の番号(baseの番号。skin_vert_index)
                                 pmd.skins[i].vertices[n_vertex].vertex_id = n_vertex;
