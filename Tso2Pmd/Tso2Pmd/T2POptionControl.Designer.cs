@@ -44,13 +44,13 @@
             this.button_Folder = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
-            this.checkBox_Spheremap = new System.Windows.Forms.CheckBox();
-            this.checkBox_Merge = new System.Windows.Forms.CheckBox();
-            this.checkBox_Edge = new System.Windows.Forms.CheckBox();
+            this.cbUseSpheremap = new System.Windows.Forms.CheckBox();
+            this.cbUniqueMaterial = new System.Windows.Forms.CheckBox();
+            this.cbUseEdge = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
-            this.radioButton_Bone1 = new System.Windows.Forms.RadioButton();
-            this.radioButton_Bone0 = new System.Windows.Forms.RadioButton();
+            this.rbOneBone = new System.Windows.Forms.RadioButton();
+            this.rbHumanBone = new System.Windows.Forms.RadioButton();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.physicsControl1 = new Tso2Pmd.PhysicsControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
@@ -218,9 +218,9 @@
             // tabPage4
             // 
             this.tabPage4.Controls.Add(this.label1);
-            this.tabPage4.Controls.Add(this.checkBox_Spheremap);
-            this.tabPage4.Controls.Add(this.checkBox_Merge);
-            this.tabPage4.Controls.Add(this.checkBox_Edge);
+            this.tabPage4.Controls.Add(this.cbUseSpheremap);
+            this.tabPage4.Controls.Add(this.cbUniqueMaterial);
+            this.tabPage4.Controls.Add(this.cbUseEdge);
             this.tabPage4.Controls.Add(this.groupBox4);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
@@ -239,45 +239,45 @@
             this.label1.TabIndex = 26;
             this.label1.Text = "＊　組み合わせ\r\nによって、\r\n不具合が生じる\r\n場合があります。";
             // 
-            // checkBox_Spheremap
+            // cbUseSpheremap
             // 
-            this.checkBox_Spheremap.AutoSize = true;
-            this.checkBox_Spheremap.Checked = true;
-            this.checkBox_Spheremap.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_Spheremap.Location = new System.Drawing.Point(28, 126);
-            this.checkBox_Spheremap.Name = "checkBox_Spheremap";
-            this.checkBox_Spheremap.Size = new System.Drawing.Size(303, 16);
-            this.checkBox_Spheremap.TabIndex = 34;
-            this.checkBox_Spheremap.Text = "スフィアマップを利用して、Toonテキスチャの色とびを補完する";
-            this.checkBox_Spheremap.UseVisualStyleBackColor = true;
+            this.cbUseSpheremap.AutoSize = true;
+            this.cbUseSpheremap.Checked = true;
+            this.cbUseSpheremap.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbUseSpheremap.Location = new System.Drawing.Point(28, 126);
+            this.cbUseSpheremap.Name = "cbUseSpheremap";
+            this.cbUseSpheremap.Size = new System.Drawing.Size(303, 16);
+            this.cbUseSpheremap.TabIndex = 34;
+            this.cbUseSpheremap.Text = "スフィアマップを利用して、Toonテキスチャの色とびを補完する";
+            this.cbUseSpheremap.UseVisualStyleBackColor = true;
             // 
-            // checkBox_Merge
+            // cbUniqueMaterial
             // 
-            this.checkBox_Merge.AutoSize = true;
-            this.checkBox_Merge.Checked = true;
-            this.checkBox_Merge.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_Merge.Location = new System.Drawing.Point(28, 170);
-            this.checkBox_Merge.Name = "checkBox_Merge";
-            this.checkBox_Merge.Size = new System.Drawing.Size(236, 16);
-            this.checkBox_Merge.TabIndex = 33;
-            this.checkBox_Merge.Text = "同じ属性をもつ材質を一つの材質に統合する";
-            this.checkBox_Merge.UseVisualStyleBackColor = true;
+            this.cbUniqueMaterial.AutoSize = true;
+            this.cbUniqueMaterial.Checked = true;
+            this.cbUniqueMaterial.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbUniqueMaterial.Location = new System.Drawing.Point(28, 170);
+            this.cbUniqueMaterial.Name = "cbUniqueMaterial";
+            this.cbUniqueMaterial.Size = new System.Drawing.Size(236, 16);
+            this.cbUniqueMaterial.TabIndex = 33;
+            this.cbUniqueMaterial.Text = "同じ属性をもつ材質を一つの材質に統合する";
+            this.cbUniqueMaterial.UseVisualStyleBackColor = true;
             // 
-            // checkBox_Edge
+            // cbUseEdge
             // 
-            this.checkBox_Edge.AutoSize = true;
-            this.checkBox_Edge.Location = new System.Drawing.Point(28, 148);
-            this.checkBox_Edge.Name = "checkBox_Edge";
-            this.checkBox_Edge.Size = new System.Drawing.Size(118, 16);
-            this.checkBox_Edge.TabIndex = 32;
-            this.checkBox_Edge.Text = "輪郭線＆影の表示";
-            this.checkBox_Edge.UseVisualStyleBackColor = true;
+            this.cbUseEdge.AutoSize = true;
+            this.cbUseEdge.Location = new System.Drawing.Point(28, 148);
+            this.cbUseEdge.Name = "cbUseEdge";
+            this.cbUseEdge.Size = new System.Drawing.Size(118, 16);
+            this.cbUseEdge.TabIndex = 32;
+            this.cbUseEdge.Text = "輪郭線＆影の表示";
+            this.cbUseEdge.UseVisualStyleBackColor = true;
             // 
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.checkedListBox1);
-            this.groupBox4.Controls.Add(this.radioButton_Bone1);
-            this.groupBox4.Controls.Add(this.radioButton_Bone0);
+            this.groupBox4.Controls.Add(this.rbOneBone);
+            this.groupBox4.Controls.Add(this.rbHumanBone);
             this.groupBox4.Location = new System.Drawing.Point(22, 17);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(213, 96);
@@ -296,29 +296,29 @@
             this.checkedListBox1.TabIndex = 25;
             this.checkedListBox1.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.checkedListBox1_ItemCheck);
             // 
-            // radioButton_Bone1
+            // rbOneBone
             // 
-            this.radioButton_Bone1.AutoSize = true;
-            this.radioButton_Bone1.Location = new System.Drawing.Point(12, 18);
-            this.radioButton_Bone1.Name = "radioButton_Bone1";
-            this.radioButton_Bone1.Size = new System.Drawing.Size(58, 16);
-            this.radioButton_Bone1.TabIndex = 1;
-            this.radioButton_Bone1.Text = "1ボーン";
-            this.radioButton_Bone1.UseVisualStyleBackColor = true;
-            this.radioButton_Bone1.CheckedChanged += new System.EventHandler(this.radioButton_Bone1_CheckedChanged);
+            this.rbOneBone.AutoSize = true;
+            this.rbOneBone.Location = new System.Drawing.Point(12, 18);
+            this.rbOneBone.Name = "rbOneBone";
+            this.rbOneBone.Size = new System.Drawing.Size(58, 16);
+            this.rbOneBone.TabIndex = 1;
+            this.rbOneBone.Text = "1ボーン";
+            this.rbOneBone.UseVisualStyleBackColor = true;
+            this.rbOneBone.CheckedChanged += new System.EventHandler(this.radioButton_Bone1_CheckedChanged);
             // 
-            // radioButton_Bone0
+            // rbHumanBone
             // 
-            this.radioButton_Bone0.AutoSize = true;
-            this.radioButton_Bone0.Checked = true;
-            this.radioButton_Bone0.Location = new System.Drawing.Point(12, 40);
-            this.radioButton_Bone0.Name = "radioButton_Bone0";
-            this.radioButton_Bone0.Size = new System.Drawing.Size(76, 16);
-            this.radioButton_Bone0.TabIndex = 0;
-            this.radioButton_Bone0.TabStop = true;
-            this.radioButton_Bone0.Text = "人型ボーン";
-            this.radioButton_Bone0.UseVisualStyleBackColor = true;
-            this.radioButton_Bone0.CheckedChanged += new System.EventHandler(this.radioButton_Bone0_CheckedChanged);
+            this.rbHumanBone.AutoSize = true;
+            this.rbHumanBone.Checked = true;
+            this.rbHumanBone.Location = new System.Drawing.Point(12, 40);
+            this.rbHumanBone.Name = "rbHumanBone";
+            this.rbHumanBone.Size = new System.Drawing.Size(76, 16);
+            this.rbHumanBone.TabIndex = 0;
+            this.rbHumanBone.TabStop = true;
+            this.rbHumanBone.Text = "人型ボーン";
+            this.rbHumanBone.UseVisualStyleBackColor = true;
+            this.rbHumanBone.CheckedChanged += new System.EventHandler(this.radioButton_Bone0_CheckedChanged);
             // 
             // tabPage3
             // 
@@ -398,12 +398,12 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.TabPage tabPage5;
         private TaikeiControl taikeiControl1;
-        private System.Windows.Forms.CheckBox checkBox_Spheremap;
-        private System.Windows.Forms.CheckBox checkBox_Merge;
-        private System.Windows.Forms.CheckBox checkBox_Edge;
+        private System.Windows.Forms.CheckBox cbUseSpheremap;
+        private System.Windows.Forms.CheckBox cbUniqueMaterial;
+        private System.Windows.Forms.CheckBox cbUseEdge;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.RadioButton radioButton_Bone1;
-        private System.Windows.Forms.RadioButton radioButton_Bone0;
+        private System.Windows.Forms.RadioButton rbOneBone;
+        private System.Windows.Forms.RadioButton rbHumanBone;
         private PhysicsControl physicsControl1;
         private System.Windows.Forms.CheckedListBox checkedListBox1;
         private System.Windows.Forms.Label label1;

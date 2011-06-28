@@ -63,15 +63,15 @@ namespace Tso2Pmd
         /// フォームからパラメータを得て設定します。
         public void SetupOptions(TransTso2Pmd t2p)
         {
-            t2p.Spheremap_used = checkBox_Spheremap.Checked;
-            t2p.Edge_flag_flag = checkBox_Edge.Checked;
-            t2p.Merge_flag = checkBox_Merge.Checked;
+            t2p.UseSpheremap = cbUseSpheremap.Checked;
+            t2p.UseEdge = cbUseEdge.Checked;
+            t2p.UniqueMaterial = cbUniqueMaterial.Checked;
 
             physicsControl1.SetPhysFlag();
             t2p.TemplateList = template_list;
             t2p.CorTableList = correspondTable_list;
 
-            t2p.Bone_flag = radioButton_Bone1.Checked ? 1 : 0; 
+            t2p.UseOneBone = rbOneBone.Checked; 
 
             t2p.InputHeader(textBox_ModelName.Text, textBox_Comment.Text);
         }
