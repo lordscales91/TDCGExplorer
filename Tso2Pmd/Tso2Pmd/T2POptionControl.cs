@@ -37,11 +37,11 @@ namespace Tso2Pmd
             taikeiControl1.Initialize(ref viewer);
             physicsControl1.Initialize(template_list);
 
-            // -----------------------------------------------------
-            // ボーンの変換表を読みとる
             correspondTable_list.Load();
             foreach (string name in correspondTable_list.NameList)
+            {
                 checkedListBox1.Items.Add(name);
+            }
         }
 
         private void button_Folder_Click(object sender, EventArgs e)
@@ -86,10 +86,10 @@ namespace Tso2Pmd
         {
             if (radioButton1.Checked == true)
             {
-                string outputFilePath = System.IO.Path.GetDirectoryName(file_name) + "\\"
-                    + System.IO.Path.GetFileNameWithoutExtension(
-                        System.IO.Path.GetFileNameWithoutExtension(file_name));
-                System.IO.Directory.CreateDirectory(outputFilePath);
+                string outputFilePath = Path.Combine(
+                    Path.GetDirectoryName(file_name),
+                    Path.GetFileNameWithoutExtension(Path.GetFileNameWithoutExtension(file_name)));
+                Directory.CreateDirectory(outputFilePath);
                 return outputFilePath;
             }
             else if (radioButton2.Checked == true)
@@ -147,10 +147,7 @@ namespace Tso2Pmd
 
         private void checkedListBox1_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            if (e.NewValue == CheckState.Checked)
-                correspondTable_list.Flag[checkedListBox1.Items[e.Index].ToString()] = true;
-            else if (e.NewValue == CheckState.Unchecked)
-                correspondTable_list.Flag[checkedListBox1.Items[e.Index].ToString()] = false;
+            correspondTable_list.Used[checkedListBox1.Items[e.Index].ToString()] = (e.NewValue == CheckState.Checked);
         }
     }
 }

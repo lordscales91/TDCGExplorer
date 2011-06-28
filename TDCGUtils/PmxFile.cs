@@ -294,7 +294,7 @@ namespace TDCGUtils
             bw.Write(tail_node_id);
         }
 
-        // ボーンの種類
+        // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
         public int kind;
 
         // 親ボーン名
