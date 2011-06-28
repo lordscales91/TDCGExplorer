@@ -40,7 +40,7 @@ namespace Tso2Pmd
         CorrespondTableList corTable_list;
 
         public Figure Figure { get { return fig; } set { fig = value; } }
-        public PmxFile Pmd { get { return pmd; } }
+        //public PmxFile Pmd { get { return pmd; } }
         public int Bone_flag { set { bone_flag = value; } }
         public bool Spheremap_flag { set { spheremap_flag = value; } }
         public bool Edge_flag_flag { set { edge_flag_flag = value; } }
@@ -59,65 +59,52 @@ namespace Tso2Pmd
         const int FACE_BONE_MIN = 86;
         const int FACE_BONE_MAX = 135;
 
-        // -----------------------------------------------------
-        // コンストラクタ
-        // -----------------------------------------------------
         public TransTso2Pmd()
         {
-            // -----------------------------------------------------
-            // 表情ファイルを読みとる
-            morph.Load(Application.StartupPath + @"/表情");
-
-            return;
+            morph.Load(Path.Combine(Application.StartupPath, @"表情"));
         }
 
-        // -----------------------------------------------------
-        // ヘッダー情報を入力
-        // -----------------------------------------------------
-        public string InputHeader(string name, string comment)
-        { 
+        /// ヘッダー情報を入力します。
+        public void InputHeader(string name, string comment)
+        {
+            if (name.Length > 9)
+                throw new FormatException("モデル名が9文字を超えています。");
+            if (comment.Length > 127)
+                throw new FormatException("コメントが127文字を超えています。");
+
             /*
             pmd.pmd_header = new PMD_Header();
             pmd.pmd_header.magic = "Pmd";
             pmd.pmd_header.version = 1.0f;
-
-            if (name.Length > 9) return "モデル名が9文字を超えています。";
             pmd.pmd_header.name = name;
-
-            if (comment.Length > 127) return "コメントが127文字を超えています。";
             pmd.pmd_header.comment = comment;
             */
-
-            return "";
         }
 
-        // -----------------------------------------------------
-        // マテリアル関係のファイルを出力
-        // -----------------------------------------------------
+        /// PMDファイルを出力します。
+        public void SavePmdFile(string path)
+        {
+            pmd.Save(path);
+        }
+        
+        /// マテリアル関係のファイルを出力します。
         public void OutputMaterialFile(string path, string name)
         {
             material_list.Save(path, name, spheremap_flag);
         }
 
-        // -----------------------------------------------------
-        // FigureデータよりPmdFileデータを作成
-        // -----------------------------------------------------
-        public string Figure2PmdFileData()
+        /// Figureを元にPmdFileを更新します。
+        public void UpdatePmdFromFigure()
         {
             if (bone_flag == 0)
-            {
-                return Figure2PmdFileDataWithHumanBone();
-            }
+                UpdatePmdFromFigureWithHumanBone();
             else
-            {
-                return Figure2PmdFileDataWithOneBone();
-            }
+                UpdatePmdFromFigureWithOneBone();
         }
 
-        // -----------------------------------------------------
-        // FigureデータよりPmdFileデータを作成
-        // -----------------------------------------------------
-        public string Figure2PmdFileDataWithOneBone()
+        /// Figureを元にPmdFileを更新します。
+        /// ボーンはセンターのみです。
+        public void UpdatePmdFromFigureWithOneBone()
         {
             // -----------------------------------------------------
             // 予め、情報をコピーするmeshを選定し、並び替えておく
@@ -130,8 +117,8 @@ namespace Tso2Pmd
             MakePMDVertices(null, 2);
 
             // 頂点数が上限を超えてないかチェックし、超えていたらエラーを出して終了
-            if (pmd.vertices.Length > 65535)
-                return "頂点数(" + pmd.vertices.Length.ToString() + ")が上限(65535)を超えています。";
+            if (pmd.vertices.Length > ushort.MaxValue)
+                throw new FormatException(string.Format("頂点数({0})が上限({1})を超えています。", pmd.vertices.Length, ushort.MaxValue));
 
             // -----------------------------------------------------
             // 表情枠
@@ -195,20 +182,11 @@ namespace Tso2Pmd
             /*
             pmd.english_name_compatibility = 0;
             */
-
-            // -----------------------------------------------------
-            // 剛体＆ジョイント
-            // -----------------------------------------------------
-
-            // -----------------------------------------------------
-            // 終了
-            return "";
         }
 
-        // -----------------------------------------------------
-        // FigureデータよりPmdFileデータを作成
-        // -----------------------------------------------------
-        public string Figure2PmdFileDataWithHumanBone()
+        /// Figureを元にPmdFileを更新します。
+        /// ボーンは人型です。
+        public void UpdatePmdFromFigureWithHumanBone()
         {
             CorrespondTable cor_table = null;
             int mod_type = 0;
@@ -227,7 +205,7 @@ namespace Tso2Pmd
             }
             else
             {
-                return "未対応のボーン構造です。\n人型以外を変換する場合は、\n出力ボーンに”1ボーン”を指定してください。";
+                throw new FormatException("未対応のボーン構造です。\n人型以外を変換する場合は、\n出力ボーンに\"1ボーン\"を指定してください。");
             }
  
             // -----------------------------------------------------
@@ -241,8 +219,8 @@ namespace Tso2Pmd
             MakePMDVertices(cor_table, mod_type);
 
             // 頂点数が上限を超えてないかチェックし、超えていたらエラーを出して終了
-            if (pmd.vertices.Length > 65535)
-                return "頂点数(" + pmd.vertices.Length.ToString() + ")が上限(65535)を超えています。";
+            if (pmd.vertices.Length > ushort.MaxValue)
+                throw new FormatException(string.Format("頂点数({0})が上限({1})を超えています。", pmd.vertices.Length, ushort.MaxValue));
 
             // -----------------------------------------------------
             // 表情
@@ -464,10 +442,6 @@ namespace Tso2Pmd
             pmd.bodies = (PMD_RBody[])physOb_list.rbody_list.ToArray();
 
             pmd.joints = (PMD_Joint[])physOb_list.joint_list.ToArray();
-
-            // -----------------------------------------------------
-            // 終了
-            return "";
         }
 
         // -----------------------------------------------------
