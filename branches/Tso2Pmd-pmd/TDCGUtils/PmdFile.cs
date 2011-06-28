@@ -32,16 +32,10 @@ namespace TDCGUtils
         // 表情配列
         public PMD_Skin[] skins;
 
-        public PMD_DispGroup[] disp_groups;
+        public List<PMD_DispGroup> disp_groups = new List<PMD_DispGroup>();
 
         // 表情枠：表情インデックス配列
         public int[] skin_disp_indices;
-
-        // ボーン枠の枠名配列
-        public string[] disp_names;
-
-        // ボーン枠
-        public PMD_BoneDisp[] bone_disps;
 
         // 英名対応(01:英名対応あり)
         public int english_name_compatibility;
@@ -120,17 +114,36 @@ namespace TDCGUtils
                 bw.Write((short)skin_disp_indices[i]);
             }
 
-            bw.Write((byte)disp_names.Length);
-            for (int i = 0; i < disp_names.Length; i++)
+            UpdateBoneDispGroupID();
+
+            List<string> disp_names = new List<string>();
+            List<PMD_BoneDisp> bone_disps = new List<PMD_BoneDisp>();
+
+            foreach (PMD_DispGroup disp_group in disp_groups)
             {
-                bw.WriteCString(disp_names[i], 50);
+                if (disp_group.spec == 1)
+                    continue;
+
+                disp_names.Add(disp_group.name);
+
+                foreach (PMD_Disp disp in disp_group.disps)
+                {
+                    if (disp is PMD_BoneDisp)
+                        bone_disps.Add((PMD_BoneDisp)disp);
+                }
             }
 
-            bw.Write(bone_disps.Length);
-            for (int i = 0; i < bone_disps.Length; i++)
+            bw.Write((byte)disp_names.Count);
+            foreach (string disp_name in disp_names)
             {
-                bone_disps[i].SetBoneIDFromName(this);
-                bone_disps[i].Write(bw);
+                bw.WriteCString(disp_name, 50);
+            }
+
+            bw.Write(bone_disps.Count);
+            foreach (PMD_BoneDisp bone_disp in bone_disps)
+            {
+                bone_disp.SetBoneIDFromName(this);
+                bone_disp.Write(bw);
             }
 
             bw.Write((byte)0);//english_name_compatibility
@@ -150,6 +163,23 @@ namespace TDCGUtils
             for (int i = 0; i < joints.Length; i++)
             {
                 joints[i].Write(bw);
+            }
+        }
+
+        void UpdateBoneDispGroupID()
+        {
+            int group_id = 1;
+
+            foreach (PMD_DispGroup disp_group in disp_groups)
+            {
+                if (disp_group.spec == 1)
+                    continue;
+
+                foreach (PMD_Disp disp in disp_group.disps)
+                {
+                    disp.disp_group_id = (sbyte)group_id;
+                }
+                group_id++;
             }
         }
 
@@ -416,8 +446,8 @@ namespace TDCGUtils
     {
         public string name;
         public string name_en;
-        public byte flags;
-        public PMD_Disp[] disps;
+        public byte spec;
+        public List<PMD_Disp> disps = new List<PMD_Disp>();
 
         public void Write(BinaryWriter bw)
         {
@@ -427,16 +457,16 @@ namespace TDCGUtils
 
     public abstract class PMD_Disp
     {
+        // 表示枠番号
+        public sbyte disp_group_id;
+
         public abstract void Write(BinaryWriter bw);
     }
 
     public class PMD_BoneDisp : PMD_Disp
     {
-        // 枠用ボーン番号
-        internal short bone_id;
-        
-        // 表示枠番号
-        public sbyte disp_group_id; 
+        // ボーン番号
+        public short bone_id;
 
         public string bone_name;
 
