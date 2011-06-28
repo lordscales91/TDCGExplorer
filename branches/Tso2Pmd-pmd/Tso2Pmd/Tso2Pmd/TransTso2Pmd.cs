@@ -434,7 +434,7 @@ namespace Tso2Pmd
         // -----------------------------------------------------
         private void InitializePMDFaces()
         {
-            int n_face = 0; // 通し番号
+            sbyte skin_idx = 0; // 通し番号
             int number_of_skin = 1;
 
             // 表情数
@@ -446,26 +446,33 @@ namespace Tso2Pmd
             int numFaceVertices = CalcNumFaceVertices(fig.Tmo);
 
             // baseの表情
-            pmd.skins[n_face++] = new PMD_Skin(numFaceVertices);
+            pmd.skins[skin_idx++] = new PMD_Skin(numFaceVertices);
 
             // base以外の表情
             foreach (MorphGroup mg in morph.Groups)
             {
                 foreach (Morph m in mg.Items)
                 {
-                    pmd.skins[n_face] = new PMD_Skin(numFaceVertices);
-                    pmd.skins[n_face].name = m.Name; // 表情名 (0x00 終端，余白は 0xFD)
+                    pmd.skins[skin_idx] = new PMD_Skin(numFaceVertices);
+                    pmd.skins[skin_idx].name = m.Name; // 表情名 (0x00 終端，余白は 0xFD)
 
-                    // 分類 (0：base、1：まゆ、2：目、3：リップ、4：その他)
                     switch (mg.Name)
                     {
-                        case "まゆ": pmd.skins[n_face].panel_id = 1; break;
-                        case "目": pmd.skins[n_face].panel_id = 2; break;
-                        case "リップ": pmd.skins[n_face].panel_id = 3; break;
-                        case "その他": pmd.skins[n_face].panel_id = 4; break;
+                        case "まゆ":
+                            pmd.skins[skin_idx].panel_id = 1;
+                            break;
+                        case "目":
+                            pmd.skins[skin_idx].panel_id = 2;
+                            break;
+                        case "リップ":
+                            pmd.skins[skin_idx].panel_id = 3;
+                            break;
+                        case "その他":
+                            pmd.skins[skin_idx].panel_id = 4;
+                            break;
                     }
 
-                    n_face++;
+                    skin_idx++;
                 }
             }
         }
@@ -601,7 +608,7 @@ namespace Tso2Pmd
                     }
 
                     float w0 = tmp_w.Max();
-                    pmd_v.unBoneName[0] = tmp_b[tmp_w.IndexOf(w0)];
+                    pmd_v.bone_names[0] = tmp_b[tmp_w.IndexOf(w0)];
                     tmp_b.RemoveAt(tmp_w.IndexOf(w0));
                     tmp_w.RemoveAt(tmp_w.IndexOf(w0));
 
@@ -609,12 +616,12 @@ namespace Tso2Pmd
                     if (tmp_b.Count == 0)
                     {
                         w1 = 0.0f;
-                        pmd_v.unBoneName[1] = pmd_v.unBoneName[0];
+                        pmd_v.bone_names[1] = pmd_v.bone_names[0];
                     }
                     else
                     {
                         w1 = tmp_w.Max();
-                        pmd_v.unBoneName[1] = tmp_b[tmp_w.IndexOf(w1)];
+                        pmd_v.bone_names[1] = tmp_b[tmp_w.IndexOf(w1)];
                     }
 
                     pmd_v.weight = (sbyte)(w0 * 100 / (w0 + w1));
@@ -697,10 +704,11 @@ namespace Tso2Pmd
             // 頂点インデックス
             pmd.vindices = (short[])indices.ToArray();
             // マテリアル
-            if (merge_flag == true) material_list.MergeMaterials();
+            if (merge_flag == true)
+                material_list.MergeMaterials();
             pmd.materials = (PMD_Material[])material_list.material_list.ToArray();
             // Toonテクスチャファイル名
-            pmd.toon_file_name = material_list.GetToonFileNameList();
+            pmd.toon_file_names = material_list.GetToonFileNameList();
         }
 
         // 表情に関連するboneに影響を受ける頂点を数え上げる

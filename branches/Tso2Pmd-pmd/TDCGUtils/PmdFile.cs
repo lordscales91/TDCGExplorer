@@ -45,7 +45,7 @@ namespace TDCGUtils
         public int english_name_compatibility;
 
         // トゥーンテクスチャファイル名
-        public string[] toon_file_name;
+        public string[] toon_file_names;
 
         // 剛体
         public PMD_RBody[] bodies;
@@ -135,7 +135,7 @@ namespace TDCGUtils
 
             for (int i = 0; i < 10; i++)
             {
-                bw.WriteCString(toon_file_name[i], 100);
+                bw.WriteCString(toon_file_names[i], 100);
             }
 
             bw.Write(bodies.Length);
@@ -203,33 +203,34 @@ namespace TDCGUtils
         public float u, v;
 
         // ボーン番号
-        internal int[] bone_indices = new int[2];
+        internal short[] bone_indices = new short[2];
 
-        // ブレンドの重み (0～100％)
+        // スキンウェイト
         public sbyte weight;	
 
         // エッジフラグ
-        public sbyte edge;	
+        public sbyte edge;
 
-        public string[] unBoneName = new string[2];	// ボーン番号
+        // ボーン番号
+        public string[] bone_names = new string[2];
 
         internal void Write(BinaryWriter writer)
         {
-            writer.Write(ref this.position);
-            writer.Write(ref this.normal);
+            writer.Write(ref position);
+            writer.Write(ref normal);
             writer.Write(u);
             writer.Write(v);
-            writer.Write((ushort)this.bone_indices[0]);
-            writer.Write((ushort)this.bone_indices[1]);
-            writer.Write(this.weight);
-            writer.Write(this.edge);
+            writer.Write(bone_indices[0]);
+            writer.Write(bone_indices[1]);
+            writer.Write(weight);
+            writer.Write(edge);
         }
 
         // ボーン名をIDに置き換える
         public void SetBoneIDFromName(PmdFile pmd)
         {
-            bone_indices[0] = pmd.GetBoneIDByName(unBoneName[0]);
-            bone_indices[1] = pmd.GetBoneIDByName(unBoneName[1]);
+            bone_indices[0] = pmd.GetBoneIDByName(bone_names[0]);
+            bone_indices[1] = pmd.GetBoneIDByName(bone_names[1]);
         }
     }
 
@@ -238,10 +239,18 @@ namespace TDCGUtils
         public Vector4 diffuse = Vector4.Empty;
         public Vector4 specular = Vector4.Empty;
         public Vector3 ambient = Vector3.Empty;
-        public sbyte toon_tex_id; // toon??.bmp // 0.bmp:0xFF, 1(01).bmp:0x00 ・・・ 10.bmp:0x09
-        public sbyte edge; // 輪郭、影
-        public int vindices_count;		// この材質に対応する頂点数
-        public String tex_path;	// テクスチャファイル名
+        
+        // トゥーンテクスチャ
+        public sbyte toon_tex_id;
+
+        // 輪郭
+        public sbyte edge_width;
+        
+        // この材質に対応する頂点数
+        public int vindices_count;
+
+        // テクスチャファイル名
+        public String tex_path;
 
         internal void Write(BinaryWriter writer)
         {
@@ -252,7 +261,7 @@ namespace TDCGUtils
             writer.Write(specular.Z);
             writer.Write(ref this.ambient);
             writer.Write(this.toon_tex_id);
-            writer.Write(this.edge);
+            writer.Write(this.edge_width);
             writer.Write(this.vindices_count);
             writer.WriteCString(this.tex_path, 20);
         }
