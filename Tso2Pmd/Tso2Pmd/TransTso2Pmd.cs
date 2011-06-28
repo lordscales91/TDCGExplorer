@@ -40,7 +40,7 @@ namespace Tso2Pmd
         CorrespondTableList corTable_list;
 
         public Figure Figure { get { return fig; } set { fig = value; } }
-        public PmdFile Pmd { get { return pmd; } }
+        //public PmdFile Pmd { get { return pmd; } }
         public int Bone_flag { set { bone_flag = value; } }
         public bool Spheremap_flag { set { spheremap_flag = value; } }
         public bool Edge_flag_flag { set { edge_flag_flag = value; } }
@@ -89,9 +89,13 @@ namespace Tso2Pmd
             return "";
         }
 
-        // -----------------------------------------------------
-        // マテリアル関係のファイルを出力
-        // -----------------------------------------------------
+        /// PMDファイルを出力します。
+        public void SavePmdFile(string path)
+        {
+            pmd.Save(path);
+        }
+        
+        /// マテリアル関係のファイルを出力します。
         public void OutputMaterialFile(string path, string name)
         {
             material_list.Save(path, name, spheremap_flag);
