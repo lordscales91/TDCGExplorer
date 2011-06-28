@@ -24,11 +24,11 @@ namespace Tso2Pmd
 
         int bone_flag;
 
-        bool spheremap_flag;
+        bool spheremap_used;
         bool edge_flag_flag;
         bool merge_flag;
 
-        List<string> category;
+        List<string> categories;
 
         List<bool> meshes_flag = new List<bool>();
 
@@ -42,10 +42,10 @@ namespace Tso2Pmd
         public Figure Figure { get { return fig; } set { fig = value; } }
         //public PmxFile Pmd { get { return pmd; } }
         public int Bone_flag { set { bone_flag = value; } }
-        public bool Spheremap_flag { set { spheremap_flag = value; } }
+        public bool Spheremap_flag { set { spheremap_used = value; } }
         public bool Edge_flag_flag { set { edge_flag_flag = value; } }
         public bool Merge_flag { set { merge_flag = value; } }
-        public List<string> Category { set { category = value; } }
+        public List<string> Category { set { categories = value; } }
         public List<bool> Meshes_flag { set { meshes_flag = value; } }
         public TemplateList TemplateList { set { template_list = value; } }
         public CorrespondTableList CorTableList { set { cor_table_list = value; } }
@@ -90,7 +90,7 @@ namespace Tso2Pmd
         /// マテリアル関係のファイルを出力します。
         public void OutputMaterialFile(string path, string name)
         {
-            material_list.Save(path, name, spheremap_flag);
+            material_list.Save(path, name, spheremap_used);
         }
 
         /// Figureを元にPmdFileを更新します。
@@ -472,7 +472,7 @@ namespace Tso2Pmd
         private void SelectMeshes()
         {
             mesh_list = new List<TSOSubMesh>();
-            material_list = new T2PMaterialList(fig.TSOList, category);
+            material_list = new T2PMaterialList(fig.TSOList, categories);
 
             int tso_num = 0;
             int sub_mesh_num = 0;
@@ -486,7 +486,7 @@ namespace Tso2Pmd
                     if (meshes_flag[sub_mesh_num++] == true)
                     {
                         mesh_list.Add(sub_mesh);
-                        material_list.Add(tso_num, script_num, edge_flag_flag, spheremap_flag);
+                        material_list.Add(tso_num, script_num, edge_flag_flag, spheremap_used);
                     }
                 }
                 tso_num++;
@@ -682,7 +682,7 @@ namespace Tso2Pmd
                 }
 
                 // meshごとのインデックス数を記録
-                material_list.material_list[n_mesh++].vindices_count = indices.Count - prevNumIndices;
+                material_list.materials[n_mesh++].vindices_count = indices.Count - prevNumIndices;
                 prevNumIndices = indices.Count;
                 prevNumVertices = vertex_list.Count;
             }
@@ -695,7 +695,7 @@ namespace Tso2Pmd
             // マテリアル
             if (merge_flag == true)
                 material_list.MergeMaterials();
-            pmd.materials = (PMD_Material[])material_list.material_list.ToArray();
+            pmd.materials = (PMD_Material[])material_list.materials.ToArray();
             // Toonテクスチャファイル名
             /*
             pmd.toon_file_names = material_list.GetToonFileNameList();
