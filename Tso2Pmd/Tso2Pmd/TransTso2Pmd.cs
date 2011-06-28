@@ -124,11 +124,6 @@ namespace Tso2Pmd
             pmd.skins = new PMD_Skin[0];
 
             // -----------------------------------------------------
-            // 表情枠
-            // -----------------------------------------------------
-            pmd.skin_disp_indices = new int[0];
-
-            // -----------------------------------------------------
             // ボーン情報
             // -----------------------------------------------------
             pmd.nodes = new PMD_Bone[2];
@@ -157,6 +152,11 @@ namespace Tso2Pmd
             pmd.iks = new PMD_IK[0];
 
             AssignDispGroups();
+
+            // -----------------------------------------------------
+            // 表情枠
+            // -----------------------------------------------------
+            //pmd.skin_disp_indices = new int[0];
 
             pmd.english_name_compatibility = 0;
 
@@ -219,22 +219,6 @@ namespace Tso2Pmd
             }
 
             // -----------------------------------------------------
-            // 表情枠
-            // -----------------------------------------------------
-            if (mod_type == 0)
-            {
-                pmd.skin_disp_indices = new int[pmd.skins.Length - 1];
-                for (int i = 0; i < pmd.skin_disp_indices.Length; i++)
-                {
-                    pmd.skin_disp_indices[i] = i + 1;
-                }
-            }
-            else if (mod_type == 1)
-            {
-                pmd.skin_disp_indices = new int[0];
-            }
-
-            // -----------------------------------------------------
             // ボーン情報
             // -----------------------------------------------------
             List<PMD_Bone> bone_list = new List<PMD_Bone>();
@@ -293,7 +277,26 @@ namespace Tso2Pmd
             pmd.iks = (PMD_IK[])cor_table.iks.ToArray();
 
             AssignDispGroups();
-            
+
+            // -----------------------------------------------------
+            // 表情枠
+            // -----------------------------------------------------
+            if (mod_type == 0)
+            {
+                PMD_DispGroup disp_group = pmd.disp_groups[1];
+
+                for (int i = 0; i < pmd.skins.Length; i++)
+                {
+                    PMD_SkinDisp skin_disp = new PMD_SkinDisp();
+                    skin_disp.skin_id = (short)(i + 1);
+                    disp_group.disps.Add(skin_disp);
+                }
+            }
+            else if (mod_type == 1)
+            {
+                //pmd.skin_disp_indices = new int[0];
+            }
+
             foreach (BoneDispGroup group in cor_table.boneDispGroups)
             {
                 PMD_DispGroup disp_group = new PMD_DispGroup();
