@@ -49,8 +49,12 @@ namespace Tso2Pmd
             file_name.Add(bmp, "t" + (bmp_list.Count - 1).ToString("000") + ".bmp");
         }
 
-        // bmp_listを全てファイルに書き出す
-        public void Save(string outputFilePath, bool spheremap_flag)
+        /// <summary>
+        /// 全てのビットマップを書き出します。
+        /// </summary>
+        /// <param name="dest_path">出力先パス</param>
+        /// <param name="spheremap_used">スフィアマップを使うか</param>
+        public void Save(string dest_path, bool spheremap_used)
         {
             foreach (Bitmap bmp in bmp_list)
             {
@@ -58,21 +62,21 @@ namespace Tso2Pmd
                 {
                     // テクスチャがtoonテクスチャなら加工（最適化）してから、書き出す
                     Bitmap toon_bmp = TurnBitmap(bmp);
-                    toon_bmp.Save(outputFilePath + "/" + file_name[bmp],
+                    toon_bmp.Save(dest_path + "/" + file_name[bmp],
                         System.Drawing.Imaging.ImageFormat.Bmp);
 
                     // 色飛び補完用のスフィアマップを書き出す
-                    if (spheremap_flag == true)
+                    if (spheremap_used)
                     {
                         Bitmap sphere_bmp = MakeSphereBitmap(bmp);
                         string sphere_file_name = Path.ChangeExtension(file_name[bmp], ".sph");
-                        sphere_bmp.Save(outputFilePath + "/" + sphere_file_name,
+                        sphere_bmp.Save(dest_path + "/" + sphere_file_name,
                             System.Drawing.Imaging.ImageFormat.Bmp);
                     }
                 }
                 else
                 {
-                    bmp.Save(outputFilePath + "/" + file_name[bmp],
+                    bmp.Save(dest_path + "/" + file_name[bmp],
                         System.Drawing.Imaging.ImageFormat.Bmp);
                 }
             }
