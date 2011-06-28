@@ -16,7 +16,7 @@ namespace TDCGUtils
         public PMD_Bone[] nodes;
         public PMD_IK[] iks;
         public PMD_Skin[] skins;
-        public PMD_DispGroup[] disp_groups;
+        public List<PMD_DispGroup> disp_groups = new List<PMD_DispGroup>();
         public PMD_RBody[] bodies;
         public PMD_Joint[] joints;
 
@@ -87,7 +87,7 @@ namespace TDCGUtils
                 s.Write(bw);
             }
 
-            bw.Write(disp_groups.Length);
+            bw.Write(disp_groups.Count);
             foreach (PMD_DispGroup g in disp_groups)
             {
                 g.Write(bw);
@@ -415,16 +415,16 @@ namespace TDCGUtils
     {
         public string name;
         public string name_en;
-        public byte flags;
-        public PMD_Disp[] disps;
+        public byte spec;
+        public List<PMD_Disp> disps = new List<PMD_Disp>();
 
         public void Write(BinaryWriter bw)
         {
             bw.WritePString(name);
             bw.WritePString(name_en);
 
-            bw.Write(flags);
-            bw.Write(disps.Length);
+            bw.Write(spec);
+            bw.Write(disps.Count);
             foreach (PMD_Disp disp in disps)
             {
                 disp.Write(bw);
@@ -446,6 +446,8 @@ namespace TDCGUtils
             bw.Write((byte)0);
             bw.Write(bone_id);
         }
+
+        public string bone_name;
     }
 
     public class PMD_SkinDisp : PMD_Disp
