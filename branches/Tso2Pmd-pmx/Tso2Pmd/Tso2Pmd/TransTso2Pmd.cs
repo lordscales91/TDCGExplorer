@@ -37,7 +37,7 @@ namespace Tso2Pmd
         T2PMaterialList material_list;
         T2PPhysObjectList physOb_list;
         TemplateList template_list;
-        CorrespondTableList corTable_list;
+        CorrespondTableList cor_table_list;
 
         public Figure Figure { get { return fig; } set { fig = value; } }
         //public PmxFile Pmd { get { return pmd; } }
@@ -48,7 +48,7 @@ namespace Tso2Pmd
         public List<string> Category { set { category = value; } }
         public List<bool> Meshes_flag { set { meshes_flag = value; } }
         public TemplateList TemplateList { set { template_list = value; } }
-        public CorrespondTableList CorTableList { set { corTable_list = value; } }
+        public CorrespondTableList CorTableList { set { cor_table_list = value; } }
           
         // -----------------------------------------------------
         // 表情設定リスト
@@ -193,14 +193,14 @@ namespace Tso2Pmd
 
             if (fig.Tmo.nodes.Length == 227)
             {
-                corTable_list.SetManFlag = false;
-                cor_table = corTable_list.GetCorrespondTable();
+                cor_table_list.ManUsed = false;
+                cor_table = cor_table_list.GetCorrespondTable();
                 mod_type = 0;
             }
             else if (fig.Tmo.nodes.Length == 75)
             {
-                corTable_list.SetManFlag = true;
-                cor_table = corTable_list.GetCorrespondTable();
+                cor_table_list.ManUsed = true;
+                cor_table = cor_table_list.GetCorrespondTable();
                 mod_type = 1;
             }
             else
