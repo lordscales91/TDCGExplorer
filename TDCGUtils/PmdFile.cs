@@ -11,89 +11,48 @@ namespace TDCGUtils
 {
     public class PmdFile
     {
-        public PMD_Header pmd_header; // ヘッダー情報
+        // ヘッダー
+        public PMD_Header pmd_header;
 
-        // 頂点数
-        public int number_of_vertex
-        {
-            get { return vertices.Length; }
-        }
-        public PMD_Vertex[] vertices; // 頂点配列
+        // 頂点配列
+        public PMD_Vertex[] vertices;
 
-        // 頂点インデックス数
-        public int number_of_indices
-        {
-            get { return vindices.Length; }
-        }
-        public short[] vindices; // 頂点インデックス配列
+        // 頂点インデックス配列
+        public short[] vindices;
 
-        // マテリアル数　
-        public int number_of_materials
-        {
-            get { return materials.Length; }
-        }
-        public PMD_Material[] materials; // マテリアル配列
+        // 材質配列
+        public PMD_Material[] materials;
 
-        // Bone数
-        public int number_of_bone
-        {
-            get { return nodes.Length; }
-        }
-        public PMD_Bone[] nodes; // Bone配列
+        // ボーン配列
+        public PMD_Bone[] nodes;
 
-        // IK数
-        public int number_of_ik
-        {
-            get { return pmd_ik.Length; }
-        }
-        public PMD_IK[] pmd_ik; // IK配列
+        // IK配列
+        public PMD_IK[] iks;
 
-        // 表情数
-        public int number_of_skin
-        {
-            get { return skins.Length; }
-        }
-        public PMD_Skin[] skins; // Face配列
+        // 表情配列
+        public PMD_Skin[] skins;
 
-        // 表情枠に表示する表情数
-        public int skin_disp_count
-        {
-            get { return skin_disp_indices.Length; }
-        }
-        public int[] skin_disp_indices; // 表情番号
+        // 表情枠：表情インデックス配列
+        public int[] skin_disp_indices;
 
-        // ボーン枠用の枠名数
-        public int bone_disp_name_count
-        {
-            get { return disp_names.Length; }
-        }
-        public string[] disp_names; // 枠名(50Bytes/枠)
+        // ボーン枠の枠名配列
+        public string[] disp_names;
 
-        // ボーン枠に表示するボーン数 (枠0(センター)を除く、すべてのボーン枠の合計)
-        public int bone_disp_count
-        {
-            get { return bone_disps.Length; }
-        }
-        public PMD_BoneDisp[] bone_disps; // 枠用ボーンデータ (3Bytes/bone)
+        // ボーン枠
+        public PMD_BoneDisp[] bone_disps;
 
-        public int english_name_compatibility; // 英名対応(01:英名対応あり)
+        // 英名対応(01:英名対応あり)
+        public int english_name_compatibility;
 
-        public string[] toon_file_name;//[100][10]; // トゥーンテクスチャファイル名
+        // トゥーンテクスチャファイル名
+        public string[] toon_file_name;
 
-        // 剛体数 // 2D 00 00 00 == 45
-        public int rbody_count
-        {
-            get { return bodies.Length; }
-        }
-        public PMD_RBody[] bodies;// 剛体データ(83Bytes/rigidbody)
+        // 剛体
+        public PMD_RBody[] bodies;
 
-        // ジョイント数 // 1B 00 00 00 == 27
-        public int joint_count
-        {
-            get { return joints.Length; }
-        }
-        public PMD_Joint[] joints;// ジョイントデータ(124Bytes/joint)
-
+        // ジョイント
+        public PMD_Joint[] joints;
+        
         /// <summary>
         /// 指定パスに保存します。
         /// </summary>
@@ -112,13 +71,9 @@ namespace TDCGUtils
         {
             BinaryWriter bw = new BinaryWriter(dest_stream);
 
-            // -----------------------------------------------------
-            // ヘッダー情報
             pmd_header.Write(bw);
 
-            // -----------------------------------------------------
-            // 頂点数
-            bw.Write((int)number_of_vertex);
+            bw.Write(vertices.Length);
 
             // ボーン名をIDに置き換え
             foreach (PMD_Vertex vertex in vertices)
@@ -134,35 +89,24 @@ namespace TDCGUtils
                     vertex.bone_indices[1] = GetBoneIDByName(vertex.unBoneName[1]);
             }
 
-            // 頂点配列
-            for (int i = 0; i < number_of_vertex; i++)
+            for (int i = 0; i < vertices.Length; i++)
             {
                 vertices[i].Write(bw);
             }
 
-            // -----------------------------------------------------
-            // 頂点インデックス数
-            bw.Write((int)number_of_indices);
-
-            // 頂点インデックス配列
-            for (int i = 0; i < number_of_indices; i++)
+            bw.Write(vindices.Length);
+            for (int i = 0; i < vindices.Length; i++)
             {
                 bw.Write((short)vindices[i]);
             }
 
-            // -----------------------------------------------------
-            // マテリアル数
-            bw.Write((int)number_of_materials);
-
-            // マテリアル配列
-            for (int i = 0; i < number_of_materials; i++)
+            bw.Write(materials.Length);
+            for (int i = 0; i < materials.Length; i++)
             {
                 materials[i].Write(bw);
             }
 
-            // -----------------------------------------------------
-            // Bone数
-            bw.Write((short)number_of_bone);
+            bw.Write((short)nodes.Length);
 
             // ボーン名をIDに置き換え
             foreach (PMD_Bone bone in nodes)
@@ -183,95 +127,68 @@ namespace TDCGUtils
                     bone.unIKTarget = GetBoneIDByName(bone.IKTargetName);
             }
 
-            // Bone配列
-            for (int i = 0; i < number_of_bone; i++)
+            for (int i = 0; i < nodes.Length; i++)
             {
                 nodes[i].Write(bw);
             }
 
-            // -----------------------------------------------------
-            // IK数
-            bw.Write((short)number_of_ik);
+            bw.Write((short)iks.Length);
 
-            if (number_of_ik > 0)
+            // ボーン名をIDに置き換え
+            foreach (PMD_IK ik in iks)
             {
-                // ボーン名をIDに置き換え
-                foreach (PMD_IK ik in pmd_ik)
+                if (ik.target_node_name == null)
+                    ik.nTargetNo = -1;
+                else
+                    ik.nTargetNo = GetBoneIDByName(ik.target_node_name);
+                
+                if (ik.effector_node_name == null)
+                    ik.nEffNo = -1;
+                else
+                    ik.nEffNo = GetBoneIDByName(ik.effector_node_name);
+
+                if (ik.nTargetNo <= -1)
+                    ik.target_node_name = null;
+                else
+                    ik.target_node_name = nodes[ik.nTargetNo].name;
+                
+                if (ik.nEffNo <= -1)
+                    ik.effector_node_name = null;
+                else
+                    ik.effector_node_name = nodes[ik.nEffNo].name;
+
+                ik.chain_node_ids = new int[ik.chain_node_names.Count];
+                for (int i = 0; i < ik.chain_length; i++)
                 {
-                    if (ik.target_node_name == null)
-                        ik.nTargetNo = -1;
+                    if (ik.chain_node_names[i] == null)
+                        ik.chain_node_ids[i] = -1;
                     else
-                        ik.nTargetNo = GetBoneIDByName(ik.target_node_name);
-                    
-                    if (ik.effector_node_name == null)
-                        ik.nEffNo = -1;
-                    else
-                        ik.nEffNo = GetBoneIDByName(ik.effector_node_name);
-
-                    if (ik.nTargetNo <= -1)
-                        ik.target_node_name = null;
-                    else
-                        ik.target_node_name = nodes[ik.nTargetNo].name;
-                    
-                    if (ik.nEffNo <= -1)
-                        ik.effector_node_name = null;
-                    else
-                        ik.effector_node_name = nodes[ik.nEffNo].name;
-
-                    ik.chain_node_ids = new int[ik.chain_node_names.Count];
-                    for (int i = 0; i < ik.chain_length; i++)
-                    {
-                        if (ik.chain_node_names[i] == null)
-                            ik.chain_node_ids[i] = -1;
-                        else
-                            ik.chain_node_ids[i] = GetBoneIDByName(ik.chain_node_names[i]);
-                    }
+                        ik.chain_node_ids[i] = GetBoneIDByName(ik.chain_node_names[i]);
                 }
-
-                // IK配列
-                for (int i = 0; i < number_of_ik; i++)
-                    pmd_ik[i].Write(bw);
             }
 
-            // -----------------------------------------------------
-            // Face数
-            bw.Write((short)number_of_skin);
+            for (int i = 0; i < iks.Length; i++)
+                iks[i].Write(bw);
 
-            // Face配列
-            for (int i = 0; i < number_of_skin; i++)
+            bw.Write((short)skins.Length);
+            for (int i = 0; i < skins.Length; i++)
             {
                 skins[i].Write(bw);
             }
 
-            // -----------------------------------------------------
-            // 表情枠
-            // -----------------------------------------------------
-            // 表情枠に表示する表情数
-            bw.Write((byte)skin_disp_count);
-
-            // 表情番号
-            for (int i = 0; i < skin_disp_count; i++)
+            bw.Write((byte)skin_disp_indices.Length);
+            for (int i = 0; i < skin_disp_indices.Length; i++)
             {
                 bw.Write((short)skin_disp_indices[i]);
             }
 
-            // -----------------------------------------------------
-            // ボーン枠
-            // -----------------------------------------------------
-            // ボーン枠用の枠名数
-            bw.Write((byte)bone_disp_name_count);
-
-            // 枠名(50Bytes/枠)
-            for (int i = 0; i < bone_disp_name_count; i++)
+            bw.Write((byte)disp_names.Length);
+            for (int i = 0; i < disp_names.Length; i++)
             {
                 bw.WriteCString(disp_names[i], 50);
             }
 
-            // -----------------------------------------------------
-            // ボーン枠に表示するボーン
-            // -----------------------------------------------------
-            // ボーン枠に表示するボーン数
-            bw.Write((int)bone_disp_count);
+            bw.Write(bone_disps.Length);
 
             // ボーン名をIDに置き換え
             for (int i = 0; i < bone_disps.Length; i++)
@@ -279,44 +196,26 @@ namespace TDCGUtils
                 bone_disps[i].bone_index = GetBoneIDByName(bone_disps[i].bone_name);
             }
 
-            // 枠用ボーンデータ (3Bytes/bone)
-            for (int i = 0; i < bone_disp_count; i++)
+            for (int i = 0; i < bone_disps.Length; i++)
             {
                 bone_disps[i].Write(bw);
             }
 
-            // -----------------------------------------------------
-            // 英名対応(0:英名対応なし, 1:英名対応あり)
-            // -----------------------------------------------------
             bw.Write((byte)0);//english_name_compatibility
 
-            // -----------------------------------------------------
-            // トゥーンテクスチャファイル名
-            // -----------------------------------------------------
             for (int i = 0; i < 10; i++)
             {
                 bw.WriteCString(toon_file_name[i], 100);
             }
 
-            // -----------------------------------------------------
-            // 剛体
-            // -----------------------------------------------------
-            // 剛体数
-            bw.Write((int)rbody_count);
-
-            // 剛体データ(83Bytes/rigidbody)
-            for (int i = 0; i < rbody_count; i++)
+            bw.Write(bodies.Length);
+            for (int i = 0; i < bodies.Length; i++)
             {
                 bodies[i].Write(bw);
             }
 
-            // -----------------------------------------------------
-            // ジョイント
-            // -----------------------------------------------------
-            // ジョイント数
-            bw.Write((int)joint_count);
-
-            for (int i = 0; i < joint_count; i++)
+            bw.Write(joints.Length);
+            for (int i = 0; i < joints.Length; i++)
             {
                 joints[i].Write(bw);
             }
