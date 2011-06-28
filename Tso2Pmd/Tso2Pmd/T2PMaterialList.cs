@@ -66,8 +66,7 @@ namespace Tso2Pmd
             shader.Load(TSOList[tso_num].sub_scripts[script_num].lines);
 
             pmd_m.diffuse = new Vector4(1.0f, 1.0f, 1.0f, 1.0f);
-            pmd_m.shininess = 6.0f;
-            pmd_m.specular = new Vector3(0.15f, 0.15f, 0.15f);
+            pmd_m.specular = new Vector4(0.15f, 0.15f, 0.15f, 6.0f);
             pmd_m.ambient = new Vector3(0.5f, 0.5f, 0.5f);
 
             if (edge == true)
