@@ -266,8 +266,8 @@ namespace TDCGUtils
         public Vector3 position;
         public short parent_node_id;
         public int calc_order;
-        public byte flags_hi;
-        public byte flags_lo;
+        byte flags_hi;
+        byte flags_lo;
         public short tail_node_id;
 
         public PMD_Bone()
@@ -295,7 +295,36 @@ namespace TDCGUtils
         }
 
         // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
-        public int kind;
+        public int kind
+        {
+            get
+            {
+                switch (flags_lo)
+                {
+                    case 0x1F:
+                        return 1;
+                    case 0x11:
+                        return 7;
+                    default:
+                        return 1;
+                }
+            }
+            set
+            {
+                switch (value)
+                {
+                    case 1:
+                        flags_lo = (byte)0x1F;
+                        break;
+                    case 7:
+                        flags_lo = (byte)0x11;
+                        break;
+                    default:
+                        flags_lo = (byte)0x1F;
+                        break;
+                }
+            }
+        }
 
         // 親ボーン名
         public string ParentName;

@@ -133,9 +133,7 @@ namespace Tso2Pmd
             // センター
             pmd.nodes[0] = new PMD_Bone();
             pmd.nodes[0].name = "センター";
-            // 1:回転と移動
-            pmd.nodes[0].flags_hi = (byte)0x00;
-            pmd.nodes[0].flags_lo = (byte)0x1F;
+            pmd.nodes[0].kind = 1; // 1:回転と移動
             pmd.nodes[0].ParentName = null;
             pmd.nodes[0].TailName = "センター先";
             pmd.nodes[0].TargetName = null;
@@ -144,9 +142,7 @@ namespace Tso2Pmd
             // センター先
             pmd.nodes[1] = new PMD_Bone();
             pmd.nodes[1].name = "センター先";
-            // 7:非表示
-            pmd.nodes[1].flags_hi = (byte)0x00;
-            pmd.nodes[1].flags_lo = (byte)0x11;
+            pmd.nodes[1].kind = 7; // 7:非表示
             pmd.nodes[1].ParentName = "センター";
             pmd.nodes[1].TailName = null;
             pmd.nodes[1].TargetName = null;
@@ -234,8 +230,7 @@ namespace Tso2Pmd
 
                 pmd_b.name = bone.name;
                 pmd_b.name_en = bone.name_en;
-                pmd_b.flags_hi = bone.flags_hi;
-                pmd_b.flags_lo = bone.flags_lo;
+                pmd_b.kind = bone.kind;
                 pmd_b.ParentName = bone.ParentName;
                 pmd_b.TailName = bone.TailName;
                 pmd_b.TargetName = bone.TargetName;
