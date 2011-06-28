@@ -300,7 +300,7 @@ namespace TDCGUtils
         public string TailName;
 
         // IK時のターゲットボーン
-        public string IKTargetName;
+        public string TargetName;
     }
 
     /// IK
