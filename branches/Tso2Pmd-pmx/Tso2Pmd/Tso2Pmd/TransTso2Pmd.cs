@@ -139,7 +139,7 @@ namespace Tso2Pmd
             pmd.nodes[0].ParentName = null;
             pmd.nodes[0].TailName = "センター先";
             pmd.nodes[0].TargetName = null;
-            pmd.nodes[0].position = new Vector3(0.0f, 5.0f, 0.0f);	// モデル原点からの位置
+            pmd.nodes[0].position = new Vector3(0.0f, 5.0f, 0.0f);
 
             // センター先
             pmd.nodes[1] = new PMD_Bone();
@@ -150,7 +150,7 @@ namespace Tso2Pmd
             pmd.nodes[1].ParentName = "センター";
             pmd.nodes[1].TailName = null;
             pmd.nodes[1].TargetName = null;
-            pmd.nodes[1].position = new Vector3(0.0f, 0.0f, 0.0f);	// モデル原点からの位置
+            pmd.nodes[1].position = new Vector3(0.0f, 0.0f, 0.0f);
 
             // -----------------------------------------------------
             // IK配列
@@ -163,10 +163,6 @@ namespace Tso2Pmd
             // 表情枠
             // -----------------------------------------------------
             //pmd.skin_disp_indices = new int[0];
-
-            /*
-            pmd.english_name_compatibility = 0;
-            */
 
             pmd.bodies = new PMD_RBody[0];
             pmd.joints = new PMD_Joint[0];
@@ -321,26 +317,11 @@ namespace Tso2Pmd
                 pmd.disp_groups.Add(disp_group);
             }
 
-            // -----------------------------------------------------
-            // 英名対応(0:英名対応なし, 1:英名対応あり)
-            // -----------------------------------------------------
-            /*
-            pmd.english_name_compatibility = 0;
-            */
-
-            // -----------------------------------------------------
-            // 剛体＆ジョイント
-            // -----------------------------------------------------
-            // -----------------------------------------------------
-            // 物理オブジェクトを生成
             physOb_list = new T2PPhysObjectList(bone_list);
 
-            // -----------------------------------------------------
-            // テンプレートを適用
             template_list.PhysObExecute(ref physOb_list);
 
             pmd.bodies = (PMD_RBody[])physOb_list.rbody_list.ToArray();
-
             pmd.joints = (PMD_Joint[])physOb_list.joint_list.ToArray();
         }
 
@@ -453,10 +434,10 @@ namespace Tso2Pmd
             int numFaceVertices = CalcNumFaceVertices(fig.Tmo);
 
             // baseの表情
-            pmd.skins[skin_idx] = new PMD_Skin();
-            pmd.skins[skin_idx].name = "base";
-            pmd.skins[skin_idx].name_en = "base";
-            pmd.skins[skin_idx].vertices = new PMD_SkinVertex[numFaceVertices];
+            pmd.skins[0] = new PMD_Skin();
+            pmd.skins[0].name = "base";
+            pmd.skins[0].name_en = "base";
+            pmd.skins[0].vertices = new PMD_SkinVertex[numFaceVertices];
 
             skin_idx++;
 
@@ -717,7 +698,8 @@ namespace Tso2Pmd
             // 頂点インデックス
             pmd.vindices = (int[])indices.ToArray();
             // マテリアル
-            if (merge_flag == true) material_list.MergeMaterials();
+            if (merge_flag == true)
+                material_list.MergeMaterials();
             pmd.materials = (PMD_Material[])material_list.material_list.ToArray();
             // Toonテクスチャファイル名
             /*
@@ -884,14 +866,12 @@ namespace Tso2Pmd
                             {
                                 pmd.skins[i].vertices[n_vertex] = new PMD_SkinVertex();
 
-                                // 表情用の頂点の番号(baseの番号。skin_vert_index)
+                                // 表情用の頂点の番号（base上の番号）
                                 pmd.skins[i].vertices[n_vertex].vertex_id = n_vertex;
 
                                 // bace以外は相対位置で指定
                                 Vector3 pmd_face_pos = Trans.CopyPos(verPos_face[i - 1][n_inMesh]);
-                                pmd.skins[i].vertices[n_vertex].position.X = pmd_face_pos.X - pmd_v.position.X;
-                                pmd.skins[i].vertices[n_vertex].position.Y = pmd_face_pos.Y - pmd_v.position.Y;
-                                pmd.skins[i].vertices[n_vertex].position.Z = pmd_face_pos.Z - pmd_v.position.Z;
+                                pmd.skins[i].vertices[n_vertex].position = pmd_face_pos - pmd_v.position;
                             }
 
                             n_vertex++;
