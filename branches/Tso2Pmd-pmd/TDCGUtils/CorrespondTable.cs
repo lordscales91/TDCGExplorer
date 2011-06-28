@@ -84,9 +84,9 @@ namespace TDCGUtils
                     pmd_b.TailName = data[3].Trim();
 
                 if (data[4] == "")
-                    pmd_b.IKTargetName = null;
+                    pmd_b.TargetName = null;
                 else
-                    pmd_b.IKTargetName = data[4].Trim();
+                    pmd_b.TargetName = data[4].Trim();
 
                 boneStructure.Add(pmd_b.name, pmd_b);
 
