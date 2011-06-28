@@ -190,6 +190,10 @@ namespace TDCGUtils
             }
             bw.Write(this.edge_scale);
         }
+
+        public string[] bone_names = new string[2];
+        
+        public sbyte weight;
     }
 
     /// 材質
