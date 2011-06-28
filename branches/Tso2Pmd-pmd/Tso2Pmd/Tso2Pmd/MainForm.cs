@@ -217,19 +217,9 @@ namespace Tso2Pmd
             pd.Show(this);
             pd.Message = "ファイルを変換しています。";
 
-            string em;
-
-            // コントロールより、オプションをセットアップ
-            if ((em = t2POptionControl1.SetupOption(t2p)) != "")
-            {
-                pd.Dispose();
-                MessageBox.Show(em);
-                return;
-            }
-
-            // 変換
             try
             {
+                t2POptionControl1.SetupOptions(t2p);
                 t2p.UpdatePmdFromFigure();
             }
             catch (FormatException ex)

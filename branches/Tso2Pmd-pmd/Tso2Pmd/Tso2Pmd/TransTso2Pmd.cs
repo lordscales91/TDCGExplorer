@@ -59,34 +59,24 @@ namespace Tso2Pmd
         const int FACE_BONE_MIN = 86;
         const int FACE_BONE_MAX = 135;
 
-        // -----------------------------------------------------
-        // コンストラクタ
-        // -----------------------------------------------------
         public TransTso2Pmd()
         {
-            // -----------------------------------------------------
-            // 表情ファイルを読みとる
-            morph.Load(Application.StartupPath + @"/表情");
-
-            return;
+            morph.Load(Path.Combine(Application.StartupPath, @"表情"));
         }
 
-        // -----------------------------------------------------
-        // ヘッダー情報を入力
-        // -----------------------------------------------------
-        public string InputHeader(string name, string comment)
-        { 
+        /// ヘッダー情報を入力します。
+        public void InputHeader(string name, string comment)
+        {
+            if (name.Length > 9)
+                throw new FormatException("モデル名が9文字を超えています。");
+            if (comment.Length > 127)
+                throw new FormatException("コメントが127文字を超えています。");
+
             pmd.pmd_header = new PMD_Header();
             pmd.pmd_header.magic = "Pmd";
             pmd.pmd_header.version = 1.0f;
-
-            if (name.Length > 9) return "モデル名が9文字を超えています。";
             pmd.pmd_header.name = name;
-
-            if (comment.Length > 127) return "コメントが127文字を超えています。";
             pmd.pmd_header.comment = comment;
-
-            return "";
         }
 
         /// PMDファイルを出力します。
