@@ -236,8 +236,7 @@ namespace TDCGUtils
     public class PMD_Material
     {
         public Vector4 diffuse = Vector4.Empty;
-        public float shininess;
-        public Vector3 specular = Vector3.Empty;
+        public Vector4 specular = Vector4.Empty;
         public Vector3 ambient = Vector3.Empty;
         public sbyte toon_tex_id; // toon??.bmp // 0.bmp:0xFF, 1(01).bmp:0x00 ・・・ 10.bmp:0x09
         public sbyte edge; // 輪郭、影
@@ -247,8 +246,10 @@ namespace TDCGUtils
         internal void Write(BinaryWriter writer)
         {
             writer.Write(ref this.diffuse);
-            writer.Write(this.shininess);
-            writer.Write(ref this.specular);
+            writer.Write(specular.W);
+            writer.Write(specular.X);
+            writer.Write(specular.Y);
+            writer.Write(specular.Z);
             writer.Write(ref this.ambient);
             writer.Write(this.toon_tex_id);
             writer.Write(this.edge);
