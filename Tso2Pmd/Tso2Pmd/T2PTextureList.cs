@@ -35,7 +35,7 @@ namespace Tso2Pmd
             // bmp_listと比較して、同じものがあればそれのアドレスのみ参照しておく
             foreach (Bitmap tmp_bmp in bmp_list)
             {
-                if (EqualBitmap(bmp, tmp_bmp) == 0)
+                if (EqualBitmaps(bmp, tmp_bmp) == 0)
                 {
                     bmp_index.Add(tso_id.ToString() + "-" + tex.Name, tmp_bmp);
                     return;
@@ -119,7 +119,7 @@ namespace Tso2Pmd
         }
 
         // ２つのBitmapが等しいか判定する
-        private int EqualBitmap(Bitmap bmp1, Bitmap bmp2)
+        private int EqualBitmaps(Bitmap bmp1, Bitmap bmp2)
         {
             if (bmp1.Height != bmp2.Height) return -1;
 
@@ -135,22 +135,6 @@ namespace Tso2Pmd
 
             return 0;
         }
-
-        // Bitmapを左に90度回転させる
-        /*public static Bitmap TurnBitmap(Bitmap bmp1)
-        {
-            Bitmap bmp2 = new Bitmap(bmp1.Height, bmp1.Width);
-
-            for (int i = 0; i < bmp1.Width; i++)
-            {
-                for (int j = 0; j < bmp1.Height; j++)
-                {
-                    bmp2.SetPixel(j, bmp1.Width - (i+1), bmp1.GetPixel(i, j));
-                }
-            }
-
-            return bmp2;
-        }*/
 
         // toonテクスチャを最適化する
         private Bitmap TurnBitmap(Bitmap bmp1)
