@@ -269,12 +269,9 @@ public class TSOForm : Form
 
     }
 
-    private bool dispose_flag = false;
-    public bool Dispose_flag { set { dispose_flag = value; } get { return dispose_flag; } }
-
     private void TSOForm_FormClosing(object sender, FormClosingEventArgs e)
     {
-        if (dispose_flag == false)
+        if (!IsDisposed)
         {
             owner_form.TSOForm_Hiding();
             this.Hide();

@@ -122,12 +122,9 @@ namespace Tso2Pmd
                 checkedListBox1.SetItemChecked(i, state);
         }
 
-        private bool dispose_flag = false;
-        public bool Dispose_flag { set { dispose_flag = value; } get { return dispose_flag; } }
-
         private void ClippingVertexForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (dispose_flag == false)
+            if (!IsDisposed)
             {
                 ownerForm.ClippingVertexForm_Hiding();
                 this.Hide();

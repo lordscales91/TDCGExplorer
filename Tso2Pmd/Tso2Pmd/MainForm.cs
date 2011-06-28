@@ -34,51 +34,37 @@ namespace Tso2Pmd
             pd.Show();
             pd.Message = "Tso2Pmdを起動しています。";
 
-            //try
-            //{
+            // テンプレートリストを初期化
+            template_list = new TemplateList();
+            pd.Value += 15;
 
-                // テンプレートリストを初期化
-                template_list = new TemplateList();
-                pd.Value += 15;
+            // Viewerクラスを初期化
+            viewer = new Viewer();
+            pd.Value += 15;
 
-                // Viewerクラスを初期化
-                viewer = new Viewer();
-                pd.Value += 15;
+            // Tso2Pmdクラスを初期化
+            t2p = new TransTso2Pmd();
+            pd.Value += 15;
 
-                // Tso2Pmdクラスを初期化
-                t2p = new TransTso2Pmd();
-                pd.Value += 15;
-
-                // スプリクトを読みとる
-                if (!template_list.Load())
-                {
-                    pd.Dispose();
-                    this.Dispose();
-                }
-                pd.Value += 30;
-
-                // T2POptionControlの初期化
-                t2POptionControl1.Initialize(ref viewer, template_list);
-                pd.Value += 20;
-
-                // ビューアーフォームの初期化
-                view_form = new TSOForm(viewer, this);
-
-                // お待ちくださいダイアログを閉じる
-                pd.Value = pd.Maximum;
-                System.Threading.Thread.Sleep(1000);
-                pd.Dispose();
-
-            /*}
-            catch
+            // スプリクトを読みとる
+            if (!template_list.Load())
             {
-                // お待ちくださいダイアログを閉じる
                 pd.Dispose();
-
-                MessageBox.Show("Tso2Pmdを正常に起動できませんでした。\nProportionファルダや表情フォルダに、\n不正なファイルが含まれていないか確認してください。");
-
                 this.Dispose();
-            }*/
+            }
+            pd.Value += 30;
+
+            // T2POptionControlの初期化
+            t2POptionControl1.Initialize(ref viewer, template_list);
+            pd.Value += 20;
+
+            // ビューアーフォームの初期化
+            view_form = new TSOForm(viewer, this);
+
+            // お待ちくださいダイアログを閉じる
+            pd.Value = pd.Maximum;
+            System.Threading.Thread.Sleep(1000);
+            pd.Dispose();
         }
 
         private void panel1_DragEnter(object sender, DragEventArgs e)
@@ -130,28 +116,17 @@ namespace Tso2Pmd
                     pd.Show(this);
                     pd.Message = "ファイルを読み込んでいます。";
 
-                    //try {
+                    //ドロップされたファイルを読み込む
+                    viewer.ClearFigureList();
+                    viewer.LoadAnyFile(name, false);
 
-                        //ドロップされたファイルを読み込む
-                        viewer.ClearFigureList();
-                        viewer.LoadAnyFile(name, false);
+                    // フォームより各パラメータを得て、設定
+                    SetupFigure(name);
 
-                        // フォームより各パラメータを得て、設定
-                        SetupFigure(name);
-
-                        // お待ちくださいダイアログを閉じる
-                        pd.Value = pd.Maximum;
-                        System.Threading.Thread.Sleep(1000);
-                        pd.Dispose();
-
-                    /*}
-                    catch
-                    {
-                        // お待ちくださいダイアログを閉じる
-                        pd.Dispose();
-
-                        MessageBox.Show("ファイルを読み込むことができませんでした。\nファイルが正常であるか確認してください。");
-                    }*/
+                    // お待ちくださいダイアログを閉じる
+                    pd.Value = pd.Maximum;
+                    System.Threading.Thread.Sleep(1000);
+                    pd.Dispose();
                 }
                 else
                 {
@@ -242,78 +217,62 @@ namespace Tso2Pmd
             pd.Show(this);
             pd.Message = "ファイルを変換しています。";
 
-            //try {
+            string em;
 
-                string em;
-
-                // コントロールより、オプションをセットアップ
-                if ((em = t2POptionControl1.SetupOption(t2p)) != "")
-                {
-                    pd.Dispose();
-                    MessageBox.Show(em);
-                    return;
-                }
-
-                // 変換
-                if ((em = t2p.Figure2PmdFileData()) != "")
-                {
-                    pd.Dispose();
-                    MessageBox.Show(em);
-                    return;
-                }
-
-                // 出力フォルダのパスを得る
-                string file_path = t2POptionControl1.GetOutputFilePath();
-
-                // PMDファイルを出力
-                t2p.Pmd.Save(file_path + "/" + t2POptionControl1.GetModelName() + ".pmx");
-
-                // マテリアル関係のファイルを出力
-                t2p.OutputMaterialFile(file_path, t2POptionControl1.GetModelName());
-
-                // 体型レシピを出力
-                t2POptionControl1.SaveTPOConfig(Application.StartupPath);
-                t2POptionControl1.SaveTPOConfig(file_path);
-
-                // お待ちくださいダイアログを閉じる
-                pd.Value = pd.Maximum;
-                System.Threading.Thread.Sleep(1000);
-                pd.Dispose();
-
-                // にっこりさせる
-                t2p.NikkoriFace();
-
-                // メッセージボックスを表示する
-                MessageBox.Show("変換を完了しました。");
-
-                // 初期の表情にする
-                t2p.DefaultFace();
-
-            /*}
-            catch
+            // コントロールより、オプションをセットアップ
+            if ((em = t2POptionControl1.SetupOption(t2p)) != "")
             {
-                // お待ちくださいダイアログを閉じる
-                pd.Dispose(); 
+                pd.Dispose();
+                MessageBox.Show(em);
+                return;
+            }
 
-                MessageBox.Show("エラーにより、変換できませんでした。");
-            }*/
+            // 変換
+            if ((em = t2p.Figure2PmdFileData()) != "")
+            {
+                pd.Dispose();
+                MessageBox.Show(em);
+                return;
+            }
+
+            // 出力フォルダのパスを得る
+            string file_path = t2POptionControl1.GetOutputFilePath();
+
+            // PMDファイルを出力
+            t2p.Pmd.Save(file_path + "/" + t2POptionControl1.GetModelName() + ".pmx");
+
+            // マテリアル関係のファイルを出力
+            t2p.OutputMaterialFile(file_path, t2POptionControl1.GetModelName());
+
+            // 体型レシピを出力
+            t2POptionControl1.SaveTPOConfig(Application.StartupPath);
+            t2POptionControl1.SaveTPOConfig(file_path);
+
+            // お待ちくださいダイアログを閉じる
+            pd.Value = pd.Maximum;
+            System.Threading.Thread.Sleep(1000);
+            pd.Dispose();
+
+            // にっこりさせる
+            t2p.NikkoriFace();
+
+            // メッセージボックスを表示する
+            MessageBox.Show("変換を完了しました。");
+
+            // 初期の表情にする
+            t2p.DefaultFace();
         }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (viewer != null) viewer.Dispose();
+            if (viewer != null)
+                viewer.Dispose();
 
             if (view_form != null)
-            {
-                view_form.Dispose_flag = true;
                 view_form.Dispose();
-            }
 
             if (clip_form != null)
-            {
-                clip_form.Dispose_flag = true;
                 clip_form.Dispose();
-            }
         }
 
     }
