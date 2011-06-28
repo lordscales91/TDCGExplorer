@@ -82,7 +82,7 @@ namespace Tso2Pmd
             pmd_m.vindices_count = 0;
 
             // colorテクスチャ
-            pmd_m.tex_path = tex_list.GetFileName(tso_num, shader.ColorTexName);
+            pmd_m.tex_file = tex_list.GetFileName(tso_num, shader.ColorTexName);
 
             // toonテクスチャ
             string toon_file = tex_list.GetFileName(tso_num, shader.ShadeTexName);
@@ -123,7 +123,7 @@ namespace Tso2Pmd
                     if (toon_bmp.Width == 256 && toon_bmp.Height == 16)
                     {
                         string sphere_file = Path.ChangeExtension(toon_file, ".sph");
-                        pmd_m.tex_path = pmd_m.tex_path + "*" + sphere_file;
+                        pmd_m.tex_file = pmd_m.tex_file + "*" + sphere_file;
                     }
                 }
             }
@@ -158,7 +158,7 @@ namespace Tso2Pmd
             if (m1.edge_width != m2.edge_width)
                 return false;
 
-            if (m1.tex_path != m2.tex_path)
+            if (m1.tex_file != m2.tex_file)
                 return false;
 
             if (m1.toon_tex_id != m2.toon_tex_id)
