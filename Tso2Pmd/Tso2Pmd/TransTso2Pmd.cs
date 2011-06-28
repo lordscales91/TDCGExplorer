@@ -33,7 +33,7 @@ namespace Tso2Pmd
         List<bool> meshes_flag = new List<bool>();
 
         Figure fig;
-        List<TSOSubMesh> mesh_list;
+        List<TSOSubMesh> meshes;
         T2PMaterialList material_list;
         T2PPhysObjectList physOb_list;
         TemplateList template_list;
@@ -42,7 +42,7 @@ namespace Tso2Pmd
         public Figure Figure { get { return fig; } set { fig = value; } }
         //public PmdFile Pmd { get { return pmd; } }
         public int Bone_flag { set { bone_flag = value; } }
-        public bool Spheremap_flag { set { spheremap_used = value; } }
+        public bool Spheremap_used { set { spheremap_used = value; } }
         public bool Edge_flag_flag { set { edge_flag_flag = value; } }
         public bool Merge_flag { set { merge_flag = value; } }
         public List<string> Category { set { categories = value; } }
@@ -471,7 +471,7 @@ namespace Tso2Pmd
         // -----------------------------------------------------
         private void SelectMeshes()
         {
-            mesh_list = new List<TSOSubMesh>();
+            meshes = new List<TSOSubMesh>();
             material_list = new T2PMaterialList(fig.TSOList, categories);
 
             int tso_num = 0;
@@ -485,7 +485,7 @@ namespace Tso2Pmd
                     if (sub_mesh.spec == script_num)
                     if (meshes_flag[sub_mesh_num++] == true)
                     {
-                        mesh_list.Add(sub_mesh);
+                        meshes.Add(sub_mesh);
                         material_list.Add(tso_num, script_num, edge_flag_flag, spheremap_used);
                     }
                 }
@@ -512,7 +512,7 @@ namespace Tso2Pmd
         // -----------------------------------------------------
         private void MakePMDVertices(CorrespondTable cor_table, int mod_type)
         {
-            List<PMD_Vertex> vertex_list = new List<PMD_Vertex>();
+            List<PMD_Vertex> vertices = new List<PMD_Vertex>();
             List<short> indices = new List<short>(); // インデックスリスト
             inList_indices.Clear();
 
@@ -529,7 +529,7 @@ namespace Tso2Pmd
             int prevNumIndices = 0;
             int prevNumVertices = 0;
 
-            foreach (TSOSubMesh sub_mesh in mesh_list)
+            foreach (TSOSubMesh sub_mesh in meshes)
             {
                 int n_inMesh = -1; // mesh中のvertexの番号（処理の前に++するために、初期値は0でなく-1としている)
                 int a=-1, b=-1, c=-1; // 隣合うインデックス
@@ -622,16 +622,16 @@ namespace Tso2Pmd
                     // 存在すれば、そのインデックスを参照
                     // 存在しなければ、頂点リストに頂点を追加
                     int idx = -1;
-                    for (int i = prevNumVertices; i < vertex_list.Count; i++)
+                    for (int i = prevNumVertices; i < vertices.Count; i++)
                     {
-                        if (vertex_list[i].position.X == pmd_v.position.X &&
-                            vertex_list[i].position.Y == pmd_v.position.Y &&
-                            vertex_list[i].position.Z == pmd_v.position.Z &&
-                            vertex_list[i].normal.X == pmd_v.normal.X &&
-                            vertex_list[i].normal.Y == pmd_v.normal.Y &&
-                            vertex_list[i].normal.Z == pmd_v.normal.Z &&
-                            vertex_list[i].u == pmd_v.u &&
-                            vertex_list[i].v == pmd_v.v)
+                        if (vertices[i].position.X == pmd_v.position.X &&
+                            vertices[i].position.Y == pmd_v.position.Y &&
+                            vertices[i].position.Z == pmd_v.position.Z &&
+                            vertices[i].normal.X == pmd_v.normal.X &&
+                            vertices[i].normal.Y == pmd_v.normal.Y &&
+                            vertices[i].normal.Z == pmd_v.normal.Z &&
+                            vertices[i].u == pmd_v.u &&
+                            vertices[i].v == pmd_v.v)
                         {
                             idx = i;
                             break;
@@ -639,8 +639,8 @@ namespace Tso2Pmd
                     }
                     if (idx == -1)
                     {
-                        vertex_list.Add(pmd_v);
-                        idx = vertex_list.Count - 1;
+                        vertices.Add(pmd_v);
+                        idx = vertices.Count - 1;
                         inList_indices.Add(idx);
                     }
                     else
@@ -655,15 +655,15 @@ namespace Tso2Pmd
                     // 隣合うインデックスが参照する頂点位置の重複を判定し、
                     // 重複している場合はインデックスの追加を省略する
                     if ((n_inMesh >= 2) &&
-                        !((vertex_list[a].position.X == vertex_list[b].position.X &&
-                           vertex_list[a].position.Y == vertex_list[b].position.Y &&
-                           vertex_list[a].position.Z == vertex_list[b].position.Z) ||
-                          (vertex_list[b].position.X == vertex_list[c].position.X &&
-                           vertex_list[b].position.Y == vertex_list[c].position.Y &&
-                           vertex_list[b].position.Z == vertex_list[c].position.Z) ||
-                          (vertex_list[c].position.X == vertex_list[a].position.X &&
-                           vertex_list[c].position.Y == vertex_list[a].position.Y &&
-                           vertex_list[c].position.Z == vertex_list[a].position.Z)))
+                        !((vertices[a].position.X == vertices[b].position.X &&
+                           vertices[a].position.Y == vertices[b].position.Y &&
+                           vertices[a].position.Z == vertices[b].position.Z) ||
+                          (vertices[b].position.X == vertices[c].position.X &&
+                           vertices[b].position.Y == vertices[c].position.Y &&
+                           vertices[b].position.Z == vertices[c].position.Z) ||
+                          (vertices[c].position.X == vertices[a].position.X &&
+                           vertices[c].position.Y == vertices[a].position.Y &&
+                           vertices[c].position.Z == vertices[a].position.Z)))
                     {
                         if (n_inMesh % 2 == 0)
                         {
@@ -684,12 +684,12 @@ namespace Tso2Pmd
                 // meshごとのインデックス数を記録
                 material_list.materials[n_mesh++].vindices_count = indices.Count - prevNumIndices;
                 prevNumIndices = indices.Count;
-                prevNumVertices = vertex_list.Count;
+                prevNumVertices = vertices.Count;
             }
             // -----------------------------------------------------
             // リストを配列に代入し直す
             // 頂点情報
-            pmd.vertices = (PMD_Vertex[])vertex_list.ToArray();
+            pmd.vertices = (PMD_Vertex[])vertices.ToArray();
             // 頂点インデックス
             pmd.vindices = (short[])indices.ToArray();
             // マテリアル
@@ -705,7 +705,7 @@ namespace Tso2Pmd
         {
             int n_vertex = 0; // 表情の頂点の番号（通し番号）
             int n_inList = -1; // list中のvertexの番号（処理の前に++するために、初期値は0でなく-1としている)
-            foreach (TSOSubMesh sub_mesh in mesh_list)
+            foreach (TSOSubMesh sub_mesh in meshes)
             {
                 int n_inMesh = -1; // mesh中のvertexの番号（処理の前に++するために、初期値は0でなく-1としている)
                 foreach (Vertex vertex in sub_mesh.vertices)
@@ -743,7 +743,7 @@ namespace Tso2Pmd
         {
             int n_vertex = 0; // 表情の頂点の番号（通し番号）
             int n_inList = -1; // list中のvertexの番号（処理の前に++するために、初期値は0でなく-1としている)
-            foreach (TSOSubMesh sub_mesh in mesh_list)
+            foreach (TSOSubMesh sub_mesh in meshes)
             {
                 int n_inMesh = -1; // mesh中のvertexの番号（処理の前に++するために、初期値は0でなく-1としている)
                 foreach (Vertex vertex in sub_mesh.vertices)
@@ -788,7 +788,7 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             List<Vector3[]> verPos_face = new List<Vector3[]>();
 
-            foreach (TSOSubMesh sub_mesh in mesh_list)
+            foreach (TSOSubMesh sub_mesh in meshes)
             {
                 int n_inMesh = -1; // mesh中のvertexの番号（処理の前に++するために、初期値は0でなく-1としている)
                 verPos_face.Clear(); // 前回の分を消去
