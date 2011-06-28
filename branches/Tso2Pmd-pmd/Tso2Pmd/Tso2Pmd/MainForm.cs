@@ -238,10 +238,8 @@ namespace Tso2Pmd
             // 出力フォルダのパスを得る
             string file_path = t2POptionControl1.GetOutputFilePath();
 
-            // PMDファイルを出力
-            t2p.Pmd.Save(file_path + "/" + t2POptionControl1.GetModelName() + ".pmd");
+            t2p.SavePmdFile(file_path + "/" + t2POptionControl1.GetModelName() + ".pmd");
 
-            // マテリアル関係のファイルを出力
             t2p.OutputMaterialFile(file_path, t2POptionControl1.GetModelName());
 
             // 体型レシピを出力
