@@ -81,7 +81,7 @@ namespace Tso2Pmd
         /// マテリアル関係のファイルを出力します。
         public void OutputMaterialFile(string path, string name)
         {
-            material_list.Save(path, name, UseSpheremap);
+            material_list.Save(path, name);
         }
 
         /// Figureを元にPmdFileを更新します。
@@ -465,7 +465,7 @@ namespace Tso2Pmd
         private void SelectMeshes()
         {
             meshes = new List<TSOSubMesh>();
-            material_list = new T2PMaterialList(fig.TSOList, categories);
+            material_list = new T2PMaterialList(fig.TSOList, categories, UseSpheremap);
 
             int tso_num = 0;
             int sub_mesh_num = 0;
