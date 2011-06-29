@@ -19,65 +19,71 @@ namespace Tso2Pmd
         // bmp_listより、出力ファイル名へのインデックス
         Dictionary<Bitmap, string> file_names = new Dictionary<Bitmap, string>();
 
+        public string[] GetFileNameList()
+        {
+            string[] names = new string[bmps.Count];
+            int i = 0;
+            foreach (Bitmap bmp in bmps)
+            {
+                names[i++] = file_names[bmp];
+            }
+            return names;
+        }
+
         // テクスチャを指定し、Bitmapとして記憶し、参照可能なようにインデックス
         // をつける。ただし、以前記憶したものの中に同じBitmapがあるなら、新規の
         // Bitmapは作成せず、インデックスのみつける。
-        public void Add(TSOTex tex, int tso_id)
+        public void Add(TSOTex tex, int tso_id, bool use_spheremap)
         {
             if (tex.width == 0 || tex.height == 0)
                 return;
 
+            bool toon = (tex.width == 256 && tex.height == 16);
+
             Bitmap bmp = new Bitmap(tex.width, tex.height);
             SetBitmapBytes(bmp, tex.data);
 
-            // bmp_listと比較して、同じものがあればそれのアドレスのみ参照しておく
-            foreach (Bitmap tmp_bmp in bmps)
+            Bitmap tmp_bmp = bmp;
+
+            // テクスチャがtoonなら加工してから書き出す
+            if (toon)
             {
-                if (EqualBitmaps(bmp, tmp_bmp))
+                bmp = TurnBitmap(bmp);
+            }
+
+            // bmpsと比較して、同じものがあればそれのアドレスのみ参照しておく
+            foreach (Bitmap other_bmp in bmps)
+            {
+                if (EqualBitmaps(bmp, other_bmp))
                 {
-                    bmap.Add(tso_id.ToString() + "-" + tex.Name, tmp_bmp);
+                    bmap.Add(tso_id.ToString() + "-" + tex.Name, other_bmp);
                     return;
                 }
             }
 
-            // 同じものがなければ、新規にbmp_listにBitmapを追加
             bmps.Add(bmp);
             bmap.Add(tso_id.ToString() + "-" + tex.Name, bmp);
+            file_names.Add(bmp, string.Format("t{0:D3}.bmp", bmps.Count - 1));
 
-            // 同時にこれを出力するときのファイル名を作成
-            file_names.Add(bmp, "t" + (bmps.Count - 1).ToString("000") + ".bmp");
+            // 色飛び補完用のスフィアマップを書き出す
+            if (toon && use_spheremap)
+            {
+                Bitmap sphere_bmp = MakeSphereBitmap(tmp_bmp);
+                bmps.Add(sphere_bmp);
+                bmap.Add(tso_id.ToString() + "-" + tex.Name + ".sph", sphere_bmp);
+                file_names.Add(sphere_bmp, string.Format("t{0:D3}.sph", bmps.Count - 1));
+            }
         }
 
         /// <summary>
         /// 全てのビットマップを書き出します。
         /// </summary>
         /// <param name="dest_path">出力先パス</param>
-        /// <param name="spheremap_used">スフィアマップを使うか</param>
-        public void Save(string dest_path, bool spheremap_used)
+        public void Save(string dest_path)
         {
             foreach (Bitmap bmp in bmps)
             {
-                if (bmp.Width == 256 && bmp.Height == 16)
-                {
-                    // テクスチャがtoonテクスチャなら加工（最適化）してから、書き出す
-                    Bitmap toon_bmp = TurnBitmap(bmp);
-                    toon_bmp.Save(dest_path + "/" + file_names[bmp],
-                        System.Drawing.Imaging.ImageFormat.Bmp);
-
-                    // 色飛び補完用のスフィアマップを書き出す
-                    if (spheremap_used)
-                    {
-                        Bitmap sphere_bmp = MakeSphereBitmap(bmp);
-                        string sphere_file_name = Path.ChangeExtension(file_names[bmp], ".sph");
-                        sphere_bmp.Save(dest_path + "/" + sphere_file_name,
-                            System.Drawing.Imaging.ImageFormat.Bmp);
-                    }
-                }
-                else
-                {
-                    bmp.Save(dest_path + "/" + file_names[bmp],
-                        System.Drawing.Imaging.ImageFormat.Bmp);
-                }
+                bmp.Save(dest_path + "/" + file_names[bmp], System.Drawing.Imaging.ImageFormat.Bmp);
             }
         }
 
@@ -92,13 +98,59 @@ namespace Tso2Pmd
         // テクスチャを出力したファイル名を得る
         public string GetFileName(int tso_id, string tex_name)
         {
-            Bitmap bmp; 
+            Bitmap bmp;
             bmap.TryGetValue(tso_id.ToString() + "-" + tex_name, out bmp);
-            if (bmp == null) return null;
+    
+            if (bmp == null)
+                return null;
 
             string str;
             file_names.TryGetValue(bmp, out str);
             return str;
+        }
+
+        public sbyte GetBitmapID(int tso_id, string tex_name)
+        {
+            Bitmap bmp;
+            bmap.TryGetValue(tso_id.ToString() + "-" + tex_name, out bmp);
+
+            if (bmp == null)
+                return -1;
+
+            return (sbyte)bmps.IndexOf(bmp);
+        }
+
+        // ビットマップを得る
+        public Bitmap GetSphereBitmap(int tso_id, string tex_name)
+        {
+            Bitmap bmp;
+            bmap.TryGetValue(tso_id.ToString() + "-" + tex_name + ".sph", out bmp);
+            return bmp;
+        }
+
+        // テクスチャを出力したファイル名を得る
+        public string GetSphereFileName(int tso_id, string tex_name)
+        {
+            Bitmap bmp;
+            bmap.TryGetValue(tso_id.ToString() + "-" + tex_name + ".sph", out bmp);
+
+            if (bmp == null)
+                return null;
+
+            string str;
+            file_names.TryGetValue(bmp, out str);
+            return str;
+        }
+
+        public sbyte GetSphereBitmapID(int tso_id, string tex_name)
+        {
+            Bitmap bmp;
+            bmap.TryGetValue(tso_id.ToString() + "-" + tex_name + ".sph", out bmp);
+
+            if (bmp == null)
+                return -1;
+
+            return (sbyte)bmps.IndexOf(bmp);
         }
 
         // byte[]をBitmapに変換する

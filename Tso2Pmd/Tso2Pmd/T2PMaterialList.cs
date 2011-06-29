@@ -20,48 +20,54 @@ namespace Tso2Pmd
         List<string> categories = new List<string>();
         T2PTextureList tex_list = new T2PTextureList();
         List<string> toon_names = new List<string>();
+        bool use_spheremap;
 
-        public T2PMaterialList(List<TSOFile> tsos, List<string> categories)
+        public T2PMaterialList(List<TSOFile> tsos, List<string> categories, bool use_spheremap)
         {
             this.tsos = tsos;
             this.categories = categories;
-
+            this.use_spheremap = use_spheremap;
+            
             // テクスチャを準備
             int tso_num = 0;
             foreach (TSOFile tso in tsos)
             {
                 foreach (TSOTex tex in tso.textures)
                 {
-                    tex_list.Add(tex, tso_num);
+                    tex_list.Add(tex, tso_num, use_spheremap);
                 }
                 tso_num++;
             }
         }
 
-        public void Save(string dest_path, string file_name, bool use_spheremap)
+        public string[] GetTextureFileNameList()
         {
-            tex_list.Save(dest_path, use_spheremap);
-            WriteNames(dest_path, file_name);
+            return tex_list.GetFileNameList();
+        }
+
+        public void Save(string dest_path, string file_name)
+        {
+            tex_list.Save(dest_path);
+            SaveNamesToFile(dest_path + "/" + file_name + ".txt");
         }
 
         /// <summary>
-        /// マテリアル名のリストを書き出します。
+        /// マテリアル名のリストを保存します。
         /// </summary>
-        /// <param name="dest_path">出力先パス</param>
-        /// <param name="file_name">ファイル名</param>
-        void WriteNames(string dest_path, string file_name)
+        /// <param name="dest_file">保存ファイル名</param>
+        void SaveNamesToFile(string dest_file)
         {
-            using (StreamWriter sw = new StreamWriter(dest_path + "/" + file_name + ".txt", false,
+            using (StreamWriter sw = new StreamWriter(dest_file, false,
                 System.Text.Encoding.GetEncoding("shift_jis")))
             {
                 foreach (string name in names)
                     sw.WriteLine(name);
             }
         }
-        
+       
         // TSOSubScriptより、PMD_Materialを生成する
         // (ただし、頂点インデックス数は0となっているため、後に設定する必要がある)
-        public void Add(int tso_num, int script_num, bool use_edge, bool use_spheremap)
+        public void Add(int tso_num, int script_num, bool use_edge)
         {
             PMD_Material pmd_m = new PMD_Material();
 
@@ -74,62 +80,26 @@ namespace Tso2Pmd
             pmd_m.ambient = new Vector3(0.5f, 0.5f, 0.5f);
 
             if (use_edge)
-                pmd_m.edge_width = 1;
+                pmd_m.flags = (byte)0x10;
             else
-                pmd_m.edge_width = 0;
+                pmd_m.flags = (byte)0x00;
 
             // 頂点インデックス数（0となっているため、後に設定する必要がある）
             pmd_m.vindices_count = 0;
 
             // colorテクスチャ
             pmd_m.tex_file = tex_list.GetFileName(tso_num, shader.ColorTexName);
-            
+            pmd_m.tex_id = tex_list.GetBitmapID(tso_num, shader.ColorTexName);
+
             // toonテクスチャ
-            string toon_file = tex_list.GetFileName(tso_num, shader.ShadeTexName);
-            if (toon_file != null) // 存在しないtoonテクスチャを参照しているパーツがあるのでこれを確認
+            pmd_m.tex_toon_file = tex_list.GetFileName(tso_num, shader.ShadeTexName);
+            pmd_m.tex_toon_id = tex_list.GetBitmapID(tso_num, shader.ShadeTexName);
+
+            // スフィアマップを使う
+            if (use_spheremap)
             {
-                if (toon_names.IndexOf(toon_file) != -1)
-                {
-                    // toonテクスチャファイル中でのインデックス
-                    pmd_m.toon_tex_id = (sbyte)toon_names.IndexOf(toon_file);
-                }
-                else
-                {
-                    if (toon_names.Count <= 9)
-                    {
-                        // toonテクスチャとするテクスチャ名を記憶
-                        // 後にtoonテクスチャファイル名を出力するときに使用。
-                        toon_names.Add(toon_file);
-
-                        // toonテクスチャファイル中でのインデックス
-                        pmd_m.toon_tex_id = (sbyte)(toon_names.Count - 1);
-                    }
-                    else
-                    {
-                        // toonテクスチャとするテクスチャ名を記憶
-                        // 後にtoonテクスチャファイル名を出力するときに使用。
-                        toon_names.Add("toon10.bmp"); // 10以上は無理なので、それ以上は全てtoon10.bmp
-
-                        // toonテクスチャファイル中でのインデックス
-                        pmd_m.toon_tex_id = 9; // 10以上は無理なので、それ以上は全て9
-                    }
-                }
-
-                // スフィアマップを使う
-                if (use_spheremap)
-                {
-                    // toonテクスチャが256×16のサイズなら、スフィアマップを指定する
-                    Bitmap toon_bmp = tex_list.GetBitmap(tso_num, shader.ShadeTexName);
-                    if (toon_bmp.Width == 256 && toon_bmp.Height == 16)
-                    {
-                        string sphere_file = Path.ChangeExtension(toon_file, ".sph");
-                        pmd_m.tex_file = pmd_m.tex_file + "*" + sphere_file;
-                    }
-                }
-            }
-            else
-            {
-                pmd_m.toon_tex_id = 9;
+                pmd_m.tex_sphere_file = tex_list.GetSphereFileName(tso_num, shader.ShadeTexName);
+                pmd_m.tex_sphere_id = tex_list.GetSphereBitmapID(tso_num, shader.ShadeTexName);
             }
 
             // 要素を追加
@@ -161,40 +131,10 @@ namespace Tso2Pmd
             if (m1.tex_file != m2.tex_file)
                 return false;
             
-            if (m1.toon_tex_id != m2.toon_tex_id)
+            if (m1.tex_toon_id != m2.tex_toon_id)
                 return false;
             
             return true;
-        }
-
-        // トゥーンテクスチャファイル名を得る
-        public string[] GetToonFileNameList()
-        {
-            string[] name_list = new string[10];
-
-            if (toon_names.Count <= 10)
-            {
-                for (int i = 0; i < toon_names.Count; i++)
-                {
-                    name_list[i] = toon_names[i];
-                }
-                for (int i = toon_names.Count; i < 10; i++)
-                {
-                    name_list[i] = "toon" + i.ToString("00") + ".bmp";
-                }
-            }
-            else
-            {
-                for (int i = 0; i < 10; i++)
-                {
-                    name_list[i] = toon_names[i];
-                }
-            }
-
-            // toonテクスチャがうまく呼び出せない場合に呼び出す、空のtoonテクスチャ
-            name_list[9] = "toon10.bmp";
-
-            return name_list;
         }
     }
 }
