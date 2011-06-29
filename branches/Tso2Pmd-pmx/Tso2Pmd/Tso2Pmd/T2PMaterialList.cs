@@ -16,25 +16,23 @@ namespace Tso2Pmd
         public List<string> names = new List<string>();
         public List<PMD_Material> materials = new List<PMD_Material>();
 
-        List<TSOFile> tsos = new List<TSOFile>();
-        List<string> categories = new List<string>();
-        T2PTextureList tex_list = new T2PTextureList();
-        List<string> toon_names = new List<string>();
-        bool use_spheremap;
+        List<TSOFile> tsos;
+        List<string> categories;
+        T2PTextureList tex_list;
 
         public T2PMaterialList(List<TSOFile> tsos, List<string> categories, bool use_spheremap)
         {
             this.tsos = tsos;
             this.categories = categories;
-            this.use_spheremap = use_spheremap;
             
             // テクスチャを準備
+            tex_list = new T2PTextureList(use_spheremap);
             int tso_num = 0;
             foreach (TSOFile tso in tsos)
             {
                 foreach (TSOTex tex in tso.textures)
                 {
-                    tex_list.Add(tex, tso_num, use_spheremap);
+                    tex_list.Add(tex, tso_num);
                 }
                 tso_num++;
             }
@@ -88,17 +86,14 @@ namespace Tso2Pmd
             pmd_m.vindices_count = 0;
 
             // colorテクスチャ
-            pmd_m.tex_file = tex_list.GetFileName(tso_num, shader.ColorTexName);
             pmd_m.tex_id = tex_list.GetBitmapID(tso_num, shader.ColorTexName);
 
             // toonテクスチャ
-            pmd_m.tex_toon_file = tex_list.GetFileName(tso_num, shader.ShadeTexName);
             pmd_m.tex_toon_id = tex_list.GetBitmapID(tso_num, shader.ShadeTexName);
 
             // スフィアマップを使う
-            if (use_spheremap)
+            if (tex_list.use_spheremap)
             {
-                pmd_m.tex_sphere_file = tex_list.GetSphereFileName(tso_num, shader.ShadeTexName);
                 pmd_m.tex_sphere_id = tex_list.GetSphereBitmapID(tso_num, shader.ShadeTexName);
             }
 
@@ -125,10 +120,10 @@ namespace Tso2Pmd
         // ２つのマテリアルが等しいか判定する
         public bool EqualMaterials(PMD_Material m1, PMD_Material m2)
         {
-            if (m1.edge_width != m2.edge_width)
+            if (m1.flags != m2.flags)
                 return false;
 
-            if (m1.tex_file != m2.tex_file)
+            if (m1.tex_id != m2.tex_id)
                 return false;
             
             if (m1.tex_toon_id != m2.tex_toon_id)
