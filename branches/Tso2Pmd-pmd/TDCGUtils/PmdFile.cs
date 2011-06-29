@@ -292,6 +292,8 @@ namespace TDCGUtils
         // テクスチャファイル名
         public String tex_file;
 
+        public string name;
+
         internal void Write(BinaryWriter writer)
         {
             writer.Write(ref this.diffuse);
