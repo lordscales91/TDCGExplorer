@@ -268,7 +268,7 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // IK配列
             // -----------------------------------------------------
-            pmd.iks = (PMD_IK[])cor_table.iks.ToArray();
+            pmd.iks = cor_table.iks.ToArray();
 
             AssignDispGroups();
 
