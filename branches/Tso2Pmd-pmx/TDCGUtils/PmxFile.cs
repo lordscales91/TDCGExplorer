@@ -413,7 +413,7 @@ namespace TDCGUtils
         public int niteration;
         public float weight;
 
-        public List<short> chain_node_ids = new List<short>();
+        public List<PMD_IKNode> links = new List<PMD_IKNode>();
 
         public void Write(BinaryWriter bw)
         {
@@ -421,11 +421,10 @@ namespace TDCGUtils
             bw.Write(niteration);
             bw.Write(weight * 4);
 
-            bw.Write(chain_node_ids.Count);
-            foreach (short node_id in chain_node_ids)
+            bw.Write(links.Count);
+            foreach (PMD_IKNode link in links)
             {
-                bw.Write(node_id);
-                bw.Write((byte)0);
+                link.Write(bw);
             }
         }
 
@@ -447,7 +446,41 @@ namespace TDCGUtils
 
             foreach (string node_name in chain_node_names)
             {
-                chain_node_ids.Add(pmd.GetBoneIDByName(node_name));
+                PMD_IKNode link = new PMD_IKNode();
+
+                link.node_id = pmd.GetBoneIDByName(node_name);
+                
+                if (node_name == "左ひざ" || node_name == "右ひざ")
+                {
+                    link.constrain_angle = true;
+                    link.angle_min.X = Geometry.DegreeToRadian(-180f);
+                    link.angle_max.X = Geometry.DegreeToRadian(-0.5f);
+                }
+                links.Add(link);
+            }
+        }
+    }
+
+    /// IKリンク
+    public class PMD_IKNode
+    {
+        public short node_id;
+        public bool constrain_angle = false;
+        public Vector3 angle_min = Vector3.Empty;
+        public Vector3 angle_max = Vector3.Empty;
+
+        public void Write(BinaryWriter bw)
+        {
+            bw.Write(node_id);
+            if (constrain_angle)
+            {
+                bw.Write((byte)1);
+                bw.Write(ref angle_min);
+                bw.Write(ref angle_max);
+            }
+            else
+            {
+                bw.Write((byte)0);
             }
         }
     }
