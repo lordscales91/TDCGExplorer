@@ -851,8 +851,8 @@ namespace Tso2Pmd
                             {
                                 pmd.skins[i].vertices[n_vertex] = new PMD_SkinVertex();
 
-                                // 表情用の頂点の番号（base上の番号）
-                                pmd.skins[i].vertices[n_vertex].vertex_id = n_vertex;
+                                // 表情用の頂点の番号
+                                pmd.skins[i].vertices[n_vertex].vertex_id = idx;
 
                                 // bace以外は相対位置で指定
                                 Vector3 pmd_face_pos = Trans.CopyPos(verPos_face[i - 1][n_inMesh]);
