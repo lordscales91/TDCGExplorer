@@ -371,11 +371,11 @@ namespace TDCGUtils
         public byte flags_lo;
         public short tail_node_id;
 
-        public int target_node_id;
+        public short target_node_id;
         public int niteration;
         public float weight;
 
-        public PMD_IKNode[] chain_nodes;
+        public short[] chain_node_ids;
 
         public PMD_IK()
         {
@@ -404,11 +404,11 @@ namespace TDCGUtils
             bw.Write(niteration);
             bw.Write(weight);
 
-            bw.Write(chain_nodes.Length);
-            foreach (PMD_IKNode l in chain_nodes)
+            bw.Write(chain_node_ids.Length);
+            foreach (short node_id in chain_node_ids)
             {
-                bw.Write(l.node_id);
-                bw.Write(l.cons);
+                bw.Write(node_id);
+                bw.Write(0);
             }
         }
     
@@ -420,12 +420,19 @@ namespace TDCGUtils
 
         // IKを構成するボーンの配列
         public List<string> chain_node_names = new List<string>();
-    }
 
-    public class PMD_IKNode
-    {
-        public short node_id;
-        public byte cons = 0;
+        // ボーン名をIDに置き換える
+        public void SetBoneIDFromName(PmxFile pmd)
+        {
+            target_node_id = pmd.GetBoneIDByName(target_node_name);
+
+            chain_node_ids = new short[chain_node_names.Count + 1];
+            for (int i = 0; i < chain_node_names.Count; i++)
+            {
+                chain_node_ids[i] = pmd.GetBoneIDByName(chain_node_names[i]);
+            }
+            chain_node_ids[chain_node_names.Count] = pmd.GetBoneIDByName(effector_node_name);
+        }
     }
 
     /// 表情
