@@ -637,7 +637,7 @@ namespace Tso2Pmd
                         inList_indices.Add(idx);
                     }
                     else
-                        inList_indices.Add(-1);
+                        inList_indices.Add(idx);
 
                     // -----------------------------------------------------
                     // 頂点インデックス
