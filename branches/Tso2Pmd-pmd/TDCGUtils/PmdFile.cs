@@ -12,7 +12,7 @@ namespace TDCGUtils
     public class PmdFile
     {
         // ヘッダー
-        public PMD_Header pmd_header;
+        public PMD_Header header;
 
         // 頂点配列
         public PMD_Vertex[] vertices;
@@ -64,7 +64,7 @@ namespace TDCGUtils
         {
             BinaryWriter bw = new BinaryWriter(dest_stream);
 
-            pmd_header.Write(bw);
+            header.Write(bw);
 
             bw.Write(vertices.Length);
             for (int i = 0; i < vertices.Length; i++)
@@ -215,18 +215,16 @@ namespace TDCGUtils
 
     public class PMD_Header
     {
-        public const int SIZE_OF_STRUCT = 3 + 4 + 20 + 256;
-        public String magic;
-        public float version;
+        float version = 1.0f;
         public String name;
         public String comment;
 
         internal void Write(BinaryWriter writer)
         {
-            writer.WriteCString(this.magic, 3);
-            writer.Write(this.version);
-            writer.WriteCString(this.name, 20);
-            writer.WriteCString(this.comment, 256);
+            writer.WriteCString("Pmd", 3);
+            writer.Write(version);
+            writer.WriteCString(name, 20);
+            writer.WriteCString(comment, 256);
         }
     }
 
@@ -348,19 +346,19 @@ namespace TDCGUtils
 
     public class PMD_IK
     {
-        // IKターゲットボーン番号
-        internal int target_node_id;
-        
         // IK先端ボーン番号
-        internal int effector_node_id;
+        internal short effector_node_id;
+
+        // IKターゲットボーン番号
+        internal short target_node_id;
         
         // IKを構成するボーンの数
-        public int chain_length
+        public sbyte chain_length
         {
-            get { return chain_node_ids.Length; }
+            get { return (sbyte)chain_node_ids.Length; }
         }
         
-        public int niteration;
+        public short niteration;
         
         public float weight;
         
@@ -378,11 +376,11 @@ namespace TDCGUtils
         
         internal void Write(BinaryWriter writer)
         {
-            writer.Write((short)this.target_node_id);
-            writer.Write((short)this.effector_node_id);
-            writer.Write((sbyte)this.chain_length);
-            writer.Write((ushort)this.niteration);
-            writer.Write(this.weight);
+            writer.Write(effector_node_id);
+            writer.Write(target_node_id);
+            writer.Write(chain_length);
+            writer.Write(niteration);
+            writer.Write(weight);
 
             for (int i = 0; i < this.chain_length; i++)
             {
