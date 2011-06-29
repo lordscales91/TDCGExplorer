@@ -12,21 +12,21 @@ namespace Tso2Pmd
 {
     public class T2PPhysObjectList
     {
-        List<PMD_Bone> bone_list;
-        public List<PMD_RBody> rbody_list = new List<PMD_RBody>();
-        public List<PMD_Joint> joint_list = new List<PMD_Joint>();
+        List<PMD_Bone> nodes;
+        public List<PMD_RBody> bodies = new List<PMD_RBody>();
+        public List<PMD_Joint> joints = new List<PMD_Joint>();
 
-        public T2PPhysObjectList(List<PMD_Bone> bone_list)
+        public T2PPhysObjectList(List<PMD_Bone> nodes)
         {
-            this.bone_list = bone_list;
+            this.nodes = nodes;
         }
 
         // 名前からボーンIDを得る
         private short GetBoneIDByName(string name)
         {
-            for (short i = 0; i < (short)bone_list.Count; i++)
+            for (short i = 0; i < (short)nodes.Count; i++)
             {
-                if (bone_list[i].name == name) return i;
+                if (nodes[i].name == name) return i;
             }
 
             return -1;
@@ -34,9 +34,9 @@ namespace Tso2Pmd
         // 名前から剛体IDを得る
         private sbyte GetBodyIDByName(string name)
         {
-            for (sbyte i = 0; i < (sbyte)rbody_list.Count; i++)
+            for (sbyte i = 0; i < (sbyte)bodies.Count; i++)
             {
-                if (rbody_list[i].name == name) return i;
+                if (bodies[i].name == name) return i;
             }
 
             return -1;
@@ -44,9 +44,9 @@ namespace Tso2Pmd
         // 名前からジョイントIDを得る
         private sbyte GetJointIDByName(string name)
         {
-            for (sbyte i = 0; i < (sbyte)joint_list.Count; i++)
+            for (sbyte i = 0; i < (sbyte)joints.Count; i++)
             {
-                if (joint_list[i].name == name) return i;
+                if (joints[i].name == name) return i;
             }
 
             return -1;
@@ -54,17 +54,17 @@ namespace Tso2Pmd
         // 名前からボーンを得る
         public PMD_Bone GetBoneByName(string name)
         {
-            return bone_list[GetBoneIDByName(name)];
+            return nodes[GetBoneIDByName(name)];
         }
         // 名前から剛体を得る
         public PMD_RBody GetBodyByName(string name)
         {
-            return rbody_list[GetBodyIDByName(name)];
+            return bodies[GetBodyIDByName(name)];
         }
         // 名前からジョイントを得る
         public PMD_Joint GetJointByName(string name)
         {
-            return joint_list[GetJointIDByName(name)];
+            return joints[GetJointIDByName(name)];
         }
 
         // 正規表現から剛体リストを得る
@@ -72,13 +72,13 @@ namespace Tso2Pmd
         {
             List<PMD_RBody> list = new List<PMD_RBody>();
 
-            for (int i = 0; i < rbody_list.Count; i++)
+            for (int i = 0; i < bodies.Count; i++)
             {
                 if (System.Text.RegularExpressions.Regex.IsMatch(
-                    rbody_list[i].name,
+                    bodies[i].name,
                     exp))
                 {
-                    list.Add(rbody_list[i]);
+                    list.Add(bodies[i]);
                 }
             }
 
@@ -89,13 +89,13 @@ namespace Tso2Pmd
         {
             List<PMD_Joint> list = new List<PMD_Joint>();
 
-            for (int i = 0; i < joint_list.Count; i++)
+            for (int i = 0; i < joints.Count; i++)
             {
                 if (System.Text.RegularExpressions.Regex.IsMatch(
-                    joint_list[i].name,
+                    joints[i].name,
                     exp))
                 {
-                    list.Add(joint_list[i]);
+                    list.Add(joints[i]);
                 }
             }
 
@@ -133,9 +133,9 @@ namespace Tso2Pmd
         {
             PMD_RBody rbody = new PMD_RBody();
 
-            rbody.name = bone_list[bone_num].name; // 諸データ：名称 // 頭
+            rbody.name = nodes[bone_num].name; // 諸データ：名称 // 頭
             rbody.rel_bone_id = bone_num; // 諸データ：関連ボーン番号 // 03 00 == 3 // 頭
-            rbody.position = new Vector3(0.0f, 0.0f, 0.0f);
+            rbody.position = nodes[bone_num].position;
 
             rbody.group_id = 0; // 諸データ：グループ // 00
             rbody.group_non_collision = 0xFFFF; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
@@ -149,7 +149,7 @@ namespace Tso2Pmd
             rbody.friction = 0.0f; // 諸データ：摩擦力 // 00 00 00 00
             rbody.type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
 
-            rbody_list.Add(rbody);
+            bodies.Add(rbody);
         }
 
         // (指定したボーン→その子ボーン)にフィットするような剛体を生成
@@ -178,9 +178,9 @@ namespace Tso2Pmd
             double L = Math.Sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1));
 
             // 位置：位置(x, y, z)
-            rbody.position.X = (x1 + x2) / 2.0f - x1;
-            rbody.position.Y = (y1 + y2) / 2.0f - y1;
-            rbody.position.Z = (z1 + z2) / 2.0f - z1;
+            rbody.position.X = 0.5f * (x1 + x2);
+            rbody.position.Y = 0.5f * (y1 + y2);
+            rbody.position.Z = 0.5f * (z1 + z2);
 
             // 位置：回転(rad(x), rad(y), rad(z))
             if (y1 >= y2)
@@ -207,7 +207,7 @@ namespace Tso2Pmd
             rbody.friction = 0.0f; // 諸データ：摩擦力 // 00 00 00 00
             rbody.type = 0; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
 
-            rbody_list.Add(rbody);
+            bodies.Add(rbody);
         }
 
         // (指定したボーンにフィットさせた剛体)と、(その親ボーンにフィットさせた剛体)を、
@@ -223,13 +223,13 @@ namespace Tso2Pmd
         {
             PMD_Joint joint = new PMD_Joint();
 
-            joint.name = GetBoneByName(bone_list[bone_num].ParentName).name
-                + "-" + bone_list[bone_num].name; // 諸データ：名称 // 右髪1
+            joint.name = GetBoneByName(nodes[bone_num].ParentName).name
+                + "-" + nodes[bone_num].name; // 諸データ：名称 // 右髪1
 
-            joint.rbody_a_id = GetBodyIDByName(GetBoneByName(bone_list[bone_num].ParentName).name); // 諸データ：剛体A
-            joint.rbody_b_id = GetBodyIDByName(bone_list[bone_num].name); // 諸データ：剛体B
+            joint.rbody_a_id = GetBodyIDByName(GetBoneByName(nodes[bone_num].ParentName).name); // 諸データ：剛体A
+            joint.rbody_b_id = GetBodyIDByName(nodes[bone_num].name); // 諸データ：剛体B
 
-            joint.position = bone_list[bone_num].position;
+            joint.position = nodes[bone_num].position;
             joint.rotation = Vector3.Empty;
 
             joint.position_min = Vector3.Empty;
@@ -240,7 +240,7 @@ namespace Tso2Pmd
             joint.spring_position = Vector3.Empty;
             joint.spring_rotation = Vector3.Empty;
             
-            joint_list.Add(joint);
+            joints.Add(joint);
         }
 
         // 指定した２つのボーンにフィットさせている剛体をジョイントする
@@ -255,16 +255,16 @@ namespace Tso2Pmd
             PMD_Joint joint = new PMD_Joint();
 
             // 諸データ：名称 // 右髪1
-            joint.name = bone_list[bone_num1].name + "-" + bone_list[bone_num2].name;
-            joint.name_en = bone_list[bone_num1].name_en + "-" + bone_list[bone_num2].name_en;
+            joint.name = nodes[bone_num1].name + "-" + nodes[bone_num2].name;
+            joint.name_en = nodes[bone_num1].name_en + "-" + nodes[bone_num2].name_en;
             
-            joint.rbody_a_id = GetBodyIDByName(bone_list[bone_num1].name); // 諸データ：剛体A
-            joint.rbody_b_id = GetBodyIDByName(bone_list[bone_num2].name); // 諸データ：剛体B
+            joint.rbody_a_id = GetBodyIDByName(nodes[bone_num1].name); // 諸データ：剛体A
+            joint.rbody_b_id = GetBodyIDByName(nodes[bone_num2].name); // 諸データ：剛体B
 
             // 諸データ：位置(x, y, z) // 諸データ：位置合せでも設定可
-            joint.position.X = 0.5f * (bone_list[bone_num1].position.X + bone_list[bone_num2].position.X);
-            joint.position.Y = 0.5f * (bone_list[bone_num1].position.Y + bone_list[bone_num2].position.Y);
-            joint.position.Z = 0.5f * (bone_list[bone_num1].position.Z + bone_list[bone_num2].position.Z);
+            joint.position.X = 0.5f * (nodes[bone_num1].position.X + nodes[bone_num2].position.X);
+            joint.position.Y = 0.5f * (nodes[bone_num1].position.Y + nodes[bone_num2].position.Y);
+            joint.position.Z = 0.5f * (nodes[bone_num1].position.Z + nodes[bone_num2].position.Z);
 
             // 諸データ：回転(rad(x), rad(y), rad(z))
             joint.rotation = new Vector3(0.0f, 0.0f, 0.0f);
@@ -290,7 +290,7 @@ namespace Tso2Pmd
             // ばね：回転(rad(x), rad(y), rad(z))
             joint.spring_rotation = new Vector3(10.0f, 10.0f, 10.0f);
 
-            joint_list.Add(joint);
+            joints.Add(joint);
         }
     }
 }
