@@ -41,17 +41,16 @@ namespace Tso2Pmd
         public void Save(string dest_path, string file_name, bool use_spheremap)
         {
             tex_list.Save(dest_path, use_spheremap);
-            WriteNames(dest_path, file_name);
+            SaveNamesToFile(dest_path + "/" + file_name + ".txt");
         }
 
         /// <summary>
-        /// マテリアル名のリストを書き出します。
+        /// マテリアル名のリストを保存します。
         /// </summary>
-        /// <param name="dest_path">出力先パス</param>
-        /// <param name="file_name">ファイル名</param>
-        void WriteNames(string dest_path, string file_name)
+        /// <param name="dest_file">保存ファイル名</param>
+        void SaveNamesToFile(string dest_file)
         {
-            using (StreamWriter sw = new StreamWriter(dest_path + "/" + file_name + ".txt", false,
+            using (StreamWriter sw = new StreamWriter(dest_file, false,
                 System.Text.Encoding.GetEncoding("shift_jis")))
             {
                 foreach (string name in names)
@@ -91,7 +90,7 @@ namespace Tso2Pmd
                 if (toon_names.IndexOf(toon_file) != -1)
                 {
                     // toonテクスチャファイル中でのインデックス
-                    pmd_m.toon_tex_id = (sbyte)toon_names.IndexOf(toon_file);
+                    pmd_m.tex_toon_id = (sbyte)toon_names.IndexOf(toon_file);
                 }
                 else
                 {
@@ -102,7 +101,7 @@ namespace Tso2Pmd
                         toon_names.Add(toon_file);
 
                         // toonテクスチャファイル中でのインデックス
-                        pmd_m.toon_tex_id = (sbyte)(toon_names.Count - 1);
+                        pmd_m.tex_toon_id = (sbyte)(toon_names.Count - 1);
                     }
                     else
                     {
@@ -111,7 +110,7 @@ namespace Tso2Pmd
                         toon_names.Add("toon10.bmp"); // 10以上は無理なので、それ以上は全てtoon10.bmp
 
                         // toonテクスチャファイル中でのインデックス
-                        pmd_m.toon_tex_id = 9; // 10以上は無理なので、それ以上は全て9
+                        pmd_m.tex_toon_id = 9; // 10以上は無理なので、それ以上は全て9
                     }
                 }
 
@@ -129,7 +128,7 @@ namespace Tso2Pmd
             }
             else
             {
-                pmd_m.toon_tex_id = 9;
+                pmd_m.tex_toon_id = 9;
             }
 
             // 要素を追加
@@ -161,40 +160,35 @@ namespace Tso2Pmd
             if (m1.tex_file != m2.tex_file)
                 return false;
 
-            if (m1.toon_tex_id != m2.toon_tex_id)
+            if (m1.tex_toon_id != m2.tex_toon_id)
                 return false;
 
             return true;
         }
 
-        // トゥーンテクスチャファイル名を得る
+        // Toonテクスチャファイル名を得る
         public string[] GetToonFileNameList()
         {
-            string[] name_list = new string[10];
+            string[] names = new string[10];
 
             if (toon_names.Count <= 10)
             {
                 for (int i = 0; i < toon_names.Count; i++)
-                {
-                    name_list[i] = toon_names[i];
-                }
+                    names[i] = toon_names[i];
+
                 for (int i = toon_names.Count; i < 10; i++)
-                {
-                    name_list[i] = "toon" + i.ToString("00") + ".bmp";
-                }
+                    names[i] = "toon" + i.ToString("00") + ".bmp";
             }
             else
             {
                 for (int i = 0; i < 10; i++)
-                {
-                    name_list[i] = toon_names[i];
-                }
+                    names[i] = toon_names[i];
             }
 
             // toonテクスチャがうまく呼び出せない場合に呼び出す、空のtoonテクスチャ
-            name_list[9] = "toon10.bmp";
+            names[9] = "toon10.bmp";
 
-            return name_list;
+            return names;
         }
     }
 }
