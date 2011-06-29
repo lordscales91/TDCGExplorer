@@ -20,13 +20,13 @@ namespace Tso2Pmd
         T2PTextureList tex_list;
         List<string> toon_names = new List<string>();
 
-        public T2PMaterialList(List<TSOFile> tsos, List<string> categories)
+        public T2PMaterialList(List<TSOFile> tsos, List<string> categories, bool use_spheremap)
         {
             this.tsos = tsos;
             this.categories = categories;
 
             // テクスチャを準備
-            tex_list = new T2PTextureList();
+            tex_list = new T2PTextureList(use_spheremap);
             int tso_num = 0;
             foreach (TSOFile tso in tsos)
             {
@@ -38,9 +38,9 @@ namespace Tso2Pmd
             }
         }
 
-        public void Save(string dest_path, string file_name, bool use_spheremap)
+        public void Save(string dest_path, string file_name)
         {
-            tex_list.Save(dest_path, use_spheremap);
+            tex_list.Save(dest_path);
             SaveNamesToFile(dest_path + "/" + file_name + ".txt");
         }
 

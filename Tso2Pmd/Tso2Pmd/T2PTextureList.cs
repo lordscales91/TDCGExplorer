@@ -19,6 +19,14 @@ namespace Tso2Pmd
         // bmp_listより、出力ファイル名へのインデックス
         Dictionary<Bitmap, string> file_names = new Dictionary<Bitmap, string>();
 
+        // スフィアマップを使うか
+        public readonly bool use_spheremap;
+
+        public T2PTextureList(bool use_spheremap)
+        {
+            this.use_spheremap = use_spheremap;
+        }
+
         // テクスチャを指定し、Bitmapとして記憶し、参照可能なようにインデックス
         // をつける。ただし、以前記憶したものの中に同じBitmapがあるなら、新規の
         // Bitmapは作成せず、インデックスのみつける。
@@ -53,7 +61,7 @@ namespace Tso2Pmd
         /// </summary>
         /// <param name="dest_path">出力先パス</param>
         /// <param name="use_spheremap">スフィアマップを使うか</param>
-        public void Save(string dest_path, bool use_spheremap)
+        public void Save(string dest_path)
         {
             foreach (Bitmap bmp in bmps)
             {
