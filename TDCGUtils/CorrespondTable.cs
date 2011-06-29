@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
-using System.IO;
 
 using TDCG;
 
@@ -29,18 +28,15 @@ namespace TDCGUtils
 
         public void Load(string path)
         {
-            ReadSkinning(path);
-            ReadBonePosition(path);
-            ReadBoneStructure(path);
-            ReadIKBone(path);
+            ReadSkinning(Path.Combine(path, @"skinning.txt"));
+            ReadBonePosition(Path.Combine(path, @"bonePosition.txt"));
+            ReadBoneStructure(Path.Combine(path, @"boneStructure.txt"));
+            ReadIKBone(Path.Combine(path, @"IKBone.txt"));
         }
 
         void ReadSkinning(string path)
         {
-            System.IO.StreamReader sr;
-
-            sr = new System.IO.StreamReader(
-                Path.Combine(path, @"skinning.txt"),
+            StreamReader sr = new StreamReader(path,
                 System.Text.Encoding.GetEncoding("shift_jis"));
             while (sr.Peek() > -1)
             {
@@ -53,10 +49,7 @@ namespace TDCGUtils
 
         void ReadBonePosition(string path)
         {
-            System.IO.StreamReader sr;
-
-            sr = new System.IO.StreamReader(
-                Path.Combine(path, @"bonePosition.txt"),
+            StreamReader sr = new StreamReader(path,
                 System.Text.Encoding.GetEncoding("shift_jis"));
             while (sr.Peek() > -1)
             {
@@ -69,10 +62,7 @@ namespace TDCGUtils
 
         void ReadBoneStructure(string path)
         {
-            System.IO.StreamReader sr;
-
-            sr = new System.IO.StreamReader(
-                Path.Combine(path, @"boneStructure.txt"),
+            StreamReader sr = new StreamReader(path,
                 System.Text.Encoding.GetEncoding("shift_jis"));
             while (sr.Peek() > -1)
             {
@@ -134,11 +124,7 @@ namespace TDCGUtils
 
         void ReadIKBone(string path)
         {
-            System.IO.StreamReader sr;
-
-            //内容を一行ずつ読み込む
-            sr = new System.IO.StreamReader(
-                Path.Combine(path, @"IKBone.txt"),
+            StreamReader sr = new StreamReader(path,
                 System.Text.Encoding.GetEncoding("shift_jis"));
             while (sr.Peek() > -1)
             {
