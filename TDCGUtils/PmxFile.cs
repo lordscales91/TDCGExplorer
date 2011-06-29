@@ -233,8 +233,24 @@ namespace TDCGUtils
         public Vector4 diffuse;
         public Vector4 specular;
         public Vector3 ambient;
-        
-        public byte flags;
+
+        //描画フラグ
+        //  0x01:両面描画
+        //  0x02:地面影
+        //  0x04:セルフシャドウマップへの描画
+        //  0x08:セルフシャドウの描画
+        //  0x10:エッジ描画
+        [Flags]
+        public enum Flags : byte
+        {
+            none = 0x00,
+            both = 0x01,
+            shadow = 0x02,
+            selfshadowmap = 0x04,
+            selfshadow = 0x08,
+            edge = 0x10
+        }
+        public Flags flags;
         
         public Vector4 edge_color;
         public float edge_width;
@@ -255,7 +271,7 @@ namespace TDCGUtils
             diffuse = new Vector4(0.800f, 0.712f, 0.624f, 1.0f);
             specular = new Vector4(0.150f, 0.150f, 0.150f, 6.0f);
             ambient = new Vector3(0.500f, 0.445f, 0.390f);
-            flags = (byte)0x00;//描画フラグ 0x10:エッジ描画
+            flags = Flags.selfshadowmap | Flags.selfshadow;
             edge_color = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
             edge_width = 1.0f;
 
@@ -269,7 +285,7 @@ namespace TDCGUtils
             bw.Write(ref diffuse);
             bw.Write(ref specular);
             bw.Write(ref ambient);
-            bw.Write(flags);
+            bw.Write((byte)flags);
             bw.Write(ref edge_color);
             bw.Write(edge_width);
             bw.Write(tex_id);
@@ -279,6 +295,28 @@ namespace TDCGUtils
             bw.Write(tex_toon_id);
             bw.WritePString(memo);
             bw.Write(vindices_count);
+        }
+
+        public bool UseEdge
+        {
+            set
+            {
+                if (value)
+                    flags |=  PMD_Material.Flags.edge;
+                else
+                    flags &= ~PMD_Material.Flags.edge;
+            }
+        }
+
+        public bool UseShadow
+        {
+            set
+            {
+                if (value)
+                    flags |=  PMD_Material.Flags.shadow;
+                else
+                    flags &= ~PMD_Material.Flags.shadow;
+            }
         }
     }
 
