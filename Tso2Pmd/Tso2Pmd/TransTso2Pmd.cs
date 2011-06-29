@@ -303,19 +303,26 @@ namespace Tso2Pmd
             pmd.joints = physOb_list.joints.ToArray();
         }
 
-        // 親と子の前後関係を並び替える
+        /// 親子関係を元に並び替える
         static void SortNodes(List<PMD_Bone> nodes)
         {
             for (int i = 0; i < nodes.Count; i++)
-                for (int j = 0; j < nodes.Count; j++)
+            {
+                PMD_Bone node = nodes[i];
+                //親より前に居る子を見つける
+                for (int j = 0; j < i; j++)
                 {
-                    if (nodes[i].name == nodes[j].ParentName)
-                        if (i > j)
-                        {
-                            nodes.Insert(j, nodes[i]);
-                            nodes.RemoveAt(i + 1);
-                        }
+                    if (nodes[j].ParentName == node.name)
+                    {
+                        //親を削除
+                        nodes.RemoveAt(i);
+                        //親を子の直前に挿入
+                        nodes.Insert(j, node);
+
+                        break;
+                    }
                 }
+            }
         }
 
         /// <summary>
