@@ -506,7 +506,7 @@ namespace Tso2Pmd
         private void MakePMDVertices(CorrespondTable cor_table, int mod_type)
         {
             List<PMD_Vertex> vertices = new List<PMD_Vertex>();
-            List<short> indices = new List<short>(); // インデックスリスト
+            List<short> indices = new List<short>();
 
             Dictionary<string, short> bone_name_idmap = new Dictionary<string, short>();
             {
