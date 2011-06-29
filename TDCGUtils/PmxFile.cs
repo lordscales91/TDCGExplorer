@@ -59,7 +59,6 @@ namespace TDCGUtils
             bw.Write(vertices.Length);
             foreach (PMD_Vertex v in vertices)
             {
-                v.SetBoneIDFromName(this);
                 v.Write(bw);
             }
             bw.Write(vindices.Length);
@@ -205,8 +204,7 @@ namespace TDCGUtils
             bw.Write(ref this.normal);
             bw.Write(this.u);
             bw.Write(this.v);
-            bw.Write((byte)1);//ウェイト変形方式 0:BDEF1 1:BDEF2 2:BDEF4 3:SDEF
-            /*
+            bw.Write((byte)2);//ウェイト変形方式 0:BDEF1 1:BDEF2 2:BDEF4 3:SDEF
             for (int i = 0; i < 4; i++)
             {
                 bw.Write(skin_weights[i].bone_index);
@@ -215,24 +213,7 @@ namespace TDCGUtils
             {
                 bw.Write(skin_weights[i].weight);
             }
-            */
-            for (int i = 0; i < 2; i++)
-            {
-                bw.Write(skin_weights[i].bone_index);
-            }
-            bw.Write(weight / 100.0f);
             bw.Write(this.edge_scale);
-        }
-
-        public string[] bone_names = new string[2];
-        
-        public sbyte weight;
-
-        // ボーン名をIDに置き換える
-        public void SetBoneIDFromName(PmxFile pmd)
-        {
-            skin_weights[0].bone_index = pmd.GetBoneIDByName(bone_names[0]);
-            skin_weights[1].bone_index = pmd.GetBoneIDByName(bone_names[1]);
         }
     }
 
