@@ -24,7 +24,7 @@ namespace TDCGUtils.Extensions
                 bw.Write((int)0);
                 return;
             }
-            byte[] buf = Encoding.UTF8.GetBytes(s);
+            byte[] buf = Encoding.Unicode.GetBytes(s);
             bw.Write(buf.Length);
             bw.Write(buf);
         }
