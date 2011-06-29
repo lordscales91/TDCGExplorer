@@ -13,7 +13,6 @@ namespace Tso2Pmd
 {
     class T2PMaterialList
     {
-        public List<string> names = new List<string>();
         public List<PMD_Material> materials = new List<PMD_Material>();
 
         List<TSOFile> tsos;
@@ -58,8 +57,8 @@ namespace Tso2Pmd
             using (StreamWriter sw = new StreamWriter(dest_file, false,
                 System.Text.Encoding.GetEncoding("shift_jis")))
             {
-                foreach (string name in names)
-                    sw.WriteLine(name);
+                foreach (PMD_Material material in materials)
+                    sw.WriteLine(material.name);
             }
         }
        
@@ -68,6 +67,8 @@ namespace Tso2Pmd
         public void Add(int tso_num, int script_num, bool use_edge)
         {
             PMD_Material pmd_m = new PMD_Material();
+
+            pmd_m.name = categories[tso_num] + " " + tsos[tso_num].sub_scripts[script_num].Name;
 
             // スクリプトよりシェーダパラメータを取得
             Shader shader = new Shader();
@@ -98,7 +99,6 @@ namespace Tso2Pmd
             }
 
             // 要素を追加
-            names.Add(categories[tso_num] + " " + tsos[tso_num].sub_scripts[script_num].Name);
             materials.Add(pmd_m);
         }
 
@@ -111,7 +111,6 @@ namespace Tso2Pmd
                 {
                     materials[i].vindices_count += materials[i + 1].vindices_count;
                     materials.RemoveAt(i + 1);
-                    names.RemoveAt(i + 1);
                     i = 0;
                 }
             }
