@@ -38,22 +38,20 @@ namespace Tso2Pmd
             Bitmap bmp = new Bitmap(tex.width, tex.height);
             SetBitmapBytes(bmp, tex.data);
 
-            // bmp_listと比較して、同じものがあればそれのアドレスのみ参照しておく
+            // bmpsと比較して同じものがあれば、アドレスのみ参照しておく
             foreach (Bitmap other_bmp in bmps)
             {
                 if (EqualBitmaps(bmp, other_bmp))
                 {
-                    bmap.Add(tso_id.ToString() + "-" + tex.Name, other_bmp);
+                    bmap.Add(GetBitmapCode(tso_id, tex.Name), other_bmp);
                     return;
                 }
             }
 
-            // 同じものがなければ、新規にbmp_listにBitmapを追加
+            // 同じものがなければ、新規にbmpsにBitmapを追加
+            file_names.Add(bmp, string.Format("t{0:D3}.bmp", bmps.Count));
             bmps.Add(bmp);
-            bmap.Add(tso_id.ToString() + "-" + tex.Name, bmp);
-
-            // 同時にこれを出力するときのファイル名を作成
-            file_names.Add(bmp, "t" + (bmps.Count - 1).ToString("000") + ".bmp");
+            bmap.Add(GetBitmapCode(tso_id, tex.Name), bmp);
         }
 
         /// <summary>
@@ -89,20 +87,26 @@ namespace Tso2Pmd
             }
         }
 
+        string GetBitmapCode(int tso_id, string tex_name)
+        {
+            return tso_id.ToString() + "-" + tex_name;
+        }
+
         // ビットマップを得る
         public Bitmap GetBitmap(int tso_id, string tex_name)
         {
             Bitmap bmp;
-            bmap.TryGetValue(tso_id.ToString() + "-" + tex_name, out bmp);
+            bmap.TryGetValue(GetBitmapCode(tso_id, tex_name), out bmp);
             return bmp;
         }
 
-        // テクスチャを出力したファイル名を得る
+        // ビットマップを出力したファイル名を得る
         public string GetFileName(int tso_id, string tex_name)
         {
-            Bitmap bmp; 
-            bmap.TryGetValue(tso_id.ToString() + "-" + tex_name, out bmp);
-            if (bmp == null) return null;
+            Bitmap bmp = GetBitmap(tso_id, tex_name); 
+
+            if (bmp == null)
+                return null;
 
             string str;
             file_names.TryGetValue(bmp, out str);
