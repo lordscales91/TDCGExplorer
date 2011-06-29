@@ -29,9 +29,16 @@ namespace TDCGUtils
 
         public void Load(string path)
         {
+            ReadSkinning(path);
+            ReadBonePosition(path);
+            ReadBoneStructure(path);
+            ReadIKBone(path);
+        }
+
+        void ReadSkinning(string path)
+        {
             System.IO.StreamReader sr;
 
-            //内容を一行ずつ読み込む
             sr = new System.IO.StreamReader(
                 Path.Combine(path, @"skinning.txt"),
                 System.Text.Encoding.GetEncoding("shift_jis"));
@@ -42,8 +49,12 @@ namespace TDCGUtils
                 skinning.Add(data[0].Trim(), data[1].Trim());
             }
             sr.Close();
+        }
 
-            //内容を一行ずつ読み込む
+        void ReadBonePosition(string path)
+        {
+            System.IO.StreamReader sr;
+
             sr = new System.IO.StreamReader(
                 Path.Combine(path, @"bonePosition.txt"),
                 System.Text.Encoding.GetEncoding("shift_jis"));
@@ -54,8 +65,12 @@ namespace TDCGUtils
                 bonePosition.Add(data[1].Trim(), data[0].Trim());
             }
             sr.Close();
+        }
 
-            //内容を一行ずつ読み込む
+        void ReadBoneStructure(string path)
+        {
+            System.IO.StreamReader sr;
+
             sr = new System.IO.StreamReader(
                 Path.Combine(path, @"boneStructure.txt"),
                 System.Text.Encoding.GetEncoding("shift_jis"));
@@ -115,6 +130,11 @@ namespace TDCGUtils
                 }
             }
             sr.Close();
+        }
+
+        void ReadIKBone(string path)
+        {
+            System.IO.StreamReader sr;
 
             //内容を一行ずつ読み込む
             sr = new System.IO.StreamReader(
