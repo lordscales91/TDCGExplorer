@@ -214,7 +214,7 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // ボーン情報
             // -----------------------------------------------------
-            List<PMD_Bone> bone_list = new List<PMD_Bone>();
+            List<PMD_Bone> nodes = new List<PMD_Bone>();
 
             foreach (KeyValuePair<string, PMD_Bone> bone_kvp in cor_table.boneStructure)
             {
@@ -235,25 +235,25 @@ namespace Tso2Pmd
                         = Trans.CopyMat2Pos(fig.Tmo.FindNodeByName(bone_name).combined_matrix); // モデル原点からの位置
                 }
 
-                bone_list.Add(pmd_b);
+                nodes.Add(pmd_b);
             }
 
             // -----------------------------------------------------
             // 親と子の前後関係を並び替える
-            for (int i = 0; i < bone_list.Count; i++)
-            for (int j = 0; j < bone_list.Count; j++)
+            for (int i = 0; i < nodes.Count; i++)
+            for (int j = 0; j < nodes.Count; j++)
             {
-                if (bone_list[i].name == bone_list[j].ParentName)
+                if (nodes[i].name == nodes[j].ParentName)
                 if (i > j)
                 {
-                    bone_list.Insert(j, bone_list[i]);
-                    bone_list.RemoveAt(i+1);
+                    nodes.Insert(j, nodes[i]);
+                    nodes.RemoveAt(i+1);
                 }
             }
 
             // -----------------------------------------------------
             // リストを配列に代入し直す
-            pmd.nodes = bone_list.ToArray();
+            pmd.nodes = nodes.ToArray();
 
             UpdateRootBonePosition();
 
@@ -306,12 +306,12 @@ namespace Tso2Pmd
 
             pmd.english_name_compatibility = 0;
 
-            physOb_list = new T2PPhysObjectList(bone_list);
+            physOb_list = new T2PPhysObjectList(nodes);
 
             template_list.PhysObExecute(ref physOb_list);
 
-            pmd.bodies = physOb_list.rbody_list.ToArray();
-            pmd.joints = physOb_list.joint_list.ToArray();
+            pmd.bodies = physOb_list.bodies.ToArray();
+            pmd.joints = physOb_list.joints.ToArray();
         }
 
         /// <summary>

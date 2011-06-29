@@ -15,9 +15,9 @@ namespace Tso2Pmd
     {
         public List<PMD_Material> materials = new List<PMD_Material>();
 
-        List<TSOFile> tsos = new List<TSOFile>();
-        List<string> categories = new List<string>();
-        T2PTextureList tex_list = new T2PTextureList();
+        List<TSOFile> tsos;
+        List<string> categories;
+        T2PTextureList tex_list;
         List<string> toon_names = new List<string>();
 
         public T2PMaterialList(List<TSOFile> tsos, List<string> categories)
@@ -26,6 +26,7 @@ namespace Tso2Pmd
             this.categories = categories;
 
             // テクスチャを準備
+            tex_list = new T2PTextureList();
             int tso_num = 0;
             foreach (TSOFile tso in tsos)
             {
