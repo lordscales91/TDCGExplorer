@@ -82,6 +82,7 @@ namespace TDCGUtils
             bw.Write(nodes.Length);
             foreach (PMD_Bone n in nodes)
             {
+                n.SetBoneIDFromName(this);
                 n.Write(bw);
             }
 
@@ -131,6 +132,17 @@ namespace TDCGUtils
                     return bone;
             }
             return null;
+        }
+
+        public short GetBoneIDByName(string name)
+        {
+            if (name != null)
+                for (short i = 0; i < nodes.Length; i++)
+                {
+                    if (nodes[i].name == name)
+                        return i;
+                }
+            return -1;
         }
     }
 
@@ -271,6 +283,7 @@ namespace TDCGUtils
         byte flags_hi;
         byte flags_lo;
         public short tail_node_id;
+        public short target_node_id;
 
         public PMD_Bone()
         {
@@ -336,6 +349,14 @@ namespace TDCGUtils
 
         // IK時のターゲットボーン
         public string TargetName;
+
+        // ボーン名をIDに置き換える
+        public void SetBoneIDFromName(PmxFile pmd)
+        {
+            parent_node_id = pmd.GetBoneIDByName(ParentName);
+            tail_node_id = pmd.GetBoneIDByName(TailName);
+            target_node_id = pmd.GetBoneIDByName(TargetName);
+        }
     }
 
     /// IK
