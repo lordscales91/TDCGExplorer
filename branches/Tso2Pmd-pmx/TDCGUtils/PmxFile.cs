@@ -10,6 +10,7 @@ namespace TDCGUtils
 {
     public class PmxFile
     {
+        public PMD_Header header;
         public PMD_Vertex[] vertices;
         public int[] vindices;
         public string[] texture_file_names;
@@ -39,22 +40,7 @@ namespace TDCGUtils
         {
             BinaryWriter bw = new BinaryWriter(dest_stream);
 
-            WriteMagic(bw);
-
-            bw.Write((byte)8);
-            bw.Write((byte)0); //文字エンコード方式
-            bw.Write((byte)0); //追加UV数
-            bw.Write((byte)4); //頂点Indexサイズ
-            bw.Write((byte)1); //テクスチャIndexサイズ
-            bw.Write((byte)1); //材質Indexサイズ
-            bw.Write((byte)2); //ボーンIndexサイズ
-            bw.Write((byte)1); //モーフIndexサイズ
-            bw.Write((byte)1); //剛体Indexサイズ
-
-            bw.WritePString("model name ja");
-            bw.WritePString("model name en");
-            bw.WritePString("comment ja");
-            bw.WritePString("comment en");
+            header.Write(bw);
 
             bw.Write(vertices.Length);
             foreach (PMD_Vertex v in vertices)
@@ -121,18 +107,6 @@ namespace TDCGUtils
 
         }
 
-        /// <summary>
-        /// 'PMX ' とver (2.0)を書き出します。
-        /// </summary>
-        public static void WriteMagic(BinaryWriter bw)
-        {
-            bw.Write((byte)0x50);
-            bw.Write((byte)0x4d);
-            bw.Write((byte)0x58);
-            bw.Write((byte)0x20);
-            bw.Write(2.0f);
-        }
-
         public PMD_Bone GetBoneByName(string name)
         {
             foreach (PMD_Bone bone in nodes)
@@ -152,6 +126,37 @@ namespace TDCGUtils
                         return i;
                 }
             return -1;
+        }
+    }
+
+    public class PMD_Header
+    {
+        float version = 2.0f;
+        public String name;
+        public String comment;
+
+        internal void Write(BinaryWriter bw)
+        {
+            bw.Write((byte)0x50);
+            bw.Write((byte)0x4d);
+            bw.Write((byte)0x58);
+            bw.Write((byte)0x20);
+            bw.Write(version);
+
+            bw.Write((byte)8);
+            bw.Write((byte)0); //文字エンコード方式
+            bw.Write((byte)0); //追加UV数
+            bw.Write((byte)4); //頂点Indexサイズ
+            bw.Write((byte)1); //テクスチャIndexサイズ
+            bw.Write((byte)1); //材質Indexサイズ
+            bw.Write((byte)2); //ボーンIndexサイズ
+            bw.Write((byte)1); //モーフIndexサイズ
+            bw.Write((byte)1); //剛体Indexサイズ
+
+            bw.WritePString(name);
+            bw.WritePString("name en");
+            bw.WritePString(comment);
+            bw.WritePString("comment en");
         }
     }
 
