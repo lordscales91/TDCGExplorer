@@ -53,13 +53,13 @@ namespace Tso2Pmd
 
             Bitmap tmp_bmp = bmp;
 
-            // テクスチャがToonなら加工してから書き出す
+            // Toonなら加工してから書き出す
             if (toon)
             {
                 bmp = TurnBitmap(bmp);
             }
 
-            // bmpsと比較して同じものがあればアドレスのみ参照しておく
+            // bmps中に同じものがあれば、アドレスのみ参照する
             foreach (Bitmap other_bmp in bmps)
             {
                 if (EqualBitmaps(bmp, other_bmp))
@@ -76,6 +76,7 @@ namespace Tso2Pmd
                 }
             }
 
+            // 同じものがなければ、bmpsにBitmapを追加する
             file_names.Add(bmp, string.Format("t{0:D3}.bmp", bmps.Count));
             bmps.Add(bmp);
             bmap.Add(GetBitmapCode(tso_id, tex.Name), bmp);
