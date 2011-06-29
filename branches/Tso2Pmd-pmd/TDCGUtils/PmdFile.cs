@@ -505,10 +505,10 @@ namespace TDCGUtils
     public class PMD_RBody
     {
         public String name; // 諸データ：名称 // 頭
-        public int rel_bone_id; // 諸データ：関連ボーン番号 // 03 00 == 3 // 頭
-        public int group_id; // 諸データ：グループ // 00
-        public int group_non_collision; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
-        public int shape_id; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
+        public short rel_bone_id; // 諸データ：関連ボーン番号 // 03 00 == 3 // 頭
+        public byte group_id; // 諸データ：グループ // 00
+        public ushort group_non_collision; // 諸データ：グループ：対象 // 0xFFFFとの差 // 38 FE
+        public byte shape_id; // 形状：タイプ(0:球、1:箱、2:カプセル) // 00 // 球
         
         // 形状：半径(幅) // CD CC CC 3F // 1.6
         // 形状：高さ // CD CC CC 3D // 0.1
@@ -522,24 +522,24 @@ namespace TDCGUtils
         public float rotation_dim; // 諸データ：回転減 // 00 00 00 00
         public float recoil; // 諸データ：反発力 // 00 00 00 00
         public float friction; // 諸データ：摩擦力 // 00 00 00 00
-        public int type; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
+        public byte type; // 諸データ：タイプ(0:Bone追従、1:物理演算、2:物理演算(Bone位置合せ)) // 00 // Bone追従
 
         internal void Write(BinaryWriter writer)
         {
-            writer.WriteCString(this.name, 20);
-            writer.Write((short)this.rel_bone_id);
-            writer.Write((byte)this.group_id);
-            writer.Write((short)this.group_non_collision);
-            writer.Write((byte)this.shape_id);
-            writer.Write(ref this.size);
-            writer.Write(ref this.position);
-            writer.Write(ref this.rotation);
-            writer.Write(this.weight);
-            writer.Write(this.position_dim);
-            writer.Write(this.rotation_dim);
-            writer.Write(this.recoil);
-            writer.Write(this.friction);
-            writer.Write((byte)this.type);
+            writer.WriteCString(name, 20);
+            writer.Write(rel_bone_id);
+            writer.Write(group_id);
+            writer.Write(group_non_collision);
+            writer.Write(shape_id);
+            writer.Write(ref size);
+            writer.Write(ref position);
+            writer.Write(ref rotation);
+            writer.Write(weight);
+            writer.Write(position_dim);
+            writer.Write(rotation_dim);
+            writer.Write(recoil);
+            writer.Write(friction);
+            writer.Write(type);
         }
     }
 
@@ -559,17 +559,17 @@ namespace TDCGUtils
 
         internal void Write(BinaryWriter writer)
         {
-            writer.WriteCString(this.name, 20);
-            writer.Write(this.rbody_a_id);
-            writer.Write(this.rbody_b_id);
-            writer.Write(ref this.position);
-            writer.Write(ref this.rotation);
-            writer.Write(ref this.position_min);
-            writer.Write(ref this.position_max);
-            writer.Write(ref this.rotation_min);
-            writer.Write(ref this.rotation_max);
-            writer.Write(ref this.spring_position);
-            writer.Write(ref this.spring_rotation);
+            writer.WriteCString(name, 20);
+            writer.Write(rbody_a_id);
+            writer.Write(rbody_b_id);
+            writer.Write(ref position);
+            writer.Write(ref rotation);
+            writer.Write(ref position_min);
+            writer.Write(ref position_max);
+            writer.Write(ref rotation_min);
+            writer.Write(ref rotation_max);
+            writer.Write(ref spring_position);
+            writer.Write(ref spring_rotation);
         }
     }
 }
