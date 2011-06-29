@@ -258,10 +258,6 @@ namespace TDCGUtils
             bw.WritePString(memo);
             bw.Write(vindices_count);
         }
-
-        public String tex_file;
-        public String tex_toon_file;
-        public String tex_sphere_file;
     }
 
     /// ボーン
