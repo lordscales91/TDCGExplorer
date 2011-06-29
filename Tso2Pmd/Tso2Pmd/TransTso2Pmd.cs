@@ -182,36 +182,6 @@ namespace Tso2Pmd
             }
  
             // -----------------------------------------------------
-            // 予め、情報をコピーするmeshを選定し、並び替えておく
-            // -----------------------------------------------------
-            SelectMeshes();
-
-            // -----------------------------------------------------
-            // 頂点
-            // -----------------------------------------------------
-            MakePMDVertices(cor_table, mod_type);
-
-            // 頂点数が上限を超えてないかチェックし、超えていたらエラーを出して終了
-            if (pmd.vertices.Length > ushort.MaxValue)
-                throw new FormatException(string.Format("頂点数({0})が上限({1})を超えています。", pmd.vertices.Length, ushort.MaxValue));
-
-            // -----------------------------------------------------
-            // 表情
-            // -----------------------------------------------------
-            if (mod_type == 0)
-            {
-                InitializePMDFaces();
-                MakePMDBaseFace();
-                MakePMDFaces();
-            }
-            else if (mod_type == 1)
-            {
-                InitializePMDFaces();
-                MakePMDBaseFace();
-                pmd.skins = new PMD_Skin[0];
-            }
-
-            // -----------------------------------------------------
             // ボーン情報
             // -----------------------------------------------------
             List<PMD_Bone> nodes = new List<PMD_Bone>();
@@ -263,6 +233,36 @@ namespace Tso2Pmd
             }
 
             UpdateIKTailBonePosition();
+
+            // -----------------------------------------------------
+            // 予め、情報をコピーするmeshを選定し、並び替えておく
+            // -----------------------------------------------------
+            SelectMeshes();
+
+            // -----------------------------------------------------
+            // 頂点
+            // -----------------------------------------------------
+            MakePMDVertices(cor_table, mod_type);
+
+            // 頂点数が上限を超えてないかチェックし、超えていたらエラーを出して終了
+            if (pmd.vertices.Length > ushort.MaxValue)
+                throw new FormatException(string.Format("頂点数({0})が上限({1})を超えています。", pmd.vertices.Length, ushort.MaxValue));
+
+            // -----------------------------------------------------
+            // 表情
+            // -----------------------------------------------------
+            if (mod_type == 0)
+            {
+                InitializePMDFaces();
+                MakePMDBaseFace();
+                MakePMDFaces();
+            }
+            else if (mod_type == 1)
+            {
+                InitializePMDFaces();
+                MakePMDBaseFace();
+                pmd.skins = new PMD_Skin[0];
+            }
 
             // -----------------------------------------------------
             // IK配列
@@ -507,6 +507,16 @@ namespace Tso2Pmd
         {
             List<PMD_Vertex> vertices = new List<PMD_Vertex>();
             List<short> indices = new List<short>(); // インデックスリスト
+
+            Dictionary<string, short> bone_name_idmap = new Dictionary<string, short>();
+            {
+                short i = 0;
+                foreach (PMD_Bone node in pmd.nodes)
+                {
+                    bone_name_idmap[node.name] = i++;
+                }
+            }
+
             inList_indices.Clear();
 
             // -----------------------------------------------------
@@ -572,11 +582,7 @@ namespace Tso2Pmd
                     for (int i = 0; i < 4; i++)
                     {
                         TSONode tso_bone = sub_mesh.bones[(int)vertex.skin_weights[i].bone_index];
-                        string bone_name;
-                        if (mod_type == 0 || mod_type == 1)
-                            bone_name = cor_table.skinning[tso_bone.Name];
-                        else
-                            bone_name = "センター";
+                        string bone_name = cor_table.skinning[tso_bone.Name];
 
                         if (tmp_b.IndexOf(bone_name) < 0)
                         {
@@ -590,7 +596,7 @@ namespace Tso2Pmd
                     }
 
                     float w0 = tmp_w.Max();
-                    pmd_v.bone_names[0] = tmp_b[tmp_w.IndexOf(w0)];
+                    pmd_v.bone_indices[0] = bone_name_idmap[tmp_b[tmp_w.IndexOf(w0)]];
                     tmp_b.RemoveAt(tmp_w.IndexOf(w0));
                     tmp_w.RemoveAt(tmp_w.IndexOf(w0));
 
@@ -598,12 +604,12 @@ namespace Tso2Pmd
                     if (tmp_b.Count == 0)
                     {
                         w1 = 0.0f;
-                        pmd_v.bone_names[1] = pmd_v.bone_names[0];
+                        pmd_v.bone_indices[1] = pmd_v.bone_indices[0];
                     }
                     else
                     {
                         w1 = tmp_w.Max();
-                        pmd_v.bone_names[1] = tmp_b[tmp_w.IndexOf(w1)];
+                        pmd_v.bone_indices[1] = bone_name_idmap[tmp_b[tmp_w.IndexOf(w1)]];
                     }
 
                     pmd_v.weight = (sbyte)(w0 * 100 / (w0 + w1));

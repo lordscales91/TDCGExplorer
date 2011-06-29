@@ -69,7 +69,6 @@ namespace TDCGUtils
             bw.Write(vertices.Length);
             for (int i = 0; i < vertices.Length; i++)
             {
-                vertices[i].SetBoneIDFromName(this);
                 vertices[i].Write(bw);
             }
 
@@ -243,16 +242,13 @@ namespace TDCGUtils
         public float u, v;
 
         // ボーン番号
-        internal short[] bone_indices = new short[2];
+        public short[] bone_indices = new short[2];
 
         // スキンウェイト
         public sbyte weight;	
 
         // エッジフラグ
         public sbyte edge;
-
-        // ボーン番号
-        public string[] bone_names = new string[2];
 
         internal void Write(BinaryWriter writer)
         {
@@ -264,13 +260,6 @@ namespace TDCGUtils
             writer.Write(bone_indices[1]);
             writer.Write(weight);
             writer.Write(edge);
-        }
-
-        // ボーン名をIDに置き換える
-        public void SetBoneIDFromName(PmdFile pmd)
-        {
-            bone_indices[0] = pmd.GetBoneIDByName(bone_names[0]);
-            bone_indices[1] = pmd.GetBoneIDByName(bone_names[1]);
         }
     }
 
