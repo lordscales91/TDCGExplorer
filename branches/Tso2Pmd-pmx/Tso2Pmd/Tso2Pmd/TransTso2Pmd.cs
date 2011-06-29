@@ -83,7 +83,7 @@ namespace Tso2Pmd
         /// マテリアル関係のファイルを出力します。
         public void OutputMaterialFile(string path, string name)
         {
-            material_list.Save(path, name, UseSpheremap);
+            material_list.Save(path, name);
         }
 
         /// Figureを元にPmdFileを更新します。
@@ -465,7 +465,7 @@ namespace Tso2Pmd
         private void SelectMeshes()
         {
             meshes = new List<TSOSubMesh>();
-            material_list = new T2PMaterialList(fig.TSOList, categories);
+            material_list = new T2PMaterialList(fig.TSOList, categories, UseSpheremap);
 
             int tso_num = 0;
             int sub_mesh_num = 0;
@@ -479,7 +479,7 @@ namespace Tso2Pmd
                     if (use_meshes[sub_mesh_num++] == true)
                     {
                         meshes.Add(sub_mesh);
-                        material_list.Add(tso_num, script_num, UseEdge, UseSpheremap);
+                        material_list.Add(tso_num, script_num, UseEdge);
                     }
                 }
                 tso_num++;
@@ -562,7 +562,7 @@ namespace Tso2Pmd
                     pmd_v.u = vertex.u;
                     pmd_v.v = vertex.v;
 
-                    pmd_v.edge_scale = 0;
+                    pmd_v.edge_scale = 0.0f;
 
                     // -----------------------------------------------------
                     // スキニング
@@ -688,11 +688,8 @@ namespace Tso2Pmd
             // マテリアル
             if (UniqueMaterial)
                 material_list.UniqueMaterials();
+            pmd.texture_file_names = material_list.GetTextureFileNameList();
             pmd.materials = material_list.materials.ToArray();
-            // Toonテクスチャファイル名
-            /*
-            pmd.toon_file_names = material_list.GetToonFileNameList();
-            */
         }
 
         // 表情に関連するboneに影響を受ける頂点を数え上げる

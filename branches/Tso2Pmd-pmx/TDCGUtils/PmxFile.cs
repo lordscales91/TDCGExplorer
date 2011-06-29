@@ -12,6 +12,7 @@ namespace TDCGUtils
     {
         public PMD_Vertex[] vertices;
         public int[] vindices;
+        public string[] texture_file_names;
         public PMD_Material[] materials;
         public PMD_Bone[] nodes;
         public PMD_IK[] iks;
@@ -66,8 +67,11 @@ namespace TDCGUtils
                 bw.Write(i);
             }
 
-            bw.Write((int)1);
-            bw.WritePString("chip0.bmp");
+            bw.Write(texture_file_names.Length);
+            foreach (string file_name in texture_file_names)
+            {
+                bw.WritePString(file_name);
+            }
 
             bw.Write(materials.Length);
             foreach (PMD_Material m in materials)
@@ -214,10 +218,10 @@ namespace TDCGUtils
         public float edge_width;
         
         public sbyte tex_id = -1;
-        public sbyte sphere_tex_id = -1;
+        public sbyte tex_sphere_id = -1;
         public byte sphere_mode = 0;
-        public byte toon_flag = 0;
-        public sbyte toon_tex_id = -1;
+        public byte shared_toon = 0;
+        public sbyte tex_toon_id = -1;
         
         public string memo;
         public int vindices_count;
@@ -229,7 +233,7 @@ namespace TDCGUtils
             diffuse = new Vector4(0.800f, 0.712f, 0.624f, 1.0f);
             specular = new Vector4(0.150f, 0.150f, 0.150f, 6.0f);
             ambient = new Vector3(0.500f, 0.445f, 0.390f);
-            flags = (byte)0x10;//描画フラグ 0x10:エッジ描画
+            flags = (byte)0x00;//描画フラグ 0x10:エッジ描画
             edge_color = new Vector4(0.0f, 0.0f, 0.0f, 1.0f);
             edge_width = 1.0f;
 
@@ -247,15 +251,17 @@ namespace TDCGUtils
             bw.Write(ref edge_color);
             bw.Write(edge_width);
             bw.Write(tex_id);
-            bw.Write(sphere_tex_id);
+            bw.Write(tex_sphere_id);
             bw.Write(sphere_mode);
-            bw.Write(toon_flag);
-            bw.Write(toon_tex_id);
+            bw.Write(shared_toon);
+            bw.Write(tex_toon_id);
             bw.WritePString(memo);
             bw.Write(vindices_count);
         }
 
         public String tex_file;
+        public String tex_toon_file;
+        public String tex_sphere_file;
     }
 
     /// ボーン
