@@ -65,13 +65,9 @@ namespace Tso2Pmd
             if (comment.Length > 127)
                 throw new FormatException("コメントが127文字を超えています。");
 
-            /*
-            pmd.pmd_header = new PMD_Header();
-            pmd.pmd_header.magic = "Pmd";
-            pmd.pmd_header.version = 1.0f;
-            pmd.pmd_header.name = name;
-            pmd.pmd_header.comment = comment;
-            */
+            pmd.header = new PMD_Header();
+            pmd.header.name = name;
+            pmd.header.comment = comment;
         }
 
         /// PMDファイルを出力します。
