@@ -38,7 +38,7 @@ namespace Tso2Pmd
             Bitmap bmp = new Bitmap(tex.width, tex.height);
             SetBitmapBytes(bmp, tex.data);
 
-            // bmpsと比較して同じものがあれば、アドレスのみ参照しておく
+            // bmps中に同じものがあれば、アドレスのみ参照する
             foreach (Bitmap other_bmp in bmps)
             {
                 if (EqualBitmaps(bmp, other_bmp))
@@ -48,7 +48,7 @@ namespace Tso2Pmd
                 }
             }
 
-            // 同じものがなければ、新規にbmpsにBitmapを追加
+            // 同じものがなければ、bmpsにBitmapを追加する
             file_names.Add(bmp, string.Format("t{0:D3}.bmp", bmps.Count));
             bmps.Add(bmp);
             bmap.Add(GetBitmapCode(tso_id, tex.Name), bmp);
@@ -58,14 +58,13 @@ namespace Tso2Pmd
         /// 全てのビットマップを書き出します。
         /// </summary>
         /// <param name="dest_path">出力先パス</param>
-        /// <param name="use_spheremap">スフィアマップを使うか</param>
         public void Save(string dest_path)
         {
             foreach (Bitmap bmp in bmps)
             {
                 if (bmp.Width == 256 && bmp.Height == 16)
                 {
-                    // テクスチャがtoonテクスチャなら加工（最適化）してから、書き出す
+                    // Toonなら加工してから書き出す
                     Bitmap toon_bmp = TurnBitmap(bmp);
                     toon_bmp.Save(dest_path + "/" + file_names[bmp],
                         System.Drawing.Imaging.ImageFormat.Bmp);
