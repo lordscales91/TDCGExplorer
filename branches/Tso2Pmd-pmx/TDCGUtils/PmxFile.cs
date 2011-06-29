@@ -42,7 +42,7 @@ namespace TDCGUtils
             WriteMagic(bw);
 
             bw.Write((byte)8);
-            bw.Write((byte)1); //文字エンコード方式
+            bw.Write((byte)0); //文字エンコード方式
             bw.Write((byte)0); //追加UV数
             bw.Write((byte)4); //頂点Indexサイズ
             bw.Write((byte)1); //テクスチャIndexサイズ
@@ -99,9 +99,13 @@ namespace TDCGUtils
             }
 
             bw.Write(disp_groups.Count);
-            foreach (PMD_DispGroup group in disp_groups)
+            foreach (PMD_DispGroup disp_group in disp_groups)
             {
-                group.Write(bw);
+                foreach (PMD_Disp disp in disp_group.disps)
+                {
+                    disp.SetBoneIDFromName(this);
+                }
+                disp_group.Write(bw);
             }
 
             bw.Write(bodies.Length);
@@ -317,7 +321,10 @@ namespace TDCGUtils
                 ik = value;
 
                 if (ik != null)
+                {
+                    calc_order = 1;
                     flags_lo |= 0x20; // 0x20: IK
+                }
             }
         }
 
@@ -412,7 +419,7 @@ namespace TDCGUtils
         {
             bw.Write(target_node_id);
             bw.Write(niteration);
-            bw.Write(weight);
+            bw.Write(weight * 4);
 
             bw.Write(chain_node_ids.Count);
             foreach (short node_id in chain_node_ids)
@@ -504,6 +511,7 @@ namespace TDCGUtils
     public abstract class PMD_Disp
     {
         public abstract void Write(BinaryWriter bw);
+        public abstract void SetBoneIDFromName(PmxFile pmd);
     }
     
     public class PMD_BoneDisp : PMD_Disp
@@ -517,6 +525,12 @@ namespace TDCGUtils
         }
 
         public string bone_name;
+
+        // ボーン名をIDに置き換える
+        public override void SetBoneIDFromName(PmxFile pmd)
+        {
+            bone_id = pmd.GetBoneIDByName(bone_name);
+        }
     }
 
     public class PMD_SkinDisp : PMD_Disp
@@ -527,6 +541,12 @@ namespace TDCGUtils
         {
             bw.Write((byte)1);
             bw.Write(skin_id);
+        }
+
+        // ボーン名をIDに置き換える
+        public override void SetBoneIDFromName(PmxFile pmd)
+        {
+            //
         }
     }
 
