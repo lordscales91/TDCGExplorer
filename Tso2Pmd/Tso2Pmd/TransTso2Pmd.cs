@@ -617,12 +617,8 @@ namespace Tso2Pmd
                     int idx = -1;
                     for (int i = prevNumVertices; i < vertices.Count; i++)
                     {
-                        if (vertices[i].position.X == pmd_v.position.X &&
-                            vertices[i].position.Y == pmd_v.position.Y &&
-                            vertices[i].position.Z == pmd_v.position.Z &&
-                            vertices[i].normal.X == pmd_v.normal.X &&
-                            vertices[i].normal.Y == pmd_v.normal.Y &&
-                            vertices[i].normal.Z == pmd_v.normal.Z &&
+                        if (vertices[i].position == pmd_v.position &&
+                            vertices[i].normal == pmd_v.normal &&
                             vertices[i].u == pmd_v.u &&
                             vertices[i].v == pmd_v.v)
                         {
@@ -648,15 +644,9 @@ namespace Tso2Pmd
                     // 隣合うインデックスが参照する頂点位置の重複を判定し、
                     // 重複している場合はインデックスの追加を省略する
                     if ((n_inMesh >= 2) &&
-                        !((vertices[a].position.X == vertices[b].position.X &&
-                           vertices[a].position.Y == vertices[b].position.Y &&
-                           vertices[a].position.Z == vertices[b].position.Z) ||
-                          (vertices[b].position.X == vertices[c].position.X &&
-                           vertices[b].position.Y == vertices[c].position.Y &&
-                           vertices[b].position.Z == vertices[c].position.Z) ||
-                          (vertices[c].position.X == vertices[a].position.X &&
-                           vertices[c].position.Y == vertices[a].position.Y &&
-                           vertices[c].position.Z == vertices[a].position.Z)))
+                        !(vertices[a].position == vertices[b].position ||
+                          vertices[b].position == vertices[c].position ||
+                          vertices[c].position == vertices[a].position))
                     {
                         if (n_inMesh % 2 == 0)
                         {
