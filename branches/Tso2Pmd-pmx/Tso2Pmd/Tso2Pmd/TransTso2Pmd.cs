@@ -109,10 +109,6 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             MakePMDVertices(null, 2);
 
-            // 頂点数が上限を超えてないかチェックし、超えていたらエラーを出して終了
-            if (pmd.vertices.Length > ushort.MaxValue)
-                throw new FormatException(string.Format("頂点数({0})が上限({1})を超えています。", pmd.vertices.Length, ushort.MaxValue));
-
             // -----------------------------------------------------
             // 表情
             // -----------------------------------------------------
@@ -244,10 +240,6 @@ namespace Tso2Pmd
             // 頂点
             // -----------------------------------------------------
             MakePMDVertices(cor_table, mod_type);
-
-            // 頂点数が上限を超えてないかチェックし、超えていたらエラーを出して終了
-            if (pmd.vertices.Length > ushort.MaxValue)
-                throw new FormatException(string.Format("頂点数({0})が上限({1})を超えています。", pmd.vertices.Length, ushort.MaxValue));
 
             // -----------------------------------------------------
             // 表情
@@ -506,7 +498,7 @@ namespace Tso2Pmd
         private void MakePMDVertices(CorrespondTable cor_table, int mod_type)
         {
             List<PMD_Vertex> vertices = new List<PMD_Vertex>();
-            List<int> indices = new List<int>(); // インデックスリスト
+            List<int> indices = new List<int>();
 
             Dictionary<string, short> bone_name_idmap = new Dictionary<string, short>();
             {
@@ -626,15 +618,15 @@ namespace Tso2Pmd
                     {
                         if (n_inMesh % 2 == 0)
                         {
-                            indices.Add((short)(c));
-                            indices.Add((short)(b));
-                            indices.Add((short)(a));
+                            indices.Add(c);
+                            indices.Add(b);
+                            indices.Add(a);
                         }
                         else
                         {
-                            indices.Add((short)(a));
-                            indices.Add((short)(b));
-                            indices.Add((short)(c));
+                            indices.Add(a);
+                            indices.Add(b);
+                            indices.Add(c);
                         }
                     }
 
