@@ -95,7 +95,7 @@ namespace Tso2Pmd
             // スフィアマップを使う
             if (tex_list.use_spheremap)
             {
-                pmd_m.tex_sphere_id = tex_list.GetSphereBitmapID(tso_num, shader.ShadeTexName);
+                pmd_m.tex_sphere_id = tex_list.GetSphereID(tso_num, shader.ShadeTexName);
             }
 
             // 要素を追加

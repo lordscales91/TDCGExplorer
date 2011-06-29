@@ -53,33 +53,40 @@ namespace Tso2Pmd
 
             Bitmap tmp_bmp = bmp;
 
-            // テクスチャがtoonなら加工してから書き出す
+            // テクスチャがToonなら加工してから書き出す
             if (toon)
             {
                 bmp = TurnBitmap(bmp);
             }
 
-            // bmpsと比較して、同じものがあればそれのアドレスのみ参照しておく
+            // bmpsと比較して同じものがあればアドレスのみ参照しておく
             foreach (Bitmap other_bmp in bmps)
             {
                 if (EqualBitmaps(bmp, other_bmp))
                 {
-                    bmap.Add(tso_id.ToString() + "-" + tex.Name, other_bmp);
+                    bmap.Add(GetBitmapCode(tso_id, tex.Name), other_bmp);
+
+                    // 色飛び補完用のスフィアマップ。Toonが同じならスフィアマップも同じ
+                    if (toon && use_spheremap)
+                    {
+                        Bitmap other_sphere_bmp = GetSphere(tso_id, tex.Name);
+                        bmap.Add(GetSphereCode(tso_id, tex.Name), other_sphere_bmp);
+                    }
                     return;
                 }
             }
 
+            file_names.Add(bmp, string.Format("t{0:D3}.bmp", bmps.Count));
             bmps.Add(bmp);
-            bmap.Add(tso_id.ToString() + "-" + tex.Name, bmp);
-            file_names.Add(bmp, string.Format("t{0:D3}.bmp", bmps.Count - 1));
+            bmap.Add(GetBitmapCode(tso_id, tex.Name), bmp);
 
             // 色飛び補完用のスフィアマップを書き出す
             if (toon && use_spheremap)
             {
                 Bitmap sphere_bmp = MakeSphereBitmap(tmp_bmp);
+                file_names.Add(sphere_bmp, string.Format("t{0:D3}.sph", bmps.Count));
                 bmps.Add(sphere_bmp);
-                bmap.Add(tso_id.ToString() + "-" + tex.Name + ".sph", sphere_bmp);
-                file_names.Add(sphere_bmp, string.Format("t{0:D3}.sph", bmps.Count - 1));
+                bmap.Add(GetSphereCode(tso_id, tex.Name), sphere_bmp);
             }
         }
 
@@ -94,20 +101,24 @@ namespace Tso2Pmd
                 bmp.Save(dest_path + "/" + file_names[bmp], System.Drawing.Imaging.ImageFormat.Bmp);
             }
         }
+        
+        string GetBitmapCode(int tso_id, string tex_name)
+        {
+            return tso_id.ToString() + "-" + tex_name + ".bmp";
+        }
 
         // ビットマップを得る
         public Bitmap GetBitmap(int tso_id, string tex_name)
         {
             Bitmap bmp;
-            bmap.TryGetValue(tso_id.ToString() + "-" + tex_name, out bmp);
+            bmap.TryGetValue(GetBitmapCode(tso_id, tex_name), out bmp);
             return bmp;
         }
 
-        // テクスチャを出力したファイル名を得る
+        // ビットマップを出力したファイル名を得る
         public string GetFileName(int tso_id, string tex_name)
         {
-            Bitmap bmp;
-            bmap.TryGetValue(tso_id.ToString() + "-" + tex_name, out bmp);
+            Bitmap bmp = GetBitmap(tso_id, tex_name);
     
             if (bmp == null)
                 return null;
@@ -119,8 +130,7 @@ namespace Tso2Pmd
 
         public sbyte GetBitmapID(int tso_id, string tex_name)
         {
-            Bitmap bmp;
-            bmap.TryGetValue(tso_id.ToString() + "-" + tex_name, out bmp);
+            Bitmap bmp = GetBitmap(tso_id, tex_name);
 
             if (bmp == null)
                 return -1;
@@ -128,19 +138,23 @@ namespace Tso2Pmd
             return (sbyte)bmps.IndexOf(bmp);
         }
 
-        // ビットマップを得る
-        public Bitmap GetSphereBitmap(int tso_id, string tex_name)
+        string GetSphereCode(int tso_id, string tex_name)
+        {
+            return tso_id.ToString() + "-" + tex_name + ".sph";
+        }
+
+        // スフィアマップを得る
+        public Bitmap GetSphere(int tso_id, string tex_name)
         {
             Bitmap bmp;
-            bmap.TryGetValue(tso_id.ToString() + "-" + tex_name + ".sph", out bmp);
+            bmap.TryGetValue(GetSphereCode(tso_id, tex_name), out bmp);
             return bmp;
         }
 
-        // テクスチャを出力したファイル名を得る
+        // スフィアマップを出力したファイル名を得る
         public string GetSphereFileName(int tso_id, string tex_name)
         {
-            Bitmap bmp;
-            bmap.TryGetValue(tso_id.ToString() + "-" + tex_name + ".sph", out bmp);
+            Bitmap bmp = GetSphere(tso_id, tex_name);
 
             if (bmp == null)
                 return null;
@@ -150,10 +164,9 @@ namespace Tso2Pmd
             return str;
         }
 
-        public sbyte GetSphereBitmapID(int tso_id, string tex_name)
+        public sbyte GetSphereID(int tso_id, string tex_name)
         {
-            Bitmap bmp;
-            bmap.TryGetValue(tso_id.ToString() + "-" + tex_name + ".sph", out bmp);
+            Bitmap bmp = GetSphere(tso_id, tex_name);
 
             if (bmp == null)
                 return -1;
