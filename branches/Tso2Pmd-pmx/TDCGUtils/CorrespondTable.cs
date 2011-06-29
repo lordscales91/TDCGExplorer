@@ -179,9 +179,9 @@ namespace TDCGUtils
                     boneStructure.Add(kvp.Key, kvp.Value);
             }
 
-            foreach (BoneDispGroup dbg in ct.boneDispGroups)
+            foreach (BoneDispGroup group in ct.boneDispGroups)
             {
-                boneDispGroups.Add(dbg);
+                boneDispGroups.Add(group);
             }
 
             foreach (PMD_IK ik in ct.iks)
