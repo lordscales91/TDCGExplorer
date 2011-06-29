@@ -37,7 +37,7 @@ namespace TDCGUtils
         // 英名対応(01:英名対応あり)
         public int english_name_compatibility;
 
-        // トゥーンテクスチャファイル名
+        // Toonテクスチャファイル名
         public string[] toon_file_names;
 
         // 剛体
@@ -279,9 +279,9 @@ namespace TDCGUtils
         public Vector4 diffuse = Vector4.Empty;
         public Vector4 specular = Vector4.Empty;
         public Vector3 ambient = Vector3.Empty;
-        
-        // トゥーンテクスチャ
-        public sbyte toon_tex_id;
+
+        // Toonテクスチャ
+        public sbyte tex_toon_id;
 
         // 輪郭
         public sbyte edge_width;
@@ -300,7 +300,7 @@ namespace TDCGUtils
             writer.Write(specular.Y);
             writer.Write(specular.Z);
             writer.Write(ref this.ambient);
-            writer.Write(toon_tex_id);
+            writer.Write(tex_toon_id);
             writer.Write(edge_width);
             writer.Write(vindices_count);
             writer.WriteCString(tex_file, 20);

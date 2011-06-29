@@ -31,11 +31,11 @@ namespace Tso2Pmd
             SetBitmapBytes(bmp, tex.data);
 
             // bmp_listと比較して、同じものがあればそれのアドレスのみ参照しておく
-            foreach (Bitmap tmp_bmp in bmps)
+            foreach (Bitmap other_bmp in bmps)
             {
-                if (EqualBitmaps(bmp, tmp_bmp))
+                if (EqualBitmaps(bmp, other_bmp))
                 {
-                    bmap.Add(tso_id.ToString() + "-" + tex.Name, tmp_bmp);
+                    bmap.Add(tso_id.ToString() + "-" + tex.Name, other_bmp);
                     return;
                 }
             }
@@ -52,8 +52,8 @@ namespace Tso2Pmd
         /// 全てのビットマップを書き出します。
         /// </summary>
         /// <param name="dest_path">出力先パス</param>
-        /// <param name="spheremap_used">スフィアマップを使うか</param>
-        public void Save(string dest_path, bool spheremap_used)
+        /// <param name="use_spheremap">スフィアマップを使うか</param>
+        public void Save(string dest_path, bool use_spheremap)
         {
             foreach (Bitmap bmp in bmps)
             {
@@ -65,7 +65,7 @@ namespace Tso2Pmd
                         System.Drawing.Imaging.ImageFormat.Bmp);
 
                     // 色飛び補完用のスフィアマップを書き出す
-                    if (spheremap_used)
+                    if (use_spheremap)
                     {
                         Bitmap sphere_bmp = MakeSphereBitmap(bmp);
                         string sphere_file_name = Path.ChangeExtension(file_names[bmp], ".sph");
