@@ -396,6 +396,8 @@ namespace Tso2Pmd
             {
                 switch (flags_lo)
                 {
+                    case 0x1B:
+                        return 0;
                     case 0x1F:
                         return 1;
                     case 0x11:
@@ -408,6 +410,9 @@ namespace Tso2Pmd
             {
                 switch (value)
                 {
+                    case 0:
+                        flags_lo = (byte)0x1B;
+                        break;
                     case 1:
                         flags_lo = (byte)0x1F;
                         break;
