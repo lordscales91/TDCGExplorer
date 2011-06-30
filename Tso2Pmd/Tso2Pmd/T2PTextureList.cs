@@ -11,13 +11,10 @@ namespace Tso2Pmd
 {
     public class T2PTextureList
     {
-        // テクスチャBitmapのリスト（同一イメージの重複を許さない）
-        List<Bitmap> bmps = new List<Bitmap>();
-        // tso番号+テクスチャ名より、bmp_listへのインデックス
-        // （Bitmapはアドレスの情報しか持たないので，実体は重複している可能性あり）
-        Dictionary<string, Bitmap> bmap = new Dictionary<string, Bitmap>();
-        // bmp_listより、出力ファイル名へのインデックス
-        Dictionary<Bitmap, string> file_names = new Dictionary<Bitmap, string>();
+        // 保持リスト
+        List<PMD_Texture> items = new List<PMD_Texture>();
+        // 辞書
+        Dictionary<string, PMD_Texture> map = new Dictionary<string, PMD_Texture>();
 
         // スフィアマップを使うか
         public readonly bool use_spheremap;
@@ -29,65 +26,53 @@ namespace Tso2Pmd
 
         public string[] GetFileNameList()
         {
-            string[] names = new string[bmps.Count];
+            string[] names = new string[items.Count];
             int i = 0;
-            foreach (Bitmap bmp in bmps)
+            foreach (PMD_Texture tex in items)
             {
-                names[i++] = file_names[bmp];
+                names[i++] = tex.FileName;
             }
             return names;
         }
 
-        // テクスチャを指定し、Bitmapとして記憶し、参照可能なようにインデックス
-        // をつける。ただし、以前記憶したものの中に同じBitmapがあるなら、新規の
-        // Bitmapは作成せず、インデックスのみつける。
-        public void Add(TSOTex tex, int tso_id)
+        public void Add(TSOTex tso_tex, int tso_num)
         {
-            if (tex.width == 0 || tex.height == 0)
+            if (tso_tex.width == 0 || tso_tex.height == 0)
                 return;
 
-            bool toon = (tex.width == 256 && tex.height == 16);
+            Bitmap bmp = new Bitmap(tso_tex.width, tso_tex.height);
+            SetBitmapBytes(bmp, tso_tex.data);
 
-            Bitmap bmp = new Bitmap(tex.width, tex.height);
-            SetBitmapBytes(bmp, tex.data);
+            PMD_Texture tex = new PMD_Texture(GenName(tso_num, tso_tex.Name));
+            tex.Bitmap = bmp;
 
-            Bitmap tmp_bmp = bmp;
-
-            // Toonなら加工してから書き出す
-            if (toon)
+            foreach (PMD_Texture other in items)
             {
-                bmp = TurnBitmap(bmp);
-            }
-
-            // bmps中に同じものがあれば、アドレスのみ参照する
-            foreach (Bitmap other_bmp in bmps)
-            {
-                if (EqualBitmaps(bmp, other_bmp))
+                if (other.Bitmap != null && EqualBitmaps(bmp, other.Bitmap))
                 {
-                    bmap.Add(GetBitmapCode(tso_id, tex.Name), other_bmp);
+                    map[tex.Code] = other;
 
-                    // 色飛び補完用のスフィアマップ。Toonが同じならスフィアマップも同じ
-                    if (toon && use_spheremap)
+                    if (use_spheremap && other.IsToon)
                     {
-                        Bitmap other_sphere_bmp = GetSphere(tso_id, tex.Name);
-                        bmap.Add(GetSphereCode(tso_id, tex.Name), other_sphere_bmp);
+                        PMD_Texture tex_sphere = new PMD_Texture(GenName(tso_num, tso_tex.Name), tex);
+                        
+                        map[tex_sphere.Code] = other.Sphere;
                     }
                     return;
                 }
             }
 
-            // 同じものがなければ、bmpsにBitmapを追加する
-            file_names.Add(bmp, string.Format("t{0:D3}.bmp", bmps.Count));
-            bmps.Add(bmp);
-            bmap.Add(GetBitmapCode(tso_id, tex.Name), bmp);
+            tex.SetID((sbyte)items.Count);
+            items.Add(tex);
+            map[tex.Code] = tex;
 
-            // 色飛び補完用のスフィアマップを書き出す
-            if (toon && use_spheremap)
+            if (use_spheremap && tex.IsToon)
             {
-                Bitmap sphere_bmp = MakeSphereBitmap(tmp_bmp);
-                file_names.Add(sphere_bmp, string.Format("t{0:D3}.sph", bmps.Count));
-                bmps.Add(sphere_bmp);
-                bmap.Add(GetSphereCode(tso_id, tex.Name), sphere_bmp);
+                PMD_Texture tex_sphere = new PMD_Texture(GenName(tso_num, tso_tex.Name), tex);
+                
+                tex_sphere.SetID((sbyte)items.Count);
+                items.Add(tex_sphere);
+                map[tex_sphere.Code] = tex_sphere;
             }
         }
 
@@ -97,84 +82,12 @@ namespace Tso2Pmd
         /// <param name="dest_path">出力先パス</param>
         public void Save(string dest_path)
         {
-            foreach (Bitmap bmp in bmps)
+            foreach (PMD_Texture texture in items)
             {
-                bmp.Save(dest_path + "/" + file_names[bmp], System.Drawing.Imaging.ImageFormat.Bmp);
+                texture.Save(dest_path);
             }
         }
         
-        string GetBitmapCode(int tso_id, string tex_name)
-        {
-            return tso_id.ToString() + "-" + tex_name + ".bmp";
-        }
-
-        // ビットマップを得る
-        public Bitmap GetBitmap(int tso_id, string tex_name)
-        {
-            Bitmap bmp;
-            bmap.TryGetValue(GetBitmapCode(tso_id, tex_name), out bmp);
-            return bmp;
-        }
-
-        // ビットマップを出力したファイル名を得る
-        public string GetFileName(int tso_id, string tex_name)
-        {
-            Bitmap bmp = GetBitmap(tso_id, tex_name);
-    
-            if (bmp == null)
-                return null;
-
-            string str;
-            file_names.TryGetValue(bmp, out str);
-            return str;
-        }
-
-        public sbyte GetBitmapID(int tso_id, string tex_name)
-        {
-            Bitmap bmp = GetBitmap(tso_id, tex_name);
-
-            if (bmp == null)
-                return -1;
-
-            return (sbyte)bmps.IndexOf(bmp);
-        }
-
-        string GetSphereCode(int tso_id, string tex_name)
-        {
-            return tso_id.ToString() + "-" + tex_name + ".sph";
-        }
-
-        // スフィアマップを得る
-        public Bitmap GetSphere(int tso_id, string tex_name)
-        {
-            Bitmap bmp;
-            bmap.TryGetValue(GetSphereCode(tso_id, tex_name), out bmp);
-            return bmp;
-        }
-
-        // スフィアマップを出力したファイル名を得る
-        public string GetSphereFileName(int tso_id, string tex_name)
-        {
-            Bitmap bmp = GetSphere(tso_id, tex_name);
-
-            if (bmp == null)
-                return null;
-
-            string str;
-            file_names.TryGetValue(bmp, out str);
-            return str;
-        }
-
-        public sbyte GetSphereID(int tso_id, string tex_name)
-        {
-            Bitmap bmp = GetSphere(tso_id, tex_name);
-
-            if (bmp == null)
-                return -1;
-
-            return (sbyte)bmps.IndexOf(bmp);
-        }
-
         // byte[]をBitmapに変換する
         private void SetBitmapBytes(Bitmap bmp, byte[] bytes)
         {
@@ -206,31 +119,164 @@ namespace Tso2Pmd
             return true;
         }
 
-        // toonテクスチャを最適化する
-        private Bitmap TurnBitmap(Bitmap bmp1)
+        string GenName(int tso_num, string name)
         {
-            if (bmp1.Width == 256 && bmp1.Height == 16)
-            {
-                Bitmap bmp2 = new Bitmap(16, 250);
-
-                for (int i = 0; i < 250; i++)
-                {
-                    Color c = bmp1.GetPixel(i, 0);
-
-                    for (int j = 0; j < 16; j++)
-                        bmp2.SetPixel(j, 250 - (i + 1), c);
-                }
-
-                return bmp2;
-            }
-            else
-            {
-                return bmp1;
-            }
+            return tso_num.ToString() + "-" + name;
         }
 
-        // toonテクスチャより、色とび補完用のスフィアマップを作成する
-        private Bitmap MakeSphereBitmap(Bitmap bmp1)
+        string GenBitmapCode(int tso_num, string name)
+        {
+            return GenName(tso_num, name) + ".bmp";
+        }
+
+        string GenSphereCode(int tso_num, string name)
+        {
+            return GenName(tso_num, name) + ".sph";
+        }
+
+        public sbyte GetBitmapID(int tso_num, string name)
+        {
+            string code = GenBitmapCode(tso_num, name);
+            PMD_Texture tex;
+            if (map.TryGetValue(code, out tex))
+                return tex.ID;
+            else
+                return -1;
+        }
+
+        public sbyte GetSphereID(int tso_num, string name)
+        {
+            string code = GenSphereCode(tso_num, name);
+            PMD_Texture tex;
+            if (map.TryGetValue(code, out tex))
+                return tex.ID;
+            else
+                return -1;
+        }
+    }
+
+    public class PMD_Texture
+    {
+        sbyte id;
+        string name;
+        Bitmap bmp;
+        PMD_Texture toon = null;
+        PMD_Texture sphere = null;
+
+        /// <summary>
+        /// ID
+        /// </summary>
+        public sbyte ID { get { return id; } }
+
+        /// <summary>
+        /// IDを設定します。
+        /// </summary>
+        /// <param name="id">ID</param>
+        public void SetID(sbyte id)
+        {
+            this.id = id;
+        }
+
+        /// <summary>
+        /// 元のテクスチャを保持するビットマップ
+        /// </summary>
+        public Bitmap Bitmap { get { return bmp; } set { bmp = value; } }
+
+        /// <summary>
+        /// Toonから見たスフィアマップ
+        /// </summary>
+        public PMD_Texture Sphere { get { return sphere; } }
+        
+        /// <summary>
+        /// スフィアマップを設定します。
+        /// </summary>
+        /// <param name="sphere">スフィアマップ</param>
+        public void SetSphere(PMD_Texture sphere)
+        {
+            this.sphere = sphere;
+        }
+
+        /// <summary>
+        /// テクスチャを登録します。
+        /// </summary>
+        /// <param name="name">テクスチャ名</param>
+        public PMD_Texture(string name)
+        {
+            this.name = name;
+        }
+
+        /// <summary>
+        /// テクスチャを登録します。
+        /// スフィアマップを登録する場合は元になるToonを指定します。
+        /// </summary>
+        /// <param name="name">テクスチャ名</param>
+        /// <param name="toon">Toon</param>
+        public PMD_Texture(string name, PMD_Texture toon)
+        {
+            this.name = name;
+            this.toon = toon;
+            toon.SetSphere(this);
+        }
+
+        /// <summary>
+        /// Toonであるか
+        /// </summary>
+        public bool IsToon
+        {
+            get { return bmp != null && bmp.Width == 256 && bmp.Height == 16; }
+        }
+
+        /// <summary>
+        /// スフィアマップであるか
+        /// </summary>
+        public bool IsSphere { get { return toon != null; } }
+
+        public string FileExtension
+        {
+            get { return IsSphere ? ".sph" : ".bmp"; }
+        }
+
+        public string Code
+        {
+            get { return name + FileExtension; }
+        }
+
+        public string FileName
+        {
+            get { return string.Format("t{0:D3}", ID) + FileExtension; }
+        }
+
+        public void Save(string dest_path)
+        {
+            Bitmap saved_bmp = bmp;
+
+            if (IsToon)
+                saved_bmp = TurnBitmap(bmp);
+
+            if (IsSphere)
+                saved_bmp = MakeSphereBitmap(toon.Bitmap);
+
+            saved_bmp.Save(dest_path + "/" + FileName, System.Drawing.Imaging.ImageFormat.Bmp);
+        }
+
+        // Toonを最適化する
+        Bitmap TurnBitmap(Bitmap bmp1)
+        {
+            Bitmap bmp2 = new Bitmap(16, 250);
+
+            for (int i = 0; i < 250; i++)
+            {
+                Color c = bmp1.GetPixel(i, 0);
+
+                for (int j = 0; j < 16; j++)
+                    bmp2.SetPixel(j, 250 - (i + 1), c);
+            }
+
+            return bmp2;
+        }
+
+        // Toonから色とび補完用のスフィアマップを作成する
+        Bitmap MakeSphereBitmap(Bitmap bmp1)
         {
             Bitmap bmp2 = new Bitmap(1, 1);
 
