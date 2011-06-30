@@ -590,7 +590,7 @@ namespace Tso2Pmd
 
                     for (int i = 0; i < 4; i++)
                     {
-                        TSONode tso_bone = sub_mesh.bones[(int)vertex.skin_weights[i].bone_index];
+                        TSONode tso_bone = sub_mesh.bones[vertex.skin_weights[i].bone_index];
                         string bone_name = cor_table.skinning[tso_bone.Name];
 
                         if (tmp_b.IndexOf(bone_name) < 0)
