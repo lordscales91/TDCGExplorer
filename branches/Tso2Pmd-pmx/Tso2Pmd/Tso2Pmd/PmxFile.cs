@@ -6,7 +6,7 @@ using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using TDCGUtils.Extensions;
 
-namespace TDCGUtils
+namespace Tso2Pmd
 {
     public class PmxFile
     {

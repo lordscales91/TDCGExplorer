@@ -5,7 +5,7 @@ using System.Text;
 using System.IO;
 using System.Windows.Forms;
 
-namespace TDCGUtils
+namespace Tso2Pmd
 {
     /// <summary>
     /// ボーン対応表リストを扱います。
