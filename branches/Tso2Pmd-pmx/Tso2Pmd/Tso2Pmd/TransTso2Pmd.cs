@@ -563,12 +563,15 @@ namespace Tso2Pmd
 
                     // -----------------------------------------------------
                     // スキニング
-                    for (int i = 0; i < 4; i++)
+                    if (cor_table != null)
                     {
-                        TSONode tso_bone = sub_mesh.bones[vertex.skin_weights[i].bone_index];
-                        string bone_name = cor_table.skinning[tso_bone.Name];
-                        pmd_v.skin_weights[i].bone_index = bone_name_idmap[bone_name];
-                        pmd_v.skin_weights[i].weight = vertex.skin_weights[i].weight;
+                        for (int i = 0; i < 4; i++)
+                        {
+                            TSONode tso_bone = sub_mesh.bones[vertex.skin_weights[i].bone_index];
+                            string bone_name = cor_table.skinning[tso_bone.Name];
+                            pmd_v.skin_weights[i].bone_index = bone_name_idmap[bone_name];
+                            pmd_v.skin_weights[i].weight = vertex.skin_weights[i].weight;
+                        }
                     }
 
                     // -----------------------------------------------------
