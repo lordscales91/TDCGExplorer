@@ -32,7 +32,7 @@ namespace Tso2Pmd
             // お待ちくださいダイアログを表示
             ProgressDialog pd = new ProgressDialog();
             pd.Show();
-            pd.Message = "Tso2Pmdを起動しています。";
+            pd.Message = "Tso2Pmxを起動しています。";
 
             // テンプレートリストを初期化
             template_list = new TemplateList();
