@@ -7,6 +7,9 @@ using Microsoft.DirectX.Direct3D;
 
 namespace TDCGUtils.Extensions
 {
+    /// <summary>
+    /// BinaryWriterの拡張メソッドを定義します。
+    /// </summary>
     public static class BinaryWriterMethods
     {
         public static void WriteCString(this BinaryWriter bw, String str, int i_length)
@@ -25,6 +28,23 @@ namespace TDCGUtils.Extensions
                 for (int i = 0; i < (i_length - 1); i++)
                     bw.Write(Convert.ToByte("FD", 16)); // ストリームの位置を合わせるため、意味のないByteを書き込む
             }
+        }
+
+        /// <summary>
+        /// 指定ライタに文字byte長と文字列を書き出します。
+        /// </summary>
+        /// <param name="bw">BinaryWriter</param>
+        /// <param name="s">文字列</param>
+        public static void WritePString(this BinaryWriter bw, string s)
+        {
+            if (s == null)
+            {
+                bw.Write((int)0);
+                return;
+            }
+            byte[] buf = Encoding.Unicode.GetBytes(s);
+            bw.Write(buf.Length);
+            bw.Write(buf);
         }
 
         /// <summary>
