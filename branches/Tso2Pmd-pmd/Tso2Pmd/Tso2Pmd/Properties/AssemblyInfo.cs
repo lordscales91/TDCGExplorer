@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("（有）煮物運輸")]
-[assembly: AssemblyProduct("Tso2Pmd")]
+[assembly: AssemblyProduct("Tso2Pmd pmd Edition")]
 [assembly: AssemblyCopyright("Copyright © （有）煮物運輸 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
