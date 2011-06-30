@@ -1,8 +1,0 @@
-W_RightHand, ‰E˜r‚h‚j
-W_RightHand, ‰E˜r‚h‚jæ
-W_LeftHand, ¶˜r‚h‚j
-W_LeftHand, ¶˜r‚h‚jæ
-W_RightHandMiddle4, ‰E’†w‚h‚j
-W_RightHandMiddle4, ‰E’†w‚h‚jæ
-W_LeftHandMiddle4, ¶’†w‚h‚j
-W_LeftHandMiddle4, ¶’†w‚h‚jæ
