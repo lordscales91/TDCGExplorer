@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // アセンブリに関する一般情報は以下の属性セットをとおして制御されます。
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
-[assembly: AssemblyTitle("Tso2Pmd")]
+[assembly: AssemblyTitle("Tso2Pmx")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("（有）煮物運輸")]
-[assembly: AssemblyProduct("Tso2Pmd")]
+[assembly: AssemblyProduct("Tso2Pmd pmx Edition")]
 [assembly: AssemblyCopyright("Copyright © （有）煮物運輸 2009")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

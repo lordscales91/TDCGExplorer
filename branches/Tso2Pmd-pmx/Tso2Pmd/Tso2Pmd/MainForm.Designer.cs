@@ -56,7 +56,7 @@
             this.button_Trans.Name = "button_Trans";
             this.button_Trans.Size = new System.Drawing.Size(363, 45);
             this.button_Trans.TabIndex = 22;
-            this.button_Trans.Text = "変換を実行（TSO -> PMD）";
+            this.button_Trans.Text = "変換を実行（TSO -> PMX）";
             this.button_Trans.UseVisualStyleBackColor = true;
             this.button_Trans.Click += new System.EventHandler(this.button_Trans_Click);
             // 
@@ -116,7 +116,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
-            this.Text = "Tso2Pmd";
+            this.Text = "Tso2Pmx";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.panel1.ResumeLayout(false);
