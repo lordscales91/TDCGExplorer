@@ -83,10 +83,10 @@ namespace Tso2Pmd
             pmd_m.vindices_count = 0;
 
             // colorテクスチャ
-            pmd_m.tex_file = tex_list.GetFileName(tso_num, shader.ColorTexName);
+            pmd_m.tex_file = tex_list.GetBitmapFileName(tso_num, shader.ColorTexName);
 
             // toonテクスチャ
-            string toon_file = tex_list.GetFileName(tso_num, shader.ShadeTexName);
+            string toon_file = tex_list.GetBitmapFileName(tso_num, shader.ShadeTexName);
             if (toon_file != null) // 存在しないtoonテクスチャを参照しているパーツがあるのでこれを確認
             {
                 if (toon_names.IndexOf(toon_file) != -1)
@@ -117,15 +117,10 @@ namespace Tso2Pmd
                 }
 
                 // スフィアマップを使う
-                if (use_spheremap)
+                if (use_spheremap && tex_list.IsToonBitmap(tso_num, shader.ShadeTexName))
                 {
-                    // toonテクスチャが256×16のサイズなら、スフィアマップを指定する
-                    Bitmap toon_bmp = tex_list.GetBitmap(tso_num, shader.ShadeTexName);
-                    if (toon_bmp.Width == 256 && toon_bmp.Height == 16)
-                    {
-                        string sphere_file = Path.ChangeExtension(toon_file, ".sph");
-                        pmd_m.tex_file = pmd_m.tex_file + "*" + sphere_file;
-                    }
+                    string sphere_file = tex_list.GetSphereFileName(tso_num, shader.ShadeTexName);
+                    pmd_m.tex_file = pmd_m.tex_file + "*" + sphere_file;
                 }
             }
             else
