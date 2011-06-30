@@ -129,20 +129,20 @@ namespace Tso2Pmd
                 string line = sr.ReadLine();
                 string[] data = line.Split(',');
 
-                PMD_IK pmd_ik = new PMD_IK();
+                PMD_IK ik = new PMD_IK();
 
-                pmd_ik.effector_node_name = data[0].Trim();
-                pmd_ik.target_node_name = data[1].Trim();
+                ik.effector_node_name = data[0].Trim();
+                ik.target_node_name = data[1].Trim();
                 int chain_length = int.Parse(data[2].Trim());
-                pmd_ik.niteration = short.Parse(data[3].Trim());
-                pmd_ik.weight = float.Parse(data[4].Trim());
+                ik.niteration = short.Parse(data[3].Trim());
+                ik.weight = float.Parse(data[4].Trim());
 
                 for (int i = 5; i < data.Length; i++)
                 {
-                    pmd_ik.chain_node_names.Add(data[i].Trim());
+                    ik.chain_node_names.Add(data[i].Trim());
                 }
 
-                iks.Add(pmd_ik);
+                iks.Add(ik);
             }
             sr.Close();
         }
