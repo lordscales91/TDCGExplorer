@@ -58,8 +58,8 @@ namespace Tso2Pmd
             }
         }
         
-        // TSOSubScriptより、PMD_Materialを生成する
-        // (ただし、頂点インデックス数は0となっているため、後に設定する必要がある)
+        // TSOSubScriptを元にPMD_Materialを生成して追加する
+        // 頂点インデックス数は後で設定する
         public void Add(int tso_num, int script_num, bool use_edge, bool use_spheremap)
         {
             PMD_Material pmd_m = new PMD_Material();
@@ -79,7 +79,7 @@ namespace Tso2Pmd
             else
                 pmd_m.edge_width = 0;
 
-            // 頂点インデックス数（0となっているため、後に設定する必要がある）
+            // 頂点インデックス数（後で設定する）
             pmd_m.vindices_count = 0;
 
             // colorテクスチャ
