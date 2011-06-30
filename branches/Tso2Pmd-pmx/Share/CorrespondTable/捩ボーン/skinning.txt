@@ -1,0 +1,4 @@
+W_RightArmRoll, ‰E˜r€
+W_RightForeArmRoll, ‰Eè€
+W_LeftArmRoll, ¶˜r€
+W_LeftForeArmRoll, ¶è€
