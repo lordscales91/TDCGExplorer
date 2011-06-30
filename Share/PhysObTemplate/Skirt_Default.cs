@@ -1,3 +1,5 @@
+//css_reference Microsoft.DirectX.Direct3DX;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
