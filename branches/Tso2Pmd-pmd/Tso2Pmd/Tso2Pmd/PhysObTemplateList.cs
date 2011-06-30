@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using CSScriptLibrary;
-using TDCG;
-using TDCGUtils;
 
 namespace Tso2Pmd
 {
