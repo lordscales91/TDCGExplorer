@@ -112,6 +112,8 @@
     <Compile Include="ClippingVertexForm.Designer.cs">
       <DependentUpon>ClippingVertexForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="CorrespondTable.cs" />
+    <Compile Include="CorrespondTableList.cs" />
     <Compile Include="FigureForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -132,6 +134,7 @@
       <DependentUpon>PhysicsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="PhysObTemplateList.cs" />
+    <Compile Include="PmxFile.cs" />
     <Compile Include="TemplateList.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
