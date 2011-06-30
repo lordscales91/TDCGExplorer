@@ -140,11 +140,11 @@ namespace TDCGUtils
             // そっくりコピー
             foreach (TMOFrame frame in tmo.frames)
             {
-                frame.Matrices = new TMOMat[tmo.nodes.Length];
+                frame.matrices = new TMOMat[tmo.nodes.Length];
 
                 foreach (TMONode node in tmo.nodes)
                 {
-                    frame.Matrices[node.ID] = new TMOMat(ref node.matrices[frame.ID + start_point].m);
+                    frame.matrices[node.ID] = new TMOMat(ref node.matrices[frame.ID + start_point].m);
                 }
             }
         }
