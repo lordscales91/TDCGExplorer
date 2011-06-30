@@ -848,10 +848,6 @@ namespace TDCG
     {
         int id;
 
-// 改変 --ここから--
-        public TMOMat[] Matrices { set { matrices = value; } get { return matrices; } }
-// 改変 --ここまで--
-
         /// <summary>
         /// 行列の配列
         /// </summary>
