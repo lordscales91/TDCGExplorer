@@ -70,10 +70,21 @@ namespace Tso2Pmd
                 ik.SetBoneIDFromName(this);
             }
 
-            bw.Write(nodes.Length);
             foreach (PMD_Bone node in nodes)
             {
                 node.SetBoneIDFromName(this);
+            }
+
+            // IKを親としている系列の変形階層を1にする
+            foreach (PMD_Bone node in nodes)
+            {
+                if (node.calc_order == 1 && node.tail_node_id != -1)
+                    nodes[node.tail_node_id].calc_order = 1;
+            }
+
+            bw.Write(nodes.Length);
+            foreach (PMD_Bone node in nodes)
+            {
                 node.Write(bw);
             }
 
@@ -336,10 +347,7 @@ namespace Tso2Pmd
 
         public PMD_IK IK
         {
-            get
-            {
-                return ik;
-            }
+            get { return ik; }
             set
             {
                 ik = value;
