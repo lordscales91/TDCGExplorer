@@ -216,10 +216,10 @@ namespace Tso2Pmd
         /// </summary>
         public void Write(BinaryWriter bw)
         {
-            bw.Write(ref this.position);
-            bw.Write(ref this.normal);
-            bw.Write(this.u);
-            bw.Write(this.v);
+            bw.Write(ref position);
+            bw.Write(ref normal);
+            bw.Write(u);
+            bw.Write(v);
             bw.Write((byte)2);//ウェイト変形方式 0:BDEF1 1:BDEF2 2:BDEF4 3:SDEF
             for (int i = 0; i < 4; i++)
             {
@@ -229,7 +229,7 @@ namespace Tso2Pmd
             {
                 bw.Write(skin_weights[i].weight);
             }
-            bw.Write(this.edge_scale);
+            bw.Write(edge_scale);
         }
     }
 

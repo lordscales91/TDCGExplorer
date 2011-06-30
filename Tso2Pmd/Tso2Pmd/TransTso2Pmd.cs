@@ -561,8 +561,6 @@ namespace Tso2Pmd
                     pmd_v.u = vertex.u;
                     pmd_v.v = vertex.v;
 
-                    pmd_v.edge_scale = 0.0f;
-
                     // -----------------------------------------------------
                     // スキニング
                     for (int i = 0; i < 4; i++)
