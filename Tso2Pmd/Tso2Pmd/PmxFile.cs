@@ -342,6 +342,7 @@ namespace Tso2Pmd
         byte flags_hi;
         byte flags_lo;
         public short tail_node_id;
+        public short target_node_id;
 
         PMD_IK ik = null;
 
@@ -383,6 +384,12 @@ namespace Tso2Pmd
             bw.Write(flags_hi);
             bw.Write(tail_node_id);
 
+            if (flags_hi == 0x01)
+            {
+                bw.Write(target_node_id);
+                bw.Write(1.0f);
+            }
+
             if (ik != null)
             {
                 ik.Write(bw);
@@ -394,16 +401,22 @@ namespace Tso2Pmd
         {
             get
             {
-                switch (flags_lo)
+                switch (flags_hi)
                 {
-                    case 0x1B:
-                        return 0;
-                    case 0x1F:
-                        return 1;
-                    case 0x11:
-                        return 7;
+                    case 0x01:
+                        return 5;
                     default:
-                        return 1;
+                        switch (flags_lo)
+                        {
+                            case 0x1B:
+                                return 0;
+                            case 0x1F:
+                                return 1;
+                            case 0x11:
+                                return 7;
+                            default:
+                                return 0;
+                        }
                 }
             }
             set
@@ -411,15 +424,23 @@ namespace Tso2Pmd
                 switch (value)
                 {
                     case 0:
+                        flags_hi = (byte)0x00;
                         flags_lo = (byte)0x1B;
                         break;
                     case 1:
+                        flags_hi = (byte)0x00;
                         flags_lo = (byte)0x1F;
                         break;
+                    case 5:
+                        flags_hi = (byte)0x01;
+                        flags_lo = (byte)0x1B;
+                        break;
                     case 7:
+                        flags_hi = (byte)0x00;
                         flags_lo = (byte)0x11;
                         break;
                     default:
+                        flags_hi = (byte)0x00;
                         flags_lo = (byte)0x1F;
                         break;
                 }
@@ -432,7 +453,7 @@ namespace Tso2Pmd
         // 子ボーン名
         public string TailName;
 
-        // IKターゲットボーン
+        // IKターゲットボーン名
         public string TargetName;
 
         // ボーン名をIDに置き換える
@@ -440,6 +461,7 @@ namespace Tso2Pmd
         {
             parent_node_id = pmd.GetBoneIDByName(ParentName);
             tail_node_id = pmd.GetBoneIDByName(TailName);
+            target_node_id = pmd.GetBoneIDByName(TargetName);
         }
     }
 
