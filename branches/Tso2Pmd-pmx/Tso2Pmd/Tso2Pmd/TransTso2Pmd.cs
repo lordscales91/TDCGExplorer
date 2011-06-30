@@ -232,13 +232,11 @@ namespace Tso2Pmd
             if (mod_type == 0)
             {
                 InitializePMDFaces();
-                MakePMDBaseFace();
                 MakePMDFaces();
             }
             else if (mod_type == 1)
             {
                 InitializePMDFaces();
-                MakePMDBaseFace();
                 pmd.skins = new PMD_Skin[0];
             }
 
@@ -259,7 +257,7 @@ namespace Tso2Pmd
                 for (int i = 0; i < pmd.skins.Length; i++)
                 {
                     PMD_SkinDisp skin_disp = new PMD_SkinDisp();
-                    skin_disp.skin_id = (sbyte)(i + 1);
+                    skin_disp.skin_id = (sbyte)i;
                     disp_group.disps.Add(skin_disp);
                 }
             }
@@ -410,7 +408,7 @@ namespace Tso2Pmd
         private void InitializePMDFaces()
         {
             sbyte skin_idx = 0; // 通し番号
-            int number_of_skin = 1;
+            int number_of_skin = 0;
 
             // 表情数
             foreach (MorphGroup mg in morph.Groups)
@@ -420,15 +418,7 @@ namespace Tso2Pmd
             // 表情に関連するboneに影響を受ける頂点を数え上げる
             int numFaceVertices = CalcNumFaceVertices(fig.Tmo);
 
-            // baseの表情
-            pmd.skins[0] = new PMD_Skin();
-            pmd.skins[0].name = "base";
-            pmd.skins[0].name_en = "base";
-            pmd.skins[0].vertices = new PMD_SkinVertex[numFaceVertices];
-
-            skin_idx++;
-
-            // base以外の表情
+            // 表情
             foreach (MorphGroup mg in morph.Groups)
             {
                 foreach (Morph m in mg.Items)
@@ -695,53 +685,13 @@ namespace Tso2Pmd
             return n_vertex;
         }
 
-        // デフォルト表情を設定
-        private void MakePMDBaseFace()
-        {
-            int n_vertex = 0; // 表情の頂点の番号（通し番号）
-            int n_inList = -1; // list中のvertexの番号（処理の前に++するために、初期値は0でなく-1としている)
-            foreach (TSOSubMesh sub_mesh in meshes)
-            {
-                int n_inMesh = -1; // mesh中のvertexの番号（処理の前に++するために、初期値は0でなく-1としている)
-                foreach (Vertex vertex in sub_mesh.vertices)
-                {
-                    n_inList++; // list中のvertexの番号を一つ増やす
-                    n_inMesh++; // mesh中のvertexの番号を一つ増やす
-                    int idx = inList_indices[n_inList];
-                    if (idx == -1)
-                        continue;
-                    PMD_Vertex pmd_v = pmd.vertices[idx];
-
-                    // -----------------------------------------------------
-                    // 表情情報
-
-                    // 表情に関連するboneに影響を受ける頂点であれば、情報を記憶する
-                    foreach (SkinWeight skin_w in vertex.skin_weights)
-                    {
-                        // 表情に関連するboneに影響を受ける頂点であれば、表情用の頂点とする
-                        if (FACE_BONE_MIN <= sub_mesh.bone_indices[skin_w.bone_index]
-                            && sub_mesh.bone_indices[skin_w.bone_index] <= FACE_BONE_MAX)
-                        {
-                            // 表情の頂点情報（base）
-                            pmd.skins[0].vertices[n_vertex] = new PMD_SkinVertex();
-                            pmd.skins[0].vertices[n_vertex].vertex_id = idx; // 表情用の頂点の番号(頂点リストにある番号)
-                            pmd.skins[0].vertices[n_vertex].position = pmd_v.position;
-
-                            n_vertex++;
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-
         // 表情モーフを設定
         private void MakePMDFaces()
         {
             int n_vertex = 0; // 表情の頂点の番号（通し番号）
             int n_inList = -1; // list中のvertexの番号（処理の前に++するために、初期値は0でなく-1としている)
             // -----------------------------------------------------
-            // 表情情報（base以外）
+            // 表情情報
             // -----------------------------------------------------
             List<Vector3[]> verPos_face = new List<Vector3[]>();
 
@@ -811,16 +761,16 @@ namespace Tso2Pmd
                         if (FACE_BONE_MIN <= sub_mesh.bone_indices[skin_w.bone_index]
                             && sub_mesh.bone_indices[skin_w.bone_index] <= FACE_BONE_MAX)
                         {
-                            // 表情の頂点情報（base以外）
-                            for (int i = 1; i < pmd.skins.Length; i++)
+                            // 表情の頂点情報
+                            for (int i = 0; i < pmd.skins.Length; i++)
                             {
                                 pmd.skins[i].vertices[n_vertex] = new PMD_SkinVertex();
 
                                 // 表情用の頂点の番号
                                 pmd.skins[i].vertices[n_vertex].vertex_id = idx;
 
-                                // bace以外は相対位置で指定
-                                Vector3 pmd_face_pos = Trans.CopyPos(verPos_face[i - 1][n_inMesh]);
+                                // 相対位置で指定
+                                Vector3 pmd_face_pos = Trans.CopyPos(verPos_face[i][n_inMesh]);
                                 pmd.skins[i].vertices[n_vertex].position = pmd_face_pos - pmd_v.position;
                             }
 
