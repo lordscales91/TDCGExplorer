@@ -94,6 +94,9 @@ namespace Tso2Pmd
             if (tex_list.use_spheremap)
             {
                 pmd_m.tex_sphere_id = tex_list.GetSphereID(tso_num, shader.ShadeTexName);
+
+                if (pmd_m.tex_sphere_id != -1)
+                    pmd_m.sphere_mode = 1;
             }
 
             // 要素を追加
