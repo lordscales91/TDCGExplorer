@@ -65,10 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CorrespondBoneForTmo2Vpd.cs" />
-    <Compile Include="CorrespondTable.cs" />
-    <Compile Include="CorrespondTableList.cs" />
     <Compile Include="Extensions\BinaryWriterMethods.cs" />
-    <Compile Include="PmdFile.cs" />
     <Compile Include="ProgressForm.cs">
       <SubType>Form</SubType>
     </Compile>
