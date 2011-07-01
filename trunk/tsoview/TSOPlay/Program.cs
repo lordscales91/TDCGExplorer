@@ -7,12 +7,6 @@ using TDCG;
 
 namespace TSOPlay
 {
-#if false
-public interface IScript
-{
-    void Hello(Viewer viewer);
-}
-#endif
 static class Program
 {
     [STAThread]
