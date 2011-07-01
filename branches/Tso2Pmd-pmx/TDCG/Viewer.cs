@@ -301,7 +301,6 @@ public class Viewer : IDisposable
                 TSOFile tso = new TSOFile();
                 Debug.WriteLine("loading " + file);
                 tso.Load(file);
-                Debug.WriteLine("tso sum vertices count: " + tso.SumVerticesCount().ToString());
                 tso_list.Add(tso);
             }
         }
@@ -377,7 +376,6 @@ public class Viewer : IDisposable
         {
             TSOFile tso = new TSOFile();
             tso.Load(source_stream);
-            Debug.WriteLine("tso sum vertices count: " + tso.SumVerticesCount().ToString());
             tso_list.Add(tso);
         }
         catch (Exception ex)
@@ -1364,7 +1362,6 @@ public class Viewer : IDisposable
             {
                 TSOFile tso = new TSOFile();
                 tso.Load(dest);
-                Debug.WriteLine("tso sum vertices count: " + tso.SumVerticesCount().ToString());
                 fig.TSOList.Add(tso);
             };
             Debug.WriteLine("loading " + source_file);
