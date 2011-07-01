@@ -598,6 +598,9 @@ public class Viewer : IDisposable
             return false;
         }
 
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+
         string effect_file = Path.Combine(Application.StartupPath, @"toonshader.cgfx");
         if (! File.Exists(effect_file))
         {
@@ -614,6 +617,10 @@ public class Viewer : IDisposable
                 return false;
             }
         }
+
+        sw.Stop();
+        Console.WriteLine("toonshader.cgfx read time: " + sw.Elapsed);
+
         handle_LocalBoneMats = effect.GetParameter(null, "LocalBoneMats");
         handle_LightDirForced = effect.GetParameter(null, "LightDirForced");
         handle_UVSCR = effect.GetParameter(null, "UVSCR");
