@@ -67,14 +67,6 @@ public partial class TSOForm : Form
                     viewer.LoadAnyFile(Path.Combine(save_path, "system.tdcgsav.png"), true);
                 viewer.Camera.SetTranslation(0.0f, +10.0f, +44.0f);
             }
-#if false
-            string script_file = Path.Combine(Application.StartupPath, "Script.cs");
-            if (File.Exists(script_file))
-            {
-                var script = CSScript.Load(script_file).CreateInstance("TDCG.Script").AlignToInterface<IScript>();
-                script.Hello(viewer);
-            }
-#endif
 
             this.timer1.Enabled = true;
         }
