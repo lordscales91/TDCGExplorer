@@ -502,7 +502,7 @@ namespace Tso2Pmd
             {
                 TSONode tso_node = sub_mesh.GetBone(numPalettes);
                 TMONode tmo_node = tmo.FindNodeByName(tso_node.Name);
-                clipped_boneMatrices[numPalettes] = tso_node.OffsetMatrix * tmo_node.combined_matrix;
+                clipped_boneMatrices[numPalettes] = tso_node.offset_matrix * tmo_node.combined_matrix;
             }
             return clipped_boneMatrices;
         }
@@ -693,9 +693,8 @@ namespace Tso2Pmd
             // マテリアル
             if (UniqueMaterial)
                 material_list.UniqueMaterials();
-            pmd.materials = material_list.materials.ToArray();
-            // Toonテクスチャファイル名
             pmd.toon_file_names = material_list.GetToonFileNameList();
+            pmd.materials = material_list.materials.ToArray();
         }
 
         // 表情に関連するboneに影響を受ける頂点を数え上げる
