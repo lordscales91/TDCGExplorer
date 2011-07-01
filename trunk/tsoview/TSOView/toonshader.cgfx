@@ -460,7 +460,7 @@ struct cBHLData {
 //  tsoview系ここから
 //-----------------------------------------------------------
 
-sampler2D ShadowMap = sampler_state
+sampler2D ShadowTex = sampler_state
 {
 	Texture		= <texShadowMap>;
 
@@ -629,7 +629,6 @@ cVertexData2 cBoneVS( cVertexData2 IN )
 
 //-----------------------------------------------------------
 //  tsoview系ここまで
-//	ShadowMap,BoneColとか注意
 //-----------------------------------------------------------
 
 //-----------------------------------------------------------
@@ -1034,7 +1033,7 @@ float4 cMainPS( cVertexData IN ) : COLOR//デフォルトピクセルシェーダ
 		float2 texcoord;
 		texcoord.x = ( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
 		texcoord.y = ( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
-		float4 c = tex2D( ShadowMap, texcoord );
+		float4 c = tex2D( ShadowTex, texcoord );
 		float z = c.r + (c.g + c.b/256.0)/256.0;
 		if ( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
 		{
@@ -1109,7 +1108,7 @@ float4 cMainPS3( cVertexData IN ) : COLOR//ShadeTex適用範囲変更ピクセルシェーダ
 		float2 texcoord;
 		texcoord.x = ( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
 		texcoord.y = ( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
-		float4 c = tex2D( ShadowMap, texcoord );
+		float4 c = tex2D( ShadowTex, texcoord );
 		float z = c.r + (c.g + c.b/256.0)/256.0;
 		if ( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
 		{
@@ -1156,7 +1155,7 @@ float4 cMainPS4( cVertexData IN ) : COLOR//ShadeTex適用範囲変更ピクセルシェーダ
 		float2 texcoord;
 		texcoord.x = ( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
 		texcoord.y = ( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
-		float4 c = tex2D( ShadowMap, texcoord );
+		float4 c = tex2D( ShadowTex, texcoord );
 		float z = c.r + (c.g + c.b/256.0)/256.0;
 		if ( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
 		{
@@ -8342,22 +8341,6 @@ technique WAVE_FLASH
 		StencilEnable	 = false;
 
 		VertexProgram	 = compile PROFILE_VS cMainVS_UVSCR8();
-		FragmentProgram	 = compile PROFILE_PS cMainPS_UVFLS();
-	}
-}
-
-technique ROTATE_FLASH
-{
-	pass Main
-	{
-		DepthTestEnable  = true;
-		DepthMask		 = false;
-		CullMode		 = ccw;
-		AlphaBlendEnable = true;
-		AlphaFunc        = always;
-		StencilEnable	 = false;
-
-		VertexProgram	 = compile PROFILE_VS cMainVS_UVROT();
 		FragmentProgram	 = compile PROFILE_PS cMainPS_UVFLS();
 	}
 }
