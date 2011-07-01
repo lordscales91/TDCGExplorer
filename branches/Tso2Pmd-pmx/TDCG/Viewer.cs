@@ -45,10 +45,12 @@ public class Viewer : IDisposable
     /// control
     /// </summary>
     protected Control control;
+
     /// <summary>
     /// device
     /// </summary>
     protected Device device;
+
     /// <summary>
     /// effect
     /// </summary>

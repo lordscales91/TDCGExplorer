@@ -1090,17 +1090,6 @@ namespace TDCG
             offset_matrix = TSONode.GetOffsetMatrix(this);
         }
 
-// 改変 --ここから--
-        /// <summary>
-        /// オフセット行列を得ます。
-        /// </summary>
-        /// <returns></returns>
-        public Matrix OffsetMatrix
-        {
-            get { return offset_matrix; }
-        }
-// 改変 --ここまで--
-
         /// <summary>
         /// ワールド座標系での位置を得ます。
         /// </summary>

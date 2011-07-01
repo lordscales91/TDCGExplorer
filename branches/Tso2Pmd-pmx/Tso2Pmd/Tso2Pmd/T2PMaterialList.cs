@@ -37,11 +37,6 @@ namespace Tso2Pmd
             }
         }
 
-        public string[] GetTextureFileNameList()
-        {
-            return tex_list.GetFileNameList();
-        }
-
         public void Save(string dest_path, string file_name)
         {
             tex_list.Save(dest_path);
@@ -130,6 +125,11 @@ namespace Tso2Pmd
                 return false;
             
             return true;
+        }
+
+        public string[] GetTextureFileNameList()
+        {
+            return tex_list.GetFileNameList();
         }
     }
 }
