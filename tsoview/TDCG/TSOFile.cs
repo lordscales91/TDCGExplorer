@@ -344,15 +344,6 @@ namespace TDCG
                 sub_mesh.LinkBones(nodes);
         }
 
-        /// 頂点数の合計を得ます。
-        public int SumVerticesCount()
-        {
-            int sum = 0;
-            foreach (TSOSubMesh sub_mesh in sub_meshes)
-                sum += sub_mesh.VerticesCount;
-            return sum;
-        }
-
         /// <summary>
         /// 内部objectを破棄します。
         /// </summary>
@@ -1395,15 +1386,6 @@ namespace TDCG
             tmo.footer = new byte[4] { 0, 0, 0, 0 };
 
             return tmo;
-        }
-
-        /// 頂点数の合計を得ます。
-        public int SumVerticesCount()
-        {
-            int sum = 0;
-            foreach (TSOMesh mesh in meshes)
-                sum += mesh.SumVerticesCount();
-            return sum;
         }
 
         internal Device device;
