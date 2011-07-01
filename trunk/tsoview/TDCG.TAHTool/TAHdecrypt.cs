@@ -8,10 +8,12 @@ namespace TDCG.TAHTool
     {
         public static void Main(string[] args)
         {
-            if (args.Length > 0)
+            if (args.Length < 1)
             {
-                DumpFiles(args[0]);
+                Console.WriteLine("untah.exe <tah file>");
+                return;
             }
+            DumpFiles(args[0]);
         }
 
         public static int DumpFiles(string source_file)
@@ -26,8 +28,7 @@ namespace TDCG.TAHTool
             {
                 Console.WriteLine("{0}\t{1}\t{2}\t{3}", entry.file_name, entry.offset, entry.length, entry.flag);
 
-                byte[] data_output;
-                decrypter.ExtractResource(entry, out data_output);
+                byte[] data_output = decrypter.ExtractResource(entry);
 
                 string file_name = entry.file_name;
 

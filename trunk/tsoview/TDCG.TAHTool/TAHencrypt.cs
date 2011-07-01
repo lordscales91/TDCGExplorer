@@ -8,15 +8,18 @@ namespace TDCG.TAHTool
     {
         public static void Main(string[] args)
         {
-            if (args.Length > 0)
+            if (args.Length < 1)
             {
-                string source_file = args[0];
-                //encrypt to TAH archive
-                if (Directory.Exists(source_file))
-                {
-                    //launch encrypt routine from here...
-                    encrypt_archive(source_file + ".tah", source_file);
-                }
+                Console.WriteLine("tah.exe <folder>");
+                return;
+            }
+            string source_file = args[0];
+
+            //encrypt to TAH archive
+            if (Directory.Exists(source_file))
+            {
+                //launch encrypt routine from here...
+                encrypt_archive(source_file + ".tah", source_file);
             }
         }
 
