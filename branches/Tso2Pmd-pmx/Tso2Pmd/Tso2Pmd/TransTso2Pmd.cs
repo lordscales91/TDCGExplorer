@@ -28,7 +28,6 @@ namespace Tso2Pmd
         Figure fig;
         List<TSOSubMesh> meshes;
         T2PMaterialList material_list;
-        T2PPhysObjectList physOb_list;
         TemplateList template_list;
         CorrespondTableList cor_table_list;
 
@@ -280,12 +279,20 @@ namespace Tso2Pmd
                 pmd.disp_groups.Add(disp_group);
             }
 
-            physOb_list = new T2PPhysObjectList(nodes);
+            if (mod_type == 0)
+            {
+                T2PPhysObjectList physOb_list = new T2PPhysObjectList(nodes);
 
-            template_list.PhysObExecute(ref physOb_list);
+                template_list.PhysObExecute(ref physOb_list);
 
-            pmd.bodies = physOb_list.bodies.ToArray();
-            pmd.joints = physOb_list.joints.ToArray();
+                pmd.bodies = physOb_list.bodies.ToArray();
+                pmd.joints = physOb_list.joints.ToArray();
+            }
+            else
+            {
+                pmd.bodies = new PMD_RBody[0];
+                pmd.joints = new PMD_Joint[0];
+            }
         }
 
         /// 親子関係を元に並び替える
