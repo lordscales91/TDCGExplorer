@@ -715,10 +715,12 @@ public class Viewer : IDisposable
         device.RenderState.ReferenceAlpha = 0x08;
         device.RenderState.AlphaFunction = Compare.GreaterEqual;
 
-        device.VertexDeclaration = new VertexDeclaration(device, TSOSubMesh.ve);
+        vd = new VertexDeclaration(device, TSOSubMesh.ve);
 
         //device.RenderState.IndexedVertexBlendEnable = true;
     }
+
+    VertexDeclaration vd;
 
     /// <summary>
     /// 全フィギュアを削除します。
@@ -990,6 +992,7 @@ public class Viewer : IDisposable
         device.DepthStencilSurface = ztex_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
 
+        device.VertexDeclaration = vd;
         effect.Technique = handle_ShadowMap;
 
         foreach (Figure fig in FigureList)
@@ -1050,6 +1053,7 @@ public class Viewer : IDisposable
         device.DepthStencilSurface = dev_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer | ClearFlags.Stencil, ScreenColor, 1.0f, 0);
 
+        device.VertexDeclaration = vd;
         effect.SetValue(handle_UVSCR, UVSCR());
         foreach (Figure fig in FigureList)
         {
