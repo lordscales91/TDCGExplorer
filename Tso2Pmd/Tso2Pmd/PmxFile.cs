@@ -503,6 +503,7 @@ namespace Tso2Pmd
 
             target_node_id = pmd.GetBoneIDByName(target_node_name);
 
+            links.Clear();
             foreach (string node_name in chain_node_names)
             {
                 PMD_IKNode link = new PMD_IKNode();
