@@ -72,7 +72,8 @@ public partial class TSOForm : Form
             string script_file = Path.Combine(Application.StartupPath, "Script.cs");
             if (File.Exists(script_file))
             {
-                var script = CSScript.Load(script_file).CreateInstance("TDCG.Script").AlignToInterface<IScript>();
+                string assembly_file = Path.GetTempFileName();
+                var script = CSScript.Load(script_file, assembly_file, true, null).CreateInstance("TDCG.Script").AlignToInterface<IScript>();
                 script.Hello(viewer);
             }
 
