@@ -339,7 +339,11 @@ namespace Tso2Pmd
         {
             parent_node_id = pmd.GetBoneIDByName(ParentName);
             tail_node_id = pmd.GetBoneIDByName(TailName);
+            if (tail_node_id == -1)
+                tail_node_id = 0;
             target_node_id = pmd.GetBoneIDByName(TargetName);
+            if (target_node_id == -1)
+                target_node_id = 0;
         }
     }
 
