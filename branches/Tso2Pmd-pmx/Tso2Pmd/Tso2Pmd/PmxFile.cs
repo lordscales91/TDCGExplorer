@@ -339,10 +339,33 @@ namespace Tso2Pmd
         public Vector3 position;
         public short parent_node_id;
         public int calc_order;
+
+        /*
+        ○ボーンフラグ
+         0x0001  : 接続先(PMD子ボーン指定)表示方法 -> 0:座標オフセットで指定 1:ボーンで指定
+
+         0x0002  : 回転可能
+         0x0004  : 移動可能
+         0x0008  : 表示
+         0x0010  : 操作可
+
+         0x0020  : IK
+
+         0x0100  : 回転付与
+         0x0200  : 移動付与
+
+         0x0400  : 軸固定
+         0x0800  : ローカル軸
+
+         0x1000  : 物理後変形
+         0x2000  : 外部親変形
+        */
+
         byte flags_hi;
         byte flags_lo;
         public short tail_node_id;
         public short target_node_id;
+        public Vector3 axis = Vector3.Empty;
 
         PMD_IK ik = null;
 
@@ -384,19 +407,25 @@ namespace Tso2Pmd
             bw.Write(flags_hi);
             bw.Write(tail_node_id);
 
+            //回転付与
             if (flags_hi == 0x01)
             {
                 bw.Write(target_node_id);
                 bw.Write(1.0f);
             }
-
+            //軸固定
+            if (flags_hi == 0x04)
+            {
+                bw.Write(ref axis);
+            }
+            //IK
             if (ik != null)
             {
                 ik.Write(bw);
             }
         }
 
-        // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捻り 9:回転運動
+        // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捩り 9:回転運動
         public int kind
         {
             get
@@ -405,6 +434,8 @@ namespace Tso2Pmd
                 {
                     case 0x01:
                         return 5;
+                    case 0x04:
+                        return 8;
                     default:
                         switch (flags_lo)
                         {
@@ -439,6 +470,10 @@ namespace Tso2Pmd
                         flags_hi = (byte)0x00;
                         flags_lo = (byte)0x11;
                         break;
+                    case 8:
+                        flags_hi = (byte)0x04;
+                        flags_lo = (byte)0x1B;
+                        break;
                     default:
                         flags_hi = (byte)0x00;
                         flags_lo = (byte)0x1F;
@@ -453,7 +488,7 @@ namespace Tso2Pmd
         // 子ボーン名
         public string TailName;
 
-        // IKターゲットボーン名
+        // 対象ボーン名
         public string TargetName;
 
         // ボーン名をIDに置き換える
@@ -462,6 +497,16 @@ namespace Tso2Pmd
             parent_node_id = pmd.GetBoneIDByName(ParentName);
             tail_node_id = pmd.GetBoneIDByName(TailName);
             target_node_id = pmd.GetBoneIDByName(TargetName);
+
+            if (parent_node_id != -1)
+            {
+                // 親が捩りボーンなら軸固定を設定する
+                PMD_Bone parent = pmd.nodes[parent_node_id];
+                if (parent.flags_hi == 0x04)
+                {
+                    parent.axis = Vector3.Normalize(position - parent.position);
+                }
+            }
         }
     }
 
@@ -487,13 +532,13 @@ namespace Tso2Pmd
             }
         }
 
-        // IK先端ボーン名
+        // 先端ボーン名
         public string effector_node_name;
 
-        // IKターゲットボーン名
+        // 対象ボーン名
         public string target_node_name;
 
-        // IKを構成するボーンの配列
+        // IKリンクのボーン名リスト
         public List<string> chain_node_names = new List<string>();
 
         // ボーン名をIDに置き換える
