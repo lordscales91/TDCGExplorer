@@ -29,7 +29,7 @@ namespace Tso2Pmd
         List<TSOSubMesh> meshes;
         T2PMaterialList material_list;
         TemplateList template_list;
-        CorrespondTableList cor_table_list;
+        CorrespondTableList cortable_list;
 
         public Figure Figure { get { return fig; } set { fig = value; } }
         //public PmdFile Pmd { get { return pmd; } }
@@ -40,7 +40,7 @@ namespace Tso2Pmd
         public List<string> Categories { set { categories = value; } }
         public List<bool> UseMeshes { set { use_meshes = value; } }
         public TemplateList TemplateList { set { template_list = value; } }
-        public CorrespondTableList CorTableList { set { cor_table_list = value; } }
+        public CorrespondTableList CorTableList { set { cortable_list = value; } }
           
         // -----------------------------------------------------
         // 表情設定リスト
@@ -158,19 +158,19 @@ namespace Tso2Pmd
         /// ボーンは人型です。
         public void UpdatePmdFromFigureWithHumanBone()
         {
-            CorrespondTable cor_table = null;
+            CorrespondTable cortable = null;
             int mod_type = 0;
 
             if (fig.Tmo.nodes.Length == 227)
             {
-                cor_table_list.ManUsed = false;
-                cor_table = cor_table_list.GetCorrespondTable();
+                cortable_list.UseMan = false;
+                cortable = cortable_list.GetCorrespondTable();
                 mod_type = 0;
             }
             else if (fig.Tmo.nodes.Length == 75)
             {
-                cor_table_list.ManUsed = true;
-                cor_table = cor_table_list.GetCorrespondTable();
+                cortable_list.UseMan = true;
+                cortable = cortable_list.GetCorrespondTable();
                 mod_type = 1;
             }
             else
@@ -183,7 +183,7 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             List<PMD_Bone> nodes = new List<PMD_Bone>();
 
-            foreach (KeyValuePair<string, PMD_Bone> bone_kvp in cor_table.boneStructure)
+            foreach (KeyValuePair<string, PMD_Bone> bone_kvp in cortable.boneStructure)
             {
                 PMD_Bone bone = bone_kvp.Value;
                 PMD_Bone pmd_b = new PMD_Bone();
@@ -195,7 +195,7 @@ namespace Tso2Pmd
                 pmd_b.TargetName = bone.TargetName;
 
                 string bone_name = null;
-                cor_table.bonePosition.TryGetValue(pmd_b.name, out bone_name);
+                cortable.bonePositions.TryGetValue(pmd_b.name, out bone_name);
                 if (bone_name != null)
                 {
                     pmd_b.position
@@ -228,7 +228,7 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // 頂点
             // -----------------------------------------------------
-            MakePMDVertices(cor_table, mod_type);
+            MakePMDVertices(cortable, mod_type);
 
             // 頂点数が上限を超えてないかチェックし、超えていたらエラーを出して終了
             if (pmd.vertices.Length > ushort.MaxValue)
@@ -253,7 +253,7 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             // IK配列
             // -----------------------------------------------------
-            pmd.iks = cor_table.iks.ToArray();
+            pmd.iks = cortable.iks.ToArray();
 
             AssignDispGroups();
 
@@ -276,7 +276,7 @@ namespace Tso2Pmd
                 //pmd.skin_disp_indices = new int[0];
             }
 
-            foreach (BoneDispGroup group in cor_table.boneDispGroups)
+            foreach (BoneDispGroup group in cortable.boneDispGroups)
             {
                 PMD_DispGroup disp_group = new PMD_DispGroup();
                 disp_group.name = group.name;

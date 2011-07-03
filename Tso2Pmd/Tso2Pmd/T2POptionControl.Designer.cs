@@ -47,8 +47,8 @@
             this.cbUseSpheremap = new System.Windows.Forms.CheckBox();
             this.cbUniqueMaterial = new System.Windows.Forms.CheckBox();
             this.cbUseEdge = new System.Windows.Forms.CheckBox();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
+            this.gbBoneStructure = new System.Windows.Forms.GroupBox();
+            this.cbBoneStructure = new System.Windows.Forms.CheckedListBox();
             this.rbOneBone = new System.Windows.Forms.RadioButton();
             this.rbHumanBone = new System.Windows.Forms.RadioButton();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -59,7 +59,7 @@
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage4.SuspendLayout();
-            this.groupBox4.SuspendLayout();
+            this.gbBoneStructure.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.SuspendLayout();
@@ -220,7 +220,7 @@
             this.tabPage4.Controls.Add(this.cbUseSpheremap);
             this.tabPage4.Controls.Add(this.cbUniqueMaterial);
             this.tabPage4.Controls.Add(this.cbUseEdge);
-            this.tabPage4.Controls.Add(this.groupBox4);
+            this.tabPage4.Controls.Add(this.gbBoneStructure);
             this.tabPage4.Location = new System.Drawing.Point(4, 22);
             this.tabPage4.Name = "tabPage4";
             this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
@@ -272,28 +272,28 @@
             this.cbUseEdge.Text = "輪郭線＆影の表示";
             this.cbUseEdge.UseVisualStyleBackColor = true;
             // 
-            // groupBox4
+            // gbBoneStructure
             // 
-            this.groupBox4.Controls.Add(this.checkedListBox1);
-            this.groupBox4.Controls.Add(this.rbOneBone);
-            this.groupBox4.Controls.Add(this.rbHumanBone);
-            this.groupBox4.Location = new System.Drawing.Point(22, 17);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(213, 96);
-            this.groupBox4.TabIndex = 31;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "ボーン構造";
+            this.gbBoneStructure.Controls.Add(this.cbBoneStructure);
+            this.gbBoneStructure.Controls.Add(this.rbOneBone);
+            this.gbBoneStructure.Controls.Add(this.rbHumanBone);
+            this.gbBoneStructure.Location = new System.Drawing.Point(22, 17);
+            this.gbBoneStructure.Name = "gbBoneStructure";
+            this.gbBoneStructure.Size = new System.Drawing.Size(213, 96);
+            this.gbBoneStructure.TabIndex = 31;
+            this.gbBoneStructure.TabStop = false;
+            this.gbBoneStructure.Text = "ボーン構造";
             // 
-            // checkedListBox1
+            // cbBoneStructure
             // 
-            this.checkedListBox1.CheckOnClick = true;
-            this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(94, 40);
-            this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.ScrollAlwaysVisible = true;
-            this.checkedListBox1.Size = new System.Drawing.Size(107, 46);
-            this.checkedListBox1.TabIndex = 25;
-            this.checkedListBox1.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.checkedListBox1_ItemCheck);
+            this.cbBoneStructure.CheckOnClick = true;
+            this.cbBoneStructure.FormattingEnabled = true;
+            this.cbBoneStructure.Location = new System.Drawing.Point(94, 40);
+            this.cbBoneStructure.Name = "cbBoneStructure";
+            this.cbBoneStructure.ScrollAlwaysVisible = true;
+            this.cbBoneStructure.Size = new System.Drawing.Size(107, 46);
+            this.cbBoneStructure.TabIndex = 25;
+            this.cbBoneStructure.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.checkedListBox1_ItemCheck);
             // 
             // rbOneBone
             // 
@@ -369,8 +369,8 @@
             this.tabPage2.PerformLayout();
             this.tabPage4.ResumeLayout(false);
             this.tabPage4.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
+            this.gbBoneStructure.ResumeLayout(false);
+            this.gbBoneStructure.PerformLayout();
             this.tabPage3.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -400,11 +400,11 @@
         private System.Windows.Forms.CheckBox cbUseSpheremap;
         private System.Windows.Forms.CheckBox cbUniqueMaterial;
         private System.Windows.Forms.CheckBox cbUseEdge;
-        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.GroupBox gbBoneStructure;
         private System.Windows.Forms.RadioButton rbOneBone;
         private System.Windows.Forms.RadioButton rbHumanBone;
         private PhysicsControl physicsControl1;
-        private System.Windows.Forms.CheckedListBox checkedListBox1;
+        private System.Windows.Forms.CheckedListBox cbBoneStructure;
         private System.Windows.Forms.Label label1;
     }
 }

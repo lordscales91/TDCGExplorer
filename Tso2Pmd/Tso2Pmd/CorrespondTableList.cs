@@ -12,42 +12,49 @@ namespace Tso2Pmd
     /// </summary>
     public class CorrespondTableList
     {
-        Dictionary<string, CorrespondTable> ct_dic = new Dictionary<string, CorrespondTable>();
-
         public List<string> NameList
         {
-            get { return Used.Keys.ToList(); }
+            get { return Selected.Keys.ToList(); }
         }
-        public bool ManUsed { get; set; }
-        public Dictionary<string, bool> Used { get; set; }
+        public bool UseMan { get; set; }
+        public Dictionary<string, bool> Selected { get; set; }
 
         public CorrespondTableList()
         {
-            ManUsed = false;
-            Used = new Dictionary<string, bool>();
+            UseMan = false;
+            Selected = new Dictionary<string, bool>();
         }
 
         /// 使うボーン対応表を結合して得ます。
         public CorrespondTable GetCorrespondTable()
         {
-            CorrespondTable ct = new CorrespondTable();
+            CorrespondTable cortable = new CorrespondTable();
 
-            if (!ManUsed)
+            List<string> names = new List<string>();
+
+            if (!UseMan)
             {
-                ct.Update(ct_dic["Girl2Miku_Default"]);
+                names.Add("Girl2Miku_Default");
 
-                foreach (string name in Used.Keys)
+                foreach (string name in Selected.Keys)
                 {
-                    if (Used[name])
-                        ct.Update(ct_dic[name]);
+                    if (Selected[name])
+                        names.Add(name);
                 }
             }
             else
             {
-                ct.Update(ct_dic["Man2Miku_Default"]);
+                names.Add("Man2Miku_Default");
             }
 
-            return ct;
+            string source_path = GetSourcePath();
+
+            foreach (string name in names)
+            {
+                cortable.Load(Path.Combine(source_path, name));
+            }
+
+            return cortable;
         }
 
         public string GetSourcePath()
@@ -62,17 +69,10 @@ namespace Tso2Pmd
         {
             foreach (string path in Directory.GetDirectories(GetSourcePath()))
             {
-                CorrespondTable ct = new CorrespondTable();
-                
-                ct.Load(path);
-
                 string name = Path.GetFileName(path);
                 
                 if (!DefaultNameList.Contains(name))
-                {
-                    Used.Add(name, false);
-                }
-                ct_dic.Add(name, ct);
+                    Selected.Add(name, false);
             }
         }
     }
