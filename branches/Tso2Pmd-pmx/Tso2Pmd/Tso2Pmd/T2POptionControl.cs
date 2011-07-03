@@ -18,7 +18,7 @@ namespace Tso2Pmd
         string file_name;
 
         TemplateList template_list;
-        CorrespondTableList correspondTable_list = new CorrespondTableList();
+        CorrespondTableList cortable_list = new CorrespondTableList();
 
         public T2POptionControl()
         {
@@ -37,10 +37,10 @@ namespace Tso2Pmd
             taikeiControl1.Initialize(ref viewer);
             physicsControl1.Initialize(template_list);
 
-            correspondTable_list.Load();
-            foreach (string name in correspondTable_list.NameList)
+            cortable_list.Load();
+            foreach (string name in cortable_list.NameList)
             {
-                checkedListBox1.Items.Add(name);
+                cbBoneStructure.Items.Add(name);
             }
         }
 
@@ -69,7 +69,7 @@ namespace Tso2Pmd
 
             physicsControl1.SetPhysFlag();
             t2p.TemplateList = template_list;
-            t2p.CorTableList = correspondTable_list;
+            t2p.CorTableList = cortable_list;
 
             t2p.UseOneBone = rbOneBone.Checked; 
 
@@ -137,17 +137,17 @@ namespace Tso2Pmd
 
         private void radioButton_Bone1_CheckedChanged(object sender, EventArgs e)
         {
-            checkedListBox1.Enabled = false;
+            cbBoneStructure.Enabled = false;
         }
 
         private void radioButton_Bone0_CheckedChanged(object sender, EventArgs e)
         {
-            checkedListBox1.Enabled = true;
+            cbBoneStructure.Enabled = true;
         }
 
         private void checkedListBox1_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            correspondTable_list.Used[checkedListBox1.Items[e.Index].ToString()] = (e.NewValue == CheckState.Checked);
+            cortable_list.Selected[cbBoneStructure.Items[e.Index].ToString()] = (e.NewValue == CheckState.Checked);
         }
     }
 }

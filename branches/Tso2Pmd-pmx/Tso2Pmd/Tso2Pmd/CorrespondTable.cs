@@ -7,7 +7,7 @@ using Microsoft.DirectX.Direct3D;
 
 namespace Tso2Pmd
 {
-    public struct BoneDispGroup
+    public class BoneDispGroup
     {
         public string name;
         public List<string> bone_names;
@@ -18,8 +18,10 @@ namespace Tso2Pmd
     /// </summary>
     public class CorrespondTable
     {
+        public List<string> PathList = new List<string>();
+
         public Dictionary<string, string> skinning = new Dictionary<string, string>();
-        public Dictionary<string, string> bonePosition = new Dictionary<string, string>();
+        public Dictionary<string, string> bonePositions = new Dictionary<string, string>();
         public Dictionary<string, PMD_Bone> boneStructure = new Dictionary<string, PMD_Bone>();
         public List<BoneDispGroup> boneDispGroups = new List<BoneDispGroup>();
         public List<PMD_IK> iks = new List<PMD_IK>();
@@ -32,159 +34,135 @@ namespace Tso2Pmd
             ReadIKBone(Path.Combine(path, @"IKBone.txt"));
         }
 
-        void ReadSkinning(string path)
+        static Encoding encoding = Encoding.GetEncoding("Shift_JIS");
+
+        public void ReadSkinning(string path)
         {
-            StreamReader sr = new StreamReader(path,
-                System.Text.Encoding.GetEncoding("shift_jis"));
-            while (sr.Peek() > -1)
+            using (StreamReader sr = new StreamReader(path, encoding))
             {
-                string line = sr.ReadLine();
-                string[] data = line.Split(',');
-                skinning.Add(data[0].Trim(), data[1].Trim());
+                string line = null;
+
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] row = line.Split(',');
+
+                    string tso_bone_name = row[0].Trim();
+                    string pmd_bone_name = row[1].Trim();
+
+                    // すでにtso_bone_nameが存在するなら上書き
+                    skinning[tso_bone_name] = pmd_bone_name;
+                }
             }
-            sr.Close();
         }
 
         void ReadBonePosition(string path)
         {
-            StreamReader sr = new StreamReader(path,
-                System.Text.Encoding.GetEncoding("shift_jis"));
-            while (sr.Peek() > -1)
+            using (StreamReader sr = new StreamReader(path, encoding))
             {
-                string line = sr.ReadLine();
-                string[] data = line.Split(',');
-                bonePosition.Add(data[1].Trim(), data[0].Trim());
+                string line = null;
+
+                while ((line = sr.ReadLine()) != null)
+                {
+                    string[] row = line.Split(',');
+
+                    string tso_bone_name = row[0].Trim();
+                    string pmd_bone_name = row[1].Trim();
+
+                    // すでにpmd_bone_nameが存在するなら上書き
+                    bonePositions[pmd_bone_name] = tso_bone_name;
+                }
             }
-            sr.Close();
         }
 
         void ReadBoneStructure(string path)
         {
-            StreamReader sr = new StreamReader(path,
-                System.Text.Encoding.GetEncoding("shift_jis"));
-            while (sr.Peek() > -1)
+            using (StreamReader sr = new StreamReader(path, encoding))
             {
-                string line = sr.ReadLine();
-                string[] data = line.Split(',');
+                string line = null;
 
-                string bone_name = data[0].Trim();
-                string disp_name = data[5].Trim();
-
-                // PMD_Boneデータを生成
-                PMD_Bone pmd_b = new PMD_Bone();
-
-                pmd_b.name = bone_name;
-
-                pmd_b.kind = int.Parse(data[1].Trim());
-
-                if (data[2] == "")
-                    pmd_b.ParentName = null;
-                else
-                    pmd_b.ParentName = data[2].Trim();
-
-                if (data[3] == "")
-                    pmd_b.TailName = null;
-                else
-                    pmd_b.TailName = data[3].Trim();
-
-                if (data[4] == "")
-                    pmd_b.TargetName = null;
-                else
-                    pmd_b.TargetName = data[4].Trim();
-
-                boneStructure.Add(pmd_b.name, pmd_b);
-
-                // 枠に表示するボーン名の設定
-                if (disp_name != "")
+                while ((line = sr.ReadLine()) != null)
                 {
-                    bool found = false;
-                    foreach (BoneDispGroup group in boneDispGroups)
-                    {
-                        if (group.name == disp_name)
-                        {
-                            group.bone_names.Add(bone_name);
-                            found = true;
-                        }
-                    }
+                    string[] row = line.Split(',');
 
-                    if (!found)
-                    {
-                        BoneDispGroup group = new BoneDispGroup();
-                        group.name = disp_name;
-                        group.bone_names = new List<string>();
-                        group.bone_names.Add(bone_name);
-                        boneDispGroups.Add(group);
-                    }
+                    string bone_name = row[0].Trim();
+                    string bone_kind = row[1].Trim();
+                    string parent_name = row[2].Trim();
+                    string tail_name = row[3].Trim();
+                    string target_name = row[4].Trim();
+                    string disp_name = row[5].Trim();
+
+                    PMD_Bone pmd_b = new PMD_Bone();
+
+                    pmd_b.name = bone_name;
+                    pmd_b.kind = int.Parse(bone_kind);
+                    pmd_b.ParentName = (parent_name != "") ? parent_name : null;
+                    pmd_b.TailName = (tail_name != "") ? tail_name : null;
+                    pmd_b.TargetName = (target_name != "") ? target_name : null;
+
+                    // すでにpmd_b.nameが存在するなら上書き
+                    boneStructure[pmd_b.name] = pmd_b;
+
+                    if (disp_name != "")
+                        AddBoneNameInDisp(bone_name, disp_name);
                 }
             }
-            sr.Close();
+        }
+
+        // 指定名称を持つ表示枠に指定ボーン名を入れる
+        void AddBoneNameInDisp(string bone_name, string disp_name)
+        {
+            BoneDispGroup found_group = null;
+
+            // 指定名称を持つ表示枠を検索する
+            foreach (BoneDispGroup group in boneDispGroups)
+            {
+                if (group.name == disp_name)
+                {
+                    found_group = group;
+                    break;
+                }
+            }
+
+            // なければ追加する
+            if (found_group == null)
+            {
+                found_group = new BoneDispGroup();
+                found_group.name = disp_name;
+                found_group.bone_names = new List<string>();
+                boneDispGroups.Add(found_group);
+            }
+
+            // 表示枠にボーン名を追加する
+            // すでに同じ名前が入っているなら追加しない
+            if (!found_group.bone_names.Contains(bone_name))
+                found_group.bone_names.Add(bone_name);
         }
 
         void ReadIKBone(string path)
         {
-            StreamReader sr = new StreamReader(path,
-                System.Text.Encoding.GetEncoding("shift_jis"));
-            while (sr.Peek() > -1)
+            using (StreamReader sr = new StreamReader(path, encoding))
             {
-                string line = sr.ReadLine();
-                string[] data = line.Split(',');
+                string line = null;
 
-                PMD_IK ik = new PMD_IK();
-
-                ik.effector_node_name = data[0].Trim();
-                ik.target_node_name = data[1].Trim();
-                int chain_length = int.Parse(data[2].Trim());
-                ik.niteration = int.Parse(data[3].Trim());
-                ik.weight = float.Parse(data[4].Trim());
-
-                for (int i = 5; i < data.Length; i++)
+                while ((line = sr.ReadLine()) != null)
                 {
-                    ik.chain_node_names.Add(data[i].Trim());
+                    string[] row = line.Split(',');
+
+                    PMD_IK ik = new PMD_IK();
+
+                    ik.effector_node_name = row[0].Trim();
+                    ik.target_node_name = row[1].Trim();
+                    int chain_length = int.Parse(row[2].Trim());
+                    ik.niteration = int.Parse(row[3].Trim());
+                    ik.weight = float.Parse(row[4].Trim());
+
+                    for (int i = 5; i < row.Length; i++)
+                    {
+                        ik.chain_node_names.Add(row[i].Trim());
+                    }
+
+                    iks.Add(ik);
                 }
-
-                iks.Add(ik);
-            }
-            sr.Close();
-        }
-
-        /// <summary>
-        /// 指定対応表を結合します。
-        /// </summary>
-        /// <param name="ct">結合する対応表</param>
-        public void Update(CorrespondTable ct)
-        {
-            foreach (KeyValuePair<string, string> kvp in ct.skinning)
-            {
-                if (skinning.ContainsKey(kvp.Key))
-                    skinning[kvp.Key] = kvp.Value;
-                else
-                    skinning.Add(kvp.Key, kvp.Value);
-            }
-
-            foreach (KeyValuePair<string, string> kvp in ct.bonePosition)
-            {
-                if (bonePosition.ContainsKey(kvp.Key))
-                    bonePosition[kvp.Key] = kvp.Value;
-                else
-                    bonePosition.Add(kvp.Key, kvp.Value);
-            }
-
-            foreach (KeyValuePair<string, PMD_Bone> kvp in ct.boneStructure)
-            {
-                if (boneStructure.ContainsKey(kvp.Key))
-                    boneStructure[kvp.Key] = kvp.Value;
-                else
-                    boneStructure.Add(kvp.Key, kvp.Value);
-            }
-
-            foreach (BoneDispGroup group in ct.boneDispGroups)
-            {
-                boneDispGroups.Add(group);
-            }
-
-            foreach (PMD_IK ik in ct.iks)
-            {
-                iks.Add(ik);
             }
         }
     }
