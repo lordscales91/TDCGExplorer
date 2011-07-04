@@ -147,7 +147,7 @@ namespace Tso2Pmd
 
         private void checkedListBox1_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            cortable_list.Selected[cbBoneStructure.Items[e.Index].ToString()] = (e.NewValue == CheckState.Checked);
+            cortable_list.Selection[cbBoneStructure.Items[e.Index].ToString()] = (e.NewValue == CheckState.Checked);
         }
     }
 }
