@@ -7,6 +7,8 @@ using System.Windows.Forms;
 
 namespace Tso2Pmd
 {
+    public enum CorrespondTableListBoneKind { one, man, woman }
+
     /// <summary>
     /// ボーン対応表リストを扱います。
     /// </summary>
@@ -14,15 +16,15 @@ namespace Tso2Pmd
     {
         public List<string> NameList
         {
-            get { return Selected.Keys.ToList(); }
+            get { return Selection.Keys.ToList(); }
         }
-        public bool UseMan { get; set; }
-        public Dictionary<string, bool> Selected { get; set; }
+        public CorrespondTableListBoneKind BoneKind { get; set; }
+        public Dictionary<string, bool> Selection { get; set; }
 
         public CorrespondTableList()
         {
-            UseMan = false;
-            Selected = new Dictionary<string, bool>();
+            BoneKind = CorrespondTableListBoneKind.woman;
+            Selection = new Dictionary<string, bool>();
         }
 
         /// 使うボーン対応表を結合して得ます。
@@ -32,19 +34,20 @@ namespace Tso2Pmd
 
             List<string> names = new List<string>();
 
-            if (!UseMan)
+            switch (BoneKind)
             {
-                names.Add("Girl2Miku_Default");
+                case CorrespondTableListBoneKind.man:
+                    names.Add("Man2Miku_Default");
+                    break;
+                case CorrespondTableListBoneKind.woman:
+                    names.Add("Girl2Miku_Default");
 
-                foreach (string name in Selected.Keys)
-                {
-                    if (Selected[name])
-                        names.Add(name);
-                }
-            }
-            else
-            {
-                names.Add("Man2Miku_Default");
+                    foreach (string name in Selection.Keys)
+                    {
+                        if (Selection[name])
+                            names.Add(name);
+                    }
+                    break;
             }
 
             string source_path = GetSourcePath();
@@ -72,7 +75,7 @@ namespace Tso2Pmd
                 string name = Path.GetFileName(path);
                 
                 if (!DefaultNameList.Contains(name))
-                    Selected.Add(name, false);
+                    Selection.Add(name, false);
             }
         }
     }
