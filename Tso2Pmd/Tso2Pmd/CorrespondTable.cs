@@ -7,12 +7,6 @@ using Microsoft.DirectX.Direct3D;
 
 namespace Tso2Pmd
 {
-    public class BoneDispGroup
-    {
-        public string name;
-        public List<string> bone_names;
-    }
-
     /// <summary>
     /// ボーン対応表を扱います。
     /// </summary>
@@ -23,8 +17,29 @@ namespace Tso2Pmd
         public Dictionary<string, string> skinning = new Dictionary<string, string>();
         public Dictionary<string, string> bonePositions = new Dictionary<string, string>();
         public Dictionary<string, PMD_Bone> boneStructure = new Dictionary<string, PMD_Bone>();
-        public List<BoneDispGroup> boneDispGroups = new List<BoneDispGroup>();
+        public List<PMD_DispGroup> boneDispGroups;
         public List<PMD_IK> iks = new List<PMD_IK>();
+
+        public CorrespondTable()
+        {
+            boneDispGroups = new List<PMD_DispGroup>();
+
+            {
+                PMD_DispGroup disp_group = new PMD_DispGroup();
+                disp_group.name = "Root";
+                disp_group.name_en = "Root";
+                disp_group.spec = 1;
+                boneDispGroups.Add(disp_group);
+            }
+
+            {
+                PMD_DispGroup disp_group = new PMD_DispGroup();
+                disp_group.name = "表情";
+                disp_group.name_en = "Exp";
+                disp_group.spec = 1;
+                boneDispGroups.Add(disp_group);
+            }
+        }
 
         public void Load(string path)
         {
@@ -111,10 +126,10 @@ namespace Tso2Pmd
         // 指定名称を持つ表示枠に指定ボーン名を入れる
         void AddBoneNameInDisp(string bone_name, string disp_name)
         {
-            BoneDispGroup found_group = null;
+            PMD_DispGroup found_group = null;
 
             // 指定名称を持つ表示枠を検索する
-            foreach (BoneDispGroup group in boneDispGroups)
+            foreach (PMD_DispGroup group in boneDispGroups)
             {
                 if (group.name == disp_name)
                 {
@@ -126,16 +141,30 @@ namespace Tso2Pmd
             // なければ追加する
             if (found_group == null)
             {
-                found_group = new BoneDispGroup();
+                found_group = new PMD_DispGroup();
                 found_group.name = disp_name;
-                found_group.bone_names = new List<string>();
                 boneDispGroups.Add(found_group);
             }
 
             // 表示枠にボーン名を追加する
             // すでに同じ名前が入っているなら追加しない
-            if (!found_group.bone_names.Contains(bone_name))
-                found_group.bone_names.Add(bone_name);
+            PMD_BoneDisp found_disp = null;
+
+            foreach (PMD_BoneDisp disp in found_group.disps)
+            {
+                if (disp.bone_name == bone_name)
+                {
+                    found_disp = disp;
+                    break;
+                }
+            }
+
+            if (found_disp == null)
+            {
+                PMD_BoneDisp disp = new PMD_BoneDisp();
+                disp.bone_name = bone_name;
+                found_group.disps.Add(disp);
+            }
         }
 
         void ReadIKBone(string path)

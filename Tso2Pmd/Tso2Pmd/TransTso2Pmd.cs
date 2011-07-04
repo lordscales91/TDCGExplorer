@@ -94,6 +94,17 @@ namespace Tso2Pmd
         /// ボーンはセンターのみです。
         public void UpdatePmdFromFigureWithOneBone()
         {
+            CorrespondTable cortable;
+            cortable_list.BoneKind = CorrespondTableListBoneKind.one;
+            cortable = cortable_list.GetCorrespondTable();
+
+            PMD_DispGroup disp_group = cortable.boneDispGroups[0];//Root枠
+            {
+                PMD_BoneDisp disp = new PMD_BoneDisp();
+                disp.bone_name = "センター";
+                disp_group.disps.Add(disp);
+            }
+
             // -----------------------------------------------------
             // ボーン情報
             // -----------------------------------------------------
@@ -137,12 +148,10 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             pmd.iks = new PMD_IK[0];
 
-            AssignDispGroups();
-
             // -----------------------------------------------------
-            // 表情枠
+            // 表示枠
             // -----------------------------------------------------
-            //pmd.skin_disp_indices = new int[0];
+            pmd.disp_groups = cortable.boneDispGroups;
 
             pmd.bodies = new PMD_RBody[0];
             pmd.joints = new PMD_Joint[0];
@@ -152,24 +161,31 @@ namespace Tso2Pmd
         /// ボーンは人型です。
         public void UpdatePmdFromFigureWithHumanBone()
         {
-            CorrespondTable cortable = null;
             int mod_type = 0;
 
             if (fig.Tmo.nodes.Length == 227)
             {
-                cortable_list.UseMan = false;
-                cortable = cortable_list.GetCorrespondTable();
                 mod_type = 0;
             }
             else if (fig.Tmo.nodes.Length == 75)
             {
-                cortable_list.UseMan = true;
-                cortable = cortable_list.GetCorrespondTable();
                 mod_type = 1;
             }
             else
             {
                 throw new FormatException("未対応のボーン構造です。\n人型以外を変換する場合は、\n出力ボーンに\"1ボーン\"を指定してください。");
+            }
+
+            CorrespondTable cortable;
+
+            if (mod_type == 0)
+            {
+                cortable = cortable_list.GetCorrespondTable();
+            }
+            else
+            {
+                cortable_list.BoneKind = CorrespondTableListBoneKind.man;
+                cortable = cortable_list.GetCorrespondTable();
             }
  
             // -----------------------------------------------------
@@ -233,7 +249,7 @@ namespace Tso2Pmd
                 InitializePMDFaces();
                 MakePMDFaces();
             }
-            else if (mod_type == 1)
+            else
             {
                 InitializePMDFaces();
                 pmd.skins = new PMD_Skin[0];
@@ -244,14 +260,14 @@ namespace Tso2Pmd
             // -----------------------------------------------------
             pmd.iks = cortable.iks.ToArray();
 
-            AssignDispGroups();
+            // -----------------------------------------------------
+            // 表示枠
+            // -----------------------------------------------------
+            pmd.disp_groups = cortable.boneDispGroups;
 
-            // -----------------------------------------------------
-            // 表情枠
-            // -----------------------------------------------------
             if (mod_type == 0)
             {
-                PMD_DispGroup disp_group = pmd.disp_groups[1];
+                PMD_DispGroup disp_group = pmd.disp_groups[1];//表情枠
 
                 for (int i = 0; i < pmd.skins.Length; i++)
                 {
@@ -259,24 +275,6 @@ namespace Tso2Pmd
                     skin_disp.skin_id = (sbyte)i;
                     disp_group.disps.Add(skin_disp);
                 }
-            }
-            else if (mod_type == 1)
-            {
-                //pmd.skin_disp_indices = new int[0];
-            }
-
-            foreach (BoneDispGroup group in cortable.boneDispGroups)
-            {
-                PMD_DispGroup disp_group = new PMD_DispGroup();
-                disp_group.name = group.name;
-
-                foreach (string name in group.bone_names)
-                {
-                    PMD_BoneDisp bone_disp = new PMD_BoneDisp();
-                    bone_disp.bone_name = name;
-                    disp_group.disps.Add(bone_disp);
-                }
-                pmd.disp_groups.Add(disp_group);
             }
 
             if (mod_type == 0)
@@ -382,30 +380,6 @@ namespace Tso2Pmd
                     pmd.GetBoneByName("右つま先ＩＫ").position.X,
                     pmd.GetBoneByName("右つま先ＩＫ").position.Y - 1.0f,
                     pmd.GetBoneByName("右つま先ＩＫ").position.Z);
-        }
-
-        /// <summary>
-        /// ボーン枠用枠名リストを設定します。
-        /// </summary>
-        void AssignDispGroups()
-        {
-            pmd.disp_groups.Clear();
-
-            {
-                PMD_DispGroup disp_group = new PMD_DispGroup();
-                disp_group.name = "Root";
-                disp_group.name_en = "Root";
-                disp_group.spec = 1;
-                pmd.disp_groups.Add(disp_group);
-            }
-
-            {
-                PMD_DispGroup disp_group = new PMD_DispGroup();
-                disp_group.name = "表情";
-                disp_group.name_en = "Skin";
-                disp_group.spec = 1;
-                pmd.disp_groups.Add(disp_group);
-            }
         }
 
         // -----------------------------------------------------
