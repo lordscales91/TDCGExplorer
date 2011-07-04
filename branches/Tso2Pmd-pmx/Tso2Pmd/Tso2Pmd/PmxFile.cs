@@ -391,8 +391,9 @@ namespace Tso2Pmd
             position = new Vector3(0, 5, 0);
             parent_node_id = -1;
             calc_order = 0;//変形階層
+            kind = 0;
             flags_hi = (byte)0x00;//上位フラグ
-            flags_lo = (byte)0x1F;//下位フラグ 0x01: 接続先 1:ボーンで指定
+            flags_lo = (byte)0x1B;//下位フラグ 0x01: 接続先 1:ボーンで指定
             tail_node_id = -1;
         }
 
@@ -424,37 +425,16 @@ namespace Tso2Pmd
                 ik.Write(bw);
             }
         }
-
+        int kind;
         // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捩り 9:回転運動
-        public int kind
+        public int Kind
         {
-            get
-            {
-                switch (flags_hi)
-                {
-                    case 0x01:
-                        return 5;
-                    case 0x04:
-                        return 8;
-                    default:
-                        switch (flags_lo)
-                        {
-                            case 0x1B:
-                                return 0;
-                            case 0x1F:
-                                return 1;
-                            case 0x13:
-                                return 6;
-                            case 0x11:
-                                return 7;
-                            default:
-                                return 0;
-                        }
-                }
-            }
+            get { return kind; }
             set
             {
-                switch (value)
+                kind = value;
+
+                switch (kind)
                 {
                     case 0:
                         flags_hi = (byte)0x00;
@@ -463,6 +443,10 @@ namespace Tso2Pmd
                     case 1:
                         flags_hi = (byte)0x00;
                         flags_lo = (byte)0x1F;
+                        break;
+                    case 4:
+                        flags_hi = (byte)0x00;
+                        flags_lo = (byte)0x1B;
                         break;
                     case 5:
                         flags_hi = (byte)0x01;
@@ -482,7 +466,7 @@ namespace Tso2Pmd
                         break;
                     default:
                         flags_hi = (byte)0x00;
-                        flags_lo = (byte)0x1F;
+                        flags_lo = (byte)0x1B;
                         break;
                 }
             }
