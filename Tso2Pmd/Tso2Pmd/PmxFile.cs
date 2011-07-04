@@ -426,7 +426,7 @@ namespace Tso2Pmd
             }
         }
         int kind;
-        // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捩り 9:回転運動
+        // ボーンの種類 0:回転 1:回転と移動 2:IK 3:不明 4:IK影響下 5:回転影響下 6:IK接続先 7:非表示 8:捩り 9:回転連動
         public int Kind
         {
             get { return kind; }
@@ -437,34 +437,47 @@ namespace Tso2Pmd
                 switch (kind)
                 {
                     case 0:
+                        calc_order = 0;
                         flags_hi = (byte)0x00;
                         flags_lo = (byte)0x1B;
                         break;
                     case 1:
+                        calc_order = 0;
                         flags_hi = (byte)0x00;
                         flags_lo = (byte)0x1F;
                         break;
                     case 4:
+                        calc_order = 0;
                         flags_hi = (byte)0x00;
                         flags_lo = (byte)0x1B;
                         break;
                     case 5:
+                        calc_order = 2;
                         flags_hi = (byte)0x01;
                         flags_lo = (byte)0x1B;
                         break;
                     case 6:
+                        calc_order = 0;
                         flags_hi = (byte)0x00;
                         flags_lo = (byte)0x13;
                         break;
                     case 7:
+                        calc_order = 0;
                         flags_hi = (byte)0x00;
                         flags_lo = (byte)0x11;
                         break;
                     case 8:
+                        calc_order = 0;
                         flags_hi = (byte)0x04;
                         flags_lo = (byte)0x1B;
                         break;
+                    case 9:
+                        calc_order = 0;
+                        flags_hi = (byte)0x01;
+                        flags_lo = (byte)0x1B;
+                        break;
                     default:
+                        calc_order = 0;
                         flags_hi = (byte)0x00;
                         flags_lo = (byte)0x1B;
                         break;
