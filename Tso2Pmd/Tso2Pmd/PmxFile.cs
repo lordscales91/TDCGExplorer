@@ -443,6 +443,8 @@ namespace Tso2Pmd
                                 return 0;
                             case 0x1F:
                                 return 1;
+                            case 0x13:
+                                return 6;
                             case 0x11:
                                 return 7;
                             default:
@@ -465,6 +467,10 @@ namespace Tso2Pmd
                     case 5:
                         flags_hi = (byte)0x01;
                         flags_lo = (byte)0x1B;
+                        break;
+                    case 6:
+                        flags_hi = (byte)0x00;
+                        flags_lo = (byte)0x13;
                         break;
                     case 7:
                         flags_hi = (byte)0x00;
