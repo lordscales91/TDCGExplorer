@@ -94,7 +94,7 @@ namespace Tso2Pmd
                     PMD_Bone pmd_b = new PMD_Bone();
 
                     pmd_b.name = bone_name;
-                    pmd_b.kind = int.Parse(bone_kind);
+                    pmd_b.Kind = int.Parse(bone_kind);
                     pmd_b.ParentName = (parent_name != "") ? parent_name : null;
                     pmd_b.TailName = (tail_name != "") ? tail_name : null;
                     pmd_b.TargetName = (target_name != "") ? target_name : null;
