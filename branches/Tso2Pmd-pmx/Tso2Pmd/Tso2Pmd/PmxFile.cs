@@ -368,22 +368,7 @@ namespace Tso2Pmd
         public short target_node_id;
         public Vector3 axis = Vector3.Empty;
 
-        PMD_IK ik = null;
-
-        public PMD_IK IK
-        {
-            get { return ik; }
-            set
-            {
-                ik = value;
-
-                if (ik != null)
-                {
-                    calc_order = 1;
-                    flags_lo |= 0x20; // 0x20: IK
-                }
-            }
-        }
+        public PMD_IK IK { get; set; }
 
         public PMD_Bone()
         {
@@ -396,6 +381,7 @@ namespace Tso2Pmd
             flags_hi = (byte)0x00;//上位フラグ
             flags_lo = (byte)0x1B;//下位フラグ 0x01: 接続先 1:ボーンで指定
             tail_node_id = -1;
+            IK = null;
         }
 
         public void Write(BinaryWriter bw)
@@ -421,9 +407,9 @@ namespace Tso2Pmd
                 bw.Write(ref axis);
             }
             //IK
-            if (ik != null)
+            if (IK != null)
             {
-                ik.Write(bw);
+                IK.Write(bw);
             }
         }
         int kind;
@@ -446,6 +432,11 @@ namespace Tso2Pmd
                         calc_order = 0;
                         flags_hi = (byte)0x00;
                         flags_lo = (byte)0x1F;
+                        break;
+                    case 2:
+                        calc_order = 1;
+                        flags_hi = (byte)0x00;
+                        flags_lo = (byte)0x3F;
                         break;
                     case 4:
                         calc_order = 0;
