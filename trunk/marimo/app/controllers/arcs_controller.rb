@@ -89,6 +89,15 @@ class ArcsController < ApplicationController
     @arc = Arc.find(params[:id])
   end
 
+  def rels
+    @arc = Arc.find(params[:id])
+    if request.put?
+      if @arc.update_attributes(params[:arc])
+        redirect_to(@arc)
+      end
+    end
+  end
+
   def tags
     @arc = Arc.find(params[:id])
     if request.put?

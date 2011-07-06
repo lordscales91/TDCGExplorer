@@ -1,0 +1,57 @@
+<h2>
+  <b><%= _'Arc|Code' %>:</b>
+  <%=h @arc.code %>
+</h2>
+
+<p>
+  <b><%= _'Arc|Extname' %>:</b>
+  <%=h @arc.extname %>
+</p>
+
+<p>
+  <b><%= _'Arc|Location' %>:</b>
+  <%=h @arc.location %>
+</p>
+
+<p>
+  <b><%= _'Arc|Summary' %>:</b>
+  <%=h @arc.summary %>
+</p>
+
+<p>
+  <b><%= _'Arc|Origname' %>:</b>
+  <%=h @arc.origname %>
+</p>
+
+<p>
+  <b><%= _'Arc|Rows' %>:</b>
+  <%=h @arc.row_caption %>
+</p>
+
+<% form_for(:arc, @arc, :url => rels_arc_path(@arc), :html => {:method => :put}) do |f| %>
+  <%= f.error_messages %>
+
+<div>
+  <%= _'Arc|Relations' %><br />
+<table>
+  <thead>
+    <th><%= _'Relationship|To' %></th>
+    <th><%= _'Relationship|Kind' %></th>
+    <th><%= _'Relationship|Note' %></th>
+    <th></th>
+  </thead>
+  <tbody id="relationships">
+  <%= render :partial => 'relationship', :collection => @arc.relationships %>
+  <%= render :partial => 'rev_relationship', :collection => @arc.rev_relationships %>
+  </tbody>
+</table>
+</div>
+  <p>
+    <%= add_relationship_link _('Add a relation') %>
+  </p>
+  <p>
+    <%= f.submit _("Save") %>
+  </p>
+<% end %>
+
+<%= link_to _('Back'), @arc %>

@@ -22,7 +22,7 @@ Rails::Initializer.run do |config|
 
   # Specify gems that this application depends on. 
   # They can then be installed with "rake gems:install" on new installations.
-  config.gem "will_paginate", :lib => "will_paginate"
+  config.gem "will_paginate", :lib => "will_paginate", :version => "2.3.15"
   config.gem "locale"
   config.gem "locale_rails", :version => "2.0.5"
   config.gem "gettext"
