@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -61,7 +61,17 @@ namespace tso2mqo
             bw.Write(item.Width);
             bw.Write(item.Height);
             bw.Write(item.Depth);
-            bw.Write(item.data, 0, item.data.Length);
+
+            byte[] buf = new byte[item.data.Length];
+            Array.Copy(item.data, 0, buf, 0, buf.Length);
+
+            for(int j = 0; j < buf.Length; j += 4)
+            {
+                byte tmp = buf[j+2];
+                buf[j+2] = buf[j+0];
+                buf[j+0] = tmp;
+            }
+            bw.Write(buf);
         }
 
         public static void Write(BinaryWriter bw, TSOEffect[] items)
