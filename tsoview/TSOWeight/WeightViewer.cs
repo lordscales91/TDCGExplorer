@@ -559,6 +559,7 @@ public class WeightViewer : Viewer
         device.DepthStencilSurface = dev_zbuf;
         device.Clear(ClearFlags.Target | ClearFlags.ZBuffer | ClearFlags.Stencil, ScreenColor, 1.0f, 0);
 
+        device.VertexDeclaration = vd;
         Figure fig;
         if (TryGetFigure(out fig))
         {

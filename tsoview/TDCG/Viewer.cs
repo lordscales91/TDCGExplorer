@@ -727,7 +727,7 @@ public class Viewer : IDisposable
         //device.RenderState.IndexedVertexBlendEnable = true;
     }
 
-    VertexDeclaration vd;
+    protected VertexDeclaration vd;
 
     /// <summary>
     /// 全フィギュアを削除します。
