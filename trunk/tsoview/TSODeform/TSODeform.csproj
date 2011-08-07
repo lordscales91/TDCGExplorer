@@ -8,8 +8,8 @@
     <ProjectGuid>{A18D0631-5871-4A2D-A6BD-08198C4E2849}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TSOSkin</RootNamespace>
-    <AssemblyName>TSOSkin</AssemblyName>
+    <RootNamespace>TSODeform</RootNamespace>
+    <AssemblyName>TSODeform</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

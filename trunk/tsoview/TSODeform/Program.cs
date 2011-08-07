@@ -7,7 +7,7 @@ using Microsoft.DirectX.Direct3D;
 using Direct3D=Microsoft.DirectX.Direct3D;
 using TDCG;
 
-namespace TSOSkin
+namespace TSODeform
 {
 public static class Program
 {
@@ -15,7 +15,7 @@ public static class Program
     {
         if (args.Length < 2)
         {
-            Console.WriteLine("TSOSkin.exe <tso file> <tmo file>");
+            Console.WriteLine("TSODeform.exe <tso file> <tmo file>");
             return;
         }
         string tso_file = args[0];
