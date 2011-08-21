@@ -727,6 +727,9 @@ public class Viewer : IDisposable
         //device.RenderState.IndexedVertexBlendEnable = true;
     }
 
+    /// <summary>
+    /// toonshader.cgfx に渡す頂点宣言
+    /// </summary>
     protected VertexDeclaration vd;
 
     /// <summary>
