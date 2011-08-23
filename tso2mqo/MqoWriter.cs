@@ -143,7 +143,7 @@ namespace tso2mqo
             {
                 TSOTex  tex = file.texturemap[i.ColorTex];
                 tw.WriteLine(
-                    "	\"{0}\" shader(3) col(1.00 1.00 1.00 1.00) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex(\"{1}\")",
+                    "	\"{0}\" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex(\"{1}\")",
                     i.name, Path.Combine(OutPath, tex.File.Trim('"')));
             }
 
@@ -174,18 +174,12 @@ namespace tso2mqo
 
                         if((cnt & 1) == 0)
                         {
-                          //face.Add(a); uv.Add(va.Tex.x); uv.Add(va.Tex.y);
-                          //face.Add(b); uv.Add(vb.Tex.x); uv.Add(vb.Tex.y);
-                          //face.Add(c); uv.Add(vc.Tex.x); uv.Add(vc.Tex.y);
                             face.Add(a); uv.Add(va.Tex.X); uv.Add(1-va.Tex.Y);
                             face.Add(b); uv.Add(vb.Tex.X); uv.Add(1-vb.Tex.Y);
                             face.Add(c); uv.Add(vc.Tex.X); uv.Add(1-vc.Tex.Y);
                             mtl.Add(j.spec);
                         } else
                         {
-                          //face.Add(a); uv.Add(va.Tex.x); uv.Add(va.Tex.y);
-                          //face.Add(c); uv.Add(vc.Tex.x); uv.Add(vc.Tex.y);
-                          //face.Add(b); uv.Add(vb.Tex.x); uv.Add(vb.Tex.y);
                             face.Add(a); uv.Add(va.Tex.X); uv.Add(1-va.Tex.Y);
                             face.Add(c); uv.Add(vc.Tex.X); uv.Add(1-vc.Tex.Y);
                             face.Add(b); uv.Add(vb.Tex.X); uv.Add(1-vb.Tex.Y);
@@ -199,7 +193,7 @@ namespace tso2mqo
                 tw.WriteLine("	locking {0}", 0);
                 tw.WriteLine("	shading {0}", 1);
                 tw.WriteLine("	facet {0}", 59.5);
-                tw.WriteLine("	color {0} {1} {2}", 0.898f, 0.498f, 0.698f);
+                tw.WriteLine("	color {0:F3} {1:F3} {2:F3}", 0.898f, 0.498f, 0.698f);
                 tw.WriteLine("	color_type {0}", 0);
 
                 //
@@ -218,14 +212,9 @@ namespace tso2mqo
 
                 for(int j= 0, n= face.Count; j < n; j+=3)
                     WriteFace(face[j+0], face[j+1], face[j+2],
-#if true
                               uv[j*2+0], uv[j*2+1],
                               uv[j*2+2], uv[j*2+3],
                               uv[j*2+4], uv[j*2+5],
-#else
-                              uv[j*2+0], uv[j*2+2], uv[j*2+4],
-                              uv[j*2+1], uv[j*2+3], uv[j*2+5],
-#endif
                               mtl[j/3]);
                 tw.WriteLine("	}");
                 tw.WriteLine("}");
@@ -236,13 +225,13 @@ namespace tso2mqo
 
         public void WriteFace(int a, int b, int c, float u1, float v1, float u2, float v2, float u3, float v3, int m)
         {
-            tw.WriteLine("		{0} V({1} {2} {3}) M({10}) UV({4} {5} {6} {7} {8} {9})",
+            tw.WriteLine("		{0} V({1} {2} {3}) M({10}) UV({4:F5} {5:F5} {6:F5} {7:F5} {8:F5} {9:F5})",
                 3, a, b, c, u1, v1, u2, v2, u3, v3, m);
         }
 
         public void WriteVertex(float x, float y, float z)
         {
-            tw.WriteLine("		{0} {1} {2}", x.ToString("N6"), y.ToString("N6"), z.ToString("N6"));
+            tw.WriteLine("		{0:F4} {1:F4} {2:F4}", x, y, z);
         }
     }
 
