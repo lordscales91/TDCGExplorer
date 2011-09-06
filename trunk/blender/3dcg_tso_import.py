@@ -132,9 +132,7 @@ def Import(Option):
 		specs	= []
 		skin_weights_map	= {}
 
-		UseMate= []
-		for scr in tso.sub_scripts:
-			UseMate.append( Blender.Material.New(scr.name) )
+		materials= [ Blender.Material.New(scr.name) for scr in tso.sub_scripts ]
 		
 		for mesh in tso.meshes:
 			heap.clear()
@@ -143,60 +141,56 @@ def Import(Option):
 			del specs[:]
 			skin_weights_map.clear()
 
-			LocalUseMate= []
+			local_materials= []
 
 			for sub in mesh.sub_meshes:
 				cnt = 0
 				va = None
 				vb = None
 				vc = None
-				fa = 0
-				fb = 0
-				fc = 0
+				a = 0
+				b = 0
+				c = 0
 
-				# LocalMate= tso.sub_scripts[sub.spec].name
-
-				if UseMate[sub.spec] not in LocalUseMate:
-					LocalUseMate.append(UseMate[sub.spec])
+				if materials[sub.spec] not in local_materials:
+					local_materials.append(materials[sub.spec])
 			
-				LocalBone= []
-				for bone_index in sub.bone_indices:
-					LocalBone.append( tso.nodes[ bone_index ].name )
+				local_bone_names= [ tso.nodes[bone_index].name for bone_index in sub.bone_indices ]
 			
 				for v in sub.vertices:
 					va = vb
 					vb = vc
 					vc = v
-					key = ( sub.spec, v.co, v.no )
-					fa = fb
-					fb = fc
-					fc = heap.append(key)
+					key = ( v.co, v.no )
+					a = b
+					b = c
+					c = heap.append(key)
 
 					if key not in skin_weights_map:
 						skin_weights = []
 						for bone_index, w in v.skin_weights:
-							skin_weights.append(( LocalBone[bone_index], w ))
+							skin_weights.append(( local_bone_names[bone_index], w ))
 						skin_weights_map[key] = skin_weights
 
 					if cnt < 2:
 						cnt+= 1
 						continue
-					if fa == fb or fb == fc or fc  == fa:
+					if a == b or b == c or c == a:
 						cnt+= 1
 						continue
 					if cnt % 2 == 0:
-						faces.append(( fa, fb, fc ))
+						faces.append(( a, b, c ))
 					else:
-						faces.append(( fa, fc, fb ))
-					uvs.append({ fa: va.uv, fb: vb.uv, fc: vc.uv })
+						faces.append(( a, c, b ))
+					uvs.append({ a: va.uv, b: vb.uv, c: vc.uv })
 					specs.append(sub.spec)
 					cnt+= 1
 
 			me= Mesh.New(mesh.name)
-			me.materials= LocalUseMate
+			me.materials= local_materials
 			
 			VertVector= []
-			for spec, co, no in heap.ary:
+			for co, no in heap.ary:
 				VertVector.append( Vector(co[0], -co[2], co[1]) *0.5 )
 			me.verts.extend(VertVector)
 
@@ -213,7 +207,7 @@ def Import(Option):
 			for i in xrange(len(faces)):
 				face = me.faces[i]
 				uv = uvs[i]
-				face.mat= me.materials.index(UseMate[specs[i]])
+				face.mat= me.materials.index(materials[specs[i]])
 				face.uv= [ Vector(uv[v.index]) for v in face.verts ]
 
 			ob= Scene.GetCurrent().objects.new(me, mesh.name)
