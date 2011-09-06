@@ -10,7 +10,25 @@ import Blender
 from Blender import *
 from struct import *
 from Blender.Mathutils import *
+from tdcg import TSOFile
 
+class Heap(object):
+	def __init__(self):
+		self.ary = []
+		self.map = {}
+
+	def append(self, key):
+		if key not in self.map:
+			idx = len(self.ary)
+			self.map[key] = idx
+			self.ary.append(key)
+		else:
+			idx = self.map[key]
+		return idx
+
+	def clear(self):
+		del self.ary[:]
+		self.map.clear()
 
 ####################
 #     Import()     #
@@ -20,317 +38,210 @@ def Import(Option):
 	####################
 	## Import() sub functions
 	
-	def ImpoetArmature(op):
-		global Seek
+	def ImportArmature():
+		BoneData= []
+		for node in tso.nodes:
+			BoneData.append({})
+			BoneData[-1]["Name"]= node.name
+			BoneData[-1]["Parent"]= node.parent_name
+			mat= node.transform
+			BoneData[-1]["Matrix"]= Matrix( mat[0:4], mat[4:8], mat[8:12], mat[12:16] )
 		
-		File.seek(Seek)
-		index= unpack("i", File.read(4))[0]
-		
-		Node= []
-		for line in xrange(index):
-			Node.append("")
-			while True:
-				char= File.read(1)
-				if char ==chr(0x00):
-					break
-				Node[-1]+= char
-		
-		if op:
-			File.seek(4, 1)
-			BoneData= []
-			for path in Node:
-				BoneData.append({})
-				BoneData[-1]["Name"]= path.rsplit("|")[-1]
-				BoneData[-1]["Parent"]= path.rsplit("|")[-2]
-				mat= unpack("16f", File.read(64))
-				BoneData[-1]["Matrix"]= Matrix( mat[0:4], mat[4:8], mat[8:12], mat[12:16] )
-			
-			CopyData= BoneData[:]
-			Arm= Armature.New(Blender.sys.makename(Option["File"],"",1))
-			Arm_ob= Scene.GetCurrent().objects.new(Arm)
-			Arm.makeEditable()
-			ReviseMatrix= ScaleMatrix(0.5,3) *RotationMatrix(90,3,"x")
-			while len(CopyData) !=0:
-				data= CopyData.pop(0)
-				EditBone= Armature.Editbone()
-				EditBone.head= data["Matrix"].translationPart()*ReviseMatrix
-				EditBone.tail= data["Matrix"].translationPart()*ReviseMatrix +Vector(0,0,-1)
-				EditBone.roll= 0
-				if data["Parent"] !="":
-					try:
-						EditBone.parent= Arm.bones[data["Parent"]]
-						EditBone.head+= Arm.bones[data["Parent"]].head
-						EditBone.tail+= Arm.bones[data["Parent"]].head
-						Arm.bones[data["Name"]]= EditBone
-					except KeyError:
-						CopyData.append(data)
-				else:
+		CopyData= BoneData[:]
+		Arm= Armature.New(Blender.sys.makename(Option["File"],"",1))
+		Arm_ob= Scene.GetCurrent().objects.new(Arm)
+		Arm.makeEditable()
+		ReviseMatrix= ScaleMatrix(0.5,3) *RotationMatrix(90,3,"x")
+		while len(CopyData) !=0:
+			data= CopyData.pop(0)
+			EditBone= Armature.Editbone()
+			EditBone.head= data["Matrix"].translationPart()*ReviseMatrix
+			EditBone.tail= data["Matrix"].translationPart()*ReviseMatrix +Vector(0,0,-1)
+			EditBone.roll= 0
+			if data["Parent"] !="":
+				try:
+					EditBone.parent= Arm.bones[data["Parent"]]
+					EditBone.head+= Arm.bones[data["Parent"]].head
+					EditBone.tail+= Arm.bones[data["Parent"]].head
 					Arm.bones[data["Name"]]= EditBone
-			Arm.update()
-			Bones= Arm.bones.values()
-			Arm.makeEditable()
-			for bone in Bones:
-				if bone.hasChildren():
-					if len(bone.children) ==1:
-						Arm.bones[bone.name].tail= bone.children[0].head["ARMATURESPACE"]
-						Arm.bones[bone.children[0].name].options= Armature.CONNECTED
-					else:
-						vec= Vector(0,0,0)
-						for chld in bone.children:
-							vec+= chld.head["ARMATURESPACE"]
-						Arm.bones[bone.name].tail= Vector(\
-						vec.x/len(bone.children),\
-						vec.y/len(bone.children),\
-						vec.z/len(bone.children) )
-				elif bone.hasParent():
-					Arm.bones[bone.name].tail=\
-					(bone.head["ARMATURESPACE"] -bone.parent.head["ARMATURESPACE"])\
-					*0.1 +bone.head["ARMATURESPACE"]
-			Arm.update()
-			Pose= Arm_ob.getPose()
-			for data in BoneData:
-				eul= data["Matrix"].toEuler()
-				mat= Arm.bones[data["Name"]].matrix["ARMATURESPACE"].rotationPart()
-				Pose.bones[data["Name"]].localMatrix=(\
-				mat *Euler(eul.x,eul.z,-eul.y).toMatrix() *mat.invert() ).resize4x4()
-		else:
-			File.seek(4 +(64 *index), 1)
-		
-		Seek= File.tell()
-		return Node
+				except KeyError:
+					CopyData.append(data)
+			else:
+				Arm.bones[data["Name"]]= EditBone
+		Arm.update()
+		Bones= Arm.bones.values()
+		Arm.makeEditable()
+		for bone in Bones:
+			if bone.hasChildren():
+				if len(bone.children) ==1:
+					Arm.bones[bone.name].tail= bone.children[0].head["ARMATURESPACE"]
+					Arm.bones[bone.children[0].name].options= Armature.CONNECTED
+				else:
+					vec= Vector(0,0,0)
+					for chld in bone.children:
+						vec+= chld.head["ARMATURESPACE"]
+					Arm.bones[bone.name].tail= Vector(\
+					vec.x/len(bone.children),\
+					vec.y/len(bone.children),\
+					vec.z/len(bone.children) )
+			elif bone.hasParent():
+				Arm.bones[bone.name].tail=\
+				(bone.head["ARMATURESPACE"] -bone.parent.head["ARMATURESPACE"])\
+				*0.1 +bone.head["ARMATURESPACE"]
+		Arm.update()
+		Pose= Arm_ob.getPose()
+		for data in BoneData:
+			eul= data["Matrix"].toEuler()
+			mat= Arm.bones[data["Name"]].matrix["ARMATURESPACE"].rotationPart()
+			Pose.bones[data["Name"]].localMatrix=(\
+			mat *Euler(eul.x,eul.z,-eul.y).toMatrix() *mat.invert() ).resize4x4()
 	
-	def ImportNode(op, node):
-		if op:
-			txt= Text.New("N: " +Blender.sys.makename(Option["File"],"",1))
-			for line in node:
+	def ImportNode():
+		txt= Text.New("N: " +Blender.sys.makename(Option["File"],"",1))
+		for node in tso.nodes:
+			txt.write(node.path +"\n")
+	
+	def ImportImage():
+		for tex in tso.textures:
+			# tex.depth must be 4.
+			img= Image.New(tex.name, tex.width, tex.height, 32)
+			cnt= 0
+			for y in xrange(tex.height):
+				for x in xrange(tex.width):
+					p = ( ord(tex.data[cnt+0]), ord(tex.data[cnt+1]), ord(tex.data[cnt+2]), ord(tex.data[cnt+3]) )
+					img.setPixelI(x, y, p)
+					cnt+= 4
+			img.pack()
+	
+	def ImportShader():
+		for scr in tso.scripts:
+			txt= Text.New("S: " +scr.name)
+			for line in scr.lines:
 				txt.write(line +"\n")
 	
-	def ImportImage(op):
-		global Seek
-		File.seek(Seek)
-		for f1 in xrange( unpack("i", File.read(4))[0] ):
-			
-			name= ""
-			while True:
-				char= File.read(1)
-				if char ==chr(0x00): break
-				name+= char
-			
-			while True:
-				if File.read(1) ==chr(0x00): break
-			
-			imgX, imgY, imgC= unpack("3i", File.read(12))
-			if op:
-				data= []
-				for f2 in xrange(imgX *imgY):
-					if imgC ==4:
-						bin= File.read(4)
-						data.append([ ord(bin[0]), ord(bin[1]), ord(bin[2]), ord(bin[3]) ])
-					else:
-						bin= File.read(3)
-						data.append([ ord(bin[0]), ord(bin[1]), ord(bin[2]), 255 ])
-				
-				img= Image.New(name, imgX, imgY, 8*imgC)
-				count= 0
-				for y in xrange(imgY):
-					for x in xrange(imgX):
-						img.setPixelI(x, y, data[count])
-						count+= 1
-				img.pack()
-			else:
-				File.seek(imgX *imgY *imgC, 1)
+	def ImportMaterial():
+		for scr in tso.sub_scripts:
+			txt= Text.New("M: " +scr.name)
+			for line in scr.lines:
+				txt.write(line +"\n")
+	
+	def ImportMesh():
+		heap	= Heap()
+		faces	= []
+		uvs	= []
+		specs	= []
+		skin_weights_map	= {}
+
+		UseMate= []
+		for scr in tso.sub_scripts:
+			UseMate.append( Blender.Material.New(scr.name) )
 		
-		Seek= File.tell()
-	
-	def ImportShader(op):
-		global Seek
-		File.seek(Seek)
-		for f1 in xrange( unpack("i", File.read(4))[0] ):
-			name= ""
-			while True:
-				char= File.read(1)
-				if char ==chr(0x00): break
-				name+= char
-			LineIndex= unpack("i", File.read(4))[0]
-			if op:
-				txt= Text.New("S: " +name)
-				for f2 in xrange(LineIndex):
-					line= ""
-					while True:
-						char= File.read(1)
-						if char ==chr(0x00): break
-						line+= char
-					txt.write(line +"\n")
-			else:
-				for f2 in xrange(LineIndex):
-					while True:
-						if File.read(1) ==chr(0x00): break
-		Seek= File.tell()
-	
-	def ImportMaterial(op):
-		global Seek
-		File.seek(Seek)
-		mate= []
-		for f1 in xrange( unpack("i", File.read(4))[0] ):
-			name= ""
-			while True:
-				char= File.read(1)
-				if char ==chr(0x00): break
-				name+= char
-			mate.append(name)
-			while True:
-				if File.read(1) ==chr(0x00): break
-			LineIndex= unpack("i", File.read(4))[0]
-			if op:
-				txt= Text.New("M: " +name)
-				for f2 in xrange(LineIndex):
-					line= ""
-					while True:
-						char= File.read(1)
-						if char ==chr(0x00): break
-						line+= char
-					txt.write(line +"\n")
-			else:
-				for f2 in xrange(LineIndex):
-					while True:
-						if File.read(1) ==chr(0x00): break
-		Seek= File.tell()
-		return mate
-	
-	def ImportMesh(op, node, mate):
-		if op:
-			File.seek(Seek)
-			for f1 in xrange(len(node)):
-				node[f1]= node[f1].rpartition("|")[-1]
+		for mesh in tso.meshes:
+			heap.clear()
+			del faces[:]
+			del uvs[:]
+			del specs[:]
+			skin_weights_map.clear()
+
+			LocalUseMate= []
+
+			for sub in mesh.sub_meshes:
+				cnt = 0
+				va = None
+				vb = None
+				vc = None
+				fa = 0
+				fb = 0
+				fc = 0
+
+				# LocalMate= tso.sub_scripts[sub.spec].name
+
+				if UseMate[sub.spec] not in LocalUseMate:
+					LocalUseMate.append(UseMate[sub.spec])
 			
-			UseMate= []
-			for m in mate:
-				UseMate.append( Blender.Material.New(m) )
+				LocalBone= []
+				for bone_index in sub.bone_indices:
+					LocalBone.append( tso.nodes[ bone_index ].name )
 			
-			for ObIndex in xrange( unpack("i", File.read(4))[0] ):
-				name= ""
-				while True:
-					char= File.read(1)
-					if char ==chr(0x00): break
-					name+= char
-				
-				mat= unpack("16i", File.read(64))
-				mat= Matrix( mat[0:4], mat[4:8], mat[8:12], mat[12:16] )
-				
-				File.read(4)
-				VertData= []
-				BinData= []
-				LocalUseMate= []
-				for vg in xrange( unpack("i", File.read(4))[0] ):
-					LocalMateIndex= unpack("i", File.read(4))[0]
-					LocalMate= mate[LocalMateIndex]
-					LocalBone= []
-					
-					if not LocalUseMate.count(UseMate[LocalMateIndex]):
-						LocalUseMate.append(UseMate[LocalMateIndex])
-					
-					for bone in xrange( unpack("i", File.read(4))[0] ):
-						LocalBone.append( node[ unpack("i", File.read(4))[0] ] )
-					
-					VertData.append({"Mate":UseMate[LocalMateIndex], "Vert":[]})
-					BinData.append([])
-					for vert in xrange( unpack("i", File.read(4))[0] ):
-						data= {}
-						bin= chr(LocalMateIndex)
-						data["mate"]= LocalMateIndex
-						bin+= File.read(12)
-						data["co"]= unpack("3f", bin[1:13])
-						bin+= File.read(12)
-						data["no"]= unpack("3f", bin[13:25])
-						data["uv"]= unpack("2f", File.read(8))
-						data["weight"]= []
-						for bone in xrange( unpack("i", File.read(4))[0] ):
-							weight= unpack("if", File.read(8))
-							data["weight"].append([ LocalBone[weight[0]], weight[1] ])
-						VertData[-1]["Vert"].append(data)
-						BinData[-1].append(bin)
-				
-				UseVert= []
-				VertVector= []
-				UseBin= []
-				UseFace= []
-				UseUV= []
-				Mate= []
-				sort_face= []
-				for f1 in range(len(BinData)):
-					
-					skip= 2
-					bak= []
-					
-					for f2 in range(len(BinData[f1])):
-						if len(bak)==3: del bak[0]
-						bak.append(BinData[f1][f2])
-						
-						if not bak[-1] in UseBin:
-							UseVert.append(VertData[f1]["Vert"][f2])
-							co= UseVert[-1]["co"]
-							VertVector.append( Vector(co[0], -co[2], co[1]) *0.5 )
-							UseBin.append(bak[-1])
-						
-						if skip == 0:
-							if bak[0] != bak[1] != bak[2] != bak[0]:
-								num= [ UseBin.index(bak[0]), UseBin.index(bak[1]), UseBin.index(bak[2]) ]
-								
-								if f2%2 == 0:
-									UseFace.append(num)
-									UseUV.append((\
-										Vector( VertData[f1]["Vert"][f2-2]["uv"] ),\
-										Vector( VertData[f1]["Vert"][f2-1]["uv"] ),\
-										Vector( VertData[f1]["Vert"][f2-0]["uv"] )))
-								else:
-									num.reverse()
-									UseFace.append(num)
-									UseUV.append((\
-										Vector( VertData[f1]["Vert"][f2-0]["uv"] ),\
-										Vector( VertData[f1]["Vert"][f2-1]["uv"] ),\
-										Vector( VertData[f1]["Vert"][f2-2]["uv"] )))
-								
-								Mate.append(VertData[f1]["Mate"])
-								
-								if sorted(num) in sort_face:
-									del UseFace[sort_face.index(sorted(num))]
-									del UseUV[sort_face.index(sorted(num))]
-									del Mate[sort_face.index(sorted(num))]
-									del sort_face[sort_face.index(sorted(num))]
-								sort_face.append(sorted(num))
-						else:
-							skip-= 1
-				
-				me= Mesh.New(name)
-				me.materials= LocalUseMate
-				ob= Scene.GetCurrent().objects.new(me, name)
-				
-				me.verts.extend(VertVector)
-				for f1 in xrange(len(UseVert)):
-					for f2 in UseVert[f1]["weight"]:
-						if not f2[0] in me.getVertGroupNames():
-							me.addVertGroup(f2[0])
-						me.assignVertsToGroup(f2[0], [f1], f2[1], 1)
-				
-				me.faces.extend(UseFace)
-				for f1 in range(len(me.faces)):
-					me.faces[f1].mat= me.materials.index(Mate[f1])
-					me.faces[f1].uv= UseUV[f1]
+				for v in sub.vertices:
+					va = vb
+					vb = vc
+					vc = v
+					key = ( sub.spec, v.co, v.no )
+					fa = fb
+					fb = fc
+					fc = heap.append(key)
+
+					if key not in skin_weights_map:
+						skin_weights = []
+						for bone_index, w in v.skin_weights:
+							skin_weights.append(( LocalBone[bone_index], w ))
+						skin_weights_map[key] = skin_weights
+
+					if cnt < 2:
+						cnt+= 1
+						continue
+					if fa == fb or fb == fc or fc  == fa:
+						cnt+= 1
+						continue
+					if cnt % 2 == 0:
+						faces.append(( fa, fb, fc ))
+					else:
+						faces.append(( fa, fc, fb ))
+					uvs.append({ fa: va.uv, fb: vb.uv, fc: vc.uv })
+					specs.append(sub.spec)
+					cnt+= 1
+
+			me= Mesh.New(mesh.name)
+			me.materials= LocalUseMate
+			
+			VertVector= []
+			for spec, co, no in heap.ary:
+				VertVector.append( Vector(co[0], -co[2], co[1]) *0.5 )
+			me.verts.extend(VertVector)
+
+			# print "dump faces"
+			# for i in xrange(len(faces)):
+			# 	print faces[i]
+
+			me.faces.extend(faces)
+
+			# print "dump me.faces"
+			# for i in xrange(len(faces)):
+			# 	print me.faces[i]
+
+			for i in xrange(len(faces)):
+				face = me.faces[i]
+				uv = uvs[i]
+				face.mat= me.materials.index(UseMate[specs[i]])
+				face.uv= [ Vector(uv[v.index]) for v in face.verts ]
+
+			ob= Scene.GetCurrent().objects.new(me, mesh.name)
+
+			for i, key in enumerate(heap.ary):
+				for name, w in skin_weights_map[key]:
+					if name not in me.getVertGroupNames():
+						me.addVertGroup(name)
+					me.assignVertsToGroup(name, [i], w, 1)
 				
 	##
 	####################
 	
-	global Seek
+	tso= TSOFile()
+	tso.load(Option["File"])
 	
-	File= open(Option["File"], "rb")
-	
-	Seek= 4
-	Node= ImpoetArmature(Option["Armature"])
-	ImportNode(Option["Node Text"], Node)
-	ImportImage(Option["Image"])
-	ImportShader(Option["Shader Text"])
-	Material= ImportMaterial(Option["Material Text"])
-	ImportMesh(Option["Mesh"], Node, Material)
+	if Option["Armature"]:
+		ImportArmature()
+	if Option["Node Text"]:
+		ImportNode()
+	if Option["Image"]:
+		ImportImage()
+	if Option["Shader Text"]:
+		ImportShader()
+	if Option["Material Text"]:
+		ImportMaterial()
+	if Option["Mesh"]:
+		ImportMesh()
 
 ####################
 #       Gui()      #
@@ -505,3 +416,5 @@ def Gui():
 if __name__ =="__main__":
 	#GUI start
 	Gui()
+
+# vim: set sw=4 ts=4:
