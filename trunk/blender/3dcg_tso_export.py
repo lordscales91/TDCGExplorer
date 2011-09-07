@@ -257,58 +257,63 @@ def Export(Option):
 					i1= (vert[0].co-MidpointVecs(vert[1].co, vert[3].co)).length +(vert[2].co-MidpointVecs(vert[1].co, vert[3].co)).length
 					i2= (vert[1].co-MidpointVecs(vert[0].co, vert[2].co)).length +(vert[3].co-MidpointVecs(vert[0].co, vert[2].co)).length
 					if i1 >=i2:
-						trg_faces[mate].append( TriangleFace() )
-						trg_faces[mate][-1].verts= [ vert[0], vert[1], vert[3] ]
-						trg_faces[mate][-1].uv= [ face.uv[0], face.uv[1], face.uv[3] ]
-						trg_faces[mate][-1].mat= face.mat
-						trg_faces[mate][-1].weight= []
-						for f1 in trg_faces[mate][-1].verts:
+						trg_face = TriangleFace()
+						trg_face.verts= [ vert[0], vert[1], vert[3] ]
+						trg_face.uv= [ face.uv[0], face.uv[1], face.uv[3] ]
+						trg_face.mat= face.mat
+						trg_face.weight= []
+						for f1 in trg_face.verts:
 							for f2 in me.getVertexInfluences(f1.index):
 								if f2[0] in TSOnode:
-									if not f2[0] in trg_faces[mate][-1].weight:
-										trg_faces[mate][-1].weight.append(f2[0])
-						trg_faces[mate].append( TriangleFace() )
-						trg_faces[mate][-1].verts= [ vert[1], vert[2], vert[3] ]
-						trg_faces[mate][-1].uv= [ face.uv[1], face.uv[2], face.uv[3] ]
-						trg_faces[mate][-1].mat= face.mat
-						trg_faces[mate][-1].weight= []
-						for f1 in trg_faces[mate][-1].verts:
+									if not f2[0] in trg_face.weight:
+										trg_face.weight.append(f2[0])
+						trg_faces[mate].append( trg_face )
+						trg_face = TriangleFace()
+						trg_face.verts= [ vert[1], vert[2], vert[3] ]
+						trg_face.uv= [ face.uv[1], face.uv[2], face.uv[3] ]
+						trg_face.mat= face.mat
+						trg_face.weight= []
+						for f1 in trg_face.verts:
 							for f2 in me.getVertexInfluences(f1.index):
 								if f2[0] in TSOnode:
-									if not f2[0] in trg_faces[mate][-1].weight:
-										trg_faces[mate][-1].weight.append(f2[0])
+									if not f2[0] in trg_face.weight:
+										trg_face.weight.append(f2[0])
+						trg_faces[mate].append( trg_face )
 					else:
-						trg_faces[mate].append( TriangleFace() )
-						trg_faces[mate][-1].verts= [ vert[0], vert[1], vert[2] ]
-						trg_faces[mate][-1].uv= [ face.uv[0], face.uv[1], face.uv[2] ]
-						trg_faces[mate][-1].mat= face.mat
-						trg_faces[mate][-1].weight= []
-						for f1 in trg_faces[mate][-1].verts:
+						trg_face = TriangleFace()
+						trg_face.verts= [ vert[0], vert[1], vert[2] ]
+						trg_face.uv= [ face.uv[0], face.uv[1], face.uv[2] ]
+						trg_face.mat= face.mat
+						trg_face.weight= []
+						for f1 in trg_face.verts:
 							for f2 in me.getVertexInfluences(f1.index):
 								if f2[0] in TSOnode:
-									if not f2[0] in trg_faces[mate][-1].weight:
-										trg_faces[mate][-1].weight.append(f2[0])
-						trg_faces[mate].append( TriangleFace() )
-						trg_faces[mate][-1].verts= [ vert[0], vert[2], vert[3] ]
-						trg_faces[mate][-1].uv= [ face.uv[0], face.uv[2], face.uv[3] ]
-						trg_faces[mate][-1].mat= face.mat
-						trg_faces[mate][-1].weight= []
-						for f1 in trg_faces[mate][-1].verts:
+									if not f2[0] in trg_face.weight:
+										trg_face.weight.append(f2[0])
+						trg_faces[mate].append( trg_face )
+						trg_face = TriangleFace()
+						trg_face.verts= [ vert[0], vert[2], vert[3] ]
+						trg_face.uv= [ face.uv[0], face.uv[2], face.uv[3] ]
+						trg_face.mat= face.mat
+						trg_face.weight= []
+						for f1 in trg_face.verts:
 							for f2 in me.getVertexInfluences(f1.index):
 								if f2[0] in TSOnode:
-									if not f2[0] in trg_faces[mate][-1].weight:
-										trg_faces[mate][-1].weight.append(f2[0])
+									if not f2[0] in trg_face.weight:
+										trg_face.weight.append(f2[0])
+						trg_faces[mate].append( trg_face )
 				else:
-					trg_faces[mate].append( TriangleFace() )
-					trg_faces[mate][-1].verts= face.verts
-					trg_faces[mate][-1].uv= face.uv
-					trg_faces[mate][-1].mat= face.mat
-					trg_faces[mate][-1].weight= []
-					for f1 in trg_faces[mate][-1].verts:
+					trg_face = TriangleFace()
+					trg_face.verts= face.verts
+					trg_face.uv= face.uv
+					trg_face.mat= face.mat
+					trg_face.weight= []
+					for f1 in trg_face.verts:
 						for f2 in me.getVertexInfluences(f1.index):
 							if f2[0] in TSOnode:
-								if not f2[0] in trg_faces[mate][-1].weight:
-									trg_faces[mate][-1].weight.append(f2[0])
+								if not f2[0] in trg_face.weight:
+									trg_face.weight.append(f2[0])
+					trg_faces[mate].append( trg_face )
 			
 			copy_faces= trg_faces[:]
 			trg_faces= []
