@@ -217,6 +217,19 @@ def Export(Option):
 				data["weight"][f1][1]= data["weight"][f1][1]/total
 			return data
 		
+		def CreateTriangleFace(me, face, a, b, c):
+			trg_face = TriangleFace()
+			trg_face.verts= [ face.verts[a], face.verts[b], face.verts[c] ]
+			trg_face.uv= [ face.uv[a], face.uv[b], face.uv[c] ]
+			trg_face.mat= face.mat
+			trg_face.weight= []
+			for f1 in trg_face.verts:
+				for f2 in me.getVertexInfluences(f1.index):
+					if f2[0] in TSOnode:
+						if not f2[0] in trg_face.weight:
+							trg_face.weight.append(f2[0])
+			return trg_face;
+
 		bin= pack("<i", len(option))
 		for mesh in option:
 			ob= Object.Get(mesh["Object"])
@@ -251,69 +264,18 @@ def Export(Option):
 			for face in me.faces:
 				mate= face.mat
 				if len(face.verts) ==4:
-					vert= []
-					for f1 in face.verts:
-						vert.append( f1 )
-					i1= (vert[0].co-MidpointVecs(vert[1].co, vert[3].co)).length +(vert[2].co-MidpointVecs(vert[1].co, vert[3].co)).length
-					i2= (vert[1].co-MidpointVecs(vert[0].co, vert[2].co)).length +(vert[3].co-MidpointVecs(vert[0].co, vert[2].co)).length
+					mid_co_13 = MidpointVecs(face.verts[1].co, face.verts[3].co)
+					mid_co_02 = MidpointVecs(face.verts[0].co, face.verts[2].co)
+					i1= (face.verts[0].co-mid_co_13).length +(face.verts[2].co-mid_co_13).length
+					i2= (face.verts[1].co-mid_co_02).length +(face.verts[3].co-mid_co_02).length
 					if i1 >=i2:
-						trg_face = TriangleFace()
-						trg_face.verts= [ vert[0], vert[1], vert[3] ]
-						trg_face.uv= [ face.uv[0], face.uv[1], face.uv[3] ]
-						trg_face.mat= face.mat
-						trg_face.weight= []
-						for f1 in trg_face.verts:
-							for f2 in me.getVertexInfluences(f1.index):
-								if f2[0] in TSOnode:
-									if not f2[0] in trg_face.weight:
-										trg_face.weight.append(f2[0])
-						trg_faces[mate].append( trg_face )
-						trg_face = TriangleFace()
-						trg_face.verts= [ vert[1], vert[2], vert[3] ]
-						trg_face.uv= [ face.uv[1], face.uv[2], face.uv[3] ]
-						trg_face.mat= face.mat
-						trg_face.weight= []
-						for f1 in trg_face.verts:
-							for f2 in me.getVertexInfluences(f1.index):
-								if f2[0] in TSOnode:
-									if not f2[0] in trg_face.weight:
-										trg_face.weight.append(f2[0])
-						trg_faces[mate].append( trg_face )
+						trg_faces[mate].append( CreateTriangleFace(me, face, 0, 1, 3) )
+						trg_faces[mate].append( CreateTriangleFace(me ,face, 1, 2, 3) )
 					else:
-						trg_face = TriangleFace()
-						trg_face.verts= [ vert[0], vert[1], vert[2] ]
-						trg_face.uv= [ face.uv[0], face.uv[1], face.uv[2] ]
-						trg_face.mat= face.mat
-						trg_face.weight= []
-						for f1 in trg_face.verts:
-							for f2 in me.getVertexInfluences(f1.index):
-								if f2[0] in TSOnode:
-									if not f2[0] in trg_face.weight:
-										trg_face.weight.append(f2[0])
-						trg_faces[mate].append( trg_face )
-						trg_face = TriangleFace()
-						trg_face.verts= [ vert[0], vert[2], vert[3] ]
-						trg_face.uv= [ face.uv[0], face.uv[2], face.uv[3] ]
-						trg_face.mat= face.mat
-						trg_face.weight= []
-						for f1 in trg_face.verts:
-							for f2 in me.getVertexInfluences(f1.index):
-								if f2[0] in TSOnode:
-									if not f2[0] in trg_face.weight:
-										trg_face.weight.append(f2[0])
-						trg_faces[mate].append( trg_face )
+						trg_faces[mate].append( CreateTriangleFace(me, face, 0, 1, 2) )
+						trg_faces[mate].append( CreateTriangleFace(me, face, 0, 2, 3) )
 				else:
-					trg_face = TriangleFace()
-					trg_face.verts= face.verts
-					trg_face.uv= face.uv
-					trg_face.mat= face.mat
-					trg_face.weight= []
-					for f1 in trg_face.verts:
-						for f2 in me.getVertexInfluences(f1.index):
-							if f2[0] in TSOnode:
-								if not f2[0] in trg_face.weight:
-									trg_face.weight.append(f2[0])
-					trg_faces[mate].append( trg_face )
+					trg_faces[mate].append( CreateTriangleFace(me, face, 0, 1, 2) )
 			
 			copy_faces= trg_faces[:]
 			trg_faces= []
