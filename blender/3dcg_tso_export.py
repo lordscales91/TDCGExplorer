@@ -126,11 +126,10 @@ def Export(Option):
 			bin+= tex["Name"] +chr(0x00)
 			bin+= '"' +tex["FileName"] +tex["Ext"] +'"' +chr(0x00)
 			img= Image.Get(tex["Image"])
-			imgX= img.getMaxXY()[0]
-			imgY= img.getMaxXY()[1]
-			bin+= pack( "<3i", imgX, imgY, 4 )
-			for y in xrange(imgY):
-				for x in xrange(imgX):
+			width, height= img.getMaxXY()
+			bin+= pack( "<3i", width, height, 4 )
+			for y in xrange(height):
+				for x in xrange(width):
 					px= img.getPixelI(x, y)
 					for d in xrange(4):
 						bin+= chr(px[d])
@@ -1117,8 +1116,7 @@ def Gui():
 			if GuiState["ActiveTextureImage"] in BlenderData["Image"]:
 				img= {}
 				img["Image"]= Image.Get(GuiState["ActiveTextureImage"])
-				img["W"]= img["Image"].getMaxXY()[0]
-				img["H"]= img["Image"].getMaxXY()[1]
+				img["W"], img["H"]= img["Image"].getMaxXY()
 				W= Win(0,20,50,65, 10,0,-5,-5)
 				if W["W"]/float(img["W"]) >=W["H"]/float(img["H"]):
 					zoom= W["H"]/float(img["H"])
