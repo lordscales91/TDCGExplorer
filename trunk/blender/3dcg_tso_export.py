@@ -12,6 +12,7 @@ import string
 from Blender import *
 from struct import *
 from Blender.Mathutils import *
+from StringIO import StringIO
 
 ####################
 #      Export      #
@@ -230,11 +231,12 @@ def Export(Option):
 							trg_face.weight.append(f2[0])
 			return trg_face;
 
-		bin= pack("<i", len(option))
+		w = StringIO()
+		w.write( pack("<i", len(option)) )
 		for mesh in option:
 			ob= Object.Get(mesh["Object"])
 			me= ob.getData(False, True)
-			bin+= mesh["Name"] +chr(0x00)
+			w.write( mesh["Name"] +chr(0x00) )
 			
 			#Get object matrix
 			ob_mat= ob.getMatrix("worldspace").copy()
@@ -249,13 +251,13 @@ def Export(Option):
 			Tmat= TranslationMatrix( Vector(Tmat.x, Tmat.z, -Tmat.y) *2 )
 			#Mix
 			mat= Smat *Rmat *Tmat
-			bin+= pack( "16f",\
+			w.write( pack( "16f",\
 				mat[0][0],mat[0][1],mat[0][2],mat[0][3],\
 				mat[1][0],mat[1][1],mat[1][2],mat[1][3],\
 				mat[2][0],mat[2][1],mat[2][2],mat[2][3],\
-				mat[3][0],mat[3][1],mat[3][2],mat[3][3] )
+				mat[3][0],mat[3][1],mat[3][2],mat[3][3] ))
 			
-			bin+= pack("i", 1)
+			w.write( pack("i", 1) )
 			
 			trg_faces= []
 			for f1 in me.materials:
@@ -312,11 +314,12 @@ def Export(Option):
 			for f1 in trg_faces:
 				for f2 in f1:
 					vg_index+= 1
-			bin+= pack("i", vg_index)
+			w.write( pack("i", vg_index) )
 			
 			for f1 in xrange(len(trg_faces)):
 				for f2 in trg_faces[f1]:
-					bin+= pack("i", TSOmaterial.index( me.materials[f1].name ))
+					# spec
+					w.write( pack("i", TSOmaterial.index( me.materials[f1].name )))
 					
 					local_node_index= []
 					for f3 in f2["Node"]:
@@ -332,26 +335,28 @@ def Export(Option):
 						data.append( GetVertData( me, face, 2 ) )
 						data.append( data[-1] )
 					
-					bin+= pack( "i", len(local_node_index) )
+					# bone_indices
+
+					w.write( pack( "i", len(local_node_index) ))
 					for f3 in local_node_index:
-						bin+= pack( "i", f3 )
+						w.write( pack( "i", f3 ))
 					
-					bin+= pack( "i", len(data) )
+					# vertices
+
+					w.write( pack( "i", len(data) ))
 					for f3 in data:
-						bin+= pack( "3f", f3["co"].x, f3["co"].y, f3["co"].z )
-						bin+= pack( "3f", f3["no"].x, f3["no"].y, f3["no"].z )
-						bin+= pack( "2f", f3["uv"].x, f3["uv"].y )
+						w.write( pack( "3f", f3["co"].x, f3["co"].y, f3["co"].z ))
+						w.write( pack( "3f", f3["no"].x, f3["no"].y, f3["no"].z ))
+						w.write( pack( "2f", f3["uv"].x, f3["uv"].y ))
 						if len(f3["weight"]) >0:
-							bin+= pack( "i", len(f3["weight"]) )
+							w.write( pack( "i", len(f3["weight"]) ))
 							for f4 in f3["weight"]:
-								bin+= pack( "if", local_node_index.index( TSOnode.index(f4[0]) ), f4[1] )
+								w.write( pack( "if", local_node_index.index( TSOnode.index(f4[0]) ), f4[1] ))
 						else:
-							bin+= pack( "iif", 1, 0, 1 )
+							w.write( pack( "iif", 1, 0, 1 ))
 			
-			#print len(trg_faces[0][0]["Faces"])
-			#print len(trg_faces[0][1]["Faces"])
-			#iiie= testttttt
-			
+		bin = w.getvalue()
+		w.close()
 		return bin
 	
 	##
@@ -1494,3 +1499,5 @@ def Gui():
 if __name__ =="__main__":
 	#GUI start
 	Gui()
+
+# vim: set sw=4 ts=4:
