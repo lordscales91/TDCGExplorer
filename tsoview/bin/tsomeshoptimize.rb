@@ -27,20 +27,14 @@ end
 print "Select mesh (0-#{tso.meshes.size - 1}): "
 line = gets
 mesh_idx = line.chomp.to_i
-mesh_idx = 0
 selected_mesh = tso.meshes[mesh_idx]
-
-nodemap = {}
-for node in tso.nodes
-  nodemap[node.name.to_s] = node
-end
 
 def create_faces(mesh)
   faces = []
   for sub in mesh.sub_meshes
     vertices = []
     for a in sub.vertices
-      v = UnifiedPositionSpecVertex.new(a, sub)
+      v = UnifiedPositionSpecVertex.new(a, sub.bone_indices, sub.spec)
       vertices.push(v)
     end
     for i in 2...vertices.size
@@ -75,25 +69,6 @@ print "Set max palettes: "
 line = gets
 max_palettes = line.chomp.to_i
 max_palettes = 16 if max_palettes == 0
-
-def create_vertex(v, bmap)
-  a = UnifiedPositionTexcoordVertex.new
-  a.position = v.position
-  a.skin_weights = System::Array[TDCG::SkinWeight].new(4)
-  4.times do |i|
-    a.skin_weights[i] =
-      if v.skin_weights[i].weight < WEIGHT_EPSILON
-        TDCG::SkinWeight.new(0, 0.0)
-      else
-        TDCG::SkinWeight.new(bmap[v.skin_weights[i].bone_index], v.skin_weights[i].weight)
-      end
-  end
-  a.generate_bone_indices
-  a.normal = v.normal
-  a.u = v.u
-  a.v = v.v
-  a
-end
 
 def create_sub_meshes(faces, max_palettes)
   faces_1 = faces
@@ -147,7 +122,7 @@ def create_sub_meshes(faces, max_palettes)
       end
 
       for v in f.vertices
-        a = create_vertex(v, bmap)
+        a = UnifiedPositionTexcoordVertex.new(v, bmap)
         unless vmap[a]
           vmap[a] = vertices.size
           vertices.push(a)
@@ -156,19 +131,19 @@ def create_sub_meshes(faces, max_palettes)
       end
     end
 
-    # puts "#vert_indices:#{ vert_indices.size }"
+    # puts "#vert_indices #{ vert_indices.size }"
     vert_indices_ary = System::Array[System::UInt16].new(vert_indices.size)
     vert_indices.each_with_index do |vidx, i|
       vert_indices_ary[i] = vidx
     end
 
     optimized_indices = TDCG::NvTriStrip.optimize(vert_indices_ary)
-    # puts "#optimized_indices:#{ optimized_indices.size }"
+    # puts "#optimized_indices #{ optimized_indices.size }"
 
     sub = TDCG::TSOSubMesh.new
     sub.spec = spec
 
-    # puts "#bone_indices:#{ bone_indices.size }"
+    # puts "#bone_indices #{ bone_indices.size }"
     bone_indices_ary = System::Array[System::Int32].new(bone_indices.size)
     bone_indices.each_with_index do |bidx, i|
       bone_indices_ary[i] = bidx
@@ -195,10 +170,10 @@ end
 
 def rebuild_mesh(mesh, max_palettes)
   faces = create_faces(mesh)
-  # puts "#uniq faces:#{ faces.size }"
+  # puts "#uniq faces #{ faces.size }"
 
   subs = create_sub_meshes(faces, max_palettes)
-  # puts "#subs:#{ subs.size }"
+  # puts "#subs #{ subs.size }"
 
   subs_ary = System::Array[TDCG::TSOSubMesh].new(subs.size)
   subs.each_with_index do |sub, i|
