@@ -239,6 +239,28 @@ def Export(Option):
 							tri_face.weight.append(f2[0])
 			return tri_face
 
+		def write_cstring(writer, str):
+			writer.write(str + chr(0x00))
+
+		def write_int(writer, i):
+			writer.write(pack('<i', i))
+
+		def write_float(writer, i):
+			writer.write(pack('<f', i))
+
+		def write_matrix4(writer, m):
+			writer.write(pack('<16f',\
+				m[0][0], m[0][1], m[0][2], m[0][3],\
+				m[1][0], m[1][1], m[1][2], m[1][3],\
+				m[2][0], m[2][1], m[2][2], m[2][3],\
+				m[3][0], m[3][1], m[3][2], m[3][3]))
+
+		def write_vector3(writer, v):
+			writer.write(pack('<3f', v.x, v.y, v.z))
+
+		def write_vector2(writer, v):
+			writer.write(pack('<2f', v.x, v.y))
+
 		class SubMesh:
 			def __init__(self):
 				self.spec = None
@@ -246,30 +268,35 @@ def Export(Option):
 				self.vertices = None
 
 			def write(self, writer):
-				writer.write( pack("i", self.spec) )
+				write_int(writer, self.spec)
 
-				writer.write( pack("i", len(self.bone_indices)) )
+				write_int(writer, len(self.bone_indices))
 				for f3 in self.bone_indices:
-					writer.write( pack( "i", f3 ))
+					write_int(writer, f3)
 					
-				writer.write( pack("i", len(self.vertices)) )
+				write_int(writer, len(self.vertices))
 				for f3 in self.vertices:
-					writer.write( pack("3f", f3.co.x, f3.co.y, f3.co.z) )
-					writer.write( pack("3f", f3.no.x, f3.no.y, f3.no.z) )
-					writer.write( pack("2f", f3.uv.x, f3.uv.y) )
+					write_vector3(writer, f3.co)
+					write_vector3(writer, f3.no)
+					write_vector2(writer, f3.uv)
 					if len(f3.weight) >0:
-						writer.write( pack("i", len(f3.weight)) )
+						write_int(writer, len(f3.weight))
 						for f4 in f3.weight:
-							writer.write( pack("if", local_node_index.index( TSOnode.index(f4[0]) ), f4[1]) )
+							write_int(writer, local_node_index.index( TSOnode.index(f4[0]) ))
+							write_float(writer, f4[1])
 					else:
-						writer.write( pack("iif", 1, 0, 1) )
+						write_int(writer, 1)
+						write_int(writer, 0)
+						write_float(writer, 1.0)
 					
 		name_spec_map = {}
 		for i, name in enumerate(TSOmaterial):
 			name_spec_map[name] = i
 
 		writer = StringIO()
-		writer.write( pack("<i", len(option)) )
+
+		write_int(writer, len(option))
+
 		for mesh in option:
 			ob= Object.Get(mesh["Object"])
 			me= ob.getData(False, True)
@@ -278,7 +305,7 @@ def Export(Option):
 			for i, material in enumerate(me.materials):
 				mate_spec_map[i] = name_spec_map[material.name]
 
-			writer.write( mesh["Name"] +chr(0x00) )
+			write_cstring(writer, mesh["Name"])
 
 			#Get object matrix
 			ob_mat= ob.getMatrix("worldspace").copy()
@@ -293,13 +320,9 @@ def Export(Option):
 			Tmat= TranslationMatrix( Vector(Tmat.x, Tmat.z, -Tmat.y) *2 )
 			#Mix
 			mat= Smat *Rmat *Tmat
-			writer.write( pack( "16f",\
-				mat[0][0],mat[0][1],mat[0][2],mat[0][3],\
-				mat[1][0],mat[1][1],mat[1][2],mat[1][3],\
-				mat[2][0],mat[2][1],mat[2][2],mat[2][3],\
-				mat[3][0],mat[3][1],mat[3][2],mat[3][3] ))
+			write_matrix4(writer, mat)
 			
-			writer.write( pack("i", 1) )
+			write_int(writer, 1)
 			
 			tri_faces= []
 			for f1 in me.materials:
@@ -355,7 +378,8 @@ def Export(Option):
 			for f1 in trg_faces:
 				for f2 in f1:
 					vg_index+= 1
-			writer.write( pack("i", vg_index) )
+
+			write_int(writer, vg_index)
 			
 			for f1 in xrange(len(trg_faces)):
 				for f2 in trg_faces[f1]:
