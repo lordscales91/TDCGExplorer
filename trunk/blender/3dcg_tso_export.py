@@ -196,11 +196,11 @@ def Export(Option):
 				self.uv = None
 				self.weight = []
 
-		def CreateVertData( me, face, index ):
+		def CreateVertData( me, face, index, transform ):
 			a = VertData()
 			v = face.verts[index]
 			co= v.co
-			a.co= Vector(co.x, co.z, -co.y) *2 *mat
+			a.co= Vector(co.x, co.z, -co.y) *2 *transform
 			no= v.no
 			a.no= Vector(no.x, no.z, -no.y)
 			a.uv= face.uv[index]
@@ -321,8 +321,8 @@ def Export(Option):
 
 			write_cstring(writer, mesh["Name"])
 
-			m= create_transform( ob.getMatrix("worldspace") )
-			write_matrix4(writer, m)
+			transform= create_transform( ob.getMatrix("worldspace") )
+			write_matrix4(writer, transform)
 			
 			write_int(writer, 1)
 			
@@ -395,11 +395,11 @@ def Export(Option):
 					
 					data= []
 					for face in f2["Faces"]:
-						data.append( CreateVertData( me, face, 0 ) )
+						data.append( CreateVertData( me, face, 0, transform ) )
 						data.append( data[-1] )
 						data.append( data[-1] )
-						data.append( CreateVertData( me, face, 1 ) )
-						data.append( CreateVertData( me, face, 2 ) )
+						data.append( CreateVertData( me, face, 1, transform ) )
+						data.append( CreateVertData( me, face, 2, transform ) )
 						data.append( data[-1] )
 					
 					sub.bone_indices = local_node_index
