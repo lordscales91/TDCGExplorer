@@ -11,16 +11,16 @@ def read_cstring(file):
 	return str
 
 def read_int(file):
-	return unpack('i', file.read(4))[0]
+	return unpack('<i', file.read(4))[0]
 
 def read_matrix4(file):
-	return unpack('16f', file.read(64))
+	return unpack('<16f', file.read(64))
 
 def read_vector3(file):
-	return unpack('3f', file.read(12))
+	return unpack('<3f', file.read(12))
 
 def read_vector2(file):
-	return unpack('2f', file.read(8))
+	return unpack('<2f', file.read(8))
 
 class TSONode(object):
 	def __init__(self):
