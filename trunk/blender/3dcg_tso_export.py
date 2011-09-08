@@ -107,12 +107,12 @@ def Export(Option):
 					Tmat-= arm.bones[f1].parent.head["ARMATURESPACE"].copy()
 				Tmat= TranslationMatrix( Vector(Tmat.x, Tmat.z, -Tmat.y) *2 )
 				
-				mat= Smat *Rmat *Tmat
+				m= Smat *Rmat *Tmat
 				bin+= pack("16f",\
-					mat[0][0],mat[0][1],mat[0][2],mat[0][3],\
-					mat[1][0],mat[1][1],mat[1][2],mat[1][3],\
-					mat[2][0],mat[2][1],mat[2][2],mat[2][3],\
-					mat[3][0],mat[3][1],mat[3][2],mat[3][3] )
+					m[0][0], m[0][1], m[0][2], m[0][3],\
+					m[1][0], m[1][1], m[1][2], m[1][3],\
+					m[2][0], m[2][1], m[2][2], m[2][3],\
+					m[3][0], m[3][1], m[3][2], m[3][3])
 			
 			#print len(TSOnode)
 			#raise KeyError, "NodeMode Armature"
@@ -300,8 +300,8 @@ def Export(Option):
 			Tmat= ob_mat.copy().translationPart()
 			Tmat= TranslationMatrix( Vector(Tmat.x, Tmat.z, -Tmat.y) *2 )
 			#Mix
-			mat= Smat *Rmat *Tmat
-			return mat
+			m= Smat *Rmat *Tmat
+			return m
 
 		name_spec_map = {}
 		for i, name in enumerate(TSOmaterial):
