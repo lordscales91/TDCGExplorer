@@ -14,6 +14,16 @@ from struct import *
 from Blender.Mathutils import *
 from StringIO import StringIO
 
+import subprocess
+
+# NvTriStrip binary location
+# Defaults to Blender's scripts directory
+NvTriStripPath = Blender.sys.join(Blender.Get("scriptsdir"), "NvTriStripper-cli.exe")
+
+# Check the NvTriStrip binary
+if not Blender.sys.exists(NvTriStripPath):
+	raise Exception("Can't find NvTriStrip binary (%s)" % NvTriStripPath)
+
 ####################
 #      Export      #
 ####################
@@ -21,6 +31,23 @@ def Export(Option):
 	####################
 	## Export() sub functions
 	
+	#NvTriStrip
+	def optimize(vert_indices):
+		# Stripifying mesh
+		NvTriStrip = subprocess.Popen([NvTriStripPath], 
+			stdin = subprocess.PIPE, stdout = subprocess.PIPE)
+		for vi in vert_indices:
+			NvTriStrip.stdin.write(str(vi) + " ")
+		NvTriStrip.stdin.write("-1\n")
+		stripcount = int(NvTriStrip.stdout.readline())
+		if stripcount < 1:
+			raise Exception("NvTriStrip returned 0 strips. Aborting")
+		nativelist = []
+		striptype = int(NvTriStrip.stdout.readline())
+		nativelength = int(NvTriStrip.stdout.readline())
+		nativelist.extend(map(int, NvTriStrip.stdout.readline().split()))
+		return nativelist
+
 	#Node
 	def GetNodeBin(option):
 		if option["Mode"] =="File":
@@ -189,55 +216,63 @@ def Export(Option):
 	
 	#Mesh
 	def GetMeshBin( option, TSOnode, TSOmaterial ):
-		class VertData:
+		class Vertex:
 			def __init__(self):
 				self.co = None
 				self.no = None
 				self.uv = None
-				self.weight = []
+				self.skin_weights = []
 
-		def CreateVertData( me, face, index, transform ):
-			a = VertData()
+			def __eq__(self, v):
+				return self.co == v.co and self.uv == v.uv
+
+			def __hash__(self):
+				return hash(self.co) ^ hash(self.uv)
+
+		def create_vertex(me, face, index):
+			a = Vertex()
 			v = face.verts[index]
-			co= v.co
-			a.co= Vector(co.x, co.z, -co.y) *2 *transform
-			no= v.no
-			a.no= Vector(no.x, no.z, -no.y)
-			a.uv= face.uv[index]
-			for f1 in me.getVertexInfluences(v.index):
-				if f1[0] in TSOnode:
-					a.weight.append(f1)
-			if len(a.weight) >4:
-				for f1 in xrange(len(a.weight)-4):
+			co = Vector(v.co.x, v.co.z, -v.co.y) *2 *transform
+			no = Vector(v.no.x, v.no.z, -v.no.y)
+			uv = face.uv[index]
+			a.co = (co.x, co.y, co.z)
+			a.no = (no.x, no.y, no.z)
+			a.uv = (uv.x, uv.y)
+
+			for name, w in me.getVertexInfluences(v.index):
+				if name in TSOnode:
+					a.skin_weights.append([ name, w ])
+			if len(a.skin_weights) >4:
+				for f1 in xrange( len(a.skin_weights) -4 ):
 					del_weight= None
 					low_weight= 2.0
-					for f2 in a.weight:
-						if f2[1] <low_weight:
-							low_weight= f2[1]
-							del_weight= f2
-					a.weight.remove(del_weight)
+					for sw in a.skin_weights:
+						if sw[1] <low_weight:
+							low_weight= sw[1]
+							del_weight= sw
+					a.skin_weights.remove(del_weight)
 			total= 0.0
-			for f1 in a.weight:
-				total+= f1[1]
-			for f1 in xrange(len(a.weight)):
-				a.weight[f1][1]= a.weight[f1][1]/total
+			for name, w in a.skin_weights:
+				total+= w
+			for sw in a.skin_weights:
+				sw[1] = sw[1]/total
 			return a
-		
-		class TriangleFace:
+
+		class TriangleFace(object):
 			pass
 
 		def CreateTriangleFace(me, face, a, b, c):
-			tri_face = TriangleFace()
-			tri_face.verts= [ face.verts[a], face.verts[b], face.verts[c] ]
-			tri_face.uv= [ face.uv[a], face.uv[b], face.uv[c] ]
-			tri_face.mat= face.mat
-			tri_face.weight= []
-			for f1 in tri_face.verts:
-				for f2 in me.getVertexInfluences(f1.index):
-					if f2[0] in TSOnode:
-						if not f2[0] in tri_face.weight:
-							tri_face.weight.append(f2[0])
-			return tri_face
+			f = TriangleFace()
+			f.verts= [ face.verts[a], face.verts[b], face.verts[c] ]
+			f.uv= [ face.uv[a], face.uv[b], face.uv[c] ]
+			f.mat= face.mat
+			f.weight_names= []
+			for v in f.verts:
+				for name, w in me.getVertexInfluences(v.index):
+					if name in TSOnode:
+						if not name in f.weight_names:
+							f.weight_names.append(name)
+			return f
 
 		def write_cstring(writer, str):
 			writer.write(str + chr(0x00))
@@ -256,10 +291,10 @@ def Export(Option):
 				m[3][0], m[3][1], m[3][2], m[3][3]))
 
 		def write_vector3(writer, v):
-			writer.write(pack('<3f', v.x, v.y, v.z))
+			writer.write(pack('<3f', v[0], v[1], v[2]))
 
 		def write_vector2(writer, v):
-			writer.write(pack('<2f', v.x, v.y))
+			writer.write(pack('<2f', v[0], v[1]))
 
 		class SubMesh:
 			def __init__(self):
@@ -275,15 +310,15 @@ def Export(Option):
 					write_int(writer, f3)
 					
 				write_int(writer, len(self.vertices))
-				for f3 in self.vertices:
-					write_vector3(writer, f3.co)
-					write_vector3(writer, f3.no)
-					write_vector2(writer, f3.uv)
-					if len(f3.weight) >0:
-						write_int(writer, len(f3.weight))
-						for f4 in f3.weight:
-							write_int(writer, self.bone_indices.index( TSOnode.index(f4[0]) ))
-							write_float(writer, f4[1])
+				for v in self.vertices:
+					write_vector3(writer, v.co)
+					write_vector3(writer, v.no)
+					write_vector2(writer, v.uv)
+					if len(v.skin_weights) != 0:
+						write_int(writer, len(v.skin_weights))
+						for name, w in v.skin_weights:
+							write_int(writer, self.bone_indices.index( TSOnode.index(name) ))
+							write_float(writer, w)
 					else:
 						write_int(writer, 1)
 						write_int(writer, 0)
@@ -303,6 +338,101 @@ def Export(Option):
 			m= Smat *Rmat *Tmat
 			return m
 
+		def create_tri_faces(me_faces):
+			ret = []
+			for face in me_faces:
+				if len(face.verts) ==4:
+					mid_co_13 = MidpointVecs(face.verts[1].co, face.verts[3].co)
+					mid_co_02 = MidpointVecs(face.verts[0].co, face.verts[2].co)
+					i1= (face.verts[0].co-mid_co_13).length +(face.verts[2].co-mid_co_13).length
+					i2= (face.verts[1].co-mid_co_02).length +(face.verts[3].co-mid_co_02).length
+					if i1 >=i2:
+						ret.append( CreateTriangleFace(me, face, 0, 1, 3) )
+						ret.append( CreateTriangleFace(me, face, 1, 2, 3) )
+					else:
+						ret.append( CreateTriangleFace(me, face, 0, 1, 2) )
+						ret.append( CreateTriangleFace(me, face, 0, 2, 3) )
+				else:
+					ret.append( CreateTriangleFace(me, face, 0, 1, 2) )
+			return ret
+			
+		WEIGHT_EPSILON = 1.0e-4
+
+		def create_sub_meshes(me, tri_faces, max_palettes):
+			faces_1 = tri_faces
+			faces_2 = []
+
+			subs = []
+
+			print "  vertices bone_indices"
+			print "  -------- ------------"
+
+			while len(faces_1) != 0:
+				mat = faces_1[0].mat
+				bmap = {}
+				bone_indices = []
+				vmap = {}
+				vertices = []
+				vert_indices = []
+
+				for f in faces_1:
+					if f.mat != mat:
+						faces_2.append(f)
+						continue
+
+					valid = True
+					bset = set()
+					for v in f.verts:
+						for name, w in me.getVertexInfluences(v.index):
+							if w < WEIGHT_EPSILON:
+								continue
+							if name in bmap:
+								continue
+							if len(bmap) == max_palettes:
+								valid = False
+								break
+							bset.add(name)
+							if len(bmap) + len(bset) > max_palettes:
+								valid = False
+								break
+
+					if not valid:
+						faces_2.append(f)
+						continue
+
+					for name in bset:
+						bmap[name] = len(bone_indices)
+						bone_indices.append(name)
+
+					for i in xrange(len(f.verts)):
+						a = create_vertex(me, f, i)
+						if a not in vmap:
+							vmap[a] = len(vertices)
+							vertices.append(a)
+						vert_indices.append(vmap[a])
+					
+				# print '#vert_indices', len(vert_indices)
+				optimized_indices = optimize(vert_indices)
+				# print '#optimized_indices', len(optimized_indices)
+
+				sub = SubMesh()
+				sub.spec = mat_spec_map[mat]
+
+				# print '#bone_indices', len(bone_indices)
+				sub.bone_indices = [ TSOnode.index(name) for name in bone_indices ]
+				sub.vertices = [ vertices[vidx] for vidx in optimized_indices ]
+
+				print "  %8d %12d" % (len(sub.vertices), len(sub.bone_indices))
+
+				subs.append(sub)
+
+				t = faces_1
+				faces_1 = faces_2
+				faces_2 = t
+				del t[:]
+
+			return subs
+
 		name_spec_map = {}
 		for i, name in enumerate(TSOmaterial):
 			name_spec_map[name] = i
@@ -315,98 +445,24 @@ def Export(Option):
 			ob= Object.Get(mesh["Object"])
 			me= ob.getData(False, True)
 			
-			mate_spec_map = {}
+			mat_spec_map = {}
 			for i, material in enumerate(me.materials):
-				mate_spec_map[i] = name_spec_map[material.name]
+				mat_spec_map[i] = name_spec_map[material.name]
 
 			write_cstring(writer, mesh["Name"])
 
-			transform= create_transform( ob.getMatrix("worldspace") )
+			transform = create_transform( ob.getMatrix("worldspace") )
 			write_matrix4(writer, transform)
 			
 			write_int(writer, 1)
 			
-			tri_faces= []
-			for f1 in me.materials:
-				tri_faces.append([])
-			
-			for face in me.faces:
-				mate= face.mat
-				if len(face.verts) ==4:
-					mid_co_13 = MidpointVecs(face.verts[1].co, face.verts[3].co)
-					mid_co_02 = MidpointVecs(face.verts[0].co, face.verts[2].co)
-					i1= (face.verts[0].co-mid_co_13).length +(face.verts[2].co-mid_co_13).length
-					i2= (face.verts[1].co-mid_co_02).length +(face.verts[3].co-mid_co_02).length
-					if i1 >=i2:
-						tri_faces[mate].append( CreateTriangleFace(me, face, 0, 1, 3) )
-						tri_faces[mate].append( CreateTriangleFace(me ,face, 1, 2, 3) )
-					else:
-						tri_faces[mate].append( CreateTriangleFace(me, face, 0, 1, 2) )
-						tri_faces[mate].append( CreateTriangleFace(me, face, 0, 2, 3) )
-				else:
-					tri_faces[mate].append( CreateTriangleFace(me, face, 0, 1, 2) )
-			
-			trg_faces= []
-			for faces in tri_faces:
-				trg_faces.append([])
-				while len(faces) != 0:
-					local_node= []
-					local_faces= []
-					last_face= None
-					faces_len= len(faces)
-					
-					i1= 0
-					while len(local_node) <16:
-						if faces_len <=i1:
-							break
-						last_face= faces.pop(0)
-						new_face= set(last_face.weight) -set(local_node)
-						if len(new_face)+len(local_node) <=16:
-							local_node+= list(new_face)
-							local_faces.append(last_face)
-						else:
-							faces.append(last_face)
-						i1+= 1
-					
-					for f1 in xrange( len(faces)-1, -1, -1 ):
-						if len( set(faces[f1].weight)-set(local_node) ) ==0:
-							local_faces.append( faces.pop(f1) )
-					
-					trg_faces[-1].append({ "Node":local_node, "Faces":local_faces })
-					
-					print local_node
-			
-			vg_index= 0
-			for f1 in trg_faces:
-				for f2 in f1:
-					vg_index+= 1
+			subs = create_sub_meshes(me, create_tri_faces(me.faces), 16)
 
-			write_int(writer, vg_index)
+			write_int(writer, len(subs))
 			
-			for f1 in xrange(len(trg_faces)):
-				for f2 in trg_faces[f1]:
-					sub = SubMesh()
-					sub.spec = mate_spec_map[f1]
-
-					local_node_index= []
-					for f3 in f2["Node"]:
-						local_node_index.append( TSOnode.index(f3) )
-					local_node_index.sort()
-					
-					data= []
-					for face in f2["Faces"]:
-						data.append( CreateVertData( me, face, 0, transform ) )
-						data.append( data[-1] )
-						data.append( data[-1] )
-						data.append( CreateVertData( me, face, 1, transform ) )
-						data.append( CreateVertData( me, face, 2, transform ) )
-						data.append( data[-1] )
-					
-					sub.bone_indices = local_node_index
-					sub.vertices = data
-
-					sub.write(writer)
-			
+			for sub in subs:
+				sub.write(writer)
+		
 		bin = writer.getvalue()
 		writer.close()
 		return bin
