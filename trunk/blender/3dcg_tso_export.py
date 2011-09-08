@@ -189,9 +189,6 @@ def Export(Option):
 	
 	#Mesh
 	def GetMeshBin( option, TSOnode, TSOmaterial ):
-		class TriangleFace:
-			pass
-
 		class VertData:
 			def __init__(self):
 				self.co = None
@@ -226,18 +223,21 @@ def Export(Option):
 				a.weight[f1][1]= a.weight[f1][1]/total
 			return a
 		
+		class TriangleFace:
+			pass
+
 		def CreateTriangleFace(me, face, a, b, c):
-			trg_face = TriangleFace()
-			trg_face.verts= [ face.verts[a], face.verts[b], face.verts[c] ]
-			trg_face.uv= [ face.uv[a], face.uv[b], face.uv[c] ]
-			trg_face.mat= face.mat
-			trg_face.weight= []
-			for f1 in trg_face.verts:
+			tri_face = TriangleFace()
+			tri_face.verts= [ face.verts[a], face.verts[b], face.verts[c] ]
+			tri_face.uv= [ face.uv[a], face.uv[b], face.uv[c] ]
+			tri_face.mat= face.mat
+			tri_face.weight= []
+			for f1 in tri_face.verts:
 				for f2 in me.getVertexInfluences(f1.index):
 					if f2[0] in TSOnode:
-						if not f2[0] in trg_face.weight:
-							trg_face.weight.append(f2[0])
-			return trg_face;
+						if not f2[0] in tri_face.weight:
+							tri_face.weight.append(f2[0])
+			return tri_face
 
 		writer = StringIO()
 		writer.write( pack("<i", len(option)) )
@@ -267,9 +267,9 @@ def Export(Option):
 			
 			writer.write( pack("i", 1) )
 			
-			trg_faces= []
+			tri_faces= []
 			for f1 in me.materials:
-				trg_faces.append([])
+				tri_faces.append([])
 			
 			for face in me.faces:
 				mate= face.mat
@@ -279,17 +279,16 @@ def Export(Option):
 					i1= (face.verts[0].co-mid_co_13).length +(face.verts[2].co-mid_co_13).length
 					i2= (face.verts[1].co-mid_co_02).length +(face.verts[3].co-mid_co_02).length
 					if i1 >=i2:
-						trg_faces[mate].append( CreateTriangleFace(me, face, 0, 1, 3) )
-						trg_faces[mate].append( CreateTriangleFace(me ,face, 1, 2, 3) )
+						tri_faces[mate].append( CreateTriangleFace(me, face, 0, 1, 3) )
+						tri_faces[mate].append( CreateTriangleFace(me ,face, 1, 2, 3) )
 					else:
-						trg_faces[mate].append( CreateTriangleFace(me, face, 0, 1, 2) )
-						trg_faces[mate].append( CreateTriangleFace(me, face, 0, 2, 3) )
+						tri_faces[mate].append( CreateTriangleFace(me, face, 0, 1, 2) )
+						tri_faces[mate].append( CreateTriangleFace(me, face, 0, 2, 3) )
 				else:
-					trg_faces[mate].append( CreateTriangleFace(me, face, 0, 1, 2) )
+					tri_faces[mate].append( CreateTriangleFace(me, face, 0, 1, 2) )
 			
-			copy_faces= trg_faces[:]
 			trg_faces= []
-			for faces in copy_faces:
+			for faces in tri_faces:
 				trg_faces.append([])
 				while len(faces) >0:
 					local_node= []
