@@ -10,6 +10,25 @@ namespace TSOMeshOptimize
 {
     class UnifiedPositionTexcoordVertex : Vertex, IComparable
     {
+        public static float WeightEpsilon = float.Epsilon;
+
+	public UnifiedPositionTexcoordVertex(UnifiedPositionSpecVertex v, Dictionary<int, ushort> bone_idmap)
+        {
+            this.position = v.position;
+            this.normal = v.normal;
+            this.u = v.u;
+            this.v = v.v;
+            this.skin_weights = new SkinWeight[4];
+            for (int i = 0; i < 4; i++)
+            {
+                if (v.skin_weights[i].weight < WeightEpsilon)
+                    this.skin_weights[i] = new SkinWeight(0, 0.0f);
+                else
+                    this.skin_weights[i] = new SkinWeight(bone_idmap[v.skin_weights[i].bone_index], v.skin_weights[i].weight);
+            }
+            GenerateBoneIndices();
+        }
+
         public int CompareTo(object obj)
         {
             UnifiedPositionTexcoordVertex v = obj as UnifiedPositionTexcoordVertex;

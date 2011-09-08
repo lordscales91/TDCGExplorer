@@ -23,7 +23,7 @@ namespace TSOMeshOptimize
         /// </summary>
         /// <param name="a">頂点</param>
         /// <param name="sub">頂点を含むサブメッシュ</param>
-        public UnifiedPositionSpecVertex(Vertex a, TSOSubMesh sub)
+        public UnifiedPositionSpecVertex(Vertex a, int[] bone_indices, int spec)
         {
             this.position = a.position;
             this.normal = a.normal;
@@ -32,9 +32,9 @@ namespace TSOMeshOptimize
             this.skin_weights = new SkinWeight[4];
             for (int i = 0; i < 4; i++)
             {
-                skin_weights[i] = new SkinWeight(sub.bone_indices[a.skin_weights[i].bone_index], a.skin_weights[i].weight);
+                skin_weights[i] = new SkinWeight(bone_indices[a.skin_weights[i].bone_index], a.skin_weights[i].weight);
             }
-            this.spec = sub.spec;
+            this.spec = spec;
         }
 
         /// <summary>
