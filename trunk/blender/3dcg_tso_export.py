@@ -239,6 +239,31 @@ def Export(Option):
 							tri_face.weight.append(f2[0])
 			return tri_face
 
+		class SubMesh:
+			def __init__(self):
+				self.spec = None
+				self.bone_indices = None
+				self.vertices = None
+
+			def write(self, writer):
+				writer.write( pack("i", self.spec) )
+
+				writer.write( pack("i", len(self.bone_indices)) )
+				for f3 in self.bone_indices:
+					writer.write( pack( "i", f3 ))
+					
+				writer.write( pack("i", len(self.vertices)) )
+				for f3 in self.vertices:
+					writer.write( pack("3f", f3.co.x, f3.co.y, f3.co.z) )
+					writer.write( pack("3f", f3.no.x, f3.no.y, f3.no.z) )
+					writer.write( pack("2f", f3.uv.x, f3.uv.y) )
+					if len(f3.weight) >0:
+						writer.write( pack("i", len(f3.weight)) )
+						for f4 in f3.weight:
+							writer.write( pack("if", local_node_index.index( TSOnode.index(f4[0]) ), f4[1]) )
+					else:
+						writer.write( pack("iif", 1, 0, 1) )
+					
 		name_spec_map = {}
 		for i, name in enumerate(TSOmaterial):
 			name_spec_map[name] = i
@@ -299,7 +324,7 @@ def Export(Option):
 			trg_faces= []
 			for faces in tri_faces:
 				trg_faces.append([])
-				while len(faces) >0:
+				while len(faces) != 0:
 					local_node= []
 					local_faces= []
 					last_face= None
@@ -334,9 +359,9 @@ def Export(Option):
 			
 			for f1 in xrange(len(trg_faces)):
 				for f2 in trg_faces[f1]:
-					# spec
-					writer.write( pack("i", mate_spec_map[f1]))
-					
+					sub = SubMesh()
+					sub.spec = mate_spec_map[f1]
+
 					local_node_index= []
 					for f3 in f2["Node"]:
 						local_node_index.append( TSOnode.index(f3) )
@@ -351,25 +376,10 @@ def Export(Option):
 						data.append( CreateVertData( me, face, 2 ) )
 						data.append( data[-1] )
 					
-					# bone_indices
+					sub.bone_indices = local_node_index
+					sub.vertices = data
 
-					writer.write( pack( "i", len(local_node_index) ))
-					for f3 in local_node_index:
-						writer.write( pack( "i", f3 ))
-					
-					# vertices
-
-					writer.write( pack( "i", len(data) ))
-					for f3 in data:
-						writer.write( pack( "3f", f3.co.x, f3.co.y, f3.co.z ))
-						writer.write( pack( "3f", f3.no.x, f3.no.y, f3.no.z ))
-						writer.write( pack( "2f", f3.uv.x, f3.uv.y ))
-						if len(f3.weight) >0:
-							writer.write( pack( "i", len(f3.weight) ))
-							for f4 in f3.weight:
-								writer.write( pack( "if", local_node_index.index( TSOnode.index(f4[0]) ), f4[1] ))
-						else:
-							writer.write( pack( "iif", 1, 0, 1 ))
+					sub.write(writer)
 			
 		bin = writer.getvalue()
 		writer.close()
