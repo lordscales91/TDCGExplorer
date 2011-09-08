@@ -28,14 +28,14 @@ for sub in selected_mesh.sub_meshes:
 	print "  %8d %12d" % (len(sub.vertices), len(sub.bone_indices))
 
 class UnifiedPositionSpecVertex(object):
-	def __init__(self, a, sub):
+	def __init__(self, a, bone_indices, spec):
 		self.co = a.co
 		self.no = a.no
 		self.uv = a.uv
 		self.skin_weights = []
 		for bone_index, weight in a.skin_weights:
-			self.skin_weights.append(( sub.bone_indices[bone_index], weight ))
-		self.spec = sub.spec
+			self.skin_weights.append(( bone_indices[bone_index], weight ))
+		self.spec = spec
 
 	def __eq__(self, v):
 		return self.co == v.co and self.spec == v.spec
@@ -44,11 +44,18 @@ class UnifiedPositionSpecVertex(object):
 		return hash(self.co) ^ hash(self.spec)
 
 class UnifiedPositionTexcoordVertex(object):
-	def __init__(self):
-		self.co = None
-		self.no = None
-		self.uv = None
+	WEIGHT_EPSILON = 1.0e-4
+
+	def __init__(self, v, bone_indices_map):
+		self.co = v.co
+		self.no = v.no
+		self.uv = v.uv
 		self.skin_weights = []
+		for bone_index, weight in v.skin_weights:
+			if weight < WEIGHT_EPSILON:
+				self.skin_weights.append(( 0, 0.0 ))
+			else:
+				self.skin_weights.append(( bone_indices_map[bone_index], weight ))
 
 	def __eq__(self, v):
 		return self.co == v.co and self.uv == v.uv
@@ -69,7 +76,7 @@ class TSOFace(object):
 def create_faces(mesh):
 	faces = []
 	for sub in mesh.sub_meshes:
-		vertices = [ UnifiedPositionSpecVertex(a, sub) for a in sub.vertices ]
+		vertices = [ UnifiedPositionSpecVertex(a, sub.bone_indices, sub.spec) for a in sub.vertices ]
 		for i in xrange(2, len(vertices)):
 			if i % 2 != 0:
 				a = vertices[i-2]
@@ -86,18 +93,6 @@ def create_faces(mesh):
 	return faces
 
 WEIGHT_EPSILON = 1.0e-4
-
-def create_vertex(v, bmap):
-	a = UnifiedPositionTexcoordVertex()
-	a.co = v.co
-	a.no = v.no
-	a.uv = v.uv
-	for bone_index, weight in v.skin_weights:
-		if weight < WEIGHT_EPSILON:
-			a.skin_weights.append(( 0, 0.0 ))
-		else:
-			a.skin_weights.append(( bmap[bone_index], weight ))
-	return a
 
 def create_sub_meshes(faces, max_palettes):
 	faces_1 = faces
@@ -146,7 +141,7 @@ def create_sub_meshes(faces, max_palettes):
 				bone_indices.append(bone_index)
 
 			for v in f.vertices():
-				a = create_vertex(v, bmap)
+				a = UnifiedPositionTexcoordVertex(v, bmap)
 				if a not in vmap:
 					vmap[a] = len(vertices)
 					vertices.append(a)
