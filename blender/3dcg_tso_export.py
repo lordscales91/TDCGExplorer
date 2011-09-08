@@ -239,13 +239,22 @@ def Export(Option):
 							tri_face.weight.append(f2[0])
 			return tri_face
 
+		name_spec_map = {}
+		for i, name in enumerate(TSOmaterial):
+			name_spec_map[name] = i
+
 		writer = StringIO()
 		writer.write( pack("<i", len(option)) )
 		for mesh in option:
 			ob= Object.Get(mesh["Object"])
 			me= ob.getData(False, True)
-			writer.write( mesh["Name"] +chr(0x00) )
 			
+			mate_spec_map = {}
+			for i, material in enumerate(me.materials):
+				mate_spec_map[i] = name_spec_map[material.name]
+
+			writer.write( mesh["Name"] +chr(0x00) )
+
 			#Get object matrix
 			ob_mat= ob.getMatrix("worldspace").copy()
 			#Scale
@@ -326,7 +335,7 @@ def Export(Option):
 			for f1 in xrange(len(trg_faces)):
 				for f2 in trg_faces[f1]:
 					# spec
-					writer.write( pack("i", TSOmaterial.index( me.materials[f1].name )))
+					writer.write( pack("i", mate_spec_map[f1]))
 					
 					local_node_index= []
 					for f3 in f2["Node"]:
