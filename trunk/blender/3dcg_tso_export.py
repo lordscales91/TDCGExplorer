@@ -191,32 +191,40 @@ def Export(Option):
 	def GetMeshBin( option, TSOnode, TSOmaterial ):
 		class TriangleFace:
 			pass
+
+		class VertData:
+			def __init__(self):
+				self.co = None
+				self.no = None
+				self.uv = None
+				self.weight = []
+
 		def GetVertData( me, face, index ):
-			data= {}
-			co= face.verts[index].co
-			data["co"]= Vector(co.x, co.z, -co.y) *2 *mat
-			no= face.verts[index].no
-			data["no"]= Vector(no.x, no.z, -no.y)
-			data["uv"]= face.uv[index]
-			data["weight"]= []
-			for f1 in me.getVertexInfluences( face.verts[index].index ):
+			a = VertData()
+			v = face.verts[index]
+			co= v.co
+			a.co= Vector(co.x, co.z, -co.y) *2 *mat
+			no= v.no
+			a.no= Vector(no.x, no.z, -no.y)
+			a.uv= face.uv[index]
+			for f1 in me.getVertexInfluences(v.index):
 				if f1[0] in TSOnode:
-					data["weight"].append(f1)
-			if len(data["weight"]) >4:
-				for f1 in xrange(len(data["weight"])-4):
+					a.weight.append(f1)
+			if len(a.weight) >4:
+				for f1 in xrange(len(a.weight)-4):
 					del_weight= None
 					low_weight= 2.0
-					for f2 in data["weight"]:
+					for f2 in a.weight:
 						if f2[1] <low_weight:
 							low_weight= f2[1]
 							del_weight= f2
-					data["weight"].remove(del_weight)
+					a.weight.remove(del_weight)
 			total= 0.0
-			for f1 in data["weight"]:
+			for f1 in a.weight:
 				total+= f1[1]
-			for f1 in xrange(len(data["weight"])):
-				data["weight"][f1][1]= data["weight"][f1][1]/total
-			return data
+			for f1 in xrange(len(a.weight)):
+				a.weight[f1][1]= a.weight[f1][1]/total
+			return a
 		
 		def CreateTriangleFace(me, face, a, b, c):
 			trg_face = TriangleFace()
@@ -345,12 +353,12 @@ def Export(Option):
 
 					w.write( pack( "i", len(data) ))
 					for f3 in data:
-						w.write( pack( "3f", f3["co"].x, f3["co"].y, f3["co"].z ))
-						w.write( pack( "3f", f3["no"].x, f3["no"].y, f3["no"].z ))
-						w.write( pack( "2f", f3["uv"].x, f3["uv"].y ))
-						if len(f3["weight"]) >0:
-							w.write( pack( "i", len(f3["weight"]) ))
-							for f4 in f3["weight"]:
+						w.write( pack( "3f", f3.co.x, f3.co.y, f3.co.z ))
+						w.write( pack( "3f", f3.no.x, f3.no.y, f3.no.z ))
+						w.write( pack( "2f", f3.uv.x, f3.uv.y ))
+						if len(f3.weight) >0:
+							w.write( pack( "i", len(f3.weight) ))
+							for f4 in f3.weight:
 								w.write( pack( "if", local_node_index.index( TSOnode.index(f4[0]) ), f4[1] ))
 						else:
 							w.write( pack( "iif", 1, 0, 1 ))
