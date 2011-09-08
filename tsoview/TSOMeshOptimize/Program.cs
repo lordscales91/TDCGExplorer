@@ -92,20 +92,7 @@ namespace TSOMeshOptimize
 
         public static UnifiedPositionTexcoordVertex CreateVertex(UnifiedPositionSpecVertex v, Dictionary<int, ushort> bone_idmap)
         {
-            UnifiedPositionTexcoordVertex a = new UnifiedPositionTexcoordVertex();
-            a.position = v.position;
-            a.skin_weights = new SkinWeight[4];
-            for (int i = 0; i < 4; i++)
-            {
-                if (v.skin_weights[i].weight < WeightEpsilon)
-                    a.skin_weights[i] = new SkinWeight(0, 0.0f);
-                else
-                    a.skin_weights[i] = new SkinWeight(bone_idmap[v.skin_weights[i].bone_index], v.skin_weights[i].weight);
-            }
-            a.GenerateBoneIndices();
-            a.normal = v.normal;
-            a.u = v.u;
-            a.v = v.v;
+            UnifiedPositionTexcoordVertex a = new UnifiedPositionTexcoordVertex(v, bone_idmap);
             return a;
         }
 
@@ -121,7 +108,7 @@ namespace TSOMeshOptimize
                 UnifiedPositionSpecVertex[] vertices = new UnifiedPositionSpecVertex[sub.vertices.Length];
                 for (int i = 0; i < vertices.Length; i++)
                 {
-                    vertices[i] = new UnifiedPositionSpecVertex(sub.vertices[i], sub);
+                    vertices[i] = new UnifiedPositionSpecVertex(sub.vertices[i], sub.bone_indices, sub.spec);
                 }
                 for (int i = 2; i < vertices.Length; i++)
                 {
@@ -212,7 +199,7 @@ namespace TSOMeshOptimize
                     }
                     foreach (UnifiedPositionSpecVertex v in f.vertices)
                     {
-                        UnifiedPositionTexcoordVertex a = CreateVertex(v, bh.map);
+                        UnifiedPositionTexcoordVertex a = new UnifiedPositionTexcoordVertex(v, bh.map);
                         if (!vh.ContainsKey(a))
                         {
                             vh.Add(a);
