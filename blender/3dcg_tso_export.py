@@ -282,7 +282,7 @@ def Export(Option):
 					if len(f3.weight) >0:
 						write_int(writer, len(f3.weight))
 						for f4 in f3.weight:
-							write_int(writer, local_node_index.index( TSOnode.index(f4[0]) ))
+							write_int(writer, self.bone_indices.index( TSOnode.index(f4[0]) ))
 							write_float(writer, f4[1])
 					else:
 						write_int(writer, 1)
@@ -321,8 +321,8 @@ def Export(Option):
 
 			write_cstring(writer, mesh["Name"])
 
-			mat= create_transform( ob.getMatrix("worldspace") )
-			write_matrix4(writer, mat)
+			m= create_transform( ob.getMatrix("worldspace") )
+			write_matrix4(writer, m)
 			
 			write_int(writer, 1)
 			
