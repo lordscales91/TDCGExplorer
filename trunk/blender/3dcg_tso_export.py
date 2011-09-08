@@ -289,6 +289,20 @@ def Export(Option):
 						write_int(writer, 0)
 						write_float(writer, 1.0)
 					
+		def create_transform(ob_mat):
+			#Scale
+			Smat= ob_mat.copy().scalePart()
+			Smat= Matrix( [Smat.x, 0, 0], [0, Smat.z, 0], [0, 0, Smat.y] ).resize4x4()
+			#Rotation
+			Rmat= ob_mat.copy().toEuler()
+			Rmat= Euler(Rmat.x, Rmat.z, -Rmat.y).toMatrix().resize4x4()
+			#Translation
+			Tmat= ob_mat.copy().translationPart()
+			Tmat= TranslationMatrix( Vector(Tmat.x, Tmat.z, -Tmat.y) *2 )
+			#Mix
+			mat= Smat *Rmat *Tmat
+			return mat
+
 		name_spec_map = {}
 		for i, name in enumerate(TSOmaterial):
 			name_spec_map[name] = i
@@ -307,19 +321,7 @@ def Export(Option):
 
 			write_cstring(writer, mesh["Name"])
 
-			#Get object matrix
-			ob_mat= ob.getMatrix("worldspace").copy()
-			#Scale
-			Smat= ob_mat.copy().scalePart()
-			Smat= Matrix( [Smat.x, 0, 0], [0, Smat.z, 0], [0, 0, Smat.y] ).resize4x4()
-			#Rotation
-			Rmat= ob_mat.copy().toEuler()
-			Rmat= Euler(Rmat.x, Rmat.z, -Rmat.y).toMatrix().resize4x4()
-			#Translation
-			Tmat= ob_mat.copy().translationPart()
-			Tmat= TranslationMatrix( Vector(Tmat.x, Tmat.z, -Tmat.y) *2 )
-			#Mix
-			mat= Smat *Rmat *Tmat
+			mat= create_transform( ob.getMatrix("worldspace") )
 			write_matrix4(writer, mat)
 			
 			write_int(writer, 1)
