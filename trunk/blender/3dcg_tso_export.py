@@ -196,7 +196,7 @@ def Export(Option):
 				self.uv = None
 				self.weight = []
 
-		def GetVertData( me, face, index ):
+		def CreateVertData( me, face, index ):
 			a = VertData()
 			v = face.verts[index]
 			co= v.co
@@ -335,11 +335,11 @@ def Export(Option):
 					
 					data= []
 					for face in f2["Faces"]:
-						data.append( GetVertData( me, face, 0 ) )
+						data.append( CreateVertData( me, face, 0 ) )
 						data.append( data[-1] )
 						data.append( data[-1] )
-						data.append( GetVertData( me, face, 1 ) )
-						data.append( GetVertData( me, face, 2 ) )
+						data.append( CreateVertData( me, face, 1 ) )
+						data.append( CreateVertData( me, face, 2 ) )
 						data.append( data[-1] )
 					
 					# bone_indices
