@@ -221,6 +221,8 @@ def Import(Option):
 	##
 	####################
 	
+	start_time = Blender.sys.time()
+
 	tso= TSOFile()
 	tso.load(Option["File"])
 	
@@ -236,6 +238,9 @@ def Import(Option):
 		ImportMaterial()
 	if Option["Mesh"]:
 		ImportMesh()
+
+	end_time = Blender.sys.time()
+	print 'tso import time:', end_time - start_time
 
 ####################
 #       Gui()      #

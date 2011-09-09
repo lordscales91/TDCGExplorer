@@ -474,6 +474,8 @@ def Export(Option):
 	
 	print Option
 	
+	start_time = Blender.sys.time()
+
 	#TSO need variable
 	TSOnode= []
 	TSOmaterial= []
@@ -491,7 +493,8 @@ def Export(Option):
 	file.write( bin )
 	file.close()
 	
-	return
+	end_time = Blender.sys.time()
+	print 'tso export time:', end_time - start_time
 
 ####################
 #       Gui        #
