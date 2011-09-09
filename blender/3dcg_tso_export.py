@@ -217,6 +217,8 @@ def Export(Option):
 	
 	#Mesh
 	def GetMeshBin( option, TSOnode, TSOmaterial ):
+		WEIGHT_EPSILON = 1.0e-4
+
 		class Vertex:
 			def __init__(self):
 				self.co = None
@@ -241,8 +243,12 @@ def Export(Option):
 			a.uv = (uv.x, uv.y)
 
 			for name, w in me.getVertexInfluences(v.index):
-				if name in TSOnode:
-					a.skin_weights.append([ name, w ])
+				if w < WEIGHT_EPSILON:
+					continue
+				if name not in TSOnode:
+					continue
+				a.skin_weights.append([ name, w ])
+
 			if len(a.skin_weights) >4:
 				for f1 in xrange( len(a.skin_weights) -4 ):
 					del_weight= None
@@ -252,11 +258,13 @@ def Export(Option):
 							low_weight= sw[1]
 							del_weight= sw
 					a.skin_weights.remove(del_weight)
+
 			total= 0.0
 			for name, w in a.skin_weights:
 				total+= w
 			for sw in a.skin_weights:
 				sw[1] = sw[1]/total
+
 			return a
 
 		class TriangleFace(object):
@@ -270,9 +278,10 @@ def Export(Option):
 			f.weight_names= []
 			for v in f.verts:
 				for name, w in me.getVertexInfluences(v.index):
-					if name in TSOnode:
-						if not name in f.weight_names:
-							f.weight_names.append(name)
+					if name not in TSOnode:
+						continue
+					if name not in f.weight_names:
+						f.weight_names.append(name)
 			return f
 
 		def write_cstring(writer, str):
@@ -318,7 +327,11 @@ def Export(Option):
 					if len(v.skin_weights) != 0:
 						write_int(writer, len(v.skin_weights))
 						for name, w in v.skin_weights:
-							write_int(writer, self.bone_indices.index( TSOnode.index(name) ))
+							try:
+								write_int(writer, self.bone_indices.index( TSOnode.index(name) ))
+							except ValueError:
+								print name, TSOnode.index(name), self.bone_indices
+								raise
 							write_float(writer, w)
 					else:
 						write_int(writer, 1)
@@ -357,8 +370,6 @@ def Export(Option):
 					ret.append( CreateTriangleFace(me, face, 0, 1, 2) )
 			return ret
 			
-		WEIGHT_EPSILON = 1.0e-4
-
 		def create_sub_meshes(me, tri_faces, max_palettes):
 			faces_1 = tri_faces
 			faces_2 = []
