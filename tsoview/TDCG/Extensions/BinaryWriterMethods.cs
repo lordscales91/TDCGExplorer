@@ -19,7 +19,7 @@ namespace TDCG.Extensions
         /// <param name="s">null終端文字列</param>
         public static void WriteCString(this BinaryWriter bw, string s)
         {
-            foreach(byte i in Encoding.Default.GetBytes(s))
+            foreach (byte i in Encoding.Default.GetBytes(s))
                 bw.Write(i);
 
             bw.Write((byte)0);
