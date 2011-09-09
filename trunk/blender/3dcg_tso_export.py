@@ -9,6 +9,7 @@ Tooltip: 'Export 3DCustomGirl tso (.tso) file.'
 import Blender
 import re
 import string
+import pprint
 from Blender import *
 from struct import *
 from Blender.Mathutils import *
@@ -472,7 +473,8 @@ def Export(Option):
 	
 	global TSOnode, TSOmaterial
 	
-	print Option
+	pp = pprint.PrettyPrinter(indent=2)
+	pp.pprint(Option)
 	
 	start_time = Blender.sys.time()
 
