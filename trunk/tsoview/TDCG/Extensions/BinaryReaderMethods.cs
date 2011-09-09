@@ -21,7 +21,8 @@ namespace TDCG.Extensions
             StringBuilder string_builder = new StringBuilder();
             while ( true ) {
                 char c = reader.ReadChar();
-                if (c == 0) break;
+                if (c == 0)
+                        break;
                 string_builder.Append(c);
             }
             return string_builder.ToString();

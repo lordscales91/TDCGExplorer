@@ -145,7 +145,7 @@ namespace TSOMeshOptimize
             Heap<UnifiedPositionTexcoordVertex> vh = new Heap<UnifiedPositionTexcoordVertex>();
             
             List<ushort> vert_indices = new List<ushort>();
-            Dictionary<int, bool> bone_indices = new Dictionary<int, bool>();
+            Dictionary<int, bool> adding_bone_indices = new Dictionary<int, bool>();
             List<TSOSubMesh> sub_meshes = new List<TSOSubMesh>();
 
             Console.WriteLine("  vertices bone_indices");
@@ -165,8 +165,7 @@ namespace TSOMeshOptimize
                         faces_2.Add(f);
                         continue;
                     }
-                    bool valid = true;
-                    bone_indices.Clear();
+                    adding_bone_indices.Clear();
                     foreach (UnifiedPositionSpecVertex v in f.vertices)
                     {
                         foreach (SkinWeight sw in v.skin_weights)
@@ -175,25 +174,15 @@ namespace TSOMeshOptimize
                                 continue;
                             if (bh.ContainsKey(sw.bone_index))
                                 continue;
-                            if (bh.Count == max_palettes)
-                            {
-                                valid = false;
-                                break;
-                            }
-                            bone_indices[sw.bone_index] = true;
-                            if (bh.Count + bone_indices.Count > max_palettes)
-                            {
-                                valid = false;
-                                break;
-                            }
+                            adding_bone_indices[sw.bone_index] = true;
                         }
                     }
-                    if (!valid)
+                    if (bh.Count + adding_bone_indices.Count > max_palettes)
                     {
                         faces_2.Add(f);
                         continue;
                     }
-                    foreach (int bone_index in bone_indices.Keys)
+                    foreach (int bone_index in adding_bone_indices.Keys)
                     {
                         bh.Add(bone_index);
                     }
