@@ -249,15 +249,9 @@ def Export(Option):
 					continue
 				a.skin_weights.append([ name, w ])
 
-			if len(a.skin_weights) >4:
-				for f1 in xrange( len(a.skin_weights) -4 ):
-					del_weight= None
-					low_weight= 2.0
-					for sw in a.skin_weights:
-						if sw[1] <low_weight:
-							low_weight= sw[1]
-							del_weight= sw
-					a.skin_weights.remove(del_weight)
+			a.skin_weights.sort(lambda a, b: cmp(b[1], a[1]))
+
+			del a.skin_weights[4:]
 
 			total= 0.0
 			for name, w in a.skin_weights:
@@ -275,13 +269,7 @@ def Export(Option):
 			f.verts= [ face.verts[a], face.verts[b], face.verts[c] ]
 			f.uv= [ face.uv[a], face.uv[b], face.uv[c] ]
 			f.mat= face.mat
-			f.weight_names= []
-			for v in f.verts:
-				for name, w in me.getVertexInfluences(v.index):
-					if name not in TSOnode:
-						continue
-					if name not in f.weight_names:
-						f.weight_names.append(name)
+
 			return f
 
 		def write_cstring(writer, str):
