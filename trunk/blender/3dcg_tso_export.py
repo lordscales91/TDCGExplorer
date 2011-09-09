@@ -262,15 +262,10 @@ def Export(Option):
 			return a
 
 		class TriangleFace(object):
-			pass
-
-		def CreateTriangleFace(me, face, a, b, c):
-			f = TriangleFace()
-			f.verts= [ face.verts[a], face.verts[b], face.verts[c] ]
-			f.uv= [ face.uv[a], face.uv[b], face.uv[c] ]
-			f.mat= face.mat
-
-			return f
+			def __init__(self, face, a, b, c):
+				self.verts= [ face.verts[a], face.verts[b], face.verts[c] ]
+				self.uv= [ face.uv[a], face.uv[b], face.uv[c] ]
+				self.mat= face.mat
 
 		def write_cstring(writer, str):
 			writer.write(str + chr(0x00))
@@ -350,13 +345,13 @@ def Export(Option):
 					i1= (face.verts[0].co-mid_co_13).length +(face.verts[2].co-mid_co_13).length
 					i2= (face.verts[1].co-mid_co_02).length +(face.verts[3].co-mid_co_02).length
 					if i1 >=i2:
-						ret.append( CreateTriangleFace(me, face, 0, 1, 3) )
-						ret.append( CreateTriangleFace(me, face, 1, 2, 3) )
+						ret.append( TriangleFace(face, 0, 1, 3) )
+						ret.append( TriangleFace(face, 1, 2, 3) )
 					else:
-						ret.append( CreateTriangleFace(me, face, 0, 1, 2) )
-						ret.append( CreateTriangleFace(me, face, 0, 2, 3) )
+						ret.append( TriangleFace(face, 0, 1, 2) )
+						ret.append( TriangleFace(face, 0, 2, 3) )
 				else:
-					ret.append( CreateTriangleFace(me, face, 0, 1, 2) )
+					ret.append( TriangleFace(face, 0, 1, 2) )
 			return ret
 			
 		def create_sub_meshes(me, tri_faces, max_palettes):
