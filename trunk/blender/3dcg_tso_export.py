@@ -381,27 +381,20 @@ def Export(Option):
 						faces_2.append(f)
 						continue
 
-					valid = True
-					bset = set()
+					adding_bone_names = set()
 					for v in f.verts:
 						for name, w in me.getVertexInfluences(v.index):
 							if w < WEIGHT_EPSILON:
 								continue
 							if name in bmap:
 								continue
-							if len(bmap) == max_palettes:
-								valid = False
-								break
-							bset.add(name)
-							if len(bmap) + len(bset) > max_palettes:
-								valid = False
-								break
+							adding_bone_names.add(name)
 
-					if not valid:
+					if len(bmap) + len(adding_bone_names) > max_palettes:
 						faces_2.append(f)
 						continue
 
-					for name in bset:
+					for name in adding_bone_names:
 						bmap[name] = len(bone_indices)
 						bone_indices.append(name)
 
