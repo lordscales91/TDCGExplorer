@@ -531,7 +531,7 @@ def Gui():
 		data["Tab"]= Tab
 		data["Option"]= Option
 		data["GuiState"]= GuiState
-		Blender.Registry.SetKey("3DCG TSO Exporter", data, True)
+		Blender.Registry.SetKey("tso_export", data, True)
 	
 	##
 	####################
@@ -1432,7 +1432,7 @@ def Gui():
 	
 	
 	#Registry read
-	rdict= Registry.GetKey("3DCG TSO Exporter", True)
+	rdict= Registry.GetKey("tso_export", True)
 	if rdict:
 		try:
 			if rdict["Tab"] in ["Node", "Mesh", "Texture", "Shader", "Material", "Export"]:
