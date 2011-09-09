@@ -304,10 +304,15 @@ def Export(Option):
 				write_int(writer, self.spec)
 
 				write_int(writer, len(self.bone_indices))
-				for f3 in self.bone_indices:
-					write_int(writer, f3)
+				for name in self.bone_indices:
+					write_int(writer, TSOnode.index(name))
 					
+				bone_index_map = {}
+				for name in self.bone_indices:
+					bone_index_map[name] = self.bone_indices.index(name)
+
 				write_int(writer, len(self.vertices))
+
 				for v in self.vertices:
 					write_vector3(writer, v.co)
 					write_vector3(writer, v.no)
@@ -315,11 +320,7 @@ def Export(Option):
 					if len(v.skin_weights) != 0:
 						write_int(writer, len(v.skin_weights))
 						for name, w in v.skin_weights:
-							try:
-								write_int(writer, self.bone_indices.index( TSOnode.index(name) ))
-							except ValueError:
-								print name, TSOnode.index(name), self.bone_indices
-								raise
+							write_int(writer, bone_index_map[name])
 							write_float(writer, w)
 					else:
 						write_int(writer, 1)
@@ -412,7 +413,7 @@ def Export(Option):
 				sub.spec = mat_spec_map[mat]
 
 				# print '#bone_indices', len(bone_indices)
-				sub.bone_indices = [ TSOnode.index(name) for name in bone_indices ]
+				sub.bone_indices = bone_indices
 				sub.vertices = [ vertices[vidx] for vidx in optimized_indices ]
 
 				print "  %8d %12d" % (len(sub.vertices), len(sub.bone_indices))
