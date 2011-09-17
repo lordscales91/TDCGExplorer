@@ -33,7 +33,6 @@ namespace Tso2MqoGui
             foreach(ImportEffectInfo   i in effects)   i.PostLoad(this);
             foreach(ImportTextureInfo  i in textures)  i.PostLoad(this);
             foreach(ImportMaterialInfo i in materials) i.PostLoad(this);
-
         }
 
         public ImportEffectInfo GetEffect(string name)

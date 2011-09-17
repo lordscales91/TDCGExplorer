@@ -318,7 +318,6 @@ namespace Tso2MqoGui
 
     public class TSOMaterialCode : Dictionary<string, TSOParameter>
     {
-
         public TSOMaterialCode(string code)
             : this(code.Split('\r', '\n'))
         {
@@ -334,7 +333,7 @@ namespace Tso2MqoGui
             TSOParameter    p   = this[index];
             p.Value             = value;
 	    }
-	
+
         public TSOMaterialCode(string[] code)
         {
             foreach(string i in code)

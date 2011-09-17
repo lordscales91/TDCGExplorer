@@ -81,7 +81,7 @@ namespace Tso2MqoGui
                 switch(e.ChangedItem.Label)
                 {
                 case "テクスチャ：カラー":          item.SubItems[1].Text= e.ChangedItem.Value.ToString(); break;
-                case "テクスチャ：シェーディング":  item.SubItems[2].Text= e.ChangedItem.Value.ToString(); break;
+                case "テクスチャ：シェーティング":  item.SubItems[2].Text= e.ChangedItem.Value.ToString(); break;
                 case "シェーダー設定ファイル":      item.SubItems[3].Text= e.ChangedItem.Value.ToString(); break;
                 }
             }

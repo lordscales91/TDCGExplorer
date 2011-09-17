@@ -238,19 +238,15 @@ namespace Tso2MqoGui
         private void OpenMQOFile(string f)
         {
             TsoGenerator    gen = new TsoGenerator();
+            TSOGenerateConfig   config  = new TSOGenerateConfig();
+            config.materialconfig       = cbShowMaterials.Checked;
 
             if(rbAutoBone.Checked)
             {
-                TSOGenerateConfig   config  = new TSOGenerateConfig();
-                config.materialconfig       = cbShowMaterials.Checked;
-
                 gen.GenerateAutoBone(f, tbTso.Text, tbTsoEx.Text, config);
             } else
             if(rb1Bone.Checked)
             {
-                TSOGenerateConfig   config  = new TSOGenerateConfig();
-                config.materialconfig       = cbShowMaterials.Checked;
-
                 foreach(ListViewItem i in lvObject.Items)
                 {
                     if(i.SubItems[1].Text == "")

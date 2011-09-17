@@ -117,7 +117,7 @@
             this.label2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label2.Location = new System.Drawing.Point(6, 94);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(476, 178);
+            this.label2.Size = new System.Drawing.Size(476, 177);
             this.label2.TabIndex = 8;
             this.label2.Text = "Drop TSO File Here!";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -147,10 +147,10 @@
             this.tabPage1.Controls.Add(this.label2);
             this.tabPage1.Controls.Add(this.button1);
             this.tabPage1.Controls.Add(this.tbPath);
-            this.tabPage1.Location = new System.Drawing.Point(4, 21);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(488, 275);
+            this.tabPage1.Size = new System.Drawing.Size(488, 274);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Tso->Mqo";
             // 
@@ -213,10 +213,10 @@
             this.tabPage2.Controls.Add(this.bRefMqoIn);
             this.tabPage2.Controls.Add(this.tbMqoIn);
             this.tabPage2.Controls.Add(this.label3);
-            this.tabPage2.Location = new System.Drawing.Point(4, 21);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(488, 275);
+            this.tabPage2.Size = new System.Drawing.Size(488, 274);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Mqo->Tso";
             // 
@@ -484,9 +484,9 @@
             this.tabPage3.Controls.Add(this.bMergeAdd);
             this.tabPage3.Controls.Add(this.label8);
             this.tabPage3.Controls.Add(this.tvMerge);
-            this.tabPage3.Location = new System.Drawing.Point(4, 21);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(488, 275);
+            this.tabPage3.Size = new System.Drawing.Size(488, 274);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Merge";
             // 
