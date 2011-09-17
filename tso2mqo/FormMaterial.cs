@@ -78,11 +78,11 @@ namespace Tso2MqoGui
             {
                 ListViewItem    item= lvMaterials.SelectedItems[0];
 
-                switch(e.ChangedItem.Label)
+                switch(e.ChangedItem.PropertyDescriptor.Name)
                 {
-                case "テクスチャ：カラー":          item.SubItems[1].Text= e.ChangedItem.Value.ToString(); break;
-                case "テクスチャ：シェーティング":  item.SubItems[2].Text= e.ChangedItem.Value.ToString(); break;
-                case "シェーダー設定ファイル":      item.SubItems[3].Text= e.ChangedItem.Value.ToString(); break;
+                case "DiffuseTexture":  item.SubItems[1].Text= e.ChangedItem.Value.ToString(); break;
+                case "ShadowTexture":   item.SubItems[2].Text= e.ChangedItem.Value.ToString(); break;
+                case "ShaderFile":      item.SubItems[3].Text= e.ChangedItem.Value.ToString(); break;
                 }
             }
         }
