@@ -45,7 +45,7 @@ namespace Tso2MqoGui
                         }
                     }
 
-                    TsoGenerator        gen     = new TsoGenerator();
+                    TSOGenerator        gen     = new TSOGenerator();
                     TSOGenerateConfig   config  = new TSOGenerateConfig();
                     config.cui                  = true;
                     config.materialconfig       = false;
