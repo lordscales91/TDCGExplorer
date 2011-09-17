@@ -237,7 +237,7 @@ namespace Tso2MqoGui
 
         private void OpenMQOFile(string f)
         {
-            TsoGenerator    gen = new TsoGenerator();
+            TSOGenerator        gen     = new TSOGenerator();
             TSOGenerateConfig   config  = new TSOGenerateConfig();
             config.materialconfig       = cbShowMaterials.Checked;
 

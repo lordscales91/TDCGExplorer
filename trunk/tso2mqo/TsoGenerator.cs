@@ -10,7 +10,7 @@ using System.Windows.Forms.Design;
 
 namespace Tso2MqoGui
 {
-    public unsafe class TsoGenerator
+    public unsafe class TSOGenerator
     {
         private string                      dir;
         private TSOGenerateConfig           config;
@@ -121,10 +121,10 @@ namespace Tso2MqoGui
                 if(config.cui)
                     throw new Exception("マテリアルの設定が無効です");
 
-                FormMaterial    fm  = new FormMaterial();
-                fm.materials        = materials;
+                FormMaterial    dlg = new FormMaterial();
+                dlg.materials       = materials;
 
-                if(fm.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                if(dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                     return false;
             }
 
