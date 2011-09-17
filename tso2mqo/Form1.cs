@@ -103,9 +103,10 @@ namespace Tso2MqoGui
                 switch(tabControl1.SelectedIndex)
                 {
                 case 0:
-                    switch(Path.GetExtension(files[0]).ToUpper())
+                    foreach(string i in files)
                     {
-                    case ".TSO":    OpenTSOFile(files[0]);  break;
+                        if(Path.GetExtension(i).ToUpper() == ".TSO")
+                            OpenTSOFile(i);
                     }
 
                     break;
