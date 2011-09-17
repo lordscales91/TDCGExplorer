@@ -158,9 +158,6 @@ namespace Tso2MqoGui
             count                           = r.ReadInt32();
             meshes                          = new TSOMesh[count];
             int             check           = 0;
-#if true
-            bool    debug   = false;
-#endif
             for(int i= 0; i < count; ++i)
             {
                 meshes[i]                   = new TSOMesh();
@@ -191,22 +188,11 @@ namespace Tso2MqoGui
 
                     for(int k= 0; k < meshes[i].sub[j].numvertices; ++k)
                     {
-                        if(debug)
-                        {
-                            WriteLine(r.BaseStream.Position.ToString("X"));
-                            ReadVertexDebug(ref v[k]);
-                        } else
-                        {
-                            ReadVertex(ref v[k]);
-                        }
+                        ReadVertex(ref v[k]);
                     }
 
                     WriteLine(r.BaseStream.Position.ToString("X"));
                     System.Diagnostics.Debug.WriteLine(r.BaseStream.Position.ToString("X"));
-#if DEBUG
-                    if(r.BaseStream.Position == 0x61F94)
-                        debug   = true;
-#endif
                 }
             }
 
