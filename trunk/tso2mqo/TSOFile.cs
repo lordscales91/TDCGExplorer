@@ -677,7 +677,7 @@ namespace Tso2MqoGui
                  ^ Nrm.x.GetHashCode() ^ Nrm.y.GetHashCode() ^ Nrm.z.GetHashCode()
                  ^ Tex.x.GetHashCode() ^ Tex.y.GetHashCode() ^ Wgt.w.GetHashCode()
                  ^ Wgt.x.GetHashCode() ^ Wgt.y.GetHashCode() ^ Wgt.z.GetHashCode()
-                 - Idx.GetHashCode();
+                 ^ Idx.GetHashCode();
         }
 
         public override bool Equals(object obj)
