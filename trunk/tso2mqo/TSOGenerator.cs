@@ -699,7 +699,7 @@ namespace Tso2MqoGui
 #region ユーティリティ
         public void WriteString(BinaryWriter bw, string s)
         {
-            byte[]  b   = Encoding.ASCII.GetBytes(s);
+            byte[]  b   = Encoding.Default.GetBytes(s);
             bw.Write(b);
             bw.Write((byte)0);
         }
