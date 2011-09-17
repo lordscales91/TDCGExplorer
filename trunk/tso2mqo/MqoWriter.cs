@@ -61,16 +61,6 @@ namespace Tso2MqoGui
             string  file= Path.Combine(OutPath, Path.GetFileName(tex.file.Trim('"')));
             byte[]  data= tex.data;
 
-            /*
-            if(Path.GetExtension(file).ToUpper() == ".BMP")
-            for(int i= 0; i < data.Length; i+=tex.Depth)
-            {
-                byte    x   = data[i+0];
-                data[i+0]   = data[i+2];
-                data[i+2]   = x;
-            }
-            */
-
             using(FileStream fs= File.OpenWrite(file))
             {
                 BinaryWriter    bw  = new BinaryWriter(fs);
@@ -188,18 +178,12 @@ namespace Tso2MqoGui
 
                         if((cnt & 1) == 0)
                         {
-                          //face.Add(a); uv.Add(va.Tex.x); uv.Add(va.Tex.y);
-                          //face.Add(b); uv.Add(vb.Tex.x); uv.Add(vb.Tex.y);
-                          //face.Add(c); uv.Add(vc.Tex.x); uv.Add(vc.Tex.y);
                             face.Add(a); uv.Add(va.Tex.x); uv.Add(1-va.Tex.y);
                             face.Add(b); uv.Add(vb.Tex.x); uv.Add(1-vb.Tex.y);
                             face.Add(c); uv.Add(vc.Tex.x); uv.Add(1-vc.Tex.y);
                             mtl.Add(j.spec);
                         } else
                         {
-                          //face.Add(a); uv.Add(va.Tex.x); uv.Add(va.Tex.y);
-                          //face.Add(c); uv.Add(vc.Tex.x); uv.Add(vc.Tex.y);
-                          //face.Add(b); uv.Add(vb.Tex.x); uv.Add(vb.Tex.y);
                             face.Add(a); uv.Add(va.Tex.x); uv.Add(1-va.Tex.y);
                             face.Add(c); uv.Add(vc.Tex.x); uv.Add(1-vc.Tex.y);
                             face.Add(b); uv.Add(vb.Tex.x); uv.Add(1-vb.Tex.y);
@@ -232,14 +216,9 @@ namespace Tso2MqoGui
 
                 for(int j= 0, n= face.Count; j < n; j+=3)
                     WriteFace(face[j+0], face[j+1], face[j+2],
-#if true
                               uv[j*2+0], uv[j*2+1],
                               uv[j*2+2], uv[j*2+3],
                               uv[j*2+4], uv[j*2+5],
-#else
-                              uv[j*2+0], uv[j*2+2], uv[j*2+4],
-                              uv[j*2+1], uv[j*2+3], uv[j*2+5],
-#endif
                               mtl[j/3]);
                 tw.WriteLine("	}");
                 tw.WriteLine("}");
@@ -259,43 +238,16 @@ namespace Tso2MqoGui
                     else    i.world = Matrix44.Mul(i.Matrix, i.parent.World);
                 }
                 
-#if false
-                // 位置一覧
-                Dictionary<string, Point3>  pointmap= new Dictionary<string, Point3>();
-                Dictionary<string, int>     indexmap= new Dictionary<string, int();
-
-                foreach(TSONode i in file.nodes)
-                {
-                    points.Add(i.World.Translation);
-                    pointmap.Add(i.name, i.World.Translation);
-                }
-
-              //RDBBonFile                  bonfile = new RDBBonFile();
-#endif
                 List<Point3>                points  = new List<Point3>();
                 List<int>                   bones   = new List<int>();
 
                 tw.WriteLine("Object \"{0}\" {{", "Bone");
-#if true
                 tw.WriteLine("	visible {0}", 15);
                 tw.WriteLine("	locking {0}", 0);
                 tw.WriteLine("	shading {0}", 1);
                 tw.WriteLine("	facet {0}", 59.5);
                 tw.WriteLine("	color {0} {1} {2}", 1, 0, 0);
                 tw.WriteLine("	color_type {0}", 0);
-#else
-                tw.WriteLine("	depth {0}", 0);
-	            tw.WriteLine("	folding {0}", 0);
-	            tw.WriteLine("	scale {0} {1} {2}", 1.000000, 1.000000, 1.000000);
-	            tw.WriteLine("	rotation {0} {1} {2}", 0.000000, 0.000000, 0.000000);
-	            tw.WriteLine("	translation {0} {1} {2}", 0.000000, 0.000000, 0.000000);
-	            tw.WriteLine("	visible {0}", 15);
-	            tw.WriteLine("	locking {0}", 0);
-	            tw.WriteLine("	shading {0}", 1);
-	            tw.WriteLine("	facet {0}", 59.5);
-	            tw.WriteLine("	color {0} {1} {2}", 0.898, 0.498, 0.698);
-	            tw.WriteLine("	color_type {0}", 0);
-#endif
 
                 foreach(TSONode i in file.nodes)
                 {
