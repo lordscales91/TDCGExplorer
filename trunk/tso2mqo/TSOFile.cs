@@ -30,6 +30,16 @@ namespace Tso2MqoGui
             System.Diagnostics.Debug.WriteLine(s);
         }
 
+        static void ExchangeChannel(byte[] data, int depth)
+        {
+            for(int j= 0; j < data.Length; j+=depth)
+            {
+                byte    tmp = data[j+2];
+                data[j+2]   = data[j+0];
+                data[j+0]   = tmp;
+            }
+        }
+
         public void ReadAll()
         {
             byte[]  magic                   = r.ReadBytes(4);
@@ -98,12 +108,7 @@ namespace Tso2MqoGui
                 textures[i].data            = r.ReadBytes(textures[i].width * textures[i].height * textures[i].depth);
                 texturemap.Add(textures[i].name, textures[i]);
 
-                for(int j= 0; j < textures[i].data.Length; j+=4)
-                {
-                    byte    tmp          = textures[i].data[j+2];
-                    textures[i].data[j+2]= textures[i].data[j+0];
-                    textures[i].data[j+0]= tmp;
-                }
+                ExchangeChannel(textures[i].data, textures[i].depth);
 
                 WriteLine(r.BaseStream.Position.ToString("X"));
             }
