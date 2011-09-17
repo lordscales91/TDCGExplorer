@@ -351,7 +351,7 @@ namespace Tso2MqoGui
             return x .GetHashCode() ^ y .GetHashCode() ^ z .GetHashCode()
                  ^ nx.GetHashCode() ^ ny.GetHashCode() ^ nz.GetHashCode()
                //^ u .GetHashCode() ^ v .GetHashCode()
-                 ^ mtl.GetHashCode()
+               //^ mtl.GetHashCode()
                  ;
         }
 
@@ -365,7 +365,7 @@ namespace Tso2MqoGui
             return x  == o.x  && y  == o.y  && y  == o.y
                 && nx == o.nx && ny == o.ny && ny == o.ny
               //&& u  == o.u  && v  == o.y
-                && mtl == o.mtl
+              //&& mtl == o.mtl
                 ;
         }
     }
