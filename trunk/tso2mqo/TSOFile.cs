@@ -573,10 +573,10 @@ namespace Tso2MqoGui
         public override string ToString()
         {
             StringBuilder   sb  = new StringBuilder();
-            sb.AppendFormat("[{0}, {1}, {2}, {3}], ",  M11.ToString("N"), M12.ToString("N"), M13.ToString("N"), M14.ToString("N"))
-              .AppendFormat("[{0}, {1}, {2}, {3}], ",  M21.ToString("N"), M22.ToString("N"), M23.ToString("N"), M24.ToString("N"))
-              .AppendFormat("[{0}, {1}, {2}, {3}], ",  M31.ToString("N"), M32.ToString("N"), M33.ToString("N"), M34.ToString("N"))
-              .AppendFormat("[{0}, {1}, {2}, {3}]",    M41.ToString("N"), M42.ToString("N"), M43.ToString("N"), M44.ToString("N"));
+            sb.AppendFormat("[{0:F4}, {1:F4}, {2:F4}, {3:F4}], ",  M11, M12, M13, M14)
+              .AppendFormat("[{0:F4}, {1:F4}, {2:F4}, {3:F4}], ",  M21, M22, M23, M24)
+              .AppendFormat("[{0:F4}, {1:F4}, {2:F4}, {3:F4}], ",  M31, M32, M33, M34)
+              .AppendFormat("[{0:F4}, {1:F4}, {2:F4}, {3:F4}]",    M41, M42, M43, M44);
             return sb.ToString();
         }
 
