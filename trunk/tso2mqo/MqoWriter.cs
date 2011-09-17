@@ -147,10 +147,18 @@ namespace Tso2MqoGui
 
             foreach(TSOMaterial i in file.materials)
             {
-                TSOTex  tex = file.texturemap[i.ColorTex];
-                tw.WriteLine(
-                    "	\"{0}\" shader(3) col(1.00 1.00 1.00 1.00) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex(\"{1}\")",
-                    i.name, Path.Combine(OutPath, tex.File.Trim('"')));
+                if(i.ColorTex != null)
+                {
+                    TSOTex  tex = file.texturemap[i.ColorTex];
+                    tw.WriteLine(
+                        "	\"{0}\" shader(3) col(1.00 1.00 1.00 1.00) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex(\"{1}\")",
+                        i.name, Path.Combine(OutPath, tex.File.Trim('"')));
+                } else
+                {
+                    tw.WriteLine(
+                        "	\"{0}\" shader(3) col(1.00 1.00 1.00 1.00) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00))",
+                        i.name);
+                }
             }
 
             tw.WriteLine("}");
