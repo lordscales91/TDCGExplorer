@@ -30,7 +30,7 @@ namespace Tso2MqoGui
             System.Diagnostics.Debug.WriteLine(s);
         }
 
-        static void ExchangeChannel(byte[] data, int depth)
+        public static void ExchangeChannel(byte[] data, int depth)
         {
             for(int j= 0; j < data.Length; j+=depth)
             {

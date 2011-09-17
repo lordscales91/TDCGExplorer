@@ -560,6 +560,9 @@ namespace Tso2MqoGui
                         }
                     }
 
+                    foreach(TSOTex i in texlist)
+                        TSOFile.ExchangeChannel(i.data, i.depth);
+
                     BinaryWriter    bw  = new BinaryWriter(fs);
                     TSOWriter.WriteHeader(bw);
                     TSOWriter.Write(bw, last.nodes);
