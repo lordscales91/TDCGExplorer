@@ -51,6 +51,63 @@ namespace Tso2MqoGui
             DoRead(SectionRoot);
         }
 
+        private static string[] SplitString(string s)
+        {
+            List<string>    tokens  = new List<string>();
+            StringBuilder   sb     = new StringBuilder(s.Length);
+            bool            str    = false;
+            bool            escape = false;
+            bool            bracket= false;
+            s                      = s.Trim(' ', '\t', '\r', '\n');
+
+            foreach(char i in s)
+            {
+                if(escape)
+                {
+                    sb.Append(i);
+                    escape  = false;
+                    continue;
+                }
+
+
+                switch(i)
+                {
+                case '\\':
+                    if(str) sb.Append(i);
+                    else    escape  = true;
+                    break;
+                case ' ':
+                case '\t':
+                         if(bracket)        {sb.Append(i);                            }
+                    else if(str)            {sb.Append(i);                            }
+                    else if(sb.Length > 0)  {tokens.Add(sb.ToString()); sb.Length= 0; }
+                    break;
+                case '(':
+                    sb.Append(i);
+                    if(!str)
+                        bracket= true;
+                    break;
+                case ')':
+                    sb.Append(i);
+                    if(!str)
+                        bracket= false;
+                    break;
+                case '\"':
+                    sb.Append(i);
+                    str = !str;
+                    break;
+                default:
+                    sb.Append(i);
+                    break;
+                }
+            }
+
+            if(sb.Length > 0)
+                tokens.Add(sb.ToString());
+
+            return tokens.ToArray();
+        }
+
         private void DoRead(SectionHandler h)
         {
             for(int no= 1;; ++no)
@@ -61,7 +118,7 @@ namespace Tso2MqoGui
                     break;
 
                 line                = line.Trim();
-                string[]    tokens  = line.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
+                string[]    tokens  = SplitString(line);
 
                 try
                 {
@@ -117,6 +174,11 @@ namespace Tso2MqoGui
             }
         }
 
+        private static string[] SplitParam(string s)
+        {
+            return s.Split(delimiters2, StringSplitOptions.RemoveEmptyEntries);
+        }
+
         private bool SectionMaterial(string[] tokens)
         {
             if(tokens[0] == "}")
@@ -129,24 +191,22 @@ namespace Tso2MqoGui
 
             string      line= sb.ToString().Trim();
             MqoMaterial m   = new MqoMaterial(tokens[0].Trim('"'));
-            tokens          = line.Split(delimiters2, StringSplitOptions.RemoveEmptyEntries);
+            tokens          = SplitString(line);
             materials.Add(m);
 
             for(int i= 1 ; i < tokens.Length; ++i)
             {
                 string      t   = tokens[i];
+                string      t2  = t.ToLower();
 
-                switch(tokens[i].ToLower())
-                {
-                case "shader":  m.shader   = int   .Parse(tokens[++i]);         break;
-                case "col":     m.col      = Color3.Parse(tokens, i+1); i+=4;   break;
-                case "dif":     m.dif      = float .Parse(tokens[++i]);         break;
-                case "amb":     m.amb      = float .Parse(tokens[++i]);         break;
-                case "emi":     m.emi      = float .Parse(tokens[++i]);         break;
-                case "spc":     m.spc      = float .Parse(tokens[++i]);         break;
-                case "power":   m.power    = float .Parse(tokens[++i]);         break;
-                case "tex":     m.tex      = tokens[++i].Trim('\"');            break;
-                }
+                     if(t2.StartsWith("shader("))  m.shader   = int   .Parse(SplitParam(t)[1]);
+                else if(t2.StartsWith("col("))     m.col      = Color3.Parse(SplitParam(t), 1);
+                else if(t2.StartsWith("dif("))     m.dif      = float .Parse(SplitParam(t)[1]);
+                else if(t2.StartsWith("amb("))     m.amb      = float .Parse(SplitParam(t)[1]);
+                else if(t2.StartsWith("emi("))     m.emi      = float .Parse(SplitParam(t)[1]);
+                else if(t2.StartsWith("spc("))     m.spc      = float .Parse(SplitParam(t)[1]);
+                else if(t2.StartsWith("power("))   m.power    = float .Parse(SplitParam(t)[1]);
+                else if(t2.StartsWith("tex("))     m.tex      = t.Substring(3).Trim('(', ')', '"');
             }
 
             return true;
@@ -195,26 +255,32 @@ namespace Tso2MqoGui
 
             string      line= sb.ToString().Trim();
             MqoFace     f   = new MqoFace();
-            tokens          = line.Split(delimiters2, StringSplitOptions.RemoveEmptyEntries);
+            tokens          = SplitString(line);
             current.faces.Add(f);
 
             for(int i= 1 ; i < tokens.Length; ++i)
             {
-                switch(tokens[i].ToLower())
+                string      t   = tokens[i];
+                string      t2  = t.ToLower();
+
+                if(t2.StartsWith("v("))
                 {
-                case "v":
-                    f.a     = ushort.Parse(tokens[++i]);
-                    f.b     = ushort.Parse(tokens[++i]);
-                    f.c     = ushort.Parse(tokens[++i]);
-                    break;
-                case "m":
-                    f.mtl   = ushort.Parse(tokens[++i]);
-                    break;
-                case "uv":
-                    f.ta    = Point2.Parse(tokens, i+1); i+=2;
-                    f.tb    = Point2.Parse(tokens, i+1); i+=2;
-                    f.tc    = Point2.Parse(tokens, i+1); i+=2;
-                    break;
+                    string[]    t3  = SplitParam(t);
+                    f.a             = ushort.Parse(t3[1]);
+                    f.b             = ushort.Parse(t3[2]);
+                    f.c             = ushort.Parse(t3[3]);
+                } else
+                if(t2.StartsWith("m("))
+                {
+                    string[]    t3  = SplitParam(t);
+                    f.mtl           = ushort.Parse(t3[1]);
+                } else
+                if(t2.StartsWith("uv("))
+                {
+                    string[]    t3  = SplitParam(t);
+                    f.ta            = Point2.Parse(t3, 1);
+                    f.tb            = Point2.Parse(t3, 3);
+                    f.tc            = Point2.Parse(t3, 5);
                 }
             }
 
