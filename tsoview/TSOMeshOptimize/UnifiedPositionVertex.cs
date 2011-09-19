@@ -9,9 +9,9 @@ using TDCG;
 namespace TSOMeshOptimize
 {
     /// <summary>
-    /// 位置とシェーダ設定の組が一意な頂点
+    /// 位置が一意な頂点
     /// </summary>
-    public class UnifiedPositionSpecVertex : Vertex, IComparable
+    public class UnifiedPositionVertex : Vertex, IComparable
     {
         /// <summary>
         /// シェーダ設定番号
@@ -19,11 +19,11 @@ namespace TSOMeshOptimize
         public int spec;
 
         /// <summary>
-        /// 位置とシェーダ設定の組が一意な頂点を生成します。
+        /// 位置が一意な頂点を生成します。
         /// </summary>
         /// <param name="a">頂点</param>
         /// <param name="sub">頂点を含むサブメッシュ</param>
-        public UnifiedPositionSpecVertex(Vertex a, int[] bone_indices, int spec)
+        public UnifiedPositionVertex(Vertex a, int[] bone_indices, int spec)
         {
             this.position = a.position;
             this.normal = a.normal;
@@ -44,16 +44,14 @@ namespace TSOMeshOptimize
         /// <returns></returns>
         public int CompareTo(object obj)
         {
-            UnifiedPositionSpecVertex v = obj as UnifiedPositionSpecVertex;
+            UnifiedPositionVertex v = obj as UnifiedPositionVertex;
             if ((object)v == null)
-                throw new ArgumentException("not a UnifiedPositionSpecVertex");
+                throw new ArgumentException("not a UnifiedPositionVertex");
             int cmp = this.position.X.CompareTo(v.position.X);
             if (cmp == 0)
                 cmp = this.position.Y.CompareTo(v.position.Y);
             if (cmp == 0)
                 cmp = this.position.Z.CompareTo(v.position.Z);
-            if (cmp == 0)
-                cmp = this.spec.CompareTo(v.spec);
             return cmp;
         }
 
@@ -66,10 +64,10 @@ namespace TSOMeshOptimize
         {
             if (obj == null)
                 return false;
-            UnifiedPositionSpecVertex v = obj as UnifiedPositionSpecVertex;
+            UnifiedPositionVertex v = obj as UnifiedPositionVertex;
             if ((object)v == null)
                 return false;
-            return this.position == v.position && this.spec == v.spec;
+            return this.position == v.position;
         }
 
         /// <summary>
@@ -77,11 +75,11 @@ namespace TSOMeshOptimize
         /// </summary>
         /// <param name="v">v</param>
         /// <returns></returns>
-        public bool Equals(UnifiedPositionSpecVertex v)
+        public bool Equals(UnifiedPositionVertex v)
         {
             if ((object)v == null)
                 return false;
-            return this.position == v.position && this.spec == v.spec;
+            return this.position == v.position;
         }
 
         /// <summary>
@@ -90,7 +88,7 @@ namespace TSOMeshOptimize
         /// <returns></returns>
         public override int GetHashCode()
         {
-            return position.GetHashCode() ^ spec.GetHashCode();
+            return position.GetHashCode();
         }
     }
 }
