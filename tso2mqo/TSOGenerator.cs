@@ -268,6 +268,8 @@ namespace Tso2MqoGui
                 if(i.name.ToLower() == "bone")
                     continue;
 
+                Console.WriteLine("object:" + i.name);
+
                 // 一番近い頂点への参照
                 List<int>       vref= new List<int>(i.vertices.Count);
 
@@ -307,7 +309,10 @@ namespace Tso2MqoGui
                     faces1.Add(j);
 
 #region ボーンパーティション
-                while(faces1.Count > 0)
+                Console.WriteLine("  vertices bone_indices");
+                Console.WriteLine("  -------- ------------");
+
+                while (faces1.Count > 0)
                 {
                     int                 mtl     = i.faces[faces1[0]].mtl;
                     selected.Clear();
@@ -328,7 +333,7 @@ namespace Tso2MqoGui
                         v[0]                    = vlst[vref[f.a]];
                         v[1]                    = vlst[vref[f.b]];
                         v[2]                    = vlst[vref[f.c]];
-                        bool            valid       = true;
+
                         work.Clear();
 
                         for(int k= 0; k < 3; ++k)
@@ -339,35 +344,17 @@ namespace Tso2MqoGui
                             byte*       idx     = (byte*)(&idx0);
                             float*      wgt     = (float*)(&wgt0);
 
-//                              if(idx0 != 0)
-//                                  idx0            = idx0;
-
                             for(int l= 0; l < 4; ++l)
                             {
                                 if(wgt[l] <= float.Epsilon)         continue;
                                 if(selected.ContainsKey(idx[l]))    continue;
                                 
-                                if(selected.Count == 16)
-                                {
-                                    valid   = false;
-                                    break;
-                                }
-
                                 if(!work.ContainsKey(idx[l]))
                                     work.Add(idx[l], 0);
-
-                                if(selected.Count + work.Count >= 17)
-                                {
-                                    valid   = false;
-                                    break;
-                                }
                             }
-
-                            if(!valid)
-                                break;
                         }
 
-                        if(!valid)
+                        if (selected.Count + work.Count > 16)
                         {
                             faces2.Add(j);
                             continue;
@@ -376,8 +363,6 @@ namespace Tso2MqoGui
                         // ボーンリストに足してvalid
                         foreach(KeyValuePair<int, int> l in work)
                         {
-                            System.Diagnostics.Debug.WriteLine(
-                                string.Format("Add: {0} -> {1}", l.Key, selected.Count)); 
                             selected.Add(l.Key, selected.Count);    // ボーンテーブルに追加
                             bones.Add(l.Key);
                         }
@@ -423,6 +408,8 @@ namespace Tso2MqoGui
                     for(int j= 0; j < nidx.Length; ++j)
                         sub.vertices[j] = verts[nidx[j]];
 
+                    Console.WriteLine("  {0,8} {1,12}", sub.vertices.Length, sub.bones.Length);
+
                     subs.Add(sub);
 
                     // 次の周回
@@ -453,6 +440,8 @@ namespace Tso2MqoGui
             {
                 if(i.name.ToLower() == "bone")
                     continue;
+
+                Console.WriteLine("object:" + i.name);
 
                 // 法線生成
                 Point3[]        nrm = new Point3[i.vertices.Count];
