@@ -41,6 +41,11 @@ namespace Tso2MqoGui
         {
             return x.GetHashCode() ^ y.GetHashCode();
         }
+
+        public bool Equals(Point2 p)
+        {
+            return (x == p.x) && (y == p.y);
+        }
     }
 
     public partial struct Point3 : IComparable<Point3>
@@ -113,6 +118,11 @@ namespace Tso2MqoGui
         {
             return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();
         }
+
+        public bool Equals(Point3 p)
+        {
+            return (x == p.x) && (y == p.y) && (z == p.z);
+        }
     }
 
     public partial struct Point4 : IComparable<Point4>
@@ -150,6 +160,11 @@ namespace Tso2MqoGui
         public override int GetHashCode()
         {
             return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode() ^ w.GetHashCode();
+        }
+
+        public bool Equals(Point4 p)
+        {
+            return (x == p.x) && (y == p.y) && (z == p.z) && (w == p.w);
         }
     }
 
