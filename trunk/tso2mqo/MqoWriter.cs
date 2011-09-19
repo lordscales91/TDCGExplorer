@@ -332,15 +332,10 @@ namespace Tso2MqoGui
 
         public int CompareTo(UVertex o)
         {
-            if(Pos.x < o.Pos.x) return -1; if(Pos.x > o.Pos.x) return 1;
-            if(Pos.y < o.Pos.y) return -1; if(Pos.y > o.Pos.y) return 1;
-            if(Pos.z < o.Pos.z) return -1; if(Pos.z > o.Pos.z) return 1;
-            if(Nrm.x < o.Nrm.x) return -1; if(Nrm.x > o.Nrm.x) return 1;
-            if(Nrm.y < o.Nrm.y) return -1; if(Nrm.y > o.Nrm.y) return 1;
-            if(Nrm.z < o.Nrm.z) return -1; if(Nrm.z > o.Nrm.z) return 1;
-            if(Tex.x < o.Tex.x) return -1; if(Tex.x > o.Tex.x) return 1;
-            if(Tex.y < o.Tex.y) return -1; if(Tex.y > o.Tex.y) return 1;
-            return mtl - o.mtl;
+            int cmp;
+            cmp = Pos.CompareTo(o.Pos); if (cmp != 0) return cmp;
+            cmp = Nrm.CompareTo(o.Nrm);
+            return cmp;
         }
 
         public override int GetHashCode()
