@@ -640,11 +640,8 @@ namespace Tso2MqoGui
 
         public override int GetHashCode()
         {
-            return Pos.x.GetHashCode() ^ Pos.y.GetHashCode() ^ Pos.z.GetHashCode()
-                 ^ Nrm.x.GetHashCode() ^ Nrm.y.GetHashCode() ^ Nrm.z.GetHashCode()
-                 ^ Tex.x.GetHashCode() ^ Tex.y.GetHashCode() ^ Wgt.w.GetHashCode()
-                 ^ Wgt.x.GetHashCode() ^ Wgt.y.GetHashCode() ^ Wgt.z.GetHashCode()
-                 ^ Idx.GetHashCode();
+            return Pos.GetHashCode() ^ Nrm.GetHashCode() ^ Tex.GetHashCode()
+                 ^ Wgt.GetHashCode() ^ Idx.GetHashCode();
         }
 
         public override bool Equals(object obj)

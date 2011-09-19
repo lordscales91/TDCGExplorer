@@ -36,6 +36,11 @@ namespace Tso2MqoGui
             cmp = y.CompareTo(obj.y);
             return cmp;
         }
+
+        public override int GetHashCode()
+        {
+            return x.GetHashCode() ^ y.GetHashCode();
+        }
     }
 
     public partial struct Point3 : IComparable<Point3>
@@ -103,6 +108,11 @@ namespace Tso2MqoGui
             cmp = z.CompareTo(obj.z);
             return cmp;
         }
+
+        public override int GetHashCode()
+        {
+            return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode();
+        }
     }
 
     public partial struct Point4 : IComparable<Point4>
@@ -135,6 +145,11 @@ namespace Tso2MqoGui
             cmp = z.CompareTo(obj.z); if (cmp != 0) return cmp;
             cmp = w.CompareTo(obj.w);
             return cmp;
+        }
+
+        public override int GetHashCode()
+        {
+            return x.GetHashCode() ^ y.GetHashCode() ^ z.GetHashCode() ^ w.GetHashCode();
         }
     }
 
