@@ -632,16 +632,13 @@ namespace Tso2MqoGui
             int cmp = 0;
             cmp = Pos.CompareTo(o.Pos); if (cmp != 0) return cmp;
             cmp = Nrm.CompareTo(o.Nrm); if (cmp != 0) return cmp;
-            cmp = Tex.CompareTo(o.Tex); if (cmp != 0) return cmp;
-            cmp = Wgt.CompareTo(o.Wgt); if (cmp != 0) return cmp;
-            cmp = Idx.CompareTo(o.Idx);
+            cmp = Tex.CompareTo(o.Tex);
             return cmp;
         }
 
         public override int GetHashCode()
         {
-            return Pos.GetHashCode() ^ Nrm.GetHashCode() ^ Tex.GetHashCode()
-                 ^ Wgt.GetHashCode() ^ Idx.GetHashCode();
+            return Pos.GetHashCode() ^ Nrm.GetHashCode() ^ Tex.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -649,16 +646,14 @@ namespace Tso2MqoGui
             if (obj is Vertex)
             {
                 Vertex v = (Vertex)obj;
-                return Pos.Equals(v.Pos) && Nrm.Equals(v.Nrm) && Tex.Equals(v.Tex)
-                     ^ Wgt.Equals(v.Wgt) && Idx.Equals(v.Idx);
+                return Pos.Equals(v.Pos) && Nrm.Equals(v.Nrm) && Tex.Equals(v.Tex);
             }
             return false;
         }
 
         public bool Equals(Vertex v)
         {
-            return Pos.Equals(v.Pos) && Nrm.Equals(v.Nrm) && Tex.Equals(v.Tex)
-                 ^ Wgt.Equals(v.Wgt) && Idx.Equals(v.Idx);
+            return Pos.Equals(v.Pos) && Nrm.Equals(v.Nrm) && Tex.Equals(v.Tex);
         }
     }
 
