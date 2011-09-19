@@ -24,8 +24,6 @@ namespace Tso2MqoGui
             this.r  = r;
         }
 
-        public static int   debug_count = 0;
-
         public void ReadVertex(ref Vertex v)
         {
             v.Pos.X     = r.ReadSingle();
