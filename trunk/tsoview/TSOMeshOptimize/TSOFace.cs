@@ -13,15 +13,15 @@ namespace TSOMeshOptimize
         /// <summary>
         /// 頂点a
         /// </summary>
-        public readonly UnifiedPositionSpecVertex a;
+        public readonly UnifiedPositionVertex a;
         /// <summary>
         /// 頂点b
         /// </summary>
-        public readonly UnifiedPositionSpecVertex b;
+        public readonly UnifiedPositionVertex b;
         /// <summary>
         /// 頂点c
         /// </summary>
-        public readonly UnifiedPositionSpecVertex c;
+        public readonly UnifiedPositionVertex c;
         /// <summary>
         /// シェーダ設定番号
         /// </summary>
@@ -29,7 +29,7 @@ namespace TSOMeshOptimize
         /// <summary>
         /// 頂点配列
         /// </summary>
-        public readonly UnifiedPositionSpecVertex[] vertices;
+        public readonly UnifiedPositionVertex[] vertices;
 
         /// <summary>
         /// 面を生成します。
@@ -37,13 +37,13 @@ namespace TSOMeshOptimize
         /// <param name="a">頂点a</param>
         /// <param name="b">頂点b</param>
         /// <param name="c">頂点c</param>
-        public TSOFace(UnifiedPositionSpecVertex a, UnifiedPositionSpecVertex b, UnifiedPositionSpecVertex c)
+        public TSOFace(UnifiedPositionVertex a, UnifiedPositionVertex b, UnifiedPositionVertex c)
         {
             this.a = a;
             this.b = b;
             this.c = c;
             this.spec = a.spec;
-            vertices = new UnifiedPositionSpecVertex[3];
+            vertices = new UnifiedPositionVertex[3];
             vertices[0] = a;
             vertices[1] = b;
             vertices[2] = c;

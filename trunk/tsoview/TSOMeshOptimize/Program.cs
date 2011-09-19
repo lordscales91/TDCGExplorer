@@ -90,7 +90,7 @@ namespace TSOMeshOptimize
             tso.Save(dest_path);
         }
 
-        public static UnifiedPositionTexcoordVertex CreateVertex(UnifiedPositionSpecVertex v, Dictionary<int, ushort> bone_idmap)
+        public static UnifiedPositionTexcoordVertex CreateVertex(UnifiedPositionVertex v, Dictionary<int, ushort> bone_idmap)
         {
             UnifiedPositionTexcoordVertex a = new UnifiedPositionTexcoordVertex(v, bone_idmap);
             return a;
@@ -105,14 +105,14 @@ namespace TSOMeshOptimize
             List<TSOFace> faces = new List<TSOFace>();
             foreach (TSOSubMesh sub in mesh.sub_meshes)
             {
-                UnifiedPositionSpecVertex[] vertices = new UnifiedPositionSpecVertex[sub.vertices.Length];
+                UnifiedPositionVertex[] vertices = new UnifiedPositionVertex[sub.vertices.Length];
                 for (int i = 0; i < vertices.Length; i++)
                 {
-                    vertices[i] = new UnifiedPositionSpecVertex(sub.vertices[i], sub.bone_indices, sub.spec);
+                    vertices[i] = new UnifiedPositionVertex(sub.vertices[i], sub.bone_indices, sub.spec);
                 }
                 for (int i = 2; i < vertices.Length; i++)
                 {
-                    UnifiedPositionSpecVertex a, b, c;
+                    UnifiedPositionVertex a, b, c;
                     if (i % 2 != 0)
                     {
                         a = vertices[i - 2];
@@ -166,7 +166,7 @@ namespace TSOMeshOptimize
                         continue;
                     }
                     adding_bone_indices.Clear();
-                    foreach (UnifiedPositionSpecVertex v in f.vertices)
+                    foreach (UnifiedPositionVertex v in f.vertices)
                     {
                         foreach (SkinWeight sw in v.skin_weights)
                         {
@@ -186,7 +186,7 @@ namespace TSOMeshOptimize
                     {
                         bh.Add(bone_index);
                     }
-                    foreach (UnifiedPositionSpecVertex v in f.vertices)
+                    foreach (UnifiedPositionVertex v in f.vertices)
                     {
                         UnifiedPositionTexcoordVertex a = new UnifiedPositionTexcoordVertex(v, bh.map);
                         if (!vh.ContainsKey(a))

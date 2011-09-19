@@ -12,7 +12,7 @@ namespace TSOMeshOptimize
     {
         public static float WeightEpsilon = float.Epsilon;
 
-	public UnifiedPositionTexcoordVertex(UnifiedPositionSpecVertex v, Dictionary<int, ushort> bone_idmap)
+	public UnifiedPositionTexcoordVertex(UnifiedPositionVertex v, Dictionary<int, ushort> bone_idmap)
         {
             this.position = v.position;
             this.normal = v.normal;
