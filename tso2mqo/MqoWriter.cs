@@ -171,7 +171,7 @@ namespace Tso2MqoGui
                         ++cnt;
                         va= vb; a= b;
                         vb= vc; b= c;
-                        vc= k;  c= vh.Add(new UVertex(k.Pos.x, k.Pos.y, k.Pos.z, k.Nrm.x, k.Nrm.y, k.Nrm.z, k.Tex.x, k.Tex.y, j.spec));
+                        vc= k;  c= vh.Add(new UVertex(k.Pos, k.Nrm, k.Tex, j.spec));
 
                         if(cnt < 3)                     continue;
                         if(a == b || b == c || c == a)  continue;
@@ -204,7 +204,7 @@ namespace Tso2MqoGui
                 tw.WriteLine("	vertex {0} {{", vh.Count);
 
                 foreach(UVertex j in vh.verts)
-                    WriteVertex(j.x, j.y, j.z);
+                    WriteVertex(j.Pos.x, j.Pos.y, j.Pos.z);
 
                 tw.WriteLine("	}");
 
@@ -313,46 +313,40 @@ namespace Tso2MqoGui
 
     public class UVertex : IComparable<UVertex>
     {
-        public float    x, y, z, nx, ny, nz, u, v;
+        public Point3 Pos;
+        public Point3 Nrm;
+        public Point2 Tex;
         public int      mtl;
         
         public UVertex()
         {
         }
 
-        public UVertex(float x, float y, float z, float nx, float ny, float nz, float u, float v, int mtl)
+        public UVertex(Point3 pos, Point3 nrm, Point2 tex, int mtl)
         {
-            this.x  = x;
-            this.y  = y;
-            this.z  = z;
-            this.nx = nx;
-            this.ny = ny;
-            this.nz = nz;
-            this.u  = u;
-            this.v  = v;
+            Pos = pos;
+            Nrm = nrm;
+            Tex = tex;
             this.mtl= mtl;
         }
 
         public int CompareTo(UVertex o)
         {
-            if(x   < o.x)   return -1; if(x   > o.x)   return 1;
-            if(y   < o.y)   return -1; if(y   > o.y)   return 1;
-            if(z   < o.z)   return -1; if(z   > o.z)   return 1;
-            if(nx  < o.nx)  return -1; if(nx  > o.nx)  return 1;
-            if(ny  < o.ny)  return -1; if(ny  > o.ny)  return 1;
-            if(nz  < o.nz)  return -1; if(nz  > o.nz)  return 1;
-            if(u   < o.u)   return -1; if(u   > o.u)   return 1;
-            if(v   < o.v)   return -1; if(v   > o.v)   return 1;
+            if(Pos.x < o.Pos.x) return -1; if(Pos.x > o.Pos.x) return 1;
+            if(Pos.y < o.Pos.y) return -1; if(Pos.y > o.Pos.y) return 1;
+            if(Pos.z < o.Pos.z) return -1; if(Pos.z > o.Pos.z) return 1;
+            if(Nrm.x < o.Nrm.x) return -1; if(Nrm.x > o.Nrm.x) return 1;
+            if(Nrm.y < o.Nrm.y) return -1; if(Nrm.y > o.Nrm.y) return 1;
+            if(Nrm.z < o.Nrm.z) return -1; if(Nrm.z > o.Nrm.z) return 1;
+            if(Tex.x < o.Tex.x) return -1; if(Tex.x > o.Tex.x) return 1;
+            if(Tex.y < o.Tex.y) return -1; if(Tex.y > o.Tex.y) return 1;
             return mtl - o.mtl;
         }
 
         public override int GetHashCode()
         {
-            return x .GetHashCode() ^ y .GetHashCode() ^ z .GetHashCode()
-                 ^ nx.GetHashCode() ^ ny.GetHashCode() ^ nz.GetHashCode()
-               //^ u .GetHashCode() ^ v .GetHashCode()
-               //^ mtl.GetHashCode()
-                 ;
+            return Pos.x.GetHashCode() ^ Pos.y.GetHashCode() ^ Pos.z.GetHashCode()
+                 ^ Nrm.x.GetHashCode() ^ Nrm.y.GetHashCode() ^ Nrm.z.GetHashCode();
         }
 
         public override bool Equals(object obj)
@@ -362,11 +356,8 @@ namespace Tso2MqoGui
             if(o == null)
                 return false;
 
-            return x  == o.x  && y  == o.y  && y  == o.y
-                && nx == o.nx && ny == o.ny && ny == o.ny
-              //&& u  == o.u  && v  == o.y
-              //&& mtl == o.mtl
-                ;
+            return Pos.x==o.Pos.x && Pos.y==o.Pos.y && Pos.z==o.Pos.z
+                && Nrm.x==o.Nrm.x && Nrm.y==o.Nrm.y && Nrm.z==o.Nrm.z;
         }
     }
 }
