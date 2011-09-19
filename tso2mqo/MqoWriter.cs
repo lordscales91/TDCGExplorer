@@ -209,7 +209,7 @@ namespace Tso2MqoGui
                 tw.WriteLine("	}");
 
                 //
-                tw.WriteLine("	face {0} {{", face.Count);
+                tw.WriteLine("	face {0} {{", face.Count / 3);
 
                 System.Diagnostics.Debug.Assert(face.Count*2 == uv.Count);
                 System.Diagnostics.Debug.Assert(face.Count == mtl.Count * 3);
