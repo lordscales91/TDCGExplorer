@@ -21,6 +21,13 @@ namespace Tso2MqoGui
         {
             return X+","+Y;
         }
+
+        public static Point2    Parse(string[] t, int  begin)
+        {
+            return new Point2(
+                float.Parse(t[begin+0]),
+                float.Parse(t[begin+1]));
+        }
     }
 
     public partial struct Point3
@@ -71,6 +78,14 @@ namespace Tso2MqoGui
             d           = (float)(1 / (Math.Sqrt(d)));
             return new Point3(p.x*d, p.y*d, p.z*d);
         }
+
+        public static Point3    Parse(string[] t, int  begin)
+        {
+            return new Point3(
+                float.Parse(t[begin+0]),
+                float.Parse(t[begin+1]),
+                float.Parse(t[begin+2]));
+        }
     }
 
     public partial struct Point4
@@ -115,34 +130,10 @@ namespace Tso2MqoGui
         {
             return R+","+G+","+B;
         }
-    }
 
-    public partial struct Color3
-    {
         public static Color3    Parse(string[] t, int  begin)
         {
             return new Color3(
-                float.Parse(t[begin+0]),
-                float.Parse(t[begin+1]),
-                float.Parse(t[begin+2]));
-        }
-    }
-
-    public partial struct Point2
-    {
-        public static Point2    Parse(string[] t, int  begin)
-        {
-            return new Point2(
-                float.Parse(t[begin+0]),
-                float.Parse(t[begin+1]));
-        }
-    }
-
-    public partial struct Point3
-    {
-        public static Point3    Parse(string[] t, int  begin)
-        {
-            return new Point3(
                 float.Parse(t[begin+0]),
                 float.Parse(t[begin+1]),
                 float.Parse(t[begin+2]));
