@@ -267,9 +267,7 @@ namespace Tso2MqoGui
             {
                 if(i.name.ToLower() == "bone")
                     continue;
-#if true
-                System.Diagnostics.Debug.WriteLine("object:" + i.name);            
-#endif
+
                 // 一番近い頂点への参照
                 List<int>       vref= new List<int>(i.vertices.Count);
 
@@ -284,15 +282,10 @@ namespace Tso2MqoGui
                     Point3  v1  = Point3.Normalize(i.vertices[j.b] - i.vertices[j.a]);
                     Point3  v2  = Point3.Normalize(i.vertices[j.c] - i.vertices[j.b]);
                     Point3  n   = Point3.Normalize(Point3.Cross(v1, v2));
-#if false
-                    nrm[j.a]    +=n;
-                    nrm[j.b]    +=n;
-                    nrm[j.c]    +=n;
-#else
+
                     nrm[j.a]    -=n;
                     nrm[j.b]    -=n;
                     nrm[j.c]    -=n;
-#endif
                 }
 
                 for(int j= 0; j < nrm.Length; ++j)
@@ -393,15 +386,10 @@ namespace Tso2MqoGui
                         Vertex  va  = new Vertex(i.vertices[f.a], v[0].Wgt, v[0].Idx, nrm[f.a], new Point2(f.ta.x, 1-f.ta.y));
                         Vertex  vb  = new Vertex(i.vertices[f.b], v[1].Wgt, v[1].Idx, nrm[f.b], new Point2(f.tb.x, 1-f.tb.y));
                         Vertex  vc  = new Vertex(i.vertices[f.c], v[2].Wgt, v[2].Idx, nrm[f.c], new Point2(f.tc.x, 1-f.tc.y));
-#if false
-                        indices.Add(vh.Add(va));
-                        indices.Add(vh.Add(vb));
-                        indices.Add(vh.Add(vc));
-#else
+
                         indices.Add(vh.Add(va));
                         indices.Add(vh.Add(vc));
                         indices.Add(vh.Add(vb));
-#endif
                     }
 
                     // フェイス最適化
@@ -465,9 +453,7 @@ namespace Tso2MqoGui
             {
                 if(i.name.ToLower() == "bone")
                     continue;
-#if true
-                System.Diagnostics.Debug.WriteLine("object:" + i.name);            
-#endif
+
                 // 法線生成
                 Point3[]        nrm = new Point3[i.vertices.Count];
                 
