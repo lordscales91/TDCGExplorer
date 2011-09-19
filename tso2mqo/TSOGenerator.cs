@@ -471,6 +471,9 @@ namespace Tso2MqoGui
                 VertexHeap<Vertex>  vh      = new VertexHeap<Vertex>();
                 List<TSOSubMesh>    subs    = new List<TSOSubMesh>();
 
+                Console.WriteLine("  vertices bone_indices");
+                Console.WriteLine("  -------- ------------");
+
                 for(int j= 0, n= materials.Count; j < n; ++j)
                 {
                     int mtl = j;
@@ -507,6 +510,8 @@ namespace Tso2MqoGui
                    
                     for(int k= 0; k < nidx.Length; ++k)
                         sub.vertices[k] = verts[nidx[k]];
+
+                    Console.WriteLine("  {0,8} {1,12}", sub.vertices.Length, sub.bones.Length);
 
                     subs.Add(sub);
                 }
