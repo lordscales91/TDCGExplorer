@@ -345,13 +345,22 @@ namespace Tso2MqoGui
 
         public override bool Equals(object obj)
         {
-            UVertex o   = obj as UVertex;
+            if (obj is UVertex)
+            {
+                UVertex v = (UVertex)obj;
+                return Pos.Equals(v.Pos) && Nrm.Equals(v.Nrm);
+            }
+            return false;
+        }
 
-            if(o == null)
+        public bool Equals(UVertex v)
+        {
+            if ((object)v == null)
+            {
                 return false;
+            }
 
-            return Pos.x==o.Pos.x && Pos.y==o.Pos.y && Pos.z==o.Pos.z
-                && Nrm.x==o.Nrm.x && Nrm.y==o.Nrm.y && Nrm.z==o.Nrm.z;
+            return Pos.Equals(v.Pos) && Nrm.Equals(v.Nrm);
         }
     }
 }

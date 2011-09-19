@@ -646,13 +646,19 @@ namespace Tso2MqoGui
 
         public override bool Equals(object obj)
         {
-            Vertex  o   = (Vertex)obj;
+            if (obj is Vertex)
+            {
+                Vertex v = (Vertex)obj;
+                return Pos.Equals(v.Pos) && Nrm.Equals(v.Nrm) && Tex.Equals(v.Tex)
+                     ^ Wgt.Equals(v.Wgt) && Idx.Equals(v.Idx);
+            }
+            return false;
+        }
 
-            return Pos.x==o.Pos.x && Pos.y==o.Pos.y && Pos.z==o.Pos.z
-                && Nrm.x==o.Nrm.x && Nrm.y==o.Nrm.y && Nrm.z==o.Nrm.z
-                && Tex.x==o.Tex.x && Tex.y==o.Tex.y && Wgt.w==o.Wgt.w
-                && Wgt.x==o.Wgt.x && Wgt.y==o.Wgt.y && Wgt.z==o.Wgt.z
-                && Idx  ==o.Idx;
+        public bool Equals(Vertex v)
+        {
+            return Pos.Equals(v.Pos) && Nrm.Equals(v.Nrm) && Tex.Equals(v.Tex)
+                 ^ Wgt.Equals(v.Wgt) && Idx.Equals(v.Idx);
         }
     }
 
