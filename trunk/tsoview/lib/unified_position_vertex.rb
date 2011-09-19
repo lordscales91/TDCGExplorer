@@ -1,4 +1,4 @@
-class UnifiedPositionSpecVertex < TDCG::Vertex
+class UnifiedPositionVertex < TDCG::Vertex
   attr :spec
   def initialize(a, bone_indices, spec)
     self.position = a.position
@@ -12,9 +12,9 @@ class UnifiedPositionSpecVertex < TDCG::Vertex
     @spec = spec
   end
   def eql?(o)
-    position == o.position && spec == o.spec
+    position == o.position
   end
   def hash
-    position.hash ^ spec.hash
+    position.hash
   end
 end

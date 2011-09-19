@@ -7,7 +7,7 @@ require 'TDCG'
 require 'TDCG.NvTriStrip'
 
 require 'unified_position_texcoord_vertex'
-require 'unified_position_spec_vertex'
+require 'unified_position_vertex'
 require 'tsoface'
 
 if ARGV.size < 1
@@ -34,7 +34,7 @@ def create_faces(mesh)
   for sub in mesh.sub_meshes
     vertices = []
     for a in sub.vertices
-      v = UnifiedPositionSpecVertex.new(a, sub.bone_indices, sub.spec)
+      v = UnifiedPositionVertex.new(a, sub.bone_indices, sub.spec)
       vertices.push(v)
     end
     for i in 2...vertices.size
