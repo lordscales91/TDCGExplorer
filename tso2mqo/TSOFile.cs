@@ -629,20 +629,13 @@ namespace Tso2MqoGui
 
         public int CompareTo(Vertex o)
         {
-            if(Pos.x < o.Pos.x) return -1; if(Pos.x > o.Pos.x) return 1;
-            if(Pos.y < o.Pos.y) return -1; if(Pos.y > o.Pos.y) return 1;
-            if(Pos.z < o.Pos.z) return -1; if(Pos.z > o.Pos.z) return 1;
-            if(Nrm.x < o.Nrm.x) return -1; if(Nrm.x > o.Nrm.x) return 1;
-            if(Nrm.y < o.Nrm.y) return -1; if(Nrm.y > o.Nrm.y) return 1;
-            if(Nrm.z < o.Nrm.z) return -1; if(Nrm.z > o.Nrm.z) return 1;
-            if(Tex.x < o.Tex.x) return -1; if(Tex.x > o.Tex.x) return 1;
-            if(Tex.y < o.Tex.y) return -1; if(Tex.y > o.Tex.y) return 1;
-            if(Wgt.x < o.Wgt.x) return -1; if(Wgt.x > o.Wgt.x) return 1;
-            if(Wgt.y < o.Wgt.y) return -1; if(Wgt.y > o.Wgt.y) return 1;
-            if(Wgt.z < o.Wgt.z) return -1; if(Wgt.z > o.Wgt.z) return 1;
-            if(Wgt.w < o.Wgt.w) return -1; if(Wgt.w > o.Wgt.w) return 1;
-            if(Idx   < o.Idx)   return -1; if(Idx   > o.Idx)   return 1;
-            return 0;
+            int cmp = 0;
+            cmp = Pos.CompareTo(o.Pos); if (cmp != 0) return cmp;
+            cmp = Nrm.CompareTo(o.Nrm); if (cmp != 0) return cmp;
+            cmp = Tex.CompareTo(o.Tex); if (cmp != 0) return cmp;
+            cmp = Wgt.CompareTo(o.Wgt); if (cmp != 0) return cmp;
+            cmp = Idx.CompareTo(o.Idx);
+            return cmp;
         }
 
         public override int GetHashCode()

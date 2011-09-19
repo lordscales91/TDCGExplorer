@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Tso2MqoGui
 {
-    public partial struct Point2
+    public partial struct Point2 : IComparable<Point2>
     {
         public float x, y;
 
@@ -28,9 +28,17 @@ namespace Tso2MqoGui
                 float.Parse(t[begin+0]),
                 float.Parse(t[begin+1]));
         }
+
+        public int CompareTo(Point2 obj)
+        {
+            int cmp;
+            cmp = x.CompareTo(obj.x); if (cmp != 0) return cmp;
+            cmp = y.CompareTo(obj.y);
+            return cmp;
+        }
     }
 
-    public partial struct Point3
+    public partial struct Point3 : IComparable<Point3>
     {
         public float x, y, z;
 
@@ -86,9 +94,18 @@ namespace Tso2MqoGui
                 float.Parse(t[begin+1]),
                 float.Parse(t[begin+2]));
         }
+
+        public int CompareTo(Point3 obj)
+        {
+            int cmp;
+            cmp = x.CompareTo(obj.x); if (cmp != 0) return cmp;
+            cmp = y.CompareTo(obj.y); if (cmp != 0) return cmp;
+            cmp = z.CompareTo(obj.z);
+            return cmp;
+        }
     }
 
-    public partial struct Point4
+    public partial struct Point4 : IComparable<Point4>
     {
         public float x, y, z, w;
 
@@ -108,6 +125,16 @@ namespace Tso2MqoGui
         public override string ToString()
         {
             return X+","+Y+","+Z+","+W;
+        }
+
+        public int CompareTo(Point4 obj)
+        {
+            int cmp;
+            cmp = x.CompareTo(obj.x); if (cmp != 0) return cmp;
+            cmp = y.CompareTo(obj.y); if (cmp != 0) return cmp;
+            cmp = z.CompareTo(obj.z); if (cmp != 0) return cmp;
+            cmp = w.CompareTo(obj.w);
+            return cmp;
         }
     }
 
