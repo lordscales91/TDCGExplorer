@@ -100,7 +100,7 @@ class Tahdump
         tah = create_tah(line)
         arc.add_tah tah
       when /^# TAH /
-        # .tah ‚Í‘¶İ‚µ‚È‚¢‚Í‚¸
+        # .tah ã¯å­˜åœ¨ã—ãªã„ã¯ãš
         raise "raw TAH found."
       when /^Error:/
         next
