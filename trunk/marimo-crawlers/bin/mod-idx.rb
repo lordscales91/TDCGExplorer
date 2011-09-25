@@ -21,6 +21,7 @@ uploader.root_path = "/futabacustom/mod"
 uploader.base_html = ""
 uploader.local_dir = '/Volumes/uploader/arc/mod'
 body = uploader.get_base
+open('/Volumes/uploader/src/mod/index.html', 'w'){ |f| f.puts body }
 each_filename(body) do |filename|
   exist = uploader.local_file_exist?(filename)
   puts [ filename, exist ? 'exist' : 'download' ].join("\t")
