@@ -1,4 +1,5 @@
-#!/usr/bin/ruby -KS
+#!ruby
+# encoding: utf-8
 require File.dirname(__FILE__) + "/../config/environment"
 
 CAP2TAG_NAMES = {}
@@ -15,8 +16,8 @@ def caption_to_tag_names(caption)
   CAP2TAG_NAMES[caption]
 end
 
-Arc.find(:all, :conditions => ["summary like ?", '%y%']).each do |arc|
-  arc.summary.scan(/y(.+?)z/) do |caption, |
+Arc.find(:all, :conditions => ["summary like ?", '%ã€%']).each do |arc|
+  arc.summary.scan(/ã€(.+?)ã€‘/) do |caption, |
     tag_names = caption_to_tag_names(caption)
     if tag_names.nil?
       puts "#{arc.id} #{arc.code} not found tag_names. #{caption}"
@@ -27,7 +28,7 @@ Arc.find(:all, :conditions => ["summary like ?", '%y%']).each do |arc|
       tag = Tag.find_or_create_by_name(tag_name)
       tag.arc_tags.find_or_create_by_arc_id(arc.id)
     end
-    arc.summary = arc.summary.gsub(/y(.+?)z/, '')
+    arc.summary = arc.summary.gsub(/ã€(.+?)ã€‘/, '')
     arc.save
   end
 end
