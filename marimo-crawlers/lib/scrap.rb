@@ -35,9 +35,22 @@ class Scrap_xpc < Scrap
   end
 end
 
+class Scrap_mod < Scrap
+  def initialize
+    @row_re = %r(<td></td><td class="c-n"><a href="(.+?)" target="target_blank">(.+?)</a></td><td class="c-c">(.+?)</td><td class="c-s">(.+?)</td><td class="c-d">(.+?)</td><td class="c-o">(.+?)</td>)
+  end
+
+  def row
+    _, href, name, comment, size, date, orig = @md.to_a
+    [ name, encode(comment), size, date, encode(orig), false ]
+  end
+end
+
 def Scrap.find_by_site_code(site_code)
   case site_code
   when 'xpc'
     scrap = Scrap_xpc.new
+  when 'mod'
+    scrap = Scrap_mod.new
   end
 end
