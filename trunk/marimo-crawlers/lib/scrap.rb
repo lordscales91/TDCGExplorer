@@ -38,11 +38,13 @@ end
 class Scrap_mod < Scrap
   def initialize
     @row_re = %r(<td></td><td class="c-n"><a href="(.+?)" target="target_blank">(.+?)</a></td><td class="c-c">(.+?)</td><td class="c-s">(.+?)</td><td class="c-d">(.+?)</td><td class="c-o">(.+?)</td>)
+    @key_re = Regexp.new(Regexp.escape("<span class=\"crypted2\">*</span>"))
   end
 
   def row
     _, href, name, comment, size, date, orig = @md.to_a
-    [ name, encode(comment), size, date, encode(orig), false ]
+    locked = !!comment.sub!(@key_re, '')
+    [ name, encode(comment), size, date, encode(orig), locked ]
   end
 end
 
