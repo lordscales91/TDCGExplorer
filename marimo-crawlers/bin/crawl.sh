@@ -1,5 +1,4 @@
 #!/bin/sh
-ruby bin/3ch-idx.rb
 ruby bin/wpc-idx.rb
 ruby bin/xpc-idx.rb
 ruby bin/xpp-idx.rb
