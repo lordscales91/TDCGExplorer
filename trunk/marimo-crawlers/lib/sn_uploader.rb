@@ -7,7 +7,7 @@ class SnUploader
   attr_accessor :host, :root_path, :jcode, :dlkey, :authorization, :local_dir, :base_html
 
   def initialize
-    @jcode = ERB::Util.u("Š¿Žš")
+    @jcode = ERB::Util.u(NKF.nkf('-Ws', "æ¼¢å­—"))
     @dlkey = "custom"
     @authorization = nil
     @local_dir = "."
@@ -17,7 +17,7 @@ class SnUploader
   def kcode=(kcode)
     case kcode
     when /^U/i
-      @jcode = ERB::Util.u(NKF.nkf('-Sw', "Š¿Žš"))
+      @jcode = ERB::Util.u("æ¼¢å­—")
     end
   end
 
