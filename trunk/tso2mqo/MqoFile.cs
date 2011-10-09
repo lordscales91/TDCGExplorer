@@ -246,10 +246,6 @@ namespace Tso2MqoGui
                 return false;
 
             int nface = int.Parse(tokens[0]);
-
-            if (3 != nface)
-                return true;
-
             {
                 StringBuilder sb = new StringBuilder();
                 foreach (string i in tokens)
@@ -257,37 +253,86 @@ namespace Tso2MqoGui
                 string line = sb.ToString().Trim();
                 tokens = SplitString(line);
             }
-            MqoFace f = new MqoFace();
-
-            for (int i = 1; i < tokens.Length; ++i)
+            switch (nface)
             {
-                string t = tokens[i];
-                string t2 = t.ToLower();
+                case 3:
+                    {
+                        MqoFace f = new MqoFace();
 
-                if (t2.StartsWith("v("))
-                {
-                    string[] t3 = SplitParam(t);
-                    f.a = ushort.Parse(t3[1]);
-                    f.b = ushort.Parse(t3[2]);
-                    f.c = ushort.Parse(t3[3]);
-                }
-                else
-                if (t2.StartsWith("m("))
-                {
-                    string[] t3 = SplitParam(t);
-                    f.mtl = ushort.Parse(t3[1]);
-                }
-                else
-                if (t2.StartsWith("uv("))
-                {
-                    string[] t3 = SplitParam(t);
-                    f.ta = Point2.Parse(t3, 1);
-                    f.tb = Point2.Parse(t3, 3);
-                    f.tc = Point2.Parse(t3, 5);
-                }
+                        for (int i = 1; i < tokens.Length; ++i)
+                        {
+                            string t = tokens[i];
+                            string t2 = t.ToLower();
+
+                            if (t2.StartsWith("v("))
+                            {
+                                string[] t3 = SplitParam(t);
+                                f.a = ushort.Parse(t3[1]);
+                                f.b = ushort.Parse(t3[2]);
+                                f.c = ushort.Parse(t3[3]);
+                            }
+                            else
+                            if (t2.StartsWith("m("))
+                            {
+                                string[] t3 = SplitParam(t);
+                                f.mtl = ushort.Parse(t3[1]);
+                            }
+                            else
+                            if (t2.StartsWith("uv("))
+                            {
+                                string[] t3 = SplitParam(t);
+                                f.ta = Point2.Parse(t3, 1);
+                                f.tb = Point2.Parse(t3, 3);
+                                f.tc = Point2.Parse(t3, 5);
+                            }
+                        }
+                        current.faces.Add(f);
+                    }
+                    break;
+                case 4:
+                    {
+                        MqoFace f = new MqoFace();
+                        MqoFace f2 = new MqoFace();
+
+                        for (int i = 1; i < tokens.Length; ++i)
+                        {
+                            string t = tokens[i];
+                            string t2 = t.ToLower();
+
+                            if (t2.StartsWith("v("))
+                            {
+                                string[] t3 = SplitParam(t);
+                                f.a = ushort.Parse(t3[1]);
+                                f.b = ushort.Parse(t3[2]);
+                                f.c = ushort.Parse(t3[3]);
+                                f2.a = f.a;
+                                f2.b = f.c;
+                                f2.c = ushort.Parse(t3[4]);
+                            }
+                            else
+                            if (t2.StartsWith("m("))
+                            {
+                                string[] t3 = SplitParam(t);
+                                f.mtl = ushort.Parse(t3[1]);
+                                f2.mtl = f.mtl;
+                            }
+                            else
+                            if (t2.StartsWith("uv("))
+                            {
+                                string[] t3 = SplitParam(t);
+                                f.ta = Point2.Parse(t3, 1);
+                                f.tb = Point2.Parse(t3, 3);
+                                f.tc = Point2.Parse(t3, 5);
+                                f2.ta = f.ta;
+                                f2.tb = f.tc;
+                                f2.tc = Point2.Parse(t3, 7);
+                            }
+                        }
+                        current.faces.Add(f);
+                        current.faces.Add(f2);
+                    }
+                    break;
             }
-            current.faces.Add(f);
-
             return true;
         }
 
