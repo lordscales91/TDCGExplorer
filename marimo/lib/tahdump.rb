@@ -3,7 +3,7 @@ require 'stringio'
 class Tahdump
 
   class Arc
-    attr_accessor :code, :extname, :location, :summary, :origname
+    attr_accessor :code, :extname, :location
 
     def initialize
       @tahs = []
@@ -18,8 +18,6 @@ class Tahdump
       arc = ::Arc.find_or_create_by_code(code)
       arc.extname = extname
       arc.location = location
-      arc.summary = summary
-      arc.origname = origname
       arc.save
 
       ( arc.tahs.size-1 ).downto( @tahs.size ) do |i|
@@ -121,11 +119,8 @@ class Tahdump
     basename.sub!(Regexp.new(Regexp.escape("." + extname) + "$"), '')
     if md = /^([A-Za-z0-9]{6,9})$/.match(basename)
       _, code = md.to_a
-      summary = nil
-      origname = nil
     elsif md = /^([A-Za-z0-9]{6,9})_(.+)/.match(basename)
       _, code, tmp = md.to_a
-      summary, origname = tmp.split("@", 2)
     else
       raise "pattern not matched. " + line
     end
@@ -133,8 +128,6 @@ class Tahdump
     arc.code = code
     arc.extname = extname
     arc.location = location
-    arc.summary = summary
-    arc.origname = origname
     arc
   end
 
