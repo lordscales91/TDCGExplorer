@@ -15,10 +15,8 @@ class Tahdump
     end
 
     def commit
-      arc = ::Arc.find_or_create_by_code(code)
-      arc.extname = extname
-      arc.location = location
-      arc.save
+      arc = ::Arc.find_by_code(code)
+      return unless arc
 
       ( arc.tahs.size-1 ).downto( @tahs.size ) do |i|
         arc.tahs[i].destroy
