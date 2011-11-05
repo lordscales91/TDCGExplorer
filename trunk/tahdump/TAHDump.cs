@@ -59,7 +59,7 @@ namespace TAHdecrypt
 
                 foreach (IArchiveEntry entry in arc)
                 {
-                    if (Path.GetExtension(entry.FileName) == ".tah")
+                    if (Path.GetExtension(entry.FileName).ToLower() == ".tah")
                     {
                         Console.WriteLine("# TAH in archive " + entry.FileName);
                         using (MemoryStream ms = new MemoryStream((int)entry.Size))
