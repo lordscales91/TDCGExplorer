@@ -2,7 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
 describe Tahdump do
 
-  it "指定 code を持つ既存の arc がない場合 arc を作成する" do
+  it "指定 code を持つ既存の arc がない場合 arc を作成しない" do
     data = <<'EOT'
 # zip 3ch\TA0002.zip
 EOT
@@ -10,7 +10,7 @@ EOT
     tahdump.commit
 
     arc = Arc.find_by_code("TA0002")
-    arc.should_not be_nil
+    arc.should be_nil
   end
 
   it "指定 code を持つ既存の arc がある場合 arc を更新する" do
@@ -24,32 +24,6 @@ EOT
 
     new_arc = Arc.find_by_code("TA0002")
     arc.should == new_arc
-  end
-
-  it "extname を設定" do
-    arc = Arc.create(:code => "TA0002")
-
-    data = <<'EOT'
-# zip 3ch\TA0002.zip
-EOT
-    tahdump = Tahdump.new(data)
-    tahdump.commit
-
-    arc.reload
-    arc.extname.should == "zip"
-  end
-
-  it "location を設定" do
-    arc = Arc.create(:code => "TA0002")
-
-    data = <<'EOT'
-# zip 3ch\TA0002.zip
-EOT
-    tahdump = Tahdump.new(data)
-    tahdump.commit
-
-    arc.reload
-    arc.location.should == "3ch"
   end
 
   it "指定 path を持つ既存の tah がない場合 tah を作成する" do
