@@ -27,11 +27,15 @@ class Scrap_xpc < Scrap
     @tag_list_re = Regexp.new("<span class=\"tag_list\">(.+?)</span>")
   end
 
+  def match(line)
+    @md = @row_re.match(encode(line))
+  end
+
   def row
     _, href, name, comment, size, date, mime, orig = @md.to_a
     locked = !!comment.sub!(@key_re, '')
     comment.sub!(@tag_list_re, '\\1')
-    [ name, encode(comment), size, date, encode(orig), locked ]
+    [ name, comment, size, date, orig, locked ]
   end
 end
 
@@ -41,10 +45,14 @@ class Scrap_mod < Scrap
     @key_re = Regexp.new(Regexp.escape("<span class=\"crypted2\">*</span>"))
   end
 
+  def match(line)
+    @md = @row_re.match(encode(line))
+  end
+
   def row
     _, href, name, comment, size, date, orig = @md.to_a
     locked = !!comment.sub!(@key_re, '')
-    [ name, encode(comment), size, date, encode(orig), locked ]
+    [ name, comment, size, date, orig, locked ]
   end
 end
 
