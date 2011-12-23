@@ -2339,6 +2339,7 @@ data/icon/items/n009bhea_c13.psd
 data/icon/items/n009bhea_c14.psd
 data/icon/items/n009bhea_c15.psd
 data/icon/items/n009bhea_c16.psd
+data/icon/items/n009bhea_c17.psd
 data/icon/items/n009bhea_c18.psd
 data/icon/items/n009bnbn_y00.psd
 data/icon/items/n009bnbn_y01.psd
@@ -7569,6 +7570,7 @@ data/motion/N009SYAS_X06.tmo
 data/motion/N010DEMO_Z01.tmo
 data/motion/N011DEMO_Z01.tmo
 data/motion/N012DEMO_Z01.tmo
+data/motion/N013DEMO_Z01.tmo
 data/motion/NanikaAata01.tmo
 data/motion/NanikaAata02.tmo
 data/motion/NanikaAata03.tmo
@@ -7672,6 +7674,7 @@ data/shader/toonshader_mono.cgfx
 data/sound/bell.ogg
 data/sound/bgm01.ogg
 data/sound/bgm02.ogg
+data/sound/buzzer.ogg
 data/sound/cancel.ogg
 data/sound/cr.ogg
 data/sound/decide.ogg
@@ -7696,6 +7699,7 @@ data/sound/kigaeok.ogg
 data/sound/lr.ogg
 data/sound/type.ogg
 data/sound/ud.ogg
+data/sound/undress.ogg
 data/sound/voice/aibu/01/000.ogg
 data/sound/voice/aibu/01/001.ogg
 data/sound/voice/aibu/01/002.ogg
