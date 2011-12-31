@@ -1294,12 +1294,12 @@ public class Viewer : IDisposable
                 BMPSaveData data = new BMPSaveData();
                 data.Read(ms);
 
-                fig.slider_matrix.TallRatio = data.sliders[4];
-                fig.slider_matrix.ArmRatio = data.sliders[5];
-                fig.slider_matrix.LegRatio = data.sliders[6];
-                fig.slider_matrix.WaistRatio = data.sliders[7];
-                fig.slider_matrix.BustRatio = data.sliders[0];
-                fig.slider_matrix.EyeRatio = data.sliders[8];
+                fig.slider_matrix.TallRatio = data.GetSliderValue(4);
+                fig.slider_matrix.ArmRatio = data.GetSliderValue(5);
+                fig.slider_matrix.LegRatio = data.GetSliderValue(6);
+                fig.slider_matrix.WaistRatio = data.GetSliderValue(7);
+                fig.slider_matrix.BustRatio = data.GetSliderValue(0);
+                fig.slider_matrix.EyeRatio = data.GetSliderValue(8);
             }
         }
         catch (Exception ex)

@@ -64,5 +64,10 @@ class BMPSaveData
         for (int i = 0; i < 12; i++)
             sliders[i] = BitConverter.ToSingle(data, 32 * 32 + 4 * i);
     }
+
+    public float GetSliderValue(int index)
+    {
+        return sliders[index];
+    }
 }
 }
