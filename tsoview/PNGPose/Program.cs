@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using ICSharpCode.SharpZipLib.Core;
 using ICSharpCode.SharpZipLib.Zip.Compression.Streams;
 using TDCG;
@@ -41,7 +42,6 @@ class Program
         }
     }
         int numTMO = 0;
-        int numTSO = 0;
 
         public int Extract(string source_file, string dest_path)
         {
@@ -102,7 +102,7 @@ class Program
             };
             png.Lgta += delegate(Stream dest, int extract_length)
             {
-                numTMO++; numTSO = 0;
+                numTMO++;
 
                 byte[] buf = new byte[extract_length];
                 dest.Read(buf, 0, extract_length);
@@ -149,24 +149,20 @@ class Program
             };
             png.Ftso += delegate(Stream dest, int extract_length, byte[] opt1)
             {
-                numTSO++;
+                StringBuilder sb = new StringBuilder();
+                for (int i = 0; i < 4; i++)
+                {
+                    sb.Append(string.Format("{0:X2}", opt1[i]));
+                }
+                string code = sb.ToString();
 
-                string dest_file = dest_path + @"\" + numTMO + @"\" + numTSO + ".tso";
+                string dest_file = dest_path + @"\" + numTMO + @"\" + code + ".tso";
                 Console.WriteLine("TSO Save File: " + dest_file);
 
                 using (FileStream file = File.Create(dest_file))
                 {
                     byte[] buf = new byte[4096];
                     StreamUtils.Copy(dest, file, buf);
-                }
-
-                dest_file = dest_path + @"\" + numTMO + @"\tso" + numTSO + ".txt";
-                Console.WriteLine("TSO option Save File: " + dest_file);
-
-                using (StreamWriter sw = new StreamWriter(dest_file))
-                for (int i = 0; i < 4; i++)
-                {
-                    sw.Write("{0:X2}", opt1[i]);
                 }
             };
 
@@ -197,8 +193,8 @@ class Program
         {
             pw.WriteTDCG();
             pw.WriteHSAV();
-            while (NextFTSOExists())
-                WriteFTSO(pw);
+            foreach (string file in Directory.GetFiles(dest_path + @"\" + numTMO, "*.tso"))
+                WriteFTSO(pw, file);
         }
 
         protected void WritePose(PNGWriter pw)
@@ -220,20 +216,14 @@ class Program
                 WriteLGTA(pw);
                 WriteFTMO(pw);
                 WriteFIGU(pw);
-                while (NextFTSOExists())
-                    WriteFTSO(pw);
+                foreach (string file in Directory.GetFiles(dest_path + @"\" + numTMO, "*.tso"))
+                    WriteFTSO(pw, file);
             }
         }
 
         protected bool NextFIGUExists()
         {
             string dest_file = dest_path + @"\Figure" + (numTMO + 1) + ".txt";
-            return File.Exists(dest_file);
-        }
-
-        protected bool NextFTSOExists()
-        {
-            string dest_file = dest_path + @"\" + numTMO + @"\" + (numTSO + 1) + ".tso";
             return File.Exists(dest_file);
         }
 
@@ -305,7 +295,7 @@ class Program
 
         protected void WriteLGTA(PNGWriter pw)
         {
-            numTMO++; numTSO = 0;
+            numTMO++;
 
             string dest_file = dest_path + @"\LightA" + numTMO + ".txt";
             Console.WriteLine("LGTA Load File: " + dest_file);
@@ -334,26 +324,20 @@ class Program
             }
         }
 
-        protected uint opt_value(string option_file)
+        protected uint opt_value(string code)
         {
-            string line;
-            using (StreamReader source = new StreamReader(File.OpenRead(option_file)))
-                line = source.ReadLine();
             byte[] buf = new byte[4];
             for (int i = 0; i < 4; i++)
-                buf[i] = Convert.ToByte(line.Substring(i*2, 2), 16);
+                buf[i] = Convert.ToByte(code.Substring(i*2, 2), 16);
             return BitConverter.ToUInt32(buf, 0);
         }
 
-        protected void WriteFTSO(PNGWriter pw)
+        protected void WriteFTSO(PNGWriter pw, string tso_file)
         {
-            numTSO++;
-
-            string tso_file = dest_path + @"\" + numTMO + @"\" + numTSO + ".tso";
             Console.WriteLine("TSO Load File: " + tso_file);
 
-            string option_file = dest_path + @"\" + numTMO + @"\tso" + numTSO + ".txt";
-            uint opt1 = opt_value(option_file);
+            string code = Path.GetFileNameWithoutExtension(tso_file);
+            uint opt1 = opt_value(code);
 
             using (Stream tso_stream = File.OpenRead(tso_file))
             {
