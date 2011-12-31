@@ -1288,11 +1288,10 @@ public class Viewer : IDisposable
 
             if (sav.type == "HSAV")
             {
-                MemoryStream ms = new MemoryStream();
-                png.Save(ms);
-                ms.Seek(0, SeekOrigin.Begin);
                 BMPSaveData data = new BMPSaveData();
-                data.Read(ms);
+
+                using (Stream stream = File.OpenRead(source_file))
+                    data.Read(stream);
 
                 fig.slider_matrix.TallRatio = data.GetSliderValue(4);
                 fig.slider_matrix.ArmRatio = data.GetSliderValue(5);
