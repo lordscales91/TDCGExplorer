@@ -9,8 +9,7 @@ namespace TDCG
 class BMPSaveData
 {
     public string[] names = new string[32];
-    public float[] proportions = new float[7];
-    public int[] unknowns = new int[5];
+    public float[] sliders = new float[12];
 
     public void Read(Stream stream)
     {
@@ -62,19 +61,8 @@ class BMPSaveData
         for (int i = 0; i < 32; i++)
             names[i] = enc.GetString(data, i * 32, 32);
 
-        proportions[0] = BitConverter.ToSingle(data, 32 * 32 + 4 * 0);
-        proportions[1] = BitConverter.ToSingle(data, 32 * 32 + 4 * 4);
-        proportions[2] = BitConverter.ToSingle(data, 32 * 32 + 4 * 5);
-        proportions[3] = BitConverter.ToSingle(data, 32 * 32 + 4 * 6);
-        proportions[4] = BitConverter.ToSingle(data, 32 * 32 + 4 * 7);
-        proportions[5] = BitConverter.ToSingle(data, 32 * 32 + 4 * 8);
-        proportions[6] = BitConverter.ToSingle(data, 32 * 32 + 4 * 11);
-
-        unknowns[0] = BitConverter.ToInt32(data, 32 * 32 + 4 * 1);
-        unknowns[1] = BitConverter.ToInt32(data, 32 * 32 + 4 * 2);
-        unknowns[2] = BitConverter.ToInt32(data, 32 * 32 + 4 * 3);
-        unknowns[3] = BitConverter.ToInt32(data, 32 * 32 + 4 * 9);
-        unknowns[4] = BitConverter.ToInt32(data, 32 * 32 + 4 * 10);
+        for (int i = 0; i < 12; i++)
+            sliders[i] = BitConverter.ToSingle(data, 32 * 32 + 4 * i);
     }
 }
 }
