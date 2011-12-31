@@ -17,15 +17,6 @@
 コマンドプロンプトから起動します。
 具体的な使い方についてはチュートリアル (tutorial.htm) を参照してください。
 
-TMOTool.exe <tmo file> [script name ...]
-　指定したtmo fileに対して体型変更を行います。
-　フォルダを指定すると再帰的に処理します。
-
-　script nameには体型変更スクリプトの名前を指定します。
-　Boin Dom Pedo Ika Kemo を指定できます（複数指定可）。
-
-　処理したtmo fileはカレントディレクトリに書き出されます。
-
 TMOMove.exe <tmo file> [x y z]
 　指定したtmo fileをx y z方向に移動します。
 　注意：ファイルは上書きされます。
@@ -38,18 +29,6 @@ TMORotY.exe <tmo file> <angle>
 
 TMOZoom.exe <tmo file> <ratio>
 　指定したtmo fileをratio倍率で拡大縮小します。
-　注意：ファイルは上書きされます。
-
-TMOBoin.exe <tmo file>
-　指定したtmo fileを膨乳にします。
-　注意：ファイルは上書きされます。
-
-TMODom.exe <tmo file>
-　指定したtmo fileを巨尻にします。
-　注意：ファイルは上書きされます。
-
-TMOPedo.exe <tmo file>
-　指定したtmo fileを幼女にします。
 　注意：ファイルは上書きされます。
 
 TMOAppend.exe <source tmo> <motion tmo>
