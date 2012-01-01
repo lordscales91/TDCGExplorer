@@ -24,7 +24,9 @@ namespace TDCG
             IntPtr ptr = bmpData.Scan0;
 
             // Declare an array to hold the bytes of the bitmap.
-            int nbyte  = bmpData.Stride * bmp.Height;
+            int stride = bmpData.Stride;
+            int height = bmp.Height;
+            int nbyte  = stride * height;
             byte[] bytes = new byte[nbyte];
 
             // Copy the RGB values into the array.
@@ -33,18 +35,16 @@ namespace TDCG
             // Unlock the bits.
             bmp.UnlockBits(bmpData);
 
-            int stride = bmpData.Stride;
-            int height = bmpData.Height;
+            data = new byte[nbyte / 8];
+            int data_offset = 0;
 
-            data = new byte[stride * height / 8];
-            int offset = 0;
-
-            for (int y = height-1; y >=0; y--)
+            for (int y = height - 1; y >= 0; y--)
             {
                 for (int x = 0; x < stride; x += 8)
                 {
                     int i = y * stride + x;
-                    byte c = (byte)(bytes[i + 0] & 0x1);
+                    byte c = 0;
+                    c |= (byte)((bytes[i + 0] & 0x1) << 0);
                     c |= (byte)((bytes[i + 1] & 0x1) << 1);
                     c |= (byte)((bytes[i + 2] & 0x1) << 2);
                     c |= (byte)((bytes[i + 3] & 0x1) << 3);
@@ -52,7 +52,7 @@ namespace TDCG
                     c |= (byte)((bytes[i + 5] & 0x1) << 5);
                     c |= (byte)((bytes[i + 6] & 0x1) << 6);
                     c |= (byte)((bytes[i + 7] & 0x1) << 7);
-                    data[offset++] = c;
+                    data[data_offset++] = c;
                 }
             }
         }
