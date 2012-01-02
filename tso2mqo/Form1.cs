@@ -240,7 +240,7 @@ namespace Tso2MqoGui
         {
             TSOGenerator gen = new TSOGenerator();
             TSOGenerateConfig config = new TSOGenerateConfig();
-            config.materialconfig = cbShowMaterials.Checked;
+            config.ShowMaterials = cbShowMaterials.Checked;
 
             if (rbAutoBone.Checked)
             {
@@ -249,6 +249,8 @@ namespace Tso2MqoGui
             else
             if (rb1Bone.Checked)
             {
+                Dictionary<string, string> boneref = new Dictionary<string, string>();
+
                 foreach (ListViewItem i in lvObject.Items)
                 {
                     if (i.SubItems[1].Text == "")
@@ -257,10 +259,10 @@ namespace Tso2MqoGui
                         return;
                     }
 
-                    config.boneref.Add(i.SubItems[0].Text, i.SubItems[1].Text);
+                    boneref.Add(i.SubItems[0].Text, i.SubItems[1].Text);
                 }
 
-                gen.GenerateOneBone(f, tbTso.Text, tbTsoEx.Text, config);
+                gen.GenerateOneBone(f, tbTso.Text, tbTsoEx.Text, config, boneref);
             }
             else
             {

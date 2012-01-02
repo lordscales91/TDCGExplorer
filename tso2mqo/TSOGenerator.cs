@@ -50,7 +50,8 @@ namespace Tso2MqoGui
 
         private bool Common_DoSetupDir(string mqoin)
         {
-            Environment.CurrentDirectory= dir= Path.GetDirectoryName(mqoin);
+            dir = Path.GetDirectoryName(mqoin);
+            Environment.CurrentDirectory = dir;
             return true;
         }
 
@@ -97,47 +98,47 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool Common_DoLoadXml(string mqoin)
+        private bool Common_DoLoadXml(string importinfo_file)
         {
             // XML読み込み
-            ii  = ImportInfo.Load(Path.ChangeExtension(mqoin, ".xml"));
+            ii = ImportInfo.Load(importinfo_file);
 
             // 使用マテリアル一覧取得
-            materials       = new Dictionary<string, MaterialInfo>();
-            bool    validmap= true;
+            materials = new Dictionary<string, MaterialInfo>();
+            bool validmap = true;
 
-            foreach(MqoMaterial i in mqo.Materials)
+            foreach (MqoMaterial i in mqo.Materials)
             {
-                MaterialInfo    mi  = new MaterialInfo(dir, i, ii.GetMaterial(i.name));
-                validmap            &=mi.Valid;
+                MaterialInfo mi = new MaterialInfo(dir, i, ii.GetMaterial(i.name));
+                validmap &= mi.Valid;
                 materials.Add(i.name, mi);
             }
 
-            if(!validmap || config.materialconfig)
+            if (!validmap || config.ShowMaterials)
             {
-                if(config.cui)
+                if (config.cui)
                     throw new Exception("マテリアルの設定が無効です");
 
-                FormMaterial    dlg = new FormMaterial();
-                dlg.materials       = materials;
+                FormMaterial dlg = new FormMaterial();
+                dlg.materials = materials;
 
-                if(dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+                if (dlg.ShowDialog() != System.Windows.Forms.DialogResult.OK)
                     return false;
             }
 
             // 使用テクスチャ一覧の取得
-            textures        = new Dictionary<string, TextureInfo>();
+            textures = new Dictionary<string, TextureInfo>();
 
-            foreach(MaterialInfo i in materials.Values)
+            foreach (MaterialInfo i in materials.Values)
             {
-                string  name= Path.GetFileNameWithoutExtension(i.diffuse);
+                string name = Path.GetFileNameWithoutExtension(i.diffuse);
 
-                if(!textures.ContainsKey(name))
+                if (!textures.ContainsKey(name))
                     textures.Add(name, new TextureInfo(name, i.diffuse));
 
-                name        = Path.GetFileNameWithoutExtension(i.shadow);
+                name = Path.GetFileNameWithoutExtension(i.shadow);
 
-                if(!textures.ContainsKey(name))
+                if (!textures.ContainsKey(name))
                     textures.Add(name, new TextureInfo(name, i.shadow));
             }
 
@@ -429,7 +430,7 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool OneBone_DoGenerateMeshes()
+        private bool OneBone_DoGenerateMeshes(Dictionary<string, string> boneref)
         {
             meshes  = new List<TSOMesh>();
 
@@ -460,7 +461,7 @@ namespace Tso2MqoGui
                 uint                idx     = 0x00000000;
                 Point4              wgt     = new Point4(1, 0, 0, 0);
                 int[]               bones   = new int[1];
-                string              bone    = config.boneref[i.name];
+                string              bone    = boneref[i.name];
                 bones[0]                    = nodes[bone].ID;
 
                 // マテリアル別に処理を実行
@@ -579,7 +580,7 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool OneBone_DoOutput(string tsoex)
+        private bool OneBone_DoOutput(string tsoex, Dictionary<string, string> boneref)
         {
             //----- 出力処理 -----------------------------------------------
             ii.materials.Clear();
@@ -596,17 +597,17 @@ namespace Tso2MqoGui
                 Common_DoWriteTextures();
                 Common_DoWriteEffects();
                 Common_DoWriteMaterials();
-                OneBone_DoGenerateMeshes();
+                OneBone_DoGenerateMeshes(boneref);
                 Common_DoWriteMeshes();
             }
 
             return true;
         }
 
-        private bool Common_DoSaveXml(string mqoin)
+        private bool Common_DoSaveXml(string importinfo_file)
         {
             // 結果を保存しておく
-            ImportInfo.Save(Path.ChangeExtension(mqoin, ".xml"), ii);
+            ImportInfo.Save(importinfo_file, ii);
             return true;
         }
 
@@ -629,18 +630,19 @@ namespace Tso2MqoGui
             return true;
         }
 
-        public void GenerateOneBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
+        public void GenerateOneBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config, Dictionary<string, string> boneref)
         {
             this.config = config;
+            string importinfo_file = Path.ChangeExtension(mqoin, ".xml");
 
             try
             {
                 if (!Common_DoSetupDir(mqoin)) return;
                 if (!Common_DoLoadMQO(mqoin)) return;
                 if (!OneBone_DoLoadRefTSO(tsoref)) return;
-                if (!Common_DoLoadXml(mqoin)) return;
-                if (!OneBone_DoOutput(tsoex)) return;
-                if (!Common_DoSaveXml(mqoin)) return;
+                if (!Common_DoLoadXml(importinfo_file)) return;
+                if (!OneBone_DoOutput(tsoex, boneref)) return;
+                if (!Common_DoSaveXml(importinfo_file)) return;
             }
             finally
             {
@@ -651,15 +653,16 @@ namespace Tso2MqoGui
         public void GenerateAutoBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
         {
             this.config = config;
+            string importinfo_file = Path.ChangeExtension(mqoin, ".xml");
 
             try
             {
                 if (!Common_DoSetupDir(mqoin)) return;
                 if (!Common_DoLoadMQO(mqoin)) return;
                 if (!AutoBone_DoLoadRefTSO(tsoref)) return;
-                if (!Common_DoLoadXml(mqoin)) return;
+                if (!Common_DoLoadXml(importinfo_file)) return;
                 if (!AutoBone_DoOutput(tsoex)) return;
-                if (!Common_DoSaveXml(mqoin)) return;
+                if (!Common_DoSaveXml(importinfo_file)) return;
             }
             finally
             {

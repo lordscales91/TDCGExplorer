@@ -48,7 +48,7 @@ namespace Tso2MqoGui
                     TSOGenerator        gen     = new TSOGenerator();
                     TSOGenerateConfig   config  = new TSOGenerateConfig();
                     config.cui                  = true;
-                    config.materialconfig       = false;
+                    config.ShowMaterials       = false;
 
                     if(mqo  == null) throw new ArgumentException("「-mso:ファイル名」の形式で入力Mqoファイル名を指定してください");
                     if(tso  == null) throw new ArgumentException("「-tso:ファイル名」の形式で出力Tsoファイル名を指定してください");
