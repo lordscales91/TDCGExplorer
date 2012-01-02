@@ -64,7 +64,7 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool AutoBone_DoLoadRefTSO(string tsoref)
+        private bool RefBone_DoLoadRefTSO(string tsoref)
         {
             // 参照TSOロード
             tsor    = LoadTSO(tsoref);
@@ -257,7 +257,7 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool AutoBone_DoGenerateMeshes()
+        private bool RefBone_DoGenerateMeshes()
         {
             meshes  = new List<TSOMesh>();
 
@@ -556,7 +556,7 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool AutoBone_DoOutput(string tsoex)
+        private bool RefBone_DoOutput(string tsoex)
         {
             //----- 出力処理 -----------------------------------------------
             ii.materials.Clear();
@@ -573,7 +573,7 @@ namespace Tso2MqoGui
                 Common_DoWriteTextures();
                 Common_DoWriteEffects();
                 Common_DoWriteMaterials();
-                AutoBone_DoGenerateMeshes();
+                RefBone_DoGenerateMeshes();
                 Common_DoWriteMeshes();
             }
 
@@ -650,7 +650,7 @@ namespace Tso2MqoGui
             }
         }
         
-        public void GenerateAutoBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
+        public void GenerateRefBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
         {
             this.config = config;
             string importinfo_file = Path.ChangeExtension(mqoin, ".xml");
@@ -659,9 +659,9 @@ namespace Tso2MqoGui
             {
                 if (!Common_DoSetupDir(mqoin)) return;
                 if (!Common_DoLoadMQO(mqoin)) return;
-                if (!AutoBone_DoLoadRefTSO(tsoref)) return;
+                if (!RefBone_DoLoadRefTSO(tsoref)) return;
                 if (!Common_DoLoadXml(importinfo_file)) return;
-                if (!AutoBone_DoOutput(tsoex)) return;
+                if (!RefBone_DoOutput(tsoex)) return;
                 if (!Common_DoSaveXml(importinfo_file)) return;
             }
             finally
@@ -783,6 +783,14 @@ namespace Tso2MqoGui
             }
         }
 #endregion
+    }
+
+    public class TSOGeneratorOneBone : TSOGenerator
+    {
+    }
+    
+    public class TSOGeneratorRefBone : TSOGenerator
+    {
     }
 
     public class TextureInfo
