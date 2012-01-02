@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Tso2MqoGui
 {
-    public class TSOGenerateConfig
+    public class TSOGeneratorConfig
     {
         public bool ShowMaterials = false;
         public bool cui = false;

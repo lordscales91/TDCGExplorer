@@ -12,16 +12,21 @@ namespace Tso2MqoGui
 {
     public abstract class TSOGenerator
     {
-        private string                      dir;
-        private TSOGenerateConfig           config;
-        protected MqoFile                     mqo;
-        protected TSOFile                     tsor;
+        private string dir;
+        private TSOGeneratorConfig config;
+        protected MqoFile mqo;
+        protected TSOFile tsor;
         protected Dictionary<string, TSONode> nodes;
-        protected List<TSOMesh>               meshes;
-        private ImportInfo                  ii;
-        private BinaryWriter                bw;
-        protected Dictionary<string, MaterialInfo>    materials;
-        private Dictionary<string, TextureInfo>     textures;
+        protected List<TSOMesh> meshes;
+        private ImportInfo ii;
+        private BinaryWriter bw;
+        protected Dictionary<string, MaterialInfo> materials;
+        private Dictionary<string, TextureInfo> textures;
+
+        public TSOGenerator(TSOGeneratorConfig config)
+        {
+            this.config = config;
+        }
 
         public TSOFile  LoadTSO(string file)
         {
@@ -272,7 +277,6 @@ namespace Tso2MqoGui
             tsor        = null;
             nodes       = null;
             meshes      = null;
-            config      = null;
             mqo         = null;
             ii          = null;
             bw          = null;
@@ -283,9 +287,8 @@ namespace Tso2MqoGui
             return true;
         }
 
-        public void Generate(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
+        public void Generate(string mqoin, string tsoref, string tsoex)
         {
-            this.config = config;
             string importinfo_file = Path.ChangeExtension(mqoin, ".xml");
 
             try
@@ -425,6 +428,11 @@ namespace Tso2MqoGui
     {
         public Dictionary<string, string> ObjectBoneNames = new Dictionary<string, string>();
 
+        public TSOGeneratorOneBone(TSOGeneratorConfig config)
+            : base(config)
+        {
+        }
+
         protected override bool DoLoadRefTSO(string tsoref)
         {
             // 参照TSOロード
@@ -533,8 +541,13 @@ namespace Tso2MqoGui
     
     public unsafe class TSOGeneratorRefBone : TSOGenerator
     {
-        private List<Vertex>                vlst;
-        private PointCluster                pc;
+        private List<Vertex> vlst;
+        private PointCluster pc;
+
+        public TSOGeneratorRefBone(TSOGeneratorConfig config)
+            : base(config)
+        {
+        }
 
         private void CreatePointCluster(TSOFile tso)
         {
