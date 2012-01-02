@@ -239,13 +239,13 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool DoOutput(string tsoex)
+        private bool DoOutput(string tsoout_file)
         {
             //----- 出力処理 -----------------------------------------------
             ii.materials.Clear();
             ii.textures.Clear();
 
-            using (FileStream fs = File.OpenWrite(tsoex))
+            using (FileStream fs = File.OpenWrite(tsoout_file))
             {
                 fs.SetLength(0);
                 bw = new BinaryWriter(fs);
@@ -287,17 +287,17 @@ namespace Tso2MqoGui
             return true;
         }
 
-        public void Generate(string mqoin, string tsoref, string tsoex)
+        public void Generate(string mqo_file, string tsoref_file, string tsoout_file)
         {
-            string importinfo_file = Path.ChangeExtension(mqoin, ".xml");
+            string importinfo_file = Path.ChangeExtension(mqo_file, ".xml");
 
             try
             {
-                if (!DoSetupDir(mqoin)) return;
-                if (!DoLoadMQO(mqoin)) return;
-                if (!DoLoadRefTSO(tsoref)) return;
+                if (!DoSetupDir(mqo_file)) return;
+                if (!DoLoadMQO(mqo_file)) return;
+                if (!DoLoadRefTSO(tsoref_file)) return;
                 if (!DoLoadXml(importinfo_file)) return;
-                if (!DoOutput(tsoex)) return;
+                if (!DoOutput(tsoout_file)) return;
                 if (!DoSaveXml(importinfo_file)) return;
             }
             finally
@@ -433,10 +433,10 @@ namespace Tso2MqoGui
         {
         }
 
-        protected override bool DoLoadRefTSO(string tsoref)
+        protected override bool DoLoadRefTSO(string tsoref_file)
         {
             // 参照TSOロード
-            tsor    = LoadTSO(tsoref);
+            tsor    = LoadTSO(tsoref_file);
             return true;
         }
 

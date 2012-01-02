@@ -41,36 +41,36 @@
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.cbShowMaterials = new System.Windows.Forms.CheckBox();
             this.gbBone = new System.Windows.Forms.GroupBox();
-            this.bDeselectAll = new System.Windows.Forms.Button();
-            this.bRefresh = new System.Windows.Forms.Button();
-            this.bSelectAll = new System.Windows.Forms.Button();
+            this.btnDeselectAll = new System.Windows.Forms.Button();
+            this.btnRefresh = new System.Windows.Forms.Button();
+            this.btnSelectAll = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
-            this.bAssign = new System.Windows.Forms.Button();
-            this.tvBone = new System.Windows.Forms.TreeView();
-            this.lvObject = new System.Windows.Forms.ListView();
+            this.btnAssign = new System.Windows.Forms.Button();
+            this.tvBones = new System.Windows.Forms.TreeView();
+            this.lvObjects = new System.Windows.Forms.ListView();
             this.chObjects1 = new System.Windows.Forms.ColumnHeader();
             this.chObjects2 = new System.Windows.Forms.ColumnHeader();
             this.label6 = new System.Windows.Forms.Label();
-            this.bExpOk = new System.Windows.Forms.Button();
-            this.bRefTsoEx = new System.Windows.Forms.Button();
-            this.bRefTso = new System.Windows.Forms.Button();
+            this.btnGenerate = new System.Windows.Forms.Button();
+            this.btnTsoFile = new System.Windows.Forms.Button();
+            this.btnTsoFileRef = new System.Windows.Forms.Button();
             this.rbOneBone = new System.Windows.Forms.RadioButton();
             this.rbRefBone = new System.Windows.Forms.RadioButton();
-            this.tbTsoEx = new System.Windows.Forms.TextBox();
+            this.tbTsoFile = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
-            this.tbTso = new System.Windows.Forms.TextBox();
+            this.tbTsoFileRef = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.bRefMqoIn = new System.Windows.Forms.Button();
-            this.tbMqoIn = new System.Windows.Forms.TextBox();
+            this.btnMqoFile = new System.Windows.Forms.Button();
+            this.tbMqoFile = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.bRefMergeTso = new System.Windows.Forms.Button();
+            this.btnMergeTso = new System.Windows.Forms.Button();
             this.tbMergeTso = new System.Windows.Forms.TextBox();
-            this.bMerge = new System.Windows.Forms.Button();
+            this.btnMerge = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
-            this.bMergeReset = new System.Windows.Forms.Button();
-            this.bMergeDel = new System.Windows.Forms.Button();
-            this.bMergeAdd = new System.Windows.Forms.Button();
+            this.btnMergeReset = new System.Windows.Forms.Button();
+            this.btnMergeDel = new System.Windows.Forms.Button();
+            this.btnMergeAdd = new System.Windows.Forms.Button();
             this.label8 = new System.Windows.Forms.Label();
             this.tvMerge = new System.Windows.Forms.TreeView();
             this.tabControl1.SuspendLayout();
@@ -201,17 +201,17 @@
             this.tabPage2.BackColor = System.Drawing.Color.PeachPuff;
             this.tabPage2.Controls.Add(this.cbShowMaterials);
             this.tabPage2.Controls.Add(this.gbBone);
-            this.tabPage2.Controls.Add(this.bExpOk);
-            this.tabPage2.Controls.Add(this.bRefTsoEx);
-            this.tabPage2.Controls.Add(this.bRefTso);
+            this.tabPage2.Controls.Add(this.btnGenerate);
+            this.tabPage2.Controls.Add(this.btnTsoFile);
+            this.tabPage2.Controls.Add(this.btnTsoFileRef);
             this.tabPage2.Controls.Add(this.rbOneBone);
             this.tabPage2.Controls.Add(this.rbRefBone);
-            this.tabPage2.Controls.Add(this.tbTsoEx);
+            this.tabPage2.Controls.Add(this.tbTsoFile);
             this.tabPage2.Controls.Add(this.label5);
-            this.tabPage2.Controls.Add(this.tbTso);
+            this.tabPage2.Controls.Add(this.tbTsoFileRef);
             this.tabPage2.Controls.Add(this.label4);
-            this.tabPage2.Controls.Add(this.bRefMqoIn);
-            this.tabPage2.Controls.Add(this.tbMqoIn);
+            this.tabPage2.Controls.Add(this.btnMqoFile);
+            this.tabPage2.Controls.Add(this.tbMqoFile);
             this.tabPage2.Controls.Add(this.label3);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
@@ -235,13 +235,13 @@
             this.gbBone.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbBone.Controls.Add(this.bDeselectAll);
-            this.gbBone.Controls.Add(this.bRefresh);
-            this.gbBone.Controls.Add(this.bSelectAll);
+            this.gbBone.Controls.Add(this.btnDeselectAll);
+            this.gbBone.Controls.Add(this.btnRefresh);
+            this.gbBone.Controls.Add(this.btnSelectAll);
             this.gbBone.Controls.Add(this.label7);
-            this.gbBone.Controls.Add(this.bAssign);
-            this.gbBone.Controls.Add(this.tvBone);
-            this.gbBone.Controls.Add(this.lvObject);
+            this.gbBone.Controls.Add(this.btnAssign);
+            this.gbBone.Controls.Add(this.tvBones);
+            this.gbBone.Controls.Add(this.lvObjects);
             this.gbBone.Controls.Add(this.label6);
             this.gbBone.Location = new System.Drawing.Point(6, 103);
             this.gbBone.Name = "gbBone";
@@ -250,38 +250,38 @@
             this.gbBone.TabStop = false;
             this.gbBone.Text = "ボーン指定";
             // 
-            // bDeselectAll
+            // btnDeselectAll
             // 
-            this.bDeselectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bDeselectAll.Location = new System.Drawing.Point(123, 108);
-            this.bDeselectAll.Name = "bDeselectAll";
-            this.bDeselectAll.Size = new System.Drawing.Size(110, 23);
-            this.bDeselectAll.TabIndex = 27;
-            this.bDeselectAll.Text = "すべて非選択";
-            this.bDeselectAll.UseVisualStyleBackColor = true;
-            this.bDeselectAll.Click += new System.EventHandler(this.bDeselectAll_Click);
+            this.btnDeselectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnDeselectAll.Location = new System.Drawing.Point(123, 108);
+            this.btnDeselectAll.Name = "btnDeselectAll";
+            this.btnDeselectAll.Size = new System.Drawing.Size(110, 23);
+            this.btnDeselectAll.TabIndex = 27;
+            this.btnDeselectAll.Text = "すべて非選択";
+            this.btnDeselectAll.UseVisualStyleBackColor = true;
+            this.btnDeselectAll.Click += new System.EventHandler(this.btnDeselectAll_Click);
             // 
-            // bRefresh
+            // btnRefresh
             // 
-            this.bRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bRefresh.Location = new System.Drawing.Point(272, 108);
-            this.bRefresh.Name = "bRefresh";
-            this.bRefresh.Size = new System.Drawing.Size(198, 23);
-            this.bRefresh.TabIndex = 26;
-            this.bRefresh.Text = "オブジェクトとボーンの一覧を更新";
-            this.bRefresh.UseVisualStyleBackColor = true;
-            this.bRefresh.Click += new System.EventHandler(this.bRefresh_Click);
+            this.btnRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnRefresh.Location = new System.Drawing.Point(272, 108);
+            this.btnRefresh.Name = "btnRefresh";
+            this.btnRefresh.Size = new System.Drawing.Size(198, 23);
+            this.btnRefresh.TabIndex = 26;
+            this.btnRefresh.Text = "オブジェクトとボーンの一覧を更新";
+            this.btnRefresh.UseVisualStyleBackColor = true;
+            this.btnRefresh.Click += new System.EventHandler(this.btnRefresh_Click);
             // 
-            // bSelectAll
+            // btnSelectAll
             // 
-            this.bSelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bSelectAll.Location = new System.Drawing.Point(6, 108);
-            this.bSelectAll.Name = "bSelectAll";
-            this.bSelectAll.Size = new System.Drawing.Size(110, 23);
-            this.bSelectAll.TabIndex = 25;
-            this.bSelectAll.Text = "すべて選択";
-            this.bSelectAll.UseVisualStyleBackColor = true;
-            this.bSelectAll.Click += new System.EventHandler(this.bSelectAll_Click);
+            this.btnSelectAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnSelectAll.Location = new System.Drawing.Point(6, 108);
+            this.btnSelectAll.Name = "btnSelectAll";
+            this.btnSelectAll.Size = new System.Drawing.Size(110, 23);
+            this.btnSelectAll.TabIndex = 25;
+            this.btnSelectAll.Text = "すべて選択";
+            this.btnSelectAll.UseVisualStyleBackColor = true;
+            this.btnSelectAll.Click += new System.EventHandler(this.btnSelectAll_Click);
             // 
             // label7
             // 
@@ -292,44 +292,44 @@
             this.label7.TabIndex = 24;
             this.label7.Text = "Tsoボーン:";
             // 
-            // bAssign
+            // btnAssign
             // 
-            this.bAssign.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.btnAssign.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
-            this.bAssign.Location = new System.Drawing.Point(239, 30);
-            this.bAssign.Name = "bAssign";
-            this.bAssign.Size = new System.Drawing.Size(27, 72);
-            this.bAssign.TabIndex = 23;
-            this.bAssign.Text = "←割り当て";
-            this.bAssign.UseVisualStyleBackColor = true;
-            this.bAssign.Click += new System.EventHandler(this.bAssign_Click);
+            this.btnAssign.Location = new System.Drawing.Point(239, 30);
+            this.btnAssign.Name = "btnAssign";
+            this.btnAssign.Size = new System.Drawing.Size(27, 72);
+            this.btnAssign.TabIndex = 23;
+            this.btnAssign.Text = "←割り当て";
+            this.btnAssign.UseVisualStyleBackColor = true;
+            this.btnAssign.Click += new System.EventHandler(this.btnAssign_Click);
             // 
-            // tvBone
+            // tvBones
             // 
-            this.tvBone.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.tvBones.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.tvBone.HideSelection = false;
-            this.tvBone.Location = new System.Drawing.Point(272, 30);
-            this.tvBone.Name = "tvBone";
-            this.tvBone.Size = new System.Drawing.Size(198, 72);
-            this.tvBone.TabIndex = 22;
+            this.tvBones.HideSelection = false;
+            this.tvBones.Location = new System.Drawing.Point(272, 30);
+            this.tvBones.Name = "tvBones";
+            this.tvBones.Size = new System.Drawing.Size(198, 72);
+            this.tvBones.TabIndex = 22;
             // 
-            // lvObject
+            // lvObjects
             // 
-            this.lvObject.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            this.lvObjects.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)));
-            this.lvObject.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.lvObjects.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.chObjects1,
             this.chObjects2});
-            this.lvObject.FullRowSelect = true;
-            this.lvObject.HideSelection = false;
-            this.lvObject.Location = new System.Drawing.Point(6, 30);
-            this.lvObject.Name = "lvObject";
-            this.lvObject.Size = new System.Drawing.Size(227, 72);
-            this.lvObject.TabIndex = 21;
-            this.lvObject.UseCompatibleStateImageBehavior = false;
-            this.lvObject.View = System.Windows.Forms.View.Details;
+            this.lvObjects.FullRowSelect = true;
+            this.lvObjects.HideSelection = false;
+            this.lvObjects.Location = new System.Drawing.Point(6, 30);
+            this.lvObjects.Name = "lvObjects";
+            this.lvObjects.Size = new System.Drawing.Size(227, 72);
+            this.lvObjects.TabIndex = 21;
+            this.lvObjects.UseCompatibleStateImageBehavior = false;
+            this.lvObjects.View = System.Windows.Forms.View.Details;
             // 
             // chObjects1
             // 
@@ -350,38 +350,38 @@
             this.label6.TabIndex = 20;
             this.label6.Text = "Mqoオブジェクト:";
             // 
-            // bExpOk
+            // btnGenerate
             // 
-            this.bExpOk.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bExpOk.Location = new System.Drawing.Point(363, 246);
-            this.bExpOk.Name = "bExpOk";
-            this.bExpOk.Size = new System.Drawing.Size(113, 23);
-            this.bExpOk.TabIndex = 17;
-            this.bExpOk.Text = "Tsoファイル作成";
-            this.bExpOk.UseVisualStyleBackColor = true;
-            this.bExpOk.Click += new System.EventHandler(this.bOk_Click);
+            this.btnGenerate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnGenerate.Location = new System.Drawing.Point(363, 246);
+            this.btnGenerate.Name = "btnGenerate";
+            this.btnGenerate.Size = new System.Drawing.Size(113, 23);
+            this.btnGenerate.TabIndex = 17;
+            this.btnGenerate.Text = "Tsoファイル作成";
+            this.btnGenerate.UseVisualStyleBackColor = true;
+            this.btnGenerate.Click += new System.EventHandler(this.btnGenerate_Click);
             // 
-            // bRefTsoEx
+            // btnTsoFile
             // 
-            this.bRefTsoEx.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bRefTsoEx.Location = new System.Drawing.Point(407, 54);
-            this.bRefTsoEx.Name = "bRefTsoEx";
-            this.bRefTsoEx.Size = new System.Drawing.Size(75, 23);
-            this.bRefTsoEx.TabIndex = 10;
-            this.bRefTsoEx.Text = "Ref";
-            this.bRefTsoEx.UseVisualStyleBackColor = true;
-            this.bRefTsoEx.Click += new System.EventHandler(this.bRefTsoEx_Click);
+            this.btnTsoFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnTsoFile.Location = new System.Drawing.Point(407, 54);
+            this.btnTsoFile.Name = "btnTsoFile";
+            this.btnTsoFile.Size = new System.Drawing.Size(75, 23);
+            this.btnTsoFile.TabIndex = 10;
+            this.btnTsoFile.Text = "Ref";
+            this.btnTsoFile.UseVisualStyleBackColor = true;
+            this.btnTsoFile.Click += new System.EventHandler(this.btnTsoFile_Click);
             // 
-            // bRefTso
+            // btnTsoFileRef
             // 
-            this.bRefTso.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bRefTso.Location = new System.Drawing.Point(407, 29);
-            this.bRefTso.Name = "bRefTso";
-            this.bRefTso.Size = new System.Drawing.Size(75, 23);
-            this.bRefTso.TabIndex = 9;
-            this.bRefTso.Text = "Ref";
-            this.bRefTso.UseVisualStyleBackColor = true;
-            this.bRefTso.Click += new System.EventHandler(this.bRefTso_Click);
+            this.btnTsoFileRef.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnTsoFileRef.Location = new System.Drawing.Point(407, 29);
+            this.btnTsoFileRef.Name = "btnTsoFileRef";
+            this.btnTsoFileRef.Size = new System.Drawing.Size(75, 23);
+            this.btnTsoFileRef.TabIndex = 9;
+            this.btnTsoFileRef.Text = "Ref";
+            this.btnTsoFileRef.UseVisualStyleBackColor = true;
+            this.btnTsoFileRef.Click += new System.EventHandler(this.btnTsoFileRef_Click);
             // 
             // rbOneBone
             // 
@@ -407,14 +407,14 @@
             this.rbRefBone.UseVisualStyleBackColor = true;
             this.rbRefBone.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
-            // tbTsoEx
+            // tbTsoFile
             // 
-            this.tbTsoEx.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.tbTsoFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbTsoEx.Location = new System.Drawing.Point(65, 56);
-            this.tbTsoEx.Name = "tbTsoEx";
-            this.tbTsoEx.Size = new System.Drawing.Size(336, 19);
-            this.tbTsoEx.TabIndex = 6;
+            this.tbTsoFile.Location = new System.Drawing.Point(65, 56);
+            this.tbTsoFile.Name = "tbTsoFile";
+            this.tbTsoFile.Size = new System.Drawing.Size(336, 19);
+            this.tbTsoFile.TabIndex = 6;
             // 
             // label5
             // 
@@ -425,14 +425,14 @@
             this.label5.TabIndex = 5;
             this.label5.Text = "出力TSO:";
             // 
-            // tbTso
+            // tbTsoFileRef
             // 
-            this.tbTso.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.tbTsoFileRef.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbTso.Location = new System.Drawing.Point(65, 31);
-            this.tbTso.Name = "tbTso";
-            this.tbTso.Size = new System.Drawing.Size(336, 19);
-            this.tbTso.TabIndex = 4;
+            this.tbTsoFileRef.Location = new System.Drawing.Point(65, 31);
+            this.tbTsoFileRef.Name = "tbTsoFileRef";
+            this.tbTsoFileRef.Size = new System.Drawing.Size(336, 19);
+            this.tbTsoFileRef.TabIndex = 4;
             // 
             // label4
             // 
@@ -443,25 +443,25 @@
             this.label4.TabIndex = 3;
             this.label4.Text = "参照TSO:";
             // 
-            // bRefMqoIn
+            // btnMqoFile
             // 
-            this.bRefMqoIn.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bRefMqoIn.Location = new System.Drawing.Point(407, 4);
-            this.bRefMqoIn.Name = "bRefMqoIn";
-            this.bRefMqoIn.Size = new System.Drawing.Size(75, 23);
-            this.bRefMqoIn.TabIndex = 2;
-            this.bRefMqoIn.Text = "Ref";
-            this.bRefMqoIn.UseVisualStyleBackColor = true;
-            this.bRefMqoIn.Click += new System.EventHandler(this.bRefMqoIn_Click);
+            this.btnMqoFile.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMqoFile.Location = new System.Drawing.Point(407, 4);
+            this.btnMqoFile.Name = "btnMqoFile";
+            this.btnMqoFile.Size = new System.Drawing.Size(75, 23);
+            this.btnMqoFile.TabIndex = 2;
+            this.btnMqoFile.Text = "Ref";
+            this.btnMqoFile.UseVisualStyleBackColor = true;
+            this.btnMqoFile.Click += new System.EventHandler(this.btnMqoFile_Click);
             // 
-            // tbMqoIn
+            // tbMqoFile
             // 
-            this.tbMqoIn.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.tbMqoFile.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbMqoIn.Location = new System.Drawing.Point(65, 6);
-            this.tbMqoIn.Name = "tbMqoIn";
-            this.tbMqoIn.Size = new System.Drawing.Size(336, 19);
-            this.tbMqoIn.TabIndex = 1;
+            this.tbMqoFile.Location = new System.Drawing.Point(65, 6);
+            this.tbMqoFile.Name = "tbMqoFile";
+            this.tbMqoFile.Size = new System.Drawing.Size(336, 19);
+            this.tbMqoFile.TabIndex = 1;
             // 
             // label3
             // 
@@ -475,13 +475,13 @@
             // tabPage3
             // 
             this.tabPage3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(232)))), ((int)(((byte)(216)))));
-            this.tabPage3.Controls.Add(this.bRefMergeTso);
+            this.tabPage3.Controls.Add(this.btnMergeTso);
             this.tabPage3.Controls.Add(this.tbMergeTso);
-            this.tabPage3.Controls.Add(this.bMerge);
+            this.tabPage3.Controls.Add(this.btnMerge);
             this.tabPage3.Controls.Add(this.label9);
-            this.tabPage3.Controls.Add(this.bMergeReset);
-            this.tabPage3.Controls.Add(this.bMergeDel);
-            this.tabPage3.Controls.Add(this.bMergeAdd);
+            this.tabPage3.Controls.Add(this.btnMergeReset);
+            this.tabPage3.Controls.Add(this.btnMergeDel);
+            this.tabPage3.Controls.Add(this.btnMergeAdd);
             this.tabPage3.Controls.Add(this.label8);
             this.tabPage3.Controls.Add(this.tvMerge);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
@@ -490,16 +490,16 @@
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "Merge";
             // 
-            // bRefMergeTso
+            // btnMergeTso
             // 
-            this.bRefMergeTso.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bRefMergeTso.Location = new System.Drawing.Point(410, 220);
-            this.bRefMergeTso.Name = "bRefMergeTso";
-            this.bRefMergeTso.Size = new System.Drawing.Size(75, 23);
-            this.bRefMergeTso.TabIndex = 8;
-            this.bRefMergeTso.Text = "Ref";
-            this.bRefMergeTso.UseVisualStyleBackColor = true;
-            this.bRefMergeTso.Click += new System.EventHandler(this.bRefMergeTso_Click);
+            this.btnMergeTso.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMergeTso.Location = new System.Drawing.Point(410, 220);
+            this.btnMergeTso.Name = "btnMergeTso";
+            this.btnMergeTso.Size = new System.Drawing.Size(75, 23);
+            this.btnMergeTso.TabIndex = 8;
+            this.btnMergeTso.Text = "Ref";
+            this.btnMergeTso.UseVisualStyleBackColor = true;
+            this.btnMergeTso.Click += new System.EventHandler(this.btnRefMergeTso_Click);
             // 
             // tbMergeTso
             // 
@@ -513,16 +513,16 @@
             this.tbMergeTso.DragDrop += new System.Windows.Forms.DragEventHandler(this.tbMergeTso_DragDrop);
             this.tbMergeTso.DragEnter += new System.Windows.Forms.DragEventHandler(this.tbMergeTso_DragEnter);
             // 
-            // bMerge
+            // btnMerge
             // 
-            this.bMerge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bMerge.Location = new System.Drawing.Point(410, 249);
-            this.bMerge.Name = "bMerge";
-            this.bMerge.Size = new System.Drawing.Size(75, 23);
-            this.bMerge.TabIndex = 6;
-            this.bMerge.Text = "実行";
-            this.bMerge.UseVisualStyleBackColor = true;
-            this.bMerge.Click += new System.EventHandler(this.bMerge_Click);
+            this.btnMerge.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnMerge.Location = new System.Drawing.Point(410, 249);
+            this.btnMerge.Name = "btnMerge";
+            this.btnMerge.Size = new System.Drawing.Size(75, 23);
+            this.btnMerge.TabIndex = 6;
+            this.btnMerge.Text = "実行";
+            this.btnMerge.UseVisualStyleBackColor = true;
+            this.btnMerge.Click += new System.EventHandler(this.btnMerge_Click);
             // 
             // label9
             // 
@@ -534,38 +534,38 @@
             this.label9.TabIndex = 5;
             this.label9.Text = "出力TSO";
             // 
-            // bMergeReset
+            // btnMergeReset
             // 
-            this.bMergeReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bMergeReset.Location = new System.Drawing.Point(167, 193);
-            this.bMergeReset.Name = "bMergeReset";
-            this.bMergeReset.Size = new System.Drawing.Size(75, 23);
-            this.bMergeReset.TabIndex = 4;
-            this.bMergeReset.Text = "リセット";
-            this.bMergeReset.UseVisualStyleBackColor = true;
-            this.bMergeReset.Click += new System.EventHandler(this.bMergeReset_Click);
+            this.btnMergeReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnMergeReset.Location = new System.Drawing.Point(167, 193);
+            this.btnMergeReset.Name = "btnMergeReset";
+            this.btnMergeReset.Size = new System.Drawing.Size(75, 23);
+            this.btnMergeReset.TabIndex = 4;
+            this.btnMergeReset.Text = "リセット";
+            this.btnMergeReset.UseVisualStyleBackColor = true;
+            this.btnMergeReset.Click += new System.EventHandler(this.btnMergeReset_Click);
             // 
-            // bMergeDel
+            // btnMergeDel
             // 
-            this.bMergeDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bMergeDel.Location = new System.Drawing.Point(86, 193);
-            this.bMergeDel.Name = "bMergeDel";
-            this.bMergeDel.Size = new System.Drawing.Size(75, 23);
-            this.bMergeDel.TabIndex = 3;
-            this.bMergeDel.Text = "削除";
-            this.bMergeDel.UseVisualStyleBackColor = true;
-            this.bMergeDel.Click += new System.EventHandler(this.bMergeDel_Click);
+            this.btnMergeDel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnMergeDel.Location = new System.Drawing.Point(86, 193);
+            this.btnMergeDel.Name = "btnMergeDel";
+            this.btnMergeDel.Size = new System.Drawing.Size(75, 23);
+            this.btnMergeDel.TabIndex = 3;
+            this.btnMergeDel.Text = "削除";
+            this.btnMergeDel.UseVisualStyleBackColor = true;
+            this.btnMergeDel.Click += new System.EventHandler(this.btnMergeDel_Click);
             // 
-            // bMergeAdd
+            // btnMergeAdd
             // 
-            this.bMergeAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bMergeAdd.Location = new System.Drawing.Point(5, 193);
-            this.bMergeAdd.Name = "bMergeAdd";
-            this.bMergeAdd.Size = new System.Drawing.Size(75, 23);
-            this.bMergeAdd.TabIndex = 2;
-            this.bMergeAdd.Text = "追加";
-            this.bMergeAdd.UseVisualStyleBackColor = true;
-            this.bMergeAdd.Click += new System.EventHandler(this.bMergeAdd_Click);
+            this.btnMergeAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnMergeAdd.Location = new System.Drawing.Point(5, 193);
+            this.btnMergeAdd.Name = "btnMergeAdd";
+            this.btnMergeAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnMergeAdd.TabIndex = 2;
+            this.btnMergeAdd.Text = "追加";
+            this.btnMergeAdd.UseVisualStyleBackColor = true;
+            this.btnMergeAdd.Click += new System.EventHandler(this.btnMergeAdd_Click);
             // 
             // label8
             // 
@@ -627,42 +627,42 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.CheckBox cbMakeSub;
         private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.Button bRefMqoIn;
-        private System.Windows.Forms.TextBox tbMqoIn;
+        private System.Windows.Forms.Button btnMqoFile;
+        private System.Windows.Forms.TextBox tbMqoFile;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Button bRefTsoEx;
-        private System.Windows.Forms.Button bRefTso;
+        private System.Windows.Forms.Button btnTsoFile;
+        private System.Windows.Forms.Button btnTsoFileRef;
         private System.Windows.Forms.RadioButton rbOneBone;
         private System.Windows.Forms.RadioButton rbRefBone;
-        private System.Windows.Forms.TextBox tbTsoEx;
+        private System.Windows.Forms.TextBox tbTsoFile;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox tbTso;
+        private System.Windows.Forms.TextBox tbTsoFileRef;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Button bExpOk;
+        private System.Windows.Forms.Button btnGenerate;
         private System.Windows.Forms.CheckBox cbCopyTSO;
         private System.Windows.Forms.RadioButton rbBoneRokDeBone;
         private System.Windows.Forms.RadioButton rbBoneNone;
         private System.Windows.Forms.GroupBox gbBone;
-        private System.Windows.Forms.Button bRefresh;
-        private System.Windows.Forms.Button bSelectAll;
+        private System.Windows.Forms.Button btnRefresh;
+        private System.Windows.Forms.Button btnSelectAll;
         private System.Windows.Forms.Label label7;
-        private System.Windows.Forms.Button bAssign;
-        private System.Windows.Forms.TreeView tvBone;
-        private System.Windows.Forms.ListView lvObject;
+        private System.Windows.Forms.Button btnAssign;
+        private System.Windows.Forms.TreeView tvBones;
+        private System.Windows.Forms.ListView lvObjects;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ColumnHeader chObjects1;
         private System.Windows.Forms.ColumnHeader chObjects2;
-        private System.Windows.Forms.Button bDeselectAll;
+        private System.Windows.Forms.Button btnDeselectAll;
         private System.Windows.Forms.CheckBox cbShowMaterials;
         private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.Button bMergeReset;
-        private System.Windows.Forms.Button bMergeDel;
-        private System.Windows.Forms.Button bMergeAdd;
+        private System.Windows.Forms.Button btnMergeReset;
+        private System.Windows.Forms.Button btnMergeDel;
+        private System.Windows.Forms.Button btnMergeAdd;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.TreeView tvMerge;
-        private System.Windows.Forms.Button bRefMergeTso;
+        private System.Windows.Forms.Button btnMergeTso;
         private System.Windows.Forms.TextBox tbMergeTso;
-        private System.Windows.Forms.Button bMerge;
+        private System.Windows.Forms.Button btnMerge;
         private System.Windows.Forms.Label label9;
     }
 }
