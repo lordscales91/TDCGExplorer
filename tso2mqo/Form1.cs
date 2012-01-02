@@ -237,18 +237,18 @@ namespace Tso2MqoGui
 
         private void OpenMQOFile(string f)
         {
-            TSOGenerator gen = new TSOGenerator();
             TSOGenerateConfig config = new TSOGenerateConfig();
             config.ShowMaterials = cbShowMaterials.Checked;
 
             if (rbRefBone.Checked)
             {
+                TSOGeneratorRefBone gen = new TSOGeneratorRefBone();
                 gen.GenerateRefBone(f, tbTso.Text, tbTsoEx.Text, config);
             }
             else
             if (rbOneBone.Checked)
             {
-                Dictionary<string, string> boneref = new Dictionary<string, string>();
+                TSOGeneratorOneBone gen = new TSOGeneratorOneBone();
 
                 foreach (ListViewItem i in lvObject.Items)
                 {
@@ -258,10 +258,10 @@ namespace Tso2MqoGui
                         return;
                     }
 
-                    boneref.Add(i.SubItems[0].Text, i.SubItems[1].Text);
+                    gen.boneref.Add(i.SubItems[0].Text, i.SubItems[1].Text);
                 }
 
-                gen.GenerateOneBone(f, tbTso.Text, tbTsoEx.Text, config, boneref);
+                gen.GenerateOneBone(f, tbTso.Text, tbTsoEx.Text, config);
             }
             else
             {
