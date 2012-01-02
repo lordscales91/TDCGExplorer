@@ -28,25 +28,25 @@ namespace Tso2MqoGui
             this.config = config;
         }
 
-        public TSOFile  LoadTSO(string file)
+        public TSOFile LoadTSO(string file)
         {
-            TSOFile         tso = new TSOFile(file);
+            TSOFile tso = new TSOFile(file);
             tso.ReadAll();
             return tso;
         }
 
-        private bool DoSetupDir(string mqoin)
+        private bool SetCurrentDirectory(string dir)
         {
-            dir = Path.GetDirectoryName(mqoin);
+            this.dir = dir;
             Environment.CurrentDirectory = dir;
             return true;
         }
 
-        private bool DoLoadMQO(string mqoin)
+        private bool DoLoadMQO(string mqo_file)
         {
             // MQO読み込み
             mqo = new MqoFile();
-            mqo.Load(mqoin);
+            mqo.Load(mqo_file);
             mqo.Dump();
             return true;
         }
@@ -289,11 +289,12 @@ namespace Tso2MqoGui
 
         public void Generate(string mqo_file, string tsoref_file, string tsoout_file)
         {
+            string dir = Path.GetDirectoryName(mqo_file);
             string importinfo_file = Path.ChangeExtension(mqo_file, ".xml");
 
             try
             {
-                if (!DoSetupDir(mqo_file)) return;
+                if (!SetCurrentDirectory(dir)) return;
                 if (!DoLoadMQO(mqo_file)) return;
                 if (!DoLoadRefTSO(tsoref_file)) return;
                 if (!DoLoadXml(importinfo_file)) return;
