@@ -283,7 +283,7 @@ namespace Tso2MqoGui
             return true;
         }
 
-        public void GenerateOneBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
+        public void Generate(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
         {
             this.config = config;
             string importinfo_file = Path.ChangeExtension(mqoin, ".xml");
@@ -303,26 +303,6 @@ namespace Tso2MqoGui
             }
         }
         
-        public void GenerateRefBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
-        {
-            this.config = config;
-            string importinfo_file = Path.ChangeExtension(mqoin, ".xml");
-
-            try
-            {
-                if (!Common_DoSetupDir(mqoin)) return;
-                if (!Common_DoLoadMQO(mqoin)) return;
-                if (!DoLoadRefTSO(tsoref)) return;
-                if (!Common_DoLoadXml(importinfo_file)) return;
-                if (!DoOutput(tsoex)) return;
-                if (!Common_DoSaveXml(importinfo_file)) return;
-            }
-            finally
-            {
-                Common_DoCleanup();
-            }
-        }
-
         protected abstract bool DoLoadRefTSO(string tsoref);
 
 #region ユーティリティ
