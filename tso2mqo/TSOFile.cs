@@ -101,7 +101,7 @@ namespace Tso2MqoGui
                 textures[i]                 = new TSOTex();
                 textures[i].id              = i;
                 textures[i].name            = ReadString();
-                textures[i].file            = ReadString();
+                textures[i].File            = ReadString();
                 textures[i].width           = r.ReadInt32();
                 textures[i].height          = r.ReadInt32();
                 textures[i].depth           = r.ReadInt32();
@@ -233,7 +233,7 @@ namespace Tso2MqoGui
     {
         internal int            id;
         internal string         name;
-        internal string         file;
+        string         file;
         internal int            width;
         internal int            height;
         internal int            depth;
