@@ -46,7 +46,7 @@ namespace Tso2MqoGui
                     if(tso  == null) throw new ArgumentException("「-tso:ファイル名」の形式で出力Tsoファイル名を指定してください");
                     if(rtso == null) throw new ArgumentException("「-ref:ファイル名」の形式で参照Tsoファイル名を指定してください");
 
-                    gen.GenerateRefBone(mqo, rtso, tso, config);
+                    gen.Generate(mqo, rtso, tso, config);
                 } catch(ArgumentException e)
                 {
                     System.Diagnostics.Debug.WriteLine(e.Message);

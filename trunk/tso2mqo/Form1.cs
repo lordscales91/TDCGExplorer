@@ -243,7 +243,7 @@ namespace Tso2MqoGui
             if (rbRefBone.Checked)
             {
                 TSOGeneratorRefBone gen = new TSOGeneratorRefBone();
-                gen.GenerateRefBone(f, tbTso.Text, tbTsoEx.Text, config);
+                gen.Generate(f, tbTso.Text, tbTsoEx.Text, config);
             }
             else
             if (rbOneBone.Checked)
@@ -261,7 +261,7 @@ namespace Tso2MqoGui
                     gen.boneref.Add(i.SubItems[0].Text, i.SubItems[1].Text);
                 }
 
-                gen.GenerateOneBone(f, tbTso.Text, tbTsoEx.Text, config);
+                gen.Generate(f, tbTso.Text, tbTsoEx.Text, config);
             }
             else
             {
