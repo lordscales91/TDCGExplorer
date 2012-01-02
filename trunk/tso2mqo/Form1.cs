@@ -235,18 +235,18 @@ namespace Tso2MqoGui
 
         private void OpenMQOFile(string file)
         {
-            TSOGenerateConfig config = new TSOGenerateConfig();
+            TSOGeneratorConfig config = new TSOGeneratorConfig();
             config.ShowMaterials = cbShowMaterials.Checked;
 
             if (rbRefBone.Checked)
             {
-                TSOGeneratorRefBone gen = new TSOGeneratorRefBone();
-                gen.Generate(file, tbTso.Text, tbTsoEx.Text, config);
+                TSOGeneratorRefBone gen = new TSOGeneratorRefBone(config);
+                gen.Generate(file, tbTso.Text, tbTsoEx.Text);
             }
             else
             if (rbOneBone.Checked)
             {
-                TSOGeneratorOneBone gen = new TSOGeneratorOneBone();
+                TSOGeneratorOneBone gen = new TSOGeneratorOneBone(config);
 
                 foreach (ListViewItem i in lvObject.Items)
                 {
@@ -259,7 +259,7 @@ namespace Tso2MqoGui
                     gen.ObjectBoneNames.Add(i.SubItems[0].Text, i.SubItems[1].Text);
                 }
 
-                gen.Generate(file, tbTso.Text, tbTsoEx.Text, config);
+                gen.Generate(file, tbTso.Text, tbTsoEx.Text);
             }
             else
             {
