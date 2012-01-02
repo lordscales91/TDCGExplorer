@@ -26,19 +26,19 @@ namespace Tso2MqoGui
         private void Form1_Load(object sender, EventArgs e)
         {
             RegistryKey reg = Application.UserAppDataRegistry.CreateSubKey("Config");
-            OutPath                     = (string)reg.GetValue("OutPath", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
-            tabControl1.SelectedIndex   = (int)reg.GetValue("TabPage",       0);
-            tbMqoIn   .Text             = (string)reg.GetValue("MqoIn",    "");
-            tbTso     .Text             = (string)reg.GetValue("Tso",      "");
-            tbTsoEx   .Text             = (string)reg.GetValue("TsoEx",    "");
-            tbMergeTso.Text             = (string)reg.GetValue("MergeTso", "");
-            rbAutoBone     .Checked     = (int)reg.GetValue("AutoBone",      1) == 1;
-            rb1Bone        .Checked     = (int)reg.GetValue("OneBone",       0) == 1;
-            rbBoneNone     .Checked     = (int)reg.GetValue("BoneNone",      1) == 1;
-            rbBoneRokDeBone.Checked     = (int)reg.GetValue("BoneRokDeBone", 0) == 1;
-            cbMakeSub      .Checked     = (int)reg.GetValue("MakeSub",       1) == 1;
-            cbCopyTSO      .Checked     = (int)reg.GetValue("CopyTSO",       1) == 1;
-            cbShowMaterials.Checked     = (int)reg.GetValue("ShowMaterials", 0) == 1;
+            OutPath = (string)reg.GetValue("OutPath", Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments));
+            tabControl1.SelectedIndex = (int)reg.GetValue("TabPage", 0);
+            tbMqoIn.Text = (string)reg.GetValue("MqoIn", "");
+            tbTso.Text = (string)reg.GetValue("Tso", "");
+            tbTsoEx.Text = (string)reg.GetValue("TsoEx", "");
+            tbMergeTso.Text = (string)reg.GetValue("MergeTso", "");
+            rbRefBone.Checked = (int)reg.GetValue("RefBone", 1) == 1;
+            rbOneBone.Checked = (int)reg.GetValue("OneBone", 0) == 1;
+            rbBoneNone.Checked = (int)reg.GetValue("BoneNone", 1) == 1;
+            rbBoneRokDeBone.Checked = (int)reg.GetValue("BoneRokDeBone", 0) == 1;
+            cbMakeSub.Checked = (int)reg.GetValue("MakeSub", 1) == 1;
+            cbCopyTSO.Checked = (int)reg.GetValue("CopyTSO", 1) == 1;
+            cbShowMaterials.Checked = (int)reg.GetValue("ShowMaterials", 0) == 1;
 
             reg             = Application.UserAppDataRegistry.CreateSubKey("Form1");
             Bounds          = new Rectangle(
@@ -55,18 +55,18 @@ namespace Tso2MqoGui
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             RegistryKey reg = Application.UserAppDataRegistry.CreateSubKey("Config");
-            reg.SetValue("OutPath",       OutPath);
-            reg.SetValue("TabPage",       tabControl1.SelectedIndex);
-            reg.SetValue("MqoIn",         tbMqoIn   .Text);
-            reg.SetValue("Tso",           tbTso     .Text);
-            reg.SetValue("TsoEx",         tbTsoEx   .Text);
-            reg.SetValue("MergeTso",      tbMergeTso.Text);
-            reg.SetValue("AutoBone",      rbAutoBone     .Checked ? 1 : 0);
-            reg.SetValue("OneBone",       rb1Bone        .Checked ? 1 : 0);
-            reg.SetValue("BoneNone",      rbBoneNone     .Checked ? 1 : 0);
+            reg.SetValue("OutPath", OutPath);
+            reg.SetValue("TabPage", tabControl1.SelectedIndex);
+            reg.SetValue("MqoIn", tbMqoIn.Text);
+            reg.SetValue("Tso", tbTso.Text);
+            reg.SetValue("TsoEx", tbTsoEx.Text);
+            reg.SetValue("MergeTso", tbMergeTso.Text);
+            reg.SetValue("RefBone", rbRefBone.Checked ? 1 : 0);
+            reg.SetValue("OneBone", rbOneBone.Checked ? 1 : 0);
+            reg.SetValue("BoneNone", rbBoneNone.Checked ? 1 : 0);
             reg.SetValue("BoneRokDeBone", rbBoneRokDeBone.Checked ? 1 : 0);
-            reg.SetValue("MakeSub",       cbMakeSub      .Checked ? 1 : 0);
-            reg.SetValue("CopyTSO",       cbCopyTSO      .Checked ? 1 : 0);
+            reg.SetValue("MakeSub", cbMakeSub.Checked ? 1 : 0);
+            reg.SetValue("CopyTSO", cbCopyTSO.Checked ? 1 : 0);
             reg.SetValue("ShowMaterials", cbShowMaterials.Checked ? 1 : 0);
 
             reg= Application.UserAppDataRegistry.CreateSubKey("Form1");
@@ -112,11 +112,10 @@ namespace Tso2MqoGui
                     break;
 
                 case 1:
-                    switch(Path.GetExtension(files[0]).ToUpper())
+                    switch (Path.GetExtension(files[0]).ToUpper())
                     {
-                    case ".TSO":    tbTso  .Text= files[0]; break;
-                    case ".MQO":    tbMqoIn.Text= files[0]; break;
-                  //case ".MQO":    OpenMQOFile(files[0]);  break;
+                        case ".TSO": tbTso.Text = files[0]; break;
+                        case ".MQO": tbMqoIn.Text = files[0]; break;
                     }
 
                     break;
@@ -242,12 +241,12 @@ namespace Tso2MqoGui
             TSOGenerateConfig config = new TSOGenerateConfig();
             config.ShowMaterials = cbShowMaterials.Checked;
 
-            if (rbAutoBone.Checked)
+            if (rbRefBone.Checked)
             {
-                gen.GenerateAutoBone(f, tbTso.Text, tbTsoEx.Text, config);
+                gen.GenerateRefBone(f, tbTso.Text, tbTsoEx.Text, config);
             }
             else
-            if (rb1Bone.Checked)
+            if (rbOneBone.Checked)
             {
                 Dictionary<string, string> boneref = new Dictionary<string, string>();
 
@@ -291,7 +290,7 @@ namespace Tso2MqoGui
 
         private void EnableControlStuff()
         {
-            gbBone.Enabled  = rb1Bone.Checked;
+            gbBone.Enabled  = rbOneBone.Checked;
         }
 
         private void BuildBoneTree(TreeNodeCollection nodes, TSONode node)

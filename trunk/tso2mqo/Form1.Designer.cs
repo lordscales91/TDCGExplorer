@@ -54,8 +54,8 @@
             this.bExpOk = new System.Windows.Forms.Button();
             this.bRefTsoEx = new System.Windows.Forms.Button();
             this.bRefTso = new System.Windows.Forms.Button();
-            this.rb1Bone = new System.Windows.Forms.RadioButton();
-            this.rbAutoBone = new System.Windows.Forms.RadioButton();
+            this.rbOneBone = new System.Windows.Forms.RadioButton();
+            this.rbRefBone = new System.Windows.Forms.RadioButton();
             this.tbTsoEx = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.tbTso = new System.Windows.Forms.TextBox();
@@ -204,8 +204,8 @@
             this.tabPage2.Controls.Add(this.bExpOk);
             this.tabPage2.Controls.Add(this.bRefTsoEx);
             this.tabPage2.Controls.Add(this.bRefTso);
-            this.tabPage2.Controls.Add(this.rb1Bone);
-            this.tabPage2.Controls.Add(this.rbAutoBone);
+            this.tabPage2.Controls.Add(this.rbOneBone);
+            this.tabPage2.Controls.Add(this.rbRefBone);
             this.tabPage2.Controls.Add(this.tbTsoEx);
             this.tabPage2.Controls.Add(this.label5);
             this.tabPage2.Controls.Add(this.tbTso);
@@ -383,29 +383,29 @@
             this.bRefTso.UseVisualStyleBackColor = true;
             this.bRefTso.Click += new System.EventHandler(this.bRefTso_Click);
             // 
-            // rb1Bone
+            // rbOneBone
             // 
-            this.rb1Bone.AutoSize = true;
-            this.rb1Bone.Location = new System.Drawing.Point(170, 81);
-            this.rb1Bone.Name = "rb1Bone";
-            this.rb1Bone.Size = new System.Drawing.Size(119, 16);
-            this.rb1Bone.TabIndex = 8;
-            this.rb1Bone.Text = "１ボーンに割り当てる";
-            this.rb1Bone.UseVisualStyleBackColor = true;
-            this.rb1Bone.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
+            this.rbOneBone.AutoSize = true;
+            this.rbOneBone.Location = new System.Drawing.Point(170, 81);
+            this.rbOneBone.Name = "rbOneBone";
+            this.rbOneBone.Size = new System.Drawing.Size(119, 16);
+            this.rbOneBone.TabIndex = 8;
+            this.rbOneBone.Text = "１ボーンに割り当てる";
+            this.rbOneBone.UseVisualStyleBackColor = true;
+            this.rbOneBone.CheckedChanged += new System.EventHandler(this.radioButton2_CheckedChanged);
             // 
-            // rbAutoBone
+            // rbRefBone
             // 
-            this.rbAutoBone.AutoSize = true;
-            this.rbAutoBone.Checked = true;
-            this.rbAutoBone.Location = new System.Drawing.Point(8, 81);
-            this.rbAutoBone.Name = "rbAutoBone";
-            this.rbAutoBone.Size = new System.Drawing.Size(156, 16);
-            this.rbAutoBone.TabIndex = 7;
-            this.rbAutoBone.TabStop = true;
-            this.rbAutoBone.Text = "自動的にボーンを割り当てる";
-            this.rbAutoBone.UseVisualStyleBackColor = true;
-            this.rbAutoBone.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
+            this.rbRefBone.AutoSize = true;
+            this.rbRefBone.Checked = true;
+            this.rbRefBone.Location = new System.Drawing.Point(8, 81);
+            this.rbRefBone.Name = "rbRefBone";
+            this.rbRefBone.Size = new System.Drawing.Size(156, 16);
+            this.rbRefBone.TabIndex = 7;
+            this.rbRefBone.TabStop = true;
+            this.rbRefBone.Text = "自動的にボーンを割り当てる";
+            this.rbRefBone.UseVisualStyleBackColor = true;
+            this.rbRefBone.CheckedChanged += new System.EventHandler(this.radioButton1_CheckedChanged);
             // 
             // tbTsoEx
             // 
@@ -632,8 +632,8 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button bRefTsoEx;
         private System.Windows.Forms.Button bRefTso;
-        private System.Windows.Forms.RadioButton rb1Bone;
-        private System.Windows.Forms.RadioButton rbAutoBone;
+        private System.Windows.Forms.RadioButton rbOneBone;
+        private System.Windows.Forms.RadioButton rbRefBone;
         private System.Windows.Forms.TextBox tbTsoEx;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox tbTso;

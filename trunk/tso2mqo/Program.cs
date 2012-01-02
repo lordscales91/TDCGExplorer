@@ -18,9 +18,6 @@ namespace Tso2MqoGui
             {   // バッチで処理する
                 try
                 {
-                  //bool    bImport= false, bExport= false;
-                  //bool    bMakeSub= false, bCopyTSO= false;
-                  //bool    bBoneAuto= false;
                     string  tso = null;
                     string  mqo = null;
                     string  rtso= null;
@@ -31,11 +28,6 @@ namespace Tso2MqoGui
 
                         switch(o)
                         {
-                      //case "-i":  bImport  = true; break;
-                      //case "-e":  bExport  = true; break;
-                      //case "-s":  bMakeSub = true; break;
-                      //case "-c":  bCopyTSO = true; break;
-                      //case "-ba": bBoneAuto= true; break;
                         default:
                                  if(o.StartsWith("-tso:"))  tso = o.Substring(5).Trim('\r', '\n');
                             else if(o.StartsWith("-mqo:"))  mqo = o.Substring(5).Trim('\r', '\n');
@@ -54,7 +46,7 @@ namespace Tso2MqoGui
                     if(tso  == null) throw new ArgumentException("「-tso:ファイル名」の形式で出力Tsoファイル名を指定してください");
                     if(rtso == null) throw new ArgumentException("「-ref:ファイル名」の形式で参照Tsoファイル名を指定してください");
 
-                    gen.GenerateAutoBone(mqo, rtso, tso, config);
+                    gen.GenerateRefBone(mqo, rtso, tso, config);
                 } catch(ArgumentException e)
                 {
                     System.Diagnostics.Debug.WriteLine(e.Message);
