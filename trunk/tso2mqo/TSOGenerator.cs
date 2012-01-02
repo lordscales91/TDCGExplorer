@@ -30,14 +30,14 @@ namespace Tso2MqoGui
             return tso;
         }
 
-        private bool Common_DoSetupDir(string mqoin)
+        private bool DoSetupDir(string mqoin)
         {
             dir = Path.GetDirectoryName(mqoin);
             Environment.CurrentDirectory = dir;
             return true;
         }
 
-        private bool Common_DoLoadMQO(string mqoin)
+        private bool DoLoadMQO(string mqoin)
         {
             // MQO読み込み
             mqo = new MqoFile();
@@ -46,7 +46,7 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool Common_DoLoadXml(string importinfo_file)
+        private bool DoLoadXml(string importinfo_file)
         {
             // XML読み込み
             ii = ImportInfo.Load(importinfo_file);
@@ -93,13 +93,13 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool Common_DoWriteHeader()
+        private bool DoWriteHeader()
         {
             bw.Write(0x314F5354);
             return true;
         }
 
-        private bool Common_DoWriteNodeNames()
+        private bool DoWriteNodeNames()
         {
             bw.Write(tsor.nodes.Length);
 
@@ -114,7 +114,7 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool Common_DoWriteNodeMatrices()
+        private bool DoWriteNodeMatrices()
         {
             bw.Write(tsor.nodes.Length);
 
@@ -124,7 +124,7 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool Common_DoWriteTextures()
+        private bool DoWriteTextures()
         {
             bw.Write(textures.Count);
 
@@ -158,7 +158,7 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool Common_DoWriteEffects()
+        private bool DoWriteEffects()
         {
             bw.Write(ii.effects.Count);
 
@@ -177,7 +177,7 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool Common_DoWriteMaterials()
+        private bool DoWriteMaterials()
         {
             bw.Write(mqo.Materials.Count);
 
@@ -205,7 +205,7 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool Common_DoWriteMeshes()
+        private bool DoWriteMeshes()
         {
             bw.Write(meshes.Count);
 
@@ -245,28 +245,28 @@ namespace Tso2MqoGui
                 fs.SetLength(0);
                 bw = new BinaryWriter(fs);
 
-                Common_DoWriteHeader();
-                Common_DoWriteNodeNames();
-                Common_DoWriteNodeMatrices();
-                Common_DoWriteTextures();
-                Common_DoWriteEffects();
-                Common_DoWriteMaterials();
+                DoWriteHeader();
+                DoWriteNodeNames();
+                DoWriteNodeMatrices();
+                DoWriteTextures();
+                DoWriteEffects();
+                DoWriteMaterials();
                 DoGenerateMeshes();
-                Common_DoWriteMeshes();
+                DoWriteMeshes();
             }
 
             return true;
         }
         protected abstract bool DoGenerateMeshes();
 
-        private bool Common_DoSaveXml(string importinfo_file)
+        private bool DoSaveXml(string importinfo_file)
         {
             // 結果を保存しておく
             ImportInfo.Save(importinfo_file, ii);
             return true;
         }
 
-        private bool Common_DoCleanup()
+        private bool DoCleanup()
         {
             dir         = null;
             tsor        = null;
@@ -290,16 +290,16 @@ namespace Tso2MqoGui
 
             try
             {
-                if (!Common_DoSetupDir(mqoin)) return;
-                if (!Common_DoLoadMQO(mqoin)) return;
+                if (!DoSetupDir(mqoin)) return;
+                if (!DoLoadMQO(mqoin)) return;
                 if (!DoLoadRefTSO(tsoref)) return;
-                if (!Common_DoLoadXml(importinfo_file)) return;
+                if (!DoLoadXml(importinfo_file)) return;
                 if (!DoOutput(tsoex)) return;
-                if (!Common_DoSaveXml(importinfo_file)) return;
+                if (!DoSaveXml(importinfo_file)) return;
             }
             finally
             {
-                Common_DoCleanup();
+                DoCleanup();
             }
         }
         
