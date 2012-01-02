@@ -423,7 +423,7 @@ namespace Tso2MqoGui
 
     public class TSOGeneratorOneBone : TSOGenerator
     {
-        public Dictionary<string, string> boneref = new Dictionary<string, string>();
+        public Dictionary<string, string> ObjectBoneNames = new Dictionary<string, string>();
 
         protected override bool DoLoadRefTSO(string tsoref)
         {
@@ -463,7 +463,7 @@ namespace Tso2MqoGui
                 uint                idx     = 0x00000000;
                 Point4              wgt     = new Point4(1, 0, 0, 0);
                 int[]               bones   = new int[1];
-                string              bone    = boneref[i.name];
+                string              bone    = ObjectBoneNames[i.name];
                 bones[0]                    = nodes[bone].ID;
 
                 // マテリアル別に処理を実行
