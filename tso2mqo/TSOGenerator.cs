@@ -15,7 +15,7 @@ namespace Tso2MqoGui
         private string dir;
         private TSOGeneratorConfig config;
         protected MqoFile mqo;
-        protected TSOFile tsor;
+        protected TSOFile tsoref;
         protected Dictionary<string, TSONode> nodes;
         protected List<TSOMesh> meshes;
         private ImportInfo ii;
@@ -106,11 +106,11 @@ namespace Tso2MqoGui
 
         private bool DoWriteNodeNames()
         {
-            bw.Write(tsor.nodes.Length);
+            bw.Write(tsoref.nodes.Length);
 
             nodes   = new Dictionary<string,TSONode>();
 
-            foreach(TSONode i in tsor.nodes)
+            foreach(TSONode i in tsoref.nodes)
             {
                 WriteString(bw, i.Name);
                 nodes.Add(i.ShortName, i);
@@ -121,9 +121,9 @@ namespace Tso2MqoGui
 
         private bool DoWriteNodeMatrices()
         {
-            bw.Write(tsor.nodes.Length);
+            bw.Write(tsoref.nodes.Length);
 
-            foreach(TSONode i in tsor.nodes)
+            foreach(TSONode i in tsoref.nodes)
                 WriteMatrix(bw, i.Matrix);
 
             return true;
@@ -271,17 +271,17 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool DoCleanup()
+        protected virtual bool DoCleanup()
         {
-            dir         = null;
-            tsor        = null;
-            nodes       = null;
-            meshes      = null;
-            mqo         = null;
-            ii          = null;
-            bw          = null;
-            materials   = null;
-            textures    = null;
+            dir = null;
+            tsoref = null;
+            nodes = null;
+            meshes = null;
+            mqo = null;
+            ii = null;
+            bw = null;
+            materials = null;
+            textures = null;
 
             System.GC.Collect();
             return true;
@@ -436,7 +436,7 @@ namespace Tso2MqoGui
         protected override bool DoLoadRefTSO(string tsoref_file)
         {
             // 参照TSOロード
-            tsor    = LoadTSO(tsoref_file);
+            tsoref = LoadTSO(tsoref_file);
             return true;
         }
 
@@ -551,44 +551,44 @@ namespace Tso2MqoGui
 
         private void CreatePointCluster(TSOFile tso)
         {
-            vlst= new List<Vertex>();
+            vlst = new List<Vertex>();
 
-            foreach(TSOMesh i in tso.meshes)
-            foreach(TSOSubMesh j in i.sub)
-                vlst.AddRange(j.vertices);
+            foreach (TSOMesh i in tso.meshes)
+                foreach (TSOSubMesh j in i.sub)
+                    vlst.AddRange(j.vertices);
 
-            pc  = new PointCluster(vlst.Count);
+            pc = new PointCluster(vlst.Count);
 
-            foreach(Vertex i in vlst)
+            foreach (Vertex i in vlst)
                 pc.Add(i.Pos.x, i.Pos.y, i.Pos.z);
 
             pc.Clustering();
         }
 
-        protected override bool DoLoadRefTSO(string tsoref)
+        protected override bool DoLoadRefTSO(string tsoref_file)
         {
             // 参照TSOロード
-            tsor    = LoadTSO(tsoref);
+            tsoref = LoadTSO(tsoref_file);
 
-            foreach(TSOMesh i in tsor.meshes)
-            foreach(TSOSubMesh j in i.sub)
-            {
-                int[]   bones   = j.bones;
-
-                for(int k= 0, n= j.numvertices; k < n; ++k)
+            foreach (TSOMesh i in tsoref.meshes)
+                foreach (TSOSubMesh j in i.sub)
                 {
-                    // ボーンをグローバルな番号に変換
-                    uint    idx0= j.vertices[k].Idx;
-                    byte*   idx = (byte*)(&idx0);
-                    idx[0]      = (byte)bones[idx[0]];
-                    idx[1]      = (byte)bones[idx[1]];
-                    idx[2]      = (byte)bones[idx[2]];
-                    idx[3]      = (byte)bones[idx[3]];
-                    j.vertices[k].Idx   = idx0;
-                }
-            }
+                    int[] bones = j.bones;
 
-            CreatePointCluster(tsor);
+                    for (int k = 0, n = j.numvertices; k < n; ++k)
+                    {
+                        // ボーンをグローバルな番号に変換
+                        uint idx0 = j.vertices[k].Idx;
+                        byte* idx = (byte*)(&idx0);
+                        idx[0] = (byte)bones[idx[0]];
+                        idx[1] = (byte)bones[idx[1]];
+                        idx[2] = (byte)bones[idx[2]];
+                        idx[3] = (byte)bones[idx[3]];
+                        j.vertices[k].Idx = idx0;
+                    }
+                }
+
+            CreatePointCluster(tsoref);
             return true;
         }
 
@@ -765,6 +765,12 @@ namespace Tso2MqoGui
             return true;
         }
 
+        protected override bool DoCleanup()
+        {
+            pc = null;
+            vlst = null;
+            return base.DoCleanup();
+        }
     }
 
     public class TextureInfo
