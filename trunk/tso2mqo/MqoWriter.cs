@@ -56,10 +56,19 @@ namespace Tso2MqoGui
             tw  = null;
         }
 
+        string GetTexturePath(TSOTex tex)
+        {
+            string filename = Path.GetFileName(tex.File.Trim('"'));
+            if (filename == "")
+                filename = "none";
+            return Path.Combine(OutPath, filename);
+        }
+
         public void CreateTextureFile(TSOTex tex)
         {
-            string  file= Path.Combine(OutPath, Path.GetFileName(tex.file.Trim('"')));
+            string file = GetTexturePath(tex);
             byte[]  data= tex.data;
+
 
             using(FileStream fs= File.OpenWrite(file))
             {
@@ -130,24 +139,24 @@ namespace Tso2MqoGui
             List<float>         uv  = new List<float>(2048*3 * 2);
             List<int>           mtl = new List<int>(2048);
 
-            foreach(TSOTex i in file.textures)
-                CreateTextureFile(i);
+            foreach(TSOTex tex in file.textures)
+                CreateTextureFile(tex);
 
             tw.WriteLine("Material {0} {{", file.materials.Length);
 
-            foreach(TSOMaterial i in file.materials)
+            foreach(TSOMaterial mat in file.materials)
             {
-                if(i.ColorTex != null)
+                if(mat.ColorTex != null)
                 {
-                    TSOTex  tex = file.texturemap[i.ColorTex];
+                    TSOTex  tex = file.texturemap[mat.ColorTex];
                     tw.WriteLine(
                         "	\"{0}\" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex(\"{1}\")",
-                        i.name, Path.Combine(OutPath, tex.File.Trim('"')));
+                        mat.name, GetTexturePath(tex));
                 } else
                 {
                     tw.WriteLine(
                         "	\"{0}\" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00))",
-                        i.name);
+                        mat.name);
                 }
             }
 

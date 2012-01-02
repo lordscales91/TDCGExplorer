@@ -20,9 +20,6 @@ namespace Tso2MqoGui
         private List<Vertex>                vlst;
         private Dictionary<string, TSONode> nodes;
         private List<TSOMesh>               meshes;
-        private string                      mqoin;
-        private string                      tsoref;
-        private string                      tsoex;
         private ImportInfo                  ii;
         private BinaryWriter                bw;
         private Dictionary<string, MaterialInfo>    materials;
@@ -51,13 +48,13 @@ namespace Tso2MqoGui
             pc.Clustering();
         }
 
-        private bool Common_DoSetupDir()
+        private bool Common_DoSetupDir(string mqoin)
         {
             Environment.CurrentDirectory= dir= Path.GetDirectoryName(mqoin);
             return true;
         }
 
-        private bool Common_DoLoadMQO()
+        private bool Common_DoLoadMQO(string mqoin)
         {
             // MQO読み込み
             mqo = new MqoFile();
@@ -66,7 +63,7 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool AutoBone_DoLoadRefTSO()
+        private bool AutoBone_DoLoadRefTSO(string tsoref)
         {
             // 参照TSOロード
             tsor    = LoadTSO(tsoref);
@@ -93,14 +90,14 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool OneBone_DoLoadRefTSO()
+        private bool OneBone_DoLoadRefTSO(string tsoref)
         {
             // 参照TSOロード
             tsor    = LoadTSO(tsoref);
             return true;
         }
 
-        private bool Common_DoLoadXml()
+        private bool Common_DoLoadXml(string mqoin)
         {
             // XML読み込み
             ii  = ImportInfo.Load(Path.ChangeExtension(mqoin, ".xml"));
@@ -558,16 +555,16 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool AutoBone_DoOutput()
+        private bool AutoBone_DoOutput(string tsoex)
         {
             //----- 出力処理 -----------------------------------------------
             ii.materials.Clear();
             ii.textures.Clear();
 
-            using(FileStream fs= File.OpenWrite(tsoex))
+            using (FileStream fs = File.OpenWrite(tsoex))
             {
                 fs.SetLength(0);
-                bw      = new BinaryWriter(fs);
+                bw = new BinaryWriter(fs);
 
                 Common_DoWriteHeader();
                 Common_DoWriteNodeNames();
@@ -582,16 +579,16 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool OneBone_DoOutput()
+        private bool OneBone_DoOutput(string tsoex)
         {
             //----- 出力処理 -----------------------------------------------
             ii.materials.Clear();
             ii.textures.Clear();
 
-            using(FileStream fs= File.OpenWrite(tsoex))
+            using (FileStream fs = File.OpenWrite(tsoex))
             {
                 fs.SetLength(0);
-                bw      = new BinaryWriter(fs);
+                bw = new BinaryWriter(fs);
 
                 Common_DoWriteHeader();
                 Common_DoWriteNodeNames();
@@ -606,7 +603,7 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool Common_DoSaveXml()
+        private bool Common_DoSaveXml(string mqoin)
         {
             // 結果を保存しておく
             ImportInfo.Save(Path.ChangeExtension(mqoin, ".xml"), ii);
@@ -621,9 +618,6 @@ namespace Tso2MqoGui
             vlst        = null;
             nodes       = null;
             meshes      = null;
-            mqoin       = null;
-            tsoref      = null;
-            tsoex       = null;
             config      = null;
             mqo         = null;
             ii          = null;
@@ -635,43 +629,39 @@ namespace Tso2MqoGui
             return true;
         }
 
-        public unsafe void GenerateOneBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
+        public void GenerateOneBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
         {
-            this.mqoin  = mqoin;
-            this.tsoref = tsoref;
-            this.tsoex  = tsoex;
             this.config = config;
 
             try
             {
-                if(!Common_DoSetupDir())        return;
-                if(!Common_DoLoadMQO())         return;
-                if(!OneBone_DoLoadRefTSO())     return;
-                if(!Common_DoLoadXml())         return;
-                if(!OneBone_DoOutput())         return;
-                if(!Common_DoSaveXml())         return;
-            } finally
+                if (!Common_DoSetupDir(mqoin)) return;
+                if (!Common_DoLoadMQO(mqoin)) return;
+                if (!OneBone_DoLoadRefTSO(tsoref)) return;
+                if (!Common_DoLoadXml(mqoin)) return;
+                if (!OneBone_DoOutput(tsoex)) return;
+                if (!Common_DoSaveXml(mqoin)) return;
+            }
+            finally
             {
                 Common_DoCleanup();
             }
         }
         
-        public unsafe void GenerateAutoBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
+        public void GenerateAutoBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
         {
-            this.mqoin  = mqoin;
-            this.tsoref = tsoref;
-            this.tsoex  = tsoex;
             this.config = config;
 
             try
             {
-                if(!Common_DoSetupDir())        return;
-                if(!Common_DoLoadMQO())         return;
-                if(!AutoBone_DoLoadRefTSO())    return;
-                if(!Common_DoLoadXml())         return;
-                if(!AutoBone_DoOutput())        return;
-                if(!Common_DoSaveXml())         return;
-            } finally
+                if (!Common_DoSetupDir(mqoin)) return;
+                if (!Common_DoLoadMQO(mqoin)) return;
+                if (!AutoBone_DoLoadRefTSO(tsoref)) return;
+                if (!Common_DoLoadXml(mqoin)) return;
+                if (!AutoBone_DoOutput(tsoex)) return;
+                if (!Common_DoSaveXml(mqoin)) return;
+            }
+            finally
             {
                 Common_DoCleanup();
             }
@@ -757,7 +747,7 @@ namespace Tso2MqoGui
                 tex.depth       = header.depth  / 8;
                 tex.width       = header.width;
                 tex.height      = header.height;
-                tex.file        = file;
+                tex.File        = file;
                 tex.data        = br.ReadBytes(tex.width * tex.height * tex.depth);
 
                 return tex;
@@ -783,7 +773,7 @@ namespace Tso2MqoGui
                 tex.depth       = bih.biBitCount  / 8;
                 tex.width       = bih.biWidth;
                 tex.height      = bih.biHeight;
-                tex.file        = file;
+                tex.File        = file;
                 tex.data        = br.ReadBytes(tex.width * tex.height * tex.depth);
 
                 return tex;

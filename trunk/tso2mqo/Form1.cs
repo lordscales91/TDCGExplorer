@@ -238,19 +238,20 @@ namespace Tso2MqoGui
 
         private void OpenMQOFile(string f)
         {
-            TSOGenerator        gen     = new TSOGenerator();
-            TSOGenerateConfig   config  = new TSOGenerateConfig();
-            config.materialconfig       = cbShowMaterials.Checked;
+            TSOGenerator gen = new TSOGenerator();
+            TSOGenerateConfig config = new TSOGenerateConfig();
+            config.materialconfig = cbShowMaterials.Checked;
 
-            if(rbAutoBone.Checked)
+            if (rbAutoBone.Checked)
             {
                 gen.GenerateAutoBone(f, tbTso.Text, tbTsoEx.Text, config);
-            } else
-            if(rb1Bone.Checked)
+            }
+            else
+            if (rb1Bone.Checked)
             {
-                foreach(ListViewItem i in lvObject.Items)
+                foreach (ListViewItem i in lvObject.Items)
                 {
-                    if(i.SubItems[1].Text == "")
+                    if (i.SubItems[1].Text == "")
                     {
                         MessageBox.Show("すべてのオブジェクトにボーンを設定してください");
                         return;
@@ -260,7 +261,8 @@ namespace Tso2MqoGui
                 }
 
                 gen.GenerateOneBone(f, tbTso.Text, tbTsoEx.Text, config);
-            } else
+            }
+            else
             {
             }
         }
@@ -438,20 +440,22 @@ namespace Tso2MqoGui
 
         private void bOk_Click(object sender, EventArgs e)
         {
-            Color   c   = tabPage2.BackColor;
+            Color c = tabPage2.BackColor;
 
             try
             {
-                tabPage2.BackColor  = Color.Tomato;
+                tabPage2.BackColor = Color.Tomato;
                 tabPage2.Update();
-                string  file= tbMqoIn.Text;
+                string file = tbMqoIn.Text;
                 OpenMQOFile(file);
-            } catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Util.ProcessError(ex);
-            } finally
+            }
+            finally
             {
-                tabPage2.BackColor  = c;
+                tabPage2.BackColor = c;
             }
         }
 #endregion

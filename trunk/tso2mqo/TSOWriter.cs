@@ -67,7 +67,7 @@ namespace Tso2MqoGui
         public static void Write(BinaryWriter bw, TSOTex item)
         {
             Write(bw, item.name);
-            Write(bw, item.file);
+            Write(bw, item.File);
             bw.Write(item.Width);
             bw.Write(item.Height);
             bw.Write(item.Depth);
