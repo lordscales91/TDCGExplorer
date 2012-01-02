@@ -10,19 +10,17 @@ using System.Windows.Forms.Design;
 
 namespace Tso2MqoGui
 {
-    public unsafe class TSOGenerator
+    public abstract class TSOGenerator
     {
         private string                      dir;
         private TSOGenerateConfig           config;
-        private PointCluster                pc;
-        private MqoFile                     mqo;
-        private TSOFile                     tsor;
-        private List<Vertex>                vlst;
-        private Dictionary<string, TSONode> nodes;
-        private List<TSOMesh>               meshes;
+        protected MqoFile                     mqo;
+        protected TSOFile                     tsor;
+        protected Dictionary<string, TSONode> nodes;
+        protected List<TSOMesh>               meshes;
         private ImportInfo                  ii;
         private BinaryWriter                bw;
-        private Dictionary<string, MaterialInfo>    materials;
+        protected Dictionary<string, MaterialInfo>    materials;
         private Dictionary<string, TextureInfo>     textures;
 
         public TSOFile  LoadTSO(string file)
@@ -30,22 +28,6 @@ namespace Tso2MqoGui
             TSOFile         tso = new TSOFile(file);
             tso.ReadAll();
             return tso;
-        }
-
-        private void CreatePointCluster(TSOFile tso)
-        {
-            vlst= new List<Vertex>();
-
-            foreach(TSOMesh i in tso.meshes)
-            foreach(TSOSubMesh j in i.sub)
-                vlst.AddRange(j.vertices);
-
-            pc  = new PointCluster(vlst.Count);
-
-            foreach(Vertex i in vlst)
-                pc.Add(i.Pos.x, i.Pos.y, i.Pos.z);
-
-            pc.Clustering();
         }
 
         private bool Common_DoSetupDir(string mqoin)
@@ -61,40 +43,6 @@ namespace Tso2MqoGui
             mqo = new MqoFile();
             mqo.Load(mqoin);
             mqo.Dump();
-            return true;
-        }
-
-        private bool RefBone_DoLoadRefTSO(string tsoref)
-        {
-            // 参照TSOロード
-            tsor    = LoadTSO(tsoref);
-
-            foreach(TSOMesh i in tsor.meshes)
-            foreach(TSOSubMesh j in i.sub)
-            {
-                int[]   bones   = j.bones;
-
-                for(int k= 0, n= j.numvertices; k < n; ++k)
-                {
-                    // ボーンをグローバルな番号に変換
-                    uint    idx0= j.vertices[k].Idx;
-                    byte*   idx = (byte*)(&idx0);
-                    idx[0]      = (byte)bones[idx[0]];
-                    idx[1]      = (byte)bones[idx[1]];
-                    idx[2]      = (byte)bones[idx[2]];
-                    idx[3]      = (byte)bones[idx[3]];
-                    j.vertices[k].Idx   = idx0;
-                }
-            }
-
-            CreatePointCluster(tsor);
-            return true;
-        }
-
-        private bool OneBone_DoLoadRefTSO(string tsoref)
-        {
-            // 参照TSOロード
-            tsor    = LoadTSO(tsoref);
             return true;
         }
 
@@ -257,7 +205,401 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool RefBone_DoGenerateMeshes()
+        private bool Common_DoWriteMeshes()
+        {
+            bw.Write(meshes.Count);
+
+            foreach(TSOMesh i in meshes)
+            {
+                WriteString(bw, i.Name);
+                WriteMatrix(bw, i.Matrix);
+                bw.Write(1);
+                bw.Write(i.numsubs);
+
+                foreach(TSOSubMesh j in i.sub)
+                {
+                    bw.Write(j.spec);
+                    bw.Write(j.numbones);
+
+                    foreach(int k in j.bones)
+                        bw.Write(k);
+
+                    bw.Write(j.numvertices);
+
+                    foreach(Vertex k in j.vertices)
+                        WriteVertex(bw, k);
+                }
+            }
+
+            return true;
+        }
+
+        private bool DoOutput(string tsoex)
+        {
+            //----- 出力処理 -----------------------------------------------
+            ii.materials.Clear();
+            ii.textures.Clear();
+
+            using (FileStream fs = File.OpenWrite(tsoex))
+            {
+                fs.SetLength(0);
+                bw = new BinaryWriter(fs);
+
+                Common_DoWriteHeader();
+                Common_DoWriteNodeNames();
+                Common_DoWriteNodeMatrices();
+                Common_DoWriteTextures();
+                Common_DoWriteEffects();
+                Common_DoWriteMaterials();
+                DoGenerateMeshes();
+                Common_DoWriteMeshes();
+            }
+
+            return true;
+        }
+        protected abstract bool DoGenerateMeshes();
+
+        private bool Common_DoSaveXml(string importinfo_file)
+        {
+            // 結果を保存しておく
+            ImportInfo.Save(importinfo_file, ii);
+            return true;
+        }
+
+        private bool Common_DoCleanup()
+        {
+            dir         = null;
+            tsor        = null;
+            nodes       = null;
+            meshes      = null;
+            config      = null;
+            mqo         = null;
+            ii          = null;
+            bw          = null;
+            materials   = null;
+            textures    = null;
+
+            System.GC.Collect();
+            return true;
+        }
+
+        public void GenerateOneBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
+        {
+            this.config = config;
+            string importinfo_file = Path.ChangeExtension(mqoin, ".xml");
+
+            try
+            {
+                if (!Common_DoSetupDir(mqoin)) return;
+                if (!Common_DoLoadMQO(mqoin)) return;
+                if (!DoLoadRefTSO(tsoref)) return;
+                if (!Common_DoLoadXml(importinfo_file)) return;
+                if (!DoOutput(tsoex)) return;
+                if (!Common_DoSaveXml(importinfo_file)) return;
+            }
+            finally
+            {
+                Common_DoCleanup();
+            }
+        }
+        
+        public void GenerateRefBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
+        {
+            this.config = config;
+            string importinfo_file = Path.ChangeExtension(mqoin, ".xml");
+
+            try
+            {
+                if (!Common_DoSetupDir(mqoin)) return;
+                if (!Common_DoLoadMQO(mqoin)) return;
+                if (!DoLoadRefTSO(tsoref)) return;
+                if (!Common_DoLoadXml(importinfo_file)) return;
+                if (!DoOutput(tsoex)) return;
+                if (!Common_DoSaveXml(importinfo_file)) return;
+            }
+            finally
+            {
+                Common_DoCleanup();
+            }
+        }
+
+        protected abstract bool DoLoadRefTSO(string tsoref);
+
+#region ユーティリティ
+        public void WriteString(BinaryWriter bw, string s)
+        {
+            byte[]  b   = Encoding.Default.GetBytes(s);
+            bw.Write(b);
+            bw.Write((byte)0);
+        }
+
+        public void WriteMatrix(BinaryWriter bw, Matrix44 m)
+        {
+            bw.Write(m.M11); bw.Write(m.M12); bw.Write(m.M13); bw.Write(m.M14);
+            bw.Write(m.M21); bw.Write(m.M22); bw.Write(m.M23); bw.Write(m.M24);
+            bw.Write(m.M31); bw.Write(m.M32); bw.Write(m.M33); bw.Write(m.M34);
+            bw.Write(m.M41); bw.Write(m.M42); bw.Write(m.M43); bw.Write(m.M44);
+        }
+
+        public unsafe void WriteVertex(BinaryWriter bw, Vertex v)
+        {
+            uint        idx0    = v.Idx;
+            byte*       idx     = (byte*)(&idx0);
+            List<int>   idxs    = new List<int>(4);
+            List<float> wgts    = new List<float>(4);
+
+            if(v.Wgt.x > 0) { idxs.Add(idx[0]); wgts.Add(v.Wgt.x); }
+            if(v.Wgt.y > 0) { idxs.Add(idx[1]); wgts.Add(v.Wgt.y); }
+            if(v.Wgt.z > 0) { idxs.Add(idx[2]); wgts.Add(v.Wgt.z); }
+            if(v.Wgt.w > 0) { idxs.Add(idx[3]); wgts.Add(v.Wgt.w); }
+
+            bw.Write(v.Pos.X); bw.Write(v.Pos.Y); bw.Write(v.Pos.Z);
+            bw.Write(v.Nrm.X); bw.Write(v.Nrm.Y); bw.Write(v.Nrm.Z);
+            bw.Write(v.Tex.X); bw.Write(v.Tex.Y);
+
+            bw.Write(wgts.Count);
+
+            for(int i= 0, n= idxs.Count; i < n; ++i)
+            {
+                bw.Write(idxs[i]);
+                bw.Write(wgts[i]);
+            }
+        }
+#endregion
+#region テクスチャ処理
+        public TSOTex   LoadTex(string file)
+        {
+            string  ext = Path.GetExtension(file).ToUpper();
+            TSOTex  tex;
+
+            switch(ext)
+            {
+            case ".TGA":    tex= LoadTarga(file);   break;
+            case ".BMP":    tex= LoadBitmap(file);  break;
+            default:        throw new Exception("Unsupported texture file: " + file);
+            }
+
+            for(int i= 0, n= tex.data.Length; i < n; i+=tex.Depth)
+            {
+                byte    b       = tex.data[i+0];
+                tex.data[i+0]   = tex.data[i+2];
+                tex.data[i+2]   = b;
+            }
+
+            return tex;
+        }
+
+        public unsafe TSOTex   LoadTarga(string file)
+        {
+            using(FileStream fs= File.OpenRead(file))
+            {
+                BinaryReader        br      = new BinaryReader(fs);
+                TARGA_HEADER        header;
+
+                Marshal.Copy(br.ReadBytes(sizeof(TARGA_HEADER)), 0, (IntPtr)(&header), sizeof(TARGA_HEADER));
+
+                if(header.imagetype != 0x02)    throw new Exception("Invalid imagetype: " + file);
+                if(header.depth     != 24
+                && header.depth     != 32)      throw new Exception("Invalid depth: " + file);
+                
+                TSOTex      tex = new TSOTex();
+                tex.depth       = header.depth  / 8;
+                tex.width       = header.width;
+                tex.height      = header.height;
+                tex.File        = file;
+                tex.data        = br.ReadBytes(tex.width * tex.height * tex.depth);
+
+                return tex;
+            }
+        }
+
+        public unsafe TSOTex   LoadBitmap(string file)
+        {
+            using(FileStream fs= File.OpenRead(file))
+            {
+                BinaryReader        br      = new BinaryReader(fs);
+                BITMAPFILEHEADER    bfh;
+                BITMAPINFOHEADER    bih;
+
+                Marshal.Copy(br.ReadBytes(sizeof(BITMAPFILEHEADER)), 0, (IntPtr)(&bfh), sizeof(BITMAPFILEHEADER));
+                Marshal.Copy(br.ReadBytes(sizeof(BITMAPINFOHEADER)), 0, (IntPtr)(&bih), sizeof(BITMAPINFOHEADER));
+
+                if(bfh.bfType != 0x4D42)        throw new Exception("Invalid imagetype: " + file);
+                if(bih.biBitCount != 24
+                && bih.biBitCount != 32)        throw new Exception("Invalid depth: " + file);
+                
+                TSOTex      tex = new TSOTex();
+                tex.depth       = bih.biBitCount  / 8;
+                tex.width       = bih.biWidth;
+                tex.height      = bih.biHeight;
+                tex.File        = file;
+                tex.data        = br.ReadBytes(tex.width * tex.height * tex.depth);
+
+                return tex;
+            }
+        }
+#endregion
+    }
+
+    public class TSOGeneratorOneBone : TSOGenerator
+    {
+        public Dictionary<string, string> boneref = new Dictionary<string, string>();
+
+        protected override bool DoLoadRefTSO(string tsoref)
+        {
+            // 参照TSOロード
+            tsor    = LoadTSO(tsoref);
+            return true;
+        }
+
+        protected override bool DoGenerateMeshes()
+        {
+            meshes  = new List<TSOMesh>();
+
+            foreach(MqoObject i in mqo.Objects)
+            {
+                if(i.name.ToLower() == "bone")
+                    continue;
+
+                Console.WriteLine("object:" + i.name);
+
+                // 法線生成
+                Point3[]        nrm = new Point3[i.vertices.Count];
+                
+                foreach(MqoFace j in i.faces)
+                {
+                    Point3  v1  = Point3.Normalize(i.vertices[j.b] - i.vertices[j.a]);
+                    Point3  v2  = Point3.Normalize(i.vertices[j.c] - i.vertices[j.b]);
+                    Point3  n   = Point3.Normalize(Point3.Cross(v1, v2));
+                    nrm[j.a]    -=n;
+                    nrm[j.b]    -=n;
+                    nrm[j.c]    -=n;
+                }
+
+                for(int j= 0; j < nrm.Length; ++j)
+                    nrm[j]      = Point3.Normalize(nrm[j]);
+
+                // ボーン情報作成
+                uint                idx     = 0x00000000;
+                Point4              wgt     = new Point4(1, 0, 0, 0);
+                int[]               bones   = new int[1];
+                string              bone    = boneref[i.name];
+                bones[0]                    = nodes[bone].ID;
+
+                // マテリアル別に処理を実行
+                List<ushort>        indices = new List<ushort>();
+                VertexHeap<Vertex>  vh      = new VertexHeap<Vertex>();
+                List<TSOSubMesh>    subs    = new List<TSOSubMesh>();
+
+                Console.WriteLine("  vertices bone_indices");
+                Console.WriteLine("  -------- ------------");
+
+                for(int j= 0, n= materials.Count; j < n; ++j)
+                {
+                    int mtl = j;
+                    indices.Clear();
+
+                    foreach(MqoFace f in i.faces)
+                    {
+                        if(f.mtl != mtl)
+                            continue;
+
+                        Vertex  va  = new Vertex(i.vertices[f.a], wgt, idx, nrm[f.a], new Point2(f.ta.x, 1-f.ta.y));
+                        Vertex  vb  = new Vertex(i.vertices[f.b], wgt, idx, nrm[f.b], new Point2(f.tb.x, 1-f.tb.y));
+                        Vertex  vc  = new Vertex(i.vertices[f.c], wgt, idx, nrm[f.c], new Point2(f.tc.x, 1-f.tc.y));
+
+                        indices.Add(vh.Add(va));
+                        indices.Add(vh.Add(vc));
+                        indices.Add(vh.Add(vb));
+                    }
+
+                    if(indices.Count == 0)
+                        continue;
+
+                    // フェイス最適化
+                    ushort[]    nidx    = NvTriStrip.Optimize(indices.ToArray());
+
+                    // サブメッシュ生成
+                    Vertex[]    verts= vh.verts.ToArray();
+                    TSOSubMesh  sub = new TSOSubMesh();
+                    sub.spec        = mtl;
+                    sub.numbones    = bones.Length;
+                    sub.bones       = bones;
+                    sub.numvertices = nidx.Length;
+                    sub.vertices    = new Vertex[nidx.Length];
+                   
+                    for(int k= 0; k < nidx.Length; ++k)
+                        sub.vertices[k] = verts[nidx[k]];
+
+                    Console.WriteLine("  {0,8} {1,12}", sub.vertices.Length, sub.bones.Length);
+
+                    subs.Add(sub);
+                }
+
+                // メッシュ生成
+                TSOMesh mesh    = new TSOMesh();
+                mesh.name       = i.name;
+                mesh.numsubs    = subs.Count;
+                mesh.sub        = subs.ToArray();
+                mesh.matrix     = Matrix44.Identity;
+                mesh.effect     = 0;
+                meshes.Add(mesh);
+            }
+
+            return true;
+        }
+
+    }
+    
+    public unsafe class TSOGeneratorRefBone : TSOGenerator
+    {
+        private List<Vertex>                vlst;
+        private PointCluster                pc;
+
+        private void CreatePointCluster(TSOFile tso)
+        {
+            vlst= new List<Vertex>();
+
+            foreach(TSOMesh i in tso.meshes)
+            foreach(TSOSubMesh j in i.sub)
+                vlst.AddRange(j.vertices);
+
+            pc  = new PointCluster(vlst.Count);
+
+            foreach(Vertex i in vlst)
+                pc.Add(i.Pos.x, i.Pos.y, i.Pos.z);
+
+            pc.Clustering();
+        }
+
+        protected override bool DoLoadRefTSO(string tsoref)
+        {
+            // 参照TSOロード
+            tsor    = LoadTSO(tsoref);
+
+            foreach(TSOMesh i in tsor.meshes)
+            foreach(TSOSubMesh j in i.sub)
+            {
+                int[]   bones   = j.bones;
+
+                for(int k= 0, n= j.numvertices; k < n; ++k)
+                {
+                    // ボーンをグローバルな番号に変換
+                    uint    idx0= j.vertices[k].Idx;
+                    byte*   idx = (byte*)(&idx0);
+                    idx[0]      = (byte)bones[idx[0]];
+                    idx[1]      = (byte)bones[idx[1]];
+                    idx[2]      = (byte)bones[idx[2]];
+                    idx[3]      = (byte)bones[idx[3]];
+                    j.vertices[k].Idx   = idx0;
+                }
+            }
+
+            CreatePointCluster(tsor);
+            return true;
+        }
+
+        protected override bool DoGenerateMeshes()
         {
             meshes  = new List<TSOMesh>();
 
@@ -430,367 +772,6 @@ namespace Tso2MqoGui
             return true;
         }
 
-        private bool OneBone_DoGenerateMeshes(Dictionary<string, string> boneref)
-        {
-            meshes  = new List<TSOMesh>();
-
-            foreach(MqoObject i in mqo.Objects)
-            {
-                if(i.name.ToLower() == "bone")
-                    continue;
-
-                Console.WriteLine("object:" + i.name);
-
-                // 法線生成
-                Point3[]        nrm = new Point3[i.vertices.Count];
-                
-                foreach(MqoFace j in i.faces)
-                {
-                    Point3  v1  = Point3.Normalize(i.vertices[j.b] - i.vertices[j.a]);
-                    Point3  v2  = Point3.Normalize(i.vertices[j.c] - i.vertices[j.b]);
-                    Point3  n   = Point3.Normalize(Point3.Cross(v1, v2));
-                    nrm[j.a]    -=n;
-                    nrm[j.b]    -=n;
-                    nrm[j.c]    -=n;
-                }
-
-                for(int j= 0; j < nrm.Length; ++j)
-                    nrm[j]      = Point3.Normalize(nrm[j]);
-
-                // ボーン情報作成
-                uint                idx     = 0x00000000;
-                Point4              wgt     = new Point4(1, 0, 0, 0);
-                int[]               bones   = new int[1];
-                string              bone    = boneref[i.name];
-                bones[0]                    = nodes[bone].ID;
-
-                // マテリアル別に処理を実行
-                List<ushort>        indices = new List<ushort>();
-                VertexHeap<Vertex>  vh      = new VertexHeap<Vertex>();
-                List<TSOSubMesh>    subs    = new List<TSOSubMesh>();
-
-                Console.WriteLine("  vertices bone_indices");
-                Console.WriteLine("  -------- ------------");
-
-                for(int j= 0, n= materials.Count; j < n; ++j)
-                {
-                    int mtl = j;
-                    indices.Clear();
-
-                    foreach(MqoFace f in i.faces)
-                    {
-                        if(f.mtl != mtl)
-                            continue;
-
-                        Vertex  va  = new Vertex(i.vertices[f.a], wgt, idx, nrm[f.a], new Point2(f.ta.x, 1-f.ta.y));
-                        Vertex  vb  = new Vertex(i.vertices[f.b], wgt, idx, nrm[f.b], new Point2(f.tb.x, 1-f.tb.y));
-                        Vertex  vc  = new Vertex(i.vertices[f.c], wgt, idx, nrm[f.c], new Point2(f.tc.x, 1-f.tc.y));
-
-                        indices.Add(vh.Add(va));
-                        indices.Add(vh.Add(vc));
-                        indices.Add(vh.Add(vb));
-                    }
-
-                    if(indices.Count == 0)
-                        continue;
-
-                    // フェイス最適化
-                    ushort[]    nidx    = NvTriStrip.Optimize(indices.ToArray());
-
-                    // サブメッシュ生成
-                    Vertex[]    verts= vh.verts.ToArray();
-                    TSOSubMesh  sub = new TSOSubMesh();
-                    sub.spec        = mtl;
-                    sub.numbones    = bones.Length;
-                    sub.bones       = bones;
-                    sub.numvertices = nidx.Length;
-                    sub.vertices    = new Vertex[nidx.Length];
-                   
-                    for(int k= 0; k < nidx.Length; ++k)
-                        sub.vertices[k] = verts[nidx[k]];
-
-                    Console.WriteLine("  {0,8} {1,12}", sub.vertices.Length, sub.bones.Length);
-
-                    subs.Add(sub);
-                }
-
-                // メッシュ生成
-                TSOMesh mesh    = new TSOMesh();
-                mesh.name       = i.name;
-                mesh.numsubs    = subs.Count;
-                mesh.sub        = subs.ToArray();
-                mesh.matrix     = Matrix44.Identity;
-                mesh.effect     = 0;
-                meshes.Add(mesh);
-            }
-
-            return true;
-        }
-
-        private bool Common_DoWriteMeshes()
-        {
-            bw.Write(meshes.Count);
-
-            foreach(TSOMesh i in meshes)
-            {
-                WriteString(bw, i.Name);
-                WriteMatrix(bw, i.Matrix);
-                bw.Write(1);
-                bw.Write(i.numsubs);
-
-                foreach(TSOSubMesh j in i.sub)
-                {
-                    bw.Write(j.spec);
-                    bw.Write(j.numbones);
-
-                    foreach(int k in j.bones)
-                        bw.Write(k);
-
-                    bw.Write(j.numvertices);
-
-                    foreach(Vertex k in j.vertices)
-                        WriteVertex(bw, k);
-                }
-            }
-
-            return true;
-        }
-
-        private bool RefBone_DoOutput(string tsoex)
-        {
-            //----- 出力処理 -----------------------------------------------
-            ii.materials.Clear();
-            ii.textures.Clear();
-
-            using (FileStream fs = File.OpenWrite(tsoex))
-            {
-                fs.SetLength(0);
-                bw = new BinaryWriter(fs);
-
-                Common_DoWriteHeader();
-                Common_DoWriteNodeNames();
-                Common_DoWriteNodeMatrices();
-                Common_DoWriteTextures();
-                Common_DoWriteEffects();
-                Common_DoWriteMaterials();
-                RefBone_DoGenerateMeshes();
-                Common_DoWriteMeshes();
-            }
-
-            return true;
-        }
-
-        private bool OneBone_DoOutput(string tsoex, Dictionary<string, string> boneref)
-        {
-            //----- 出力処理 -----------------------------------------------
-            ii.materials.Clear();
-            ii.textures.Clear();
-
-            using (FileStream fs = File.OpenWrite(tsoex))
-            {
-                fs.SetLength(0);
-                bw = new BinaryWriter(fs);
-
-                Common_DoWriteHeader();
-                Common_DoWriteNodeNames();
-                Common_DoWriteNodeMatrices();
-                Common_DoWriteTextures();
-                Common_DoWriteEffects();
-                Common_DoWriteMaterials();
-                OneBone_DoGenerateMeshes(boneref);
-                Common_DoWriteMeshes();
-            }
-
-            return true;
-        }
-
-        private bool Common_DoSaveXml(string importinfo_file)
-        {
-            // 結果を保存しておく
-            ImportInfo.Save(importinfo_file, ii);
-            return true;
-        }
-
-        private bool Common_DoCleanup()
-        {
-            dir         = null;
-            pc          = null;
-            tsor        = null;
-            vlst        = null;
-            nodes       = null;
-            meshes      = null;
-            config      = null;
-            mqo         = null;
-            ii          = null;
-            bw          = null;
-            materials   = null;
-            textures    = null;
-
-            System.GC.Collect();
-            return true;
-        }
-
-        public void GenerateOneBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config, Dictionary<string, string> boneref)
-        {
-            this.config = config;
-            string importinfo_file = Path.ChangeExtension(mqoin, ".xml");
-
-            try
-            {
-                if (!Common_DoSetupDir(mqoin)) return;
-                if (!Common_DoLoadMQO(mqoin)) return;
-                if (!OneBone_DoLoadRefTSO(tsoref)) return;
-                if (!Common_DoLoadXml(importinfo_file)) return;
-                if (!OneBone_DoOutput(tsoex, boneref)) return;
-                if (!Common_DoSaveXml(importinfo_file)) return;
-            }
-            finally
-            {
-                Common_DoCleanup();
-            }
-        }
-        
-        public void GenerateRefBone(string mqoin, string tsoref, string tsoex, TSOGenerateConfig config)
-        {
-            this.config = config;
-            string importinfo_file = Path.ChangeExtension(mqoin, ".xml");
-
-            try
-            {
-                if (!Common_DoSetupDir(mqoin)) return;
-                if (!Common_DoLoadMQO(mqoin)) return;
-                if (!RefBone_DoLoadRefTSO(tsoref)) return;
-                if (!Common_DoLoadXml(importinfo_file)) return;
-                if (!RefBone_DoOutput(tsoex)) return;
-                if (!Common_DoSaveXml(importinfo_file)) return;
-            }
-            finally
-            {
-                Common_DoCleanup();
-            }
-        }
-#region ユーティリティ
-        public void WriteString(BinaryWriter bw, string s)
-        {
-            byte[]  b   = Encoding.Default.GetBytes(s);
-            bw.Write(b);
-            bw.Write((byte)0);
-        }
-
-        public void WriteMatrix(BinaryWriter bw, Matrix44 m)
-        {
-            bw.Write(m.M11); bw.Write(m.M12); bw.Write(m.M13); bw.Write(m.M14);
-            bw.Write(m.M21); bw.Write(m.M22); bw.Write(m.M23); bw.Write(m.M24);
-            bw.Write(m.M31); bw.Write(m.M32); bw.Write(m.M33); bw.Write(m.M34);
-            bw.Write(m.M41); bw.Write(m.M42); bw.Write(m.M43); bw.Write(m.M44);
-        }
-
-        public unsafe void WriteVertex(BinaryWriter bw, Vertex v)
-        {
-            uint        idx0    = v.Idx;
-            byte*       idx     = (byte*)(&idx0);
-            List<int>   idxs    = new List<int>(4);
-            List<float> wgts    = new List<float>(4);
-
-            if(v.Wgt.x > 0) { idxs.Add(idx[0]); wgts.Add(v.Wgt.x); }
-            if(v.Wgt.y > 0) { idxs.Add(idx[1]); wgts.Add(v.Wgt.y); }
-            if(v.Wgt.z > 0) { idxs.Add(idx[2]); wgts.Add(v.Wgt.z); }
-            if(v.Wgt.w > 0) { idxs.Add(idx[3]); wgts.Add(v.Wgt.w); }
-
-            bw.Write(v.Pos.X); bw.Write(v.Pos.Y); bw.Write(v.Pos.Z);
-            bw.Write(v.Nrm.X); bw.Write(v.Nrm.Y); bw.Write(v.Nrm.Z);
-            bw.Write(v.Tex.X); bw.Write(v.Tex.Y);
-
-            bw.Write(wgts.Count);
-
-            for(int i= 0, n= idxs.Count; i < n; ++i)
-            {
-                bw.Write(idxs[i]);
-                bw.Write(wgts[i]);
-            }
-        }
-#endregion
-#region テクスチャ処理
-        public TSOTex   LoadTex(string file)
-        {
-            string  ext = Path.GetExtension(file).ToUpper();
-            TSOTex  tex;
-
-            switch(ext)
-            {
-            case ".TGA":    tex= LoadTarga(file);   break;
-            case ".BMP":    tex= LoadBitmap(file);  break;
-            default:        throw new Exception("Unsupported texture file: " + file);
-            }
-
-            for(int i= 0, n= tex.data.Length; i < n; i+=tex.Depth)
-            {
-                byte    b       = tex.data[i+0];
-                tex.data[i+0]   = tex.data[i+2];
-                tex.data[i+2]   = b;
-            }
-
-            return tex;
-        }
-
-        public unsafe TSOTex   LoadTarga(string file)
-        {
-            using(FileStream fs= File.OpenRead(file))
-            {
-                BinaryReader        br      = new BinaryReader(fs);
-                TARGA_HEADER        header;
-
-                Marshal.Copy(br.ReadBytes(sizeof(TARGA_HEADER)), 0, (IntPtr)(&header), sizeof(TARGA_HEADER));
-
-                if(header.imagetype != 0x02)    throw new Exception("Invalid imagetype: " + file);
-                if(header.depth     != 24
-                && header.depth     != 32)      throw new Exception("Invalid depth: " + file);
-                
-                TSOTex      tex = new TSOTex();
-                tex.depth       = header.depth  / 8;
-                tex.width       = header.width;
-                tex.height      = header.height;
-                tex.File        = file;
-                tex.data        = br.ReadBytes(tex.width * tex.height * tex.depth);
-
-                return tex;
-            }
-        }
-
-        public unsafe TSOTex   LoadBitmap(string file)
-        {
-            using(FileStream fs= File.OpenRead(file))
-            {
-                BinaryReader        br      = new BinaryReader(fs);
-                BITMAPFILEHEADER    bfh;
-                BITMAPINFOHEADER    bih;
-
-                Marshal.Copy(br.ReadBytes(sizeof(BITMAPFILEHEADER)), 0, (IntPtr)(&bfh), sizeof(BITMAPFILEHEADER));
-                Marshal.Copy(br.ReadBytes(sizeof(BITMAPINFOHEADER)), 0, (IntPtr)(&bih), sizeof(BITMAPINFOHEADER));
-
-                if(bfh.bfType != 0x4D42)        throw new Exception("Invalid imagetype: " + file);
-                if(bih.biBitCount != 24
-                && bih.biBitCount != 32)        throw new Exception("Invalid depth: " + file);
-                
-                TSOTex      tex = new TSOTex();
-                tex.depth       = bih.biBitCount  / 8;
-                tex.width       = bih.biWidth;
-                tex.height      = bih.biHeight;
-                tex.File        = file;
-                tex.data        = br.ReadBytes(tex.width * tex.height * tex.depth);
-
-                return tex;
-            }
-        }
-#endregion
-    }
-
-    public class TSOGeneratorOneBone : TSOGenerator
-    {
-    }
-    
-    public class TSOGeneratorRefBone : TSOGenerator
-    {
     }
 
     public class TextureInfo

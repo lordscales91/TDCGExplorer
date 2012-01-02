@@ -37,7 +37,7 @@ namespace Tso2MqoGui
                         }
                     }
 
-                    TSOGenerator        gen     = new TSOGenerator();
+                    TSOGeneratorRefBone        gen     = new TSOGeneratorRefBone();
                     TSOGenerateConfig   config  = new TSOGenerateConfig();
                     config.cui                  = true;
                     config.ShowMaterials       = false;
