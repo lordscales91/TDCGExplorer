@@ -159,83 +159,81 @@ namespace Tso2MqoGui
             e.Effect    = DragDropEffects.Copy;
         }
 
-        private void OpenTSOFile(string f)
+        private void OpenTSOFile(string file)
         {
-            string  dir = OutPath;
+            string dir = OutPath;
 
-            if(cbMakeSub.Checked)
+            if (cbMakeSub.Checked)
             {
-                dir = Path.Combine(dir, Path.GetFileNameWithoutExtension(f));
+                dir = Path.Combine(dir, Path.GetFileNameWithoutExtension(file));
 
-                if(!Directory.Exists(dir))
+                if (!Directory.Exists(dir))
                     Directory.CreateDirectory(dir);
             }
 
-            string      file= Path.Combine(dir, Path.ChangeExtension(Path.GetFileName(f), ".mqo"));
-            string      info= Path.Combine(dir, Path.ChangeExtension(Path.GetFileName(f), ".xml"));
+            string mqo_path = Path.Combine(dir, Path.ChangeExtension(Path.GetFileName(file), ".mqo"));
+            string importinfo_path = Path.Combine(dir, Path.ChangeExtension(Path.GetFileName(file), ".xml"));
 
             try
             {
-                label2.BackColor= Color.Tomato;
-                label2.ForeColor= Color.White;
-                label2.Text     = "Processing";
+                label2.BackColor = Color.Tomato;
+                label2.ForeColor = Color.White;
+                label2.Text = "Processing";
                 label2.Invalidate();
                 label2.Update();
 
                 // モデル、テクスチャの作成
-                using(MqoWriter mqo = new MqoWriter(file))
+                using (MqoWriter mqo = new MqoWriter(mqo_path))
                 {
-                    TSOFile     tso = new TSOFile(f);
+                    TSOFile tso = new TSOFile(file);
                     tso.ReadAll();
 
-                    if(rbBoneRokDeBone.Checked) mqo.BoneMode    = MqoBoneMode.RokDeBone;
+                    if (rbBoneRokDeBone.Checked) mqo.BoneMode = MqoBoneMode.RokDeBone;
 
                     mqo.Write(tso);
                     mqo.Close();
 
-                    ImportInfo  ii  = new ImportInfo();
+                    ImportInfo ii = new ImportInfo();
 
                     // テクスチャ情報
-                    foreach(TSOTex i in tso.textures)
+                    foreach (TSOTex i in tso.textures)
                         ii.textures.Add(new ImportTextureInfo(i));
 
                     // エフェクトの作成
-                    foreach(TSOEffect i in tso.effects)
+                    foreach (TSOEffect i in tso.effects)
                     {
                         ii.effects.Add(new ImportEffectInfo(i));
                         File.WriteAllText(Path.Combine(dir, i.Name), i.code, Encoding.Default);
                     }
 
                     // マテリアルの作成
-                    foreach(TSOMaterial i in tso.materials)
+                    foreach (TSOMaterial i in tso.materials)
                     {
                         ii.materials.Add(new ImportMaterialInfo(i));
                         File.WriteAllText(Path.Combine(dir, i.Name), i.code, Encoding.Default);
-                      //File.WriteAllText(Path.Combine(dir, i.File), i.code, Encoding.Default);
                     }
 
-                    ImportInfo.Save(info, ii);
+                    ImportInfo.Save(importinfo_path, ii);
                 }
 
-                if(cbCopyTSO.Checked)
+                if (cbCopyTSO.Checked)
                 {
-                    file    = Path.Combine(dir, Path.GetFileName(f));
+                    string tso_path = Path.Combine(dir, Path.GetFileName(file));
 
-                    if(f != file)
-                        File.Copy(f, file, true);
+                    if (file != tso_path)
+                        File.Copy(file, tso_path, true);
                 }
-            } finally
-            {
-                label2.BackColor    = SystemColors.Control;
-                label2.BackColor    = label2.Parent.BackColor;
-                label2.ForeColor    = SystemColors.ControlText;
-                label2.Text         = "Drop TSO File Here!";
             }
-
-          //System.Diagnostics.Process.Start(file);
+            finally
+            {
+                label2.BackColor = SystemColors.Control;
+                label2.BackColor = label2.Parent.BackColor;
+                label2.ForeColor = SystemColors.ControlText;
+                label2.Text = "Drop TSO File Here!";
+            }
         }
 
-        private void OpenMQOFile(string f)
+        private void OpenMQOFile(string file)
         {
             TSOGenerateConfig config = new TSOGenerateConfig();
             config.ShowMaterials = cbShowMaterials.Checked;
@@ -243,7 +241,7 @@ namespace Tso2MqoGui
             if (rbRefBone.Checked)
             {
                 TSOGeneratorRefBone gen = new TSOGeneratorRefBone();
-                gen.Generate(f, tbTso.Text, tbTsoEx.Text, config);
+                gen.Generate(file, tbTso.Text, tbTsoEx.Text, config);
             }
             else
             if (rbOneBone.Checked)
@@ -258,10 +256,10 @@ namespace Tso2MqoGui
                         return;
                     }
 
-                    gen.boneref.Add(i.SubItems[0].Text, i.SubItems[1].Text);
+                    gen.ObjectBoneNames.Add(i.SubItems[0].Text, i.SubItems[1].Text);
                 }
 
-                gen.Generate(f, tbTso.Text, tbTsoEx.Text, config);
+                gen.Generate(file, tbTso.Text, tbTsoEx.Text, config);
             }
             else
             {
