@@ -57,12 +57,28 @@ namespace TDCG
 
         public string GetFileName(int index)
         {
-            return enc.GetString(savedata, index * 32, 32);
+            int len = 32;
+            for (int i = 0; i < 32; i++)
+            {
+                if (savedata[index * 32 + i] == 0)
+                {
+                    len = i;
+                    break;
+                }
+            }
+            return enc.GetString(savedata, index * 32, len);
         }
 
         public float GetSliderValue(int index)
         {
-            return BitConverter.ToSingle(savedata, 32 * 32 + 4 * index);
+            return BitConverter.ToSingle(savedata, 32 * 32 + index * 4);
+        }
+
+        public byte[] GetBytes(int index)
+        {
+            byte[] bytes = new byte[4];
+            Array.Copy(savedata, 32 * 32 + index * 4, bytes, 0, 4);
+            return bytes;
         }
 
         public void SetFileName(int index, string file)
@@ -70,6 +86,17 @@ namespace TDCG
             byte[] bytes = enc.GetBytes(file);
             Array.Resize(ref bytes, 32);
             Array.Copy(bytes, 0, savedata, index * 32, 32);
+        }
+
+        public void SetSliderValue(int index, float ratio)
+        {
+            byte[] bytes = BitConverter.GetBytes(ratio);
+            Array.Copy(bytes, 0, savedata, 32 * 32 + index * 4, 4);
+        }
+
+        public void SetBytes(int index, byte[] bytes)
+        {
+            Array.Copy(bytes, 0, savedata, 32 * 32 + index * 4, 4);
         }
 
         public void Save(string file)

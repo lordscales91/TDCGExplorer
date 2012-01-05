@@ -168,6 +168,18 @@ class Program
 
             png.Load(source_file);
             png.Save(dest_path + @"\thumbnail.png");
+
+            {
+                BMPSaveData data = new BMPSaveData();
+
+                using (Stream stream = File.OpenRead(dest_path + @"\thumbnail.png"))
+                    data.Read(stream);
+
+                string dest_file = dest_path + @"\thumbnail.txt";
+                Console.WriteLine("dump bmp save data: " + dest_file);
+                DumpBmpSaveData(data, dest_file);
+            }
+
             return 0;
         }
 
@@ -183,6 +195,19 @@ class Program
                 PNGWriter pw = new PNGWriter(bw);
                 WriteHsavOrPoseOrScne(pw);
             };
+
+            {
+                BMPSaveData data = new BMPSaveData();
+
+                using (Stream stream = File.OpenRead(dest_path + @"\thumbnail.png"))
+                    data.Read(stream);
+
+                string source_file = dest_path + @"\thumbnail.txt";
+                Console.WriteLine("load bmp save data: " + source_file);
+                LoadBmpSaveData(data, source_file);
+
+                data.Save(dest_path + @"\thumbnail.png");
+            }
 
             png.Load(dest_path + @"\thumbnail.png");
             png.Save(dest_path + @".new.png");
@@ -263,6 +288,66 @@ class Program
             }
         }
 
+        void DumpBmpSaveData(BMPSaveData data, string dest_file)
+        {
+            using (StreamWriter sw = new StreamWriter(dest_file))
+            {
+                for (int i = 0; i < 32; i++)
+                {
+                    sw.WriteLine(data.GetFileName(i));
+                }
+
+                sw.WriteLine(data.GetSliderValue(0));
+                sw.WriteLine(BitConverter.ToUInt32(data.GetBytes(1), 0));
+                sw.WriteLine();
+                sw.WriteLine();
+                sw.WriteLine(data.GetSliderValue(4));
+                sw.WriteLine(data.GetSliderValue(5));
+                sw.WriteLine(data.GetSliderValue(6));
+                sw.WriteLine(data.GetSliderValue(7));
+                sw.WriteLine(data.GetSliderValue(8));
+                sw.WriteLine();
+                sw.WriteLine();
+                sw.WriteLine(data.GetSliderValue(11));
+            }
+        }
+
+        void LoadBmpSaveData(BMPSaveData data, string source_file)
+        {
+            using (StreamReader source = new StreamReader(File.OpenRead(source_file)))
+            {
+                for (int i = 0; i < 32; i++)
+                {
+                    string line = source.ReadLine();
+                    if (line == null)
+                        throw new FormatException();
+                    data.SetFileName(i, line);
+                }
+
+                for (int i = 0; i < 12; i++)
+                {
+                    string line = source.ReadLine();
+                    if (line == null)
+                        throw new FormatException();
+                    switch (i)
+                    {
+                        case 0:
+                        case 4:
+                        case 5:
+                        case 6:
+                        case 7:
+                        case 8:
+                        case 11:
+                            data.SetSliderValue(i, Single.Parse(line));
+                            break;
+                        case 1:
+                            data.SetBytes(i, BitConverter.GetBytes(UInt32.Parse(line)));
+                            break;
+                    }
+                }
+            }
+        }
+
         protected byte[] ReadFloats(string dest_file)
         {
             List<float> floats = new List<float>();
@@ -327,8 +412,9 @@ class Program
         protected uint opt_value(string code)
         {
             byte[] buf = new byte[4];
-            for (int i = 0; i < 4; i++)
-                buf[i] = Convert.ToByte(code.Substring(i*2, 2), 16);
+            int offset = 0;
+            for (int i = 0; i < 8; i += 2)
+                buf[offset++] = Convert.ToByte(code.Substring(i, 2), 16);
             return BitConverter.ToUInt32(buf, 0);
         }
 
