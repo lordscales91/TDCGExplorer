@@ -57,13 +57,13 @@ class Program
             }
             PNGFile png = new PNGFile();
 
+            string source_type = null;
+
             png.Hsav += delegate(string type)
             {
-                string dest_file = dest_path + @"\TDCG.txt";
-                Console.WriteLine("This is HSAV Save File: " + dest_file);
-
-                using (StreamWriter sw = new StreamWriter(dest_file))
-                    sw.WriteLine(type);
+                Console.WriteLine("This is HSAV Save File");
+                DumpSourceType(dest_path + @"\TDCG.txt", type);
+                source_type = type;
 
                 string figure_path = dest_path + @"\" + numTMO;
                 if (! System.IO.Directory.Exists(figure_path))
@@ -71,19 +71,15 @@ class Program
             };
             png.Pose += delegate(string type)
             {
-                string dest_file = dest_path + @"\TDCG.txt";
-                Console.WriteLine("This is POSE Save File: " + dest_file);
-
-                using (StreamWriter sw = new StreamWriter(dest_file))
-                    sw.WriteLine(type);
+                Console.WriteLine("This is POSE Save File");
+                DumpSourceType(dest_path + @"\TDCG.txt", type);
+                source_type = type;
             };
             png.Scne += delegate(string type)
             {
-                string dest_file = dest_path + @"\TDCG.txt";
-                Console.WriteLine("This is SCNE Save File: " + dest_file);
-
-                using (StreamWriter sw = new StreamWriter(dest_file))
-                    sw.WriteLine(type);
+                Console.WriteLine("This is SCNE Save File");
+                DumpSourceType(dest_path + @"\TDCG.txt", type);
+                source_type = type;
             };
             png.Cami += delegate(Stream dest, int extract_length)
             {
@@ -169,6 +165,7 @@ class Program
             png.Load(source_file);
             png.Save(dest_path + @"\thumbnail.png");
 
+            if (source_type == "HSAV")
             {
                 BMPSaveData data = new BMPSaveData();
 
@@ -190,12 +187,15 @@ class Program
             this.dest_path = dest_path;
             PNGFile png = new PNGFile();
 
+            string source_type = ReadSourceType(dest_path + @"\TDCG.txt");
+
             png.WriteTaOb += delegate(BinaryWriter bw)
             {
                 PNGWriter pw = new PNGWriter(bw);
-                WriteHsavOrPoseOrScne(pw);
+                WriteHsavOrPoseOrScne(pw, source_type);
             };
 
+            if (source_type == "HSAV")
             {
                 BMPSaveData data = new BMPSaveData();
 
@@ -265,15 +265,24 @@ class Program
             return num;
         }
 
-        protected void WriteHsavOrPoseOrScne(PNGWriter pw)
+        void DumpSourceType(string dest_file, string type)
         {
-            string dest_file = dest_path + @"\TDCG.txt";
+            using (StreamWriter sw = new StreamWriter(dest_file))
+                sw.WriteLine(type);
+        }
 
+        string ReadSourceType(string source_file)
+        {
             string source_type;
-            using (StreamReader source = new StreamReader(File.OpenRead(dest_file)))
+            using (StreamReader source = new StreamReader(File.OpenRead(source_file)))
             {
                 source_type = source.ReadLine();
             }
+            return source_type;
+        }
+
+        protected void WriteHsavOrPoseOrScne(PNGWriter pw, string source_type)
+        {
             switch (source_type)
             {
                 case "HSAV":
