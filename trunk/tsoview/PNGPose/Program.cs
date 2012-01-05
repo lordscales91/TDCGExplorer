@@ -61,7 +61,7 @@ class Program
 
             png.Hsav += delegate(string type)
             {
-                Console.WriteLine("This is HSAV Save File");
+                Console.WriteLine("This is {0} Save File", type);
                 DumpSourceType(dest_path + @"\TDCG.txt", type);
                 source_type = type;
 
@@ -71,13 +71,13 @@ class Program
             };
             png.Pose += delegate(string type)
             {
-                Console.WriteLine("This is POSE Save File");
+                Console.WriteLine("This is {0} Save File", type);
                 DumpSourceType(dest_path + @"\TDCG.txt", type);
                 source_type = type;
             };
             png.Scne += delegate(string type)
             {
-                Console.WriteLine("This is SCNE Save File");
+                Console.WriteLine("This is {0} Save File", type);
                 DumpSourceType(dest_path + @"\TDCG.txt", type);
                 source_type = type;
             };
@@ -188,6 +188,7 @@ class Program
             PNGFile png = new PNGFile();
 
             string source_type = ReadSourceType(dest_path + @"\TDCG.txt");
+            Console.WriteLine("This is {0} Save File", source_type);
 
             png.WriteTaOb += delegate(BinaryWriter bw)
             {
