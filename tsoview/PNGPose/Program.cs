@@ -293,18 +293,21 @@ class Program
                     sw.WriteLine(data.GetFileName(i));
                 }
 
-                sw.WriteLine(data.GetSliderValue(0));
-                sw.WriteLine(BitConverter.ToUInt32(data.GetBytes(1), 0));
-                sw.WriteLine();
-                sw.WriteLine();
-                sw.WriteLine(data.GetSliderValue(4));
-                sw.WriteLine(data.GetSliderValue(5));
-                sw.WriteLine(data.GetSliderValue(6));
-                sw.WriteLine(data.GetSliderValue(7));
-                sw.WriteLine(data.GetSliderValue(8));
-                sw.WriteLine();
-                sw.WriteLine();
-                sw.WriteLine(data.GetSliderValue(11));
+                for (int i = 0; i < 14; i++)
+                {
+                    switch (i)
+                    {
+                        case 0: case 4: case 5: case 6: case 7: case 8: case 11:
+                            sw.WriteLine(data.GetSliderValue(i));
+                            break;
+                        case 1:
+                            sw.WriteLine(BitConverter.ToUInt32(data.GetBytes(i), 0));
+                            break;
+                        default:
+                            sw.WriteLine("0x{0:X8}", BitConverter.ToUInt32(data.GetBytes(i), 0));
+                            break;
+                    }
+                }
             }
         }
 
