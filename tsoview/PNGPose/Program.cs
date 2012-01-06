@@ -196,20 +196,6 @@ class Program
                 WriteHsavOrPoseOrScne(pw, source_type);
             };
 
-            if (source_type == "HSAV")
-            {
-                BMPSaveData data = new BMPSaveData();
-
-                using (Stream stream = File.OpenRead(dest_path + @"\thumbnail.png"))
-                    data.Read(stream);
-
-                string source_file = dest_path + @"\thumbnail.txt";
-                Console.WriteLine("load bmp save data: " + source_file);
-                LoadBmpSaveData(data, source_file);
-
-                data.Save(dest_path + @"\thumbnail.png");
-            }
-
             png.Load(dest_path + @"\thumbnail.png");
             png.Save(dest_path + @".new.png");
             return 0;
@@ -319,42 +305,6 @@ class Program
                 sw.WriteLine();
                 sw.WriteLine();
                 sw.WriteLine(data.GetSliderValue(11));
-            }
-        }
-
-        void LoadBmpSaveData(BMPSaveData data, string source_file)
-        {
-            using (StreamReader source = new StreamReader(File.OpenRead(source_file)))
-            {
-                for (int i = 0; i < 32; i++)
-                {
-                    string line = source.ReadLine();
-                    if (line == null)
-                        throw new FormatException();
-                    data.SetFileName(i, line);
-                }
-
-                for (int i = 0; i < 12; i++)
-                {
-                    string line = source.ReadLine();
-                    if (line == null)
-                        throw new FormatException();
-                    switch (i)
-                    {
-                        case 0:
-                        case 4:
-                        case 5:
-                        case 6:
-                        case 7:
-                        case 8:
-                        case 11:
-                            data.SetSliderValue(i, Single.Parse(line));
-                            break;
-                        case 1:
-                            data.SetBytes(i, BitConverter.GetBytes(UInt32.Parse(line)));
-                            break;
-                    }
-                }
             }
         }
 
