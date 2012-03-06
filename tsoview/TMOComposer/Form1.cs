@@ -36,6 +36,7 @@ namespace TMOComposer
             TMOAnimItem.FaceRoot = tso_config.FacePath;
 
             viewer = new CCDViewer();
+            viewer.ScreenColor = tso_config.ScreenColor;
             if (viewer.InitializeApplication(this))
             {
                 CreatePngSave();
