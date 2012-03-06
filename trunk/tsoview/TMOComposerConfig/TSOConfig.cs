@@ -13,6 +13,7 @@ namespace TMOComposerConfig
 public class TSOConfig
 {
     public Size ClientSize { get; set; }
+    public string ScreenColorName { get; set; }
     public int RecordStep { get; set; }
     [Editor(typeof(System.Windows.Forms.Design.FolderNameEditor), typeof(System.Drawing.Design.UITypeEditor))]
     public string SavePath { get; set; }
@@ -24,6 +25,7 @@ public class TSOConfig
     public TSOConfig()
     {
         this.ClientSize = new Size(1024, 768);
+        this.ScreenColorName = "LightGray";
         this.RecordStep = 5;
         this.SavePath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
         this.PosePath = SavePath + @"\pose";
