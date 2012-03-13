@@ -201,7 +201,7 @@ namespace TDCG
             }
 
             //選択ボーンに対応するウェイトがなければ、最小値を持つウェイトを置き換える。
-            if (selected_skin_weight == null)
+            if (selected_skin_weight == null && weight > 0)
             {
                 //サブメッシュのボーン参照に指定ノードが含まれるか。
                 int bone_index = Array.IndexOf(sub_mesh.bone_indices, selected_node.ID);
