@@ -88,6 +88,7 @@
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnAssign = new System.Windows.Forms.Button();
             this.btnReduce = new System.Windows.Forms.Button();
             this.lbRadius = new System.Windows.Forms.Label();
             this.lbWeight = new System.Windows.Forms.Label();
@@ -101,7 +102,6 @@
             this.btnGain = new System.Windows.Forms.Button();
             this.tbRadius = new System.Windows.Forms.TrackBar();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.btnAssign = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbWeight)).BeginInit();
@@ -583,6 +583,16 @@
             this.panel1.Size = new System.Drawing.Size(200, 681);
             this.panel1.TabIndex = 22;
             // 
+            // btnAssign
+            // 
+            this.btnAssign.Location = new System.Drawing.Point(14, 541);
+            this.btnAssign.Name = "btnAssign";
+            this.btnAssign.Size = new System.Drawing.Size(84, 23);
+            this.btnAssign.TabIndex = 14;
+            this.btnAssign.Text = "代入(&A)";
+            this.btnAssign.UseVisualStyleBackColor = true;
+            this.btnAssign.Click += new System.EventHandler(this.btnAssign_Click);
+            // 
             // btnReduce
             // 
             this.btnReduce.Location = new System.Drawing.Point(104, 512);
@@ -663,10 +673,11 @@
             // tbWeight
             // 
             this.tbWeight.Location = new System.Drawing.Point(16, 430);
-            this.tbWeight.Maximum = 40;
+            this.tbWeight.Maximum = 200;
             this.tbWeight.Name = "tbWeight";
             this.tbWeight.Size = new System.Drawing.Size(172, 45);
             this.tbWeight.TabIndex = 8;
+            this.tbWeight.TickStyle = System.Windows.Forms.TickStyle.None;
             this.tbWeight.Value = 4;
             this.tbWeight.ValueChanged += new System.EventHandler(this.tbWeight_ValueChanged);
             // 
@@ -687,6 +698,7 @@
             this.tbRadius.Name = "tbRadius";
             this.tbRadius.Size = new System.Drawing.Size(172, 45);
             this.tbRadius.TabIndex = 11;
+            this.tbRadius.TickStyle = System.Windows.Forms.TickStyle.None;
             this.tbRadius.Value = 20;
             this.tbRadius.ValueChanged += new System.EventHandler(this.tbRadius_ValueChanged);
             // 
@@ -697,16 +709,6 @@
             this.statusStrip1.Size = new System.Drawing.Size(1008, 22);
             this.statusStrip1.TabIndex = 23;
             this.statusStrip1.Text = "statusStrip1";
-            // 
-            // btnAssign
-            // 
-            this.btnAssign.Location = new System.Drawing.Point(14, 541);
-            this.btnAssign.Name = "btnAssign";
-            this.btnAssign.Size = new System.Drawing.Size(84, 23);
-            this.btnAssign.TabIndex = 14;
-            this.btnAssign.Text = "代入(&A)";
-            this.btnAssign.UseVisualStyleBackColor = true;
-            this.btnAssign.Click += new System.EventHandler(this.btnAssign_Click);
             // 
             // Form1
             // 
