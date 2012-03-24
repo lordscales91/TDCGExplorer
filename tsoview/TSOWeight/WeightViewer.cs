@@ -121,6 +121,19 @@ namespace TDCG
         }
     }
 
+    /// ウェイトの計算方法
+    public enum WeightOperation
+    {
+        /// なし
+        None,
+        /// 加算
+        Gain,
+        /// 減算
+        Reduce,
+        /// 代入
+        Assign
+    }
+
     /// 頂点操作
     public class VertexCommand
     {
@@ -132,14 +145,16 @@ namespace TDCG
         TSOSubMesh sub_mesh = null;
         TSONode selected_node = null;
         float weight;
+        WeightOperation weight_op = WeightOperation.None;
 
         /// 頂点操作を生成します。
-        public VertexCommand(TSOSubMesh sub_mesh, TSONode selected_node, Vertex vertex, float weight)
+        public VertexCommand(TSOSubMesh sub_mesh, TSONode selected_node, Vertex vertex, float weight, WeightOperation weight_op)
         {
             this.sub_mesh = sub_mesh;
             this.selected_node = selected_node;
             this.vertex = vertex;
             this.weight = weight;
+            this.weight_op = weight_op;
         }
 
         /// 変更を元に戻す。
@@ -200,8 +215,19 @@ namespace TDCG
                 }
             }
 
+            bool prepare_bone = false;
+            switch (weight_op)
+            {
+                case WeightOperation.Gain:
+                    prepare_bone = weight > 0;
+                    break;
+                case WeightOperation.Assign:
+                    prepare_bone = weight > 0;
+                    break;
+            }
+
             //選択ボーンに対応するウェイトがなければ、最小値を持つウェイトを置き換える。
-            if (selected_skin_weight == null && weight > 0)
+            if (selected_skin_weight == null && prepare_bone)
             {
                 //サブメッシュのボーン参照に指定ノードが含まれるか。
                 int bone_index = Array.IndexOf(sub_mesh.bone_indices, selected_node.ID);
@@ -222,8 +248,22 @@ namespace TDCG
 
                 float w0 = selected_skin_weight.weight; //変更前の対象ウェイト値
                 float m0 = 1.0f - w0;                   //変更前の残りウェイト値
-                float w1 = w0 + weight;                 //変更後の対象ウェイト値
-
+                float w1;                               //変更後の対象ウェイト値
+                switch (weight_op)
+                {
+                    case WeightOperation.Gain:
+                        w1 = w0 + weight;
+                        break;
+                    case WeightOperation.Reduce:
+                        w1 = w0 - weight;
+                        break;
+                    case WeightOperation.Assign:
+                        w1 = weight;
+                        break;
+                    default:
+                        w1 = w0;
+                        break;
+                }
                 //clamp 0.0f .. 1.0f
                 if (w1 > 1.0f) w1 = 1.0f;
                 if (w1 < 0.0f) w1 = 0.0f;
@@ -274,16 +314,18 @@ namespace TDCG
         Figure fig = null;
         TSONode selected_node = null;
         float weight;
+        WeightOperation weight_op;
         Vector3 center;
         float radius;
 
         /// サブメッシュ操作を生成します。
-        public SubMeshCommand(Figure fig, TSOSubMesh sub_mesh, TSONode selected_node, float weight, Vector3 center, float radius)
+        public SubMeshCommand(Figure fig, TSOSubMesh sub_mesh, TSONode selected_node, float weight, WeightOperation weight_op, Vector3 center, float radius)
         {
             this.fig = fig;
             this.sub_mesh = sub_mesh;
             this.selected_node = selected_node;
             this.weight = weight;
+            this.weight_op = weight_op;
             this.center = center;
             this.radius = radius;
         }
@@ -320,7 +362,7 @@ namespace TDCG
 
                 if (v.selected)
                 {
-                    VertexCommand vertex_command = new VertexCommand(sub_mesh, selected_node, v, weight);
+                    VertexCommand vertex_command = new VertexCommand(sub_mesh, selected_node, v, weight, weight_op);
                     
                     if (vertex_command.Execute())
                     {
@@ -346,16 +388,18 @@ namespace TDCG
         Figure fig = null;
         TSONode selected_node = null;
         float weight;
+        WeightOperation weight_op;
         Vector3 center;
         float radius;
 
         /// メッシュ操作を生成します。
-        public MeshCommand(Figure fig, TSOMesh mesh, TSONode selected_node, float weight, Vector3 center, float radius)
+        public MeshCommand(Figure fig, TSOMesh mesh, TSONode selected_node, float weight, WeightOperation weight_op, Vector3 center, float radius)
         {
             this.fig = fig;
             this.mesh = mesh;
             this.selected_node = selected_node;
             this.weight = weight;
+            this.weight_op = weight_op;
             this.center = center;
             this.radius = radius;
         }
@@ -386,7 +430,7 @@ namespace TDCG
             foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
                 //操作を生成する。
-                SubMeshCommand sub_mesh_command = new SubMeshCommand(fig, sub_mesh, selected_node, weight, center, radius);
+                SubMeshCommand sub_mesh_command = new SubMeshCommand(fig, sub_mesh, selected_node, weight, weight_op, center, radius);
 
                 if (sub_mesh_command.Execute())
                 {
@@ -1081,7 +1125,7 @@ public class WeightViewer : Viewer
             if (SelectedMesh != null && SelectedVertex != null)
             {
                 Vector3 center = SelectedVertex.CalcSkindeformPosition(fig.ClipBoneMatrices(SelectedSubMesh));
-                MeshCommand mesh_command = new MeshCommand(fig, SelectedMesh, SelectedNode, +weight, center, radius);
+                MeshCommand mesh_command = new MeshCommand(fig, SelectedMesh, SelectedNode, weight, WeightOperation.Gain, center, radius);
                 Execute(mesh_command);
             }
         }
@@ -1096,7 +1140,7 @@ public class WeightViewer : Viewer
             if (SelectedMesh != null && SelectedVertex != null)
             {
                 Vector3 center = SelectedVertex.CalcSkindeformPosition(fig.ClipBoneMatrices(SelectedSubMesh));
-                MeshCommand mesh_command = new MeshCommand(fig, SelectedMesh, SelectedNode, -weight, center, radius);
+                MeshCommand mesh_command = new MeshCommand(fig, SelectedMesh, SelectedNode, weight, WeightOperation.Reduce, center, radius);
                 Execute(mesh_command);
             }
         }
