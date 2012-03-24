@@ -1146,17 +1146,19 @@ public class WeightViewer : Viewer
             if (SelectedMesh != null && SelectedVertex != null)
             {
                 Vector3 center = SelectedVertex.CalcSkindeformPosition(fig.ClipBoneMatrices(SelectedSubMesh));
-                TSOSubMesh sub_mesh = SelectedSubMesh;
 
-                Matrix[] clipped_boneMatrices = fig.ClipBoneMatrices(sub_mesh);
-
-                for (int i = 0; i < sub_mesh.vertices.Length; i++)
+                foreach (TSOSubMesh sub_mesh in SelectedMesh.sub_meshes)
                 {
-                    Vertex v = sub_mesh.vertices[i];
+                    Matrix[] clipped_boneMatrices = fig.ClipBoneMatrices(sub_mesh);
 
-                    //頂点間距離が半径未満なら選択する。
-                    Vector3 p1 = v.CalcSkindeformPosition(clipped_boneMatrices);
-                    v.selected = Vector3.LengthSq(p1 - center) - radius * radius < float.Epsilon;
+                    for (int i = 0; i < sub_mesh.vertices.Length; i++)
+                    {
+                        Vertex v = sub_mesh.vertices[i];
+
+                        //頂点間距離が半径未満なら選択する。
+                        Vector3 p1 = v.CalcSkindeformPosition(clipped_boneMatrices);
+                        v.selected = Vector3.LengthSq(p1 - center) - radius * radius < float.Epsilon;
+                    }
                 }
             }
         }
