@@ -72,6 +72,9 @@
             this.vertexAllToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.vertexCcwToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vertexNoneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.boneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.boneAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.boneNoneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.HelpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpContentToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpIndexToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -85,7 +88,7 @@
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.btnErase = new System.Windows.Forms.Button();
+            this.btnReduce = new System.Windows.Forms.Button();
             this.lbRadius = new System.Windows.Forms.Label();
             this.lbWeight = new System.Windows.Forms.Label();
             this.lbWeightCaption = new System.Windows.Forms.Label();
@@ -95,12 +98,10 @@
             this.columnHeader5 = new System.Windows.Forms.ColumnHeader();
             this.lbSkinWeights = new System.Windows.Forms.Label();
             this.tbWeight = new System.Windows.Forms.TrackBar();
-            this.btnDraw = new System.Windows.Forms.Button();
+            this.btnGain = new System.Windows.Forms.Button();
             this.tbRadius = new System.Windows.Forms.TrackBar();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.boneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.boneAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.boneNoneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnAssign = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbWeight)).BeginInit();
@@ -434,6 +435,29 @@
             this.vertexNoneToolStripMenuItem.Text = "なし(&N)";
             this.vertexNoneToolStripMenuItem.Click += new System.EventHandler(this.vertexNoneToolStripMenuItem_Click);
             // 
+            // boneToolStripMenuItem
+            // 
+            this.boneToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.boneAllToolStripMenuItem,
+            this.boneNoneToolStripMenuItem});
+            this.boneToolStripMenuItem.Name = "boneToolStripMenuItem";
+            this.boneToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
+            this.boneToolStripMenuItem.Text = "ボーン(&B)";
+            // 
+            // boneAllToolStripMenuItem
+            // 
+            this.boneAllToolStripMenuItem.Name = "boneAllToolStripMenuItem";
+            this.boneAllToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.boneAllToolStripMenuItem.Text = "全てのボーンを表示(&A)";
+            this.boneAllToolStripMenuItem.Click += new System.EventHandler(this.boneAllToolStripMenuItem_Click);
+            // 
+            // boneNoneToolStripMenuItem
+            // 
+            this.boneNoneToolStripMenuItem.Name = "boneNoneToolStripMenuItem";
+            this.boneNoneToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.boneNoneToolStripMenuItem.Text = "なし(&N)";
+            this.boneNoneToolStripMenuItem.Click += new System.EventHandler(this.boneNoneToolStripMenuItem_Click);
+            // 
             // HelpToolStripMenuItem
             // 
             this.HelpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -539,7 +563,8 @@
             // 
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.panel1.Controls.Add(this.btnErase);
+            this.panel1.Controls.Add(this.btnAssign);
+            this.panel1.Controls.Add(this.btnReduce);
             this.panel1.Controls.Add(this.lbRadius);
             this.panel1.Controls.Add(this.lbWeight);
             this.panel1.Controls.Add(this.lvTSOFiles);
@@ -551,22 +576,22 @@
             this.panel1.Controls.Add(this.lvSkinWeights);
             this.panel1.Controls.Add(this.lbSkinWeights);
             this.panel1.Controls.Add(this.tbWeight);
-            this.panel1.Controls.Add(this.btnDraw);
+            this.panel1.Controls.Add(this.btnGain);
             this.panel1.Controls.Add(this.tbRadius);
             this.panel1.Location = new System.Drawing.Point(808, 25);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(200, 681);
             this.panel1.TabIndex = 22;
             // 
-            // btnErase
+            // btnReduce
             // 
-            this.btnErase.Location = new System.Drawing.Point(104, 512);
-            this.btnErase.Name = "btnErase";
-            this.btnErase.Size = new System.Drawing.Size(84, 23);
-            this.btnErase.TabIndex = 13;
-            this.btnErase.Text = "消す(&E)";
-            this.btnErase.UseVisualStyleBackColor = true;
-            this.btnErase.Click += new System.EventHandler(this.btnErase_Click);
+            this.btnReduce.Location = new System.Drawing.Point(104, 512);
+            this.btnReduce.Name = "btnReduce";
+            this.btnReduce.Size = new System.Drawing.Size(84, 23);
+            this.btnReduce.TabIndex = 13;
+            this.btnReduce.Text = "減算(&R)";
+            this.btnReduce.UseVisualStyleBackColor = true;
+            this.btnReduce.Click += new System.EventHandler(this.btnReduce_Click);
             // 
             // lbRadius
             // 
@@ -645,15 +670,15 @@
             this.tbWeight.Value = 4;
             this.tbWeight.ValueChanged += new System.EventHandler(this.tbWeight_ValueChanged);
             // 
-            // btnDraw
+            // btnGain
             // 
-            this.btnDraw.Location = new System.Drawing.Point(14, 512);
-            this.btnDraw.Name = "btnDraw";
-            this.btnDraw.Size = new System.Drawing.Size(84, 23);
-            this.btnDraw.TabIndex = 12;
-            this.btnDraw.Text = "塗る(&D)";
-            this.btnDraw.UseVisualStyleBackColor = true;
-            this.btnDraw.Click += new System.EventHandler(this.btnDraw_Click);
+            this.btnGain.Location = new System.Drawing.Point(14, 512);
+            this.btnGain.Name = "btnGain";
+            this.btnGain.Size = new System.Drawing.Size(84, 23);
+            this.btnGain.TabIndex = 12;
+            this.btnGain.Text = "加算(&G)";
+            this.btnGain.UseVisualStyleBackColor = true;
+            this.btnGain.Click += new System.EventHandler(this.btnGain_Click);
             // 
             // tbRadius
             // 
@@ -673,28 +698,15 @@
             this.statusStrip1.TabIndex = 23;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // boneToolStripMenuItem
+            // btnAssign
             // 
-            this.boneToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.boneAllToolStripMenuItem,
-            this.boneNoneToolStripMenuItem});
-            this.boneToolStripMenuItem.Name = "boneToolStripMenuItem";
-            this.boneToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
-            this.boneToolStripMenuItem.Text = "ボーン(&B)";
-            // 
-            // boneAllToolStripMenuItem
-            // 
-            this.boneAllToolStripMenuItem.Name = "boneAllToolStripMenuItem";
-            this.boneAllToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.boneAllToolStripMenuItem.Text = "全てのボーンを表示(&A)";
-            this.boneAllToolStripMenuItem.Click += new System.EventHandler(this.boneAllToolStripMenuItem_Click);
-            // 
-            // boneNoneToolStripMenuItem
-            // 
-            this.boneNoneToolStripMenuItem.Name = "boneNoneToolStripMenuItem";
-            this.boneNoneToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
-            this.boneNoneToolStripMenuItem.Text = "なし(&N)";
-            this.boneNoneToolStripMenuItem.Click += new System.EventHandler(this.boneNoneToolStripMenuItem_Click);
+            this.btnAssign.Location = new System.Drawing.Point(14, 541);
+            this.btnAssign.Name = "btnAssign";
+            this.btnAssign.Size = new System.Drawing.Size(84, 23);
+            this.btnAssign.TabIndex = 14;
+            this.btnAssign.Text = "代入(&A)";
+            this.btnAssign.UseVisualStyleBackColor = true;
+            this.btnAssign.Click += new System.EventHandler(this.btnAssign_Click);
             // 
             // Form1
             // 
@@ -755,7 +767,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.Label lbWeightCaption;
         private System.Windows.Forms.Label lbRadiusCaption;
-        private System.Windows.Forms.Button btnDraw;
+        private System.Windows.Forms.Button btnGain;
         private System.Windows.Forms.TrackBar tbRadius;
         private System.Windows.Forms.TrackBar tbWeight;
         private System.Windows.Forms.ListView lvSkinWeights;
@@ -786,10 +798,11 @@
         private System.Windows.Forms.ToolStripMenuItem helpSearchToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
         private System.Windows.Forms.ToolStripMenuItem helpVersionToolStripMenuItem;
-        private System.Windows.Forms.Button btnErase;
+        private System.Windows.Forms.Button btnReduce;
         private System.Windows.Forms.ToolStripMenuItem boneToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem boneAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem boneNoneToolStripMenuItem;
+        private System.Windows.Forms.Button btnAssign;
     }
 }
 
