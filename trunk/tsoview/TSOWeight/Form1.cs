@@ -175,17 +175,67 @@ namespace TSOWeight
 
         private void tbWeight_ValueChanged(object sender, EventArgs e)
         {
-            float value = (float)(tbWeight.Value) * 0.005f;
-            edWeight.Text = string.Format("{0:F3}", value);
-            viewer.Weight = value;
+            float weight = (float)(tbWeight.Value) * 0.005f;
+            edWeight.TextChanged -= new EventHandler(edWeight_TextChanged);
+            edWeight.Text = string.Format("{0:F3}", weight);
+            edWeight.TextChanged += new EventHandler(edWeight_TextChanged);
+            viewer.Weight = weight;
+            //Invalidate(false);
+        }
+
+        private void edWeight_TextChanged(object sender, EventArgs e)
+        {
+            float weight;
+            try
+            {
+                weight = float.Parse(edWeight.Text);
+            }
+            catch (FormatException)
+            {
+                weight = 0.020f;
+            }
+            int value = (int)(weight * 200.0f);
+            if (value < tbWeight.Minimum)
+                value = tbWeight.Minimum;
+            if (value > tbWeight.Maximum)
+                value = tbWeight.Maximum;
+            tbWeight.ValueChanged -= new EventHandler(tbWeight_ValueChanged);
+            tbWeight.Value = value;
+            tbWeight.ValueChanged += new EventHandler(tbWeight_ValueChanged);
+            viewer.Weight = weight;
             //Invalidate(false);
         }
 
         private void tbRadius_ValueChanged(object sender, EventArgs e)
         {
-            float value = (float)(tbRadius.Value) * 0.025f;
-            edRadius.Text = string.Format("{0:F3}", value);
-            viewer.Radius = value;
+            float radius = (float)(tbRadius.Value) * 0.025f;
+            edRadius.TextChanged -= new EventHandler(edRadius_TextChanged);
+            edRadius.Text = string.Format("{0:F3}", radius);
+            edRadius.TextChanged += new EventHandler(edRadius_TextChanged);
+            viewer.Radius = radius;
+            Invalidate(false);
+        }
+
+        private void edRadius_TextChanged(object sender, EventArgs e)
+        {
+            float radius;
+            try
+            {
+                radius = float.Parse(edRadius.Text);
+            }
+            catch (FormatException)
+            {
+                radius = 0.500f;
+            }
+            int value = (int)(radius * 40.0f);
+            if (value < tbRadius.Minimum)
+                value = tbRadius.Minimum;
+            if (value > tbRadius.Maximum)
+                value = tbRadius.Maximum;
+            tbRadius.ValueChanged -= new EventHandler(tbRadius_ValueChanged);
+            tbRadius.Value = value;
+            tbRadius.ValueChanged += new EventHandler(tbRadius_ValueChanged);
+            viewer.Radius = radius;
             Invalidate(false);
         }
 
