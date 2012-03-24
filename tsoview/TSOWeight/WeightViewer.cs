@@ -1146,6 +1146,21 @@ public class WeightViewer : Viewer
         }
     }
 
+    /// 選択ボーンに対応するウェイトを代入します。
+    public void AssignSkinWeight()
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            if (SelectedMesh != null && SelectedVertex != null)
+            {
+                Vector3 center = SelectedVertex.CalcSkindeformPosition(fig.ClipBoneMatrices(SelectedSubMesh));
+                MeshCommand mesh_command = new MeshCommand(fig, SelectedMesh, SelectedNode, weight, WeightOperation.Assign, center, radius);
+                Execute(mesh_command);
+            }
+        }
+    }
+
     /// 指定操作を実行します。
     public void Execute(ICommand command)
     {

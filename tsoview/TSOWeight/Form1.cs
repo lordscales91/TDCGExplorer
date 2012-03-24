@@ -189,16 +189,23 @@ namespace TSOWeight
             Invalidate(false);
         }
 
-        private void btnDraw_Click(object sender, EventArgs e)
+        private void btnGain_Click(object sender, EventArgs e)
         {
             viewer.GainSkinWeight();
             AssignSkinWeights(viewer.SelectedVertex);
             Invalidate(false);
         }
 
-        private void btnErase_Click(object sender, EventArgs e)
+        private void btnReduce_Click(object sender, EventArgs e)
         {
             viewer.ReduceSkinWeight();
+            AssignSkinWeights(viewer.SelectedVertex);
+            Invalidate(false);
+        }
+
+        private void btnAssign_Click(object sender, EventArgs e)
+        {
+            viewer.AssignSkinWeight();
             AssignSkinWeights(viewer.SelectedVertex);
             Invalidate(false);
         }
