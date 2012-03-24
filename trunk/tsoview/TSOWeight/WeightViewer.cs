@@ -314,15 +314,11 @@ namespace TDCG
         {
             bool updated = false;
 
-            Matrix[] clipped_boneMatrices = fig.ClipBoneMatrices(sub_mesh);
-
             for (int i = 0; i < sub_mesh.vertices.Length; i++)
             {
                 Vertex v = sub_mesh.vertices[i];
 
-                //頂点間距離が半径未満ならウェイトを加算する。
-                Vector3 p1 = v.CalcSkindeformPosition(clipped_boneMatrices);
-                if (Vector3.LengthSq(p1 - center) - radius * radius < float.Epsilon)
+                if (v.selected)
                 {
                     VertexCommand vertex_command = new VertexCommand(sub_mesh, selected_node, v, weight);
                     
@@ -959,20 +955,16 @@ public class WeightViewer : Viewer
                 {
                     if (selected_vertex != null)
                     {
-                        Vector3 p0 = selected_vertex.CalcSkindeformPosition(fig.ClipBoneMatrices(selected_sub_mesh));
-
                         sprite.Begin(SpriteFlags.None);
 
                         for (int i = 0; i < sub_mesh.vertices.Length; i++)
                         {
-                            //頂点間距離が半径未満なら黄色にする。
-                            Vector3 p1 = sub_mesh.vertices[i].CalcSkindeformPosition(clipped_boneMatrices);
-                            if (Vector3.LengthSq(p1 - p0) - radius * radius < float.Epsilon)
+                            if (sub_mesh.vertices[i].selected)
                                 rect = new Rectangle(8, 8, 7, 7);//yellow
                             else
                                 rect = new Rectangle(0, 0, 7, 7);//red
 
-                            Vector3 p2 = WorldToScreen(p1);
+                            Vector3 p2 = screen_positions[i];
                             p2.Z = 0.0f;
                             sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
                         }
@@ -998,8 +990,6 @@ public class WeightViewer : Viewer
 
                     if (selected_vertex != null)
                     {
-                        Vector3 p0 = selected_vertex.CalcSkindeformPosition(fig.ClipBoneMatrices(selected_sub_mesh));
-
                         sprite.Begin(SpriteFlags.None);
 
                         for (int i = 0; i < sub_mesh.vertices.Length; i++)
@@ -1007,14 +997,12 @@ public class WeightViewer : Viewer
                             if (!ccws[i])
                                 continue;
 
-                            //頂点間距離が半径未満なら黄色にする。
-                            Vector3 p1 = sub_mesh.vertices[i].CalcSkindeformPosition(clipped_boneMatrices);
-                            if (Vector3.LengthSq(p1 - p0) - radius * radius < float.Epsilon)
+                            if (sub_mesh.vertices[i].selected)
                                 rect = new Rectangle(8, 8, 7, 7);//yellow
                             else
                                 rect = new Rectangle(0, 0, 7, 7);//red
 
-                            Vector3 p2 = WorldToScreen(p1);
+                            Vector3 p2 = screen_positions[i];
                             p2.Z = 0.0f;
                             sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
                         }
@@ -1127,11 +1115,52 @@ public class WeightViewer : Viewer
         }
     }
 
+    float radius = 0.500f;
     /// 半径
-    public float radius = 0.500f;
+    public float Radius
+    {
+        get { return radius; }
+        set
+        {
+            radius = value;
+            SelectVertices();
+        }
+    }
 
+    float weight = 0.020f;
     /// 加算ウェイト値
-    public float weight = 0.020f;
+    public float Weight
+    {
+        get { return weight; }
+        set
+        {
+            weight = value;
+        }
+    }
+
+    public void SelectVertices()
+    {
+        Figure fig;
+        if (TryGetFigure(out fig))
+        {
+            if (SelectedMesh != null && SelectedVertex != null)
+            {
+                Vector3 center = SelectedVertex.CalcSkindeformPosition(fig.ClipBoneMatrices(SelectedSubMesh));
+                TSOSubMesh sub_mesh = SelectedSubMesh;
+
+                Matrix[] clipped_boneMatrices = fig.ClipBoneMatrices(sub_mesh);
+
+                for (int i = 0; i < sub_mesh.vertices.Length; i++)
+                {
+                    Vertex v = sub_mesh.vertices[i];
+
+                    //頂点間距離が半径未満なら選択する。
+                    Vector3 p1 = v.CalcSkindeformPosition(clipped_boneMatrices);
+                    v.selected = Vector3.LengthSq(p1 - center) - radius * radius < float.Epsilon;
+                }
+            }
+        }
+    }
 
     /// 操作リスト
     public List<ICommand> commands = new List<ICommand>();
@@ -1301,6 +1330,7 @@ public class WeightViewer : Viewer
         set
         {
             selected_vertex = value;
+            SelectVertices();
         }
     }
 
@@ -1454,6 +1484,7 @@ public class WeightViewer : Viewer
                 {
                     selected_sub_mesh = found_sub_mesh;
                     selected_vertex = found_vertex;
+                    SelectVertices();
                     if (SelectedVertexChanged != null)
                         SelectedVertexChanged(this, EventArgs.Empty);
                 }

@@ -408,6 +408,9 @@ namespace TDCG
         /// </summary>
         public uint bone_indices;
 
+        /// 選択中であるか
+        public bool selected = false;
+
         /// <summary>
         /// 頂点を読みとります。
         /// </summary>
