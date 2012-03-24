@@ -88,6 +88,8 @@
             this.lvMeshes = new System.Windows.Forms.ListView();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.edRadius = new System.Windows.Forms.TextBox();
+            this.edWeight = new System.Windows.Forms.TextBox();
             this.btnAssign = new System.Windows.Forms.Button();
             this.btnReduce = new System.Windows.Forms.Button();
             this.lbWeightCaption = new System.Windows.Forms.Label();
@@ -100,8 +102,6 @@
             this.btnGain = new System.Windows.Forms.Button();
             this.tbRadius = new System.Windows.Forms.TrackBar();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.edWeight = new System.Windows.Forms.TextBox();
-            this.edRadius = new System.Windows.Forms.TextBox();
             this.menuStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tbWeight)).BeginInit();
@@ -583,6 +583,24 @@
             this.panel1.Size = new System.Drawing.Size(200, 681);
             this.panel1.TabIndex = 22;
             // 
+            // edRadius
+            // 
+            this.edRadius.Location = new System.Drawing.Point(104, 473);
+            this.edRadius.Name = "edRadius";
+            this.edRadius.Size = new System.Drawing.Size(84, 19);
+            this.edRadius.TabIndex = 10;
+            this.edRadius.Text = "0.500";
+            this.edRadius.TextChanged += new System.EventHandler(this.edRadius_TextChanged);
+            // 
+            // edWeight
+            // 
+            this.edWeight.Location = new System.Drawing.Point(104, 418);
+            this.edWeight.Name = "edWeight";
+            this.edWeight.Size = new System.Drawing.Size(84, 19);
+            this.edWeight.TabIndex = 7;
+            this.edWeight.Text = "0.020";
+            this.edWeight.TextChanged += new System.EventHandler(this.edWeight_TextChanged);
+            // 
             // btnAssign
             // 
             this.btnAssign.Location = new System.Drawing.Point(14, 557);
@@ -693,22 +711,6 @@
             this.statusStrip1.Size = new System.Drawing.Size(1008, 22);
             this.statusStrip1.TabIndex = 23;
             this.statusStrip1.Text = "statusStrip1";
-            // 
-            // edWeight
-            // 
-            this.edWeight.Location = new System.Drawing.Point(104, 418);
-            this.edWeight.Name = "edWeight";
-            this.edWeight.Size = new System.Drawing.Size(84, 19);
-            this.edWeight.TabIndex = 7;
-            this.edWeight.Text = "0.020";
-            // 
-            // edRadius
-            // 
-            this.edRadius.Location = new System.Drawing.Point(104, 473);
-            this.edRadius.Name = "edRadius";
-            this.edRadius.Size = new System.Drawing.Size(84, 19);
-            this.edRadius.TabIndex = 10;
-            this.edRadius.Text = "0.500";
             // 
             // Form1
             // 
