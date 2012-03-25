@@ -38,7 +38,7 @@ src = <<EOT
 EOT
 
 p1 = Matrix.invert(scaling) * vertices_to_matrix(create_vertices(src))
-m1 = Matrix.invert(Matrix.translation(t1)) * p1
+m1 = p1
 puts "Chichi_Left1"
 dump_matrix m1
 
@@ -51,7 +51,7 @@ src = <<EOT
 EOT
 
 p2 = Matrix.invert(scaling) * vertices_to_matrix(create_vertices(src))
-m2 = Matrix.invert(Matrix.translation(t2)) * p2 * Matrix.invert(p1)
+m2 = p2 * Matrix.invert(p1)
 puts "Chichi_Left2"
 dump_matrix m2
 
@@ -64,7 +64,7 @@ src = <<EOT
 EOT
 
 p3 = Matrix.invert(scaling) * vertices_to_matrix(create_vertices(src))
-m3 = Matrix.invert(Matrix.translation(t3)) * p3 * Matrix.invert(p2)
+m3 = p3 * Matrix.invert(p2)
 puts "Chichi_Left3"
 dump_matrix m3
 
@@ -77,7 +77,7 @@ src = <<EOT
 EOT
 
 p4 = Matrix.invert(scaling) * vertices_to_matrix(create_vertices(src))
-m4 = Matrix.invert(Matrix.translation(t4)) * p4 * Matrix.invert(p3)
+m4 = p4 * Matrix.invert(p3)
 puts "Chichi_Left4"
 dump_matrix m4
 
@@ -90,7 +90,7 @@ src = <<EOT
 EOT
 
 p5 = Matrix.invert(scaling) * vertices_to_matrix(create_vertices(src))
-m5 = Matrix.invert(Matrix.translation(t5)) * p5 * Matrix.invert(p4)
+m5 = p5 * Matrix.invert(p4)
 puts "Chichi_Left5"
 dump_matrix m5
 
@@ -103,6 +103,6 @@ src = <<EOT
 EOT
 
 p5e = Matrix.invert(scaling) * vertices_to_matrix(create_vertices(src))
-m5e = Matrix.invert(Matrix.translation(t5e)) * p5e * Matrix.invert(p5)
+m5e = p5e * Matrix.invert(p5)
 puts "Chichi_Left5_End"
 dump_matrix m5e

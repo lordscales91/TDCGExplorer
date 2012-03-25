@@ -140,21 +140,21 @@ public class SliderMatrix
     public static Matrix GetMinChichiR1()
     {
         Matrix m = Matrix.Identity;
-m.M11 = 0.838980F;
+m.M11 = 0.838979F;
 m.M12 = 0.000000F;
-m.M13 = 0.092850F;
+m.M13 = 0.092851F;
 m.M14 = 0.000000F;
-m.M21 = 0.014230F;
-m.M22 = 0.991600F;
-m.M23 = -0.128580F;
+m.M21 = 0.014229F;
+m.M22 = 0.991598F;
+m.M23 = -0.128573F;
 m.M24 = 0.000000F;
-m.M31 = -0.050890F;
-m.M32 = 0.060350F;
-m.M33 = 0.459780F;
+m.M31 = -0.050885F;
+m.M32 = 0.060347F;
+m.M33 = 0.459783F;
 m.M34 = 0.000000F;
-m.M41 = -0.112670F;
-m.M42 = 0.003287F;
-m.M43 = 0.256559F;
+m.M41 = -0.040000F;
+m.M42 = 2.235000F;
+m.M43 = -0.434000F;
 m.M44 = 1.000000F;
         return m;
     }
@@ -163,21 +163,21 @@ m.M44 = 1.000000F;
     public static Matrix GetMinChichiR2()
     {
         Matrix m = Matrix.Identity;
-m.M11 = 0.931411F;
-m.M12 = -0.000002F;
-m.M13 = -0.164169F;
+m.M11 = 0.931421F;
+m.M12 = -0.000001F;
+m.M13 = -0.164172F;
 m.M14 = 0.000000F;
-m.M21 = 0.018489F;
-m.M22 = 0.921278F;
-m.M23 = 0.343515F;
+m.M21 = 0.018493F;
+m.M22 = 0.921283F;
+m.M23 = 0.343484F;
 m.M24 = 0.000000F;
-m.M31 = 0.060021F;
-m.M32 = -0.091309F;
-m.M33 = 1.114699F;
+m.M31 = 0.060012F;
+m.M32 = -0.091304F;
+m.M33 = 1.114690F;
 m.M34 = 0.000000F;
-m.M41 = 0.049161F;
-m.M42 = 0.163693F;
-m.M43 = 0.235952F;
+m.M41 = -0.398648F;
+m.M42 = -1.191724F;
+m.M43 = 1.387158F;
 m.M44 = 1.000000F;
         return m;
     }
@@ -198,9 +198,9 @@ m.M31 = 0.000000F;
 m.M32 = 0.000001F;
 m.M33 = 1.298548F;
 m.M34 = 0.000000F;
-m.M41 = -0.028062F;
-m.M42 = -0.134603F;
-m.M43 = -0.145561F;
+m.M41 = -0.214649F;
+m.M42 = -0.510181F;
+m.M43 = 0.493325F;
 m.M44 = 1.000000F;
         return m;
     }
@@ -219,11 +219,11 @@ m.M23 = 0.000000F;
 m.M24 = 0.000000F;
 m.M31 = -0.000001F;
 m.M32 = 0.000000F;
-m.M33 = 1.451920F;
+m.M33 = 1.451921F;
 m.M34 = 0.000000F;
-m.M41 = 0.043505F;
-m.M42 = 0.007941F;
-m.M43 = -0.174366F;
+m.M41 = -0.094427F;
+m.M42 = -0.016221F;
+m.M43 = 0.385749F;
 m.M44 = 1.000000F;
         return m;
     }
@@ -244,9 +244,9 @@ m.M31 = 0.000000F;
 m.M32 = 0.000000F;
 m.M33 = 1.000001F;
 m.M34 = 0.000000F;
-m.M41 = -0.000099F;
-m.M42 = -0.000705F;
-m.M43 = -0.000509F;
+m.M41 = -0.064099F;
+m.M42 = 0.044692F;
+m.M43 = 0.238179F;
 m.M44 = 1.000000F;
         return m;
     }
@@ -267,9 +267,9 @@ m.M31 = 0.000001F;
 m.M32 = 0.000000F;
 m.M33 = 0.999999F;
 m.M34 = 0.000000F;
-m.M41 = -0.000274F;
-m.M42 = 0.000190F;
-m.M43 = 0.000653F;
+m.M41 = 0.000009F;
+m.M42 = 0.049918F;
+m.M43 = 0.110920F;
 m.M44 = 1.000000F;
         return m;
     }
@@ -278,7 +278,6 @@ m.M44 = 1.000000F;
     public static Matrix GetMinChichiL1()
     {
         Matrix m = Matrix.Identity;
-
 m.M11 = 0.838981F;
 m.M12 = 0.000000F;
 m.M13 = -0.092846F;
@@ -291,9 +290,9 @@ m.M31 = 0.050883F;
 m.M32 = 0.060347F;
 m.M33 = 0.459783F;
 m.M34 = 0.000000F;
-m.M41 = 0.112161F;
-m.M42 = 0.003479F;
-m.M43 = 0.256440F;
+m.M41 = 0.040000F;
+m.M42 = 2.235000F;
+m.M43 = -0.434000F;
 m.M44 = 1.000000F;
         return m;
     }
@@ -312,11 +311,11 @@ m.M23 = 0.343484F;
 m.M24 = 0.000000F;
 m.M31 = -0.060014F;
 m.M32 = -0.091303F;
-m.M33 = 1.114690F;
+m.M33 = 1.114691F;
 m.M34 = 0.000000F;
-m.M41 = -0.048692F;
-m.M42 = 0.163041F;
-m.M43 = 0.235785F;
+m.M41 = 0.398652F;
+m.M42 = -1.192715F;
+m.M43 = 1.386874F;
 m.M44 = 1.000000F;
         return m;
     }
@@ -337,9 +336,9 @@ m.M31 = 0.000000F;
 m.M32 = 0.000000F;
 m.M33 = 1.298548F;
 m.M34 = 0.000000F;
-m.M41 = 0.027806F;
-m.M42 = -0.134507F;
-m.M43 = -0.145748F;
+m.M41 = 0.214698F;
+m.M42 = -0.510182F;
+m.M43 = 0.493322F;
 m.M44 = 1.000000F;
         return m;
     }
@@ -358,11 +357,11 @@ m.M23 = 0.000001F;
 m.M24 = 0.000000F;
 m.M31 = -0.000002F;
 m.M32 = 0.000000F;
-m.M33 = 1.451920F;
+m.M33 = 1.451921F;
 m.M34 = 0.000000F;
-m.M41 = -0.042320F;
-m.M42 = 0.007925F;
-m.M43 = -0.174345F;
+m.M41 = 0.095882F;
+m.M42 = -0.016238F;
+m.M43 = 0.385769F;
 m.M44 = 1.000000F;
         return m;
     }
@@ -383,9 +382,9 @@ m.M31 = 0.000001F;
 m.M32 = 0.000000F;
 m.M33 = 1.000001F;
 m.M34 = 0.000000F;
-m.M41 = -0.000287F;
-m.M42 = 0.000293F;
-m.M43 = -0.000554F;
+m.M41 = 0.064114F;
+m.M42 = 0.045690F;
+m.M43 = 0.238135F;
 m.M44 = 1.000000F;
         return m;
     }
@@ -406,9 +405,9 @@ m.M31 = -0.000001F;
 m.M32 = 0.000000F;
 m.M33 = 1.000000F;
 m.M34 = 0.000000F;
-m.M41 = 0.000289F;
-m.M42 = 0.000146F;
-m.M43 = -0.000345F;
+m.M41 = 0.000006F;
+m.M42 = 0.049874F;
+m.M43 = 0.109921F;
 m.M44 = 1.000000F;
         return m;
     }
@@ -541,32 +540,6 @@ m.M44 = 1.000000F;
     /// 拡大変位
     public Vector3 Arm;
 
-    /// 変形行列
-    public Matrix ChichiR1;
-    /// 変形行列
-    public Matrix ChichiR2;
-    /// 変形行列
-    public Matrix ChichiR3;
-    /// 変形行列
-    public Matrix ChichiR4;
-    /// 変形行列
-    public Matrix ChichiR5;
-    /// 変形行列
-    public Matrix ChichiR5E;
-
-    /// 変形行列
-    public Matrix ChichiL1;
-    /// 変形行列
-    public Matrix ChichiL2;
-    /// 変形行列
-    public Matrix ChichiL3;
-    /// 変形行列
-    public Matrix ChichiL4;
-    /// 変形行列
-    public Matrix ChichiL5;
-    /// 変形行列
-    public Matrix ChichiL5E;
-
     /// 拡大変位
     public Vector3 Chichi;
 
@@ -639,20 +612,6 @@ m.M44 = 1.000000F;
             {
                 float ratio = bust_ratio / FlatRatio;
 
-                ChichiR1 = GetMatrixRatio(GetMinChichiR1(), Matrix.Identity, ratio);
-                ChichiR2 = GetMatrixRatio(GetMinChichiR2(), Matrix.Identity, ratio);
-                ChichiR3 = GetMatrixRatio(GetMinChichiR3(), Matrix.Identity, ratio);
-                ChichiR4 = GetMatrixRatio(GetMinChichiR4(), Matrix.Identity, ratio);
-                ChichiR5 = GetMatrixRatio(GetMinChichiR5(), Matrix.Identity, ratio);
-                ChichiR5E = GetMatrixRatio(GetMinChichiR5E(), Matrix.Identity, ratio);
-
-                ChichiL1 = GetMatrixRatio(GetMinChichiL1(), Matrix.Identity, ratio);
-                ChichiL2 = GetMatrixRatio(GetMinChichiL2(), Matrix.Identity, ratio);
-                ChichiL3 = GetMatrixRatio(GetMinChichiL3(), Matrix.Identity, ratio);
-                ChichiL4 = GetMatrixRatio(GetMinChichiL4(), Matrix.Identity, ratio);
-                ChichiL5 = GetMatrixRatio(GetMinChichiL5(), Matrix.Identity, ratio);
-                ChichiL5E = GetMatrixRatio(GetMinChichiL5E(), Matrix.Identity, ratio);
-
                 Chichi = GetVector3Ratio(new Vector3(1,1,1), GetMinChichi(), ratio);
             }
             else
@@ -723,43 +682,45 @@ m.M44 = 1.000000F;
     /// おっぱい変形：貧乳を行います。
     public void TransformChichiFlat(TMONode tmo_node, ref Matrix m)
     {
+        float ratio = bust_ratio / FlatRatio;
+
         switch (tmo_node.Name)
         {
             case "Chichi_Right1":
-                m *= this.ChichiR1;
+                m = GetMatrixRatio(GetMinChichiR1(), m, ratio);
                 break;
             case "Chichi_Right2":
-                m *= this.ChichiR2;
+                m = GetMatrixRatio(GetMinChichiR2(), m, ratio);
                 break;
             case "Chichi_Right3":
-                m *= this.ChichiR3;
+                m = GetMatrixRatio(GetMinChichiR3(), m, ratio);
                 break;
             case "Chichi_Right4":
-                m *= this.ChichiR4;
+                m = GetMatrixRatio(GetMinChichiR4(), m, ratio);
                 break;
             case "Chichi_Right5":
-                m *= this.ChichiR5;
+                m = GetMatrixRatio(GetMinChichiR5(), m, ratio);
                 break;
             case "Chichi_Right5_end":
-                m *= this.ChichiR5E;
+                m = GetMatrixRatio(GetMinChichiR5E(), m, ratio);
                 break;
             case "Chichi_Left1":
-                m *= this.ChichiL1;
+                m = GetMatrixRatio(GetMinChichiL1(), m, ratio);
                 break;
             case "Chichi_Left2":
-                m *= this.ChichiL2;
+                m = GetMatrixRatio(GetMinChichiL2(), m, ratio);
                 break;
             case "Chichi_Left3":
-                m *= this.ChichiL3;
+                m = GetMatrixRatio(GetMinChichiL3(), m, ratio);
                 break;
             case "Chichi_Left4":
-                m *= this.ChichiL4;
+                m = GetMatrixRatio(GetMinChichiL4(), m, ratio);
                 break;
             case "Chichi_Left5":
-                m *= this.ChichiL5;
+                m = GetMatrixRatio(GetMinChichiL5(), m, ratio);
                 break;
             case "Chichi_Left5_End":
-                m *= this.ChichiL5E;
+                m = GetMatrixRatio(GetMinChichiL5E(), m, ratio);
                 break;
         }
 
