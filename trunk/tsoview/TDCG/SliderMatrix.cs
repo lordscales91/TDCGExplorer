@@ -179,6 +179,12 @@ m.M41 = -0.398459F;
 m.M42 = -1.191766F;
 m.M43 = 1.387521F;
 m.M44 = 1.000000F;
+        m.M43 += 0.2F;
+        float scale = 1.125f;
+        m.M41 /= scale;
+        m.M42 /= scale;
+        m.M43 /= scale;
+        m *= Matrix.Scaling(scale, scale, scale);
         return m;
     }
 
@@ -202,6 +208,11 @@ m.M41 = -0.214215F;
 m.M42 = -0.509967F;
 m.M43 = 0.492733F;
 m.M44 = 1.000000F;
+        float scale = 1.0f / 1.125f;
+        m.M41 /= scale;
+        m.M42 /= scale;
+        m.M43 /= scale;
+        m *= Matrix.Scaling(scale, scale, scale);
         return m;
     }
 
@@ -317,6 +328,12 @@ m.M41 = 0.398463F;
 m.M42 = -1.191766F;
 m.M43 = 1.387515F;
 m.M44 = 1.000000F;
+        m.M43 += 0.2F;
+        float scale = 1.125f;
+        m.M41 /= scale;
+        m.M42 /= scale;
+        m.M43 /= scale;
+        m *= Matrix.Scaling(scale, scale, scale);
         return m;
     }
 
@@ -340,6 +357,11 @@ m.M41 = 0.214248F;
 m.M42 = -0.511035F;
 m.M43 = 0.492813F;
 m.M44 = 1.000000F;
+        float scale = 1.0f / 1.125f;
+        m.M41 /= scale;
+        m.M42 /= scale;
+        m.M43 /= scale;
+        m *= Matrix.Scaling(scale, scale, scale);
         return m;
     }
 
@@ -611,8 +633,9 @@ m.M44 = 1.000000F;
             if (Flat())
             {
                 float ratio = bust_ratio / FlatRatio;
+                float scale = 1.0f;
 
-                Chichi = GetVector3Ratio(new Vector3(1,1,1), GetMinChichi(), ratio);
+                Chichi = GetVector3Ratio(new Vector3(scale, scale, scale), GetMinChichi(), ratio);
             }
             else
                 Chichi = GetVector3Ratio(GetMinChichi(), GetMaxChichi(), (bust_ratio - FlatRatio) / (1.0f - FlatRatio));
