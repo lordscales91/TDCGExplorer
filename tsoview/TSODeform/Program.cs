@@ -35,15 +35,7 @@ public static class Program
         foreach (TSOMesh mesh in tso.meshes)
         foreach (TSOSubMesh sub in mesh.sub_meshes)
         {
-            Matrix[] clipped_boneMatrices = new Matrix[sub.maxPalettes];
-
-            for (int numPalettes = 0; numPalettes < sub.maxPalettes; numPalettes++)
-            {
-                TSONode tso_node = sub.GetBone(numPalettes);
-                TMONode tmo_node;
-                if (fig.nodemap.TryGetValue(tso_node, out tmo_node))
-                    clipped_boneMatrices[numPalettes] = tso_node.offset_matrix * tmo_node.combined_matrix;
-            }
+            Matrix[] clipped_boneMatrices = fig.ClipBoneMatrices(sub);
 
             for (int i = 0; i < sub.vertices.Length; i++)
             {
