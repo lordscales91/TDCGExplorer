@@ -269,6 +269,9 @@ namespace TSOWeight
             if (viewer.TryGetFigure(out fig))
             {
                 SaveFileDialog dialog = new SaveFileDialog();
+                int index = lvTSOFiles.SelectedIndices[0];
+                TSOFile tso = fig.TSOList[index];
+                dialog.FileName = tso.FileName;
                 dialog.Filter = "tso files|*.tso";
                 dialog.FilterIndex = 0;
                 if (dialog.ShowDialog() == DialogResult.OK)
@@ -277,8 +280,6 @@ namespace TSOWeight
                     string extension = Path.GetExtension(dest_file);
                     if (extension == ".tso")
                     {
-                        int index = lvTSOFiles.SelectedIndices[0];
-                        TSOFile tso = fig.TSOList[index];
                         tso.Save(dest_file);
                     }
                 }
