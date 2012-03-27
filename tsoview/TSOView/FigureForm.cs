@@ -115,7 +115,20 @@ public partial class FigureForm : Form
             return;
         if (sub_script != null)
             sub_script.SaveShader();
-        tso.Save(@"out.tso");
+
+        SaveFileDialog dialog = new SaveFileDialog();
+        dialog.FileName = tso.FileName;
+        dialog.Filter = "tso files|*.tso";
+        dialog.FilterIndex = 0;
+        if (dialog.ShowDialog() == DialogResult.OK)
+        {
+            string dest_file = dialog.FileName;
+            string extension = Path.GetExtension(dest_file);
+            if (extension == ".tso")
+            {
+                tso.Save(dest_file);
+            }
+        }
     }
 
     private void btnUp_Click(object sender, EventArgs e)
