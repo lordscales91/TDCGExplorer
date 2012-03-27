@@ -1319,7 +1319,7 @@ public class Viewer : IDisposable
                     if (file != "")
                         tso.FileName = Path.GetFileName(file);
                     else
-                        tso.FileName = "TSO #" + i.ToString();
+                        tso.FileName = string.Format("{0:X2}", tso.Row);
                 }
             }
         }
