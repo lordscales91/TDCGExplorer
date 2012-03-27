@@ -312,7 +312,7 @@ public class Viewer : IDisposable
         foreach (TSOFile tso in tso_list)
         {
             tso.Open(device, effect);
-            fig.AddTSO(tso);
+            fig.TSOList.Add(tso);
         }
         fig.UpdateNodeMapAndBoneMatrices();
         int idx = FigureList.Count;
@@ -397,7 +397,7 @@ public class Viewer : IDisposable
         foreach (TSOFile tso in tso_list)
         {
             tso.Open(device, effect);
-            fig.AddTSO(tso);
+            fig.TSOList.Add(tso);
         }
         fig.UpdateNodeMapAndBoneMatrices();
         if (FigureEvent != null)

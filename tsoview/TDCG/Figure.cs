@@ -269,18 +269,6 @@ public class Figure : IDisposable
     }
 
     /// <summary>
-    /// tsoをTSOListに追加します。
-    /// </summary>
-    /// <param name="tso">tso</param>
-    public void AddTSO(TSOFile tso)
-    {
-        if (tmo.frames != null)
-            AddNodeMap(tso);
-
-        TSOList.Add(tso);
-    }
-
-    /// <summary>
     /// bone行列を更新します。
     /// ただしtmo frameを無視します。
     /// </summary>
