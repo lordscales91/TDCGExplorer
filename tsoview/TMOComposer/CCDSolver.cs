@@ -37,7 +37,7 @@ namespace TDCG
         /// <summary>
         /// 接地が有効であるか。
         /// </summary>
-        public bool FloorEnabled { get; set; }
+        public bool Grounded { get; set; }
 
         bool solved = true;
         /// <summary>
@@ -186,7 +186,7 @@ namespace TDCG
             {
                 effector.Translation = target;
             }
-            if (FloorEnabled)
+            if (Grounded)
                 foreach (string ename in effector_list)
                 {
                     Solve(tmo, ename, target_dictionary[ename]);

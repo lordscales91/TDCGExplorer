@@ -52,7 +52,7 @@
             this.btnDel = new System.Windows.Forms.Button();
             this.btnCopy = new System.Windows.Forms.Button();
             this.cbLimitRotation = new System.Windows.Forms.CheckBox();
-            this.cbFloor = new System.Windows.Forms.CheckBox();
+            this.cbGrounded = new System.Windows.Forms.CheckBox();
             this.btnFlip = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.gvTMOAnimItems)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tmoAnimItemBindingSource)).BeginInit();
@@ -251,18 +251,18 @@
             this.cbLimitRotation.UseVisualStyleBackColor = true;
             this.cbLimitRotation.CheckedChanged += new System.EventHandler(this.cbLimitRotation_CheckedChanged);
             // 
-            // cbFloor
+            // cbGrounded
             // 
-            this.cbFloor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbFloor.Checked = true;
-            this.cbFloor.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbFloor.Location = new System.Drawing.Point(572, 34);
-            this.cbFloor.Name = "cbFloor";
-            this.cbFloor.Size = new System.Drawing.Size(100, 16);
-            this.cbFloor.TabIndex = 14;
-            this.cbFloor.Text = "&Floor";
-            this.cbFloor.UseVisualStyleBackColor = true;
-            this.cbFloor.CheckedChanged += new System.EventHandler(this.cbFloor_CheckedChanged);
+            this.cbGrounded.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbGrounded.Checked = true;
+            this.cbGrounded.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbGrounded.Location = new System.Drawing.Point(572, 34);
+            this.cbGrounded.Name = "cbGrounded";
+            this.cbGrounded.Size = new System.Drawing.Size(100, 16);
+            this.cbGrounded.TabIndex = 14;
+            this.cbGrounded.Text = "&Grounded";
+            this.cbGrounded.UseVisualStyleBackColor = true;
+            this.cbGrounded.CheckedChanged += new System.EventHandler(this.cbGrounded_CheckedChanged);
             // 
             // btnFlip
             // 
@@ -280,7 +280,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 563);
             this.Controls.Add(this.btnFlip);
-            this.Controls.Add(this.cbFloor);
+            this.Controls.Add(this.cbGrounded);
             this.Controls.Add(this.cbLimitRotation);
             this.Controls.Add(this.btnCopy);
             this.Controls.Add(this.btnDel);
@@ -325,7 +325,7 @@
         private System.Windows.Forms.Button btnDel;
         private System.Windows.Forms.Button btnCopy;
         private System.Windows.Forms.CheckBox cbLimitRotation;
-        private System.Windows.Forms.CheckBox cbFloor;
+        private System.Windows.Forms.CheckBox cbGrounded;
         private System.Windows.Forms.Button btnFlip;
     }
 }

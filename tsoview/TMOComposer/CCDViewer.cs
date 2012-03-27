@@ -30,7 +30,7 @@ public class CCDViewer : Viewer
     public CCDViewer()
     {
         LimitRotationEnabled = true;
-        FloorEnabled = true;
+        Grounded = true;
         solver.TMONodeRotation += delegate(TMONode node)
         {
             LimitRotation(node);
@@ -262,7 +262,7 @@ public class CCDViewer : Viewer
     /// <summary>
     /// 接地が有効であるか。
     /// </summary>
-    public bool FloorEnabled { get { return solver.FloorEnabled; } set { solver.FloorEnabled = value; } }
+    public bool Grounded { get { return solver.Grounded; } set { solver.Grounded = value; } }
 
     void DrawEffector()
     {
