@@ -383,9 +383,9 @@ namespace TMOComposer
             viewer.LimitRotationEnabled = cbLimitRotation.Checked;
         }
 
-        private void cbFloor_CheckedChanged(object sender, EventArgs e)
+        private void cbGrounded_CheckedChanged(object sender, EventArgs e)
         {
-            viewer.FloorEnabled = cbFloor.Checked;
+            viewer.Grounded = cbGrounded.Checked;
         }
 
         private void btnFlip_Click(object sender, EventArgs e)

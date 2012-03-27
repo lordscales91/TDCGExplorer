@@ -82,7 +82,7 @@
 
 	参考：回転角の範囲は angle-GRABIA-zxy.xml, angle-GRABIA-xyz.xml で設定しています。
 
-・Floor：接地IK
+・Grounded：接地IK
 接地IKを有効にすると、腰ボーンをドラッグしたときに足先に対するIKを行います。
 
 
