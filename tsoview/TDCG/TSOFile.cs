@@ -1536,5 +1536,11 @@ namespace TDCG
             foreach (TSOTex tex in textures)
                 tex.Dispose();
         }
+
+        /// ファイル名
+        public string FileName;
+
+        /// 出現部位
+        public byte Row;
     }
 }

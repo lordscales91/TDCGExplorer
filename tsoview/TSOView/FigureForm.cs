@@ -69,7 +69,7 @@ public partial class FigureForm : Form
         for (int i = 0; i < fig.TSOList.Count; i++)
         {
             TSOFile tso = fig.TSOList[i];
-            ListViewItem li = new ListViewItem("TSO #" + i.ToString());
+            ListViewItem li = new ListViewItem(tso.FileName ?? "TSO #" + i.ToString());
             li.Tag = tso;
             lvTSOFiles.Items.Add(li);
         }

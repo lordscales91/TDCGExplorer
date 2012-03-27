@@ -362,7 +362,7 @@ public class Viewer : IDisposable
     {
         Debug.WriteLine("loading " + source_file);
         using (Stream source_stream = File.OpenRead(source_file))
-            LoadTSOFile(source_stream);
+            LoadTSOFile(source_stream, source_file);
     }
 
     /// <summary>
@@ -371,11 +371,22 @@ public class Viewer : IDisposable
     /// <param name="source_stream">ストリーム</param>
     public void LoadTSOFile(Stream source_stream)
     {
+        LoadTSOFile(source_stream, null);
+    }
+
+    /// <summary>
+    /// 指定ストリームからTSOFileを読み込みます。
+    /// </summary>
+    /// <param name="source_stream">ストリーム</param>
+    /// <param name="file">ファイル名</param>
+    public void LoadTSOFile(Stream source_stream, string file)
+    {
         List<TSOFile> tso_list = new List<TSOFile>();
         try
         {
             TSOFile tso = new TSOFile();
             tso.Load(source_stream);
+            tso.FileName = file != null ? Path.GetFileNameWithoutExtension(file) : null;
             tso_list.Add(tso);
         }
         catch (Exception ex)
@@ -1281,6 +1292,7 @@ public class Viewer : IDisposable
             {
                 TSOFile tso = new TSOFile();
                 tso.Load(dest);
+                tso.Row = opt1[0];
                 fig.TSOList.Add(tso);
             };
             Debug.WriteLine("loading " + source_file);
@@ -1299,6 +1311,16 @@ public class Viewer : IDisposable
                 fig.slider_matrix.WaistRatio = data.GetSliderValue(7);
                 fig.slider_matrix.BustRatio = data.GetSliderValue(0);
                 fig.slider_matrix.EyeRatio = data.GetSliderValue(8);
+
+                for (int i = 0; i < fig.TSOList.Count; i++)
+                {
+                    TSOFile tso = fig.TSOList[i];
+                    string file = data.GetFileName(tso.Row);
+                    if (file != "")
+                        tso.FileName = Path.GetFileName(file);
+                    else
+                        tso.FileName = "TSO #" + i.ToString();
+                }
             }
         }
         catch (Exception ex)
