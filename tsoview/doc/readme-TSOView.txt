@@ -1,6 +1,6 @@
 ダウンロードありがとうございます
 
-●TSOView ver 0.3.6
+●TSOView ver 0.3.7
 
 これはなに
 Direct3D上でTSOをレンダリングします。
@@ -73,6 +73,11 @@ TSOView.exe [file ... ]
 　Ctrlキーを押しながらtsoまたはpngをd&dすると選択フィギュアに追加します。
 　tmoをd&dすると選択フィギュアのモーションを置き換えます。
 
+
+ver 0.3.6 からの変更点：
+・TSOリストの名前項目にTSOファイル名を表示
+・MODS1197 toonshader2(20120328) RC3
+・貧乳再現性を向上
 
 ver 0.3.5 からの変更点：
 ・XPC03010 toonshader4TSOView

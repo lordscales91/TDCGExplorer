@@ -1,6 +1,6 @@
 ダウンロードありがとうございます
 
-●TSOView ver 0.3.6 with TMOComposer and TMOProportion
+●TSOView ver 0.3.7 with TMOComposer and TMOProportion
 
 これはなに
 TSOView, TMOComposer, TMOProportion をひとつにまとめたパッケージです。
