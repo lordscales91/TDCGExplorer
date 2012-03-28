@@ -222,21 +222,21 @@ public partial class FigureForm : Form
         fig.UpdateBoneMatrices(true);
     }
 
-    private void tbSlideEye_ValueChanged(object sender, EventArgs e)
-    {
-        if (fig == null)
-            return;
-
-        fig.slider_matrix.EyeRatio = tbSlideEye.Value / (float)tbSlideEye.Maximum;
-        fig.UpdateBoneMatrices(true);
-    }
-
     private void tbSlideTall_ValueChanged(object sender, EventArgs e)
     {
         if (fig == null)
             return;
 
         fig.slider_matrix.TallRatio = tbSlideTall.Value / (float)tbSlideTall.Maximum;
+        fig.UpdateBoneMatrices(true);
+    }
+
+    private void tbSlideEye_ValueChanged(object sender, EventArgs e)
+    {
+        if (fig == null)
+            return;
+
+        fig.slider_matrix.EyeRatio = tbSlideEye.Value / (float)tbSlideEye.Maximum;
         fig.UpdateBoneMatrices(true);
     }
 }
