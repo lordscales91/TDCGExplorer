@@ -270,7 +270,7 @@ float4	HighLightColor
 
 texture	ShadeTex_texture;
 texture	ColorTex_texture;
-texture	texShadowTex;
+texture	texShadowMap;
 texture	RotateTex_texture;
 texture	DesktopTexture;
 texture	MojiTexture;
@@ -462,7 +462,7 @@ struct cBHLData {
 
 sampler2D ShadowTex = sampler_state
 {
-	Texture		= <texShadowTex>;
+	Texture		= <texShadowMap>;
 
 	WrapS = CLAMP;
 	WrapT = CLAMP;
@@ -477,7 +477,7 @@ const uniform int	LocalBoneSels[16];
 
 struct cVertexData3 {
 	float4	Position	: POSITION;
-	float4  ShadowTexTex    : TEXCOORD0;
+	float4  ShadowMapTex    : TEXCOORD0;
 };
 
 //-----------------------------------------------------------
@@ -559,7 +559,7 @@ float4 cMainPS_BoneCol( cVertexData IN ) : COLOR
         return IN.ZTex;
 }
 
-cVertexData3 cShadowTexVS( appdata IN )
+cVertexData3 cShadowMapVS( appdata IN )
 {
    cVertexData3 OUT;
    float4 opos;
@@ -572,15 +572,15 @@ cVertexData3 cShadowTexVS( appdata IN )
    OUT.Position = mul( opos, mat );
    
    // テクスチャ座標を頂点に合わせる
-   OUT.ShadowTexTex = OUT.Position;
+   OUT.ShadowMapTex = OUT.Position;
 
    return OUT;
 }
 
-float4 cShadowTexPS( float4 ShadowTexTex : TEXCOORD0 ) : COLOR
+float4 cShadowMapPS( float4 ShadowMapTex : TEXCOORD0 ) : COLOR
 {
    // Z値算出
-   float depth = ShadowTexTex.z / ShadowTexTex.w;
+   float depth = ShadowMapTex.z / ShadowMapTex.w;
    // 精度を上げる
    float4 unpacked_depth = float4( 0.0, 0.0, 256.0, 256.0 );
    unpacked_depth.g = modf( depth*256.0, unpacked_depth.r );
@@ -590,7 +590,7 @@ float4 cShadowTexPS( float4 ShadowTexTex : TEXCOORD0 ) : COLOR
 
 technique ShadowMap
 {
-	pass ShadowTex
+	pass ShadowMap
 	{
 		DepthTestEnable = true;
 		DepthMask		= true;
@@ -599,8 +599,8 @@ technique ShadowMap
 		AlphaFunc = greaterequal;
 		StencilEnable	= false;
 
-		VertexProgram	= compile PROFILE_VS cShadowTexVS();
-		FragmentProgram	= compile PROFILE_PS cShadowTexPS();
+		VertexProgram	= compile PROFILE_VS cShadowMapVS();
+		FragmentProgram	= compile PROFILE_PS cShadowMapPS();
 	}
 }
  
