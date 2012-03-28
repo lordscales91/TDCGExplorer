@@ -36,8 +36,11 @@ namespace TSOWeight
                 {
                     form1.Invalidate(false);
                 };
+
                 form1.Show();
                 form2.Show();
+                form1.slider_form.Show();
+
                 Application.Run(form1);
             }
         }

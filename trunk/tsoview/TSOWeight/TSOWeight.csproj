@@ -54,6 +54,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="SliderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SliderForm.Designer.cs">
+      <DependentUpon>SliderForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="NotSelectableButton.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -76,6 +82,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Form2.resx">
       <DependentUpon>Form2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SliderForm.resx">
+      <DependentUpon>SliderForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

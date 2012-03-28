@@ -13,6 +13,8 @@ namespace TSOWeight
     public partial class Form1 : Form
     {
         public WeightViewer viewer = null;
+        public SliderForm slider_form = null;
+
         string save_path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\TechArts3D\TDCG";
 
         public Form1(TSOConfig tso_config, string[] args)
@@ -23,6 +25,13 @@ namespace TSOWeight
             this.viewer = new WeightViewer();
             viewer.ScreenColor = tso_config.ScreenColor;
 
+            this.slider_form = new SliderForm(this);
+            slider_form.TopLevel = false;
+            slider_form.Location = new System.Drawing.Point(0, 26 + 160);
+            this.Controls.Add(slider_form);
+            slider_form.BringToFront();
+            slider_form.viewer = this.viewer;
+
             if (viewer.InitializeApplication(this))
             {
                 viewer.FigureEvent += delegate(object sender, EventArgs e)
@@ -30,10 +39,12 @@ namespace TSOWeight
                     Figure fig;
                     if (viewer.TryGetFigure(out fig))
                     {
+                        slider_form.SetFigure(fig);
                         AssignTSOFiles(fig);
                     }
                     else
                     {
+                        slider_form.Clear();
                         viewer.SelectedMesh = null;
                         viewer.ClearCommands();
                     }
