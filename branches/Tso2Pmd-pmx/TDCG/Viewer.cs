@@ -312,7 +312,7 @@ public class Viewer : IDisposable
         foreach (TSOFile tso in tso_list)
         {
             tso.Open(device, effect);
-            fig.AddTSO(tso);
+            fig.TSOList.Add(tso);
         }
         fig.UpdateNodeMapAndBoneMatrices();
         int idx = FigureList.Count;
@@ -362,7 +362,7 @@ public class Viewer : IDisposable
     {
         Debug.WriteLine("loading " + source_file);
         using (Stream source_stream = File.OpenRead(source_file))
-            LoadTSOFile(source_stream);
+            LoadTSOFile(source_stream, source_file);
     }
 
     /// <summary>
@@ -371,11 +371,22 @@ public class Viewer : IDisposable
     /// <param name="source_stream">ストリーム</param>
     public void LoadTSOFile(Stream source_stream)
     {
+        LoadTSOFile(source_stream, null);
+    }
+
+    /// <summary>
+    /// 指定ストリームからTSOFileを読み込みます。
+    /// </summary>
+    /// <param name="source_stream">ストリーム</param>
+    /// <param name="file">ファイル名</param>
+    public void LoadTSOFile(Stream source_stream, string file)
+    {
         List<TSOFile> tso_list = new List<TSOFile>();
         try
         {
             TSOFile tso = new TSOFile();
             tso.Load(source_stream);
+            tso.FileName = file != null ? Path.GetFileNameWithoutExtension(file) : null;
             tso_list.Add(tso);
         }
         catch (Exception ex)
@@ -386,7 +397,7 @@ public class Viewer : IDisposable
         foreach (TSOFile tso in tso_list)
         {
             tso.Open(device, effect);
-            fig.AddTSO(tso);
+            fig.TSOList.Add(tso);
         }
         fig.UpdateNodeMapAndBoneMatrices();
         if (FigureEvent != null)
@@ -598,6 +609,9 @@ public class Viewer : IDisposable
             return false;
         }
 
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+
         string effect_file = Path.Combine(Application.StartupPath, @"toonshader.cgfx");
         if (! File.Exists(effect_file))
         {
@@ -614,6 +628,10 @@ public class Viewer : IDisposable
                 return false;
             }
         }
+
+        sw.Stop();
+        Console.WriteLine("toonshader.cgfx read time: " + sw.Elapsed);
+
         handle_LocalBoneMats = effect.GetParameter(null, "LocalBoneMats");
         handle_LightDirForced = effect.GetParameter(null, "LightDirForced");
         handle_UVSCR = effect.GetParameter(null, "UVSCR");
@@ -729,7 +747,10 @@ public class Viewer : IDisposable
         //device.RenderState.IndexedVertexBlendEnable = true;
     }
 
-    VertexDeclaration vd;
+    /// <summary>
+    /// toonshader.cgfx に渡す頂点宣言
+    /// </summary>
+    protected VertexDeclaration vd;
 
     /// <summary>
     /// 全フィギュアを削除します。
@@ -1362,6 +1383,7 @@ public class Viewer : IDisposable
             {
                 TSOFile tso = new TSOFile();
                 tso.Load(dest);
+                tso.Row = opt1[0];
                 fig.TSOList.Add(tso);
             };
             Debug.WriteLine("loading " + source_file);
@@ -1369,18 +1391,27 @@ public class Viewer : IDisposable
 
             if (sav.type == "HSAV")
             {
-                MemoryStream ms = new MemoryStream();
-                png.Save(ms);
-                ms.Seek(0, SeekOrigin.Begin);
                 BMPSaveData data = new BMPSaveData();
-                data.Read(ms);
 
-                fig.slider_matrix.TallRatio = data.proportions[1];
-                fig.slider_matrix.ArmRatio = data.proportions[2];
-                fig.slider_matrix.LegRatio = data.proportions[3];
-                fig.slider_matrix.WaistRatio = data.proportions[4];
-                fig.slider_matrix.BustRatio = data.proportions[0];
-                fig.slider_matrix.EyeRatio = data.proportions[5];
+                using (Stream stream = File.OpenRead(source_file))
+                    data.Read(stream);
+
+                fig.slider_matrix.TallRatio = data.GetSliderValue(4);
+                fig.slider_matrix.ArmRatio = data.GetSliderValue(5);
+                fig.slider_matrix.LegRatio = data.GetSliderValue(6);
+                fig.slider_matrix.WaistRatio = data.GetSliderValue(7);
+                fig.slider_matrix.BustRatio = data.GetSliderValue(0);
+                fig.slider_matrix.EyeRatio = data.GetSliderValue(8);
+
+                for (int i = 0; i < fig.TSOList.Count; i++)
+                {
+                    TSOFile tso = fig.TSOList[i];
+                    string file = data.GetFileName(tso.Row);
+                    if (file != "")
+                        tso.FileName = Path.GetFileName(file);
+                    else
+                        tso.FileName = string.Format("{0:X2}", tso.Row);
+                }
             }
         }
         catch (Exception ex)

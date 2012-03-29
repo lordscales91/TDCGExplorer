@@ -6,75 +6,184 @@ using System.Drawing;
 
 namespace TDCG
 {
-class BMPSaveData
-{
-    public string[] names = new string[32];
-    public float[] proportions = new float[7];
-    public int[] unknowns = new int[5];
-
-    public void Read(Stream stream)
+    /// <summary>
+    /// ビットマップに埋め込まれたパラメータを扱います。
+    /// </summary>
+    public class BMPSaveData
     {
-        Bitmap bmp = new Bitmap(stream);
+        Bitmap bitmap;
+        byte[] savedata;
 
-        // Lock the bitmap's bits.  
-        Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-        System.Drawing.Imaging.BitmapData bmpData =
-            bmp.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
-            bmp.PixelFormat);
-
-        // Get the address of the first line.
-        IntPtr ptr = bmpData.Scan0;
-
-        // Declare an array to hold the bytes of the bitmap.
-        int nbyte  = bmpData.Stride * bmp.Height;
-        byte[] bytes = new byte[nbyte];
-
-        // Copy the RGB values into the array.
-        System.Runtime.InteropServices.Marshal.Copy(ptr, bytes, 0, nbyte);
-
-        // Unlock the bits.
-        bmp.UnlockBits(bmpData);
-
-        int stride = bmpData.Stride;
-        int height = bmpData.Height;
-
-        byte[] data = new byte[stride * height / 8];
-        int offset = 0;
-
-        for (int y = height-1; y >=0; y--)
+        /// <summary>
+        /// 指定ストリームからビットマップを読み込みます。
+        /// </summary>
+        /// <param name="stream">ストリーム</param>
+        public void Read(Stream stream)
         {
-            for (int x = 0; x < stride; x += 8)
+            bitmap = new Bitmap(stream);
+
+            // Lock the bitmap's bits.  
+            Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            System.Drawing.Imaging.BitmapData bitmapData =
+                bitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+                bitmap.PixelFormat);
+
+            // Get the address of the first line.
+            IntPtr ptr = bitmapData.Scan0;
+
+            // Declare an array to hold the bytes of the bitmap.
+            int stride = bitmapData.Stride;
+            int height = bitmap.Height;
+            int nbyte  = stride * height;
+            byte[] bytes = new byte[nbyte];
+
+            // Copy the RGB values into the array.
+            System.Runtime.InteropServices.Marshal.Copy(ptr, bytes, 0, nbyte);
+
+            // Unlock the bits.
+            bitmap.UnlockBits(bitmapData);
+
+            savedata = new byte[nbyte / 8];
+
+            int savedata_offset = 0;
+
+            for (int y = height - 1; y >= 0; y--)
             {
-                int i = y * stride + x;
-                byte c = (byte)(bytes[i + 0] & 0x1);
-                c |= (byte)((bytes[i + 1] & 0x1) << 1);
-                c |= (byte)((bytes[i + 2] & 0x1) << 2);
-                c |= (byte)((bytes[i + 3] & 0x1) << 3);
-                c |= (byte)((bytes[i + 4] & 0x1) << 4);
-                c |= (byte)((bytes[i + 5] & 0x1) << 5);
-                c |= (byte)((bytes[i + 6] & 0x1) << 6);
-                c |= (byte)((bytes[i + 7] & 0x1) << 7);
-                data[offset++] = c;
+                for (int x = 0; x < stride; x += 8)
+                {
+                    int i = y * stride + x;
+                    byte c = 0;
+                    for (int w = 0; w < 8; w++)
+                        c |= (byte)((bytes[i + w] & 0x01) << w);
+                    savedata[savedata_offset++] = c;
+                }
             }
         }
 
-        Encoding enc = Encoding.GetEncoding("Shift_JIS");
-        for (int i = 0; i < 32; i++)
-            names[i] = enc.GetString(data, i * 32, 32);
+        static Encoding enc = Encoding.GetEncoding("Shift_JIS");
 
-        proportions[0] = BitConverter.ToSingle(data, 32 * 32 + 4 * 0);
-        proportions[1] = BitConverter.ToSingle(data, 32 * 32 + 4 * 4);
-        proportions[2] = BitConverter.ToSingle(data, 32 * 32 + 4 * 5);
-        proportions[3] = BitConverter.ToSingle(data, 32 * 32 + 4 * 6);
-        proportions[4] = BitConverter.ToSingle(data, 32 * 32 + 4 * 7);
-        proportions[5] = BitConverter.ToSingle(data, 32 * 32 + 4 * 8);
-        proportions[6] = BitConverter.ToSingle(data, 32 * 32 + 4 * 11);
+        /// <summary>
+        /// 指定添字のファイル名を得ます。
+        /// </summary>
+        /// <param name="index">添字</param>
+        /// <returns>ファイル名</returns>
+        public string GetFileName(int index)
+        {
+            int len = 32;
+            for (int i = 0; i < 32; i++)
+            {
+                if (savedata[index * 32 + i] == 0)
+                {
+                    len = i;
+                    break;
+                }
+            }
+            return enc.GetString(savedata, index * 32, len);
+        }
 
-        unknowns[0] = BitConverter.ToInt32(data, 32 * 32 + 4 * 1);
-        unknowns[1] = BitConverter.ToInt32(data, 32 * 32 + 4 * 2);
-        unknowns[2] = BitConverter.ToInt32(data, 32 * 32 + 4 * 3);
-        unknowns[3] = BitConverter.ToInt32(data, 32 * 32 + 4 * 9);
-        unknowns[4] = BitConverter.ToInt32(data, 32 * 32 + 4 * 10);
+        /// <summary>
+        /// 指定添字のスライダ値を得ます。
+        /// </summary>
+        /// <param name="index">添字</param>
+        /// <returns>スライダ値</returns>
+        public float GetSliderValue(int index)
+        {
+            return BitConverter.ToSingle(savedata, 32 * 32 + index * 4);
+        }
+
+        /// <summary>
+        /// 指定添字のバイト配列を得ます。
+        /// </summary>
+        /// <param name="index">添字</param>
+        /// <returns>バイト配列</returns>
+        public byte[] GetBytes(int index)
+        {
+            byte[] bytes = new byte[4];
+            Array.Copy(savedata, 32 * 32 + index * 4, bytes, 0, 4);
+            return bytes;
+        }
+
+        /// <summary>
+        /// 指定添字のファイル名を設定します。
+        /// </summary>
+        /// <param name="index">添字</param>
+        /// <param name="file">ファイル名</param>
+        public void SetFileName(int index, string file)
+        {
+            byte[] bytes = enc.GetBytes(file);
+            Array.Resize(ref bytes, 32);
+            Array.Copy(bytes, 0, savedata, index * 32, 32);
+        }
+
+        /// <summary>
+        /// 指定添字のスライダ値を設定します。
+        /// </summary>
+        /// <param name="index">添字</param>
+        /// <param name="ratio">スライダ値</param>
+        public void SetSliderValue(int index, float ratio)
+        {
+            byte[] bytes = BitConverter.GetBytes(ratio);
+            Array.Copy(bytes, 0, savedata, 32 * 32 + index * 4, 4);
+        }
+
+        /// <summary>
+        /// 指定添字のバイト配列を設定します。
+        /// </summary>
+        /// <param name="index">添字</param>
+        /// <param name="bytes">バイナリ値</param>
+        public void SetBytes(int index, byte[] bytes)
+        {
+            Array.Copy(bytes, 0, savedata, 32 * 32 + index * 4, 4);
+        }
+
+        /// <summary>
+        /// 指定パスにビットマップを書き出します。
+        /// </summary>
+        /// <param name="file">パス</param>
+        public void Save(string file)
+        {
+            // Lock the bitmap's bits.  
+            Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
+            System.Drawing.Imaging.BitmapData bitmapData =
+                bitmap.LockBits(rect, System.Drawing.Imaging.ImageLockMode.ReadWrite,
+                bitmap.PixelFormat);
+
+            // Get the address of the first line.
+            IntPtr ptr = bitmapData.Scan0;
+
+            // Declare an array to hold the bytes of the bitmap.
+            int stride = bitmapData.Stride;
+            int height = bitmap.Height;
+            int nbyte  = stride * height;
+            byte[] bytes = new byte[nbyte];
+
+            // Copy the RGB values into the array.
+            System.Runtime.InteropServices.Marshal.Copy(ptr, bytes, 0, nbyte);
+
+            int savedata_offset = 0;
+
+            for (int y = height - 1; y >= 0; y--)
+            {
+                for (int x = 0; x < stride; x += 8)
+                {
+                    int i = y * stride + x;
+                    byte c = savedata[savedata_offset];
+                    for (int w = 0; w < 8; w++)
+                        if ((c & (0x01 << w)) == (0x01 << w))
+                            bytes[i + w] |= 0x01;
+                        else
+                            bytes[i + w] &= 0xFE;
+                    savedata_offset++;
+                }
+            }
+
+            // Copy the RGB values back to the bitmap
+            System.Runtime.InteropServices.Marshal.Copy(bytes, 0, ptr, nbyte);
+
+            // Unlock the bits.
+            bitmap.UnlockBits(bitmapData);
+
+            bitmap.Save(file);
+        }
     }
-}
 }
