@@ -408,6 +408,9 @@ namespace TDCG
         /// </summary>
         public uint bone_indices;
 
+        /// 選択中であるか
+        public bool selected = false;
+
         /// <summary>
         /// 頂点を読みとります。
         /// </summary>
@@ -1148,9 +1151,8 @@ namespace TDCG
             }
             set {
                 transformation_matrix = value;
-                Matrix m = transformation_matrix;
-                translation = Helper.DecomposeMatrix(ref m);
-                rotation = Quaternion.RotationMatrix(m);
+                translation = Helper.DecomposeMatrix(ref value);
+                rotation = Quaternion.RotationMatrix(value);
             }
         }
     }
@@ -1534,5 +1536,11 @@ namespace TDCG
             foreach (TSOTex tex in textures)
                 tex.Dispose();
         }
+
+        /// ファイル名
+        public string FileName;
+
+        /// 出現部位
+        public byte Row;
     }
 }
