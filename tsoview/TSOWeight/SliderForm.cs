@@ -53,7 +53,7 @@ namespace TSOWeight
                 return;
 
             fig.slider_matrix.ArmRatio = tbSlideArm.Value / (float)tbSlideArm.Maximum;
-            fig.UpdateBoneMatrices(true);
+            fig.UpdateBoneMatricesWithoutTMOFrame();
             form1.Invalidate(false);
         }
 
@@ -63,7 +63,7 @@ namespace TSOWeight
                 return;
 
             fig.slider_matrix.LegRatio = tbSlideLeg.Value / (float)tbSlideLeg.Maximum;
-            fig.UpdateBoneMatrices(true);
+            fig.UpdateBoneMatricesWithoutTMOFrame();
             form1.Invalidate(false);
         }
 
@@ -73,7 +73,7 @@ namespace TSOWeight
                 return;
 
             fig.slider_matrix.WaistRatio = tbSlideWaist.Value / (float)tbSlideWaist.Maximum;
-            fig.UpdateBoneMatrices(true);
+            fig.UpdateBoneMatricesWithoutTMOFrame();
             form1.Invalidate(false);
         }
 
@@ -83,7 +83,7 @@ namespace TSOWeight
                 return;
 
             fig.slider_matrix.BustRatio = tbSlideBust.Value / (float)tbSlideBust.Maximum;
-            fig.UpdateBoneMatrices(true);
+            fig.UpdateBoneMatricesWithoutTMOFrame();
             form1.Invalidate(false);
         }
 
@@ -93,7 +93,7 @@ namespace TSOWeight
                 return;
 
             fig.slider_matrix.TallRatio = tbSlideTall.Value / (float)tbSlideTall.Maximum;
-            fig.UpdateBoneMatrices(true);
+            fig.UpdateBoneMatricesWithoutTMOFrame();
             form1.Invalidate(false);
         }
 
@@ -103,7 +103,7 @@ namespace TSOWeight
                 return;
 
             fig.slider_matrix.EyeRatio = tbSlideEye.Value / (float)tbSlideEye.Maximum;
-            fig.UpdateBoneMatrices(true);
+            fig.UpdateBoneMatricesWithoutTMOFrame();
             form1.Invalidate(false);
         }
 

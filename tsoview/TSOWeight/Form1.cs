@@ -310,6 +310,16 @@ namespace TSOWeight
             AssignSkinWeights(viewer.SelectedVertex);
             Invalidate(false);
         }
+        
+        private void editResetPoseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Figure fig;
+            if (viewer.TryGetFigure(out fig))
+            {
+                fig.UpdateBoneMatrices(true);
+            }
+            Invalidate(false);
+        }
 
         private void fileSaveAsToolStripMenuItem_Click(object sender, EventArgs e)
         {
