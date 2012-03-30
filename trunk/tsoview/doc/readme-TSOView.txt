@@ -76,7 +76,7 @@ TSOView.exe [file ... ]
 
 ver 0.3.6 からの変更点：
 ・TSOリストの名前項目にTSOファイル名を表示
-・MODS1197 toonshader2(20120328) RC3
+・MODS1200 toonshader2(20120328) RC4
 ・貧乳再現性を向上
 
 ver 0.3.5 からの変更点：
