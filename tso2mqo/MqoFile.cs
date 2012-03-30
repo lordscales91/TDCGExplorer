@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
 
-namespace Tso2MqoGui
+namespace tso2mqo
 {
     public class MqoFile
     {
@@ -51,63 +52,6 @@ namespace Tso2MqoGui
             DoRead(SectionRoot);
         }
 
-        private static string[] SplitString(string s)
-        {
-            List<string>    tokens  = new List<string>();
-            StringBuilder   sb     = new StringBuilder(s.Length);
-            bool            str    = false;
-            bool            escape = false;
-            bool            bracket= false;
-            s                      = s.Trim(' ', '\t', '\r', '\n');
-
-            foreach(char i in s)
-            {
-                if(escape)
-                {
-                    sb.Append(i);
-                    escape  = false;
-                    continue;
-                }
-
-
-                switch(i)
-                {
-                case '\\':
-                    if(str) sb.Append(i);
-                    else    escape  = true;
-                    break;
-                case ' ':
-                case '\t':
-                         if(bracket)        {sb.Append(i);                            }
-                    else if(str)            {sb.Append(i);                            }
-                    else if(sb.Length > 0)  {tokens.Add(sb.ToString()); sb.Length= 0; }
-                    break;
-                case '(':
-                    sb.Append(i);
-                    if(!str)
-                        bracket= true;
-                    break;
-                case ')':
-                    sb.Append(i);
-                    if(!str)
-                        bracket= false;
-                    break;
-                case '\"':
-                    sb.Append(i);
-                    str = !str;
-                    break;
-                default:
-                    sb.Append(i);
-                    break;
-                }
-            }
-
-            if(sb.Length > 0)
-                tokens.Add(sb.ToString());
-
-            return tokens.ToArray();
-        }
-
         private void DoRead(SectionHandler h)
         {
             for(int no= 1;; ++no)
@@ -118,7 +62,7 @@ namespace Tso2MqoGui
                     break;
 
                 line                = line.Trim();
-                string[]    tokens  = SplitString(line);
+                string[]    tokens  = line.Split(delimiters, StringSplitOptions.RemoveEmptyEntries);
 
                 try
                 {
@@ -138,6 +82,29 @@ namespace Tso2MqoGui
         public void Error(string[] tokens)
         {
             throw new Exception("File Format Error: \"" + string.Concat(tokens) + "\"");
+        }
+
+        public static Vector3 ParseColor3(string[] t, int begin)
+        {
+            return new Vector3(
+                float.Parse(t[begin + 0]),
+                float.Parse(t[begin + 1]),
+                float.Parse(t[begin + 2]));
+        }
+
+        public static Vector2 ParsePoint2(string[] t, int begin)
+        {
+            return new Vector2(
+                float.Parse(t[begin + 0]),
+                float.Parse(t[begin + 1]));
+        }
+
+        public static Vector3 ParsePoint3(string[] t, int begin)
+        {
+            return new Vector3(
+                float.Parse(t[begin + 0]),
+                float.Parse(t[begin + 1]),
+                float.Parse(t[begin + 2]));
         }
 
         private bool SectionRoot(string[] tokens)
@@ -161,22 +128,17 @@ namespace Tso2MqoGui
 
             switch(tokens[0].ToLower())
             {
-            case "pos":         scene.pos           = Point3.Parse(tokens, 1);  return true;
-            case "lookat":      scene.lookat        = Point3.Parse(tokens, 1);  return true;
+                case "pos": scene.pos = ParsePoint3(tokens, 1); return true;
+                case "lookat": scene.lookat = ParsePoint3(tokens, 1); return true;
             case "head":        scene.head          = float .Parse(tokens[1]);  return true;
             case "pich":        scene.pich          = float .Parse(tokens[1]);  return true;
             case "ortho":       scene.ortho         = float .Parse(tokens[1]);  return true;
             case "zoom2":       scene.zoom2         = float .Parse(tokens[1]);  return true;
-            case "amb":         scene.amb           = Color3.Parse(tokens, 1);  return true;
+            case "amb": scene.amb = ParseColor3(tokens, 1); return true;
             case "}":                                                           return false;
           //default:            Error(tokens);                                  return false;
             default:                                                            return true;
             }
-        }
-
-        private static string[] SplitParam(string s)
-        {
-            return s.Split(delimiters2, StringSplitOptions.RemoveEmptyEntries);
         }
 
         private bool SectionMaterial(string[] tokens)
@@ -191,22 +153,24 @@ namespace Tso2MqoGui
 
             string      line= sb.ToString().Trim();
             MqoMaterial m   = new MqoMaterial(tokens[0].Trim('"'));
-            tokens          = SplitString(line);
+            tokens          = line.Split(delimiters2, StringSplitOptions.RemoveEmptyEntries);
             materials.Add(m);
 
             for(int i= 1 ; i < tokens.Length; ++i)
             {
                 string      t   = tokens[i];
-                string      t2  = t.ToLower();
 
-                     if(t2.StartsWith("shader("))  m.shader   = int   .Parse(SplitParam(t)[1]);
-                else if(t2.StartsWith("col("))     m.col      = Color3.Parse(SplitParam(t), 1);
-                else if(t2.StartsWith("dif("))     m.dif      = float .Parse(SplitParam(t)[1]);
-                else if(t2.StartsWith("amb("))     m.amb      = float .Parse(SplitParam(t)[1]);
-                else if(t2.StartsWith("emi("))     m.emi      = float .Parse(SplitParam(t)[1]);
-                else if(t2.StartsWith("spc("))     m.spc      = float .Parse(SplitParam(t)[1]);
-                else if(t2.StartsWith("power("))   m.power    = float .Parse(SplitParam(t)[1]);
-                else if(t2.StartsWith("tex("))     m.tex      = t.Substring(3).Trim('(', ')', '"');
+                switch(tokens[i].ToLower())
+                {
+                case "shader":  m.shader   = int   .Parse(tokens[++i]);         break;
+                case "col": m.col = ParseColor3(tokens, i + 1); i += 4; break;
+                case "dif":     m.dif      = float .Parse(tokens[++i]);         break;
+                case "amb":     m.amb      = float .Parse(tokens[++i]);         break;
+                case "emi":     m.emi      = float .Parse(tokens[++i]);         break;
+                case "spc":     m.spc      = float .Parse(tokens[++i]);         break;
+                case "power":   m.power    = float .Parse(tokens[++i]);         break;
+                case "tex":     m.tex      = tokens[++i].Trim('\"');            break;
+                }
             }
 
             return true;
@@ -220,7 +184,7 @@ namespace Tso2MqoGui
             case "locking":     current.locking     = int   .Parse(tokens[1]);  return true;
             case "shading":     current.shading     = int   .Parse(tokens[1]);  return true;
             case "facet":       current.facet       = float .Parse(tokens[1]);  return true;
-            case "color":       current.color       = Color3.Parse(tokens, 1);  return true;
+            case "color": current.color = ParseColor3(tokens, 1); return true;
             case "color_type":  current.color_type  = int   .Parse(tokens[1]);  return true;
             case "vertex":      ParseVertex(tokens);                            return true;
             case "face":        ParseFace(tokens);                              return true;
@@ -232,107 +196,52 @@ namespace Tso2MqoGui
 
         private bool SectionVertex(string[] tokens)
         {
-            if (tokens[0] == "}")
+            if(tokens[0] == "}")
                 return false;
 
-            current.vertices.Add(Point3.Parse(tokens, 0));
+            current.vertices.Add(ParsePoint3(tokens, 0));
 
             return true;
         }
 
         private bool SectionFace(string[] tokens)
         {
-            if (tokens[0] == "}")
+            if(tokens[0] == "}")
                 return false;
 
-            int nface = int.Parse(tokens[0]);
+            if(3 != int.Parse(tokens[0]))
+                return true;
+
+            StringBuilder   sb  = new StringBuilder();
+
+            foreach(string i in tokens)
+                sb.Append(' ').Append(i);
+
+            string      line= sb.ToString().Trim();
+            MqoFace     f   = new MqoFace();
+            tokens          = line.Split(delimiters2, StringSplitOptions.RemoveEmptyEntries);
+            current.faces.Add(f);
+
+            for(int i= 1 ; i < tokens.Length; ++i)
             {
-                StringBuilder sb = new StringBuilder();
-                foreach (string i in tokens)
-                    sb.Append(' ').Append(i);
-                string line = sb.ToString().Trim();
-                tokens = SplitString(line);
-            }
-            switch (nface)
-            {
-                case 3:
-                    {
-                        MqoFace f = new MqoFace();
-
-                        for (int i = 1; i < tokens.Length; ++i)
-                        {
-                            string t = tokens[i];
-                            string t2 = t.ToLower();
-
-                            if (t2.StartsWith("v("))
-                            {
-                                string[] t3 = SplitParam(t);
-                                f.a = ushort.Parse(t3[1]);
-                                f.b = ushort.Parse(t3[2]);
-                                f.c = ushort.Parse(t3[3]);
-                            }
-                            else
-                            if (t2.StartsWith("m("))
-                            {
-                                string[] t3 = SplitParam(t);
-                                f.mtl = ushort.Parse(t3[1]);
-                            }
-                            else
-                            if (t2.StartsWith("uv("))
-                            {
-                                string[] t3 = SplitParam(t);
-                                f.ta = Point2.Parse(t3, 1);
-                                f.tb = Point2.Parse(t3, 3);
-                                f.tc = Point2.Parse(t3, 5);
-                            }
-                        }
-                        current.faces.Add(f);
-                    }
+                switch(tokens[i].ToLower())
+                {
+                case "v":
+                    f.a     = ushort.Parse(tokens[++i]);
+                    f.b     = ushort.Parse(tokens[++i]);
+                    f.c     = ushort.Parse(tokens[++i]);
                     break;
-                case 4:
-                    {
-                        MqoFace f = new MqoFace();
-                        MqoFace f2 = new MqoFace();
-
-                        for (int i = 1; i < tokens.Length; ++i)
-                        {
-                            string t = tokens[i];
-                            string t2 = t.ToLower();
-
-                            if (t2.StartsWith("v("))
-                            {
-                                string[] t3 = SplitParam(t);
-                                f.a = ushort.Parse(t3[1]);
-                                f.b = ushort.Parse(t3[2]);
-                                f.c = ushort.Parse(t3[3]);
-                                f2.a = f.a;
-                                f2.b = f.c;
-                                f2.c = ushort.Parse(t3[4]);
-                            }
-                            else
-                            if (t2.StartsWith("m("))
-                            {
-                                string[] t3 = SplitParam(t);
-                                f.mtl = ushort.Parse(t3[1]);
-                                f2.mtl = f.mtl;
-                            }
-                            else
-                            if (t2.StartsWith("uv("))
-                            {
-                                string[] t3 = SplitParam(t);
-                                f.ta = Point2.Parse(t3, 1);
-                                f.tb = Point2.Parse(t3, 3);
-                                f.tc = Point2.Parse(t3, 5);
-                                f2.ta = f.ta;
-                                f2.tb = f.tc;
-                                f2.tc = Point2.Parse(t3, 7);
-                            }
-                        }
-                        current.faces.Add(f);
-                        current.faces.Add(f2);
-                    }
+                case "m":
+                    f.mtl   = ushort.Parse(tokens[++i]);
                     break;
+                case "uv":
+                    f.ta = ParsePoint2(tokens, i + 1); i += 2;
+                    f.tb = ParsePoint2(tokens, i + 1); i += 2;
+                    f.tc = ParsePoint2(tokens, i + 1); i += 2;
+                    break;
+                }
             }
+
             return true;
         }
 
@@ -377,7 +286,7 @@ namespace Tso2MqoGui
         {
             if(tokens[2].ToLower() != "{")          Error(tokens);
 
-            current.vertices    = new List<Point3>(int.Parse(tokens[1]));
+            current.vertices    = new List<Vector3>(int.Parse(tokens[1]));
             DoRead(SectionVertex);
         }
 
@@ -392,13 +301,13 @@ namespace Tso2MqoGui
 
     public class MqoScene
     {
-        public Point3           pos;
-        public Point3           lookat;
+        public Vector3           pos;
+        public Vector3           lookat;
         public float            head;
         public float            pich;
         public float            ortho;
         public float            zoom2;
-        public Color3           amb;
+        public Vector3           amb;
 
         public override string ToString()
         {
@@ -418,7 +327,7 @@ namespace Tso2MqoGui
     {
         public string           name;
         public int              shader;
-        public Color3           col;
+        public Vector3           col;
         public float            dif;
         public float            amb;
         public float            emi;
@@ -452,9 +361,9 @@ namespace Tso2MqoGui
 	    public int              locking;
 	    public int              shading;
 	    public float            facet;
-	    public Color3           color;
+	    public Vector3           color;
 	    public int              color_type;
-        public List<Point3>     vertices;
+        public List<Vector3>     vertices;
         public List<MqoFace>    faces;
 
         public MqoObject()              {           }
@@ -479,13 +388,13 @@ namespace Tso2MqoGui
     public class  MqoFace
     {
         public ushort   a, b, c, mtl;
-        public Point2   ta, tb, tc;
+        public Vector2   ta, tb, tc;
 
         public MqoFace()
         {
         }
 
-        public MqoFace(ushort a, ushort b, ushort c, ushort mtl, Point2 ta, Point2 tb, Point2 tc)
+        public MqoFace(ushort a, ushort b, ushort c, ushort mtl, Vector2 ta, Vector2 tb, Vector2 tc)
         {
             this.a  = a;
             this.b  = b;
