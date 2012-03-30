@@ -976,6 +976,7 @@ namespace TDCG
         private string path;
         private string name;
 
+        private Vector3 scaling;
         private Quaternion rotation;
         private Vector3 translation;
 
@@ -1017,14 +1018,26 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 拡大変位
+        /// </summary>
+        public Vector3 Scaling
+        {
+            get { return scaling; }
+            set
+            {
+                scaling = value;
+                need_update_transformation = true;
+            }
+        }
+
+        /// <summary>
         /// 回転変位
         /// </summary>
         public Quaternion Rotation
         {
-            get {
-                return rotation;
-            }
-            set {
+            get { return rotation; }
+            set
+            {
                 rotation = value;
                 need_update_transformation = true;
             }
@@ -1035,10 +1048,9 @@ namespace TDCG
         /// </summary>
         public Vector3 Translation
         {
-            get {
-                return translation;
-            }
-            set {
+            get { return translation; }
+            set
+            {
                 translation = value;
                 need_update_transformation = true;
             }
@@ -1302,11 +1314,23 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 拡大行列
+        /// </summary>
+        public Matrix ScalingMatrix
+        {
+            get
+            {
+                return Matrix.Scaling(scaling);
+            }
+        }
+
+        /// <summary>
         /// 回転行列
         /// </summary>
         public Matrix RotationMatrix
         {
-            get {
+            get
+            {
                 return Matrix.RotationQuaternion(rotation);
             }
         }
@@ -1316,28 +1340,31 @@ namespace TDCG
         /// </summary>
         public Matrix TranslationMatrix
         {
-            get {
+            get
+            {
                 return Matrix.Translation(translation);
             }
         }
 
         /// <summary>
-        /// 変形行列。これは 回転行列 x 位置行列 です。
+        /// 変形行列。これは 拡大行列 x 回転行列 x 位置行列 です。
         /// </summary>
         public Matrix TransformationMatrix
         {
-            get {
+            get
+            {
                 if (need_update_transformation)
                 {
-                    transformation_matrix = RotationMatrix * TranslationMatrix;
+                    transformation_matrix = ScalingMatrix * RotationMatrix * TranslationMatrix;
                     need_update_transformation = false;
                 }
                 return transformation_matrix;
             }
-            set {
+            set
+            {
                 transformation_matrix = value;
                 Matrix m = transformation_matrix;
-                translation = Helper.DecomposeMatrix(ref m);
+                translation = Helper.DecomposeMatrix(ref m, out scaling);
                 rotation = Quaternion.RotationMatrix(m);
             }
         }
