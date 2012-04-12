@@ -65,6 +65,7 @@
             this.tbSlideEye.Name = "tbSlideEye";
             this.tbSlideEye.Size = new System.Drawing.Size(135, 24);
             this.tbSlideEye.TabIndex = 18;
+            this.tbSlideEye.TickStyle = System.Windows.Forms.TickStyle.None;
             this.tbSlideEye.ValueChanged += new System.EventHandler(this.tbSlideEye_ValueChanged);
             // 
             // lbSlideTall
@@ -84,6 +85,7 @@
             this.tbSlideTall.Name = "tbSlideTall";
             this.tbSlideTall.Size = new System.Drawing.Size(135, 24);
             this.tbSlideTall.TabIndex = 28;
+            this.tbSlideTall.TickStyle = System.Windows.Forms.TickStyle.None;
             this.tbSlideTall.ValueChanged += new System.EventHandler(this.tbSlideTall_ValueChanged);
             // 
             // lbSlideBust
@@ -130,6 +132,7 @@
             this.tbSlideBust.Name = "tbSlideBust";
             this.tbSlideBust.Size = new System.Drawing.Size(135, 24);
             this.tbSlideBust.TabIndex = 22;
+            this.tbSlideBust.TickStyle = System.Windows.Forms.TickStyle.None;
             this.tbSlideBust.ValueChanged += new System.EventHandler(this.tbSlideBust_ValueChanged);
             // 
             // tbSlideWaist
@@ -140,6 +143,7 @@
             this.tbSlideWaist.Name = "tbSlideWaist";
             this.tbSlideWaist.Size = new System.Drawing.Size(135, 24);
             this.tbSlideWaist.TabIndex = 21;
+            this.tbSlideWaist.TickStyle = System.Windows.Forms.TickStyle.None;
             this.tbSlideWaist.ValueChanged += new System.EventHandler(this.tbSlideWaist_ValueChanged);
             // 
             // tbSlideArm
@@ -161,6 +165,7 @@
             this.tbSlideLeg.Name = "tbSlideLeg";
             this.tbSlideLeg.Size = new System.Drawing.Size(135, 24);
             this.tbSlideLeg.TabIndex = 19;
+            this.tbSlideLeg.TickStyle = System.Windows.Forms.TickStyle.None;
             this.tbSlideLeg.ValueChanged += new System.EventHandler(this.tbSlideLeg_ValueChanged);
             // 
             // SliderForm
