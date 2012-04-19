@@ -72,6 +72,13 @@ namespace TSOMaterial
                 }
             }
 
+            foreach (TSOScript scr in tso.scripts)
+            {
+                string name = scr.Name;
+                Console.WriteLine(name);
+                scr.Save(Path.Combine(dest_path, name));
+            }
+
             foreach (TSOSubScript scr in tso.sub_scripts)
             {
                 string name = scr.Name;
@@ -117,6 +124,19 @@ namespace TSOMaterial
                             break;
                     }
                 }
+            }
+
+            foreach (TSOScript scr in tso.scripts)
+            {
+                string name = scr.Name;
+                string path = Path.Combine(dest_path, name);
+                if (!File.Exists(path))
+                {
+                    Console.WriteLine("File not found: " + path);
+                    continue;
+                }
+                Console.WriteLine(name);
+                scr.Load(path);
             }
 
             foreach (TSOSubScript scr in tso.sub_scripts)
