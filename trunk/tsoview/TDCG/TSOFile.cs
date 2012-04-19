@@ -548,11 +548,24 @@ namespace TDCG
         /// <summary>
         /// 名称
         /// </summary>
-        public string name;
+        internal string name;
         /// <summary>
         /// テキスト行配列
         /// </summary>
         public string[] lines;
+
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public string Name { get { return name; } set { name = value; } }
+
+        /// <summary>
+        /// スクリプトを読み込みます。
+        /// </summary>
+        public void Load(string source_file)
+        {
+            this.lines = File.ReadAllLines(source_file);
+        }
 
         /// <summary>
         /// スクリプトを読み込みます。
@@ -566,6 +579,14 @@ namespace TDCG
             {
                 lines[i] = reader.ReadCString();
             }
+        }
+
+        /// <summary>
+        /// スクリプトを書き出します。
+        /// </summary>
+        public void Save(string dest_file)
+        {
+            File.WriteAllLines(dest_file, this.lines);
         }
 
         /// <summary>
