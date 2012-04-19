@@ -14,7 +14,7 @@ class Program
     {
         if (args.Length != 1)
         {
-            System.Console.WriteLine("Usage: PNGPose <png file>");
+            Console.WriteLine("Usage: PNGPose <png file>");
             return;
         }
 
@@ -47,12 +47,11 @@ class Program
         {
             try
             {
-                if (! System.IO.Directory.Exists(dest_path))
-                    System.IO.Directory.CreateDirectory(dest_path);
+                Directory.CreateDirectory(dest_path);
             }
             catch (Exception)
             {
-                System.Console.Out.WriteLine("Error: Cannot prepare destination directory for file writing.");
+                Console.WriteLine("Error: Cannot prepare destination directory for file writing.");
                 return -1;
             }
             PNGFile png = new PNGFile();
