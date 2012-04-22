@@ -724,12 +724,20 @@ namespace TDCG
         {
             TMOMat[] ret = new TMOMat[length];
 
-            Quaternion q1 = Quaternion.RotationMatrix(mat1.m);
-            Quaternion q2 = Quaternion.RotationMatrix(mat2.m);
+            Matrix m1 = mat1.m;
+            Matrix m2 = mat2.m;
+
+            Vector3 scaling1;
+            Vector3 scaling2;
+            Vector3 v1 = Helper.DecomposeMatrix(ref m1, out scaling1);
+            Vector3 v2 = Helper.DecomposeMatrix(ref m2, out scaling2);
+
+            Quaternion q1 = Quaternion.RotationMatrix(m1);
+            Quaternion q2 = Quaternion.RotationMatrix(m2);
 
             Vector3 v0 = new Vector3(mat0.m.M41, mat0.m.M42, mat0.m.M43);
-            Vector3 v1 = new Vector3(mat1.m.M41, mat1.m.M42, mat1.m.M43);
-            Vector3 v2 = new Vector3(mat2.m.M41, mat2.m.M42, mat2.m.M43);
+            //Vector3 v1 = new Vector3(mat1.m.M41, mat1.m.M42, mat1.m.M43);
+            //Vector3 v2 = new Vector3(mat2.m.M41, mat2.m.M42, mat2.m.M43);
             Vector3 v3 = new Vector3(mat3.m.M41, mat3.m.M42, mat3.m.M43);
 
             float p0 = 0.0f;
@@ -739,7 +747,7 @@ namespace TDCG
             {
                 float t = dt*i;
                 float p = t*t*(p2-2*p1+p0) + t*(2*p1-2*p0) + p0;
-                Matrix m = Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, p)) * Matrix.Translation(Vector3.CatmullRom(v0, v1, v2, v3, p));
+                Matrix m = Matrix.Scaling(Vector3.Lerp(scaling1, scaling2, p)) * Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, p)) * Matrix.Translation(Vector3.CatmullRom(v0, v1, v2, v3, p));
                 ret[i] = new TMOMat(ref m);
             }
             return ret;
