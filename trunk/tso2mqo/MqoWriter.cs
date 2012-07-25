@@ -133,8 +133,7 @@ namespace Tso2MqoGui
             tw.WriteLine("	amb 0.250 0.250 0.250");
             tw.WriteLine("}");
 
-          //VertexHeap<UVertex> vh  = new VertexHeap<UVertex>();
-            VertexHeap          vh  = new VertexHeap();
+            VertexHeap<UVertex> vh  = new VertexHeap<UVertex>();
             List<ushort>        face= new List<ushort>(2048*3);
             List<float>         uv  = new List<float>(2048*3 * 2);
             List<int>           mtl = new List<int>(2048);
