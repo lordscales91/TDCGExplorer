@@ -198,42 +198,40 @@ namespace TSOSmooth
                 }
                 for (int i = 2; i < vert_indices.Length; i++)
                 {
-                    ushort a, b, c;
+                    FaceVertex a, b, c;
                     if (i % 2 != 0)
                     {
-                        a = vert_indices[i - 2];
-                        b = vert_indices[i - 0];
-                        c = vert_indices[i - 1];
+                        a.i = vert_indices[i - 2];
+                        b.i = vert_indices[i - 0];
+                        c.i = vert_indices[i - 1];
                     }
                     else
                     {
-                        a = vert_indices[i - 2];
-                        b = vert_indices[i - 1];
-                        c = vert_indices[i - 0];
+                        a.i = vert_indices[i - 2];
+                        b.i = vert_indices[i - 1];
+                        c.i = vert_indices[i - 0];
                     }
-                    if (a != b && b != c && c != a)
+                    if (a.i != b.i && b.i != c.i && c.i != a.i)
                     {
-                        float ua, ub, uc;
-                        float va, vb, vc;
                         if (i % 2 != 0)
                         {
-                            ua = sub.vertices[i - 2].u;
-                            va = sub.vertices[i - 2].v;
-                            ub = sub.vertices[i - 0].u;
-                            vb = sub.vertices[i - 0].v;
-                            uc = sub.vertices[i - 1].u;
-                            vc = sub.vertices[i - 1].v;
+                            a.u = sub.vertices[i - 2].u;
+                            a.v = sub.vertices[i - 2].v;
+                            b.u = sub.vertices[i - 0].u;
+                            b.v = sub.vertices[i - 0].v;
+                            c.u = sub.vertices[i - 1].u;
+                            c.v = sub.vertices[i - 1].v;
                         }
                         else
                         {
-                            ua = sub.vertices[i - 2].u;
-                            va = sub.vertices[i - 2].v;
-                            ub = sub.vertices[i - 1].u;
-                            vb = sub.vertices[i - 1].v;
-                            uc = sub.vertices[i - 0].u;
-                            vc = sub.vertices[i - 0].v;
+                            a.u = sub.vertices[i - 2].u;
+                            a.v = sub.vertices[i - 2].v;
+                            b.u = sub.vertices[i - 1].u;
+                            b.v = sub.vertices[i - 1].v;
+                            c.u = sub.vertices[i - 0].u;
+                            c.v = sub.vertices[i - 0].v;
                         }
-                        faces.Add(new TSOFace(a, b, c, ua, va, ub, vb, uc, vc, sub.spec));
+                        faces.Add(new TSOFace(a, b, c, sub.spec));
                     }
                 }
             }
@@ -273,32 +271,9 @@ namespace TSOSmooth
                     }
                     adding_bone_indices.Clear();
 
+                    foreach (ushort i in f.vert_indices)
                     {
-                        UnifiedPositionVertex v = unified_position_vert_heap.ary[f.a];
-                        foreach (SkinWeight sw in v.skin_weights)
-                        {
-                            if (sw.weight < WeightEpsilon)
-                                continue;
-                            if (bh.ContainsKey(sw.bone_index))
-                                continue;
-                            adding_bone_indices[sw.bone_index] = true;
-                        }
-                    }
-
-                    {
-                        UnifiedPositionVertex v = unified_position_vert_heap.ary[f.b];
-                        foreach (SkinWeight sw in v.skin_weights)
-                        {
-                            if (sw.weight < WeightEpsilon)
-                                continue;
-                            if (bh.ContainsKey(sw.bone_index))
-                                continue;
-                            adding_bone_indices[sw.bone_index] = true;
-                        }
-                    }
-
-                    {
-                        UnifiedPositionVertex v = unified_position_vert_heap.ary[f.c];
+                        UnifiedPositionVertex v = unified_position_vert_heap.ary[i];
                         foreach (SkinWeight sw in v.skin_weights)
                         {
                             if (sw.weight < WeightEpsilon)
@@ -319,28 +294,13 @@ namespace TSOSmooth
                         bh.Add(bone_index);
                     }
 
+                    foreach (FaceVertex fv in f.vertices)
                     {
-                        UnifiedPositionVertex v = unified_position_vert_heap.ary[f.a];
-                        UnifiedPositionTexcoordVertex a = new UnifiedPositionTexcoordVertex(v, f.ua, f.va, bh.map);
+                        UnifiedPositionVertex v = unified_position_vert_heap.ary[fv.i];
+                        UnifiedPositionTexcoordVertex a = new UnifiedPositionTexcoordVertex(v, fv.u, fv.v, bh.map);
                         if (!vh.ContainsKey(a))
                             vh.Add(a);
                         vert_indices.Add(vh[a]);
-                    }
-
-                    {
-                        UnifiedPositionVertex v = unified_position_vert_heap.ary[f.b];
-                        UnifiedPositionTexcoordVertex b = new UnifiedPositionTexcoordVertex(v, f.ub, f.vb, bh.map);
-                        if (!vh.ContainsKey(b))
-                            vh.Add(b);
-                        vert_indices.Add(vh[b]);
-                    }
-
-                    {
-                        UnifiedPositionVertex v = unified_position_vert_heap.ary[f.c];
-                        UnifiedPositionTexcoordVertex c = new UnifiedPositionTexcoordVertex(v, f.uc, f.vc, bh.map);
-                        if (!vh.ContainsKey(c))
-                            vh.Add(c);
-                        vert_indices.Add(vh[c]);
                     }
                 }
                 //Console.WriteLine("#vert_indices:{0}", vert_indices.Count);
