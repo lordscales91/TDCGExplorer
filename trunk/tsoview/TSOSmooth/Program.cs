@@ -341,23 +341,28 @@ namespace TSOSmooth
 
         static void Smooth()
         {
-            TSONode[] nodes = use_nodes.ToArray();
-            Vector3[] node_world_positions = new Vector3[nodes.Length];
+            int len = use_nodes.Count;
 
-            for (int i = 0; i < nodes.Length; i++)
+            TSONode[] nodes = new TSONode[len];
+            Vector3[] node_world_positions = new Vector3[len];
+
+            for (int i = 0; i < len; i++)
             {
-                node_world_positions[i] = nodes[i].GetWorldPosition();
+                node_world_positions[i] = use_nodes[i].GetWorldPosition();
             }
 
-            float[] distances = new float[nodes.Length];
-            float[] inv_distances = new float[nodes.Length];
+            float[] distances = new float[len];
+            float[] inv_distances = new float[len];
 
             foreach (UnifiedPositionVertex v in unified_position_vert_heap.ary)
             {
-                nodes = use_nodes.ToArray(); // node_world_positions と合わせるために並びを直す
+                for (int i = 0; i < len; i++)
+                {
+                    nodes[i] = use_nodes[i];
+                }
 
                 //頂点vに対して距離が近い順に並べたnodesを得る。
-                for (int i = 0; i < nodes.Length; i++)
+                for (int i = 0; i < len; i++)
                 {
                     distances[i] = LengthSq(v.position, node_world_positions[i]);
                 }
