@@ -50,7 +50,7 @@ namespace TSOSmooth
             return Path.Combine(GetSetsRoot(), setsname + ".txt");
         }
 
-        static TSONode[] nodes;
+        static List<TSONode> use_nodes = new List<TSONode>();
 
         static void Main(string[] args)
         {
@@ -97,8 +97,6 @@ namespace TSOSmooth
             }
             setsname = nodesets[sets_idx];
 
-            List<TSONode> use_nodes = new List<TSONode>();
-
             char[] delim = { ' ' };
             using (StreamReader source = new StreamReader(File.OpenRead(GetSetsPath())))
             {
@@ -117,8 +115,6 @@ namespace TSOSmooth
                     }
                 }
             }
-
-            nodes = use_nodes.ToArray();
 
             Console.WriteLine("メッシュ:");
             {
@@ -345,6 +341,7 @@ namespace TSOSmooth
 
         static void Smooth()
         {
+            TSONode[] nodes = use_nodes.ToArray();
             Vector3[] node_world_positions = new Vector3[nodes.Length];
 
             for (int i = 0; i < nodes.Length; i++)
@@ -357,6 +354,8 @@ namespace TSOSmooth
 
             foreach (UnifiedPositionVertex v in unified_position_vert_heap.ary)
             {
+                nodes = use_nodes.ToArray(); // node_world_positions と合わせるために並びを直す
+
                 //頂点vに対して距離が近い順に並べたnodesを得る。
                 for (int i = 0; i < nodes.Length; i++)
                 {
