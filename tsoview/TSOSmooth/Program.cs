@@ -385,6 +385,13 @@ namespace TSOSmooth
 
         static void Smooth()
         {
+            Vector3[] node_world_positions = new Vector3[nodes.Length];
+
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                node_world_positions[i] = nodes[i].GetWorldPosition();
+            }
+
             float[] distances = new float[nodes.Length];
             float[] inv_distances = new float[nodes.Length];
 
@@ -393,7 +400,7 @@ namespace TSOSmooth
                 //頂点vに対して距離が近い順に並べたnodesを得る。
                 for (int i = 0; i < nodes.Length; i++)
                 {
-                    distances[i] = LengthSq(v.position, nodes[i].GetWorldPosition());
+                    distances[i] = LengthSq(v.position, node_world_positions[i]);
                 }
                 Array.Sort(distances, nodes);
 
