@@ -34,6 +34,7 @@ namespace Tso2Pmd
         public Figure Figure { get { return fig; } set { fig = value; } }
         //public PmxFile Pmd { get { return pmd; } }
         public bool UseOneBone { get;  set; }
+        public string TextureFilePrefix { get; set; }
         public bool UseSpheremap { get; set; }
         public bool UseEdge { get; set; }
         public bool UniqueMaterial { get; set; }
@@ -435,7 +436,7 @@ namespace Tso2Pmd
         private void SelectMeshes()
         {
             meshes = new List<TSOSubMesh>();
-            material_list = new T2PMaterialList(fig.TSOList, categories, UseSpheremap);
+            material_list = new T2PMaterialList(fig.TSOList, categories, TextureFilePrefix, UseSpheremap);
 
             int tso_num = 0;
             int sub_mesh_num = 0;
