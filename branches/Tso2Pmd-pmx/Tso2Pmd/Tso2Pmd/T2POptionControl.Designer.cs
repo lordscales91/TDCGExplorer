@@ -39,8 +39,8 @@
             this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.radioButton1 = new System.Windows.Forms.RadioButton();
             this.label2 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBox_Folder = new System.Windows.Forms.TextBox();
+            this.lbFolder = new System.Windows.Forms.Label();
+            this.tbFolder = new System.Windows.Forms.TextBox();
             this.button_Folder = new System.Windows.Forms.Button();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.label1 = new System.Windows.Forms.Label();
@@ -55,6 +55,8 @@
             this.physicsControl1 = new Tso2Pmd.PhysicsControl();
             this.tabPage5 = new System.Windows.Forms.TabPage();
             this.taikeiControl1 = new Tso2Pmd.TaikeiControl();
+            this.tbTextureFilePrefix = new System.Windows.Forms.TextBox();
+            this.lbTexFilePrefix = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -86,7 +88,7 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(353, 203);
+            this.tabPage1.Size = new System.Drawing.Size(353, 249);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "モデル名＆コメント";
             this.tabPage1.UseVisualStyleBackColor = true;
@@ -115,7 +117,8 @@
             this.textBox_Comment.Name = "textBox_Comment";
             this.textBox_Comment.Size = new System.Drawing.Size(290, 99);
             this.textBox_Comment.TabIndex = 11;
-            this.textBox_Comment.Text = "PolyMo用モデルデータ : カスタム少女\r\n(物理演算対応モデル)\r\n\r\nモデル編集者 : ---\r\nMOD作成者 : ---\r\nデータ変換 : Tso2Pmx Ver. 0.3.0\r\nCopyright : TechArts3D & ---";
+            this.textBox_Comment.Text = "PolyMo用モデルデータ : カスタム少女\r\n(物理演算対応モデル)\r\n\r\nモデル編集者 : ---\r\nMOD作成者 : ---\r\nデータ変換 : Tso2Pm" +
+    "x Ver. 0.3.0\r\nCopyright : TechArts3D & ---";
             // 
             // label7
             // 
@@ -132,13 +135,13 @@
             this.tabPage2.Controls.Add(this.radioButton2);
             this.tabPage2.Controls.Add(this.radioButton1);
             this.tabPage2.Controls.Add(this.label2);
-            this.tabPage2.Controls.Add(this.label4);
-            this.tabPage2.Controls.Add(this.textBox_Folder);
+            this.tabPage2.Controls.Add(this.lbFolder);
+            this.tabPage2.Controls.Add(this.tbFolder);
             this.tabPage2.Controls.Add(this.button_Folder);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(353, 203);
+            this.tabPage2.Size = new System.Drawing.Size(353, 249);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "出力フォルダ";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -188,21 +191,21 @@
             this.label2.TabIndex = 7;
             this.label2.Text = "＊ ファイルは確認なしで上書きされます";
             // 
-            // label4
+            // lbFolder
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(46, 99);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(74, 12);
-            this.label4.TabIndex = 2;
-            this.label4.Text = "出力フォルダ ：";
+            this.lbFolder.AutoSize = true;
+            this.lbFolder.Location = new System.Drawing.Point(46, 99);
+            this.lbFolder.Name = "lbFolder";
+            this.lbFolder.Size = new System.Drawing.Size(74, 12);
+            this.lbFolder.TabIndex = 2;
+            this.lbFolder.Text = "出力フォルダ ：";
             // 
-            // textBox_Folder
+            // tbFolder
             // 
-            this.textBox_Folder.Location = new System.Drawing.Point(48, 114);
-            this.textBox_Folder.Name = "textBox_Folder";
-            this.textBox_Folder.Size = new System.Drawing.Size(192, 19);
-            this.textBox_Folder.TabIndex = 1;
+            this.tbFolder.Location = new System.Drawing.Point(48, 114);
+            this.tbFolder.Name = "tbFolder";
+            this.tbFolder.Size = new System.Drawing.Size(192, 19);
+            this.tbFolder.TabIndex = 1;
             // 
             // button_Folder
             // 
@@ -216,6 +219,8 @@
             // 
             // tabPage4
             // 
+            this.tabPage4.Controls.Add(this.lbTexFilePrefix);
+            this.tabPage4.Controls.Add(this.tbTextureFilePrefix);
             this.tabPage4.Controls.Add(this.label1);
             this.tabPage4.Controls.Add(this.cbUseSpheremap);
             this.tabPage4.Controls.Add(this.cbUniqueMaterial);
@@ -243,11 +248,11 @@
             this.cbUseSpheremap.AutoSize = true;
             this.cbUseSpheremap.Checked = true;
             this.cbUseSpheremap.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbUseSpheremap.Location = new System.Drawing.Point(28, 126);
+            this.cbUseSpheremap.Location = new System.Drawing.Point(22, 142);
             this.cbUseSpheremap.Name = "cbUseSpheremap";
-            this.cbUseSpheremap.Size = new System.Drawing.Size(303, 16);
+            this.cbUseSpheremap.Size = new System.Drawing.Size(301, 16);
             this.cbUseSpheremap.TabIndex = 34;
-            this.cbUseSpheremap.Text = "スフィアマップを利用して、Toonテキスチャの色とびを補完する";
+            this.cbUseSpheremap.Text = "スフィアマップを利用して、Toonテクスチャの色とびを補完する";
             this.cbUseSpheremap.UseVisualStyleBackColor = true;
             // 
             // cbUniqueMaterial
@@ -255,7 +260,7 @@
             this.cbUniqueMaterial.AutoSize = true;
             this.cbUniqueMaterial.Checked = true;
             this.cbUniqueMaterial.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbUniqueMaterial.Location = new System.Drawing.Point(28, 170);
+            this.cbUniqueMaterial.Location = new System.Drawing.Point(22, 186);
             this.cbUniqueMaterial.Name = "cbUniqueMaterial";
             this.cbUniqueMaterial.Size = new System.Drawing.Size(236, 16);
             this.cbUniqueMaterial.TabIndex = 33;
@@ -265,7 +270,7 @@
             // cbUseEdge
             // 
             this.cbUseEdge.AutoSize = true;
-            this.cbUseEdge.Location = new System.Drawing.Point(28, 148);
+            this.cbUseEdge.Location = new System.Drawing.Point(22, 164);
             this.cbUseEdge.Name = "cbUseEdge";
             this.cbUseEdge.Size = new System.Drawing.Size(118, 16);
             this.cbUseEdge.TabIndex = 32;
@@ -325,7 +330,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(353, 203);
+            this.tabPage3.Size = new System.Drawing.Size(353, 249);
             this.tabPage3.TabIndex = 4;
             this.tabPage3.Text = "オプション2";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -343,7 +348,7 @@
             this.tabPage5.Location = new System.Drawing.Point(4, 22);
             this.tabPage5.Name = "tabPage5";
             this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(353, 203);
+            this.tabPage5.Size = new System.Drawing.Size(353, 249);
             this.tabPage5.TabIndex = 5;
             this.tabPage5.Text = "オプション3";
             this.tabPage5.UseVisualStyleBackColor = true;
@@ -354,6 +359,23 @@
             this.taikeiControl1.Name = "taikeiControl1";
             this.taikeiControl1.Size = new System.Drawing.Size(330, 183);
             this.taikeiControl1.TabIndex = 0;
+            // 
+            // tbTexFilePrefix
+            // 
+            this.tbTextureFilePrefix.Location = new System.Drawing.Point(195, 117);
+            this.tbTextureFilePrefix.Name = "tbTexFilePrefix";
+            this.tbTextureFilePrefix.Size = new System.Drawing.Size(40, 19);
+            this.tbTextureFilePrefix.TabIndex = 35;
+            this.tbTextureFilePrefix.Text = "t";
+            // 
+            // lbTexFilePrefix
+            // 
+            this.lbTexFilePrefix.AutoSize = true;
+            this.lbTexFilePrefix.Location = new System.Drawing.Point(22, 120);
+            this.lbTexFilePrefix.Name = "lbTexFilePrefix";
+            this.lbTexFilePrefix.Size = new System.Drawing.Size(167, 12);
+            this.lbTexFilePrefix.TabIndex = 36;
+            this.lbTexFilePrefix.Text = "テクスチャファイル名のプレフィックス：";
             // 
             // T2POptionControl
             // 
@@ -390,8 +412,8 @@
         private System.Windows.Forms.RadioButton radioButton2;
         private System.Windows.Forms.RadioButton radioButton1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox textBox_Folder;
+        private System.Windows.Forms.Label lbFolder;
+        private System.Windows.Forms.TextBox tbFolder;
         private System.Windows.Forms.Button button_Folder;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TabPage tabPage3;
@@ -406,5 +428,7 @@
         private PhysicsControl physicsControl1;
         private System.Windows.Forms.CheckedListBox cbBoneStructure;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox tbTextureFilePrefix;
+        private System.Windows.Forms.Label lbTexFilePrefix;
     }
 }

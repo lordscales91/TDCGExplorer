@@ -29,7 +29,7 @@ namespace Tso2Pmd
         {
             // 出力フォルダ設定
             radioButton1.Checked = true;
-            textBox_Folder.Enabled = false;
+            tbFolder.Enabled = false;
             button_Folder.Enabled = false;
 
             // -----------------------------------------------------
@@ -49,20 +49,21 @@ namespace Tso2Pmd
             using (FolderBrowserDialog fbd = new FolderBrowserDialog())
             {
                 //最初に選択するフォルダを指定する
-                if (textBox_Folder.Text != "")
-                    fbd.SelectedPath = textBox_Folder.Text;
+                if (tbFolder.Text != "")
+                    fbd.SelectedPath = tbFolder.Text;
 
                 if (fbd.ShowDialog() != DialogResult.OK)
                 {
                     return;
                 }
-                textBox_Folder.Text = fbd.SelectedPath;
+                tbFolder.Text = fbd.SelectedPath;
             }
         }
 
         /// フォームからパラメータを得て設定します。
         public void SetupOptions(TransTso2Pmd t2p)
         {
+            t2p.TextureFilePrefix = tbTextureFilePrefix.Text;
             t2p.UseSpheremap = cbUseSpheremap.Checked;
             t2p.UseEdge = cbUseEdge.Checked;
             t2p.UniqueMaterial = cbUniqueMaterial.Checked;
@@ -98,7 +99,7 @@ namespace Tso2Pmd
             }
             else
             {
-                return textBox_Folder.Text;
+                return tbFolder.Text;
             }
         }
 
@@ -109,19 +110,19 @@ namespace Tso2Pmd
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
-            textBox_Folder.Enabled = false;
+            tbFolder.Enabled = false;
             button_Folder.Enabled = false;
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
-            textBox_Folder.Enabled = false;
+            tbFolder.Enabled = false;
             button_Folder.Enabled = false;
         }
 
         private void radioButton3_CheckedChanged(object sender, EventArgs e)
         {
-            textBox_Folder.Enabled = true;
+            tbFolder.Enabled = true;
             button_Folder.Enabled = true;
         }
 

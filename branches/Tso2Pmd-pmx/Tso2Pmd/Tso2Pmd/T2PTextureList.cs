@@ -16,11 +16,14 @@ namespace Tso2Pmd
         // 辞書
         Dictionary<string, PMD_Texture> map = new Dictionary<string, PMD_Texture>();
 
+        public readonly string file_prefix;
+
         // スフィアマップを使うか
         public readonly bool use_spheremap;
 
-        public T2PTextureList(bool use_spheremap)
+        public T2PTextureList(string file_prefix, bool use_spheremap)
         {
+            this.file_prefix = file_prefix;
             this.use_spheremap = use_spheremap;
         }
 
@@ -30,7 +33,7 @@ namespace Tso2Pmd
             int i = 0;
             foreach (PMD_Texture tex in items)
             {
-                names[i++] = tex.FileName;
+                names[i++] = file_prefix + tex.FileName;
             }
             return names;
         }
@@ -84,7 +87,7 @@ namespace Tso2Pmd
         {
             foreach (PMD_Texture texture in items)
             {
-                texture.Save(dest_path);
+                texture.Save(dest_path, file_prefix);
             }
         }
         
@@ -243,10 +246,10 @@ namespace Tso2Pmd
 
         public string FileName
         {
-            get { return string.Format("t{0:D3}", ID) + FileExtension; }
+            get { return string.Format("{0:D3}", ID) + FileExtension; }
         }
 
-        public void Save(string dest_path)
+        public void Save(string dest_path, string file_prefix)
         {
             Bitmap saved_bmp = bmp;
 
@@ -256,7 +259,7 @@ namespace Tso2Pmd
             if (IsSphere)
                 saved_bmp = MakeSphereBitmap(toon.Bitmap);
 
-            saved_bmp.Save(dest_path + "/" + FileName, System.Drawing.Imaging.ImageFormat.Bmp);
+            saved_bmp.Save(dest_path + "/" + file_prefix + FileName, System.Drawing.Imaging.ImageFormat.Bmp);
         }
 
         // Toonを最適化する

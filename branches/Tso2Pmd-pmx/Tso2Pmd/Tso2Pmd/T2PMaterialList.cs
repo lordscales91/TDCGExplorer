@@ -19,13 +19,13 @@ namespace Tso2Pmd
         List<string> categories;
         T2PTextureList tex_list;
 
-        public T2PMaterialList(List<TSOFile> tsos, List<string> categories, bool use_spheremap)
+        public T2PMaterialList(List<TSOFile> tsos, List<string> categories, string file_prefix, bool use_spheremap)
         {
             this.tsos = tsos;
             this.categories = categories;
             
             // テクスチャを準備
-            tex_list = new T2PTextureList(use_spheremap);
+            tex_list = new T2PTextureList(file_prefix, use_spheremap);
             int tso_num = 0;
             foreach (TSOFile tso in tsos)
             {
