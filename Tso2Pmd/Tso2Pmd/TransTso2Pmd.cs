@@ -566,43 +566,52 @@ namespace Tso2Pmd
 
                     // -----------------------------------------------------
                     // スキニング
-                    List<string> tmp_b = new List<string>();
-                    List<float> tmp_w = new List<float>();
-
-                    for (int i = 0; i < 4; i++)
+                    if (cor_table != null)
                     {
-                        TSONode tso_bone = sub_mesh.bones[vertex.skin_weights[i].bone_index];
-                        string bone_name = cor_table.skinning[tso_bone.Name];
+                        List<string> tmp_b = new List<string>();
+                        List<float> tmp_w = new List<float>();
 
-                        if (tmp_b.IndexOf(bone_name) < 0)
+                        for (int i = 0; i < 4; i++)
                         {
-                            tmp_b.Add(bone_name);
-                            tmp_w.Add(vertex.skin_weights[i].weight);
+                            TSONode tso_bone = sub_mesh.bones[vertex.skin_weights[i].bone_index];
+                            string bone_name = cor_table.skinning[tso_bone.Name];
+
+                            if (tmp_b.IndexOf(bone_name) < 0)
+                            {
+                                tmp_b.Add(bone_name);
+                                tmp_w.Add(vertex.skin_weights[i].weight);
+                            }
+                            else
+                            {
+                                tmp_w[tmp_b.IndexOf(bone_name)] += vertex.skin_weights[i].weight;
+                            }
+                        }
+
+                        float w0 = tmp_w.Max();
+                        pmd_v.bone_indices[0] = bone_name_idmap[tmp_b[tmp_w.IndexOf(w0)]];
+                        tmp_b.RemoveAt(tmp_w.IndexOf(w0));
+                        tmp_w.RemoveAt(tmp_w.IndexOf(w0));
+
+                        float w1;
+                        if (tmp_b.Count == 0)
+                        {
+                            w1 = 0.0f;
+                            pmd_v.bone_indices[1] = pmd_v.bone_indices[0];
                         }
                         else
                         {
-                            tmp_w[tmp_b.IndexOf(bone_name)] += vertex.skin_weights[i].weight;
+                            w1 = tmp_w.Max();
+                            pmd_v.bone_indices[1] = bone_name_idmap[tmp_b[tmp_w.IndexOf(w1)]];
                         }
-                    }
 
-                    float w0 = tmp_w.Max();
-                    pmd_v.bone_indices[0] = bone_name_idmap[tmp_b[tmp_w.IndexOf(w0)]];
-                    tmp_b.RemoveAt(tmp_w.IndexOf(w0));
-                    tmp_w.RemoveAt(tmp_w.IndexOf(w0));
-
-                    float w1;
-                    if (tmp_b.Count == 0)
-                    {
-                        w1 = 0.0f;
-                        pmd_v.bone_indices[1] = pmd_v.bone_indices[0];
+                        pmd_v.weight = (sbyte)(w0 * 100 / (w0 + w1));
                     }
                     else
                     {
-                        w1 = tmp_w.Max();
-                        pmd_v.bone_indices[1] = bone_name_idmap[tmp_b[tmp_w.IndexOf(w1)]];
+                        pmd_v.bone_indices[0] = 0;
+                        pmd_v.bone_indices[1] = 0;
+                        pmd_v.weight = 100;
                     }
-
-                    pmd_v.weight = (sbyte)(w0 * 100 / (w0 + w1));
 
                     // -----------------------------------------------------
                     // 頂点リストに頂点を追加
