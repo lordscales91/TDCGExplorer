@@ -13,11 +13,6 @@ using Microsoft.DirectX.Direct3D;
 using TDCG;
 using TDCGUtils;
 
-using NyMmdUtils;
-using jp.nyatla.nymmd.cs;
-using jp.nyatla.nymmd.cs.core;
-using jp.nyatla.nymmd.cs.types;
-
 namespace Vmd2Tmo
 {
     public class Vmd2Tmo
