@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tmo2Vpd", "Tmo2Vpd\Tmo2Vpd.csproj", "{F3EB0737-E481-4E1F-AA8D-5526E04F2BCC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NyMmd", "..\NyMmd\NyMmd\NyMmd.csproj", "{6E0B0B92-0394-4537-8096-8EEB0DF619D4}"

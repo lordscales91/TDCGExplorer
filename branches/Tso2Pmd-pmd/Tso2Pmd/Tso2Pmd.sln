@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C# Express 2008
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tso2Pmd", "Tso2Pmd\Tso2Pmd.csproj", "{940F1263-9C7E-47A9-A28E-EFB7DC12D058}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TDCG", "..\TDCG\TDCG.csproj", "{30D26679-E876-46FC-B8C0-E55146316C8C}"
