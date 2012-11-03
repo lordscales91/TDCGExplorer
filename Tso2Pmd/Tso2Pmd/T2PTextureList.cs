@@ -33,7 +33,7 @@ namespace Tso2Pmd
             int i = 0;
             foreach (PMD_Texture tex in items)
             {
-                names[i++] = file_prefix + tex.FileName;
+                names[i++] = tex.GetFileName(file_prefix);
             }
             return names;
         }
@@ -244,9 +244,9 @@ namespace Tso2Pmd
             get { return name + FileExtension; }
         }
 
-        public string FileName
+        public string GetFileName(string file_prefix)
         {
-            get { return string.Format("{0:D3}", ID) + FileExtension; }
+            return file_prefix + string.Format("{0:D3}", ID) + FileExtension;
         }
 
         public void Save(string dest_path, string file_prefix)
@@ -259,7 +259,7 @@ namespace Tso2Pmd
             if (IsSphere)
                 saved_bmp = MakeSphereBitmap(toon.Bitmap);
 
-            saved_bmp.Save(dest_path + "/" + file_prefix + FileName, System.Drawing.Imaging.ImageFormat.Bmp);
+            saved_bmp.Save(dest_path + "/" + GetFileName(file_prefix), System.Drawing.Imaging.ImageFormat.Bmp);
         }
 
         // Toonを最適化する
