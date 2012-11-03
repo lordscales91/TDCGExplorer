@@ -554,6 +554,11 @@ namespace Tso2Pmd
                             pmd_v.skin_weights[i].weight = vertex.skin_weights[i].weight;
                         }
                     }
+                    else
+                    {
+                        pmd_v.skin_weights[0].bone_index = 0;
+                        pmd_v.skin_weights[0].weight = 1.0f;
+                    }
 
                     // -----------------------------------------------------
                     // 頂点リストに頂点を追加
