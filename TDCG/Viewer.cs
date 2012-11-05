@@ -7,9 +7,9 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using Direct3D = Microsoft.DirectX.Direct3D;
+using System.Runtime.InteropServices;
+using SharpDX;
+using SharpDX.Direct3D9;
 
 namespace TDCG
 {
@@ -104,7 +104,7 @@ public class Viewer : IDisposable
     internal Line line = null;
     float w_scale = 1.0f;
     float h_scale = 1.0f;
-    Rectangle ztex_rect;
+    SharpDX.Rectangle ztex_rect;
 
     /// <summary>
     /// surface of device
@@ -130,7 +130,7 @@ public class Viewer : IDisposable
     /// </summary>
     public Viewer()
     {
-        ScreenColor = Color.LightGray;
+        ScreenColor = SharpDX.Color.LightGray;
     }
 
     /// <summary>
@@ -470,7 +470,7 @@ public class Viewer : IDisposable
             Figure fig;
             if (TryGetFigure(out fig))
             {
-                if (sav.LightDirection != Vector3.Empty)
+                if (sav.LightDirection != Vector3.Zero)
                     fig.LightDirection = sav.LightDirection;
                 fig.Tmo = sav.Tmo;
                 //fig.TransformTpo();
@@ -573,37 +573,35 @@ public class Viewer : IDisposable
             pp.BackBufferCount = 1;
             pp.EnableAutoDepthStencil = true;
 
-            int adapter_ordinal = Manager.Adapters.Default.Adapter;
-            DisplayMode display_mode = Manager.Adapters.Default.CurrentDisplayMode;
+            Direct3D direct3d = new Direct3D();
 
-            int ret;
-            if (Manager.CheckDepthStencilMatch(adapter_ordinal, DeviceType.Hardware, display_mode.Format, pp.BackBufferFormat, DepthFormat.D24S8, out ret))
-                pp.AutoDepthStencilFormat = DepthFormat.D24S8;
+            int adapter_ordinal = direct3d.Adapters[0].Adapter;
+            DisplayMode display_mode = direct3d.Adapters[0].CurrentDisplayMode;
+
+            Result ret;
+
+            if (direct3d.CheckDepthStencilMatch(adapter_ordinal, DeviceType.Hardware, display_mode.Format, pp.BackBufferFormat, Format.D24S8, out ret))
+                pp.AutoDepthStencilFormat = Format.D24S8;
             else
-            if (Manager.CheckDepthStencilMatch(adapter_ordinal, DeviceType.Hardware, display_mode.Format, pp.BackBufferFormat, DepthFormat.D24X8, out ret))
-                pp.AutoDepthStencilFormat = DepthFormat.D24X8;
+            if (direct3d.CheckDepthStencilMatch(adapter_ordinal, DeviceType.Hardware, display_mode.Format, pp.BackBufferFormat, Format.D24X8, out ret))
+                pp.AutoDepthStencilFormat = Format.D24X8;
             else
-                pp.AutoDepthStencilFormat = DepthFormat.D16;
+                pp.AutoDepthStencilFormat = Format.D16;
 
             int quality;
-            if (Manager.CheckDeviceMultiSampleType(adapter_ordinal, DeviceType.Hardware, pp.BackBufferFormat, pp.Windowed, MultiSampleType.FourSamples, out ret, out quality))
+
+            if (direct3d.CheckDeviceMultisampleType(adapter_ordinal, DeviceType.Hardware, pp.BackBufferFormat, pp.Windowed, MultisampleType.FourSamples, out quality, out ret))
             {
-                pp.MultiSample = MultiSampleType.FourSamples;
+                pp.MultiSampleType = MultisampleType.FourSamples;
                 pp.MultiSampleQuality = quality - 1;
             }
 
-            CreateFlags flags = CreateFlags.SoftwareVertexProcessing;
-            Caps caps = Manager.GetDeviceCaps(adapter_ordinal, DeviceType.Hardware);
-            if (caps.DeviceCaps.SupportsHardwareTransformAndLight)
-                flags = CreateFlags.HardwareVertexProcessing;
-            if (caps.DeviceCaps.SupportsPureDevice)
-                flags |= CreateFlags.PureDevice;
-            device = new Device(adapter_ordinal, DeviceType.Hardware, control, flags, pp);
+            device = new Device(direct3d, 0, DeviceType.Hardware, control.Handle, CreateFlags.HardwareVertexProcessing, pp);
 
-            device.DeviceLost += new EventHandler(OnDeviceLost);
-            device.DeviceReset += new EventHandler(OnDeviceReset);
+            //device.DeviceLost += new EventHandler(OnDeviceLost);
+            //device.DeviceReset += new EventHandler(OnDeviceReset);
         }
-        catch (DirectXException ex)
+        catch (SharpDXException ex)
         {
             Console.WriteLine("Error: " + ex);
             return false;
@@ -620,13 +618,13 @@ public class Viewer : IDisposable
         }
         using (FileStream effect_stream = File.OpenRead(effect_file))
         {
-            string compile_error;
-            effect = Effect.FromStream(device, effect_stream, null, ShaderFlags.None, null, out compile_error);
-            if (compile_error != null)
-            {
-                Console.WriteLine(compile_error);
-                return false;
-            }
+            //string compile_error;
+            effect = Effect.FromStream(device, effect_stream, ShaderFlags.None);
+            //if (compile_error != null)
+            //{
+                //Console.WriteLine(compile_error);
+                //return false;
+            //}
         }
 
         sw.Stop();
@@ -688,50 +686,50 @@ public class Viewer : IDisposable
             ztex = new Texture(device, 1024, 1024, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
             ztex_surface = ztex.GetSurfaceLevel(0);
 
-            effect.SetValue("texShadowMap", ztex);
+            effect.SetTexture("texShadowMap", ztex);
             int texw = ztex_surface.Description.Width;
             int texh = ztex_surface.Description.Height;
             Console.WriteLine("ztex {0}x{1}", texw, texh);
 
-            ztex_zbuf = device.CreateDepthStencilSurface(texw, texh, DepthFormat.D16, MultiSampleType.None, 0, false);
+            //ztex_zbuf = device.CreateDepthStencilSurface(texw, texh, Format.D16, MultisampleType.None, 0, false);
 
             w_scale = (float)devw / texw;
             h_scale = (float)devh / texh;
-            ztex_rect = new Rectangle(0, 0, texw, texh);
+            ztex_rect = new SharpDX.Rectangle(0, 0, texw, texh);
         }
 
         Transform_Projection = Matrix.PerspectiveFovRH(
-                Geometry.DegreeToRadian(30.0f),
+                MathUtil.DegreesToRadians(30.0f),
                 (float)device.Viewport.Width / (float)device.Viewport.Height,
                 1.0f,
                 1000.0f );
         // xxx: for w-buffering
-        device.Transform.Projection = Transform_Projection;
+        device.SetTransform(TransformState.Projection, Transform_Projection);
         effect.SetValue("proj", Transform_Projection);
 
         if (shadow_map_enabled)
         {
             Light_Projection = Matrix.PerspectiveFovLH(
-                Geometry.DegreeToRadian(45.0f),
+                MathUtil.DegreesToRadians(45.0f),
                 1.0f,
                 20.0f,
                 250.0f );
             effect.SetValue("lightproj", Light_Projection);
         }
 
-        device.RenderState.Lighting = false;
-        device.RenderState.CullMode = Cull.CounterClockwise;
+        device.SetRenderState(RenderState.Lighting, false);
+        device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
 
-        device.TextureState[0].AlphaOperation = TextureOperation.Modulate;
-        device.TextureState[0].AlphaArgument1 = TextureArgument.TextureColor;
-        device.TextureState[0].AlphaArgument2 = TextureArgument.Current;
+        device.SetTextureStageState(0, TextureStage.AlphaOperation, TextureOperation.Modulate);
+        device.SetTextureStageState(0, TextureStage.AlphaArg1, TextureArgument.Texture);
+        device.SetTextureStageState(0, TextureStage.AlphaArg2, TextureArgument.Current);
 
-        device.RenderState.AlphaBlendEnable = true;
-        device.RenderState.SourceBlend = Blend.SourceAlpha; 
-        device.RenderState.DestinationBlend = Blend.InvSourceAlpha;
-        device.RenderState.AlphaTestEnable = true;
-        device.RenderState.ReferenceAlpha = 0x08;
-        device.RenderState.AlphaFunction = Compare.GreaterEqual;
+        device.SetRenderState(RenderState.AlphaBlendEnable, true);
+        device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+        device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
+        device.SetRenderState(RenderState.AlphaTestEnable, true);
+        device.SetRenderState(RenderState.AlphaRef, 0x08);
+        device.SetRenderState(RenderState.AlphaFunc, Compare.GreaterEqual);
 
         vd = new VertexDeclaration(device, TSOSubMesh.ve);
 
@@ -884,7 +882,7 @@ public class Viewer : IDisposable
             camera.Update();
             Transform_View = camera.ViewMatrix;
             // xxx: for w-buffering
-            device.Transform.View = Transform_View;
+            device.SetTransform(TransformState.View, Transform_View);
             effect.SetValue("view", Transform_View);
         }
 
@@ -982,24 +980,6 @@ public class Viewer : IDisposable
             Rendering();
 
         device.EndScene();
-        {
-            int ret;
-            if (! device.CheckCooperativeLevel(out ret))
-            {
-                switch ((ResultCode)ret)
-                {
-                    case ResultCode.DeviceLost:
-                        Thread.Sleep(30);
-                        return;
-                    case ResultCode.DeviceNotReset:
-                        device.Reset(device.PresentationParameters);
-                        break;
-                    default:
-                        Console.WriteLine((ResultCode)ret);
-                        return;
-                }
-            }
-        }
 
         device.Present();
         Thread.Sleep(30);
@@ -1007,11 +987,11 @@ public class Viewer : IDisposable
 
     void DrawShadowMap()
     {
-        device.RenderState.AlphaBlendEnable = false;
+        device.SetRenderState(RenderState.AlphaBlendEnable, false);
 
         device.SetRenderTarget(0, ztex_surface);
         device.DepthStencilSurface = ztex_zbuf;
-        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, SharpDX.Color.White, 1.0f, 0);
 
         device.VertexDeclaration = vd;
         effect.Technique = handle_ShadowMap;
@@ -1025,7 +1005,7 @@ public class Viewer : IDisposable
             foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
                 //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                device.SetStreamSource(0, sub_mesh.vb, 0);
+                device.SetStreamSource(0, sub_mesh.vb, 0, 52);
 
                 //tso.SwitchShader(sub_mesh);
                 effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
@@ -1047,11 +1027,11 @@ public class Viewer : IDisposable
     {
         device.SetRenderTarget(0, ztex_surface);
         device.DepthStencilSurface = ztex_zbuf;
-        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.White, 1.0f, 0);
+        device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, SharpDX.Color.White, 1.0f, 0);
     }
 
     /// スクリーン塗りつぶし色
-    public Color ScreenColor { get; set; }
+    public SharpDX.Color ScreenColor { get; set; }
 
     /// <summary>
     /// UVSCR値を得ます。
@@ -1068,7 +1048,7 @@ public class Viewer : IDisposable
     /// </summary>
     protected virtual void DrawFigure()
     {
-        device.RenderState.AlphaBlendEnable = true;
+        device.SetRenderState(RenderState.AlphaBlendEnable, true);
 
         device.SetRenderTarget(0, dev_surface);
         device.DepthStencilSurface = dev_zbuf;
@@ -1087,7 +1067,7 @@ public class Viewer : IDisposable
                     foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
                     {
                         //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                        device.SetStreamSource(0, sub_mesh.vb, 0);
+                        device.SetStreamSource(0, sub_mesh.vb, 0, 52);
 
                         tso.SwitchShader(sub_mesh);
                         effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
@@ -1108,12 +1088,12 @@ public class Viewer : IDisposable
 
     void DrawSprite()
     {
-        device.RenderState.AlphaBlendEnable = false;
+        device.SetRenderState(RenderState.AlphaBlendEnable, false);
 
         sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
 
         sprite.Begin(0);
-        sprite.Draw(ztex, ztex_rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
+        //sprite.Draw(ztex, ztex_rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
         sprite.End();
     }
 
@@ -1336,9 +1316,9 @@ public class Viewer : IDisposable
     /// <param name="file">ファイル名</param>
     public void SaveToBitmap(string file)
     {
-      using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))
-      if (sf != null)
-          SurfaceLoader.Save(file, ImageFileFormat.Bmp, sf);
+      //using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))
+      //if (sf != null)
+      //    SurfaceLoader.Save(file, ImageFileFormat.Bmp, sf);
     }
 
     /// <summary>
@@ -1347,9 +1327,9 @@ public class Viewer : IDisposable
     /// <param name="file">ファイル名</param>
     public void SaveToPng(string file)
     {
-      using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))
-      if (sf != null)
-          SurfaceLoader.Save(file, ImageFileFormat.Png, sf);
+      //using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))
+      //if (sf != null)
+      //    SurfaceLoader.Save(file, ImageFileFormat.Png, sf);
     }
 
     /// <summary>
@@ -1365,7 +1345,7 @@ public class Viewer : IDisposable
     public static bool DetectSphereRayCollision(float sphereRadius, ref Vector3 sphereCenter, ref Vector3 rayStart, ref Vector3 rayOrientation, out Vector3 collisionPoint, out float collisionTime)
     {
         collisionTime = 0.0f;
-        collisionPoint = Vector3.Empty;
+        collisionPoint = Vector3.Zero;
 
         Vector3 u = rayStart - sphereCenter;
         float a = Vector3.Dot(rayOrientation, rayOrientation);

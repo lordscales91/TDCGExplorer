@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 
 namespace TDCG
 {
@@ -548,9 +548,9 @@ public class TPONode
         if (rotation_command != null)
         {
             Vector3 angle;
-            angle.X = Geometry.RadianToDegree(rotation_command.X);
-            angle.Y = Geometry.RadianToDegree(rotation_command.Y);
-            angle.Z = Geometry.RadianToDegree(rotation_command.Z);
+            angle.X = MathUtil.RadiansToDegrees(rotation_command.X);
+            angle.Y = MathUtil.RadiansToDegrees(rotation_command.Y);
+            angle.Z = MathUtil.RadiansToDegrees(rotation_command.Z);
             return angle;
         }
         else
@@ -639,9 +639,9 @@ public class TPONode
 
             commands.Insert(idx, rotation_command);
         }
-        rotation_command.x = Geometry.DegreeToRadian(angle.X);
-        rotation_command.y = Geometry.DegreeToRadian(angle.Y);
-        rotation_command.z = Geometry.DegreeToRadian(angle.Z);
+        rotation_command.x = MathUtil.DegreesToRadians(angle.X);
+        rotation_command.y = MathUtil.DegreesToRadians(angle.Y);
+        rotation_command.z = MathUtil.DegreesToRadians(angle.Z);
     }
 
     /// 移動変位を設定します。

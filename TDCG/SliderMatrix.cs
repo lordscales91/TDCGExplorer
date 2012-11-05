@@ -6,8 +6,8 @@ using System.Threading;
 //using System.ComponentModel;
 using System.Windows.Forms;
 using System.IO;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 
 namespace TDCG
 {
