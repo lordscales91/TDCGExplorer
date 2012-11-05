@@ -1,8 +1,0 @@
-W_LeftArmRoll, 左腕捩,
-W_LeftForeArm, 左腕捩先,
-W_LeftForeArmRoll, 左手捩, 
-W_LeftHand, 左手捩先, 
-W_RightArmRoll, 右腕捩,
-W_RightForeArm, 右腕捩先,
-W_RightForeArmRoll, 右手捩, 
-W_RightHand, 右手捩先, 
