@@ -7,8 +7,8 @@ using System.Threading;
 using System.Windows.Forms;
 using System.IO;
 using System.Text.RegularExpressions;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 
 namespace TDCG
 {
@@ -27,7 +27,7 @@ public class Figure : IDisposable
     /// </summary>
     public SliderMatrix slider_matrix = new SliderMatrix();
 
-    Vector3 center = Vector3.Empty;
+    Vector3 center = Vector3.Zero;
     /// <summary>
     /// 中心座標
     /// </summary>
@@ -36,7 +36,7 @@ public class Figure : IDisposable
         get { return center; }
     }
 
-    Vector3 translation = Vector3.Empty;
+    Vector3 translation = Vector3.Zero;
     /// <summary>
     /// 移動変位
     /// </summary>
@@ -64,7 +64,7 @@ public class Figure : IDisposable
     /// tso nodeからtmo nodeを導出する辞書
     public Dictionary<TSONode, TMONode> nodemap;
 
-    private MatrixStack matrixStack = null;
+    private Stack<Matrix> matrixStack = null;
     private int frame_index = 0;
     private int current_frame_index = 0;
 
@@ -90,7 +90,7 @@ public class Figure : IDisposable
     {
         tmo = new TMOFile();
         nodemap = new Dictionary<TSONode, TMONode>();
-        matrixStack = new MatrixStack();
+        matrixStack = new Stack<Matrix>();
 
         tpo_list.Load();
 
@@ -318,7 +318,7 @@ public class Figure : IDisposable
             local.M42 = translation.Y;
             local.M43 = translation.Z;
 
-            matrixStack.LoadMatrix(local);
+            matrixStack.Push(local);
             UpdateBoneMatrices(tmo.w_hips_node, tmo_frame);
         }
         foreach (TMONode tmo_node in tmo.root_nodes_except_w_hips)
@@ -326,7 +326,7 @@ public class Figure : IDisposable
             //移動変位を設定
             Matrix local = Matrix.Translation(translation);
 
-            matrixStack.LoadMatrix(local);
+            matrixStack.Push(local);
             UpdateBoneMatricesWithoutSlideMatrices(tmo_node, tmo_frame);
         }
     }
@@ -338,7 +338,7 @@ public class Figure : IDisposable
     /// </summary>
     protected void UpdateBoneMatrices(TMONode tmo_node, TMOFrame tmo_frame)
     {
-        matrixStack.Push();
+        //matrixStack.Push();
 
         if (tmo_frame != null)
         {
@@ -357,8 +357,8 @@ public class Figure : IDisposable
         else
             slider_matrix.TransformFace(tmo_node, ref m);
 
-        matrixStack.MultiplyMatrixLocal(m);
-        m = matrixStack.Top;
+        matrixStack.Push(m * matrixStack.Peek());
+        m = matrixStack.Peek();
 
         if (chichi_p)
         {
@@ -381,7 +381,7 @@ public class Figure : IDisposable
     /// </summary>
     protected void UpdateBoneMatricesWithoutSlideMatrices(TMONode tmo_node, TMOFrame tmo_frame)
     {
-        matrixStack.Push();
+        //matrixStack.Push();
 
         if (tmo_frame != null)
         {
@@ -390,8 +390,8 @@ public class Figure : IDisposable
         }
         Matrix m = tmo_node.TransformationMatrix;
 
-        matrixStack.MultiplyMatrixLocal(m);
-        m = matrixStack.Top;
+        matrixStack.Push(m * matrixStack.Peek());
+        m = matrixStack.Peek();
 
         tmo_node.combined_matrix = m;
 

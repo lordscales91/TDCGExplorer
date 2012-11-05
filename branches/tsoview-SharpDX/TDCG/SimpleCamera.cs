@@ -3,8 +3,8 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 
 namespace TDCG
 {
@@ -70,10 +70,10 @@ namespace TDCG
         /// </summary>
         public SimpleCamera()
         {
-            angle = Vector3.Empty;
-            center = Vector3.Empty;
+            angle = Vector3.Zero;
+            center = Vector3.Zero;
             translation = new Vector3(0.0f, 0.0f, +10.0f);
-            dirD = Vector3.Empty;
+            dirD = Vector3.Zero;
             zD = 0.0f;
             needUpdate = true;
             view = Matrix.Identity;
@@ -86,9 +86,9 @@ namespace TDCG
         /// </summary>
         public void Reset()
         {
-            center = Vector3.Empty;
+            center = Vector3.Zero;
             translation = new Vector3(0.0f, 0.0f, +10.0f);
-            angle = Vector3.Empty;
+            angle = Vector3.Zero;
             needUpdate = true;
         }
 
@@ -242,7 +242,7 @@ namespace TDCG
         /// </summary>
         protected void ResetDefValue()
         {
-            dirD = Vector3.Empty;
+            dirD = Vector3.Zero;
             zD = 0.0f;
             rotZD = 0.0f;
         }

@@ -5,8 +5,8 @@ using System.IO;
 using System.ComponentModel;
 using System.Text;
 using System.Runtime.InteropServices;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 using TDCG.Extensions;
 
 namespace TDCG
@@ -235,8 +235,8 @@ namespace TDCG
 
             if (vb != null)
                 vb.Dispose();
-            vb = new VertexBuffer(typeof(VertexFormat), vertices.Length, device, Usage.Dynamic | Usage.WriteOnly, VertexFormats.None, Pool.Default);
-            vb.Created += new EventHandler(vb_Created);
+            vb = new VertexBuffer(device, 52 * vertices.Length, Usage.Dynamic | Usage.WriteOnly, SharpDX.Direct3D9.VertexFormat.None, Pool.Default);
+            //vb.Created += new EventHandler(vb_Created);
             vb_Created(vb, null);
         }
 
@@ -248,7 +248,7 @@ namespace TDCG
             // rewrite vertex buffer
             //
             {
-                GraphicsStream gs = vb.Lock(0, 0, LockFlags.None);
+                DataStream  gs = vb.Lock(0, 0, LockFlags.None);
                 {
                     for (int i = 0; i < vertices.Length; i++)
                     {
@@ -353,29 +353,6 @@ namespace TDCG
             foreach (TSOSubMesh sub_mesh in sub_meshes)
                 sub_mesh.Dispose();
         }
-    }
-
-    /// 頂点構造体
-    public struct VertexFormat
-    {
-        /// 位置
-        public Vector3 position;
-        /// スキンウェイト0
-        public float weight_0;
-        /// スキンウェイト1
-        public float weight_1;
-        /// スキンウェイト2
-        public float weight_2;
-        /// スキンウェイト3
-        public float weight_3;
-        /// ボーンインデックス
-        public uint bone_indices;
-        /// 法線
-        public Vector3 normal;
-        /// テクスチャU座標
-        public float u;
-        /// テクスチャV座標
-        public float v;
     }
 
     /// <summary>
@@ -492,7 +469,7 @@ namespace TDCG
         /// <returns>スキン変形後の位置</returns>
         public Vector3 CalcSkindeformPosition(Matrix[] bone_matrices)
         {
-            Vector3 pos = Vector3.Empty;
+            Vector3 pos = Vector3.Zero;
             for (int i = 0; i < 4; i++)
             {
                 Matrix m = bone_matrices[skin_weights[i].bone_index];
@@ -963,7 +940,7 @@ namespace TDCG
                 }
                 bw.Flush();
                 ms.Seek(0, SeekOrigin.Begin);
-                tex = TextureLoader.FromStream(device, ms);
+                tex = Texture.FromStream(device, ms);
             }
         }
 
@@ -1091,7 +1068,7 @@ namespace TDCG
             Matrix m = Matrix.Identity;
             while (node != null)
             {
-                m.Multiply(node.TransformationMatrix);
+                m *= node.TransformationMatrix;
                 node = node.parent;
             }
             return Matrix.Invert(m);
@@ -1112,7 +1089,7 @@ namespace TDCG
         public Vector3 GetWorldPosition()
         {
             TSONode node = this;
-            Vector3 v = Vector3.Empty;
+            Vector3 v = Vector3.Zero;
             while (node != null)
             {
                 v = Vector3.TransformCoordinate(v, node.TransformationMatrix);
@@ -1131,7 +1108,7 @@ namespace TDCG
             Matrix m = Matrix.Identity;
             while (node != null)
             {
-                m.Multiply(node.TransformationMatrix);
+                m *= node.TransformationMatrix;
                 node = node.parent;
             }
             return m;
@@ -1501,7 +1478,7 @@ namespace TDCG
                 switch (p.type)
                 {
                 case ShaderParameterType.String:
-                    effect.SetValue(p.name, p.GetString());
+                        effect.SetString(p.name, p.GetString());
                     break;
                 case ShaderParameterType.Float:
                 case ShaderParameterType.Float3:
@@ -1519,11 +1496,11 @@ namespace TDCG
 
             TSOTex shadeTex;
             if (shader.shadeTex != null && texmap.TryGetValue(shader.ShadeTexName, out shadeTex))
-                effect.SetValue(handle_ShadeTex_texture, shadeTex.tex);
+                effect.SetTexture(handle_ShadeTex_texture, shadeTex.tex);
 
             TSOTex colorTex;
             if (shader.colorTex != null && texmap.TryGetValue(shader.ColorTexName, out colorTex))
-                effect.SetValue(handle_ColorTex_texture, colorTex.tex);
+                effect.SetTexture(handle_ColorTex_texture, colorTex.tex);
 
             effect.Technique = techmap[shader.technique];
             effect.ValidateTechnique(effect.Technique);

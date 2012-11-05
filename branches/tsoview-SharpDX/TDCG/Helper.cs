@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 
 namespace TDCG
 {
@@ -76,9 +76,9 @@ namespace TDCG
         public static Quaternion ToQuaternionZXY(Vector3 angle)
         {
             Quaternion qx, qy, qz;
-            qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), Geometry.DegreeToRadian(angle.X));
-            qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), Geometry.DegreeToRadian(angle.Y));
-            qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), Geometry.DegreeToRadian(angle.Z));
+            qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), MathUtil.DegreesToRadians(angle.X));
+            qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), MathUtil.DegreesToRadians(angle.Y));
+            qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), MathUtil.DegreesToRadians(angle.Z));
             return qy * qx * qz;
         }
 
@@ -90,20 +90,20 @@ namespace TDCG
             {
                 if (m.M23 > -1.0f + float.Epsilon)
                 {
-                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(-m.M21, m.M22));
-                    angle.X = Geometry.RadianToDegree((float)Math.Asin(m.M23));
-                    angle.Y = Geometry.RadianToDegree((float)Math.Atan2(-m.M13, m.M33));
+                    angle.Z = MathUtil.RadiansToDegrees((float)Math.Atan2(-m.M21, m.M22));
+                    angle.X = MathUtil.RadiansToDegrees((float)Math.Asin(m.M23));
+                    angle.Y = MathUtil.RadiansToDegrees((float)Math.Atan2(-m.M13, m.M33));
                 }
                 else
                 {
-                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
+                    angle.Z = MathUtil.RadiansToDegrees((float)Math.Atan2(m.M12, m.M11));
                     angle.X = -90.0f;
                     angle.Y = 0.0f;
                 }
             }
             else
             {
-                angle.Z = Geometry.RadianToDegree((float)Math.Atan2(m.M12, m.M11));
+                angle.Z = MathUtil.RadiansToDegrees((float)Math.Atan2(m.M12, m.M11));
                 angle.X = +90.0f;
                 angle.Y = 0.0f;
             }
@@ -120,9 +120,9 @@ namespace TDCG
         public static Quaternion ToQuaternionXYZ(Vector3 angle)
         {
             Quaternion qx, qy, qz;
-            qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), Geometry.DegreeToRadian(angle.X));
-            qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), Geometry.DegreeToRadian(angle.Y));
-            qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), Geometry.DegreeToRadian(angle.Z));
+            qx = Quaternion.RotationAxis(new Vector3(1.0f, 0.0f, 0.0f), MathUtil.DegreesToRadians(angle.X));
+            qy = Quaternion.RotationAxis(new Vector3(0.0f, 1.0f, 0.0f), MathUtil.DegreesToRadians(angle.Y));
+            qz = Quaternion.RotationAxis(new Vector3(0.0f, 0.0f, 1.0f), MathUtil.DegreesToRadians(angle.Z));
             return qz * qy * qx;
         }
 
@@ -134,20 +134,20 @@ namespace TDCG
             {
                 if (m.M31 > -1.0f + float.Epsilon)
                 {
-                    angle.X = Geometry.RadianToDegree((float)Math.Atan2(-m.M32, m.M33));
-                    angle.Y = Geometry.RadianToDegree((float)Math.Asin(m.M31));
-                    angle.Z = Geometry.RadianToDegree((float)Math.Atan2(-m.M21, m.M11));
+                    angle.X = MathUtil.RadiansToDegrees((float)Math.Atan2(-m.M32, m.M33));
+                    angle.Y = MathUtil.RadiansToDegrees((float)Math.Asin(m.M31));
+                    angle.Z = MathUtil.RadiansToDegrees((float)Math.Atan2(-m.M21, m.M11));
                 }
                 else
                 {
-                    angle.X = Geometry.RadianToDegree((float)Math.Atan2(m.M21, m.M22));
+                    angle.X = MathUtil.RadiansToDegrees((float)Math.Atan2(m.M21, m.M22));
                     angle.Y = -90.0f;
                     angle.Z = 0.0f;
                 }
             }
             else
             {
-                angle.X = Geometry.RadianToDegree((float)Math.Atan2(m.M21, m.M22));
+                angle.X = MathUtil.RadiansToDegrees((float)Math.Atan2(m.M21, m.M22));
                 angle.Y = +90.0f;
                 angle.Z = 0.0f;
             }

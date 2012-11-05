@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 using TDCG.Extensions;
 
 namespace TDCG
@@ -575,7 +575,7 @@ namespace TDCG
             m.M22 *= y;
             m.M33 *= z;
             */
-            m.Multiply(Matrix.Scaling(x, y, z));
+            m *= Matrix.Scaling(x, y, z);
             m.M41 /= x;
             m.M42 /= y;
             m.M43 /= z;
@@ -592,7 +592,7 @@ namespace TDCG
             m.M22 *= y;
             m.M33 *= z;
             */
-            m.Multiply(scaling);
+            m *= scaling;
             m.M41 /= scaling.M11;
             m.M42 /= scaling.M22;
             m.M43 /= scaling.M33;
@@ -1226,7 +1226,7 @@ namespace TDCG
         public Vector3 GetWorldPosition()
         {
             TMONode node = this;
-            Vector3 v = Vector3.Empty;
+            Vector3 v = Vector3.Zero;
             while (node != null)
             {
                 v = Vector3.TransformCoordinate(v, node.TransformationMatrix);
@@ -1245,7 +1245,7 @@ namespace TDCG
             Matrix m = Matrix.Identity;
             while (node != null)
             {
-                m.Multiply(node.TransformationMatrix);
+                m *= node.TransformationMatrix;
                 node = node.parent;
             }
             return m;

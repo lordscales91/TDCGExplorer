@@ -4,6 +4,8 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using SharpDX;
+using SharpDX.Direct3D9;
 
 namespace TSOView
 {
@@ -11,17 +13,17 @@ namespace TSOView
 public class TSOConfig
 {
     public Size ClientSize { get; set; }
-    Color screen_color;
-    public Color ScreenColor { get { return screen_color; } }
-    public string ScreenColorName
-    {
-        get { return ColorTranslator.ToHtml(screen_color); }
-        set { screen_color = ColorTranslator.FromHtml(value); }
-    }
+    SharpDX.Color screen_color;
+    public SharpDX.Color ScreenColor { get { return screen_color; } }
+    //public string ScreenColorName
+    //{
+    //    get { return ColorTranslator.ToHtml(screen_color); }
+    //    set { screen_color = ColorTranslator.FromHtml(value); }
+    //}
     public TSOConfig()
     {
         this.ClientSize = new Size(800, 600);
-        screen_color = Color.LightGray;
+        screen_color = SharpDX.Color.LightGray;
     }
 
     public void Dump()

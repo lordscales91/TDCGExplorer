@@ -53,7 +53,7 @@ public partial class TSOForm : Form
 
         this.fig_form = new FigureForm();
 
-        if (viewer.InitializeApplication(this, true))
+        if (viewer.InitializeApplication(this))
         {
             viewer.FigureEvent += delegate(object sender, EventArgs e)
             {

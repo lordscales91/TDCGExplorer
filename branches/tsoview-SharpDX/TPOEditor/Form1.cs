@@ -79,7 +79,7 @@ namespace TPOEditor
         void WriteRotationTpoCommandLine(string axis, float angle, StreamWriter sw)
         {
             sw.Write(indent);
-            sw.WriteLine(@"node.Rotate{1}(Geometry.DegreeToRadian({0:F}F));", Geometry.RadianToDegree(angle), axis);
+            sw.WriteLine(@"node.Rotate{1}(MathUtil.DegreesToRadians({0:F}F));", MathUtil.RadiansToDegrees(angle), axis);
         }
 
         void WriteTpoCommandLine(TPOCommand command, StreamWriter sw)
