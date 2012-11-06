@@ -4,9 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using Direct3D = Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 
 namespace TDCG
 {
@@ -249,7 +248,7 @@ namespace TDCG
             Quaternion q;
             if (RotationVectorToVector(localEffectorP, localTargetP, out q))
                 node.Rotation = q * node.Rotation;
-            if ((localEffectorP - localTargetP).LengthSq() < 0.1f)
+            if ((localEffectorP - localTargetP).LengthSquared() < 0.1f)
                 solved = true;
         }
 

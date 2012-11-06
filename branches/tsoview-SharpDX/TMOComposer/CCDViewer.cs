@@ -5,9 +5,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using Direct3D = Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 
 namespace TDCG
 {
@@ -80,7 +79,7 @@ public class CCDViewer : Viewer
                     if (Control.ModifierKeys == Keys.Shift)
                         SetTargetOnScreen(e.X, e.Y);
                     else
-                        if (current_handle_dir != Vector3.Empty)
+                        if (current_handle_dir != Vector3.Zero)
                             RotateOnScreen(dx, dy);
                         else
                             Camera.Move(dx, -dy, 0.0f);
@@ -162,7 +161,7 @@ public class CCDViewer : Viewer
             current_handle_dir = dir;
         else
         {
-            current_handle_dir = Vector3.Empty;
+            current_handle_dir = Vector3.Zero;
 
             TMONode effector;
             if (FindEffectorOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, out effector))
@@ -250,7 +249,7 @@ public class CCDViewer : Viewer
     }
 
     string current_effector_path = null;
-    Vector3 current_handle_dir = Vector3.Empty;
+    Vector3 current_handle_dir = Vector3.Zero;
     TMOConstraint constraint_xyz = null;
     TMOConstraint constraint_zxy = null;
     
@@ -361,7 +360,7 @@ public class CCDViewer : Viewer
     public bool FindBoneOnScreenPoint(float x, float y, TMONode bone, out Vector3 collisionPoint, out float collisionTime)
     {
         collisionTime = 0.0f;
-        collisionPoint = Vector3.Empty;
+        collisionPoint = Vector3.Zero;
 
         Figure fig;
         if (TryGetFigure(out fig))
@@ -388,7 +387,7 @@ public class CCDViewer : Viewer
     /// <returns>エフェクタハンドルを見つけたか</returns>
     public bool FindCurrentEffectorHandleOnScreenPoint(float x, float y, out Vector3 dir)
     {
-        dir = Vector3.Empty;
+        dir = Vector3.Zero;
 
         Figure fig;
         if (TryGetFigure(out fig))

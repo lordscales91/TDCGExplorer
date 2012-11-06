@@ -4,9 +4,8 @@ using System.Drawing;
 using System.Windows.Forms;
 using System.IO;
 using System.Text;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using Direct3D = Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 
 namespace TDCG
 {
@@ -23,8 +22,8 @@ namespace TDCG
             {
                 RenderDerived();
             };
-            LineColor = Color.FromArgb(100, 100, 230); //from MikuMikuDance
-            SelectedLineColor = Color.FromArgb(255, 0, 0); //red
+            LineColor = new SharpDX.Color(100, 100, 230, 255); //from MikuMikuDance
+            SelectedLineColor = new SharpDX.Color(255, 0, 0, 255); //red
         }
 
         /// マウスボタンを押したときに実行するハンドラ
@@ -107,7 +106,7 @@ namespace TDCG
             if (!base.InitializeApplication(control, shadowMapEnabled))
                 return false;
 
-            dot_texture = TextureLoader.FromFile(device, GetDotBitmapPath());
+            dot_texture = Texture.FromFile(device, GetDotBitmapPath());
 
             return true;
         }
@@ -199,7 +198,7 @@ namespace TDCG
         }
 
         /// node line描画色
-        public Color LineColor { get; set; }
+        public SharpDX.Color LineColor { get; set; }
 
         /// <summary>
         /// フィギュアに含まれるnode treeを描画する。
@@ -220,7 +219,7 @@ namespace TDCG
                     Vector3 p1 = GetNodePositionOnScreen(parent_node);
 
                     Vector3 pd = p0 - p1;
-                    float len = Vector3.Length(pd);
+                    float len = pd.Length();
                     float scale = 4.0f / len;
                     Vector2 p3 = new Vector2(p1.X + pd.Y * scale, p1.Y - pd.X * scale);
                     Vector2 p4 = new Vector2(p1.X - pd.Y * scale, p1.Y + pd.X * scale);
@@ -235,13 +234,13 @@ namespace TDCG
             line.Dispose();
             line = null;
 
-            Rectangle rect = new Rectangle(0, 16, 15, 15); //node circle
+            SharpDX.Rectangle rect = new SharpDX.Rectangle(0, 16, 15, 15); //node circle
             Vector3 rect_center = new Vector3(7, 7, 0);
             sprite.Begin(SpriteFlags.None);
             foreach (TMONode node in tmo.nodes)
             {
                 Vector3 p0 = GetNodePositionOnScreen(node);
-                sprite.Draw(dot_texture, rect, rect_center, p0, Color.White);
+                sprite.Draw(dot_texture, SharpDX.Color.White, rect, rect_center, p0);
             }
             sprite.End();
         }
@@ -261,7 +260,7 @@ namespace TDCG
         }
 
         /// 選択node line描画色
-        public Color SelectedLineColor { get; set; }
+        public SharpDX.Color SelectedLineColor { get; set; }
 
         /// 選択nodeを描画する。
         void DrawSelectedNode(Figure fig)
@@ -284,7 +283,7 @@ namespace TDCG
                         Vector3 p0 = GetNodePositionOnScreen(child_bone);
 
                         Vector3 pd = p0 - p1;
-                        float len = Vector3.Length(pd);
+                        float len = pd.Length();
                         float scale = 4.0f / len;
                         Vector2 p3 = new Vector2(p1.X + pd.Y * scale, p1.Y - pd.X * scale);
                         Vector2 p4 = new Vector2(p1.X - pd.Y * scale, p1.Y + pd.X * scale);
@@ -305,9 +304,9 @@ namespace TDCG
                     Vector3 py = GetNodeDirYPositionOnScreen(bone);
                     Vector3 pz = GetNodeDirZPositionOnScreen(bone);
 
-                    Color line_color_x = Color.FromArgb(255, 0, 0); //R
-                    Color line_color_y = Color.FromArgb(0, 255, 0); //G
-                    Color line_color_z = Color.FromArgb(0, 0, 255); //B
+                    SharpDX.Color line_color_x = new SharpDX.Color(255, 0, 0, 255); //R
+                    SharpDX.Color line_color_y = new SharpDX.Color(0, 255, 0, 255); //G
+                    SharpDX.Color line_color_z = new SharpDX.Color(0, 0, 255, 255); //B
                     Line line = new Line(device);
                     line.Width = 3;
 
@@ -324,10 +323,10 @@ namespace TDCG
                     line = null;
                 }
 
-                Rectangle rect = new Rectangle(16, 16, 15, 15); //node circle
+                SharpDX.Rectangle rect = new SharpDX.Rectangle(16, 16, 15, 15); //node circle
                 Vector3 rect_center = new Vector3(7, 7, 0);
                 sprite.Begin(SpriteFlags.None);
-                sprite.Draw(dot_texture, rect, rect_center, p1, Color.White);
+                sprite.Draw(dot_texture, SharpDX.Color.White, rect, rect_center, p1);
                 sprite.End();
             }
         }

@@ -41,6 +41,11 @@ namespace TSOMaterial
         
         public int Extract(string source_file, string dest_path)
         {
+            if (!File.Exists(source_file))
+            {
+                Console.WriteLine("File not found: " + source_file);
+                return -1;
+            }
             try
             {
                 Directory.CreateDirectory(dest_path);

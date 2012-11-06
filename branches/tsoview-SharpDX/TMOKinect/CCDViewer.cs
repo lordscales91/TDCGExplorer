@@ -7,9 +7,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using Direct3D = Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 
 namespace TDCG
 {
@@ -34,7 +33,7 @@ public class CCDViewer : Viewer
         Console.WriteLine("CCDViewer.OnDeviceLost");
         if (OpenNiEnabled)
         {
-            ni_model_translation = Vector3.Empty;
+            ni_model_translation = Vector3.Zero;
             NiSimpleTracker.Clean();
             Console.WriteLine("ok OpenNIClean");
             OpenNiEnabled = false;
@@ -117,7 +116,7 @@ public class CCDViewer : Viewer
                     if (Control.ModifierKeys == Keys.Shift)
                         SetTargetOnScreen(e.X, e.Y);
                     else
-                        if (current_handle_dir != Vector3.Empty)
+                        if (current_handle_dir != Vector3.Zero)
                             RotateOnScreen(dx, dy);
                         else
                             Camera.Move(dx, -dy, 0.0f);
@@ -216,7 +215,7 @@ public class CCDViewer : Viewer
             {
                 Vector3 p0 = tmo.FindNodeByName("W_Hips").Translation;
                 Vector3 p1 = ToWorldPosition(Mean(ni_joint_map["LeftHip"].position, ni_joint_map["RightHip"].position));
-                if (ni_model_translation == Vector3.Empty)
+                if (ni_model_translation == Vector3.Zero)
                 {
                     ni_model_translation = p1 - p0;
                 }
@@ -323,7 +322,7 @@ public class CCDViewer : Viewer
         return needRotate;
     }
 
-    Vector3 ni_model_translation = Vector3.Empty;
+    Vector3 ni_model_translation = Vector3.Zero;
 
     bool TryNiRotationDirX(out Quaternion q, XnSkeletonJointPosition xnp1, XnSkeletonJointPosition xnp2)
     {
@@ -399,7 +398,7 @@ public class CCDViewer : Viewer
             }
 
             {
-                GraphicsStream gs = surface.LockRectangle(LockFlags.None);
+                DataRectangle gs = surface.LockRectangle(LockFlags.None);
                 NiSimpleTracker.DrawDepthMap();
                 IntPtr ptr = NiSimpleTracker.GetDepthBuf();
                 int len = camw * camh * 4;
@@ -408,11 +407,11 @@ public class CCDViewer : Viewer
                 surface.UnlockRectangle();
             }
 
-            Rectangle src_rect = new Rectangle(0, 0, camw, camh);
+            SharpDX.Rectangle src_rect = new SharpDX.Rectangle(0, 0, camw, camh);
 
             //カメラ画像の転写矩形を作成
             Viewport vp = device.Viewport;
-            Rectangle view_rect = new Rectangle(vp.X + vp.Width - vp.Width / 4, vp.Y, vp.Width / 4, vp.Height / 4);
+            SharpDX.Rectangle view_rect = new SharpDX.Rectangle(vp.X + vp.Width - vp.Width / 4, vp.Y, vp.Width / 4, vp.Height / 4);
 
             {
                 //背景描画
@@ -456,7 +455,7 @@ public class CCDViewer : Viewer
             current_handle_dir = dir;
         else
         {
-            current_handle_dir = Vector3.Empty;
+            current_handle_dir = Vector3.Zero;
 
             TMONode effector;
             if (FindEffectorOnScreenPoint(lastScreenPoint.X, lastScreenPoint.Y, out effector))
@@ -527,15 +526,15 @@ public class CCDViewer : Viewer
             }
         };
 
-        device.DeviceLost += new EventHandler(OnDeviceLost);
-        device.DeviceReset += new EventHandler(OnDeviceReset);
+        //device.DeviceLost += new EventHandler(OnDeviceLost);
+        //device.DeviceReset += new EventHandler(OnDeviceReset);
         OnDeviceReset(device, null);
 
         return true;
     }
 
     string current_effector_path = null;
-    Vector3 current_handle_dir = Vector3.Empty;
+    Vector3 current_handle_dir = Vector3.Zero;
     
     void DrawEffector()
     {
@@ -579,7 +578,7 @@ public class CCDViewer : Viewer
     {
         vb_grid = new VertexBuffer(typeof(CustomVertex.PositionColored),
             (3 + 11 + 11) * 2, device, Usage.None, CustomVertex.PositionColored.Format, Pool.Default);
-        vb_grid.Created += new EventHandler(vb_grid_Created);
+        //vb_grid.Created += new EventHandler(vb_grid_Created);
         vb_grid_Created(vb_grid, null);
 
     }
@@ -588,20 +587,20 @@ public class CCDViewer : Viewer
     {
         VertexBuffer buffer = (VertexBuffer)sender;
 
-        using (GraphicsStream data = buffer.Lock(0, 0, LockFlags.None))
+        using (DataStream data = buffer.Lock(0, 0, LockFlags.None))
         {
             int color;
-            color = Color.Red.ToArgb();
+            color = SharpDX.Color.Red.ToArgb();
             data.Write(new CustomVertex.PositionColored(0, 0, 0, color));
             data.Write(new CustomVertex.PositionColored(25, 0, 0, color));
-            color = Color.Green.ToArgb();
+            color = SharpDX.Color.Green.ToArgb();
             data.Write(new CustomVertex.PositionColored(0, 0, 0, color));
             data.Write(new CustomVertex.PositionColored(0, 25, 0, color));
-            color = Color.Blue.ToArgb();
+            color = SharpDX.Color.Blue.ToArgb();
             data.Write(new CustomVertex.PositionColored(0, 0, 0, color));
             data.Write(new CustomVertex.PositionColored(0, 0, 25, color));
 
-            color = Color.Black.ToArgb();
+            color = SharpDX.Color.Black.ToArgb();
             for (int i = -5; i <= 5; i++)
             {
                 data.Write(new CustomVertex.PositionColored(-25, 0, i * 5, color));
@@ -619,14 +618,14 @@ public class CCDViewer : Viewer
 
     void DrawGrid()
     {
-        bool orig_lighting = device.RenderState.Lighting;
-        device.RenderState.Lighting = false;
+        int orig_lighting = device.GetRenderState(RenderState.Lighting);
+        device.SetRenderState(RenderState.Lighting, false);
 
-        device.SetStreamSource(0, vb_grid, 0);
+        device.SetStreamSource(0, vb_grid, 0, 52);
         device.VertexFormat = CustomVertex.PositionColored.Format;
         device.DrawPrimitives(PrimitiveType.LineList, 0, (3 + 11 + 11));
 
-        device.RenderState.Lighting = orig_lighting;
+        device.SetRenderState(RenderState.Lighting, orig_lighting);
     }
 
     /// スクリーン座標からエフェクタを見つけます。
@@ -690,7 +689,7 @@ public class CCDViewer : Viewer
     public bool FindBoneOnScreenPoint(float x, float y, TMONode bone, out Vector3 collisionPoint, out float collisionTime)
     {
         collisionTime = 0.0f;
-        collisionPoint = Vector3.Empty;
+        collisionPoint = Vector3.Zero;
 
         Figure fig;
         if (TryGetFigure(out fig))
@@ -717,7 +716,7 @@ public class CCDViewer : Viewer
     /// <returns>エフェクタハンドルを見つけたか</returns>
     public bool FindCurrentEffectorHandleOnScreenPoint(float x, float y, out Vector3 dir)
     {
-        dir = Vector3.Empty;
+        dir = Vector3.Zero;
 
         Figure fig;
         if (TryGetFigure(out fig))

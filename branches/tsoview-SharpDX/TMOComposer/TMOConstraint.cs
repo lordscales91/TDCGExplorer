@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using Direct3D=Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -37,7 +36,7 @@ public class TMOConstraintItem
     /// euler角の範囲を制限します。
     public Vector3 Limit(Vector3 angle1)
     {
-        Vector3 angle0 = Vector3.Empty;
+        Vector3 angle0 = Vector3.Zero;
         Vector3 angle2 = angle1;
 
         if (angle2.X < 0) angle2.X += 360;

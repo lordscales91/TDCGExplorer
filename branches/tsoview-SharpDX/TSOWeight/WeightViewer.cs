@@ -6,9 +6,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using Direct3D = Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 
 namespace TDCG
 {
@@ -466,8 +465,8 @@ public class WeightViewer : Viewer
         {
             RenderDerived();
         };
-        LineColor = Color.FromArgb(100, 100, 230); //from MikuMikuDance
-        SelectedLineColor = Color.FromArgb(255, 0, 0); //red
+        LineColor = new SharpDX.Color(100, 100, 230, 255); //from MikuMikuDance
+        SelectedLineColor = new SharpDX.Color(255, 0, 0, 255); //red
     }
 
     /// get path to dot.bmp
@@ -497,8 +496,8 @@ public class WeightViewer : Viewer
         if (! base.InitializeApplication(control, shadowMapEnabled))
             return false;
 
-        sphere = Mesh.Sphere(device, 0.25f, 8, 4);
-        dot_texture = TextureLoader.FromFile(device, GetDotBitmapPath());
+        //sphere = Mesh.Sphere(device, 0.25f, 8, 4);
+        dot_texture = Texture.FromFile(device, GetDotBitmapPath());
         handle_LocalBoneSels = effect.GetParameter(null, "LocalBoneSels");
 
         return true;
@@ -593,7 +592,7 @@ public class WeightViewer : Viewer
     /// </summary>
     protected override void DrawFigure()
     {
-        device.RenderState.AlphaBlendEnable = true;
+        device.SetRenderState(RenderState.AlphaBlendEnable, true);
 
         device.SetRenderTarget(0, dev_surface);
         device.DepthStencilSurface = dev_zbuf;
@@ -696,9 +695,9 @@ public class WeightViewer : Viewer
 
     private void DrawSubMeshForToonRendering(Figure fig, TSOFile tso, TSOSubMesh sub_mesh)
     {
-        device.RenderState.FillMode = FillMode.Solid;
+        device.SetRenderState(RenderState.FillMode, FillMode.Solid);
         //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-        device.SetStreamSource(0, sub_mesh.vb, 0);
+        device.SetStreamSource(0, sub_mesh.vb, 0, 52);
 
         tso.SwitchShader(sub_mesh);
         effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
@@ -715,9 +714,9 @@ public class WeightViewer : Viewer
 
     private void DrawSubMeshForWeightHeating(Figure fig, TSOSubMesh sub_mesh)
     {
-        device.RenderState.FillMode = FillMode.Solid;
+        device.SetRenderState(RenderState.FillMode, FillMode.Solid);
         //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-        device.SetStreamSource(0, sub_mesh.vb, 0);
+        device.SetStreamSource(0, sub_mesh.vb, 0, 52);
 
         effect.Technique = "BoneCol";
         effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
@@ -736,9 +735,9 @@ public class WeightViewer : Viewer
 
     private void DrawSubMeshForWireFrame(Figure fig, TSOFile tso, TSOSubMesh sub_mesh)
     {
-        device.RenderState.FillMode = FillMode.WireFrame;
+        device.SetRenderState(RenderState.FillMode, FillMode.Wireframe);
         //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-        device.SetStreamSource(0, sub_mesh.vb, 0);
+        device.SetStreamSource(0, sub_mesh.vb, 0, 52);
 
         tso.SwitchShader(sub_mesh);
         effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
@@ -802,7 +801,7 @@ public class WeightViewer : Viewer
     }
 
     /// node line描画色
-    public Color LineColor { get; set; }
+    public SharpDX.Color LineColor { get; set; }
 
     /// <summary>
     /// フィギュアに含まれるnode treeを描画する。
@@ -823,7 +822,7 @@ public class WeightViewer : Viewer
                 Vector3 p1 = GetNodePositionOnScreen(parent_node);
 
                 Vector3 pd = p0 - p1;
-                float len = Vector3.Length(pd);
+                float len = pd.Length();
                 float scale = 4.0f / len;
                 Vector2 p3 = new Vector2(p1.X+pd.Y*scale, p1.Y-pd.X*scale);
                 Vector2 p4 = new Vector2(p1.X-pd.Y*scale, p1.Y+pd.X*scale);
@@ -838,13 +837,13 @@ public class WeightViewer : Viewer
         line.Dispose();
         line = null;
 
-        Rectangle rect = new Rectangle(0, 16, 15, 15); //node circle
+        SharpDX.Rectangle rect = new SharpDX.Rectangle(0, 16, 15, 15); //node circle
         Vector3 rect_center = new Vector3(7, 7, 0);
         sprite.Begin(SpriteFlags.None);
         foreach (TMONode node in tmo.nodes)
         {
             Vector3 p0 = GetNodePositionOnScreen(node);
-            sprite.Draw(dot_texture, rect, rect_center, p0, Color.White);
+            sprite.Draw(dot_texture, SharpDX.Color.White, rect, rect_center, p0);
         }
         sprite.End();
     }
@@ -906,7 +905,7 @@ public class WeightViewer : Viewer
     }
 
     /// 選択node line描画色
-    public Color SelectedLineColor { get; set; }
+    public SharpDX.Color SelectedLineColor { get; set; }
 
     /// 選択nodeを描画する。
     void DrawSelectedNode(Figure fig)
@@ -929,7 +928,7 @@ public class WeightViewer : Viewer
                     Vector3 p0 = GetNodePositionOnScreen(child_bone);
 
                     Vector3 pd = p0 - p1;
-                    float len = Vector3.Length(pd);
+                    float len = pd.Length();
                     float scale = 4.0f / len;
                     Vector2 p3 = new Vector2(p1.X + pd.Y * scale, p1.Y - pd.X * scale);
                     Vector2 p4 = new Vector2(p1.X - pd.Y * scale, p1.Y + pd.X * scale);
@@ -950,9 +949,9 @@ public class WeightViewer : Viewer
                 Vector3 py = GetNodeDirYPositionOnScreen(bone);
                 Vector3 pz = GetNodeDirZPositionOnScreen(bone);
 
-                Color line_color_x = Color.FromArgb(255, 0, 0); //R
-                Color line_color_y = Color.FromArgb(0, 255, 0); //G
-                Color line_color_z = Color.FromArgb(0, 0, 255); //B
+                SharpDX.Color line_color_x = new SharpDX.Color(255, 0, 0, 255); //R
+                SharpDX.Color line_color_y = new SharpDX.Color(0, 255, 0, 255); //G
+                SharpDX.Color line_color_z = new SharpDX.Color(0, 0, 255, 255); //B
                 Line line = new Line(device);
                 line.Width = 3;
 
@@ -969,10 +968,10 @@ public class WeightViewer : Viewer
                 line = null;
             }
 
-            Rectangle rect = new Rectangle(16, 16, 15, 15); //node circle
+            SharpDX.Rectangle rect = new SharpDX.Rectangle(16, 16, 15, 15); //node circle
             Vector3 rect_center = new Vector3(7, 7, 0);
             sprite.Begin(SpriteFlags.None);
-            sprite.Draw(dot_texture, rect, rect_center, p1, Color.White);
+            sprite.Draw(dot_texture, SharpDX.Color.White, rect, rect_center, p1);
             sprite.End();
         }
     }
@@ -982,7 +981,7 @@ public class WeightViewer : Viewer
     {
         Matrix[] clipped_boneMatrices = fig.ClipBoneMatrices(sub_mesh);
 
-        Rectangle rect = new Rectangle(0, 0, 7, 7);//red
+        SharpDX.Rectangle rect = new SharpDX.Rectangle(0, 0, 7, 7);//red
         Vector3 rect_center = new Vector3(3, 3, 0);
 
         Vector3[] view_positions = new Vector3[sub_mesh.vertices.Length];
@@ -1004,13 +1003,13 @@ public class WeightViewer : Viewer
                         for (int i = 0; i < sub_mesh.vertices.Length; i++)
                         {
                             if (sub_mesh.vertices[i].selected)
-                                rect = new Rectangle(8, 8, 7, 7);//yellow
+                                rect = new SharpDX.Rectangle(8, 8, 7, 7);//yellow
                             else
-                                rect = new Rectangle(0, 0, 7, 7);//red
+                                rect = new SharpDX.Rectangle(0, 0, 7, 7);//red
 
                             Vector3 p2 = screen_positions[i];
                             p2.Z = 0.0f;
-                            sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
+                            sprite.Draw(dot_texture, SharpDX.Color.White, rect, rect_center, p2);
                         }
                         sprite.End();
                     }
@@ -1022,7 +1021,7 @@ public class WeightViewer : Viewer
                         {
                             Vector3 p2 = screen_positions[i];
                             p2.Z = 0.0f;
-                            sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
+                            sprite.Draw(dot_texture, SharpDX.Color.White, rect, rect_center, p2);
                         }
                         sprite.End();
                     }
@@ -1042,13 +1041,13 @@ public class WeightViewer : Viewer
                                 continue;
 
                             if (sub_mesh.vertices[i].selected)
-                                rect = new Rectangle(8, 8, 7, 7);//yellow
+                                rect = new SharpDX.Rectangle(8, 8, 7, 7);//yellow
                             else
-                                rect = new Rectangle(0, 0, 7, 7);//red
+                                rect = new SharpDX.Rectangle(0, 0, 7, 7);//red
 
                             Vector3 p2 = screen_positions[i];
                             p2.Z = 0.0f;
-                            sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
+                            sprite.Draw(dot_texture, SharpDX.Color.White, rect, rect_center, p2);
                         }
                         sprite.End();
                     }
@@ -1063,7 +1062,7 @@ public class WeightViewer : Viewer
 
                             Vector3 p2 = screen_positions[i];
                             p2.Z = 0.0f;
-                            sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
+                            sprite.Draw(dot_texture, SharpDX.Color.White, rect, rect_center, p2);
                         }
                         sprite.End();
                     }
@@ -1093,7 +1092,7 @@ public class WeightViewer : Viewer
 
         Matrix[] clipped_boneMatrices = fig.ClipBoneMatrices(SelectedSubMesh);
 
-        Rectangle rect = new Rectangle(8, 0, 7, 7);//green
+        SharpDX.Rectangle rect = new SharpDX.Rectangle(8, 0, 7, 7);//green
         Vector3 rect_center = new Vector3(3, 3, 0);
 
         switch (vertex_selection_mode)
@@ -1106,7 +1105,7 @@ public class WeightViewer : Viewer
                         Vector3 p1 = selected_vertex.CalcSkindeformPosition(clipped_boneMatrices);
                         Vector3 p2 = WorldToScreen(p1);
                         p2.Z = 0.0f;
-                        sprite.Draw(dot_texture, rect, rect_center, p2, Color.White);
+                        sprite.Draw(dot_texture, SharpDX.Color.White, rect, rect_center, p2);
                     }
                     sprite.End();
                 }
@@ -1216,7 +1215,7 @@ public class WeightViewer : Viewer
 
                         //頂点間距離が半径未満なら選択する。
                         Vector3 p1 = v.CalcSkindeformPosition(clipped_boneMatrices);
-                        v.selected = Vector3.LengthSq(p1 - center) - radius * radius < float.Epsilon;
+                        v.selected = (p1 - center).LengthSquared() - radius * radius < float.Epsilon;
                     }
                 }
             }
