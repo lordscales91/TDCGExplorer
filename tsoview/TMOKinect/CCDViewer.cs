@@ -619,14 +619,14 @@ public class CCDViewer : Viewer
 
     void DrawGrid()
     {
-        bool orig_lighting = device.RenderState.Lighting;
-        device.RenderState.Lighting = false;
+        bool orig_lighting = device.GetRenderStateBoolean(RenderStates.Lighting);
+        device.SetRenderState(RenderStates.Lighting, false);
 
         device.SetStreamSource(0, vb_grid, 0, 52);
         device.VertexFormat = CustomVertex.PositionColored.Format;
         device.DrawPrimitives(PrimitiveType.LineList, 0, (3 + 11 + 11));
 
-        device.RenderState.Lighting = orig_lighting;
+        device.SetRenderState(RenderStates.Lighting, orig_lighting);
     }
 
     /// スクリーン座標からエフェクタを見つけます。

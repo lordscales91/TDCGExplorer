@@ -120,7 +120,7 @@ namespace TSOPlay
 
         void DrawSprite(int alpha)
         {
-            device.RenderState.AlphaBlendEnable = false;
+            device.SetRenderState(RenderStates.AlphaBlendEnable, false);
 
             tra_sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
 

@@ -719,19 +719,19 @@ public class Viewer : IDisposable
             effect.SetValue("lightproj", Light_Projection);
         }
 
-        device.RenderState.Lighting = false;
-        device.RenderState.CullMode = Cull.CounterClockwise;
+        device.SetRenderState(RenderStates.Lighting, false);
+        device.SetRenderState(RenderStates.CullMode, (int)Cull.CounterClockwise);
 
         device.TextureState[0].AlphaOperation = TextureOperation.Modulate;
         device.TextureState[0].AlphaArgument1 = TextureArgument.TextureColor;
         device.TextureState[0].AlphaArgument2 = TextureArgument.Current;
 
-        device.RenderState.AlphaBlendEnable = true;
-        device.RenderState.SourceBlend = Blend.SourceAlpha; 
-        device.RenderState.DestinationBlend = Blend.InvSourceAlpha;
-        device.RenderState.AlphaTestEnable = true;
-        device.RenderState.ReferenceAlpha = 0x08;
-        device.RenderState.AlphaFunction = Compare.GreaterEqual;
+        device.SetRenderState(RenderStates.AlphaBlendEnable, true);
+        device.SetRenderState(RenderStates.SourceBlend, (int)Blend.SourceAlpha);
+        device.SetRenderState(RenderStates.DestinationBlend, (int)Blend.InvSourceAlpha);
+        device.SetRenderState(RenderStates.AlphaTestEnable, true);
+        device.SetRenderState(RenderStates.ReferenceAlpha, 0x08);
+        device.SetRenderState(RenderStates.AlphaFunction, (int)Compare.GreaterEqual);
 
         vd = new VertexDeclaration(device, TSOSubMesh.ve);
 
@@ -1007,7 +1007,7 @@ public class Viewer : IDisposable
 
     void DrawShadowMap()
     {
-        device.RenderState.AlphaBlendEnable = false;
+        device.SetRenderState(RenderStates.AlphaBlendEnable, false);
 
         device.SetRenderTarget(0, ztex_surface);
         device.DepthStencilSurface = ztex_zbuf;
@@ -1068,7 +1068,7 @@ public class Viewer : IDisposable
     /// </summary>
     protected virtual void DrawFigure()
     {
-        device.RenderState.AlphaBlendEnable = true;
+        device.SetRenderState(RenderStates.AlphaBlendEnable, true);
 
         device.SetRenderTarget(0, dev_surface);
         device.DepthStencilSurface = dev_zbuf;
@@ -1108,7 +1108,7 @@ public class Viewer : IDisposable
 
     void DrawSprite()
     {
-        device.RenderState.AlphaBlendEnable = false;
+        device.SetRenderState(RenderStates.AlphaBlendEnable, false);
 
         sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
 

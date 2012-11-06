@@ -593,7 +593,7 @@ public class WeightViewer : Viewer
     /// </summary>
     protected override void DrawFigure()
     {
-        device.RenderState.AlphaBlendEnable = true;
+        device.SetRenderState(RenderStates.AlphaBlendEnable, true);
 
         device.SetRenderTarget(0, dev_surface);
         device.DepthStencilSurface = dev_zbuf;
@@ -696,7 +696,7 @@ public class WeightViewer : Viewer
 
     private void DrawSubMeshForToonRendering(Figure fig, TSOFile tso, TSOSubMesh sub_mesh)
     {
-        device.RenderState.FillMode = FillMode.Solid;
+        device.SetRenderState(RenderStates.FillMode, (int)FillMode.Solid);
         //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
         device.SetStreamSource(0, sub_mesh.vb, 0, 52);
 
@@ -715,7 +715,7 @@ public class WeightViewer : Viewer
 
     private void DrawSubMeshForWeightHeating(Figure fig, TSOSubMesh sub_mesh)
     {
-        device.RenderState.FillMode = FillMode.Solid;
+        device.SetRenderState(RenderStates.FillMode, (int)FillMode.Solid);
         //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
         device.SetStreamSource(0, sub_mesh.vb, 0, 52);
 
@@ -736,7 +736,7 @@ public class WeightViewer : Viewer
 
     private void DrawSubMeshForWireFrame(Figure fig, TSOFile tso, TSOSubMesh sub_mesh)
     {
-        device.RenderState.FillMode = FillMode.WireFrame;
+        device.SetRenderState(RenderStates.FillMode, (int)FillMode.WireFrame);
         //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
         device.SetStreamSource(0, sub_mesh.vb, 0, 52);
 
