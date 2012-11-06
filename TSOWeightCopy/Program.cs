@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 using TDCG;
 
 namespace TSOWeightCopy
@@ -62,8 +62,8 @@ namespace TSOWeightCopy
                 return;
             }
 
-            Vector3 min = Vector3.Empty;
-            Vector3 max = Vector3.Empty;
+            Vector3 min = Vector3.Zero;
+            Vector3 max = Vector3.Zero;
             int nvertices = 0;
 
             foreach (TSOSubMesh sub in selected_mesh.sub_meshes)

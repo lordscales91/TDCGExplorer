@@ -6,9 +6,8 @@ using System.Windows.Forms;
 using System.IO;
 using System.Text;
 using TDCG;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using Direct3D = Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 
 namespace TSOPlay
 {
@@ -47,8 +46,8 @@ namespace TSOPlay
             if (!base.InitializeApplication(control, shadowMapEnabled))
                 return false;
 
-            device.DeviceLost += new EventHandler(OnDeviceLost);
-            device.DeviceReset += new EventHandler(OnDeviceReset);
+            //device.DeviceLost += new EventHandler(OnDeviceLost);
+            //device.DeviceReset += new EventHandler(OnDeviceReset);
             OnDeviceReset(this, null);
 
             return true;
@@ -65,7 +64,7 @@ namespace TSOPlay
 
         float w_scale;
         float h_scale;
-        Rectangle tra_rect;
+        SharpDX.Rectangle tra_rect;
 
         private void OnDeviceReset(object sender, EventArgs e)
         {
@@ -83,7 +82,7 @@ namespace TSOPlay
 
             w_scale = (float)devw / texw;
             h_scale = (float)devh / texh;
-            tra_rect = new Rectangle(0, 0, texw, texh);
+            tra_rect = new SharpDX.Rectangle(0, 0, texw, texh);
 
             tra_sprite = new Sprite(device);
         }
@@ -114,18 +113,18 @@ namespace TSOPlay
             int devh = dev_surface.Description.Height;
             Console.WriteLine("dev {0}x{1}", devw, devh);
 
-            Rectangle dev_rect = new Rectangle(0, 0, devw, devh);
+            SharpDX.Rectangle dev_rect = new SharpDX.Rectangle(0, 0, devw, devh);
             device.StretchRectangle(dev_surface, dev_rect, tra_surface, tra_rect, TextureFilter.None);
         }
 
         void DrawSprite(int alpha)
         {
-            device.RenderState.AlphaBlendEnable = false;
+            device.SetRenderState(RenderState.AlphaBlendEnable, false);
 
             tra_sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
 
             tra_sprite.Begin(SpriteFlags.AlphaBlend);
-            tra_sprite.Draw(tra_tex, tra_rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.FromArgb(alpha, Color.White));
+            tra_sprite.Draw(tra_tex, new SharpDX.Color(255, 255, 255, alpha), tra_rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
             tra_sprite.End();
         }
 

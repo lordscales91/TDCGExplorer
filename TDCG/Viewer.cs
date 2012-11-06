@@ -1093,7 +1093,7 @@ public class Viewer : IDisposable
         sprite.Transform = Matrix.Scaling(w_scale, h_scale, 1.0f);
 
         sprite.Begin(0);
-        //sprite.Draw(ztex, ztex_rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0), Color.White);
+        sprite.Draw(ztex, SharpDX.Color.White, ztex_rect, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
         sprite.End();
     }
 

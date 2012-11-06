@@ -2,9 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using Direct3D=Microsoft.DirectX.Direct3D;
+using SharpDX;
+using SharpDX.Direct3D9;
 using TDCG;
 
 namespace TSODeform
@@ -55,7 +54,7 @@ public static class Program
 
     public static void CalcSkindeform(ref Vertex v, Matrix[] boneMatrices)
     {
-        Vector3 pos = Vector3.Empty;
+        Vector3 pos = Vector3.Zero;
         for (int i = 0; i < 4; i++)
         {
             Matrix m = boneMatrices[v.skin_weights[i].bone_index];
@@ -64,7 +63,7 @@ public static class Program
         }
         v.position = pos;
 
-        Vector3 nor = Vector3.Empty;
+        Vector3 nor = Vector3.Zero;
         for (int i = 0; i < 4; i++)
         {
             Matrix m = boneMatrices[v.skin_weights[i].bone_index];
