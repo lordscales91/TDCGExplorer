@@ -837,7 +837,7 @@ public class WeightViewer : Viewer
         line.Dispose();
         line = null;
 
-        SharpDX.Rectangle rect = new SharpDX.Rectangle(0, 16, 15, 15); //node circle
+        SharpDX.Rectangle rect = new SharpDX.Rectangle(0, 16, 15, 16+15); //node circle
         Vector3 rect_center = new Vector3(7, 7, 0);
         sprite.Begin(SpriteFlags.None);
         foreach (TMONode node in tmo.nodes)
@@ -968,7 +968,7 @@ public class WeightViewer : Viewer
                 line = null;
             }
 
-            SharpDX.Rectangle rect = new SharpDX.Rectangle(16, 16, 15, 15); //node circle
+            SharpDX.Rectangle rect = new SharpDX.Rectangle(16, 16, 16+15, 16+15); //node circle
             Vector3 rect_center = new Vector3(7, 7, 0);
             sprite.Begin(SpriteFlags.None);
             sprite.Draw(dot_texture, SharpDX.Color.White, rect, rect_center, p1);
@@ -1003,7 +1003,7 @@ public class WeightViewer : Viewer
                         for (int i = 0; i < sub_mesh.vertices.Length; i++)
                         {
                             if (sub_mesh.vertices[i].selected)
-                                rect = new SharpDX.Rectangle(8, 8, 7, 7);//yellow
+                                rect = new SharpDX.Rectangle(8, 8, 8+7, 8+7);//yellow
                             else
                                 rect = new SharpDX.Rectangle(0, 0, 7, 7);//red
 
@@ -1041,7 +1041,7 @@ public class WeightViewer : Viewer
                                 continue;
 
                             if (sub_mesh.vertices[i].selected)
-                                rect = new SharpDX.Rectangle(8, 8, 7, 7);//yellow
+                                rect = new SharpDX.Rectangle(8, 8, 8+7, 8+7);//yellow
                             else
                                 rect = new SharpDX.Rectangle(0, 0, 7, 7);//red
 
@@ -1092,7 +1092,7 @@ public class WeightViewer : Viewer
 
         Matrix[] clipped_boneMatrices = fig.ClipBoneMatrices(SelectedSubMesh);
 
-        SharpDX.Rectangle rect = new SharpDX.Rectangle(8, 0, 7, 7);//green
+        SharpDX.Rectangle rect = new SharpDX.Rectangle(8, 0, 8+7, 7);//green
         Vector3 rect_center = new Vector3(3, 3, 0);
 
         switch (vertex_selection_mode)
