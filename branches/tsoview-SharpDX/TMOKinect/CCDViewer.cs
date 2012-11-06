@@ -393,7 +393,7 @@ public class CCDViewer : Viewer
                 {
                     Vector3 p1 = ToWorldPosition(xnp.position);
                     Vector3 pos = p1 - ni_model_translation;
-                    DrawMesh(sphere, Matrix.Translation(pos), color);
+                    //DrawMesh(sphere, Matrix.Translation(pos), color);
                 }
             }
 
@@ -505,7 +505,7 @@ public class CCDViewer : Viewer
         if (! base.InitializeApplication(control, shadowMapEnabled))
             return false;
 
-        sphere = Mesh.Sphere(device, 0.25f, 8, 6);
+        //sphere = Mesh.CreateSphere(device, 0.25f, 8, 6);
 
         current_effector_path = "|W_Hips";
 
@@ -550,7 +550,7 @@ public class CCDViewer : Viewer
                     Vector4 color = (bone.Path == current_effector_path) ? new Vector4(1, 1, 1, 0.5f) : new Vector4(0.5f, 0.5f, 0.5f, 0.5f);
                     Matrix m = bone.combined_matrix;
                     Vector3 pos = new Vector3(m.M41, m.M42, m.M43);
-                    DrawMesh(sphere, Matrix.Translation(pos), color);
+                    //DrawMesh(sphere, Matrix.Translation(pos), color);
                 }
             }
 
@@ -559,9 +559,9 @@ public class CCDViewer : Viewer
                 if (fig.Tmo.nodemap.TryGetValue(current_effector_path, out bone))
                 {
                     Matrix m = bone.combined_matrix;
-                    DrawMesh(sphere, Matrix.Translation(new Vector3(1, 0, 0)) * m, new Vector4(1, 0, 0, 0.5f));
-                    DrawMesh(sphere, Matrix.Translation(new Vector3(0, 1, 0)) * m, new Vector4(0, 1, 0, 0.5f));
-                    DrawMesh(sphere, Matrix.Translation(new Vector3(0, 0, 1)) * m, new Vector4(0, 0, 1, 0.5f));
+                    //DrawMesh(sphere, Matrix.Translation(new Vector3(1, 0, 0)) * m, new Vector4(1, 0, 0, 0.5f));
+                    //DrawMesh(sphere, Matrix.Translation(new Vector3(0, 1, 0)) * m, new Vector4(0, 1, 0, 0.5f));
+                    //DrawMesh(sphere, Matrix.Translation(new Vector3(0, 0, 1)) * m, new Vector4(0, 0, 1, 0.5f));
                 }
             }
         }
@@ -569,7 +569,7 @@ public class CCDViewer : Viewer
 
     void DrawTarget()
     {
-        DrawMesh(sphere, Matrix.Translation(solver.Target), new Vector4(1, 1, 0, 0.5f));
+        //DrawMesh(sphere, Matrix.Translation(solver.Target), new Vector4(1, 1, 0, 0.5f));
     }
 
     VertexBuffer vb_grid = null;
