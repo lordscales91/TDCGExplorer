@@ -1025,7 +1025,7 @@ public class Viewer : IDisposable
             foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
             {
                 //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                device.SetStreamSource(0, sub_mesh.vb, 0);
+                device.SetStreamSource(0, sub_mesh.vb, 0, 52);
 
                 //tso.SwitchShader(sub_mesh);
                 effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
@@ -1087,7 +1087,7 @@ public class Viewer : IDisposable
                     foreach (TSOSubMesh sub_mesh in mesh.sub_meshes)
                     {
                         //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-                        device.SetStreamSource(0, sub_mesh.vb, 0);
+                        device.SetStreamSource(0, sub_mesh.vb, 0, 52);
 
                         tso.SwitchShader(sub_mesh);
                         effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
