@@ -235,7 +235,7 @@ namespace TDCG
 
             if (vb != null)
                 vb.Dispose();
-            vb = new VertexBuffer(typeof(VertexFormat), vertices.Length, device, Usage.Dynamic | Usage.WriteOnly, VertexFormats.None, Pool.Default);
+            vb = new VertexBuffer(device, 52 * vertices.Length, Usage.Dynamic | Usage.WriteOnly, VertexFormats.None, Pool.Default);
             vb.Created += new EventHandler(vb_Created);
             vb_Created(vb, null);
         }
@@ -353,29 +353,6 @@ namespace TDCG
             foreach (TSOSubMesh sub_mesh in sub_meshes)
                 sub_mesh.Dispose();
         }
-    }
-
-    /// 頂点構造体
-    public struct VertexFormat
-    {
-        /// 位置
-        public Vector3 position;
-        /// スキンウェイト0
-        public float weight_0;
-        /// スキンウェイト1
-        public float weight_1;
-        /// スキンウェイト2
-        public float weight_2;
-        /// スキンウェイト3
-        public float weight_3;
-        /// ボーンインデックス
-        public uint bone_indices;
-        /// 法線
-        public Vector3 normal;
-        /// テクスチャU座標
-        public float u;
-        /// テクスチャV座標
-        public float v;
     }
 
     /// <summary>

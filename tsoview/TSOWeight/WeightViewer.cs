@@ -698,7 +698,7 @@ public class WeightViewer : Viewer
     {
         device.RenderState.FillMode = FillMode.Solid;
         //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-        device.SetStreamSource(0, sub_mesh.vb, 0);
+        device.SetStreamSource(0, sub_mesh.vb, 0, 52);
 
         tso.SwitchShader(sub_mesh);
         effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));
@@ -717,7 +717,7 @@ public class WeightViewer : Viewer
     {
         device.RenderState.FillMode = FillMode.Solid;
         //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-        device.SetStreamSource(0, sub_mesh.vb, 0);
+        device.SetStreamSource(0, sub_mesh.vb, 0, 52);
 
         effect.Technique = "BoneCol";
         effect.SetValue("PenColor", new Vector4(1, 1, 1, 1));
@@ -738,7 +738,7 @@ public class WeightViewer : Viewer
     {
         device.RenderState.FillMode = FillMode.WireFrame;
         //device.RenderState.VertexBlend = (VertexBlend)(4 - 1);
-        device.SetStreamSource(0, sub_mesh.vb, 0);
+        device.SetStreamSource(0, sub_mesh.vb, 0, 52);
 
         tso.SwitchShader(sub_mesh);
         effect.SetValue(handle_LocalBoneMats, fig.ClipBoneMatrices(sub_mesh));

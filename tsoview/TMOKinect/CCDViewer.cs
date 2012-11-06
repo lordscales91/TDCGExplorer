@@ -622,7 +622,7 @@ public class CCDViewer : Viewer
         bool orig_lighting = device.RenderState.Lighting;
         device.RenderState.Lighting = false;
 
-        device.SetStreamSource(0, vb_grid, 0);
+        device.SetStreamSource(0, vb_grid, 0, 52);
         device.VertexFormat = CustomVertex.PositionColored.Format;
         device.DrawPrimitives(PrimitiveType.LineList, 0, (3 + 11 + 11));
 
