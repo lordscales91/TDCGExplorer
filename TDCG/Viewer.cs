@@ -46,6 +46,8 @@ public class Viewer : IDisposable
     /// </summary>
     protected Control control;
 
+    protected Direct3D direct3d;
+
     /// <summary>
     /// device
     /// </summary>
@@ -573,7 +575,7 @@ public class Viewer : IDisposable
             pp.BackBufferCount = 1;
             pp.EnableAutoDepthStencil = true;
 
-            Direct3D direct3d = new Direct3D();
+            direct3d = new Direct3D();
 
             int adapter_ordinal = direct3d.Adapters[0].Adapter;
             DisplayMode display_mode = direct3d.Adapters[0].CurrentDisplayMode;
@@ -1147,6 +1149,8 @@ public class Viewer : IDisposable
             effect.Dispose();
         if (device != null)
             device.Dispose();
+        if (direct3d != null)
+            direct3d.Dispose();
     }
 
     /// <summary>
@@ -1316,9 +1320,9 @@ public class Viewer : IDisposable
     /// <param name="file">ファイル名</param>
     public void SaveToBitmap(string file)
     {
-      //using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))
-      //if (sf != null)
-      //    SurfaceLoader.Save(file, ImageFileFormat.Bmp, sf);
+        using (Surface sf = device.GetBackBuffer(0, 0))
+            if (sf != null)
+                Surface.ToFile(sf, file, ImageFileFormat.Bmp);
     }
 
     /// <summary>
@@ -1327,9 +1331,9 @@ public class Viewer : IDisposable
     /// <param name="file">ファイル名</param>
     public void SaveToPng(string file)
     {
-      //using (Surface sf = device.GetBackBuffer(0, 0, BackBufferType.Mono))
-      //if (sf != null)
-      //    SurfaceLoader.Save(file, ImageFileFormat.Png, sf);
+        using (Surface sf = device.GetBackBuffer(0, 0))
+            if (sf != null)
+                Surface.ToFile(sf, file, ImageFileFormat.Png);
     }
 
     /// <summary>
