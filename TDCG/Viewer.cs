@@ -693,7 +693,7 @@ public class Viewer : IDisposable
             int texh = ztex_surface.Description.Height;
             Console.WriteLine("ztex {0}x{1}", texw, texh);
 
-            //ztex_zbuf = device.CreateDepthStencilSurface(texw, texh, Format.D16, MultisampleType.None, 0, false);
+            ztex_zbuf = Surface.CreateDepthStencil(device, texw, texh, Format.D16, MultisampleType.None, 0, false);
 
             w_scale = (float)devw / texw;
             h_scale = (float)devh / texh;
