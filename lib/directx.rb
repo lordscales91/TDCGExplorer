@@ -1,10 +1,9 @@
 # Managed DirectX
-$LOAD_PATH.unshift "C:/Windows/Microsoft.NET/DirectX for Managed Code/1.0.2902.0"
-require 'Microsoft.DirectX'
-require 'Microsoft.DirectX.Direct3D'
-require 'Microsoft.DirectX.Direct3DX'
-include Microsoft::DirectX
-include Microsoft::DirectX::Direct3D
+$LOAD_PATH.unshift "E:/SharpDX/bin/Standard-net20"
+require 'SharpDX'
+require 'SharpDX.Direct3D9'
+include SharpDX
+include SharpDX::Direct3D
 
 class Matrix
   def inspect
