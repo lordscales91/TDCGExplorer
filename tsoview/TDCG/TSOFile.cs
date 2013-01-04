@@ -287,7 +287,7 @@ namespace TDCG
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get { return name; } }
+        public string Name { get { return name; } set { name = value; } }
 
         /// <summary>
         /// 変形行列
