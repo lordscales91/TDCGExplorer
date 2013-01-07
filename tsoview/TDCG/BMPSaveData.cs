@@ -11,8 +11,18 @@ namespace TDCG
     /// </summary>
     public class BMPSaveData
     {
-        Bitmap bitmap;
+        public Bitmap bitmap;
         byte[] savedata;
+
+        /// <summary>
+        /// 指定ファイル名からビットマップを読み込みます。
+        /// </summary>
+        /// <param name="source_file">ファイル名</param>
+        public void Load(string source_file)
+        {
+            using (Stream stream = File.OpenRead(source_file))
+                this.Read(stream);
+        }
 
         /// <summary>
         /// 指定ストリームからビットマップを読み込みます。
@@ -139,8 +149,19 @@ namespace TDCG
         /// <summary>
         /// 指定パスにビットマップを書き出します。
         /// </summary>
-        /// <param name="file">パス</param>
-        public void Save(string file)
+        /// <param name="dest_file">書き出すパス</param>
+        public void Save(string dest_file)
+        {
+            Bitmap bmp = bitmap;
+            AssignTo(bmp);
+            bmp.Save(dest_file);
+        }
+
+        /// <summary>
+        /// 指定ビットマップにパラメータを埋め込みます。
+        /// </summary>
+        /// <param name="bitmap">bitmap</param>
+        public void AssignTo(Bitmap bitmap)
         {
             // Lock the bitmap's bits.  
             Rectangle rect = new Rectangle(0, 0, bitmap.Width, bitmap.Height);
@@ -182,8 +203,6 @@ namespace TDCG
 
             // Unlock the bits.
             bitmap.UnlockBits(bitmapData);
-
-            bitmap.Save(file);
         }
     }
 }
