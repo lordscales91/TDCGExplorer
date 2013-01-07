@@ -1,6 +1,6 @@
 ダウンロードありがとうございます
 
-●TSODeform ver 0.0.1
+●TSODeform ver 0.0.2
 
 これはなに
 tsoをtmoで変形して保存します。
@@ -11,13 +11,19 @@ tsoをtmoで変形して保存します。
 
 使い方
 コマンドプロンプトから起動します。
-  TSODeform.exe your.tso your.tmo
+  TSODeform.exe your.tso your.tmo Figure1.txt
+
+Figure1.txt：スライダ値を並べたテキスト（省略可）
+　PNGPose.exeで展開すると出力されるファイルです。
 
 変形に成功するとout.tsoを作成します。
 
 作成したtsoの使い道：
 ・tso2mqoでmqoに変換する：ポーズを反映して展開されます。
 ・tso2mqoで参照tsoに使う：ポーズを反映したボーンになります。
+
+ver 0.0.1 からの変更点：
+・スライダ値を読み込める
 
 開発者の方へ
 ソース (sources) を同梱しています。
