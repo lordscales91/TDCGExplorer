@@ -1058,7 +1058,7 @@ namespace TDCG
         /// 名称の短い形式。これはTSOFile中で重複する可能性があります。
         /// </summary>
         public string Name { get { return name; } }
-
+#if false
         /// <summary>
         /// 指定nodeに対するオフセット行列を計算します。
         /// </summary>
@@ -1073,13 +1073,13 @@ namespace TDCG
             }
             return Matrix.Invert(m);
         }
-
+#endif
         /// <summary>
         /// オフセット行列を計算します。
         /// </summary>
         public void ComputeOffsetMatrix()
         {
-            offset_matrix = TSONode.GetOffsetMatrix(this);
+            offset_matrix = Matrix.Invert(GetWorldCoordinate());
         }
 
         /// <summary>
