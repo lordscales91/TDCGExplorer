@@ -8,71 +8,6 @@ using TDCG;
 
 namespace tso2mqo
 {
-    class Heap<T>
-    {
-        public Dictionary<T, ushort> map = new Dictionary<T, ushort>();
-        public List<T> ary = new List<T>();
-
-        public void Clear()
-        {
-            map.Clear();
-            ary.Clear();
-        }
-        public bool ContainsKey(T item)
-        {
-            return map.ContainsKey(item);
-        }
-        public int Count
-        {
-            get { return ary.Count; }
-        }
-        public ushort Add(T item)
-        {
-            ushort idx;
-            if (map.ContainsKey(item))
-            {
-                idx = map[item];
-            }
-            else
-            {
-                idx = (ushort)ary.Count;
-                map[item] = idx;
-                ary.Add(item);
-            }
-            return idx;
-        }
-        public ushort this[T item]
-        {
-            get { return map[item]; }
-        }
-    }
-    class UnifiedPositionVertex
-    {
-        public Vector3 position;
-        public UnifiedPositionVertex(Vertex v)
-        {
-            this.position = v.position;
-        }
-        public override bool Equals(object obj)
-        {
-            if (obj == null)
-                return false;
-            UnifiedPositionVertex v = obj as UnifiedPositionVertex;
-            if ((object)v == null)
-                return false;
-            return this.position == v.position;
-        }
-        public bool Equals(UnifiedPositionVertex v)
-        {
-            if ((object)v == null)
-                return false;
-            return this.position == v.position;
-        }
-        public override int GetHashCode()
-        {
-            return position.GetHashCode();
-        }
-    }
     class Program
     {
         public static void Main(string[] args)
@@ -172,7 +107,7 @@ namespace tso2mqo
                 texmap[tex.Name] = tex;
             }
 
-            foreach(TSOSubScript sub in tso.sub_scripts)
+            foreach (TSOSubScript sub in tso.sub_scripts)
             {
                 TSOTex tex = texmap[sub.shader.ColorTexName];
                 string tex_file = tex.FileName.Trim('"');
@@ -198,26 +133,31 @@ namespace tso2mqo
                 List<MqoFace> faces = new List<MqoFace>();
                 foreach (TSOSubMesh sub in mesh.sub_meshes)
                 {
-                    for (int i = 2; i < sub.vertices.Length; i++)
+                    UnifiedPositionVertex[] vertices = new UnifiedPositionVertex[sub.vertices.Length];
+                    for (int i = 0; i < vertices.Length; i++)
                     {
-                        Vertex va, vb, vc;
+                        vertices[i] = new UnifiedPositionVertex(sub.vertices[i]);
+                    }
+                    for (int i = 2; i < vertices.Length; i++)
+                    {
+                        UnifiedPositionVertex va, vb, vc;
                         if (i % 2 == 0)
                         {
-                            va = sub.vertices[i - 2];
-                            vb = sub.vertices[i - 0];
-                            vc = sub.vertices[i - 1];
+                            va = vertices[i - 2];
+                            vb = vertices[i - 0];
+                            vc = vertices[i - 1];
                         }
                         else
                         {
-                            va = sub.vertices[i - 2];
-                            vb = sub.vertices[i - 1];
-                            vc = sub.vertices[i - 0];
+                            va = vertices[i - 2];
+                            vb = vertices[i - 1];
+                            vc = vertices[i - 0];
                         }
 
                         ushort a, b, c;
-                        a = vh.Add(new UnifiedPositionVertex(va));
-                        b = vh.Add(new UnifiedPositionVertex(vb));
-                        c = vh.Add(new UnifiedPositionVertex(vc));
+                        a = vh.Add(va);
+                        b = vh.Add(vb);
+                        c = vh.Add(vc);
 
                         if (a != b && b != c && c != a)
                         {
