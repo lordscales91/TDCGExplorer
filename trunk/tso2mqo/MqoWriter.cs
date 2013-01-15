@@ -124,13 +124,13 @@ namespace Tso2MqoGui
             tw.WriteLine("Format Text Ver 1.0");
             tw.WriteLine("");
             tw.WriteLine("Scene {");
-            tw.WriteLine("	pos -7.0446 4.1793 1541.1764");
-            tw.WriteLine("	lookat 11.8726 193.8590 0.4676");
-            tw.WriteLine("	head 0.8564");
-            tw.WriteLine("	pich 0.1708");
-            tw.WriteLine("	ortho 0");
-            tw.WriteLine("	zoom2 31.8925");
-            tw.WriteLine("	amb 0.250 0.250 0.250");
+            tw.WriteLine("\tpos -7.0446 4.1793 1541.1764");
+            tw.WriteLine("\tlookat 11.8726 193.8590 0.4676");
+            tw.WriteLine("\thead 0.8564");
+            tw.WriteLine("\tpich 0.1708");
+            tw.WriteLine("\tortho 0");
+            tw.WriteLine("\tzoom2 31.8925");
+            tw.WriteLine("\tamb 0.250 0.250 0.250");
             tw.WriteLine("}");
 
             VertexHeap<UVertex> vh  = new VertexHeap<UVertex>();
@@ -149,12 +149,12 @@ namespace Tso2MqoGui
                 {
                     TSOTex  tex = file.texturemap[mat.ColorTex];
                     tw.WriteLine(
-                        "	\"{0}\" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex(\"{1}\")",
+                        "\t\"{0}\" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex(\"{1}\")",
                         mat.name, GetTexturePath(tex));
                 } else
                 {
                     tw.WriteLine(
-                        "	\"{0}\" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00))",
+                        "\t\"{0}\" col(1.000 1.000 1.000 1.000) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00))",
                         mat.name);
                 }
             }
@@ -201,23 +201,23 @@ namespace Tso2MqoGui
                 }
 
                 tw.WriteLine("Object \"{0}\" {{", i.Name);
-                tw.WriteLine("	visible {0}", 15);
-                tw.WriteLine("	locking {0}", 0);
-                tw.WriteLine("	shading {0}", 1);
-                tw.WriteLine("	facet {0}", 59.5);
-                tw.WriteLine("	color {0:F3} {1:F3} {2:F3}", 0.898f, 0.498f, 0.698f);
-                tw.WriteLine("	color_type {0}", 0);
+                tw.WriteLine("\tvisible {0}", 15);
+                tw.WriteLine("\tlocking {0}", 0);
+                tw.WriteLine("\tshading {0}", 1);
+                tw.WriteLine("\tfacet {0}", 59.5);
+                tw.WriteLine("\tcolor {0:F3} {1:F3} {2:F3}", 0.898f, 0.498f, 0.698f);
+                tw.WriteLine("\tcolor_type {0}", 0);
 
                 //
-                tw.WriteLine("	vertex {0} {{", vh.Count);
+                tw.WriteLine("\tvertex {0} {{", vh.Count);
 
                 foreach(UVertex j in vh.verts)
                     WriteVertex(j.Pos.x, j.Pos.y, j.Pos.z);
 
-                tw.WriteLine("	}");
+                tw.WriteLine("\t}");
 
                 //
-                tw.WriteLine("	face {0} {{", face.Count / 3);
+                tw.WriteLine("\tface {0} {{", face.Count / 3);
 
                 System.Diagnostics.Debug.Assert(face.Count*2 == uv.Count);
                 System.Diagnostics.Debug.Assert(face.Count == mtl.Count * 3);
@@ -228,7 +228,7 @@ namespace Tso2MqoGui
                               uv[j*2+2], uv[j*2+3],
                               uv[j*2+4], uv[j*2+5],
                               mtl[j/3]);
-                tw.WriteLine("	}");
+                tw.WriteLine("\t}");
                 tw.WriteLine("}");
             }
 
@@ -250,12 +250,12 @@ namespace Tso2MqoGui
                 List<int>                   bones   = new List<int>();
 
                 tw.WriteLine("Object \"{0}\" {{", "Bone");
-                tw.WriteLine("	visible {0}", 15);
-                tw.WriteLine("	locking {0}", 0);
-                tw.WriteLine("	shading {0}", 1);
-                tw.WriteLine("	facet {0}", 59.5);
-                tw.WriteLine("	color {0} {1} {2}", 1, 0, 0);
-                tw.WriteLine("	color_type {0}", 0);
+                tw.WriteLine("\tvisible {0}", 15);
+                tw.WriteLine("\tlocking {0}", 0);
+                tw.WriteLine("\tshading {0}", 1);
+                tw.WriteLine("\tfacet {0}", 59.5);
+                tw.WriteLine("\tcolor {0} {1} {2}", 1, 0, 0);
+                tw.WriteLine("\tcolor_type {0}", 0);
 
                 foreach(TSONode i in file.nodes)
                 {
@@ -280,20 +280,20 @@ namespace Tso2MqoGui
                     bones.Add(points.Count); points.Add(p);
                 }
 
-                tw.WriteLine("	vertex {0} {{", points.Count);
+                tw.WriteLine("\tvertex {0} {{", points.Count);
 
                 foreach(Point3 j in points)
                     WriteVertex(j.x, j.y, j.z);
 
-                tw.WriteLine("	}");
+                tw.WriteLine("\t}");
 
                 //
-                tw.WriteLine("	face {0} {{", bones.Count / 2);
+                tw.WriteLine("\tface {0} {{", bones.Count / 2);
 
                 for(int j= 0, n= bones.Count; j < n; j+=2)
-                    tw.WriteLine(string.Format("		2 V({0} {1})", bones[j+0], bones[j+1]));
+                    tw.WriteLine(string.Format("\t\t2 V({0} {1})", bones[j+0], bones[j+1]));
 
-                tw.WriteLine("	}");
+                tw.WriteLine("\t}");
                 tw.WriteLine("}");
                 }
                 break;
@@ -309,13 +309,13 @@ namespace Tso2MqoGui
 
         public void WriteFace(int a, int b, int c, float u1, float v1, float u2, float v2, float u3, float v3, int m)
         {
-            tw.WriteLine("		{0} V({1} {2} {3}) M({10}) UV({4:F5} {5:F5} {6:F5} {7:F5} {8:F5} {9:F5})",
+            tw.WriteLine("\t\t{0} V({1} {2} {3}) M({10}) UV({4:F5} {5:F5} {6:F5} {7:F5} {8:F5} {9:F5})",
                 3, a, b, c, u1, v1, u2, v2, u3, v3, m);
         }
 
         public void WriteVertex(float x, float y, float z)
         {
-            tw.WriteLine("		{0:F4} {1:F4} {2:F4}", x, y, z);
+            tw.WriteLine("\t\t{0:F4} {1:F4} {2:F4}", x, y, z);
         }
     }
 
