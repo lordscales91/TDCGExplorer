@@ -155,13 +155,13 @@ namespace tso2mqo
             tw.WriteLine("Format Text Ver 1.0");
             tw.WriteLine("");
             tw.WriteLine("Scene {");
-            tw.WriteLine("	pos -7.0446 4.1793 1541.1764");
-            tw.WriteLine("	lookat 11.8726 193.8590 0.4676");
-            tw.WriteLine("	head 0.8564");
-            tw.WriteLine("	pich 0.1708");
-            tw.WriteLine("	ortho 0");
-            tw.WriteLine("	zoom2 31.8925");
-            tw.WriteLine("	amb 0.250 0.250 0.250");
+            tw.WriteLine("\tpos -7.0446 4.1793 1541.1764");
+            tw.WriteLine("\tlookat 11.8726 193.8590 0.4676");
+            tw.WriteLine("\thead 0.8564");
+            tw.WriteLine("\tpich 0.1708");
+            tw.WriteLine("\tortho 0");
+            tw.WriteLine("\tzoom2 31.8925");
+            tw.WriteLine("\tamb 0.250 0.250 0.250");
             tw.WriteLine("}");
 
             tw.WriteLine("Material {0} {{", tso.sub_scripts.Length);
@@ -178,7 +178,7 @@ namespace tso2mqo
                 string tex_file = tex.FileName.Trim('"');
                 tex_file = Path.GetFileNameWithoutExtension(tex_file) + ".bmp";
                 tw.WriteLine(
-                    "	\"{0}\" shader(3) col(1.00 1.00 1.00 1.00) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex(\"{1}\")",
+                    "\t\"{0}\" shader(3) col(1.00 1.00 1.00 1.00) dif(0.800) amb(0.600) emi(0.000) spc(0.000) power(5.00) tex(\"{1}\")",
                     sub.Name, tex_file);
             }
 
@@ -187,12 +187,12 @@ namespace tso2mqo
             foreach (TSOMesh mesh in tso.meshes)
             {
                 tw.WriteLine("Object \"{0}\" {{", mesh.Name);
-                tw.WriteLine("	visible {0}", 15);
-                tw.WriteLine("	locking {0}", 0);
-                tw.WriteLine("	shading {0}", 1);
-                tw.WriteLine("	facet {0}", 59.5);
-                tw.WriteLine("	color {0} {1} {2}", 0.898f, 0.498f, 0.698f);
-                tw.WriteLine("	color_type {0}", 0);
+                tw.WriteLine("\tvisible {0}", 15);
+                tw.WriteLine("\tlocking {0}", 0);
+                tw.WriteLine("\tshading {0}", 1);
+                tw.WriteLine("\tfacet {0}", 59.5);
+                tw.WriteLine("\tcolor {0} {1} {2}", 0.898f, 0.498f, 0.698f);
+                tw.WriteLine("\tcolor_type {0}", 0);
 
                 Heap<UnifiedPositionVertex> vh = new Heap<UnifiedPositionVertex>();
                 List<MqoFace> faces = new List<MqoFace>();
@@ -233,18 +233,18 @@ namespace tso2mqo
                         }
                     }
                 }
-                tw.WriteLine("	vertex {0} {{", vh.Count);
+                tw.WriteLine("\tvertex {0} {{", vh.Count);
                 foreach (UnifiedPositionVertex v in vh.ary)
                 {
                     tw.WriteLine("\t\t{0:F6} {1:F6} {2:F6}", v.position.X, v.position.Y, v.position.Z);
                 }
-                tw.WriteLine("	}");
-                tw.WriteLine("	face {0} {{", faces.Count);
+                tw.WriteLine("\t}");
+                tw.WriteLine("\tface {0} {{", faces.Count);
                 foreach (MqoFace f in faces)
                 {
                     tw.WriteLine("\t\t{0} V({1} {2} {3}) M({10}) UV({4} {5} {6} {7} {8} {9})", 3, f.a, f.b, f.c, f.ta.X, f.ta.Y, f.tb.X, f.tb.Y, f.tc.X, f.tc.Y, f.mtl);
                 }
-                tw.WriteLine("	}");
+                tw.WriteLine("\t}");
                 tw.WriteLine("}");
             }
         }
