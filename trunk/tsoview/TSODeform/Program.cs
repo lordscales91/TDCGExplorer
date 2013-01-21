@@ -58,7 +58,11 @@ public static class Program
             fig.slider_matrix.BustRatio = ratios[4];
             fig.slider_matrix.EyeRatio = ratios[5];
         }
-        fig.UpdateNodeMapAndBoneMatrices();
+        fig.UpdateNodeMap();
+        if (fig_file != null)
+            fig.UpdateBoneMatrices(true);
+        else
+            fig.UpdateBoneMatricesWithoutSlider(true);
 
         foreach (TSOMesh mesh in tso.meshes)
         foreach (TSOSubMesh sub in mesh.sub_meshes)
