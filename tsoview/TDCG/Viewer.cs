@@ -1279,12 +1279,15 @@ public class Viewer : IDisposable
                     5: つり目たれ目
                     6: やわらか
                  */
-                fig.slider_matrix.TallRatio = ratios[0];
-                fig.slider_matrix.ArmRatio = ratios[1];
-                fig.slider_matrix.LegRatio = ratios[2];
-                fig.slider_matrix.WaistRatio = ratios[3];
-                fig.slider_matrix.BustRatio = ratios[4];
-                fig.slider_matrix.EyeRatio = ratios[5];
+                if (fig.slider_matrix != null)
+                {
+                    fig.slider_matrix.TallRatio = ratios[0];
+                    fig.slider_matrix.ArmRatio = ratios[1];
+                    fig.slider_matrix.LegRatio = ratios[2];
+                    fig.slider_matrix.WaistRatio = ratios[3];
+                    fig.slider_matrix.BustRatio = ratios[4];
+                    fig.slider_matrix.EyeRatio = ratios[5];
+                }
 
                 //fig.TransformTpo();
             };
@@ -1305,12 +1308,15 @@ public class Viewer : IDisposable
                 using (Stream stream = File.OpenRead(source_file))
                     data.Read(stream);
 
-                fig.slider_matrix.TallRatio = data.GetSliderValue(4);
-                fig.slider_matrix.ArmRatio = data.GetSliderValue(5);
-                fig.slider_matrix.LegRatio = data.GetSliderValue(6);
-                fig.slider_matrix.WaistRatio = data.GetSliderValue(7);
-                fig.slider_matrix.BustRatio = data.GetSliderValue(0);
-                fig.slider_matrix.EyeRatio = data.GetSliderValue(8);
+                if (fig.slider_matrix != null)
+                {
+                    fig.slider_matrix.TallRatio = data.GetSliderValue(4);
+                    fig.slider_matrix.ArmRatio = data.GetSliderValue(5);
+                    fig.slider_matrix.LegRatio = data.GetSliderValue(6);
+                    fig.slider_matrix.WaistRatio = data.GetSliderValue(7);
+                    fig.slider_matrix.BustRatio = data.GetSliderValue(0);
+                    fig.slider_matrix.EyeRatio = data.GetSliderValue(8);
+                }
 
                 for (int i = 0; i < fig.TSOList.Count; i++)
                 {

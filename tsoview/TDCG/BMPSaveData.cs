@@ -11,7 +11,11 @@ namespace TDCG
     /// </summary>
     public class BMPSaveData
     {
+        /// <summary>
+        /// 保持しているビットマップ
+        /// </summary>
         public Bitmap bitmap;
+
         byte[] savedata;
 
         /// <summary>

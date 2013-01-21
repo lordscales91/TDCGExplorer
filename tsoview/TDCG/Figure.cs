@@ -23,9 +23,14 @@ public class Figure : IDisposable
     public List<TSOFile> TSOList = new List<TSOFile>();
 
     /// <summary>
+    /// スライダ変形行列を使うか
+    /// </summary>
+    public static bool SliderMatrixEnabled = true;
+
+    /// <summary>
     /// スライダ変形行列
     /// </summary>
-    public SliderMatrix slider_matrix = new SliderMatrix();
+    public SliderMatrix slider_matrix = null;
 
     Vector3 center = Vector3.Empty;
     /// <summary>
@@ -88,6 +93,8 @@ public class Figure : IDisposable
     /// </summary>
     public Figure()
     {
+        if (SliderMatrixEnabled)
+            slider_matrix = new SliderMatrix();
         tmo = new TMOFile();
         nodemap = new Dictionary<TSONode, TMONode>();
         matrixStack = new MatrixStack();
@@ -172,10 +179,7 @@ public class Figure : IDisposable
         if (tmo.frames == null)
             RegenerateTMO();
 
-        nodemap.Clear();
-        if (tmo.frames != null)
-        foreach (TSOFile tso in TSOList)
-            AddNodeMap(tso);
+        UpdateNodeMap();
 
         UpdateBoneMatrices(true);
     }
@@ -190,6 +194,17 @@ public class Figure : IDisposable
             Tmo = TSOList[0].GenerateTMO();
             TransformTpo();
         }
+    }
+
+    /// <summary>
+    /// nodemapを更新します。
+    /// </summary>
+    public void UpdateNodeMap()
+    {
+        nodemap.Clear();
+        if (tmo.frames != null)
+        foreach (TSOFile tso in TSOList)
+            AddNodeMap(tso);
     }
 
     /// <summary>
@@ -310,8 +325,13 @@ public class Figure : IDisposable
 
         if (tmo.w_hips_node != null)
         {
-            //姉妹スライダによる変形
-            Matrix local = Matrix.Scaling(slider_matrix.Local);
+            Matrix local = Matrix.Identity;
+
+            if (slider_matrix != null)
+            {
+                //姉妹スライダによる変形
+                local = Matrix.Scaling(slider_matrix.Local);
+            }
 
             //移動変位を設定
             local.M41 = translation.X;
@@ -327,7 +347,7 @@ public class Figure : IDisposable
             Matrix local = Matrix.Translation(translation);
 
             matrixStack.LoadMatrix(local);
-            UpdateBoneMatricesWithoutSlideMatrices(tmo_node, tmo_frame);
+            UpdateBoneMatricesWithoutSlider(tmo_node, tmo_frame);
         }
     }
 
@@ -347,26 +367,34 @@ public class Figure : IDisposable
         }
         Matrix m = tmo_node.TransformationMatrix;
 
-        bool chichi_p = re_chichi.IsMatch(tmo_node.Name);
-
-        if (chichi_p)
+        if (slider_matrix != null)
         {
-            if (slider_matrix.Flat())
-                slider_matrix.TransformChichiFlat(tmo_node, ref m);
+            bool chichi_p = re_chichi.IsMatch(tmo_node.Name);
+
+            if (chichi_p)
+            {
+                if (slider_matrix.Flat())
+                    slider_matrix.TransformChichiFlat(tmo_node, ref m);
+            }
+            else
+                slider_matrix.TransformFace(tmo_node, ref m);
+
+            matrixStack.MultiplyMatrixLocal(m);
+            m = matrixStack.Top;
+
+            if (chichi_p)
+            {
+                if (! slider_matrix.Flat())
+                    slider_matrix.ScaleChichi(ref m);
+            }
+            else
+                slider_matrix.Scale(tmo_node, ref m);
         }
         else
-            slider_matrix.TransformFace(tmo_node, ref m);
-
-        matrixStack.MultiplyMatrixLocal(m);
-        m = matrixStack.Top;
-
-        if (chichi_p)
         {
-            if (! slider_matrix.Flat())
-                slider_matrix.ScaleChichi(ref m);
+            matrixStack.MultiplyMatrixLocal(m);
+            m = matrixStack.Top;
         }
-        else
-            slider_matrix.Scale(tmo_node, ref m);
 
         tmo_node.combined_matrix = m;
 
@@ -379,7 +407,48 @@ public class Figure : IDisposable
     /// <summary>
     /// bone行列を更新します（体型変更なし）。
     /// </summary>
-    protected void UpdateBoneMatricesWithoutSlideMatrices(TMONode tmo_node, TMOFrame tmo_frame)
+    /// <param name="forced">falseの場合frame indexに変更なければ更新しません。</param>
+    public void UpdateBoneMatricesWithoutSlider(bool forced)
+    {
+        if (!forced && frame_index == current_frame_index)
+            return;
+        current_frame_index = frame_index;
+
+        TMOFrame tmo_frame = GetTMOFrame();
+
+        UpdateBoneMatricesWithoutSlider(tmo, tmo_frame);
+    }
+    
+    /// <summary>
+    /// bone行列を更新します（体型変更なし）。
+    /// </summary>
+    protected void UpdateBoneMatricesWithoutSlider(TMOFile tmo, TMOFrame tmo_frame)
+    {
+        if (tmo.nodes == null)
+            return;
+
+        if (tmo.w_hips_node != null)
+        {
+            //移動変位を設定
+            Matrix local = Matrix.Translation(translation);
+
+            matrixStack.LoadMatrix(local);
+            UpdateBoneMatricesWithoutSlider(tmo.w_hips_node, tmo_frame);
+        }
+        foreach (TMONode tmo_node in tmo.root_nodes_except_w_hips)
+        {
+            //移動変位を設定
+            Matrix local = Matrix.Translation(translation);
+
+            matrixStack.LoadMatrix(local);
+            UpdateBoneMatricesWithoutSlider(tmo_node, tmo_frame);
+        }
+    }
+
+    /// <summary>
+    /// bone行列を更新します（体型変更なし）。
+    /// </summary>
+    protected void UpdateBoneMatricesWithoutSlider(TMONode tmo_node, TMOFrame tmo_frame)
     {
         matrixStack.Push();
 
@@ -396,7 +465,7 @@ public class Figure : IDisposable
         tmo_node.combined_matrix = m;
 
         foreach (TMONode child_node in tmo_node.children)
-            UpdateBoneMatrices(child_node, tmo_frame);
+            UpdateBoneMatricesWithoutSlider(child_node, tmo_frame);
 
         matrixStack.Pop();
     }
