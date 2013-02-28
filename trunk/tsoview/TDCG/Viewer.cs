@@ -1308,7 +1308,7 @@ public class Viewer : IDisposable
                 using (Stream stream = File.OpenRead(source_file))
                     data.Read(stream);
 
-                if (fig.slider_matrix != null)
+                if (fig.slider_matrix != null && data.bitmap.Size == new Size(128, 256))
                 {
                     fig.slider_matrix.TallRatio = data.GetSliderValue(4);
                     fig.slider_matrix.ArmRatio = data.GetSliderValue(5);
