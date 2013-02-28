@@ -49,9 +49,9 @@ namespace TAHBackground
             fig = new TSOFigure();
         }
 
-        public static string GetTBNPathFromPSDPath(string psd_path)
+        public static string GetPSDPathFromTBNPath(string tbn_path)
         {
-            return @"script/backgrounds/" + Path.GetFileNameWithoutExtension(psd_path) + @".tbn";
+            return @"data/icon/backgrounds/" + Path.GetFileNameWithoutExtension(tbn_path) + @".psd";
         }
 
         public static List<string> GetTSOPathListFromTBNFile(TBNFile tbn)

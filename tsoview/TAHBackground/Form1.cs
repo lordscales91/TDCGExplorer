@@ -42,14 +42,14 @@ namespace TAHBackground
             gvEntries.Rows.Clear();
             foreach (TAHEntry entry in decrypter.Entries)
             {
-                string file_name = entry.file_name;
+                string file_name = entry.file_name.ToLower();
 
                 if (entry.flag % 2 == 1)
                 {
                     file_name += TAHFileUtils.GetExtensionFromMagic(decrypter.ExtractResource(entry));
                 }
 
-                string ext = Path.GetExtension(file_name).ToLower();
+                string ext = Path.GetExtension(file_name);
                 if (ext == ".tbn")
                 {
                     if (file_name.StartsWith("script/backgrounds/"))
@@ -79,16 +79,16 @@ namespace TAHBackground
             }
         }
 
-        List<string> GetPSDPathList()
+        List<string> GetTBNPathList()
         {
             List<string> ret = new List<string>();
             foreach (TAHEntry entry in decrypter.Entries)
             {
                 string file_name = entry.file_name.ToLower();
                 string ext = Path.GetExtension(file_name);
-                if (ext == ".psd")
+                if (ext == ".tbn")
                 {
-                    if (file_name.StartsWith("data/icon/backgrounds/"))
+                    if (file_name.StartsWith("script/backgrounds/"))
                         ret.Add(file_name);
                 }
             }
@@ -121,7 +121,7 @@ namespace TAHBackground
                     file_name += TAHFileUtils.GetExtensionFromMagic(decrypter.ExtractResource(entry));
                 }
 
-                string ext = Path.GetExtension(file_name).ToLower();
+                string ext = Path.GetExtension(file_name);
                 if (ext == ".tbn")
                 {
                     if (file_name.StartsWith("script/backgrounds/"))
@@ -141,20 +141,26 @@ namespace TAHBackground
                 }
             }
 
-            List<string> PSDPathList = GetPSDPathList();
-            int entries_count = PSDPathList.Count;
+            List<string> TBNPathList = GetTBNPathList();
+            int entries_count = TBNPathList.Count;
             int current_index = 0;
-            foreach (string psd_path in PSDPathList)
+            foreach (string tbn_path in TBNPathList)
             {
+                string psd_path = PngBack.GetPSDPathFromTBNPath(tbn_path);
+
+                Console.WriteLine("tbn {0}", tbn_path);
                 Console.WriteLine("psd {0}", psd_path);
 
-                TAHEntry psd_entry = entries[psd_path];
-                MemoryStream psd_stream = new MemoryStream(decrypter.ExtractResource(psd_entry));
+                TAHEntry tbn_entry;
+                if (!entries.TryGetValue(tbn_path, out tbn_entry))
+                    continue;
 
-                string tbn_path = PngBack.GetTBNPathFromPSDPath(psd_path);
-                Console.WriteLine("tbn {0}", tbn_path);
-                TAHEntry tbn_entry = entries[tbn_path];
+                TAHEntry psd_entry;
+                if (!entries.TryGetValue(psd_path, out psd_entry))
+                    continue;
+
                 MemoryStream tbn_stream = new MemoryStream(decrypter.ExtractResource(tbn_entry));
+                MemoryStream psd_stream = new MemoryStream(decrypter.ExtractResource(psd_entry));
 
                 PngBack back = new PngBack();
                 back.Load(tbn_stream, psd_stream);
