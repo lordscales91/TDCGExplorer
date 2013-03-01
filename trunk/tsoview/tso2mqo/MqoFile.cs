@@ -11,7 +11,7 @@ namespace tso2mqo
     {
         private delegate bool SectionHandler(string[] tokens);
 
-        public static char[] delimiters2 = new char[] { ' ', '\t', '(', ')' };
+        private static char[] delimiters2 = new char[] { ' ', '\t', '(', ')' };
 
         private string file;
         private StreamReader sr;
@@ -420,19 +420,6 @@ namespace tso2mqo
         public float ortho;
         public float zoom2;
         public Vector3 amb;
-
-        public override string ToString()
-        {
-            return (new StringBuilder(256))
-                .Append(" pos: ").Append(pos)
-                .Append(" lookat: ").Append(lookat)
-                .Append(" head: ").Append(head)
-                .Append(" pich: ").Append(pich)
-                .Append(" ortho: ").Append(ortho)
-                .Append(" zoom2: ").Append(zoom2)
-                .Append(" amb: ").Append(amb)
-                .ToString();
-        }
     }
 
     public class MqoMaterial
@@ -449,21 +436,6 @@ namespace tso2mqo
 
         public MqoMaterial() { }
         public MqoMaterial(string n) { name = n; }
-
-        public override string ToString()
-        {
-            return (new StringBuilder(256))
-                .Append(" shader: ").Append(shader)
-                .Append(" col: ").Append(col)
-                .Append(" dif: ").Append(dif)
-                .Append(" amb: ").Append(amb)
-                .Append(" emi: ").Append(emi)
-                .Append(" spc: ").Append(spc)
-                .Append(" power: ").Append(power)
-                .Append(" tex: ").Append(tex)
-                .Append(" name: ").Append(name)
-                .ToString();
-        }
     }
 
     public class MqoObject
@@ -480,21 +452,6 @@ namespace tso2mqo
 
         public MqoObject() { }
         public MqoObject(string n) { name = n; }
-
-        public override string ToString()
-        {
-            return (new StringBuilder(256))
-                .Append(" visible: ").Append(visible)
-                .Append(" locking: ").Append(locking)
-                .Append(" shading: ").Append(shading)
-                .Append(" facet: ").Append(facet)
-                .Append(" color: ").Append(color)
-                .Append(" color_type: ").Append(color_type)
-                .Append(" vertices: ").Append(vertices.Count)
-                .Append(" faces: ").Append(faces.Count)
-                .Append(" name: ").Append(name)
-                .ToString();
-        }
     }
 
     public class MqoFace
@@ -515,15 +472,6 @@ namespace tso2mqo
             this.ta = ta;
             this.tb = tb;
             this.tc = tc;
-        }
-
-        public override string ToString()
-        {
-            return (new StringBuilder(256))
-                .Append("v: ").Append(a).Append(" ").Append(b).Append(" ").Append(c)
-                .Append(" mtl: ").Append(mtl)
-                .Append(" uv: ").Append(ta).Append(" ").Append(tb).Append(" ").Append(tc)
-                .ToString();
         }
     }
 }
