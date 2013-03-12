@@ -450,7 +450,7 @@ namespace Tso2Pmd
                     if (use_meshes[sub_mesh_num++] == true)
                     {
                         meshes.Add(sub_mesh);
-                        material_list.Add(tso_num, script_num, UseEdge);
+                        material_list.Add(tso_num, script_num, UseEdge, tso.FileName);
                     }
                 }
                 tso_num++;

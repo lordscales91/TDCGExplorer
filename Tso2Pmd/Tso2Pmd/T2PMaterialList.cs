@@ -61,6 +61,13 @@ namespace Tso2Pmd
         // 頂点インデックス数は後で設定する
         public void Add(int tso_num, int script_num, bool use_edge)
         {
+            Add(tso_num, script_num, use_edge, "memo");
+        }
+
+        // TSOSubScriptを元にPMD_Materialを生成して追加する
+        // 頂点インデックス数は後で設定する
+        public void Add(int tso_num, int script_num, bool use_edge, string memo)
+        {
             PMD_Material pmd_m = new PMD_Material();
 
             pmd_m.name = categories[tso_num] + " " + tsos[tso_num].sub_scripts[script_num].Name;
@@ -75,6 +82,8 @@ namespace Tso2Pmd
 
             pmd_m.UseEdge = use_edge;
             pmd_m.UseShadow = use_edge;
+
+            pmd_m.memo += " " + memo;
 
             // 頂点インデックス数（後で設定する）
             pmd_m.vindices_count = 0;
