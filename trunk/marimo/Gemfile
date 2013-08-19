@@ -1,0 +1,13 @@
+gem 'rake', '0.8.7'
+gem 'rails', '~> 2.3.5'
+
+gem "will_paginate", "2.3.15"
+gem "locale"
+gem "locale_rails", "2.0.5"
+gem "gettext"
+gem "gettext_activerecord", "2.1.0"
+gem "gettext_rails", "2.1.0"
+
+group :test do
+  gem 'rspec', '2.7.0'
+end
