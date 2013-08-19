@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'rake', '0.8.7'
 gem 'rails', '~> 2.3.5'
+gem 'mysql'
 
 gem "will_paginate", "2.3.15"
 gem "locale"
