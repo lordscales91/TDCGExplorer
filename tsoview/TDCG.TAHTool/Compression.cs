@@ -6,8 +6,6 @@ namespace TDCG.TAHTool
 {
     class Compression
     {
-        static MT19937ar myMT19937ar = new MT19937ar();
-
         // Window sizing related stuff compressor
         public static uint HS_LZSS_MINMATCHLEN = 3;
         public static uint HS_LZSS_WINBITS = 12;
@@ -20,7 +18,6 @@ namespace TDCG.TAHTool
         public static UInt32 HS_LZSS_OUTPUT_BUFFER_POS = 0;
         public static byte HS_LZSS_OUTPUT_BUFFER_FLAG = 0;
         public static UInt32 HS_LZSS_OUTPUT_BUFFER_FLAG_POS = 0;
-        public static UInt32 HS_LZSS_OUTPUT_BUFFER_FLAG_SEED = 0;
 
         public struct LZSS_Hash
         {
@@ -42,23 +39,6 @@ namespace TDCG.TAHTool
             HS_LZSS_OUTPUT_BUFFER_POS = 0;
             data_output = new byte[1024 * 1024]; //1MB buffer
 
-            //for encryption...
-            uint[] init_key = new uint[4];
-            byte[] rnd = new byte[1024];
-
-            init_key[0] = (input_length | 0x80) >> 5;
-            init_key[1] = (input_length << 9) | 6;
-            init_key[2] = (input_length << 6) | 4;
-            init_key[3] = (input_length | 0x48) >> 3;
-            myMT19937ar.init_by_array(init_key, 4);
-            for (UInt32 i = 0; i < 1024; i++)
-            {
-                rnd[i] = (byte)(((uint)myMT19937ar.genrand_int32()) >> (int)(i % 7));
-            }
-
-            UInt32 seed = (((input_length / 1000) % 10) + ((input_length / 100) % 10) + ((input_length / 10) % 10) + (input_length % 10)) & 0x31A;
-
-
             // If the input file is too small then there is a chance of 
             // buffer overrun, so just abort
             if (input_length < 32)
@@ -74,10 +54,12 @@ namespace TDCG.TAHTool
             // Jump to our main compression function
             //
 
-            encrypt_loop(ref data_input, input_length, ref data_output, ref output_length, ref m_nDataStreamPos, ref m_nCompressedStreamPos, ref rnd, ref seed);
+            deflate_loop(ref data_input, input_length, ref data_output, ref output_length, ref m_nDataStreamPos, ref m_nCompressedStreamPos);
+
+            TAHCryption.crypt(ref data_output, output_length, input_length);
         }
 
-        public static void encrypt_loop(ref byte[] data_input, UInt32 input_length, ref byte[] data_output, ref UInt32 output_length, ref UInt32 nInputPos, ref UInt32 nOutputPos, ref byte[] rnd, ref UInt32 seed)
+        public static void deflate_loop(ref byte[] data_input, UInt32 input_length, ref byte[] data_output, ref UInt32 output_length, ref UInt32 nInputPos, ref UInt32 nOutputPos)
         {
             UInt32 nOffset1, nLen1;					// n Offset values
             UInt32 nOffset2, nLen2;					// n+1 Offset values (lazy evaluation)
@@ -126,9 +108,9 @@ namespace TDCG.TAHTool
                         // Let's use match 1
                         nInputPos = nDataPos1;	// Restore the data pos for this match
                         //WriteBitsToDataOutput(1, 1, ref data_output, ref nOutputPos);
-                        WriteBitsToDataOutput(0, 1, ref data_output, ref nOutputPos, flag_loop % 8, ref rnd, ref seed);
-                        WriteBitsToDataOutput(inverse_byte_order(nOffset1 - HS_LZSS_MINMATCHLEN, nInputPos, nLen1), HS_LZSS_WINBITS, ref data_output, ref nOutputPos, -1, ref rnd, ref seed);
-                        WriteBitsToDataOutput(nLen1 - HS_LZSS_MINMATCHLEN, HS_LZSS_MATCHBITS, ref data_output, ref nOutputPos, -1, ref rnd, ref seed);
+                        WriteBitsToDataOutput(0, 1, ref data_output, ref nOutputPos, flag_loop % 8);
+                        WriteBitsToDataOutput(inverse_byte_order(nOffset1 - HS_LZSS_MINMATCHLEN, nInputPos, nLen1), HS_LZSS_WINBITS, ref data_output, ref nOutputPos, -1);
+                        WriteBitsToDataOutput(nLen1 - HS_LZSS_MINMATCHLEN, HS_LZSS_MATCHBITS, ref data_output, ref nOutputPos, -1);
                         flag_loop++;
                     }
                     else
@@ -137,16 +119,16 @@ namespace TDCG.TAHTool
                         // Let's use match 2 (a little more work required)
                         // First, store the byte at N as a literal
                         //WriteBitsToDataOutput(0, 1, ref data_output, ref nOutputPos);
-                        WriteBitsToDataOutput(1, 1, ref data_output, ref nOutputPos, flag_loop % 8, ref rnd, ref seed);
-                        WriteBitsToDataOutput(data_input[nTempDataPos], 8, ref data_output, ref nOutputPos, -1, ref rnd, ref seed);
+                        WriteBitsToDataOutput(1, 1, ref data_output, ref nOutputPos, flag_loop % 8);
+                        WriteBitsToDataOutput(data_input[nTempDataPos], 8, ref data_output, ref nOutputPos, -1);
                         flag_loop++;
 
                         // Then store match 2
                         //m_nDataStreamPos = nDataPos2;	// Restore the data pos for this match
                         //WriteBitsToDataOutput(1, 1, ref data_output, ref nOutputPos);
-                        WriteBitsToDataOutput(0, 1, ref data_output, ref nOutputPos, flag_loop % 8, ref rnd, ref seed);
-                        WriteBitsToDataOutput(inverse_byte_order(nOffset2 - HS_LZSS_MINMATCHLEN, nInputPos, nLen2), HS_LZSS_WINBITS, ref data_output, ref nOutputPos, -1, ref rnd, ref seed);
-                        WriteBitsToDataOutput(nLen2 - HS_LZSS_MINMATCHLEN, HS_LZSS_MATCHBITS, ref data_output, ref nOutputPos, -1, ref rnd, ref seed);
+                        WriteBitsToDataOutput(0, 1, ref data_output, ref nOutputPos, flag_loop % 8);
+                        WriteBitsToDataOutput(inverse_byte_order(nOffset2 - HS_LZSS_MINMATCHLEN, nInputPos, nLen2), HS_LZSS_WINBITS, ref data_output, ref nOutputPos, -1);
+                        WriteBitsToDataOutput(nLen2 - HS_LZSS_MINMATCHLEN, HS_LZSS_MATCHBITS, ref data_output, ref nOutputPos, -1);
                         flag_loop++;
                     }
                 }
@@ -155,8 +137,8 @@ namespace TDCG.TAHTool
                     // No matches, just store the literal byte
                     nInputPos = nTempDataPos;
                     //WriteBitsToDataOutput(0, 1, ref data_output, ref nOutputPos);
-                    WriteBitsToDataOutput(1, 1, ref data_output, ref nOutputPos, flag_loop % 8, ref rnd, ref seed);
-                    WriteBitsToDataOutput(data_input[nInputPos++], 8, ref data_output, ref nOutputPos, -1, ref rnd, ref seed);
+                    WriteBitsToDataOutput(1, 1, ref data_output, ref nOutputPos, flag_loop % 8);
+                    WriteBitsToDataOutput(data_input[nInputPos++], 8, ref data_output, ref nOutputPos, -1);
                     flag_loop++;
                 }
 
@@ -198,8 +180,7 @@ namespace TDCG.TAHTool
                     // Update how many bits we are using (add 1)
                     HS_LZSS_OUTPUT_BUFFER_POS++;
                 }
-                seed = (seed + 1) & 0x3ff;
-                data_output[nOutputPos++] = (byte)((HS_LZSS_OUTPUT_BUFFER) ^ rnd[seed]);
+                data_output[nOutputPos++] = (byte)(HS_LZSS_OUTPUT_BUFFER);
             }
             if (flag_loop % 8 != 0)
             {
@@ -209,7 +190,7 @@ namespace TDCG.TAHTool
                     HS_LZSS_OUTPUT_BUFFER_FLAG |= (byte)(0x80);
                     flag_loop++;
                 }
-                data_output[HS_LZSS_OUTPUT_BUFFER_FLAG_POS] = (byte)(HS_LZSS_OUTPUT_BUFFER_FLAG ^ rnd[HS_LZSS_OUTPUT_BUFFER_FLAG_SEED]);
+                data_output[HS_LZSS_OUTPUT_BUFFER_FLAG_POS] = (byte)(HS_LZSS_OUTPUT_BUFFER_FLAG);
             }
             // We've now written out everything... reset the buffer
             HS_LZSS_OUTPUT_BUFFER_POS = 0;
@@ -240,7 +221,7 @@ namespace TDCG.TAHTool
             return ret_value;
         }
 
-        public static void WriteBitsToDataOutput(UInt32 nValue, UInt32 nNumBits, ref byte[] bOutputData, ref UInt32 nPosOutput, int flag_loop, ref byte[] rnd, ref UInt32 seed)
+        public static void WriteBitsToDataOutput(UInt32 nValue, UInt32 nNumBits, ref byte[] bOutputData, ref UInt32 nPosOutput, int flag_loop)
         {
             if (flag_loop != -1)
             {
@@ -248,8 +229,6 @@ namespace TDCG.TAHTool
                 {
                     HS_LZSS_OUTPUT_BUFFER_FLAG_POS = nPosOutput;
                     nPosOutput++;
-                    seed = (seed + 1) & 0x3ff;
-                    HS_LZSS_OUTPUT_BUFFER_FLAG_SEED = seed;
                     HS_LZSS_OUTPUT_BUFFER_FLAG = 0x00;
                     HS_LZSS_OUTPUT_BUFFER_FLAG |= (byte)(nValue * 0x80);
                 }
@@ -257,7 +236,7 @@ namespace TDCG.TAHTool
                 {
                     HS_LZSS_OUTPUT_BUFFER_FLAG = (byte)(HS_LZSS_OUTPUT_BUFFER_FLAG >> (byte)0x01);
                     HS_LZSS_OUTPUT_BUFFER_FLAG |= (byte)(nValue * 0x80);
-                    bOutputData[HS_LZSS_OUTPUT_BUFFER_FLAG_POS] = (byte)(HS_LZSS_OUTPUT_BUFFER_FLAG ^ rnd[HS_LZSS_OUTPUT_BUFFER_FLAG_SEED]);
+                    bOutputData[HS_LZSS_OUTPUT_BUFFER_FLAG_POS] = (byte)(HS_LZSS_OUTPUT_BUFFER_FLAG);
                 }
                 else
                 {
@@ -291,8 +270,7 @@ namespace TDCG.TAHTool
                             bOutputData.CopyTo(tmp_data, 0);
                             bOutputData = tmp_data;
                         }
-                        seed = (seed + 1) & 0x3ff;
-                        bOutputData[nPosOutput++] = (byte)((HS_LZSS_OUTPUT_BUFFER) ^ rnd[seed]);
+                        bOutputData[nPosOutput++] = (byte)(HS_LZSS_OUTPUT_BUFFER);
 
                         // We've now written out 8 bits
                         HS_LZSS_OUTPUT_BUFFER_POS = 0;

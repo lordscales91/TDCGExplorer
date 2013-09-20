@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TAHCryption.cs" />
     <Compile Include="Decompression.cs" />
     <Compile Include="Decrypter.cs" />
     <Compile Include="MT19937ar.cs" />
