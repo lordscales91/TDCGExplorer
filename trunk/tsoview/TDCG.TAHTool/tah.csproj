@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Compression.cs" />
+    <Compile Include="TAHCryption.cs" />
     <Compile Include="Encrypter.cs" />
     <Compile Include="MT19937ar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
