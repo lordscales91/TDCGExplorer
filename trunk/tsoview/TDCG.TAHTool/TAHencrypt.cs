@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace TDCG.TAHTool
@@ -18,8 +19,14 @@ namespace TDCG.TAHTool
             //encrypt to TAH archive
             if (Directory.Exists(source_file))
             {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+
                 //launch encrypt routine from here...
                 encrypt_archive(source_file + ".tah", source_file);
+
+                sw.Stop();
+                Console.WriteLine("time: " + sw.Elapsed);
             }
         }
 

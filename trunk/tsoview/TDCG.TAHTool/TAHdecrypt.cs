@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace TDCG.TAHTool
@@ -13,7 +14,13 @@ namespace TDCG.TAHTool
                 Console.WriteLine("untah.exe <tah file>");
                 return;
             }
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
             DumpFiles(args[0]);
+
+            sw.Stop();
+            Console.WriteLine("time: " + sw.Elapsed);
         }
 
         public static int DumpFiles(string source_file)
