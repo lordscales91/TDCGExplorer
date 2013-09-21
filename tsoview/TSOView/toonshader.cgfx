@@ -7927,3 +7927,124 @@ technique RotateRepeat_FLASH_KAZAN2_Emissive_ParaHUD
 //------------------------------------------------------------------
 //	20120428	ÅöRotateRepeatÇ±Ç±Ç‹Ç≈
 //------------------------------------------------------------------
+// óºñ ï`âÊä÷òA
+// Append by Konoa
+
+cVertexData2	cBackInkVS( appdata IN )
+{
+	cVertexData2	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	pos				=	float4( pos.xyz + ( normalize( nor ) *-Thickness ), 1);
+
+	float4	p;
+
+	p				=	mul( pos, wvp );
+	OUT.Position	=	p;
+
+	return	OUT;
+}
+
+stateblock	CounterState	=	stateblock_state
+{
+	VertexShader			=	compile	vs_3_0	cMainVS();
+	PixelShader				=	compile	ps_3_0	cMainPS();
+
+	AlphaFunc				=	greaterequal;
+
+	AlphaTestEnable			=	true;
+
+	CullMode				=	CCW;
+};
+
+stateblock	BackInkState		=	stateblock_state
+{
+	VertexShader			=	compile	vs_3_0	cBackInkVS();
+	PixelShader				=	compile	ps_3_0	cInkPS();
+
+	AlphaFunc				=	greaterequal;
+
+	AlphaTestEnable			=	true;
+
+	CullMode				=	CW;
+};
+
+technique BothSide
+{
+	pass BackInk
+	{
+		StateBlock			=	(BackInkState);
+	}
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Counter
+	{
+		StateBlock			=	(CounterState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+	}
+}
+
+technique BothSide_InkOff
+{
+	pass Counter
+	{
+		StateBlock			=	(CounterState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+	}
+}
+
+technique AllAmb_BothSide
+{
+	pass BackInk
+	{
+		StateBlock			=	(BackInkState);
+	}
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Counter
+	{
+		StateBlock			=	(CounterState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+}
+
+technique AllAmb_BothSide_InkOff
+{
+	pass Counter
+	{
+		StateBlock			=	(CounterState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+}
+
+technique NZAT_ShadowOff_InkOff_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS_emissive();
+		ZWriteEnable		=	false;
+	}
+}
