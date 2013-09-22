@@ -1,10 +1,33 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 
 namespace TDCG.TAHTool
 {
+    /// <summary>
+    /// BinaryReaderの拡張メソッドを定義します。
+    /// </summary>
+    public static class BinaryReaderMethods
+    {
+        /// <summary>
+        /// null終端文字列を読みとります。
+        /// </summary>
+        /// <returns>文字列</returns>
+        public static string ReadCString(this BinaryReader reader)
+        {
+            StringBuilder string_builder = new StringBuilder();
+            while ( true ) {
+                char c = reader.ReadChar();
+                if (c == 0)
+                        break;
+                string_builder.Append(c);
+            }
+            return string_builder.ToString();
+        }
+    }
+
     public class TAHEntry
     {
         public UInt32 hash_name;
@@ -17,8 +40,6 @@ namespace TDCG.TAHTool
     public class Decrypter
     {
         BinaryReader reader;
-
-        static UInt32 MAX_PATH = 260;
 
         public struct ext_file_list
         {
@@ -33,23 +54,19 @@ namespace TDCG.TAHTool
             public UInt32 reserved; //0
         }
 
-        public static UInt32 gen_hash_key_for_string(ref byte[] strg)
+        public static UInt32 CalcHash(string s)
         {
             UInt32 key = 0xC8A4E57AU;
-            UInt32 i;
 
-            //lower string
-            string tstrg = System.Text.Encoding.ASCII.GetString(strg);
-            tstrg = tstrg.ToLower();
-            byte[] tbstrg = System.Text.Encoding.ASCII.GetBytes(tstrg);
+            byte[] buf = Encoding.Default.GetBytes(s.ToLower());
 
-            for (i = 0; tbstrg[i] != 0x00; i++)
+            foreach (byte i in buf)
             {
                 key = key << 19 | key >> 13;
-                key = key ^ (uint)tbstrg[i];
+                key = key ^ (uint)i;
             }
 
-            return (uint)(key ^ (((tbstrg[i - 1] & 0x1A) != 0x00 ? -1 : 0)));
+            return (uint)(key ^ (((buf[buf.Length - 1] & 0x1A) != 0x00 ? -1 : 0)));
         }
 
         /* TAH Procedures*/
@@ -94,88 +111,49 @@ namespace TDCG.TAHTool
 
             byte[] output_data = new byte[output_length];
 
-            Decompression.decrypt(ref data_input, input_length, ref output_data, output_length);
+            TAHCryption.crypt(ref data_input, input_length, output_length);
+            Decompression.infrate(ref data_input, input_length, ref output_data, output_length);
             //-- entry情報の復号完了! --
 
             build_TAHEntries(output_data, arc_size);
         }
 
+        public TAHEntry FindTAHEntryByHash(UInt32 hash)
+        {
+            foreach (TAHEntry ent in Entries)
+            {
+                if (ent.hash_name == hash)
+                    return ent;
+            }
+            return null;
+        }
+
         public void build_TAHEntries(byte[] str_file_path, UInt32 arc_size)
         {
-            byte[] file_path = new byte[MAX_PATH];
-            int act_str_pos = 0;
-            while (str_file_path.Length > act_str_pos)
+            using (BinaryReader br = new BinaryReader(new MemoryStream(str_file_path)))
             {
-                int pos_local = 0;
-                //0x00か0x2Fに達するまで回す
-                while (str_file_path[act_str_pos + pos_local] != 0x00)
+                try
                 {
-                    if (str_file_path[act_str_pos + pos_local] == 0x2F) // '/'
+                    string path = "";
+                    while (true)
                     {
-                        break;
-                    }
-                    else
-                    {
-                        pos_local++;
-                    }
-                }
-                //0x00でない（つまり0x2Fである）場合 = ディレクトリ名
-                if (str_file_path[act_str_pos + pos_local] != 0x00)
-                {
-                    //0x00に達するまで回す
-                    int i;
-                    for (i = 0; str_file_path[act_str_pos + i] != 0x00; i++)
-                    {
-                        file_path[i] = str_file_path[i + act_str_pos];
-                    }
-                    file_path[i] = 0x00;
-                }
-                //0x00である場合 = ファイル名
-                else
-                {
-                    byte[] str_path = new byte[MAX_PATH];
-
-                    //0x00の位置まで先頭から回す = ディレクトリ名
-                    int str_path_offset = 0;
-                    while (file_path[str_path_offset] != 0x00)
-                    {
-                        str_path_offset++;
-                    }
-                    file_path.CopyTo(str_path, 0);
-
-                    //actが0x00に達するまで回す
-                    int i;
-                    for (i = 0; str_file_path[act_str_pos + i] != 0x00; i++)
-                    {
-                        str_path[i + str_path_offset] = str_file_path[act_str_pos + i];
-                    }
-                    str_path[i + str_path_offset] = 0x00;
-
-                    //str_pathからhashを作る
-                    UInt32 hash_key = gen_hash_key_for_string(ref str_path);
-
-                    //index entryでhashを先頭から検索
-                    UInt32 h;
-                    for (h = 0; h < Entries.Length; h++)
-                    {
-                        //名無しで
-                        if (Entries[h].file_name == null)
+                        string name = br.ReadCString();
+                        if (name.EndsWith("/"))
                         {
-                            //hashが一致する
-                            if (hash_key == Entries[h].hash_name)
-                            {
-                                //file_nameとしてcopy
-                                Entries[h].file_name = System.Text.Encoding.GetEncoding(932).GetString(str_path, 0, i + str_path_offset);
-                                break;
-                            }
+                            path = name;
+                        }
+                        else
+                        {
+                            string file_name = path + name;
+                            TAHEntry ent = FindTAHEntryByHash(CalcHash(file_name));
+                            if (ent != null)
+                                ent.file_name = file_name;
                         }
                     }
                 }
-                while (str_file_path[act_str_pos] != 0x00)
+                catch (EndOfStreamException)
                 {
-                    act_str_pos++;
                 }
-                act_str_pos += 1;
             }
 
             ext_file_list external_files;
@@ -202,8 +180,6 @@ namespace TDCG.TAHTool
                         Entries[i].file_name = external_files.files[pos];
                     }
                 }
-                //オフセットを設定
-                //Entries[i].offset = index_buffer[i].offset;
             }
 
             for (UInt32 i = 0; i < Entries.Length - 1; i++)
@@ -238,8 +214,7 @@ namespace TDCG.TAHTool
                     external_files.hashkeys = new UInt32[external_files.files.Length];
                     for (int i = 0; i < external_files.files.Length; i++)
                     {
-                        byte[] byte_string = System.Text.Encoding.ASCII.GetBytes(external_files.files[i] + "\0");
-                        external_files.hashkeys[i] = gen_hash_key_for_string(ref byte_string);
+                        external_files.hashkeys[i] = CalcHash(external_files.files[i]);
                     }
                 }
                 //sorting for faster look up...
@@ -251,25 +226,24 @@ namespace TDCG.TAHTool
         {
             //data読み込み長さ
             //-4はdata書き出し長さ格納領域 (UInt32) を減じている
-            UInt32 data_input_length = entry.length - 4;
+            UInt32 input_length = entry.length - 4;
             //data読み込みバッファ
-            byte[] data_input = new byte[data_input_length];
-            UInt32 data_output_length;
+            byte[] data_input = new byte[input_length];
+            UInt32 output_length;
 
             reader.BaseStream.Position = entry.offset;
 
-            {
-                //data書き出し長さ
-                data_output_length = reader.ReadUInt32();
-                data_input = reader.ReadBytes((int)data_input_length);
-            }
+            //data書き出し長さ
+            output_length = reader.ReadUInt32();
+            data_input = reader.ReadBytes((int)input_length);
             //-- data読み込み（復号前）完了! --
 
             //data書き出しバッファ
-            byte[] data_output = new byte[data_output_length];
+            byte[] data_output = new byte[output_length];
 
             {
-                Decompression.decrypt(ref data_input, data_input_length, ref data_output, data_output_length);
+                TAHCryption.crypt(ref data_input, input_length, output_length);
+                Decompression.infrate(ref data_input, input_length, ref data_output, output_length);
             }
             //-- data復号完了! --
             return data_output;
