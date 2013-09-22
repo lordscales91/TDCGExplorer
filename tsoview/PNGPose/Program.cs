@@ -14,7 +14,7 @@ class Program
     {
         if (args.Length != 1)
         {
-            Console.WriteLine("Usage: PNGPose <png file>");
+            Console.WriteLine("Usage: PNGPose <png file or folder>");
             return;
         }
 

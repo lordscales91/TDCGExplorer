@@ -71,7 +71,7 @@ namespace TDCG.TAHTool
             {
                 //int i = 0;
 
-                string act_file_index_path = "";
+                string path = "";
 
                 //現在のディレクトリ上にある全ファイル名（ディレクトリは含まない）について繰り返す
                 foreach (string file in dir_entries[source_path])
@@ -94,7 +94,7 @@ namespace TDCG.TAHTool
                     {
                         file_index[index_pos] = file;
                         //entry ファイル名を控える
-                        all_compressed_files[act_file].file_name = act_file_index_path + file;
+                        all_compressed_files[act_file].file_name = path + file;
                         index_pos++;
                     }
 
@@ -106,23 +106,23 @@ namespace TDCG.TAHTool
 
             for (int i = 0; i < directories.Count; i++)
             {
-                string act_file_index_path = "";
+                string path = "";
                 {
                     //ディレクトリ名を控える
                     //ただし source_path + 1 文字飛ばす
                     //いつも '/' で終わる
-                    file_index[index_pos] = directories[i].Substring(source_path.Length + 1) + @"/";
-                    act_file_index_path = file_index[index_pos];
+                    path = directories[i].Substring(source_path.Length + 1) + @"/";
+                    file_index[index_pos] = path;
                     index_pos++;
                 }
                 //現在のディレクトリ上にある全ファイル名（ディレクトリは含まない）について繰り返す
                 foreach (string file in dir_entries[directories[i]])
                 {
                     file_index[index_pos] = file;
-                    //entry ファイル名を控える
-                    all_compressed_files[act_file].file_name = act_file_index_path + file;
                     index_pos++;
 
+                    //entry ファイル名を控える
+                    all_compressed_files[act_file].file_name = path + file;
                     //実ファイル名を控える
                     all_compressed_files[act_file].true_file_name = directories[i] + "/" + file;
                     act_file++;
