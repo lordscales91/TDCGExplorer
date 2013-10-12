@@ -1,0 +1,25 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <StartArguments>d:\Documents\TDCG\arcs-base</StartArguments>
+    <StartWorkingDirectory>D:\Documents\TDCG\arcs-base\</StartWorkingDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <StartWorkingDirectory>D:\Documents\TDCG\arcs-base\HAIR\XPC03563_【髪】私的　改変髪型　詰め合わせ　7@私的　改変髪型　詰め合わせ　7\私的　改変髪型　詰め合わせ　7\髪型</StartWorkingDirectory>
+    <StartArguments>D:\Documents\TDCG\arcs-base\HAIR\XPC03563_【髪】私的　改変髪型　詰め合わせ　7@私的　改変髪型　詰め合わせ　7\私的　改変髪型　詰め合わせ　7\髪型</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PublishUrlHistory>publish\</PublishUrlHistory>
+    <InstallUrlHistory>
+    </InstallUrlHistory>
+    <SupportUrlHistory>
+    </SupportUrlHistory>
+    <UpdateUrlHistory>
+    </UpdateUrlHistory>
+    <BootstrapperUrlHistory>
+    </BootstrapperUrlHistory>
+    <ErrorReportUrlHistory>
+    </ErrorReportUrlHistory>
+    <FallbackCulture>ja-JP</FallbackCulture>
+    <VerifyUploadedFiles>false</VerifyUploadedFiles>
+  </PropertyGroup>
+</Project>
