@@ -1,0 +1,173 @@
+＃宣伝
+mediawiki
+http://3dcustom.net/mediawiki/index.php
+の編集を手伝ってくれる人を募集します
+引き受けてくださる方は、下記連絡先の何れかでコンタクトして下さい
+
+＃これは何
+新規technique追加用toonshader2です
+
+＃備考
+一部のグラボでは重くなるらしいです
+konoaさんによれば、ANISOTOROPIC処理をシェーダーで処理するグラボだと結構重くなるらしいとのこと
+今の世代だとほとんどハードIPで処理するんですけどね、とも言っていたけど
+
+＃内容物
+!HLSL2.0
+readme -はじめにお読み下さい-.txt
+SHADERTECHNIQUETEST.tah
+source
+toonshader2.tah
+toonshader2_mono.tah
+toonshader2について（乙）.txt
+toonshader2について（甲）.txt
+toonshader2の再配布について.txt
+toonshader4tdcgexplorer
+toonshader4tsoview
+免責.txt
+説明書.txt
+資料
+!HLSL2.0\toonshader2_HLSL2.0.tah
+!HLSL2.0\toonshader2_mono_HLSL2.0.tah
+!HLSL2.0\これは何？.txt
+source\toonshader2
+source\toonshader2_HLSL2.0
+source\toonshader2_mono
+source\toonshader2_mono_HLSL2.0
+source\toonshader4tdcgexplorer
+source\toonshader4tsoview
+source\toonshader2\data
+source\toonshader2\data\shader
+source\toonshader2\data\shader\toonshader.cgfx
+source\toonshader2_HLSL2.0\data
+source\toonshader2_HLSL2.0\data\shader
+source\toonshader2_HLSL2.0\data\shader\toonshader.cgfx
+source\toonshader2_mono\data
+source\toonshader2_mono\data\shader
+source\toonshader2_mono\data\shader\toonshader_mono.cgfx
+source\toonshader2_mono_HLSL2.0\data
+source\toonshader2_mono_HLSL2.0\data\shader
+source\toonshader2_mono_HLSL2.0\data\shader\toonshader_mono.cgfx
+source\toonshader4tdcgexplorer\toonshader.cgfx
+source\toonshader4tsoview\toonshader.cgfx
+toonshader4tdcgexplorer\toonshader.cgfx
+toonshader4tsoview\toonshader.cgfx
+資料\FurShader同梱ファイル＆素材
+資料\MMDへ移植ガイド.txt
+資料\ObsDX9 2010-07-25 22-44-46-56.jpg
+資料\ParaHUD_frame.psd
+資料\ShadingFur_manual
+資料\ログ.txt
+資料\ログ2.txt
+資料\体系変更
+資料\新テク20090211.jpg
+資料\新テク20090213.jpg
+資料\新テク20090219.jpg
+資料\新テク20090220.jpg
+資料\新テク20090307.jpg
+資料\新規テキスト ドキュメント.txt
+資料\職人ギルドOpenPNE改良プロジェクトについて.txt
+資料\逆光ハイライト_XP07323.jpg
+資料\FurShader同梱ファイル＆素材\テクスチャ
+資料\FurShader同梱ファイル＆素材\設定ファイル
+資料\FurShader同梱ファイル＆素材\テクスチャ\FurColor.bmp
+資料\FurShader同梱ファイル＆素材\テクスチャ\shadecol_dots64.tga
+資料\FurShader同梱ファイル＆素材\設定ファイル\Fur
+資料\FurShader同梱ファイル＆素材\設定ファイル\FurSkin
+資料\FurShader同梱ファイル＆素材\設定ファイル\N001BODY_A00.xml
+資料\ShadingFur_manual\00.jpg
+資料\ShadingFur_manual\01.jpg
+資料\ShadingFur_manual\02-01.jpg
+資料\ShadingFur_manual\02-02.jpg
+資料\ShadingFur_manual\02-03.jpg
+資料\ShadingFur_manual\03-01.jpg
+資料\ShadingFur_manual\03-02.jpg
+資料\ShadingFur_manual\03-03.jpg
+資料\ShadingFur_manual\03-04.jpg
+資料\ShadingFur_manual\03-05.jpg
+資料\ShadingFur_manual\03-06.jpg
+資料\ShadingFur_manual\03-07.jpg
+資料\ShadingFur_manual\03-08.jpg
+資料\ShadingFur_manual\03-09.jpg
+資料\ShadingFur_manual\03-10.jpg
+資料\ShadingFur_manual\04.jpg
+資料\ShadingFur_manual\05.jpg
+資料\体系変更\00-表紙.jpg
+資料\体系変更\01-01.jpg
+資料\体系変更\01-02.jpg
+資料\体系変更\01-03.jpg
+資料\体系変更\01-04.jpg
+資料\体系変更\02-01.jpg
+資料\体系変更\03-01.jpg
+資料\体系変更\04-01.jpg
+資料\体系変更\04-02.jpg
+資料\体系変更\05-01.jpg
+資料\体系変更\sample.cs
+
+＃解説
+
+＃
+	source
+	下記のアプリケーション用及びtah内に含まれるcgfxファイルのソースコードです
+＃
+	toonshader4tsoview
+	toonshader4tdcgexplorer
+	それぞれのアプリケーション用のtoonshader.cgfxです
+	コピーして使えばいいと思います
+＃
+	資料
+		過去に、toonshader2に同梱される等して公開された、新テクの資料ＳＳやマニュアル類等です
+
+＃
+	SHADERTECHNIQUETEST.tah
+		新テクテスト用アイテムです
+		カテゴリは３（イヤリング他）
+
+＃
+	toonshader2.tah
+		いつものです
+
+＃
+	toonshader2_mono.tah
+		TDCGで[E]キーを押すと使えるMono_Mode用のtoonshader2です
+		デフォのtoonshaderみたいに、モノ特化の調整なんてしていないので
+		新テクは表示できるけど精度は悪いんじゃないかと思います
+
+		toonshader_monoを置き換えるモノなので、以前作った[E]キーで立体視モード切り替えのMODと共存はしません
+
+＃
+	~HLSL2.0.tah
+		所謂ロースペック用
+		通常の版で起動しない場合、試してみてください
+		次回も付けるかは未定です
+
+#
+	toonshader2について（乙）.txt
+	toonshader2について（甲）.txt
+	toonshader2の再配布について.txt
+		toonshader2の再配布について書かれているテキストドキュメントです
+
+＃
+	readme -はじめにお読み下さい-.txt
+		kemokemo氏の書かれていたtoonshader2のリードミーに、それ以降に「ミ」が追加したtechniqueの仕様を書き足した
+		いわゆるリリースノートです
+
+＃お願い
+気になる破綻や致命的な欠陥等ありましたら
+居酒屋 てっくあーつ(http://3dcustom.net/index.html)
+ＴＤＣＧ職人ギルド(http://3dcustom.ath.cx/)
+２ｃｈ＠ＩＲＣ　＃３Ｄカスタム少女(http://irc.juggler.jp/)
+ミ（tdcg_racl@materialize-54.sakura.ne.jp）
+へ連絡お願いします
+
+＃謝辞
+全てのＭＯＤ作者とツール作者
+特に自分をこの世界に引き込んだTA0002の作者
+
+新テクの資料やテスト用アイテムの作成、及び同梱の許諾をして頂いたkemokemo氏に
+
+惜しみない感謝を
+
+made by ミ
+
+...EOF
