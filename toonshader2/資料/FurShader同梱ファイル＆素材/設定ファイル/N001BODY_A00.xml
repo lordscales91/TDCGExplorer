@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
-<TsoImportInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <Effect Name="TAToonshade_050.cgfx" />
-  <Textures Name="FurColor" File="FurColor.bmp" BytesPerPixel="4" Width="64" Height="64" />
-  <Textures Name="shadecol_dots64" File="shadecol_dots64.tga" BytesPerPixel="4" Width="64" Height="64" />
-  <Materials Name="FurSkin" File="cgfxShader" />
-  <Materials Name="Fur" File="cgfxShader" />
-</TsoImportInfo>

@@ -1,9 +1,0 @@
-このバージョンはShader Model 2.0向けに書かれたtoonshader2です。
-
-intel System on a ChipのGPUや、VIA社のGPU統合CPU等、Shader Model 3.0を
-搭載していないGPU向けに作成されました。toonshader2はこれより下のバージョンは
-ありません（3Dカスタム少女動作最小要件に準じます）。ノートパソコンなどで
-toonshader2を使う必要がある場合にご利用ください。ベースとなっている、
-Shader Model 3.0用と同時に使うと不具合がでるので、同時使用はご遠慮下さい。
-
-2013/09/11 Konoa
