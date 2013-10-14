@@ -29,20 +29,16 @@ namespace TDCG.Proportion
             node.RotateX2(DegreeToRadian(-9F));
 
             node = nodes["W_RightShoulder"];
-            node.RotateZ2(DegreeToRadian(15F));
+            node.RotateZ2(DegreeToRadian(19F));
             node = nodes["W_RightArm"];
-            node.RotateZ2(DegreeToRadian(17F));
-            node = nodes["W_RightForeArm"];
-            node.RotateZ2(DegreeToRadian(8F));
+            node.RotateZ2(DegreeToRadian(21F));
             node = nodes["W_RightHand"];
             node.RotateZ2(DegreeToRadian(5F));
 
             node = nodes["W_LeftShoulder"];
-            node.RotateZ2(DegreeToRadian(-15F));
+            node.RotateZ2(DegreeToRadian(-19F));
             node = nodes["W_LeftArm"];
-            node.RotateZ2(DegreeToRadian(-17F));
-            node = nodes["W_LeftForeArm"];
-            node.RotateZ2(DegreeToRadian(-8F));
+            node.RotateZ2(DegreeToRadian(-21F));
             node = nodes["W_LeftHand"];
             node.RotateZ2(DegreeToRadian(-5F));
 
@@ -51,6 +47,11 @@ namespace TDCG.Proportion
             node.RotateY(DegreeToRadian(-28F));
             node = nodes["Me_Left_HighLight_B"];
             node.RotateY(DegreeToRadian(45F));
+            
+            node = nodes["W_LeftLegRoll"];
+            node.RotateY(DegreeToRadian(10.00F));
+            node = nodes["W_RightLegRoll"];
+            node.RotateY(DegreeToRadian(-10.00F));
         }
     }
 }

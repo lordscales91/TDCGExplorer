@@ -281,9 +281,13 @@ namespace Tso2Pmd
         // Toonから色とび補完用のスフィアマップを作成する
         Bitmap MakeSphereBitmap(Bitmap bmp1)
         {
-            Bitmap bmp2 = new Bitmap(1, 1);
-
-            bmp2.SetPixel(0, 0, bmp1.GetPixel(249, 0));
+			Bitmap bmp2 = new Bitmap(32, 32);
+            int i,j;
+            for(i=0;i<32;i++){
+                for(j=0;j<32;j++){
+                    bmp2.SetPixel(i, j, bmp1.GetPixel(249, 0));
+                }
+            }
 
             return bmp2;
         }
