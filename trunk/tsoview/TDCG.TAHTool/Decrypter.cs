@@ -241,11 +241,10 @@ namespace TDCG.TAHTool
             //data書き出しバッファ
             byte[] data_output = new byte[output_length];
 
-            {
-                TAHCryption.crypt(ref data_input, input_length, output_length);
-                Decompression.infrate(ref data_input, input_length, ref data_output, output_length);
-            }
+            TAHCryption.crypt(ref data_input, input_length, output_length);
+            Decompression.infrate(ref data_input, input_length, ref data_output, output_length);
             //-- data復号完了! --
+
             return data_output;
         }
 

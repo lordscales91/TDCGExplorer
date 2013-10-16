@@ -31,50 +31,56 @@ namespace TDCG.TAHTool
             file_names.Add(file);
         }
 
-        public string SourcePath { get; set; }
+        string root_dir = null;
 
-        int build_file_indices(string source_path, out string[] file_index, out file_entry[] all_compressed_files)
+        public string SourcePath
+        {
+            get
+            {
+                return root_dir;
+            }
+            set
+            {
+                root_dir = value;
+            }
+        }
+
+        int build_file_indices(out string[] file_index, out file_entry[] all_compressed_files)
         {
             Dictionary<string, List<string>> dir_entries = new Dictionary<string, List<string>>();
 
             foreach (string file in file_names)
             {
-                string dirname = Path.GetDirectoryName(file).Replace(@"\", "/");
+                string dir = Path.GetDirectoryName(file);
                 string basename = Path.GetFileName(file);
-                if (!dir_entries.ContainsKey(dirname))
-                    dir_entries[dirname] = new List<string>();
-                dir_entries[dirname].Add(basename);
+                if (! dir_entries.ContainsKey(dir))
+                    dir_entries[dir] = new List<string>();
+                dir_entries[dir].Add(basename);
             }
 
-            //全ディレクトリ名
+            //全ディレクトリ名（root_dir は除く）
             List<string> directories = new List<string>();
 
-            foreach (string dirname in dir_entries.Keys)
+            foreach (string dir in dir_entries.Keys)
             {
-                directories.Add(dirname);
+                if (dir == root_dir)
+                    continue;
+
+                directories.Add(dir);
             }
-            if (directories.Contains(source_path))
-                directories.Remove(source_path);
 
-            //全ファイル数
             all_compressed_files = new file_entry[file_names.Count];
+            UInt32 act_pos = 0;
 
-            //file entryを用意する
-            UInt32 act_file = 0;
-            //全ファイル数 + 全ディレクトリ数（source_path は除く）
-            file_index = new string[file_names.Count + dir_entries.Count];
-
-            //現在のfile indexを指す idx
+            file_index = new string[file_names.Count + directories.Count];
             UInt32 index_pos = 0;
 
-            if (dir_entries.ContainsKey(source_path))
+            if (dir_entries.ContainsKey(root_dir))
             {
-                //int i = 0;
-
                 string path = "";
 
                 //現在のディレクトリ上にある全ファイル名（ディレクトリは含まない）について繰り返す
-                foreach (string file in dir_entries[source_path])
+                foreach (string file in dir_entries[root_dir])
                 {
                     //名無し対応
                     try
@@ -87,45 +93,42 @@ namespace TDCG.TAHTool
                         string fparts2 = fparts1.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries)[0];//<hash> before dot
                         //this should be the string of the hash value
                         //hash値を控える
-                        all_compressed_files[act_file].hash_value = System.UInt32.Parse(fparts2);
+                        all_compressed_files[act_pos].hash_value = System.UInt32.Parse(fparts2);
                     }
                     //名無しでなかった
                     catch (Exception)
                     {
                         file_index[index_pos] = file;
-                        //entry ファイル名を控える
-                        all_compressed_files[act_file].file_name = path + file;
                         index_pos++;
+
+                        //entry ファイル名を控える
+                        all_compressed_files[act_pos].file_name = path + file;
                     }
 
                     //実ファイル名を控える
-                    all_compressed_files[act_file].true_file_name = source_path + "/" + file;
-                    act_file++;
+                    all_compressed_files[act_pos].true_file_name = Path.Combine(root_dir, file);
+                    act_pos++;
                 }
             }
 
-            for (int i = 0; i < directories.Count; i++)
+            foreach (string dir in directories)
             {
-                string path = "";
-                {
-                    //ディレクトリ名を控える
-                    //ただし source_path + 1 文字飛ばす
-                    //いつも '/' で終わる
-                    path = directories[i].Substring(source_path.Length + 1) + @"/";
-                    file_index[index_pos] = path;
-                    index_pos++;
-                }
+                //root_dir からの相対パスを控える
+                string path = dir.Substring(root_dir.Length + 1).Replace(@"\", "/") + "/";
+                file_index[index_pos] = path;
+                index_pos++;
+
                 //現在のディレクトリ上にある全ファイル名（ディレクトリは含まない）について繰り返す
-                foreach (string file in dir_entries[directories[i]])
+                foreach (string file in dir_entries[dir])
                 {
                     file_index[index_pos] = file;
                     index_pos++;
 
                     //entry ファイル名を控える
-                    all_compressed_files[act_file].file_name = path + file;
+                    all_compressed_files[act_pos].file_name = path + file;
                     //実ファイル名を控える
-                    all_compressed_files[act_file].true_file_name = directories[i] + "/" + file;
-                    act_file++;
+                    all_compressed_files[act_pos].true_file_name = Path.Combine(dir, file);
+                    act_pos++;
                 }
             }
             return 0;
@@ -193,7 +196,7 @@ namespace TDCG.TAHTool
             string[] file_index;
             file_entry[] all_compressed_files;
 
-            build_file_indices(SourcePath, out file_index, out all_compressed_files);
+            build_file_indices(out file_index, out all_compressed_files);
             build_compressed_file_indices(file_index);
 
             UInt32 all_files_count = (UInt32)all_compressed_files.Length;
