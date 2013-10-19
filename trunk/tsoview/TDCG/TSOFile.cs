@@ -1518,11 +1518,11 @@ namespace TDCG
             effect.SetValue(handle_LightDir, shader.LightDir);
 
             TSOTex shadeTex;
-            if (shader.shadeTex != null && shader.ShadeTexName != null && texmap.TryGetValue(shader.ShadeTexName, out shadeTex))
+            if (shader.ShadeTexName != null && texmap.TryGetValue(shader.ShadeTexName, out shadeTex))
                 effect.SetValue(handle_ShadeTex_texture, shadeTex.tex);
 
             TSOTex colorTex;
-            if (shader.colorTex != null && shader.ColorTexName != null && texmap.TryGetValue(shader.ColorTexName, out colorTex))
+            if (shader.ColorTexName != null && texmap.TryGetValue(shader.ColorTexName, out colorTex))
                 effect.SetValue(handle_ColorTex_texture, colorTex.tex);
 
             effect.Technique = techmap[shader.technique];
