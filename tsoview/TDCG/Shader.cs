@@ -363,7 +363,7 @@ namespace TDCG
         {
             get
             {
-                return shadeTex.GetTexture();
+                return shadeTex != null ? shadeTex.GetTexture() : null;
             }
             set
             {
@@ -377,7 +377,7 @@ namespace TDCG
         {
             get
             {
-                return colorTex.GetTexture();
+                return colorTex != null ? colorTex.GetTexture() : null;
             }
             set
             {
