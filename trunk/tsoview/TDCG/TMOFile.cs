@@ -187,7 +187,7 @@ namespace TDCG
         /// <returns></returns>
         public TMOMat GetTMOMat(string name, int frame_index)
         {
-            return frames[frame_index].matrices[nodemap[name].ID];
+            return frames[frame_index].matrices[nodemap[name].Id];
         }
 
         /// <summary>
@@ -225,7 +225,7 @@ namespace TDCG
             int[] id_pair = new int[nodes.Length];
 
             foreach (TMONode node in nodes)
-                id_pair[node.ID] = motion_nodes[node.Name].ID;
+                id_pair[node.Id] = motion_nodes[node.Name].Id;
 
             return id_pair;
         }
@@ -792,9 +792,9 @@ namespace TDCG
         public TMOMat[] matrices;
 
         /// <summary>
-        /// ID
+        /// Id
         /// </summary>
-        public int ID { get { return id; } }
+        public int Id { get { return id; } }
 
         /// <summary>
         /// フレームを生成します。
@@ -1015,9 +1015,9 @@ namespace TDCG
         public Matrix combined_matrix;
 
         /// <summary>
-        /// ID
+        /// Id
         /// </summary>
-        public int ID { get { return id; } }
+        public int Id { get { return id; } }
         /// <summary>
         /// 名称
         /// </summary>

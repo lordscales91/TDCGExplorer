@@ -240,9 +240,9 @@ public class TPONode
     internal TPONode parent;
 
     /// <summary>
-    /// ID
+    /// Id
     /// </summary>
-    public int ID { get { return id; } }
+    public int Id { get { return id; } }
     /// <summary>
     /// 名称
     /// </summary>

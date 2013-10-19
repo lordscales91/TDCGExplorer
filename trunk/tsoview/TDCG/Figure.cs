@@ -363,7 +363,7 @@ public class Figure : IDisposable
         if (tmo_frame != null)
         {
             // TMO animation
-            tmo_node.TransformationMatrix = tmo_frame.matrices[tmo_node.ID].m;
+            tmo_node.TransformationMatrix = tmo_frame.matrices[tmo_node.Id].m;
         }
         Matrix m = tmo_node.TransformationMatrix;
 
@@ -455,7 +455,7 @@ public class Figure : IDisposable
         if (tmo_frame != null)
         {
             // TMO animation
-            tmo_node.TransformationMatrix = tmo_frame.matrices[tmo_node.ID].m;
+            tmo_node.TransformationMatrix = tmo_frame.matrices[tmo_node.Id].m;
         }
         Matrix m = tmo_node.TransformationMatrix;
 
