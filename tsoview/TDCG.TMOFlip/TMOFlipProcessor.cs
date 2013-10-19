@@ -33,7 +33,7 @@ public class TMOFlipProcessor
                 {
                     Debug.Assert(tokens.Length == 2, "tokens length should be 2");
                     string cnode_name = tokens[1];
-                    int cnode_id = nodemap[cnode_name].ID;
+                    int cnode_id = nodemap[cnode_name].Id;
 
                     foreach (TMOFrame frame in tmo.frames)
                     {
@@ -47,8 +47,8 @@ public class TMOFlipProcessor
                     Debug.Assert(tokens.Length == 3, "tokens length should be 3");
                     string lnode_name = tokens[1];
                     string rnode_name = tokens[2];
-                    int lnode_id = nodemap[lnode_name].ID;
-                    int rnode_id = nodemap[rnode_name].ID;
+                    int lnode_id = nodemap[lnode_name].Id;
+                    int rnode_id = nodemap[rnode_name].Id;
 
                     foreach (TMOFrame frame in tmo.frames)
                     {

@@ -230,7 +230,7 @@ namespace TDCG
             if (selected_skin_weight == null && prepare_bone)
             {
                 //サブメッシュのボーン参照に指定ノードが含まれるか。
-                int bone_index = Array.IndexOf(sub_mesh.bone_indices, selected_node.ID);
+                int bone_index = Array.IndexOf(sub_mesh.bone_indices, selected_node.Id);
                 if (bone_index == -1)
                     bone_index = sub_mesh.AddBone(selected_node);
                 if (bone_index != -1)

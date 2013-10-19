@@ -158,7 +158,7 @@ namespace TSOWeightCopy
                     {
                         Debug.Assert(tokens.Length == 2, "tokens length should be 2: " + line);
                         string cnode_name = tokens[1];
-                        int cnode_id = nodemap[cnode_name].ID;
+                        int cnode_id = nodemap[cnode_name].Id;
 
                         oppnode_idmap[cnode_id] = cnode_id;
                     }
@@ -168,8 +168,8 @@ namespace TSOWeightCopy
                         Debug.Assert(tokens.Length == 3, "tokens length should be 3: " + line);
                         string lnode_name = tokens[1];
                         string rnode_name = tokens[2];
-                        int lnode_id = nodemap[lnode_name].ID;
-                        int rnode_id = nodemap[rnode_name].ID;
+                        int lnode_id = nodemap[lnode_name].Id;
+                        int rnode_id = nodemap[rnode_name].Id;
 
                         oppnode_idmap[lnode_id] = rnode_id;
                         oppnode_idmap[rnode_id] = lnode_id;

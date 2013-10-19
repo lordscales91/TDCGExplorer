@@ -181,7 +181,7 @@ namespace TDCG
         /// <returns>ボーン参照配列の添字</returns>
         public int AddBone(TSONode node)
         {
-            int end = AddBoneIndex(node.ID);
+            int end = AddBoneIndex(node.Id);
             if (end != -1)
                 bones.Add(node);
             return end;
@@ -1060,9 +1060,9 @@ namespace TDCG
         public Matrix offset_matrix;
 
         /// <summary>
-        /// ID
+        /// Id
         /// </summary>
-        public int ID { get { return id; } }
+        public int Id { get { return id; } }
         
         /// <summary>
         /// 名称
