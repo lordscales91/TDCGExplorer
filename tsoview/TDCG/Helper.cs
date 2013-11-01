@@ -175,6 +175,18 @@ namespace TDCG
             m.M41 = -m.M41;
         }
 
+        /// 180度Y軸回転します。
+        public static void TurnMatrix(ref Matrix m)
+        {
+            m.M11 = -m.M11;
+            m.M12 = -m.M12;
+            m.M13 = -m.M13;
+
+            m.M31 = -m.M31;
+            m.M32 = -m.M32;
+            m.M33 = -m.M33;
+        }
+
         /// 線形補間を行います。
         public static float Lerp(float value1, float value2, float amount)
         {
