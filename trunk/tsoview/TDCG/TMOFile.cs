@@ -777,6 +777,12 @@ namespace TDCG
         {
             Helper.FlipMatrix(ref m);
         }
+
+        /// 180度Y軸回転します。
+        public void Turn()
+        {
+            Helper.TurnMatrix(ref m);
+        }
     }
 
     /// <summary>
