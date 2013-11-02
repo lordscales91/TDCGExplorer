@@ -13,7 +13,7 @@ namespace TDCG
            return (float)(Math.PI * angle / 180.0);
         }
 
-        public static int UpdateTmo(string source_file, float angle) 
+        public static int UpdateTmo(string source_file, float angle, string node_name) 
         {
             string dest_file = source_file + ".tmp";
 
@@ -45,7 +45,7 @@ namespace TDCG
             try {
                 TMONode node;
 
-                node = nodes["W_Hips"];
+                node = nodes[node_name];
                 node.RotateWorldY(DegreeToRadian(angle));
             } catch (KeyNotFoundException) {
                 Console.WriteLine("node not found.");

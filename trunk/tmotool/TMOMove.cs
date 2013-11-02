@@ -9,7 +9,7 @@ namespace TDCG
         {
             if (args.Length < 1)
             {
-                Console.WriteLine("Usage: TMOMove <tmo file> [x y z]");
+                Console.WriteLine("Usage: TMOMove <tmo file> [x y z] [node name]");
                 return;
             }
 
@@ -31,7 +31,11 @@ namespace TDCG
                     return;
                 }
 
-                Move.UpdateTmo(source_file, x, y, z);
+                string node_name = "W_Hips";
+                if (args.Length > 4)
+                    node_name = args[4];
+
+                Move.UpdateTmo(source_file, x, y, z, node_name);
             }
             else
             {
