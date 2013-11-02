@@ -1,5 +1,7 @@
 csc /out:build\TMOMove.exe @tmotool.rsp Move.cs TMOMove.cs
+csc /out:build\TMORotX.exe @tmotool.rsp RotX.cs TMORotX.cs
 csc /out:build\TMORotY.exe @tmotool.rsp RotY.cs TMORotY.cs
+csc /out:build\TMORotZ.exe @tmotool.rsp RotZ.cs TMORotZ.cs
 csc /out:build\TMOZoom.exe @tmotool.rsp Zoom.cs TMOZoom.cs
 csc /out:build\TMONodeCopy.exe @tmotool.rsp TMONodeCopy.cs
 csc /out:build\TMONodeDump.exe @tmotool.rsp TMONodeDump.cs

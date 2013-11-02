@@ -3,13 +3,13 @@ using System.IO;
 
 namespace TDCG
 {
-    class TMORotY
+    class TMORotX
     {
         static void Main(string[] args) 
         {
             if (args.Length < 2)
             {
-                Console.WriteLine("Usage: TMORotY <tmo file> <angle> [node name]");
+                Console.WriteLine("Usage: TMORotX <tmo file> <angle> [node name]");
                 return;
             }
 
@@ -29,7 +29,7 @@ namespace TDCG
             if (args.Length > 2)
                 node_name = args[2];
 
-            RotY.UpdateTmo(source_file, angle, node_name);
+            RotX.UpdateTmo(source_file, angle, node_name);
         }
     }
 }

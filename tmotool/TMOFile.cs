@@ -366,29 +366,42 @@ namespace TDCG
         public void RotateX(float angle)
         {
             Vector3 v = new Vector3(m.M11, m.M12, m.M13);
-            Quaternion qt = Quaternion.RotationAxis(v, angle);
-            m *= Matrix.RotationQuaternion(qt);
+            m *= Matrix.RotationAxis(v, angle);
         }
 
         public void RotateY(float angle)
         {
             Vector3 v = new Vector3(m.M21, m.M22, m.M23);
-            Quaternion qt = Quaternion.RotationAxis(v, angle);
-            m *= Matrix.RotationQuaternion(qt);
+            m *= Matrix.RotationAxis(v, angle);
         }
 
         public void RotateZ(float angle)
         {
             Vector3 v = new Vector3(m.M31, m.M32, m.M33);
-            Quaternion qt = Quaternion.RotationAxis(v, angle);
-            m *= Matrix.RotationQuaternion(qt);
+            m *= Matrix.RotationAxis(v, angle);
         }
 
-        public void RotateWorldY(float angle)
+        public void RotateWorldAxis(float angle, Vector3 axis, Matrix world_coordinate)
         {
-            Vector3 v = new Vector3(0.0f, 1.0f, 0.0f);
-            Quaternion qt = Quaternion.RotationAxis(v, angle);
-            m *= Matrix.RotationQuaternion(qt);
+            Matrix w = world_coordinate;
+            w.M41 = 0;
+            w.M42 = 0;
+            w.M43 = 0;
+
+            Matrix combined = w;
+            Matrix offset = Matrix.Invert(w);
+            Matrix rotation = Matrix.RotationAxis(axis, angle);
+
+            Vector3 translation = new Vector3(m.M41, m.M42, m.M43);
+            m.M41 = 0;
+            m.M42 = 0;
+            m.M43 = 0;
+
+            m *= combined * rotation * offset;
+
+            m.M41 = translation.X;
+            m.M42 = translation.Y;
+            m.M43 = translation.Z;
         }
 
         public static TMOMat[] Slerp(TMOMat mat0, TMOMat mat1, TMOMat mat2, TMOMat mat3, int length)
@@ -651,10 +664,41 @@ namespace TDCG
                 i.RotateZ(angle);
         }
 
+        public Matrix GetWorldCoordinate()
+        {
+            Matrix m = Matrix.Identity;
+            TMONode node = this;
+            while (node != null)
+            {
+                m.Multiply(node.frame_matrices[0].m);
+                node = node.parent;
+            }
+            return m;
+        }
+
+        public void RotateWorldAxis(float angle, Vector3 axis)
+        {
+            Matrix m = (parent != null) ? parent.GetWorldCoordinate() : Matrix.Identity;
+            foreach (TMOMat i in frame_matrices)
+                i.RotateWorldAxis(angle, axis, m);
+        }
+
+        public void RotateWorldX(float angle)
+        {
+            Vector3 axis = new Vector3(1, 0, 0);
+            RotateWorldAxis(angle, axis);
+        }
+
         public void RotateWorldY(float angle)
         {
-            foreach (TMOMat i in frame_matrices)
-                i.RotateWorldY(angle);
+            Vector3 axis = new Vector3(0, 1, 0);
+            RotateWorldAxis(angle, axis);
+        }
+
+        public void RotateWorldZ(float angle)
+        {
+            Vector3 axis = new Vector3(0, 0, 1);
+            RotateWorldAxis(angle, axis);
         }
     }
 }
