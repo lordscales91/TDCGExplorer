@@ -642,8 +642,7 @@ namespace TDCG
                 return;
 
             Vector3 v = new Vector3(m.M11, m.M12, m.M13);
-            Quaternion qt = Quaternion.RotationAxis(v, angle);
-            m *= Matrix.RotationQuaternion(qt);
+            m *= Matrix.RotationAxis(v, angle);
         }
 
         /// <summary>
@@ -656,8 +655,7 @@ namespace TDCG
                 return;
 
             Vector3 v = new Vector3(m.M21, m.M22, m.M23);
-            Quaternion qt = Quaternion.RotationAxis(v, angle);
-            m *= Matrix.RotationQuaternion(qt);
+            m *= Matrix.RotationAxis(v, angle);
         }
 
         /// <summary>
@@ -670,19 +668,7 @@ namespace TDCG
                 return;
 
             Vector3 v = new Vector3(m.M31, m.M32, m.M33);
-            Quaternion qt = Quaternion.RotationAxis(v, angle);
-            m *= Matrix.RotationQuaternion(qt);
-        }
-
-        /// <summary>
-        /// ワールド座標系において指定角度でY軸回転します。
-        /// </summary>
-        /// <param name="angle">角度（ラジアン）</param>
-        public void RotateWorldY(float angle)
-        {
-            Vector3 v = new Vector3(0.0f, 1.0f, 0.0f);
-            Quaternion qt = Quaternion.RotationAxis(v, angle);
-            m *= Matrix.RotationQuaternion(qt);
+            m *= Matrix.RotationAxis(v, angle);
         }
 
         /// <summary>
@@ -1199,16 +1185,6 @@ namespace TDCG
         {
             foreach (TMOMat i in matrices)
                 i.RotateZ(angle);
-        }
-
-        /// <summary>
-        /// ワールド座標系において指定角度でY軸回転します。
-        /// </summary>
-        /// <param name="angle">角度（ラジアン）</param>
-        public void RotateWorldY(float angle)
-        {
-            foreach (TMOMat i in matrices)
-                i.RotateWorldY(angle);
         }
 
         /// <summary>
