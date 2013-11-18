@@ -1164,6 +1164,7 @@ namespace TDCGExplorer
                                         IncBusy();
                                         Application.DoEvents();
                                         DecBusy();
+                                        index++;
                                     }
                                     editor.SetInformation(filename, (int)tah.Header.Version);
                                 }
