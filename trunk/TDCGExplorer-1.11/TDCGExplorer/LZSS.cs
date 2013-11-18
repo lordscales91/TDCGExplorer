@@ -234,6 +234,7 @@ namespace TDCGExplorer
             int elems = 0;
             int elemdata = 0;
 
+
             s.WriteByte(0);
 
             for (int i = 0; i < data.Length; )
@@ -289,7 +290,7 @@ namespace TDCGExplorer
 
             if (elems != 0)
                 FlushElem(elempos, elemdata);
-
+        
             s.Seek(-1, SeekOrigin.Current);
             s.SetLength(s.Position);
             s.Flush();
@@ -322,6 +323,10 @@ namespace TDCGExplorer
         {
             using (BinaryReader br = new BinaryReader(s))
             {
+                // エボ子:size=4に対応
+                if (ms.Position == ms.Length)
+                    return;
+
                 int elemdata = br.ReadByte();
                 int elems = 0;
 
