@@ -678,9 +678,12 @@ namespace TDCG
 
         public void RotateWorldAxis(float angle, Vector3 axis)
         {
-            Matrix m = (parent != null) ? parent.GetWorldCoordinate() : Matrix.Identity;
+            Matrix world_coordinate = Matrix.Identity;
+            if (parent != null)
+                world_coordinate = parent.GetWorldCoordinate();
+
             foreach (TMOMat i in frame_matrices)
-                i.RotateWorldAxis(angle, axis, m);
+                i.RotateWorldAxis(angle, axis, world_coordinate);
         }
 
         public void RotateWorldX(float angle)
