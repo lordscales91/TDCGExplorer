@@ -86,14 +86,10 @@ namespace TDCG.TAHTool
                     try
                     {
                         //名無しなのでファイル名はない
-                        //<idx>_<hash>.<ext>
-                        string fparts0 = file;
-                        string[] ary_1 = fparts0.Split(new string[] { "_" }, StringSplitOptions.RemoveEmptyEntries);
-                        string fparts1 = ary_1[ary_1.Length - 1];//= <hash>.<ext>
-                        string fparts2 = fparts1.Split(new string[] { "." }, StringSplitOptions.RemoveEmptyEntries)[0];//<hash> before dot
+                        //<hash>.<ext>
                         //this should be the string of the hash value
                         //hash値を控える
-                        all_compressed_files[act_pos].hash_value = System.UInt32.Parse(fparts2);
+                        all_compressed_files[act_pos].hash_value = Convert.ToUInt32(Path.GetFileNameWithoutExtension(file), 16);
                     }
                     //名無しでなかった
                     catch (Exception)

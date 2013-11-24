@@ -170,8 +170,8 @@ namespace TDCG.TAHTool
                         pos = Array.BinarySearch(external_files.hashkeys, Entries[i].hash_name);
                     if (pos < 0) // not found
                     {
-                        //ファイル名は <i>_<hash>にする
-                        Entries[i].file_name = i.ToString("00000000") + "_" + Entries[i].hash_name.ToString();
+                        //ファイル名は <hash>にする
+                        Entries[i].file_name = string.Format("{0:X8}", Entries[i].hash_name);
                         //file_nameが見つからなかったflag on
                         Entries[i].flag ^= 0x1;
                     }
