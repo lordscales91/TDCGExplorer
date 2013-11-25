@@ -20,7 +20,6 @@ namespace TMOProp
             string source_file = args[0];
 
             Program program = new Program();
-            program.LoadTPOFileList();
             program.Process(source_file);
         }
 
@@ -31,9 +30,43 @@ namespace TMOProp
             return Path.Combine(Application.StartupPath, @"TPOConfig.xml");
         }
 
-        public void LoadTPOFileList()
+        public Program()
+        {
+            LoadTPOFileList();
+            LoadPortions();
+        }
+
+        void LoadTPOFileList()
         {
             tpo_list.Load();
+        }
+
+        Dictionary<string, Proportion> portion_map = null;
+
+        void LoadPortions()
+        {
+            TPOConfig tpo_config = TPOConfig.Load(GetTPOConfigPath());
+            portion_map = new Dictionary<string, Proportion>();
+            foreach (Proportion portion in tpo_config.Proportions)
+                portion_map[portion.ClassName] = portion;
+        }
+
+        void tmo_Transform(TMOFile tmo)
+        {
+            tpo_list.Tmo = tmo;
+
+            for (int i = 0; i < tpo_list.Count; i++)
+            {
+                TPOFile tpo = tpo_list[i];
+                {
+                    Debug.Assert(tpo.Proportion != null, "tpo.Proportion should not be null");
+                    Proportion portion;
+                    if (portion_map.TryGetValue(tpo.Proportion.ToString(), out portion))
+                        tpo.Ratio = portion.Ratio;
+                }
+            }
+
+            tpo_list.Transform();
         }
 
         public bool Process(string source_file)
@@ -42,27 +75,9 @@ namespace TMOProp
             tmo = new TMOFile();
             tmo.Load(source_file);
             
-            TPOConfig tpo_config = TPOConfig.Load(GetTPOConfigPath());
-            Dictionary<string, Proportion> portion_map = new Dictionary<string, Proportion>();
-            foreach (Proportion portion in tpo_config.Proportions)
-                portion_map[portion.ClassName] = portion;
-            
             if (tmo.nodes[0].Path == "|W_Hips")
             {
-                tpo_list.Tmo = tmo;
-
-                for (int i = 0; i < tpo_list.Count; i++)
-                {
-                    TPOFile tpo = tpo_list[i];
-                    {
-                        Debug.Assert(tpo.Proportion != null, "tpo.Proportion should not be null");
-                        Proportion portion;
-                        if (portion_map.TryGetValue(tpo.Proportion.ToString(), out portion))
-                            tpo.Ratio = portion.Ratio;
-                    }
-                }
-
-                tpo_list.Transform();
+                tmo_Transform(tmo);
             }
 
             string dest_file = source_file + ".tmp";
