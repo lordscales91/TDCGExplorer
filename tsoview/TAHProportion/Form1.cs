@@ -31,12 +31,38 @@ namespace TAHProportion
             InitializeComponent();
 
             LoadTPOFileList();
+            LoadPortions();
             DumpPortions();
         }
 
-        private void LoadTPOFileList()
+        void LoadTPOFileList()
         {
             tpo_list.Load();
+        }
+
+        Dictionary<string, Proportion> portion_map = null;
+
+        void LoadPortions()
+        {
+            TPOConfig config = TPOConfig.Load(GetTPOConfigPath());
+            portion_map = new Dictionary<string, Proportion>();
+            foreach (Proportion portion in config.Proportions)
+                portion_map[portion.ClassName] = portion;
+        }
+
+        void tmo_Transform(TMOFile tmo)
+        {
+            tpo_list.Tmo = tmo;
+
+            foreach (TPOFile tpo in tpo_list.files)
+            {
+                Debug.Assert(tpo.Proportion != null, "tpo.Proportion should not be null");
+                Proportion portion;
+                if (portion_map.TryGetValue(tpo.ProportionName, out portion))
+                    tpo.Ratio = portion.Ratio;
+            }
+
+            tpo_list.Transform();
         }
 
         private void btnLoad_Click(object sender, EventArgs e)
@@ -67,11 +93,6 @@ namespace TAHProportion
         {
             BackgroundWorker worker = sender as BackgroundWorker;
 
-            TPOConfig config = TPOConfig.Load(GetTPOConfigPath());
-            Dictionary<string, Proportion> portion_map = new Dictionary<string, Proportion>();
-            foreach (Proportion portion in config.Proportions)
-                portion_map[portion.ClassName] = portion;
-
             Encrypter encrypter = new Encrypter();
             encrypter.SourcePath = @".";
 
@@ -89,14 +110,14 @@ namespace TAHProportion
                 string ext = Path.GetExtension(file_name).ToLower();
                 if (ext == ".tmo")
                 {
-                    string true_file_name = encrypter.SourcePath + "/" + file_name;
+                    string true_file_name = Path.Combine(encrypter.SourcePath, file_name.Replace("/", @"\"));
                     entries[true_file_name] = entry;
                     encrypter.Add(true_file_name);
                 }
                 else
                 if (ext == ".png")
                 {
-                    string true_file_name = encrypter.SourcePath + "/" + file_name;
+                    string true_file_name = Path.Combine(encrypter.SourcePath, file_name.Replace("/", @"\"));
                     entries[true_file_name] = entry;
                     encrypter.Add(true_file_name);
                 }
@@ -119,17 +140,7 @@ namespace TAHProportion
 
                     if (tmo.nodes[0].Path == "|W_Hips")
                     {
-                        tpo_list.Tmo = tmo;
-
-                        foreach (TPOFile tpo in tpo_list.files)
-                        {
-                            Debug.Assert(tpo.Proportion != null, "tpo.Proportion should not be null");
-                            Proportion portion;
-                            if (portion_map.TryGetValue(tpo.ProportionName, out portion))
-                                tpo.Ratio = portion.Ratio;
-                        }
-
-                        tpo_list.Transform();
+                        tmo_Transform(tmo);
 
                         tmo_stream.Seek(0, SeekOrigin.Begin);
                         tmo.Save(tmo_stream);
@@ -300,29 +311,11 @@ namespace TAHProportion
                 TSOFigureList.Add(fig);
             }
 
-            TPOConfig config = TPOConfig.Load(GetTPOConfigPath());
-            Dictionary<string, Proportion> portion_map = new Dictionary<string, Proportion>();
-            foreach (Proportion portion in config.Proportions)
-                portion_map[portion.ClassName] = portion;
-
             foreach (TSOFigure fig in TSOFigureList)
                 if (fig.tmo != null)
                     if (fig.tmo.nodes[0].Path == "|W_Hips")
                     {
-                        tpo_list.Tmo = fig.tmo;
-
-                        for (int i = 0; i < tpo_list.Count; i++)
-                        {
-                            TPOFile tpo = tpo_list[i];
-                            {
-                                Debug.Assert(tpo.Proportion != null, "tpo.Proportion should not be null");
-                                Proportion portion;
-                                if (portion_map.TryGetValue(tpo.Proportion.ToString(), out portion))
-                                    tpo.Ratio = portion.Ratio;
-                            }
-                        }
-
-                        tpo_list.Transform();
+                        tmo_Transform(fig.tmo);
                     }
 
             png.WriteTaOb += delegate(BinaryWriter bw)
