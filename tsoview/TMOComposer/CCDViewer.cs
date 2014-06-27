@@ -35,6 +35,10 @@ public class CCDViewer : Viewer
         {
             LimitRotation(node);
         };
+        this.FrameMoving += delegate()
+        {
+            FrameMoveDerived();
+        };
         this.Rendering += delegate()
         {
             RenderDerived();
