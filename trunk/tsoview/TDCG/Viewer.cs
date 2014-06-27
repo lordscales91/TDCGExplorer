@@ -821,13 +821,7 @@ public class Viewer : IDisposable
     [Obsolete("use MotionEnabled", true)]
     public void SwitchMotionEnabled()
     {
-        motionEnabled = ! motionEnabled;
-
-        if (motionEnabled)
-        {
-            start_ticks = DateTime.Now.Ticks;
-            start_frame_index = frame_index;
-        }
+        MotionEnabled = ! MotionEnabled;
     }
     long start_ticks = 0;
     int start_frame_index = 0;
@@ -870,11 +864,11 @@ public class Viewer : IDisposable
             int frame_len = GetMaxFrameLength();
             if (frame_len > 0)
             {
-                long dt = DateTime.Now.Ticks - start_ticks;
-                int new_frame_index = (int)((start_frame_index + dt / wait) % frame_len);
-                Debug.Assert(new_frame_index >= 0);
-                Debug.Assert(new_frame_index < frame_len);
-                frame_index = new_frame_index;
+                long ticks = DateTime.Now.Ticks - start_ticks;
+                long current_frame_index = (long)(start_frame_index + ticks * 0.000006);
+                frame_index = (int)(current_frame_index % frame_len);
+                Debug.Assert(frame_index >= 0);
+                Debug.Assert(frame_index < frame_len);
             }
 
             //フレーム番号を通知する。
@@ -926,7 +920,6 @@ public class Viewer : IDisposable
                 fig.UpdateBoneMatrices();
         }
     }
-    long wait = (long)(10000000.0f / 60.0f);
 
     private int frame_index = 0;
     /// <summary>
