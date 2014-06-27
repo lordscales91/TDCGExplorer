@@ -851,6 +851,16 @@ public class Viewer : IDisposable
     }
 
     /// <summary>
+    /// フレームを進めるのに用いるデリゲート型
+    /// </summary>
+    public delegate void FrameMovingHandler();
+
+    /// <summary>
+    /// フレームを進めるハンドラ
+    /// </summary>
+    public FrameMovingHandler FrameMoving;
+
+    /// <summary>
     /// 次のシーンフレームに進みます。
     /// </summary>
     public void FrameMove()
@@ -871,6 +881,9 @@ public class Viewer : IDisposable
             //camera.SetFrameIndex(frame_index);
         }
         FrameMove(frame_index);
+
+        if (FrameMoving != null)
+            FrameMoving();
     }
 
     /// <summary>

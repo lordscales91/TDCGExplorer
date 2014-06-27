@@ -166,7 +166,6 @@ namespace TMOComposer
         private void timer1_Tick(object sender, EventArgs e)
         {
             viewer.FrameMove();
-            viewer.FrameMoveDerived();
             viewer.Render();
         }
 
