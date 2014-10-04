@@ -224,18 +224,13 @@ namespace TSOMeshOptimize
             return sub_meshes.ToArray();
         }
 
-        public static TSOSubMesh[] CreateSubMeshes(TSOMesh mesh, int max_palettes)
+        public static void RebuildMesh(TSOMesh mesh, int max_palettes)
         {
             List<TSOFace> faces = CreateFaces(mesh);
             //Console.WriteLine("#uniq faces:{0}", faces.Count);
             TSOSubMesh[] sub_meshes = CreateSubMeshes(faces, max_palettes);
             //Console.WriteLine("#subs:{0}", sub_meshes.Length);
-            return sub_meshes;
-        }
-
-        public static void RebuildMesh(TSOMesh mesh, int max_palettes)
-        {
-            mesh.sub_meshes = CreateSubMeshes(mesh, max_palettes);
+            mesh.sub_meshes = sub_meshes;
         }
     }
 }
