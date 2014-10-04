@@ -136,7 +136,7 @@ namespace TSOMeshOptimize
 
         public static float WeightEpsilon = float.Epsilon;
 
-        public static TSOSubMesh[] CreateSubMeshes(List<TSOFace> faces, int max_palettes)
+        public static List<TSOSubMesh> CreateSubMeshes(List<TSOFace> faces, int max_palettes)
         {
             List<TSOFace> faces_1 = faces;
             List<TSOFace> faces_2 = new List<TSOFace>();
@@ -221,16 +221,16 @@ namespace TSOMeshOptimize
                 faces_2 = faces_tmp;
                 faces_tmp.Clear();
             }
-            return sub_meshes.ToArray();
+            return sub_meshes;
         }
 
         public static void RebuildMesh(TSOMesh mesh, int max_palettes)
         {
             List<TSOFace> faces = CreateFaces(mesh);
             //Console.WriteLine("#uniq faces:{0}", faces.Count);
-            TSOSubMesh[] sub_meshes = CreateSubMeshes(faces, max_palettes);
-            //Console.WriteLine("#subs:{0}", sub_meshes.Length);
-            mesh.sub_meshes = sub_meshes;
+            List<TSOSubMesh> sub_meshes = CreateSubMeshes(faces, max_palettes);
+            //Console.WriteLine("#subs:{0}", sub_meshes.Count);
+            mesh.sub_meshes = sub_meshes.ToArray();
         }
     }
 }
