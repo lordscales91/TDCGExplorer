@@ -1283,9 +1283,8 @@ namespace TDCG
             set
             {
                 transformation_matrix = value;
-                Matrix m = transformation_matrix;
-                translation = Helper.DecomposeMatrix(ref m, out scaling);
-                rotation = Quaternion.RotationMatrix(m);
+                translation = Helper.DecomposeMatrix(ref value, out scaling);
+                rotation = Quaternion.RotationMatrix(value);
             }
         }
     }
