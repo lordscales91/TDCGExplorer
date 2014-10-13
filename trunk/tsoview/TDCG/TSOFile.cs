@@ -986,6 +986,7 @@ namespace TDCG
         private string path;
         private string name;
 
+        private Vector3 scaling;
         private Quaternion rotation;
         private Vector3 translation;
 
@@ -1014,6 +1015,19 @@ namespace TDCG
         public void Write(BinaryWriter bw)
         {
             bw.WriteCString(this.Path);
+        }
+
+        /// <summary>
+        /// 拡大変位
+        /// </summary>
+        public Vector3 Scaling
+        {
+            get { return scaling; }
+            set
+            {
+                scaling = value;
+                need_update_transformation = true;
+            }
         }
 
         /// <summary>
@@ -1138,6 +1152,17 @@ namespace TDCG
         }
 
         /// <summary>
+        /// 拡大行列
+        /// </summary>
+        public Matrix ScalingMatrix
+        {
+            get
+            {
+                return Matrix.Scaling(scaling);
+            }
+        }
+
+        /// <summary>
         /// 回転行列
         /// </summary>
         public Matrix RotationMatrix
@@ -1165,14 +1190,14 @@ namespace TDCG
             get {
                 if (need_update_transformation)
                 {
-                    transformation_matrix = RotationMatrix * TranslationMatrix;
+                    transformation_matrix = ScalingMatrix * RotationMatrix * TranslationMatrix;
                     need_update_transformation = false;
                 }
                 return transformation_matrix;
             }
             set {
                 transformation_matrix = value;
-                translation = Helper.DecomposeMatrix(ref value);
+                translation = Helper.DecomposeMatrix(ref value, out scaling);
                 rotation = Quaternion.RotationMatrix(value);
             }
         }
