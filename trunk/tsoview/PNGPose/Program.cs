@@ -145,7 +145,7 @@ class Program
             png.Ftso += delegate(Stream dest, int extract_length, byte[] opt1)
             {
                 StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < 4; i++)
+                for (int i = 0; i < 1; i++)
                 {
                     sb.Append(string.Format("{0:X2}", opt1[i]));
                 }
@@ -377,7 +377,7 @@ class Program
         {
             byte[] buf = new byte[4];
             int offset = 0;
-            for (int i = 0; i < 8; i += 2)
+            for (int i = 0; i < code.Length; i += 2)
                 buf[offset++] = Convert.ToByte(code.Substring(i, 2), 16);
             return BitConverter.ToUInt32(buf, 0);
         }
