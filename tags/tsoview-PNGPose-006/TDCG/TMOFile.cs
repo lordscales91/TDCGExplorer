@@ -1,0 +1,1291 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
+using TDCG.Extensions;
+
+namespace TDCG
+{
+    /// <summary>
+    /// TMOファイルを扱います。
+    /// </summary>
+    public class TMOFile
+    {
+        /// <summary>
+        /// バイナリ値として読み取ります。
+        /// </summary>
+        protected BinaryReader reader;
+
+        /// <summary>
+        /// ヘッダ
+        /// </summary>
+        public byte[] header;
+        /// <summary>
+        /// オプション値0
+        /// </summary>
+        public int opt0;
+        /// <summary>
+        /// オプション値1
+        /// </summary>
+        public int opt1;
+        /// <summary>
+        /// bone配列
+        /// </summary>
+        public TMONode[] nodes;
+        /// <summary>
+        /// フレーム配列
+        /// </summary>
+        public TMOFrame[] frames;
+        /// <summary>
+        /// フッタ
+        /// </summary>
+        public byte[] footer;
+
+        /// <summary>
+        /// bone名称とboneを関連付ける辞書
+        /// </summary>
+        public Dictionary<string, TMONode> nodemap;
+
+        internal TMONode w_hips_node = null;
+        internal List<TMONode> root_nodes_except_w_hips;
+
+        /// <summary>
+        /// 指定パスに保存します。
+        /// </summary>
+        /// <param name="dest_file">パス</param>
+        public void Save(string dest_file)
+        {
+            using (Stream dest_stream = File.Create(dest_file))
+                Save(dest_stream);
+        }
+
+        /// <summary>
+        /// 指定ストリームに保存します。
+        /// </summary>
+        /// <param name="dest_stream">ストリーム</param>
+        public void Save(Stream dest_stream)
+        {
+            BinaryWriter bw = new BinaryWriter(dest_stream);
+
+            WriteMagic(bw);
+            bw.Write(header);
+            bw.Write(opt0);
+            bw.Write(opt1);
+
+            bw.Write(nodes.Length);
+            foreach (TMONode node in nodes)
+                node.Write(bw);
+
+            bw.Write(frames.Length);
+            foreach (TMOFrame frame in frames)
+                frame.Write(bw);
+
+            bw.Write(footer);
+        }
+
+        /// <summary>
+        /// 'TMO1' を書き出します。
+        /// </summary>
+        public static void WriteMagic(BinaryWriter bw)
+        {
+            bw.Write(0x314F4D54);
+        }
+
+        /// <summary>
+        /// 指定パスから読み込みます。
+        /// </summary>
+        /// <param name="source_file">パス</param>
+        public void Load(string source_file)
+        {
+            using (Stream source_stream = File.OpenRead(source_file))
+                Load(source_stream);
+        }
+
+        /// <summary>
+        /// 指定ストリームから読み込みます。
+        /// </summary>
+        /// <param name="source_stream">ストリーム</param>
+        public void Load(Stream source_stream)
+        {
+            this.reader = new BinaryReader(source_stream, System.Text.Encoding.Default);
+
+            byte[] magic = reader.ReadBytes(4);
+
+            if (magic[0] != (byte)'T' || magic[1] != (byte)'M' || magic[2] != (byte)'O' || magic[3] != (byte)'1')
+                throw new Exception("File is not TMO");
+
+            this.header = reader.ReadBytes(8);
+            this.opt0 = reader.ReadInt32();
+            this.opt1 = reader.ReadInt32();
+
+            int node_count = reader.ReadInt32();
+            nodes = new TMONode[node_count];
+            for (int i = 0; i < node_count; i++)
+            {
+                nodes[i] = new TMONode(i);
+                nodes[i].Read(reader);
+            }
+
+            GenerateNodemapAndTree();
+
+            int frame_count = reader.ReadInt32();
+            frames = new TMOFrame[frame_count];
+
+            for (int i = 0; i < frame_count; i++)
+            {
+                frames[i] = new TMOFrame(i);
+                frames[i].Read(reader);
+            }
+
+            foreach (TMONode node in nodes)
+                node.LinkMatrices(frames);
+
+            this.footer = reader.ReadBytes(4);
+        }
+
+        internal void GenerateNodemapAndTree()
+        {
+            nodemap = new Dictionary<string, TMONode>();
+
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                nodemap.Add(nodes[i].Path, nodes[i]);
+            }
+
+            List<TMONode> root_nodes = new List<TMONode>();
+
+            for (int i = 0; i < nodes.Length; i++)
+            {
+                int index = nodes[i].Path.LastIndexOf('|');
+                if (index == 0)
+                    root_nodes.Add(nodes[i]);
+                if (index <= 0)
+                    continue;
+                string path = nodes[i].Path.Substring(0, index);
+                nodes[i].parent = nodemap[path];
+                nodes[i].parent.children.Add(nodes[i]);
+            }
+
+            root_nodes_except_w_hips = new List<TMONode>();
+
+            foreach (TMONode node in root_nodes)
+            {
+                if (node.Path == "|W_Hips")
+                    w_hips_node = node;
+                else
+                    root_nodes_except_w_hips.Add(node);
+            }
+        }
+
+        /// <summary>
+        /// 行列を得ます。
+        /// </summary>
+        /// <param name="name">bone名称</param>
+        /// <param name="frame_index">フレーム番号</param>
+        /// <returns></returns>
+        public TMOMat GetTMOMat(string name, int frame_index)
+        {
+            return frames[frame_index].matrices[nodemap[name].Id];
+        }
+
+        /// <summary>
+        /// node idのペアを作成します。
+        /// ペアのキーはnode id
+        /// ペアの値はもうひとつのtmoにおいて名称（短い形式）が一致するnode idになります。
+        /// </summary>
+        /// <param name="motion">もうひとつのtmo</param>
+        /// <returns>tmo frame indexのペア</returns>
+        public int[] CreateNodeIdPair(TMOFile motion)
+        {
+            Dictionary<string, TMONode> source_nodes = new Dictionary<string, TMONode>();
+
+            Dictionary<string, TMONode> motion_nodes = new Dictionary<string, TMONode>();
+
+            foreach (TMONode node in motion.nodes)
+                try {
+                    motion_nodes.Add(node.Name, node);
+                } catch (ArgumentException) {
+                    Console.WriteLine("node {0} already exists.", node.Name);
+                }
+            foreach (TMONode node in nodes)
+            {
+                if (! motion_nodes.ContainsKey(node.Name))
+                {
+                    throw new ArgumentException("error: node not found in motion: " + node.Name);
+                }
+                try {
+                    source_nodes.Add(node.Name, node);
+                } catch (ArgumentException) {
+                    Console.WriteLine("node {0} already exists.", node.Name);
+                }
+            }
+
+            int[] id_pair = new int[nodes.Length];
+
+            foreach (TMONode node in nodes)
+                id_pair[node.Id] = motion_nodes[node.Name].Id;
+
+            return id_pair;
+        }
+
+        /// <summary>
+        /// 指定tmoからフレームを追加します。
+        /// </summary>
+        /// <param name="motion">tmo</param>
+        public void AppendFrameFrom(TMOFile motion)
+        {
+            int[] id_pair = CreateNodeIdPair(motion);
+
+            TMOFrame source_frame = frames[0];
+            int append_length = motion.frames.Length;
+            TMOFrame[] append_frames = new TMOFrame[append_length];
+            for (int i = 0; i < motion.frames.Length; i++)
+                append_frames[i] = TMOFrame.Select(source_frame, motion.frames[i], id_pair);
+                
+            int old_length = frames.Length;
+            Array.Resize(ref frames, frames.Length + append_length);
+            Array.Copy(append_frames, 0, frames, old_length, append_length);
+            this.opt0 = frames.Length-1;
+        }
+
+        /// <summary>
+        /// 指定tmoへフレームを補間します。
+        /// </summary>
+        /// <param name="motion">tmo</param>
+        /// <param name="append_length">補間するフレーム長さ</param>
+        /// <param name="p1">補間速度係数</param>
+        public void SlerpFrameEndTo(TMOFile motion, int append_length, float p1)
+        {
+            int[] id_pair = CreateNodeIdPair(motion);
+
+            int i0 = (frames.Length > 1) ? frames.Length - 1 - 1 : 0;
+            int i1 = frames.Length-1;
+            int i2 = 0;
+            int i3 = ( motion.frames.Length > 1 ) ? 1 : 0;
+
+            TMOFrame frame0 = frames[i0];
+            TMOFrame frame1 = frames[i1];
+            TMOFrame frame2 = motion.frames[i2];
+            TMOFrame frame3 = motion.frames[i3];
+
+            TMOFrame[] interp_frames = TMOFrame.Slerp(frame0, frame1, frame2, frame3, append_length, p1, id_pair);
+            int old_length = frames.Length;
+            Array.Resize(ref frames, frames.Length + append_length);
+            Array.Copy(interp_frames, 0, frames, old_length, append_length);
+            this.opt0 = frames.Length-1;
+        }
+
+        /// <summary>
+        /// 指定tmoへフレームを補間します。
+        /// </summary>
+        /// <param name="motion">tmo</param>
+        /// <param name="append_length">補間するフレーム長さ</param>
+        public void SlerpFrameEndTo(TMOFile motion, int append_length)
+        {
+            SlerpFrameEndTo(motion, append_length, 0.5f);
+        }
+
+        /// <summary>
+        /// 指定tmoへフレームを補間します。
+        /// </summary>
+        /// <param name="motion">tmo</param>
+        public void SlerpFrameEndTo(TMOFile motion)
+        {
+            SlerpFrameEndTo(motion, 200, 0.5f);
+        }
+
+        /// <summary>
+        /// フレームを指定indexのみに切り詰めます。
+        /// </summary>
+        /// <param name="frame_index">index</param>
+        public void TruncateFrame(int frame_index)
+        {
+            if (frames == null)
+                return;
+            if (frame_index < 0)
+                return;
+            if (frame_index > frames.Length-1)
+                return;
+            if (frame_index > 0)
+                Array.Copy(frames, frame_index, frames, 0, 1);
+            Array.Resize(ref frames, 1);
+            this.opt0 = 1;
+        }
+
+        /// <summary>
+        /// 現在の行列を指定フレームに保存します。
+        /// </summary>
+        /// <param name="frame_index">index</param>
+        public void SaveTransformationMatrixToFrame(int frame_index)
+        {
+            if (frames == null)
+                return;
+
+            foreach (TMONode node in nodes)
+                node.matrices[frame_index].m = node.TransformationMatrix;
+        }
+
+        /// <summary>
+        /// 指定フレームの行列を保持します。
+        /// </summary>
+        /// <param name="frame_index">index</param>
+        public void LoadTransformationMatrixFromFrame(int frame_index)
+        {
+            if (frames == null)
+                return;
+
+            foreach (TMONode node in nodes)
+                node.TransformationMatrix = node.matrices[frame_index].m;
+        }
+
+        /// <summary>
+        /// 指定名称（短い形式）を持つnodeを検索します。
+        /// </summary>
+        /// <param name="name">node名称（短い形式）</param>
+        /// <returns></returns>
+        public TMONode FindNodeByName(string name)
+        {
+            foreach (TMONode node in nodes)
+                if (node.Name == name)
+                    return node;
+            return null;
+        }
+
+        /// <summary>
+        /// 指定tmoのモーション（開始フレームからの変位）を複写します。
+        /// </summary>
+        /// <param name="motion">tmo</param>
+        public void CopyMotionFrom(TMOFile motion)
+        {
+            int[] id_pair = CreateNodeIdPair(motion);
+
+            TMOFrame source_frame = frames[0];
+            TMOFrame motion_frame = motion.frames[0];
+            int append_length = motion.frames.Length;
+            TMOFrame[] interp_frames = new TMOFrame[append_length];
+            for (int i = 0; i < motion.frames.Length; i++)
+                interp_frames[i] = TMOFrame.AddSub(source_frame, motion.frames[i], motion_frame, id_pair);
+                
+            int old_length = frames.Length;
+            Array.Resize(ref frames, frames.Length + append_length);
+            Array.Copy(interp_frames, 0, frames, old_length, append_length);
+            this.opt0 = frames.Length-1;
+        }
+
+        /// <summary>
+        /// 指定tmoにある指定名称（短い形式）のnodeを同じ名称のnodeに複写します。
+        /// ただし複写の対象は子node以降です。指定nodeは複写しません。
+        /// また、除外node以降のnodeは複写しません。
+        /// </summary>
+        /// <param name="motion">tmo</param>
+        /// <param name="name">node名称（短い形式）</param>
+        /// <param name="except_names">除外node名称（短い形式）リスト</param>
+        public void CopyChildrenNodeFrom(TMOFile motion, string name, List<string> except_names)
+        {
+            TMONode node = this.FindNodeByName(name);
+            if (node == null)
+                return;
+            TMONode motion_node = motion.FindNodeByName(name);
+            if (motion_node == null)
+                return;
+            node.CopyChildrenMatFrom(motion_node, except_names);
+        }
+
+        /// <summary>
+        /// 指定tmoにある指定名称（短い形式）のnodeを同じ名称のnodeに複写します。
+        /// </summary>
+        /// <param name="motion">tmo</param>
+        /// <param name="name">node名称（短い形式）</param>
+        public void CopyNodeFrom(TMOFile motion, string name)
+        {
+            TMONode node = this.FindNodeByName(name);
+            if (node == null)
+                return;
+            TMONode motion_node = motion.FindNodeByName(name);
+            if (motion_node == null)
+                return;
+            node.CopyMatFrom(motion_node);
+        }
+
+        /// <summary>
+        /// 指定tmoと同じnode treeを持つか。
+        /// </summary>
+        /// <param name="motion">tmo</param>
+        /// <returns></returns>
+        public bool IsSameNodeTree(TMOFile motion)
+        {
+            if (nodes.Length != motion.nodes.Length)
+            {
+                //Console.WriteLine("nodes length mismatch {0} {1}", nodes.Length, motion.nodes.Length);
+                return false;
+            }
+            int i = 0;
+            foreach (TMONode node in nodes)
+            {
+                TMONode motion_node = motion.nodes[i];
+                //Console.WriteLine("node Name {0} {1}", node.Name, motion_node.Name);
+                if (motion_node.Name != node.Name)
+                    return false;
+                i++;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// tmoからtmoを生成します。
+        /// </summary>
+        public TMOFile Dup()
+        {
+            TMOFile tmo = new TMOFile();
+            tmo.header = new byte[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            tmo.opt0 = 1;
+            tmo.opt1 = 0;
+
+            int node_count = nodes.Length;
+            tmo.nodes = new TMONode[node_count];
+
+            for (int i = 0; i < node_count; i++)
+            {
+                tmo.nodes[i] = new TMONode(i);
+                tmo.nodes[i].Path = nodes[i].Path;
+            }
+
+            tmo.GenerateNodemapAndTree();
+
+            int frame_count = 1;
+            tmo.frames = new TMOFrame[frame_count];
+
+            for (int i = 0; i < frame_count; i++)
+            {
+                tmo.frames[i] = new TMOFrame(i);
+
+                int matrix_count = node_count;
+                tmo.frames[i].matrices = new TMOMat[matrix_count];
+                for (int j = 0; j < matrix_count; j++)
+                {
+                    tmo.frames[i].matrices[j] = new TMOMat(ref frames[i].matrices[j].m);
+                }
+            }
+            foreach (TMONode node in tmo.nodes)
+                node.LinkMatrices(tmo.frames);
+
+            tmo.footer = new byte[4] { 0, 0, 0, 0 };
+
+            return tmo;
+        }
+
+        /// <summary>
+        /// tmoからtmoを生成します。
+        /// </summary>
+        public TMOFile GenerateTMOFromTransformationMatrix()
+        {
+            TMOFile tmo = new TMOFile();
+            tmo.header = new byte[8] { 0, 0, 0, 0, 0, 0, 0, 0 };
+            tmo.opt0 = 1;
+            tmo.opt1 = 0;
+
+            int node_count = nodes.Length;
+            tmo.nodes = new TMONode[node_count];
+
+            for (int i = 0; i < node_count; i++)
+            {
+                tmo.nodes[i] = new TMONode(i);
+                tmo.nodes[i].Path = nodes[i].Path;
+            }
+
+            tmo.GenerateNodemapAndTree();
+
+            int frame_count = 1;
+            tmo.frames = new TMOFrame[frame_count];
+
+            for (int i = 0; i < frame_count; i++)
+            {
+                tmo.frames[i] = new TMOFrame(i);
+
+                int matrix_count = node_count;
+                tmo.frames[i].matrices = new TMOMat[matrix_count];
+                for (int j = 0; j < matrix_count; j++)
+                {
+                    Matrix m = nodes[j].TransformationMatrix;
+                    tmo.frames[i].matrices[j] = new TMOMat(ref m);
+                }
+            }
+
+            foreach (TMONode node in tmo.nodes)
+                node.LinkMatrices(tmo.frames);
+
+            tmo.footer = new byte[4] { 0, 0, 0, 0 };
+
+            return tmo;
+        }
+    }
+
+    /// <summary>
+    /// 変形行列を扱います。
+    /// </summary>
+    public class TMOMat
+    {
+        /// Direct3D Matrix
+        public Matrix m;
+
+        /// <summary>
+        /// TMOMatを作成します。
+        /// </summary>
+        public TMOMat()
+        {
+        }
+
+        /// <summary>
+        /// 行列を読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            reader.ReadMatrix(ref this.m);
+        }
+
+        /// <summary>
+        /// 行列を書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.Write(ref this.m);
+        }
+
+        /// <summary>
+        /// TMOMatを作成します。
+        /// </summary>
+        /// <param name="m">matrix</param>
+        public TMOMat(ref Matrix m)
+        {
+            this.m = m;
+        }
+
+        /// <summary>
+        /// 指定比率で拡大します。
+        /// </summary>
+        /// <param name="x">X軸拡大比率</param>
+        /// <param name="y">Y軸拡大比率</param>
+        /// <param name="z">Z軸拡大比率</param>
+        public void Scale(float x, float y, float z)
+        {
+            /*
+            m.M11 *= x;
+            m.M22 *= y;
+            m.M33 *= z;
+            */
+            m.Multiply(Matrix.Scaling(x, y, z));
+            m.M41 /= x;
+            m.M42 /= y;
+            m.M43 /= z;
+        }
+
+        /// <summary>
+        /// 指定行列で拡大します。
+        /// </summary>
+        /// <param name="scaling">scaling matrix</param>
+        public void Scale(Matrix scaling)
+        {
+            /*
+            m.M11 *= x;
+            m.M22 *= y;
+            m.M33 *= z;
+            */
+            m.Multiply(scaling);
+            m.M41 /= scaling.M11;
+            m.M42 /= scaling.M22;
+            m.M43 /= scaling.M33;
+        }
+
+        /// <summary>
+        /// 指定行列で縮小します。位置は変更しません。
+        /// </summary>
+        /// <param name="scaling">scaling matrix</param>
+        public void Scale0(Matrix scaling)
+        {
+            m.M11 /= scaling.M11;
+            m.M21 /= scaling.M11;
+            m.M31 /= scaling.M11;
+            m.M12 /= scaling.M22;
+            m.M22 /= scaling.M22;
+            m.M32 /= scaling.M22;
+            m.M13 /= scaling.M33;
+            m.M23 /= scaling.M33;
+            m.M33 /= scaling.M33;
+        }
+
+        /// <summary>
+        /// 指定行列で拡大します。位置は変更しません。
+        /// </summary>
+        /// <param name="scaling">scaling matrix</param>
+        public void Scale1(Matrix scaling)
+        {
+            m.M11 *= scaling.M11;
+            m.M12 *= scaling.M11;
+            m.M13 *= scaling.M11;
+            m.M21 *= scaling.M22;
+            m.M22 *= scaling.M22;
+            m.M23 *= scaling.M22;
+            m.M31 *= scaling.M33;
+            m.M32 *= scaling.M33;
+            m.M33 *= scaling.M33;
+        }
+
+        /// <summary>
+        /// 指定角度でX軸回転します。
+        /// </summary>
+        /// <param name="angle">角度（ラジアン）</param>
+        public void RotateX(float angle)
+        {
+            if (angle == 0.0f)
+                return;
+
+            Vector3 v = new Vector3(m.M11, m.M12, m.M13);
+            m *= Matrix.RotationAxis(v, angle);
+        }
+
+        /// <summary>
+        /// 指定角度でY軸回転します。
+        /// </summary>
+        /// <param name="angle">角度（ラジアン）</param>
+        public void RotateY(float angle)
+        {
+            if (angle == 0.0f)
+                return;
+
+            Vector3 v = new Vector3(m.M21, m.M22, m.M23);
+            m *= Matrix.RotationAxis(v, angle);
+        }
+
+        /// <summary>
+        /// 指定角度でZ軸回転します。
+        /// </summary>
+        /// <param name="angle">角度（ラジアン）</param>
+        public void RotateZ(float angle)
+        {
+            if (angle == 0.0f)
+                return;
+
+            Vector3 v = new Vector3(m.M31, m.M32, m.M33);
+            m *= Matrix.RotationAxis(v, angle);
+        }
+
+        /// <summary>
+        /// 指定変位だけ移動します。
+        /// </summary>
+        /// <param name="translation">変位</param>
+        public void Move(Vector3 translation)
+        {
+            m.M41 += translation.X;
+            m.M42 += translation.Y;
+            m.M43 += translation.Z;
+        }
+
+        /// <summary>
+        /// 補間を行います。
+        /// </summary>
+        /// <param name="mat0">行列0</param>
+        /// <param name="mat1">行列1</param>
+        /// <param name="mat2">行列2</param>
+        /// <param name="mat3">行列3</param>
+        /// <param name="length">分割数</param>
+        /// <returns>分割数だけTMOMatを持つ配列</returns>
+        public static TMOMat[] Slerp(TMOMat mat0, TMOMat mat1, TMOMat mat2, TMOMat mat3, int length)
+        {
+            return Slerp(mat0, mat1, mat2, mat3, length, 0.5f);
+        }
+
+        /// <summary>
+        /// 補間を行います。
+        /// </summary>
+        /// <param name="mat0">行列0</param>
+        /// <param name="mat1">行列1</param>
+        /// <param name="mat2">行列2</param>
+        /// <param name="mat3">行列3</param>
+        /// <param name="length">分割数</param>
+        /// <param name="p1">補間速度係数</param>
+        /// <returns>分割数だけTMOMatを持つ配列</returns>
+        public static TMOMat[] Slerp(TMOMat mat0, TMOMat mat1, TMOMat mat2, TMOMat mat3, int length, float p1)
+        {
+            TMOMat[] ret = new TMOMat[length];
+
+            Matrix m1 = mat1.m;
+            Matrix m2 = mat2.m;
+
+            Vector3 scaling1;
+            Vector3 scaling2;
+            Vector3 v1 = Helper.DecomposeMatrix(ref m1, out scaling1);
+            Vector3 v2 = Helper.DecomposeMatrix(ref m2, out scaling2);
+
+            Quaternion q1 = Quaternion.RotationMatrix(m1);
+            Quaternion q2 = Quaternion.RotationMatrix(m2);
+
+            Vector3 v0 = new Vector3(mat0.m.M41, mat0.m.M42, mat0.m.M43);
+            //Vector3 v1 = new Vector3(mat1.m.M41, mat1.m.M42, mat1.m.M43);
+            //Vector3 v2 = new Vector3(mat2.m.M41, mat2.m.M42, mat2.m.M43);
+            Vector3 v3 = new Vector3(mat3.m.M41, mat3.m.M42, mat3.m.M43);
+
+            float p0 = 0.0f;
+            float p2 = 1.0f;
+            float dt = 1.0f/length;
+            for (int i = 0; i < length; i++)
+            {
+                float t = dt*i;
+                float p = t*t*(p2-2*p1+p0) + t*(2*p1-2*p0) + p0;
+                Matrix m = Matrix.Scaling(Vector3.Lerp(scaling1, scaling2, p)) * Matrix.RotationQuaternion(Quaternion.Slerp(q1, q2, p)) * Matrix.Translation(Vector3.CatmullRom(v0, v1, v2, v3, p));
+                ret[i] = new TMOMat(ref m);
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// 加減算を行います。
+        /// </summary>
+        /// <param name="mat0">行列0</param>
+        /// <param name="mat1">行列1</param>
+        /// <param name="mat2">行列2</param>
+        /// <returns>行列1 - 行列2 + 行列0</returns>
+        public static TMOMat AddSub(TMOMat mat0, TMOMat mat1, TMOMat mat2)
+        {
+            Matrix m0 = mat0.m;
+            Matrix m1 = mat1.m;
+            Matrix m2 = mat2.m;
+            Vector3 t0 = Helper.DecomposeMatrix(ref m0);
+            Vector3 t1 = Helper.DecomposeMatrix(ref m1);
+            Vector3 t2 = Helper.DecomposeMatrix(ref m2);
+            Matrix m = m1 * Matrix.Invert(m2) * m0 * Matrix.Translation(t1 - t2 + t0);
+            return new TMOMat(ref m);
+        }
+
+        /// 左右反転します。
+        public void Flip()
+        {
+            Helper.FlipMatrix(ref m);
+        }
+
+        /// 180度Y軸回転します。
+        public void Turn()
+        {
+            Helper.TurnMatrix(ref m);
+        }
+    }
+
+    /// <summary>
+    /// フレームを扱います。
+    /// </summary>
+    public class TMOFrame
+    {
+        int id;
+
+        /// <summary>
+        /// 行列の配列
+        /// </summary>
+        public TMOMat[] matrices;
+
+        /// <summary>
+        /// Id
+        /// </summary>
+        public int Id { get { return id; } }
+
+        /// <summary>
+        /// フレームを生成します。
+        /// </summary>
+        public TMOFrame(int id)
+        {
+            this.id = id;
+        }
+
+        /// <summary>
+        /// フレームを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            int matrix_count = reader.ReadInt32();
+            this.matrices = new TMOMat[matrix_count];
+            for (int i = 0; i < matrix_count; i++)
+            {
+                this.matrices[i] = new TMOMat();
+                this.matrices[i].Read(reader);
+            }
+        }
+
+        /// <summary>
+        /// フレームを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.Write(matrices.Length);
+            foreach (TMOMat mat in matrices)
+                mat.Write(bw);
+        }
+
+        /// <summary>
+        /// フレームを補間します。
+        /// </summary>
+        /// <param name="frame0">フレーム0</param>
+        /// <param name="frame1">フレーム1</param>
+        /// <param name="frame2">フレーム2</param>
+        /// <param name="frame3">フレーム3</param>
+        /// <param name="length">分割数</param>
+        /// <param name="p1">補間速度係数</param>
+        /// <param name="id_pair">node idのペア</param>
+        /// <returns></returns>
+        public static TMOFrame[] Slerp(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, TMOFrame frame3, int length, float p1, int[] id_pair)
+        {
+            TMOFrame[] frames = new TMOFrame[length];
+
+            for (int frame_index = 0; frame_index < length; frame_index++)
+            {
+                frames[frame_index] = new TMOFrame(frame_index);
+                frames[frame_index].matrices = new TMOMat[frame1.matrices.Length];
+            }
+
+            for (int i = 0; i < frame1.matrices.Length; i++)
+            {
+                TMOMat[] interpolated_matrices = TMOMat.Slerp(
+                        frame0.matrices[i],
+                        frame1.matrices[i],
+                        frame2.matrices[id_pair[i]],
+                        frame3.matrices[id_pair[i]],
+                        length,
+                        p1);
+
+                for (int frame_index = 0; frame_index < length; frame_index++)
+                    frames[frame_index].matrices[i] = interpolated_matrices[frame_index];
+            }
+            return frames;
+        }
+
+        /// <summary>
+        /// frame1の行列で構成された新たなframeを得ます。
+        /// 新たなframeはframe0と同じnode並びとなります。
+        /// </summary>
+        /// <param name="frame0"></param>
+        /// <param name="frame1"></param>
+        /// <param name="id_pair">node idのペア</param>
+        /// <returns>新たなframe</returns>
+        public static TMOFrame Select(TMOFrame frame0, TMOFrame frame1, int[] id_pair)
+        {
+            TMOFrame ret = new TMOFrame(0);
+            ret.matrices = new TMOMat[frame0.matrices.Length];
+            for (int i = 0; i < frame0.matrices.Length; i++)
+            {
+                ret.matrices[i] = frame1.matrices[id_pair[i]];
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// 加減算の結果として新たなframeを得ます。
+        /// 新たなframeはframe0と同じnode並びとなります。
+        /// </summary>
+        /// <param name="frame0">frame0</param>
+        /// <param name="frame1">frame1</param>
+        /// <param name="frame2">frame2</param>
+        /// <param name="id_pair">node idのペア</param>
+        /// <returns>新たなframe</returns>
+        public static TMOFrame AddSub(TMOFrame frame0, TMOFrame frame1, TMOFrame frame2, int[] id_pair)
+        {
+            TMOFrame ret = new TMOFrame(0);
+            ret.matrices = new TMOMat[frame0.matrices.Length];
+            for (int i = 0; i < frame0.matrices.Length; i++)
+            {
+                ret.matrices[i] = TMOMat.AddSub( frame0.matrices[i], frame1.matrices[id_pair[i]], frame2.matrices[id_pair[i]] );
+            }
+            return ret;
+        }
+    }
+
+    /// <summary>
+    /// boneを扱います。
+    /// </summary>
+    public class TMONode
+    {
+        private int id;
+        private string path;
+        private string name;
+
+        private Vector3 scaling;
+        private Quaternion rotation;
+        private Vector3 translation;
+
+        private Matrix transformation_matrix;
+        private bool need_update_transformation;
+
+        /// <summary>
+        /// TMONodeを生成します。
+        /// </summary>
+        public TMONode(int id)
+        {
+            this.id = id;
+        }
+
+        /// <summary>
+        /// TMONodeを読み込みます。
+        /// </summary>
+        public void Read(BinaryReader reader)
+        {
+            this.Path = reader.ReadCString();
+        }
+
+        /// <summary>
+        /// TMONodeを書き出します。
+        /// </summary>
+        public void Write(BinaryWriter bw)
+        {
+            bw.WriteCString(this.Path);
+        }
+
+        /// <summary>
+        /// 行列をリンクします。
+        /// </summary>
+        public void LinkMatrices(TMOFrame[] frames)
+        {
+            this.matrices.Clear();
+            foreach (TMOFrame frame in frames)
+                this.matrices.Add(frame.matrices[id]);
+        }
+
+        /// <summary>
+        /// 拡大変位
+        /// </summary>
+        public Vector3 Scaling
+        {
+            get { return scaling; }
+            set
+            {
+                scaling = value;
+                need_update_transformation = true;
+            }
+        }
+
+        /// <summary>
+        /// 回転変位
+        /// </summary>
+        public Quaternion Rotation
+        {
+            get { return rotation; }
+            set
+            {
+                rotation = value;
+                need_update_transformation = true;
+            }
+        }
+
+        /// <summary>
+        /// 位置変位
+        /// </summary>
+        public Vector3 Translation
+        {
+            get { return translation; }
+            set
+            {
+                translation = value;
+                need_update_transformation = true;
+            }
+        }
+
+        /// <summary>
+        /// 子nodeリスト
+        /// </summary>
+        public List<TMONode> children = new List<TMONode>();
+
+        /// <summary>
+        /// 親node
+        /// </summary>
+        public TMONode parent;
+
+        /// <summary>
+        /// 行列リスト
+        /// </summary>
+        public List<TMOMat> matrices = new List<TMOMat>();
+
+        /// <summary>
+        /// ワールド座標系での位置と向きを表します。これはviewerから更新されます。
+        /// </summary>
+        public Matrix combined_matrix;
+
+        /// <summary>
+        /// Id
+        /// </summary>
+        public int Id { get { return id; } }
+        /// <summary>
+        /// 名称
+        /// </summary>
+        public string Path
+        {
+            get { return path; }
+            set
+            {
+                path = value;
+                name = path.Substring(path.LastIndexOf('|') + 1);
+            }
+        }
+        /// <summary>
+        /// 名称の短い形式。これはTMOFile中で重複する可能性があります。
+        /// </summary>
+        public string Name { get { return name; } }
+
+        /// <summary>
+        /// 指定名称（短い形式）を持つ子nodeを検索します。
+        /// </summary>
+        /// <param name="name">名称（短い形式）</param>
+        /// <returns></returns>
+        public TMONode FindChildByName(string name)
+        {
+            foreach (TMONode child_node in children)
+                if (child_node.name == name)
+                    return child_node;
+            return null;
+        }
+
+        /// <summary>
+        /// 指定nodeから行列を複写します。
+        /// </summary>
+        /// <param name="motion">node</param>
+        public void CopyThisMatFrom(TMONode motion)
+        {
+            //Console.WriteLine("copy mat {0} {1}", name, motion.Name);
+            int i = 0;
+            foreach (TMOMat mat in matrices)
+            {
+                mat.m = motion.matrices[i % motion.matrices.Count].m;
+                i++;
+            }
+        }
+
+        void CopyChildrenMatFrom_0(TMONode motion, List<string> except_names)
+        {
+            List<TMONode> select_children = new List<TMONode>();
+            foreach (TMONode child_node in children)
+            {
+                bool found = false;
+                foreach (string except_name in except_names)
+                {
+                    if (child_node.name == except_name)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+                if (found)
+                    except_names.Remove(child_node.name);
+                else
+                    select_children.Add(child_node);
+            }
+            foreach (TMONode child_node in select_children)
+            {
+                TMONode motion_child = motion.FindChildByName(child_node.name);
+                child_node.CopyThisMatFrom(motion_child);
+                child_node.CopyChildrenMatFrom_0(motion_child, except_names);
+            }
+        }
+
+        /// <summary>
+        /// 指定nodeから行列を複写します。
+        /// ただし複写の対象は子node以降です。指定nodeは複写しません。
+        /// また、除外node以降のnodeは複写しません。
+        /// </summary>
+        /// <param name="motion">node</param>
+        /// <param name="except_names">除外node名称（短い形式）リスト</param>
+        public void CopyChildrenMatFrom(TMONode motion, List<string> except_names)
+        {
+            List<string> dup_except_names = new List<string>();
+            foreach (string except_name in except_names)
+            {
+                dup_except_names.Add(except_name);
+            }
+            CopyChildrenMatFrom_0(motion, dup_except_names);
+        }
+
+        /// <summary>
+        /// 指定nodeから行列を複写します。
+        /// </summary>
+        /// <param name="motion">node</param>
+        public void CopyMatFrom(TMONode motion)
+        {
+            CopyThisMatFrom(motion);
+            foreach (TMONode child_node in children)
+            {
+                child_node.CopyMatFrom(motion.FindChildByName(child_node.name));
+            }
+        }
+
+        /// <summary>
+        /// 指定変位だけ拡大します。
+        /// </summary>
+        /// <param name="x">X軸変位</param>
+        /// <param name="y">Y軸変位</param>
+        /// <param name="z">Z軸変位</param>
+        public void Scale(float x, float y, float z)
+        {
+            Matrix scaling = Matrix.Scaling(x, y, z);
+
+            foreach (TMOMat i in matrices)
+                i.Scale(scaling);
+        }
+
+        /// <summary>
+        /// 指定変位だけ縮小します。
+        /// </summary>
+        /// <param name="x">X軸変位</param>
+        /// <param name="y">Y軸変位</param>
+        /// <param name="z">Z軸変位</param>
+        public void Scale0(float x, float y, float z)
+        {
+            Matrix scaling = Matrix.Scaling(x, y, z);
+
+            foreach (TMOMat i in matrices)
+                i.Scale0(scaling);
+        }
+
+        /// <summary>
+        /// 指定変位だけ拡大します。さらに各子nodeを縮小します。
+        /// </summary>
+        /// <param name="x">X軸変位</param>
+        /// <param name="y">Y軸変位</param>
+        /// <param name="z">Z軸変位</param>
+        public void Scale1(float x, float y, float z)
+        {
+            Matrix scaling = Matrix.Scaling(x, y, z);
+
+            foreach (TMOMat i in matrices)
+                i.Scale1(scaling);
+
+            foreach (TMONode child_node in children)
+                child_node.Scale0(x, y, z);
+        }
+
+        /// <summary>
+        /// 指定角度でX軸回転します。
+        /// </summary>
+        /// <param name="angle">角度（ラジアン）</param>
+        public void RotateX(float angle)
+        {
+            foreach (TMOMat i in matrices)
+                i.RotateX(angle);
+        }
+
+        /// <summary>
+        /// 指定角度でY軸回転します。
+        /// </summary>
+        /// <param name="angle">角度（ラジアン）</param>
+        public void RotateY(float angle)
+        {
+            foreach (TMOMat i in matrices)
+                i.RotateY(angle);
+        }
+
+        /// <summary>
+        /// 指定角度でZ軸回転します。
+        /// </summary>
+        /// <param name="angle">角度（ラジアン）</param>
+        public void RotateZ(float angle)
+        {
+            foreach (TMOMat i in matrices)
+                i.RotateZ(angle);
+        }
+
+        /// <summary>
+        /// 指定変位だけ移動します。
+        /// </summary>
+        /// <param name="x">X軸変位</param>
+        /// <param name="y">Y軸変位</param>
+        /// <param name="z">Z軸変位</param>
+        public void Move(float x, float y, float z)
+        {
+            Vector3 translation = new Vector3(x, y, z);
+
+            foreach (TMOMat i in matrices)
+                i.Move(translation);
+        }
+
+        /// <summary>
+        /// ワールド座標系での位置を得ます。
+        /// </summary>
+        /// <returns></returns>
+        public Vector3 GetWorldPosition()
+        {
+            TMONode node = this;
+            Vector3 v = Vector3.Empty;
+            while (node != null)
+            {
+                v = Vector3.TransformCoordinate(v, node.TransformationMatrix);
+                node = node.parent;
+            }
+            return v;
+        }
+
+        /// <summary>
+        /// ワールド座標系での位置と向きを得ます。
+        /// </summary>
+        /// <returns></returns>
+        public Matrix GetWorldCoordinate()
+        {
+            TMONode node = this;
+            Matrix m = Matrix.Identity;
+            while (node != null)
+            {
+                m.Multiply(node.TransformationMatrix);
+                node = node.parent;
+            }
+            return m;
+        }
+
+        /// <summary>
+        /// 拡大行列
+        /// </summary>
+        public Matrix ScalingMatrix
+        {
+            get
+            {
+                return Matrix.Scaling(scaling);
+            }
+        }
+
+        /// <summary>
+        /// 回転行列
+        /// </summary>
+        public Matrix RotationMatrix
+        {
+            get
+            {
+                return Matrix.RotationQuaternion(rotation);
+            }
+        }
+
+        /// <summary>
+        /// 位置行列
+        /// </summary>
+        public Matrix TranslationMatrix
+        {
+            get
+            {
+                return Matrix.Translation(translation);
+            }
+        }
+
+        /// <summary>
+        /// 変形行列。これは 拡大行列 x 回転行列 x 位置行列 です。
+        /// </summary>
+        public Matrix TransformationMatrix
+        {
+            get
+            {
+                if (need_update_transformation)
+                {
+                    transformation_matrix = ScalingMatrix * RotationMatrix * TranslationMatrix;
+                    need_update_transformation = false;
+                }
+                return transformation_matrix;
+            }
+            set
+            {
+                transformation_matrix = value;
+                translation = Helper.DecomposeMatrix(ref value, out scaling);
+                rotation = Quaternion.RotationMatrix(value);
+            }
+        }
+    }
+}

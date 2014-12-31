@@ -1,0 +1,8050 @@
+/*********************************************************
+	"ToonShader" for cgFxShader v0.91
+
+								(c) 2008 TechArts Inc.
+	( This file is a part of "3D Custom Girl" project. )
+**********************************************************/
+
+/*********************************************************
+tsoviewセルフシャドウ対応
+
+セルフシャドウさせたいtechniqueのpassの
+
+
+VSに
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+OUTするDataが対応してる必要あり
+
+逆に、OUTするDataがZTexを必要とする場合は
+これを追加しなければならない
+
+PSに
+
+	//tsoview
+	float2	texcoord;
+
+	texcoord.x			=	( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
+	texcoord.y			=	( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
+	float4	c			=	tex2D( ShadowTex, texcoord );
+	float	z			=	c.r + (c.g + c.b/256.0)/256.0;
+
+	if	( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
+	{
+		ldotn			=	-1.0;
+		hdotn			=	-1.0;
+	}
+
+VSがZTexをOUTしてる必要あり
+
+他の追加はコメントアウト
+//tsoview
+を追跡のこと
+
+あと、biasは不要
+関連する項目は削除しておくこと
+
+**********************************************************/
+
+//----------------------------------
+//	tweakables
+//----------------------------------
+
+float	Ambient
+<
+	string	UIName		=	"Ambient";
+	string	UIWidget	=	"Slider";
+	float	UIMin		=	-100.0;
+	float	UIMax		=	100.0;
+	float	UIStep		=	0.001;
+>						=	0.0;
+
+float	HighLight
+<
+	string	UIName		=	"HighLight";
+	string	UIWidget	=	"Slider";
+	float	UIMin		=	-100.0;
+	float	UIMax		=	100.0;
+	float	UIStep		=	0.001;
+>						=	0.0;
+
+float Thickness
+<
+	string	UIName		=	"Thickness";
+	string	UIWidget	=	"Slider";
+	float	UIMin		=	0.0;
+	float	UIMax		=	1.0;
+	float	UIStep		=	0.001;
+>						=	0.001;
+
+float ColorBlend
+<
+	string	UIName		=	"ColorBlend";
+	string	UIWidget	=	"Slider";
+	float	UIMin		=	-100.0;
+	float	UIMax		=	100.0;
+	float	UIStep		=	0.001;
+>						=	10.0;
+
+float ShadeBlend
+<
+	string	UIName		=	"ShadeBlend";
+	string	UIWidget	=	"Slider";
+	float	UIMin		=	-100.0;
+	float	UIMax		=	100.0;
+	float	UIStep		=	0.001;
+>						=	10.0;
+
+float HighLightBlend
+<
+	string	UIName		=	"HighLightBlend";
+	string	UIWidget	=	"Slider";
+	float	UIMin		=	0;
+	float	UIMax		=	100.0;
+	float	UIStep		=	0.001;
+>						=	10.0;
+
+float HighLightPower
+<
+	string	UIName		=	"HighLightPower";
+	string	UIWidget	=	"Slider";
+	float	UIMin		=	0;
+	float	UIMax		=	1000;
+	float	UIStep		=	1;
+>						=	100;
+
+float4	PenColor		:	Diffuse
+<
+	string	UIName		=	"PenColor";
+	string	UIWidget	=	"Color";
+>						=	{ 0.0f, 0.0f, 0.0f, 1.0f };
+
+float4	ShadowColor		:	Diffuse
+<
+	string	UIName		=	"ShadowColor";
+	string	UIWidget	=	"Color";
+>						=	{ 0.0f, 0.0f, 0.0f, 1.0f };
+
+float4 LightDir : Direction
+<	>					=	{ 0, 1, 0, 0 };
+
+float4 LightDirForced : Direction
+<	>					=	{ 0, 0, -1, 0 };
+
+float4 ColorRate
+<	>					=	{ 1, 1, 1, 1 };
+
+float4 UVSCR
+<	>					=	{ 0, 0, 0, 0 };
+
+float HohoAlpha
+<	>					=	1.0;
+
+float ZamenAlpha0
+<	>					=	1.0;
+
+float ZamenAlpha1
+<	>					=	1.0;
+
+float ZamenAlpha2
+<	>					=	1.0;
+
+float ZMat2ZOffset
+<	>					=	0.0;
+
+float SHADOW_HEIGHT
+<	>					=	0.0;
+
+float4 ManColor
+<	>					=	{ 0.0, 1.0, 1.0, 0.4 };
+
+//----------------------------------
+//	un-tweakables
+//----------------------------------
+uniform	float4x4	wld			:	World;// ワールド変換行列
+uniform	float4x4	wv			:	WorldView;
+uniform	float4x4	wvp			:	WorldViewProjection;
+uniform	float4x4	view		:	View;// カメラビュー変換行列
+uniform	float4x4	proj		:	Projection;// 射影変換行列
+uniform	float4x4	lv			:	LightView;// ライトビュー変換行列
+uniform	float4x4	lp			:	LightProjection;// ライトビュー射影変換行列
+uniform	float4x4	wlp			:	WorldLightViewProjection;
+
+//tsoview時には下を適用
+//uniform	float4x4	lvp			:	LightViewProjection;// ライトビュー変換行列
+
+//tsoview
+uniform	float4x4	lightview	:	View;
+uniform	float4x4	lightproj	:	Projection;
+		float4x4	lvp			:	LightViewProjection;// ライトビュー変換行列
+
+//------------------------------------------------------------------
+//	konoaさん追加HLSL3.0用テクスチャフィルタ	ここから
+//------------------------------------------------------------------
+
+texture	ShadeTex_texture;
+texture	ColorTex_texture;
+texture	DesktopTexture;
+texture	MojiTexture;
+
+//tsoview
+texture	texShadowMap;
+
+sampler2D	ProjectiveMap;
+
+sampler2D	ShadeTex	=	sampler_state
+{
+	Texture				=	<ShadeTex_texture>;
+
+	AddressU			=	CLAMP;
+	AddressV			=	CLAMP;
+
+	MinFilter			=	ANISOTROPIC;
+	MagFilter			=	ANISOTROPIC;
+	MipFilter			=	ANISOTROPIC;
+	MAXANISOTROPY		=	16;
+};
+
+sampler2D	ColorTex	=	sampler_state
+{
+	Texture				=	<ColorTex_texture>;
+
+	MinFilter			=	ANISOTROPIC;
+	MagFilter			=	ANISOTROPIC;
+	MipFilter			=	ANISOTROPIC;
+	MAXANISOTROPY		=	16;
+};
+
+sampler2D	DesktopTex	=	sampler_state
+{
+	Texture				=	<DesktopTexture>;
+
+	MinFilter			=	ANISOTROPIC;
+	MagFilter			=	ANISOTROPIC;
+	MipFilter			=	ANISOTROPIC;
+	MAXANISOTROPY		=	16;
+};
+
+sampler2D	MojiTex		=	sampler_state
+{
+	Texture				=	<MojiTexture>;
+
+	MinFilter			=	ANISOTROPIC;
+	MagFilter			=	ANISOTROPIC;
+	MipFilter			=	ANISOTROPIC;
+	MAXANISOTROPY		=	16;
+};
+
+//tsoview
+sampler2D	ShadowTex	=	sampler_state
+{
+	Texture			=	<texShadowMap>;
+
+	AddressU			=	CLAMP;
+	AddressV			=	CLAMP;
+
+	MinFilter			=	ANISOTROPIC;
+	MagFilter			=	ANISOTROPIC;
+	MipFilter			=	ANISOTROPIC;
+	MAXANISOTROPY		=	16;
+};
+
+//------------------------------------------------------------------
+//	konoaさん追加HLSL3.0用テクスチャフィルタ	ここまで
+//------------------------------------------------------------------
+
+const uniform float4x4	LocalBoneMats[16];
+
+//tsoview
+const uniform int	LocalBoneSels[16];
+
+struct appdata
+{
+	float3	Position	:	POSITION;
+	float2	UV			:	TEXCOORD0;
+	float4	Tangent		:	TEXCOORD1;
+	float4	Binormal	:	TEXCOORD2;
+	float4	Normal		:	NORMAL;
+	float4	VWeights	:	TEXCOORD3;
+	int4	BoneIdxs	:	TEXCOORD4;
+};
+
+struct cVertexData
+{
+	float4	Position	:	POSITION;
+	float2	UV			:	TEXCOORD0;
+	float3	Normal		:	TEXCOORD1;
+
+//tsoview
+	float4	ZTex		:	TEXCOORD2;
+
+};
+
+struct cVertexData2
+{
+	float4	Position	:	POSITION;
+};
+
+//tsoview
+struct cVertexData3
+{
+	float4	Position	:	POSITION;
+	float4	ShadowMapTex:	TEXCOORD0;
+};
+
+//-----------------------------------------------------------
+//  スキン変形 (頂点／法線)
+//-----------------------------------------------------------
+
+void calc_skindeform( float4 ipos, float3 innor, float4 weights, int4 idxs, out float4 outpos, out float3 outnor )
+{
+	float4x4	mb;
+	float4		inor;
+	float4		npos, nnor;
+	float		w;
+
+	inor		=	float4( innor.xyz, 0 );
+	w			=	weights[0];
+	mb			=	LocalBoneMats[idxs[0]];
+	npos		=	mul( ipos, mb ) * w;
+	nnor		=	mul( inor, mb ) * w;
+	w			=	weights[1];
+	mb			=	LocalBoneMats[idxs[1]];
+	npos		+=	mul( ipos, mb ) * w;
+	nnor		+=	mul( inor, mb ) * w;
+	w			=	weights[2];
+	mb			=	LocalBoneMats[idxs[2]];
+	npos		+=	mul( ipos, mb ) * w;
+	nnor		+=	mul( inor, mb ) * w;
+	w			=	weights[3];
+	mb			=	LocalBoneMats[idxs[3]];
+	npos		+=	mul( ipos, mb ) * w;
+	nnor		+=	mul( inor, mb ) * w;
+	outpos		=	float4( npos.xyz, 1 );
+	outnor		=	nnor.xyz;
+}
+
+//-----------------------------------------------------------
+//  スキン変形 (頂点のみ)
+//-----------------------------------------------------------
+
+void calc_skindeform_nonorm( float4 inpos, float4 weights, int4 idxs, out float4 outpos )
+{
+	float4		npos;
+
+	npos		=	mul( inpos, LocalBoneMats[idxs[0]] ) * weights[0];
+	npos		+=	mul( inpos, LocalBoneMats[idxs[1]] ) * weights[1];
+	npos		+=	mul( inpos, LocalBoneMats[idxs[2]] ) * weights[2];
+	npos		+=	mul( inpos, LocalBoneMats[idxs[3]] ) * weights[3];
+	outpos		=	float4( npos.xyz, 1 );
+}
+
+//-----------------------------------------------------------
+//	20100122	★動くハイライト	ここから
+//-----------------------------------------------------------
+
+void calc_skindeform_onorm( float3 innor, float4 weights, float4 idxs, out float3 outnor )
+{
+	float4		nnor;
+	float		w;
+
+	nnor		=	mul( float4( innor.xyz, 0 ), LocalBoneMats[idxs[0]] ) * weights[0];
+	nnor		+=	mul( float4( innor.xyz, 0 ), LocalBoneMats[idxs[1]] ) * weights[1];
+	nnor		+=	mul( float4( innor.xyz, 0 ), LocalBoneMats[idxs[2]] ) * weights[2];
+	nnor		+=	mul( float4( innor.xyz, 0 ), LocalBoneMats[idxs[3]] ) * weights[3];
+	outnor		=	normalize( nnor.xyz );
+}
+
+//-----------------------------------------------------------
+//	20100122	★動くハイライト	ここまで
+//-----------------------------------------------------------
+
+//tsoview
+void calc_bonecol( float4 incol, float4 weights, int4 idxs, out float4 outcol )
+{
+	float4	ncol;
+	ncol				=	mul( incol, LocalBoneSels[idxs[0]] ) * weights[0];
+	ncol				+=	mul( incol, LocalBoneSels[idxs[1]] ) * weights[1];
+	ncol				+=	mul( incol, LocalBoneSels[idxs[2]] ) * weights[2];
+	ncol				+=	mul( incol, LocalBoneSels[idxs[3]] ) * weights[3];
+	outcol				=	float4( ncol.xyz, 1 );
+}
+
+//-----------------------------------------------------------
+//	20090622	tickness統合	ここから
+//-----------------------------------------------------------
+
+cVertexData2	cInkVS( appdata IN )
+{
+	cVertexData2	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	pos				=	float4( pos.xyz + ( normalize( nor ) * Thickness ), 1);
+
+	float4	p;
+
+	p				=	mul( pos, wvp );
+	OUT.Position	=	p;
+
+	return	OUT;
+}
+
+//-----------------------------------------------------------
+//	20090622	tickness統合	ここまで
+//-----------------------------------------------------------
+
+float4	ColRate( float4 ic )
+{
+	return	ic;
+}
+
+float4	cInkPS( cVertexData2 IN ) : COLOR
+{
+	return ColRate( PenColor * ColorRate );
+}
+
+cVertexData	cMainVS( appdata IN )	//デフォルト頂点シェーダ
+{
+	cVertexData	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+	OUT.UV				=	IN.UV;
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS2( appdata IN )
+{
+	cVertexData		OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	float4	p;
+
+	p				=	mul( pos, wvp );
+	p.z				=	1.0 * p.w;
+	OUT.Position	=	p;
+	OUT.UV			=	IN.UV;
+	OUT.Normal		=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS3( appdata IN )
+{
+	cVertexData		OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	float4	p;
+
+	p				=	mul( pos, wvp );
+	p.z				=	p.z + ZMat2ZOffset;
+	OUT.Position	=	p;
+	OUT.UV			=	IN.UV;
+	OUT.Normal		=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS_UVSCR( appdata IN )
+{
+	cVertexData	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+	OUT.UV				=	IN.UV + float2( UVSCR.xy );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+//tsoview
+cVertexData	cMainVS_BoneCol( appdata IN )
+{
+	cVertexData	OUT;
+
+	float4	pos;
+	float3	nor;
+	float4	col;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+	calc_bonecol( PenColor, IN.VWeights, IN.BoneIdxs, col );
+
+	OUT.Position		=	mul( pos, wvp );
+	OUT.UV				=	IN.UV;
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+	OUT.ZTex			=	col;
+	return	OUT;
+}
+
+//tsoview
+cVertexData2	cBoneVS( cVertexData2 IN )
+{
+	cVertexData2	OUT;
+	OUT.Position	=	mul( IN.Position, wvp );
+	return	OUT;
+}
+
+//tsoview
+cVertexData3	cShadowMapVS( appdata IN )
+{
+	cVertexData3	OUT;
+	float4	opos;
+
+	calc_skindeform_nonorm( float4 ( IN.Position.xyz, 1 ), IN.VWeights, IN.BoneIdxs, opos );
+
+	// 普通に world view projection
+	float4x4	mat	=	wld;
+	mat				=	mul( mat, lightview );
+	mat				=	mul( mat, lightproj );
+	OUT.Position	=	mul( opos, mat );
+
+	// テクスチャ座標を頂点に合わせる
+	OUT.ShadowMapTex	=	OUT.Position;
+
+	return	OUT;
+}
+
+//-----------------------------------------------------------
+//	20100122	★動くハイライト	ここから
+//-----------------------------------------------------------
+
+float4	cMainPS( cVertexData IN ) : COLOR	//デフォルトピクセルシェーダ
+{
+	float4	nnormal		=	float4 (normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+
+	//tsoviewセルフシャドウ
+	float2	texcoord;
+
+	texcoord.x			=	( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
+	texcoord.y			=	( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
+	float4	c			=	tex2D( ShadowTex, texcoord );
+	float	z			=	c.r + (c.g + c.b/256.0)/256.0;
+
+	if	( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
+	{
+		ldotn			=	-1.0;
+		hdotn			=	-1.0;
+	}
+
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.6) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4 ( hp, hp, hp, 1.0 );
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4(col.rgb, texcol.a ) * ColorRate );
+}
+
+//-----------------------------------------------------------
+//	20100122	★動くハイライト	ここまで
+//-----------------------------------------------------------
+
+float4	cMainPS2( cVertexData IN ) : COLOR
+{
+	return	float4( 0,0,0,0 );
+}
+
+float4	cMainPSDT( cVertexData IN ) : COLOR
+{
+	float4	nnormal		=	float4 (normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol		=	tex2D( DesktopTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4( col.rgb, texcol.a ) * ColorRate );
+}
+
+float4	cMainPS_Moji( cVertexData IN ) : COLOR
+{
+	float4	nnormal		=	float4 (normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol		=	tex2D( MojiTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4( col.rgb, texcol.a ) * ColorRate );
+}
+
+float4	cHohoPS( cVertexData IN ) : COLOR
+{
+	float4	nnormal		=	float4 (normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4( col.rgb, texcol.a * HohoAlpha ) * ColorRate );
+}
+
+float4	cZamn0PS( cVertexData IN ) : COLOR
+{
+	float4	nnormal		=	float4 (normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4( col.rgb, texcol.a * ZamenAlpha0 ) * ColorRate );
+}
+
+float4	cZamn1PS( cVertexData IN ) : COLOR
+{
+	float4	nnormal		=	float4 (normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col 				=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col 				+=	hl * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4( col.rgb, texcol.a * ZamenAlpha1 ) * ColorRate );
+}
+
+float4	cZamn2PS( cVertexData IN ) : COLOR
+{
+	float4	nnormal		=	float4 (normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4( col.rgb, texcol.a * ZamenAlpha2 ) * ColorRate );
+}
+
+float4	cTrnsPS( cVertexData IN ) : COLOR
+{
+	return	ColRate( ManColor * ColorRate );
+}
+
+//NormalMap
+float3	g_LightLocalDirect	=	float3( 1, 0, 0 );
+
+struct	NormalMapData
+{
+	float3	Position			:	POSITION;
+	float3	Normal				:	NORMAL;
+	float4	UV					:	TEXCOORD0;
+	float3	Tangent				:	TEXCOORD1;
+	float3	Binormal			:	TEXCOORD2;
+	float4	VWeights			:	TEXCOORD3;
+	int4	BoneIdxs			:	TEXCOORD4;
+	float4	LightTangentDirect	:	TEXCOORD5;
+};
+
+struct cNormalMapData
+{
+	float4	Position			:	POSITION;
+	float4	UV					:	TEXCOORD0;
+	float3	Normal				:	TEXCOORD1;
+	float4	LightTangentDirect	:	TEXCOORD5;
+};
+
+// 接空間行列の逆行列を算出
+float4x4	InvTangentMatrix(
+	float3	tangent,
+	float3	binormal,
+	float3	normal	)
+{
+	float4x4 mat	=	{ float4(tangent, 0.0f ), float4(binormal, 0.0f), float4(normal, 0.0f), {0.0f, 0.0f, 0.0f, 1.0f} };
+	return transpose( mat );  // 転置
+}
+
+// 頂点シェーダ
+cNormalMapData	NormalMap_VS( NormalMapData IN, float4 inpos : POSITION, float3 inTangent : TANGENT, float3 inBinormal : BINORMAL, float3 inNormal : NORMAL,  float4 inUV : TEXCOORD0 )
+{
+	cNormalMapData	OUT		=	(cNormalMapData)0;
+
+	calc_skindeform( float4( inpos.xyz, 1.0 ), inNormal, IN.VWeights, IN.BoneIdxs, inpos, inNormal );
+
+	OUT.Position			=	mul( inpos, wvp );
+	float4x4 invTangentMat	=	InvTangentMatrix( normalize(inTangent), normalize(inBinormal), normalize(inNormal) );
+	OUT.LightTangentDirect	=	mul( float4( -LightDirForced.xyz, 1.0f ), invTangentMat );
+	OUT.UV					=	inUV;
+	OUT.Normal				=	normalize( mul( float4( inNormal.xyz, 0 ), wld ) );
+
+	return OUT;
+}
+
+float4	NormalMap_PS( cNormalMapData IN, float4 inUV : TEXCOORD0, float3 inLightTangentDirect : TEXCOORD5 ) : COLOR
+{
+	float	L			=	dot( IN.Normal, -LightDirForced );
+	float	lp			=	min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float	hp0			=	min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp			=	pow( abs(hp0), HighLightPower );
+	
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 1 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+	float3	normalcol	=	tex2D( ShadeTex, inUV );
+	float3	normalVec	=	2.0f * normalcol - 1.0f;
+	normalVec			=	normalize( normalVec );
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+	
+	float3	bright		=	dot( normalize(inLightTangentDirect), normalVec );
+	bright				=	max( 0.0f, bright );
+	
+	float2	TransTexCoord;
+	TransTexCoord.x		=	(1.0f + inUV.x/inUV.w)*0.5f;
+	TransTexCoord.y		=	(1.0f - inUV.y/inUV.w)*0.5f;
+	
+	float ZValue				=	inUV.z / inUV.w;
+	float SM_Z					=	tex2D( ProjectiveMap, TransTexCoord ).x;
+	if( ZValue < SM_Z ){bright	=	-1 * max( 0.0f, bright ) + 1;}
+	
+	return	ColRate( float4(bright * col.rgb, texcol.a) * ColorRate );
+}
+
+//tsoview
+float4	cMainPS_BoneCol( cVertexData IN ) : COLOR
+{
+	return	IN.ZTex;
+}
+
+//tsoview
+float4	cShadowMapPS( float4 ShadowMapTex : TEXCOORD0 ) : COLOR
+{
+	// Z値算出
+	float	depth		=	ShadowMapTex.z / ShadowMapTex.w;
+
+	// 精度を上げる
+	float4	unpacked_depth	=	float4( 0.0, 0.0, 256.0, 256.0 );
+	unpacked_depth.g	=	modf( depth*256.0, unpacked_depth.r );
+	unpacked_depth.b	*=	modf( unpacked_depth.g*256.0, unpacked_depth.g );
+
+	return	unpacked_depth	/	256.0;
+}
+
+float4 cBonePS( cVertexData2 IN ) : COLOR
+{
+	return	ColRate( ManColor );
+}
+
+//-----------------------------------------------------------------
+//	20120423	★TechniqueStateBlockここから
+//-----------------------------------------------------------------
+stateblock	DefaultState	=	stateblock_state
+{
+	VertexShader			=	compile	vs_3_0	cMainVS();
+	PixelShader				=	compile	ps_3_0	cMainPS();
+
+	AlphaFunc				=	greaterequal;
+
+	AlphaTestEnable			=	true;
+
+	CullMode				=	CW;
+};
+
+stateblock	InkState		=	stateblock_state
+{
+	VertexShader			=	compile	vs_3_0	cInkVS();
+	PixelShader				=	compile	ps_3_0	cInkPS();
+
+	AlphaFunc				=	greaterequal;
+
+	AlphaTestEnable			=	true;
+
+	CullMode				=	CCW;
+};
+
+stateblock	TransState		=	stateblock_state
+{
+	VertexShader			=	compile	vs_3_0	cMainVS();
+	PixelShader				=	compile	ps_3_0	cTrnsPS();
+
+	AlphaFunc				=	always;
+
+	AlphaTestEnable			=	true;
+
+	CullMode				=	None;
+
+	StencilEnable			=	true;
+	StencilFunc				=	equal;
+	StencilMask				=	255;
+	StencilPass				=	incrsat;
+	StencilZFail			=	replace;
+};
+
+stateblock	NATState		=	stateblock_state
+{
+	VertexShader			=	compile	vs_3_0	cMainVS();
+	PixelShader				=	compile	ps_3_0	cMainPS();
+
+	AlphaFunc				=	always;
+
+	AlphaTestEnable			=	true;
+
+	CullMode				=	CW;
+};
+
+stateblock	KAZANState		=	stateblock_state
+{
+	VertexShader			=	compile	vs_3_0	cMainVS();
+	PixelShader				=	compile	ps_3_0	cMainPS();
+
+	AlphaBlendEnable		=	true;
+	SrcBlend				=	srcalpha;
+	DestBlend				=	one;
+
+	AlphaFunc				=	always;
+
+	AlphaTestEnable			=	true;
+
+	CullMode				=	CW;
+
+	ZWriteEnable			=	false;
+};
+
+//-----------------------------------------------------------------
+//	20120423	★TechniqueStateBlockここまで
+//-----------------------------------------------------------------
+
+technique NormalMap
+{
+	pass NMap
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	NormalMap_VS();
+		PixelShader			=	compile	ps_3_0	NormalMap_PS();
+	}	
+}
+
+technique ShadowOff
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+	}
+}
+
+technique ShadowOn
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+	}
+}
+
+technique ShadowOff_InkOff
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+	}
+}
+
+technique ShadowOn_InkOff
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+	}
+}
+
+technique Transparent
+{
+	pass Main
+	{
+		StateBlock			=	(TransState);
+	}
+}
+
+technique NAT_ShadowOff_InkOff
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+	}
+}
+
+technique NAT_ShadowOff
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+
+	pass Main
+	{
+		StateBlock			=	(NATState);
+	}
+}
+
+technique NAT_ShadowOn
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+	}
+}
+
+technique DEMO
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+	}
+}
+
+technique DEMO_DT
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPSDT();
+	}
+}
+
+technique DEMO_ADD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+	}
+}
+
+technique HOHO
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cHohoPS();
+		ZWriteEnable		=	false;
+	}
+}
+
+technique ZAMEN0
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cZamn0PS();
+		ZWriteEnable		=	false;
+	}
+}
+
+technique ZAMEN1
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cZamn1PS();
+		ZWriteEnable		=	false;
+	}
+}
+
+technique ZAMEN2
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cZamn2PS();
+		ZWriteEnable		=	false;
+	}
+}
+
+
+technique NZ_ShadowOff
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NZ_ShadowOn
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NZ_ShadowOff_InkOff
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NZ_ShadowOn_InkOff
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NZAT_ShadowOff_InkOff
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		ZWriteEnable		=	false;
+	}
+}
+
+technique ZMAT
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS2();
+		PixelShader			=	compile	ps_3_0	cMainPS2();
+		ZFunc				=	always;
+		ZWriteEnable		=	true;
+	}
+}
+
+technique ZMAT2
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS3();
+		PixelShader			=	compile	ps_3_0	cMainPS2();
+		ZFunc				=	always;
+		ZWriteEnable		=	true;
+	}
+}
+
+
+technique NCZAT_ShadowOff_InkOff
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		CullMode			=	None;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+	}
+}
+
+technique AURORA
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR();
+		ZWriteEnable		=	false;
+	}
+}
+
+technique MOJI
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS_Moji();
+		ZWriteEnable		=	false;
+	}
+}
+
+technique POSEEDIT_UI
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+//tsoview
+technique ShadowMap
+{
+	pass ShadowMap
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cShadowMapVS();
+		PixelShader			=	compile	ps_3_0	cShadowMapPS();
+	}
+}
+
+//tsoview
+technique BONE
+{
+	pass p
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cBoneVS();
+		PixelShader			=	compile	ps_3_0	cBonePS();
+		StencilEnable		=	false;
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+//tsoview
+technique BoneCol
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_BoneCol();
+		PixelShader			=	compile	ps_3_0	cMainPS_BoneCol();
+	}
+}
+
+//------------------------------------------------------------------
+//	20090211	kemoさん追加新規technique	ここから
+//------------------------------------------------------------------
+
+//-----------------------------------------------------------------
+//	20120423	★TechniqueStateBlockここから
+//-----------------------------------------------------------------
+stateblock	NEGAState		=	stateblock_state
+{
+	VertexShader			=	compile	vs_3_0	cMainVS();
+	PixelShader				=	compile	ps_3_0	cMainPS();
+	CullMode				=	CW;
+	AlphaBlendEnable		=	true;
+	SrcBlend				=	invdestcolor;
+	DestBlend				=	zero;
+	AlphaTestEnable			=	true;
+	AlphaFunc				=	always;
+	ZWriteEnable			=	false;
+};
+
+stateblock	JOUZANState		=	stateblock_state
+{
+	VertexShader			=	compile	vs_3_0	cMainVS();
+	PixelShader				=	compile	ps_3_0	cMainPS();
+	CullMode				=	CW;
+	AlphaBlendEnable		=	true;
+	SrcBlend				=	destcolor;
+	DestBlend				=	zero;
+	AlphaTestEnable			=	true;
+	AlphaFunc				=	always;
+	ZWriteEnable			=	false;
+};
+
+stateblock	GENZANState		=	stateblock_state
+{
+	VertexShader			=	compile	vs_3_0	cMainVS();
+	PixelShader				=	compile	ps_3_0	cMainPS();
+	CullMode				=	CW;
+	AlphaBlendEnable		=	true;
+	BlendOP					=	revsubtract;
+	SrcBlend				=	one;
+	DestBlend				=	one;
+	AlphaTestEnable			=	true;
+	AlphaFunc				=	always;
+	ZWriteEnable			=	false;
+};
+
+//-----------------------------------------------------------------
+//	20120423	★TechniqueStateBlockここまで
+//-----------------------------------------------------------------
+
+technique NEGA
+{
+	pass Main
+	{
+		StateBlock			=	(NEGAState);
+	}
+}
+
+technique JOUZAN
+{
+	pass Main
+	{
+		StateBlock			=	(JOUZANState);
+	}
+}
+
+technique GENZAN
+{
+	pass Main
+	{
+		StateBlock			=	(GENZANState);
+	}
+}
+
+technique KAZAN_FRONT
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		ZEnable				=	false;
+	}
+}
+
+technique NEGA_FRONT
+{
+	pass Main
+	{
+		StateBlock			=	(NEGAState);
+		ZEnable				=	false;
+	}
+}
+
+technique JOUZAN_FRONT
+{
+	pass Main
+	{
+		StateBlock			=	(JOUZANState);
+		ZEnable				=	false;
+	}
+}
+
+technique GENZAN_FRONT
+{
+	pass Main
+	{
+		StateBlock			=	(GENZANState);
+		ZEnable				=	false;
+	}
+}
+
+//------------------------------------------------------------------
+//	20090211	kemoさん追加新規technique	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	kemoさん追加未発表technique	コメントアウト済	ここから
+//------------------------------------------------------------------
+
+/*
+float	UVRipple
+<
+string UIName			=	"UVRipple";
+	string	UIWidget	=	"Slider";
+	float	UIMin		=	-5000.0;
+	float	UIMax		=	5000.0;
+	float	UIStep		=	1.0;
+>						=	100.0;
+
+cVertexData cMainVS_UVRPL( appdata IN ) //追加 Ripple
+{
+	cVertexData	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+	float UVRPL			=	tan(UVSCR.x * 500)*1;
+	//float UVRPL		=	(1+(tan(UVSCR.x*100))/(UVSCR.x*100));
+	//float UVRPL		=	(UVSCR.x*UVSCR.x*1000);
+
+	if( UVRPL <=	0 ){UVRPL	=	0;}
+
+	float2	UVTEX		=	float2(IN.UV.x*10,IN.UV.y*10);
+	OUT.UV				=	float2( UVTEX.x/UVRPL , UVTEX.y/UVRPL ) + float2(0.5,0.5); 
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return OUT;
+}
+
+technique RIPPLE
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVRPL();
+	}
+}
+*/
+
+/*
+float4	cMainPS_INV( cVertexData IN ) : COLOR	//アルファ値変換テクスチャ用ピクセルシェーダ
+{
+	float4	texcol			=	tex2D( ColorTex, IN.UV  );
+	float	invtexcolr		=	1 - ( (texcol.g + texcol.b) / 2 );
+	float	invtexcolg		=	1 - ( (texcol.r + texcol.b) / 2 );
+	float	invtexcolb		=	1 - ( (texcol.r + texcol.g) / 2 );
+	float	invtexalpha		=	(texcol.r + texcol.g + texcol.b)/3;
+
+	return	ColRate( float4( invtexcolr, invtexcolg, invtexcolb, invtexalpha ) * ColorRate );
+}
+
+technique INVTEX_Shadow
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS_INV();
+	}
+}
+*/
+
+//------------------------------------------------------------------
+//	kemoさん追加未発表technique	コメントアウト済	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20090213	kemoさん追加technique UVスクロール	ここから
+//------------------------------------------------------------------
+
+float	UVScroll
+<
+	string	UIName		=	"UVScroll";
+	string	UIWidget	=	"Slider";
+	float	UIMin		=	-5000.0;
+	float	UIMax		=	 5000.0;
+	float	UIStep		=	1.0;
+>						=	100.0;
+
+cVertexData cMainVS_UVSCR2( appdata IN )	//追加	XScroll
+{
+	cVertexData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position	=	mul( pos, wvp );
+	OUT.UV			=	IN.UV + ( ( ( UVSCR.xy * UVScroll ) ) + ( ( UVSCR.yx * 0 ) ) );
+	OUT.Normal		=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+technique SCROLL
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2();
+	}
+}
+
+technique SCROLL_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2();
+	}
+}
+
+//------------------------------------------------------------------
+//	20090213	kemoさん追加technique UVスクロール	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20090219	kemoさん追加technique スクロール系technique	ここから
+//------------------------------------------------------------------
+
+//追加	X軸方向のスクロール速度
+float	UVScrollX
+<
+	string UIName		=	"UVScrollX";
+	string UIWidget		=	"Slider";
+	float UIMin			=	-5000.0;
+	float UIMax			=	 5000.0;
+	float UIStep		=	1.0;
+>						=	0.0;
+
+//追加	Y軸方向のスクロール速度
+float	UVScrollY
+<
+	string UIName		=	"UVScrollY";
+	string UIWidget		=	"Slider";
+	float UIMin			=	-5000.0;
+	float UIMax			=	 5000.0;
+	float UIStep		=	1.0;
+>						=	0.0;
+
+//追加	X軸方向の振幅
+float	UVScrollAmpX
+<
+	string UIName		=	"UVScrollAmpX";
+	string UIWidget		=	"Slider";
+	float UIMin			=	-10.0;
+	float UIMax			=	 10.0;
+	float UIStep		=	0.01;
+>						=	1.0;
+
+//追加	Y軸方向の振幅
+float	UVScrollAmpY
+<
+	string UIName		=	"UVScrollAmpY";
+	string UIWidget		=	"Slider";
+	float UIMin			=	-10.0;
+	float UIMax			=	 10.0;
+	float UIStep		=	0.01;
+>						=	1.0;
+
+cVertexData cMainVS_UVSCR3( appdata IN )	//追加	XRepeat
+{
+	cVertexData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+	OUT.UV				=	IN.UV + ( ( sin( UVSCR.xy * UVScrollX ) * UVScrollAmpX ) + ( ( UVSCR.yx * 0 ) ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData cMainVS_UVSCR4( appdata IN )	//追加	Bound
+{
+	cVertexData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+	OUT.UV				=	IN.UV + ( ( ( UVSCR.xy * 0.3185 ) * UVScrollX ) + ( abs( cos( UVSCR.yx * UVScrollY ) ) * UVScrollAmpY ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData cMainVS_UVSCR5( appdata IN )	//追加	Circle
+{
+	cVertexData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+	OUT.UV				=	IN.UV + ( ( sin( UVSCR.xy * UVScrollX ) * UVScrollAmpX ) + ( cos( UVSCR.yx * UVScrollY ) * UVScrollAmpY ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return OUT;
+}
+
+cVertexData cMainVS_UVSCR6( appdata IN )	//追加	Blanco
+{
+	cVertexData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+	OUT.UV				=	IN.UV + ( sin( cos( UVSCR.xy * UVScrollX ) * UVScrollAmpX ) + cos( sin( UVSCR.yx * UVScrollY ) * UVScrollAmpY ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData cMainVS_UVSCR7( appdata IN )	//追加	Eight
+{
+	cVertexData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+	OUT.UV				=	IN.UV + ( ( cos( UVSCR.xy * UVScrollX ) * UVScrollAmpX / 2 ) + ( sin( UVSCR.yx * UVScrollY * 2 ) * UVScrollAmpY / 2 ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData cMainVS_UVSCR8( appdata IN ) 	//追加	Wave
+{
+	cVertexData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+	OUT.UV				=	IN.UV + ( ( ( UVSCR.xy * 0.3185 * UVScrollX ) ) + ( sin( UVSCR.yx * UVScrollY * 2 ) * UVScrollAmpY / 2 ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData cMainVS_UVSCR9( appdata IN )	//追加	XYScroll
+{
+	cVertexData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+	OUT.UV				=	IN.UV + ( ( ( UVSCR.xy * UVScrollX ) ) + ( ( UVSCR.yx * UVScrollY ) ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+texture	RotateTex_texture;
+
+sampler2D	RotateTex	=	sampler_state
+{
+	Texture				=	<ColorTex_texture>;
+
+	AddressU			=	Border;
+	AddressV			=	Border;
+	BorderColor			=	(0);
+
+	MinFilter			=	ANISOTROPIC;
+	MagFilter			=	ANISOTROPIC;
+	MipFilter			=	ANISOTROPIC;
+	MAXANISOTROPY		=	16;
+};
+
+
+float4 cMainPS_UVROT( cVertexData IN ) : COLOR	//UVRotate用ピクセルシェーダ
+{
+	float4	nnormal		=	float4 (normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol		=	tex2D( RotateTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 ); // old
+
+	return	ColRate( float4( col.rgb, texcol.a ) * ColorRate );
+}
+
+technique XYSCROLL
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9();
+	}
+}
+
+technique XYSCROLL_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9();
+	}
+}
+
+technique XREPEAT
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3();
+	}
+}
+
+technique XREPEAT_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3();
+	}
+}
+
+technique BOUND
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4();
+	}
+}
+
+technique BOUND_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4();
+	}
+}
+
+technique CIRCLE
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5();
+	}
+}
+
+technique CIRCLE_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5();
+	}
+}
+
+technique BLANCO
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6();
+	}
+}
+
+technique BLANCO_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6();
+	}
+}
+
+technique EIGHT
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7();
+	}
+}
+
+technique EIGHT_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7();
+	}
+}
+
+technique WAVE
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8();
+	}
+}
+
+technique WAVE_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8();
+	}
+}
+
+//------------------------------------------------------------------
+//	20090219	kemoさん追加technique スクロール系technique	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20090220	kemoさん追加technique "texture ShadeTex" 適用範囲を変更	ここから
+//------------------------------------------------------------------
+
+//-----------------------------------------------------------
+//	20100122	★動くハイライト	ここから
+//-----------------------------------------------------------
+
+float4 cMainPS3( cVertexData IN ) : COLOR//ShadeTex適用範囲変更ピクセルシェーダ
+{
+	float4	nnormal		=	float4 (normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+
+	//tsoview
+	float2	texcoord;
+
+	texcoord.x			=	( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
+	texcoord.y			=	( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
+	float4	c			=	tex2D( ShadowTex, texcoord );
+	float	z			=	c.r + (c.g + c.b/256.0)/256.0;
+
+	if	( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
+	{
+		ldotn			=	-1.0;
+		hdotn			=	-1.0;
+	}
+
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.1 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4 ( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col 				+=	hl * ( HighLightBlend * 0.0025 ); // old
+
+	return	ColRate( float4(col.rgb, texcol.a ) * ColorRate );
+}
+
+//-----------------------------------------------------------
+//	20100122	★動くハイライト	ここまで
+//-----------------------------------------------------------
+
+technique AllAmb_ShadowOff
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+}
+
+technique AllAmb_ShadowOn
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+}
+
+technique AllAmb_ShadowOff_InkOff
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+}
+
+technique AllAmb_ShadowOn_InkOff
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+}
+
+//------------------------------------------------------------------
+//	20090220	kemoさん追加technique "texture ShadeTex" 適用範囲を変更	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20090307	kemoさん追加technique 反射光ハイライト	ここから
+//------------------------------------------------------------------
+
+float4	FrontLight		: Diffuse
+<
+	string UIName		=	"FrontLight";
+	string UIWidget		=	"Color";
+>						=	{ 0.9, 0.9, 0.9, 0.2 };
+
+float	FrontLightPower
+<
+	string UIName		=	"FrontLightPower";
+	string UIWidget		=	"Slider";
+	float UIMin			=	-10.0;
+	float UIMax			=	 10.0;
+	float UIStep		=	0.01;
+>						=	0.1;
+
+float4	BackLight		: Diffuse
+<	
+	string UIName		=	"BackLight";
+	string UIWidget		=	"Color";
+>						=	{ 0.2, 0.4, 0.5, 0.6 };
+
+float	BackLightPower
+<
+	string UIName		=	"BackLightPower";
+	string UIWidget		=	"Slider";
+	float UIMin			=	-10.0;
+	float UIMax			=	 10.0;
+	float UIStep		=	0.01;
+>						=	0.4;
+
+struct HLMapData
+{
+	float4	Position	:	POSITION; // 射影変換座標
+	float4	ZUV			:	TEXCOORD0; // Z値算出用テクスチャ
+	float4	HLColor		:	COLOR0; // ディフューズ色
+	float4	Tangent		:	TEXCOORD1;
+	float4	Binormal	:	TEXCOORD2;
+	float4	Normal		:	NORMAL;
+	float4	VWeights	:	TEXCOORD3;
+	int4	BoneIdxs	:	TEXCOORD4;
+};
+
+struct cHLMapData
+{
+	float4	Position	:	POSITION;
+	float4	ZUV			:	TEXCOORD0; // Z値算出用テクスチャ
+	float4	HLColor		:	COLOR0; // ディフューズ色
+};
+
+cHLMapData	cHLMapVSB( HLMapData IN )	//反射光ハイライト後頂点シェーダ
+{
+	cHLMapData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+	OUT.ZUV				=	mul( pos, lvp );
+
+	float3 N			=	normalize( mul(float4(nor.x,-nor.y,nor.z,0), wld) );
+	float3 LightDirect	=	normalize( mul(float4(nor.x,nor.y,nor.z,0), wvp) );
+
+	OUT.HLColor			=	BackLight * ( BackLightPower + dot(N, LightDirect)*(1-0.3f) * 2 );
+
+	return	OUT;
+}
+
+cHLMapData	cHLMapVSF( HLMapData IN )	//反射光ハイライト前頂点シェーダ
+{
+	cHLMapData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+	OUT.ZUV				=	mul( pos, lvp );
+
+	float3	N			=	normalize( mul(float4(nor.x,-nor.y,nor.z,0), wld) );
+	float3	LightDirect	=	normalize( mul(float4(nor.x,nor.y,nor.z,0), wvp) );
+
+	OUT.HLColor			=	FrontLight * ( FrontLightPower  + dot(N, -LightDirect)*(1-0.3f)*1.5);
+
+	return	OUT;
+}
+
+float4 cHLMapPS( cHLMapData IN )	:	COLOR	//反射光ハイライトピクセルシェーダ
+{
+	float ZValue		=	IN.ZUV.z / IN.ZUV.w;
+	float4 HLColor1		=	IN.HLColor;
+	
+	float2 TransTexCoord;
+	TransTexCoord.x		=	(1.0f + IN.ZUV.x/IN.ZUV.w)*0.5f;
+	TransTexCoord.y		=	(1.0f - IN.ZUV.y/IN.ZUV.w)*0.5f;
+	
+	float SM_Z			=	tex2D( ProjectiveMap, TransTexCoord ).x;
+	if( ZValue > SM_Z+0.005f ){HLColor1.rgb	=	HLColor1.rgb * 0.5f;}
+	
+	return	ColRate( HLColor1 * ColorRate );
+}
+
+technique AllAmb_ShadowOff_BL
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique AllAmb_ShadowOn_BL
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique AllAmb_ShadowOff_InkOff_BL
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique AllAmb_ShadowOn_InkOff_BL
+{
+
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique ShadowOff_BL
+{
+
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique ShadowOn_BL
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS();
+		PixelShader			=	compile	ps_3_0	cMainPS();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique ShadowOff_InkOff_BL
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique ShadowOn_InkOff_BL
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS();
+		PixelShader			=	compile	ps_3_0	cMainPS();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+//------------------------------------------------------------------
+//	20090307	kemoさん追加technique 反射光ハイライト	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20090313	kemoさん追加technique Rotate	ここから
+//------------------------------------------------------------------
+
+float	UVRotate
+<
+	string	UIName		=	"UVRotate";
+	string	UIWidget	=	"Slider";
+	float	UIMin		=	-5000.0;
+	float	UIMax		=	 5000.0;
+	float	UIStep		=	1.0;
+>						=	100.0;
+
+float	UVScale
+<
+	string	UIName		=	"UVScale";
+	string	UIWidget	=	"Slider";
+	float	UIMin		=	-5000.0;
+	float	UIMax		=	 5000.0;
+	float	UIStep		=	1.0;
+>						=	0.0;
+
+cVertexData	cMainVS_UVROT( appdata IN )	//追加Rotate
+{
+	cVertexData	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+
+	float	UVROT		=	(UVRotate*(UVSCR.x));
+	float	UVSCL		=	abs(1/cos(UVScale*UVSCR.x));
+	float2	UVTEX		=	float2(IN.UV.x,IN.UV.y);
+
+	OUT.UV 				=	float2(((cos(UVROT)*UVTEX.x)+(sin(UVROT)*UVTEX.y)) , (-(sin(UVROT)*UVTEX.x)+(cos(UVROT)*UVTEX.y)))*UVSCL + float2(0.5,0.5); 
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+technique ROTATE
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT();
+	}
+}
+
+technique ROTATE_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT();
+	}
+}
+
+//------------------------------------------------------------------
+//	20090313	kemoさん追加technique Rotate	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20090405	kemoさん追加technique FLASH	ここから
+//------------------------------------------------------------------
+
+float	UVFlash
+<
+	string	UIName		=	"UVFlash";
+	string	UIWidget	=	"Slider";
+	float	UIMin		=	-5000.0;
+	float	UIMax		=	5000.0;
+	float	UIStep		=	1.0;
+>						=	1.0;
+
+float	FlashFunc
+<
+	string	UIName		=	"FlashFunc";
+	string	UIWidget	=	"Slider";
+	float	UIMin		=	0.0;
+	float	UIMax		=	1.0;
+	float	UIStep		=	1.0;
+>						=	0.0;
+
+float4 cMainPS_UVFLS( cVertexData IN ) : COLOR	//テクスチャ点滅用ピクセルシェーダ
+{
+	float4	nnormal		=	float4 (normalize (IN.Normal), 0.0);
+	float4	esnormal		=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol  	=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+	float	FlashAlpha	=	(round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc)) + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc)) * texcol.a;
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4( col.rgb, FlashAlpha ) * ColorRate );
+}
+
+technique FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique FLASH_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+//------------------------------------------------------------------
+//	20090405	kemoさん追加technique FLASH	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20090408	kemoさん追加technique CLOCK	ここから
+//------------------------------------------------------------------
+
+float	UVClock
+<	string UIName		=	"UVClock";
+	string UIWidget		=	"Slider";
+	float UIMin			=	-5000.0;
+	float UIMax			=	 5000.0;
+	float UIStep		=	1.0;
+>						=	1.0;
+
+cVertexData	cMainVS_UVCLC( appdata IN )	//追加Clock
+{
+	cVertexData	OUT;	
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+
+	float	SCRCOUNT		=	333.34*(UVSCR.x);
+	float	UVROT			=	-floor(SCRCOUNT/UVClock)*3.1415/30;
+	float2	UVTEX		=	float2(IN.UV.x,IN.UV.y);
+
+	OUT.UV			=	float2(((cos(UVROT)*UVTEX.x)+(sin(UVROT)*UVTEX.y)) , (-(sin(UVROT)*UVTEX.x)+(cos(UVROT)*UVTEX.y))) + float2(0.5,0.5); 
+	OUT.Normal		=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+technique CLOCK
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC();
+	}
+}
+
+technique CLOCK_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC();
+	}
+}
+
+//------------------------------------------------------------------
+//	20090408	kemoさん追加technique CLOCK	ここまで
+//------------------------------------------------------------------
+
+//-----------------------------------------------------------
+//	20090522	kemoさん追加FurShader	ここから
+//-----------------------------------------------------------
+
+float	FurCortX
+<	string	UIName		=	"FurCortX";		>	=	{ 0.0 };
+
+float	FurCortY
+<	string	UIName		=	"FurCortY";		>	=	{ 0.0 };
+
+float	UVMag
+<	string	UIName		=	"UVMag";		>	=	{ 1.0 };
+
+float4	FurSkinColor	:	Diffuse
+<
+	string	UIName		=	"FurSkinColor";
+	string	UIWidget	=	"Color";
+>						=	{ 0.0f, 0.0f, 0.0f, 1.0f };
+
+float	FurDarkening
+<	string	UIName		=	"FurDarkening";	>	=	{ 0.0 };
+
+float4	FurBritening	:	Diffuse
+<
+	string UIName		=	"FurBritening";
+	string UIWidget		=	"Color";
+>						=	{ 0.0f, 0.0f, 0.0f, 1.0f };
+
+float	FurSkinOffset
+<	string	UIName		=	"FurSkinOffset";>	=	{ 2.0 };
+
+struct cFurShaderData
+{
+	float4	Position	:	POSITION;
+	float2	UV			:	TEXCOORD0;
+	float3	Normal		:	TEXCOORD1;
+	float3	random		:	TEXCOORD5;
+};
+
+//------------------------------------------------------------------
+//	konoaさん追加HLSL3.0用テクスチャフィルタ適用済みFurTex	ここから
+//------------------------------------------------------------------
+sampler2D	FurShadeTex	=	sampler_state
+{
+	Texture				=	<ShadeTex_texture>;
+
+	MinFilter			=	ANISOTROPIC;
+	MagFilter			=	ANISOTROPIC;
+	MipFilter			=	ANISOTROPIC;
+	MAXANISOTROPY		=	16;
+};
+
+//------------------------------------------------------------------
+//	konoaさん追加HLSL3.0用テクスチャフィルタ適用済みFurTex	ここまで
+//------------------------------------------------------------------
+
+cFurShaderData	cFurSkinVS(appdata IN)
+{
+	cFurShaderData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	pos					=	float4( pos.xyz, 1 );
+
+	OUT.random			=	0;
+	OUT.Position		=	mul( pos, wvp );
+	OUT.UV				=	IN.UV;
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	return	OUT;
+}
+
+float4	cShadingFurSkinPS(cFurShaderData IN) : COLOR
+{
+
+	float3	FurNormal	=	IN.Normal + IN.random ;
+	float	L			=	dot( FurNormal, -LightDirForced );
+	float	lp			=	min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float	hp0			=	min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp			=	pow( abs(hp0), HighLightPower );
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	(( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol*0.9 * ( ShadeBlend * 0.1 ) ));
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+
+	col.rgb				*=	FurSkinColor.rgb;
+	texcol.a			*=	FurSkinColor.a;
+
+	return	ColRate( float4( col.rgb, texcol.a ) * ColorRate );
+}
+
+cFurShaderData	cFurVS(appdata IN,uniform float ratio)
+{
+	cFurShaderData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4(IN.Position.xyz, 1), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	pos					=	float4( pos.xyz + (normalize( nor ) * Thickness * (ratio + 0.05)), 1);
+
+	OUT.random			=	0;
+	OUT.Position		=	mul(float4 (pos.xyz, 1), wvp);
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+	OUT.UV				=	IN.UV + float2( (ratio/100)*FurCortX/UVMag, (ratio/100)*FurCortY/UVMag );
+
+	return	OUT;
+}
+
+float4 cShadingFurPS (cFurShaderData IN,uniform float ratio): COLOR
+{
+	float3	FurNormal	=	IN.Normal /* + IN.random */;
+	float	L			=	dot( FurNormal, -LightDirForced );
+	float	lp			=	min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float	hp0			=	min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp			=	pow( hp0, HighLightPower );
+
+	float4	shadecol	=	tex2D( FurShadeTex, float2( lp, 0.5 ) );
+	float4	furtex		=	tex2D( FurShadeTex, IN.UV * UVMag );
+	float4	texcol		=	tex2D( ColorTex, IN.UV );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	(( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol*1.1 * ( ShadeBlend * 0.1 ) ));
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+
+	col.rgb				*=	ratio + (1.0 - ratio) * FurDarkening;
+	float3	FurBrite	=	(1 - col.rgb) * FurBritening.rgb;
+
+	col.rgb				=	col.rgb + (((ratio + 1) * (ratio - 0.5)) * FurBrite);
+	texcol.a			*=	1 - (1 - furtex.a) * (ratio + 1);
+
+	return ColRate( float4( col.rgb, texcol.a ) * ColorRate );
+}
+
+technique ShadingFurSkin
+{
+		pass SSkin
+		{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cFurSkinVS();
+		PixelShader			=	compile	ps_3_0	cShadingFurSkinPS();
+		}
+}
+
+technique ShadingFur
+{
+		pass SFur0
+		{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.0);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.0);
+		CullMode			=	none;
+		ZWriteEnable		=	false;
+		}
+		pass SFur1
+		{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.125);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.125);
+		CullMode			=	none;
+		ZWriteEnable		=	false;
+		}
+		pass SFur2
+		{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.25);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.25);
+		CullMode			=	none;
+		ZWriteEnable		=	false;
+		}
+		pass SFur3
+		{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.375);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.375);
+		CullMode			=	none;
+		ZWriteEnable		=	false;
+		}
+		pass SFur4
+		{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.5);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.5);
+		CullMode			=	none;
+		ZWriteEnable		=	false;
+		}
+		pass SFur5
+		{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.625);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.625);
+		CullMode			=	none;
+		ZWriteEnable		=	false;
+		}
+		pass SFur6
+		{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.75);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.75);
+		CullMode			=	none;
+		ZWriteEnable		=	false;
+		}
+		pass SFur7
+		{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.875);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.875);
+		CullMode			=	none;
+		ZWriteEnable		=	false;
+		}
+		pass SFur8
+		{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cFurVS (1.0);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (1.0);
+		CullMode			=	none;
+		ZWriteEnable		=	false;
+		}
+}
+
+//-----------------------------------------------------------
+//	20090522	kemoさん追加FurShader	ここまで
+//-----------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20090620	追加technique 逆光ハイライト	ここから
+//------------------------------------------------------------------
+
+struct cBHLData
+{
+	float4	Position	:	POSITION;
+	float2	UV			:	TEXCOORD0;
+	float3	Normal		:	TEXCOORD1;
+};
+
+float4 cBHLMainPS( cVertexData IN ) : COLOR //逆光ハイライトピクセルシェーダ
+{
+	float4	viewNor		=	mul( IN.Normal, wv );
+	float	L2			=	dot( viewNor, float4(0,0,1,0) );
+	float	lp2			=	min( 1.0, max( 0.0, ( L2 * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float	hp02		=	min( 1.0, max( 0.0, ( L2 * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp2			=	pow( hp02, HighLightPower );
+
+	float4	nnormal		=	float4 (normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	BHLcol		=	tex2D( ShadeTex, float2( lp2, 0.9 ) );
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.9 ) );
+	float4	hl2			=	float4( hp2, hp2, hp2, 1.0 );
+
+	float4	col2;
+	col2				=	BHLcol;
+
+	return	ColRate( float4(shadecol.rgb, BHLcol.a) * ColorRate );
+}
+
+technique AllAmb_ShadowOff_BHL
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+	}
+}
+
+technique AllAmb_ShadowOff_InkOff_BHL
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+	}
+}
+
+//------------------------------------------------------------------
+//	20090620	追加technique 逆光ハイライト	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20090622	★追加technique Fur+KAZAN	ここから
+//------------------------------------------------------------------
+technique ShadingFur_KAZAN
+{
+		pass SFurK0
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.0);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.0);
+		CullMode			=	none;
+		}
+		pass SFurK1
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.125);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.125);
+		CullMode			=	none;
+		}
+		pass SFurK2
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.25);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.25);
+		CullMode			=	none;
+		}
+		pass SFurK3
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.375);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.375);
+		CullMode			=	none;
+		}
+		pass SFurK4
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.5);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.5);
+		CullMode			=	none;
+		}
+		pass SFurK5
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.625);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.625);
+		CullMode			=	none;
+		}
+		pass SFurK6
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.75);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.75);
+		CullMode			=	none;
+		}
+		pass SFurK7
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.875);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (0.875);
+		CullMode			=	none;
+		}
+		pass SFurK8
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (1.0);
+		PixelShader			=	compile	ps_3_0	cShadingFurPS (1.0);
+		CullMode			=	none;
+		}
+}
+
+//------------------------------------------------------------------
+//	20090622	★追加technique Fur+KAZAN	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20090824	★追加technique 逆光ハイライト応用輪郭ぼかし	ここから
+//------------------------------------------------------------------
+
+float4	cMainWashOut( cVertexData IN ) : COLOR //逆光ハイライト応用輪郭ぼかし用ピクセルシェーダ
+{
+	float4	viewNor		=	mul( IN.Normal, wv );
+	float	L			=	dot( viewNor, float4(0,0,1,0) );
+	float	lp			=	min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float	hp0			=	min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp			=	pow( hp0, HighLightPower );
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.1 ) );
+	float4	texcol  	=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col 				+=	hl * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4( col.rgb, shadecol.a) * ColorRate );
+}
+
+technique WASHOUT
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainWashOut();
+	}
+}
+
+technique WASHOUT_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		PixelShader			=	compile	ps_3_0	cMainWashOut();
+	}
+}
+
+technique WASHOUT_GENZAN
+{
+	pass Main
+	{
+		StateBlock			=	(GENZANState);
+		PixelShader			=	compile	ps_3_0	cMainWashOut();
+	}
+}
+
+technique WASHOUT_JOUZAN
+{
+	pass Main
+	{
+		StateBlock			=	(JOUZANState);
+		PixelShader			=	compile	ps_3_0	cMainWashOut();
+	}
+}
+
+technique WASHOUT_NEGA
+{
+	pass Main
+	{
+		StateBlock			=	(NEGAState);
+		PixelShader			=	compile	ps_3_0	cMainWashOut();
+	}
+}
+
+technique WASHOUT_KAZAN_FRONT
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		PixelShader			=	compile	ps_3_0	cMainWashOut();
+		ZEnable				=	false;
+	}
+}
+
+technique WASHOUT_GENZAN_FRONT
+{
+	pass Main
+	{
+		StateBlock			=	(GENZANState);
+		PixelShader			=	compile	ps_3_0	cMainWashOut();
+		ZEnable				=	false;
+	}
+}
+
+technique WASHOUT_JOUZAN_FRONT
+{
+	pass Main
+	{
+		StateBlock			=	(JOUZANState);
+		PixelShader			=	compile	ps_3_0	cMainWashOut();
+		ZEnable				=	false;
+	}
+}
+
+technique WASHOUT_NEGA_FRONT
+{
+	pass Main
+	{
+		StateBlock			=	(NEGAState);
+		PixelShader			=	compile	ps_3_0	cMainWashOut();
+		ZEnable				=	false;
+	}
+}
+
+//------------------------------------------------------------------
+//	20090824	★追加technique 逆光ハイライト応用輪郭ぼかし	ここまで
+//------------------------------------------------------------------
+
+//-----------------------------------------------------------
+//	ミ追加未発表technique	ここから
+//-----------------------------------------------------------
+
+float4 cMainWashoutFlash( cVertexData IN ) : COLOR //逆光ハイライト応用輪郭ぼかしテクスチャ点滅用ピクセルシェーダ
+{
+	float4	viewNor		=	mul( IN.Normal, wv );
+	float	L			=	dot( viewNor, float4(0,0,1,0) );
+	float	lp			=	min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float	hp0			=	min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp			=	pow( hp0, HighLightPower );
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.1 ) );
+	float4	texcol  	=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+	float	FlashAlpha	=	(round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc)) + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc)) * shadecol.a;
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4( col.rgb, FlashAlpha ) * ColorRate );
+}
+
+technique WASHOUT_FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainWashoutFlash();
+	}
+}
+
+technique WASHOUT_KAZAN_FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		PixelShader			=	compile	ps_3_0	cMainWashoutFlash();
+	}
+}
+
+//-----------------------------------------------------------
+//	ミ追加未発表technique	ここから
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+//	ミ追加未発表technique	ここから
+//-----------------------------------------------------------
+
+float4 cInkPS_TrnsC( cVertexData2 IN ) : COLOR
+{
+	return ColRate( float4((ManColor.rgb / 3 * ColorRate), ManColor.a) );
+}
+
+technique Transparent2
+{
+
+	pass Main
+	{
+		StateBlock			=	(TransState);
+		PixelShader			=	compile	ps_3_0	cInkPS_TrnsC();
+	}
+
+}
+
+technique Transparent3
+{
+	pass Main
+	{
+		StateBlock			=	(TransState);
+	}
+
+	pass Pass0
+	{
+		StateBlock			=	(TransState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+	}
+
+}
+
+//-----------------------------------------------------------
+//	ミ追加未発表technique	ここまで
+//-----------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20091030	★ハイライト色変え	ここから
+//------------------------------------------------------------------
+
+float4	HighLightColor
+<
+	string	UIName		=	"HighLightColor";
+	string	UIWidget	=	"Color";
+>						=	{ 1.0, 1.0, 1.0, 1.0 };
+
+float4 cMainPS4( cVertexData IN ) : COLOR//ShadeTex適用範囲変更ピクセルシェーダ
+{
+	float4	nnormal		=	float4 (normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+
+	//tsoview
+	float2	texcoord;
+
+	texcoord.x			=	( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
+	texcoord.y			=	( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
+	float4	c			=	tex2D( ShadowTex, texcoord );
+	float	z			=	c.r + (c.g + c.b/256.0)/256.0;
+
+	if	( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
+	{
+		ldotn			=	-1.0;
+		hdotn			=	-1.0;
+	}
+
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.1 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4 ( hp, hp, hp, 1.0 );
+	float4	hlc			=	float4 ( HighLightColor.rgb * hp, HighLightColor.a);
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					-=	hl * ( HighLightBlend * 0.0025 );
+	col					+=	hlc * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4(col.rgb, texcol.a ) * ColorRate );
+}
+
+technique	AllAmb_ShadowOff_HLC
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+	}
+}
+
+technique	AllAmb_ShadowOn_HLC
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+	}
+}
+
+technique AllAmb_ShadowOff_InkOff_HLC
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+	}
+}
+
+technique AllAmb_ShadowOn_InkOff_HLC
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+	}
+}
+
+technique AllAmb_ShadowOff_BHL_HLC
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+	}
+}
+
+technique AllAmb_ShadowOff_InkOff_BHL_HLC
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+	}
+}
+
+//------------------------------------------------------------------
+//	20091030	★ハイライト色変え	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20100120	★追加technique 常に手前＋	ここから
+//------------------------------------------------------------------
+
+technique ShadowOff_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+
+technique ShadowOn_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique ShadowOff_InkOff_Front
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique ShadowOn_InkOff_Front
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique AllAmb_ShadowOff_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique AllAmb_ShadowOn_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique AllAmb_ShadowOff_InkOff_Front
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique AllAmb_ShadowOn_InkOff_Front
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique AllAmb_ShadowOff_BHL_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique AllAmb_ShadowOff_InkOff_BHL_Front
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique AllAmb_ShadowOff_HLC_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique AllAmb_ShadowOn_HLC_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique AllAmb_ShadowOff_InkOff_HLC_Front
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique AllAmb_ShadowOn_InkOff_HLC_Front
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique AllAmb_ShadowOff_BHL_HLC_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique AllAmb_ShadowOff_InkOff_BHL_HLC_Front
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+//------------------------------------------------------------------
+//	20100120	★追加technique 常に手前＋	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20100305	★NAT系新technique追加	ここから
+//------------------------------------------------------------------
+
+technique NAT_AllAmb_ShadowOff
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+}
+
+technique NAT_AllAmb_ShadowOn
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+}
+
+technique NAT_AllAmb_ShadowOn_InkOff
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_BL
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique NAT_AllAmb_ShadowOn_BL
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_BL
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique NAT_AllAmb_ShadowOn_InkOff_BL
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique NAT_ShadowOff_BL
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique NAT_ShadowOn_BL
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique NAT_ShadowOff_InkOff_BL
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique NAT_ShadowOn_InkOff_BL
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+	}
+	pass Pass0
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSB();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+	pass Pass1
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cHLMapVSF();
+		PixelShader			=	compile	ps_3_0	cHLMapPS();
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_BHL
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_BHL
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_HLC
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+	}
+}
+
+technique NAT_AllAmb_ShadowOn_HLC
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_HLC
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+	}
+}
+
+technique NAT_AllAmb_ShadowOn_InkOff_HLC
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_BHL_HLC
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader		=	compile	ps_3_0	cBHLMainPS();
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_BHL_HLC
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader		=	compile	ps_3_0	cBHLMainPS();
+	}
+}
+
+technique NAT_ShadowOff_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+
+technique NAT_ShadowOn_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_ShadowOff_InkOff_Front
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_ShadowOn_InkOff_Front
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_AllAmb_ShadowOn_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_Front
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_AllAmb_ShadowOn_InkOff_Front
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_BHL_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_BHL_Front
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_HLC_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader		=	compile	ps_3_0	cMainPS4();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_AllAmb_ShadowOn_HLC_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_HLC_Front
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_AllAmb_ShadowOn_InkOff_HLC_Front
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_BHL_HLC_Front
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_BHL_HLC_Front
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS4();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+//------------------------------------------------------------------
+//	20100305	★NAT系新technique追加	ここまで
+//------------------------------------------------------------------
+
+//-----------------------------------------------------------
+//	20100320	★テクスチャをアルファ情報のみとして解釈	ここから
+//-----------------------------------------------------------
+
+float4	Tex2AlphaCol	:	Diffuse
+<
+	string UIName		=	"Tex2AlphaCol";
+	string UIWidget		=	"Color";
+>						=	{ 0.0f, 0.0f, 0.0f, 1.0f };
+
+
+float4 cTex2AlphaPS( cVertexData IN ) : COLOR//テクスチャをアルファ情報のみとして解釈ピクセルシェーダ
+{
+	float4  texcol  	=	tex2D( ColorTex, IN.UV  );
+	float texcol2alpha	=	( 1 - max ( texcol.b, ( max ( texcol.r, texcol.g ) ) ) );
+
+	//テクスチャのカラーから明度を算出
+	return	ColRate( float4(Tex2AlphaCol.rgb, texcol2alpha) * ColorRate );
+}
+
+technique Tex2Alpha
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cTex2AlphaPS();
+	}
+}
+
+//-----------------------------------------------------------
+//	20100320	★テクスチャをアルファ情報のみとして解釈	ここまで
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+//	20100607	★追加technique	KAZAN2	ここから
+//-----------------------------------------------------------
+
+//変数定義
+
+float4	KAZAN2COLOR		:	Diffuse
+<
+	string	UIName		=	"KAZAN2COLOR";
+	string	UIWidget	=	"Color";
+>						=	{ 1.0f, 1.0f, 1.0f, 1.0f };
+
+//ピクセルシェーダ
+
+float4	KATAHO_KAZAN( cVertexData IN ) : COLOR
+{
+	float4	t0			=	tex2D( ColorTex, IN.UV  );
+	float4	r0			=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4	lrp			=	r0 + KAZAN2COLOR * ( t0 - r0 );
+	float	t1			=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float	r1			=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, (r1 - 0.75) * t0.a * KAZAN2COLOR.a );
+
+	return	ColRate(lrp2 * ColorRate);
+}
+
+float4	KATAHO_KAZAN_UVROT( cVertexData IN ) : COLOR
+{
+	float4	t0			=	tex2D( RotateTex, IN.UV  );
+	float4	r0			=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4	lrp			=	r0 + KAZAN2COLOR * ( t0 - r0 );
+	float	t1			=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float	r1			=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, (r1 - 0.75) * t0.a * KAZAN2COLOR.a );
+
+	return	ColRate(lrp2 * ColorRate);
+}
+
+float4	KATAHO_KAZAN_UVFLS( cVertexData IN ) : COLOR //テクスチャ点滅用ピクセルシェーダ
+{
+	float4	t0			=	tex2D( ColorTex, IN.UV  );
+	float4	r0			=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4	lrp			=	r0 + KAZAN2COLOR * ( t0 - r0 );
+	float	t1			=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float	r1			=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, (r1 - 0.75) * t0.a * KAZAN2COLOR.a );
+
+	float	FlashAlpha	=	(round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc)) + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc)) * lrp2.a;
+
+	return	ColRate( float4( lrp2.rgb, FlashAlpha )  * ColorRate);
+}
+
+float4	KATAHO_KAZAN_UVROT_UVFLS( cVertexData IN ) : COLOR //テクスチャ点滅用ピクセルシェーダ
+{
+	float4	t0			=	tex2D( RotateTex, IN.UV  );
+	float4	r0			=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4	lrp			=	r0 + KAZAN2COLOR * ( t0 - r0 );
+	float	t1			=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float	r1			=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, (r1 - 0.75) * t0.a * KAZAN2COLOR.a );
+
+	float	FlashAlpha	=	(round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc)) + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc)) * lrp2.a;
+
+	return	ColRate( float4( lrp2.rgb, FlashAlpha )  * ColorRate);
+}
+
+float4	WASHOUT_KATAHO_KAZAN( cVertexData IN ) : COLOR //逆光ハイライト応用輪郭ぼかし用ピクセルシェーダ
+{
+	float4	viewNor		=	mul( IN.Normal, wv );
+	float	L			=	dot( viewNor, float4(0,0,1,0) );
+	float	lp			=	min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.1 ) );
+
+		float4	t0		=	tex2D( ColorTex, IN.UV  );
+		float4	r0		=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+		float4	lrp		=	r0 + KAZAN2COLOR * ( t0 - r0 );
+		float	t1		=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+		float	r1		=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, (r1 - 0.75) * t0.a * KAZAN2COLOR.a );
+
+return	ColRate(float4( lrp2.rgb, lrp2.a * shadecol.a) * ColorRate);
+}
+
+float4	WASHOUT_KATAHO_KAZAN_FLASH( cVertexData IN ) : COLOR //逆光ハイライト応用輪郭ぼかしテクスチャ点滅用ピクセルシェーダ
+{
+	float4	viewNor		=	mul( IN.Normal, wv );
+	float	L			=	dot( viewNor, float4(0,0,1,0) );
+	float	lp			=	min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.1 ) );
+
+	float4 t0	=	tex2D( ColorTex, IN.UV  );
+	float4 r0	=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4 lrp	=	r0 + KAZAN2COLOR * ( t0 - r0 );
+	float t1	=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float r1	=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, (r1 - 0.75) * t0.a * KAZAN2COLOR.a );
+
+	float	FlashAlpha		=	(round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc)) + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc)) * shadecol.a;
+
+return ColRate(float4( lrp2.rgb,lrp2.a * FlashAlpha) * ColorRate);
+
+}
+
+//StateBlock
+
+stateblock	KAZAN2State		=	stateblock_state
+{
+	VertexShader			=	compile	vs_3_0	cMainVS();
+	PixelShader				=	compile	ps_3_0	KATAHO_KAZAN();
+	AlphaBlendEnable		=	true;
+	SrcBlend				=	one;
+	DestBlend				=	invsrcalpha;
+	AlphaFunc				=	always;
+	ZWriteEnable			=	false;
+};
+
+//シェーディングテクニック
+
+technique KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+	}
+}
+
+technique KAZAN2_FRONT
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		ZEnable				=	false;
+	}
+}
+
+technique SCROLL_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2();
+	}
+}
+
+technique XYSCROLL_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9();
+	}
+}
+
+technique XREPEAT_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3();
+	}
+}
+
+technique BOUND_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4();
+	}
+}
+
+technique CIRCLE_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN();
+	}
+}
+
+technique BLANCO_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6();
+	}
+}
+
+technique EIGHT_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7();
+	}
+}
+
+technique WAVE_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8();
+	}
+}
+
+technique ROTATE_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVROT();
+	}
+}
+
+technique CLOCK_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVROT();
+	}
+}
+
+technique FLASH_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+	}
+}
+
+technique WASHOUT_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		PixelShader			=	compile	ps_3_0	WASHOUT_KATAHO_KAZAN();
+	}
+}
+
+technique WASHOUT_KAZAN2_FRONT
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		PixelShader			=	compile	ps_3_0	WASHOUT_KATAHO_KAZAN();
+		ZEnable				=	false;
+	}
+}
+
+technique WASHOUT_KAZAN2_FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		PixelShader			=	compile	ps_3_0	WASHOUT_KATAHO_KAZAN_FLASH();
+	}
+}
+
+//-----------------------------------------------------------
+//	20100607	★追加technique	KAZAN2	ここまで
+//-----------------------------------------------------------
+
+//-----------------------------------------------------------
+//	20100608	★追加technique	emissive	ここから
+//-----------------------------------------------------------
+
+//変数定義
+float4	Emissive		:	Diffuse
+<
+	string UIName		=	"Emissive";
+	string UIWidget		=	"Color";
+>						=	{ 0.0f, 0.0f, 0.0f, 0.0f };
+
+//ピクセルシェーダ
+float4	cMainPS_emissive( cVertexData IN ) : COLOR//デフォルトピクセルシェーダ+emissive
+{
+	float4	nnormal		=	float4 (normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.6) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4 ( hp, hp, hp, 1.0 );
+
+	float4  col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4(col.rgb, texcol.a ) + Emissive );
+}
+
+float4 cMainPS3_emissive( cVertexData IN ) : COLOR//ShadeTex適用範囲変更ピクセルシェーダ+emissive
+{
+	float4	nnormal		=	float4(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul(nnormal, view);
+	float4	eslight		=	mul(LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize(eyedir + eslight);
+	
+	float	ldotn		=	dot(nnormal, -LightDirForced);
+	float	hdotn		=	dot(esnormal, -halfvec);
+	float	lp			=	min(1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min(1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow(hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.1 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+
+	float4	 col;
+	col	=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col +=	hl * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4(col.rgb, texcol.a ) + Emissive );
+}
+
+float4	cBHLMainPS_emissive( cVertexData IN ) : COLOR //逆光ハイライトピクセルシェーダ+emissive
+{
+	float4	viewNor		=	mul( IN.Normal, wv );
+	float	L2			=	dot( viewNor, float4(0,0,1,0) );
+	float	lp2			=	min( 1.0, max( 0.0, ( L2 * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float	hp02		=	min( 1.0, max( 0.0, ( L2 * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp2			=	pow( hp02, HighLightPower );
+
+	float4	nnormal		=	float4(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul(nnormal, view);
+	float4	eslight		=	mul(LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize(eyedir + eslight);
+	
+	float	ldotn		=	dot(nnormal, -LightDirForced);
+	float	hdotn		=	dot(esnormal, -halfvec);
+	float	lp			=	min(1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min(1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow(hp0, HighLightPower);
+
+	float4	BHLcol		=	tex2D( ShadeTex, float2( lp2, 0.9 ) );
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.9 ) );
+	float4	hl2			=	float4( hp2, hp2, hp2, 1.0 );
+
+	float4	col2;
+	col2				=	BHLcol;
+
+	return	ColRate( float4(shadecol.rgb, BHLcol.a) + Emissive );
+}
+
+float4	cMainPS_UVROT_emissive( cVertexData IN ) : COLOR //UVRotate用ピクセルシェーダ+emissive
+{
+	float4	nnormal		=	float4	(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol  	=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 ); // old
+
+	return	ColRate( float4( col.rgb, texcol.a ) + Emissive );
+}
+
+float4	cMainPS_UVFLS_emissive( cVertexData IN ) : COLOR //テクスチャ点滅用ピクセルシェーダ+emissive
+{
+	float4	nnormal		=	float4	(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol  	=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+	float	FlashAlpha	=	(round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc)) + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc)) * texcol.a;
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 ); // old
+
+	return	ColRate( float4( col.rgb, FlashAlpha ) + Emissive );
+}
+
+float4	cMainWashOut_emissive( cVertexData IN ) : COLOR //逆光ハイライト応用輪郭ぼかし用ピクセルシェーダ+emissive
+{
+	float4	viewNor		=	mul( IN.Normal, wv );
+	float	ldotn		=	dot( viewNor, float4(0,0,1,0) );
+	float4	nnormal		=	float4	(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.1 ) );
+	float4	texcol  	=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4( col.rgb, shadecol.a) + Emissive );
+}
+
+float4	cMainWashoutFlash_emissive( cVertexData IN ) : COLOR //逆光ハイライト応用輪郭ぼかしテクスチャ点滅用ピクセルシェーダ+emissive
+{
+	float4	viewNor		=	mul( IN.Normal, wv );
+	float	ldotn		=	dot( viewNor, float4(0,0,1,0) );
+	float4	nnormal		=	float4	(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.1 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+	float	FlashAlpha	=	(round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc)) + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc)) * shadecol.a;
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+
+	return	ColRate( float4( col.rgb, FlashAlpha ) + Emissive );
+}
+
+float4	KATAHO_KAZAN_emissive( cVertexData IN ) : COLOR
+{
+	float4	t0			=	tex2D( ColorTex, IN.UV  );
+	float4	r0			=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4	lrp			=	r0 + KAZAN2COLOR * ( t0 - r0 );
+	float	t1			=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float	r1			=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, ((r1 - 0.75) * KAZAN2COLOR.a));
+
+	return	ColRate(lrp2 + Emissive);
+}
+
+float4	KATAHO_KAZAN_UVROT_emissive( cVertexData IN ) : COLOR
+{
+	float4	t0			=	tex2D( ColorTex, IN.UV  );
+	float4	r0			=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4	lrp			=	r0 + KAZAN2COLOR * ( t0 - r0 );
+	float	t1			=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float	r1			=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, (r1 - 0.75) * t0.a * KAZAN2COLOR.a);
+
+	return	ColRate(lrp2 + Emissive);
+}
+
+float4	KATAHO_KAZAN_UVFLS_emissive( cVertexData IN ) : COLOR //テクスチャ点滅用ピクセルシェーダ
+{
+	float4	t0			=	tex2D( ColorTex, IN.UV  );
+	float4	r0			=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4	lrp			=	r0 + KAZAN2COLOR * ( t0 - r0 );
+	float	t1			=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float	r1			=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, (r1 - 0.75) * t0.a * KAZAN2COLOR.a);
+
+	float	FlashAlpha	=	(round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc)) + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc)) * lrp2.a;
+
+	return	ColRate( float4( lrp2.rgb, FlashAlpha )  + Emissive);
+}
+
+float4	WASHOUT_KATAHO_KAZAN_emissive( cVertexData IN ) : COLOR //逆光ハイライト応用輪郭ぼかし用ピクセルシェーダ
+{
+	float4	viewNor		=	mul( IN.Normal, wv );
+	float	L			=	dot( viewNor, float4(0,0,1,0) );
+	float	lp			=	min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.1 ) );
+
+	float4	t0			=	tex2D( ColorTex, IN.UV  );
+	float4	r0			=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4	lrp			=	r0 + KAZAN2COLOR * ( t0 - r0 );
+	float	t1			=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float	r1			=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, (r1 - 0.75) * t0.a * KAZAN2COLOR.a);
+
+return	ColRate(float4( lrp2.rgb, lrp2.a * shadecol.a) + Emissive);
+
+}
+
+float4	WASHOUT_KATAHO_KAZAN_FLASH_emissive( cVertexData IN ) : COLOR //逆光ハイライト応用輪郭ぼかしテクスチャ点滅用ピクセルシェーダ
+{
+	float4	viewNor		=	mul( IN.Normal, wv );
+	float	L			=	dot( viewNor, float4(0,0,1,0) );
+	float	lp			=	min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.1 ) );
+
+	float4	t0			=	tex2D( ColorTex, IN.UV  );
+	float4	r0			=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4	lrp			=	r0 + KAZAN2COLOR * ( t0 - r0 );
+	float	t1			=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float	r1			=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, (r1 - 0.75) * t0.a * KAZAN2COLOR.a);
+
+	float	FlashAlpha	=	(round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc)) + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc)) * shadecol.a;
+
+	return	ColRate(float4( lrp2.rgb,lrp2.a * FlashAlpha) + Emissive);
+
+}
+
+//シェーディングテクニック
+
+technique AllAmb_ShadowOff_InkOff_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3_emissive();
+	}
+}
+
+technique AllAmb_ShadowOff_InkOff_BHL_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3_emissive();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS_emissive();
+	}
+}
+
+technique AllAmb_ShadowOff_InkOff_Front_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3_emissive();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique AllAmb_ShadowOff_InkOff_BHL_Front_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3_emissive();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS_emissive();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3_emissive();
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_BHL_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3_emissive();
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS_emissive();
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_Front_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3_emissive();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique NAT_AllAmb_ShadowOff_InkOff_BHL_Front_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS3_emissive();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+	pass Pass0
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cBHLMainPS_emissive();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		PixelShader			=	compile	ps_3_0	cMainPS_emissive();
+	}
+}
+
+technique KAZAN_FRONT_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		PixelShader			=	compile	ps_3_0	cMainPS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique SCROLL_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2();
+		PixelShader			=	compile	ps_3_0	cMainPS_emissive();
+	}
+}
+
+technique XYSCROLL_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9();
+		PixelShader			=	compile	ps_3_0	cMainPS_emissive();
+	}
+}
+
+technique XREPEAT_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3();
+		PixelShader			=	compile	ps_3_0	cMainPS_emissive();
+	}
+}
+
+technique BOUND_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4();
+		PixelShader			=	compile	ps_3_0	cMainPS_emissive();
+	}
+}
+
+technique CIRCLE_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5();
+		PixelShader			=	compile	ps_3_0	cMainPS_emissive();
+	}
+}
+
+technique BLANCO_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6();
+		PixelShader			=	compile	ps_3_0	cMainPS_emissive();
+	}
+}
+
+technique EIGHT_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7();
+		PixelShader			=	compile	ps_3_0	cMainPS_emissive();
+	}
+}
+
+technique WAVE_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8();
+		PixelShader			=	compile	ps_3_0	cMainPS_emissive();
+	}
+}
+
+technique ROTATE_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT_emissive();
+	}
+}
+
+technique CLOCK_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT_emissive();
+	}
+}
+
+technique FLASH_KAZAN_Emissives
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique WASHOUT_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS();
+		PixelShader			=	compile	ps_3_0	cMainWashOut_emissive();
+	}
+}
+
+technique WASHOUT_KAZAN_FRONT_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		PixelShader			=	compile	ps_3_0	cMainWashOut_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique WASHOUT_KAZAN_FLASH_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		PixelShader			=	compile	ps_3_0	cMainWashoutFlash_emissive();
+	}
+}
+
+technique KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_emissive();
+	}
+}
+
+technique KAZAN2_FRONT_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique SCROLL_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_emissive();
+	}
+}
+
+technique XYSCROLL_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_emissive();
+	}
+}
+
+technique XREPEAT_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_emissive();
+	}
+}
+technique BOUND_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_emissive();
+	}
+}
+technique CIRCLE_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_emissive();
+	}
+}
+technique BLANCO_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_emissive();
+	}
+}
+
+technique EIGHT_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_emissive();
+	}
+}
+technique WAVE_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_emissive();
+	}
+}
+
+technique ROTATE_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVROT_emissive();
+	}
+}
+
+technique CLOCK_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVROT_emissive();
+	}
+}
+
+technique FLASH_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+	}
+}
+
+technique WASHOUT_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		PixelShader			=	compile	ps_3_0	WASHOUT_KATAHO_KAZAN_emissive();
+	}
+}
+
+technique WASHOUT_KAZAN2_FRONT_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		PixelShader			=	compile	ps_3_0	WASHOUT_KATAHO_KAZAN_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique WASHOUT_KAZAN2_FLASH_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		PixelShader			=	compile	ps_3_0	WASHOUT_KATAHO_KAZAN_FLASH_emissive();
+	}
+}
+
+//-----------------------------------------------------------
+//	20100608	★追加technique	emissive	ここまで
+//-----------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20101019	★追加technique	Fur+KAZAN2+Emissive	ここから
+//------------------------------------------------------------------
+
+float4	Fur_KAZAN2_Emissive_PS (cFurShaderData IN,uniform float	ratio): COLOR
+{
+
+//KAZAN2のカラー決め部分
+	float4	t0			=	tex2D( ColorTex, IN.UV  );
+	float4	r0			=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4	lrp			=	r0 + KAZAN2COLOR * ( t0 - r0 );
+	float	t1			=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float	r1			=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, ((r1 - 0.75) * KAZAN2COLOR.a));
+
+//furshaderのテクスチャの一部
+	float4	furtex		=	tex2D( FurShadeTex, IN.UV * UVMag );
+
+//KAZAN2のカラーをfurshaderと同じ内容で色付け
+	lrp2.rgb			*=	ratio + (1.0 - ratio) * FurDarkening;
+	float3	FurBrite	=	(1 - lrp2.rgb) * FurBritening.rgb;
+	lrp2.rgb			=	lrp2.rgb + (((ratio + 1) * (ratio - 0.5)) * FurBrite);
+
+//アルファチャンネルだけfurshaderと同じくする
+	lrp2				*=	1 - (1 - furtex.a) * (ratio + 1);
+
+//出力
+	return	ColRate(lrp2 + Emissive);
+
+}
+
+technique ShadingFur_KAZAN2_Emissive
+{
+		pass SFurK0
+		{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.0);
+		PixelShader			=	compile	ps_3_0	Fur_KAZAN2_Emissive_PS (0.0);
+		CullMode			=	none;
+		}
+		pass SFurK1
+		{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.125);
+		PixelShader			=	compile	ps_3_0	Fur_KAZAN2_Emissive_PS (0.125);
+		CullMode			=	none;
+		}
+		pass SFurK2
+		{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.25);
+		PixelShader			=	compile	ps_3_0	Fur_KAZAN2_Emissive_PS (0.25);
+		CullMode			=	none;
+		}
+		pass SFurK3
+		{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.375);
+		PixelShader			=	compile	ps_3_0	Fur_KAZAN2_Emissive_PS (0.375);
+		CullMode			=	none;
+		}
+		pass SFurK4
+		{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.5);
+		PixelShader			=	compile	ps_3_0	Fur_KAZAN2_Emissive_PS (0.5);
+		CullMode			=	none;
+		}
+		pass SFurK5
+		{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.625);
+		PixelShader			=	compile	ps_3_0	Fur_KAZAN2_Emissive_PS (0.625);
+		CullMode			=	none;
+		}
+		pass SFurK6
+		{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.75);
+		PixelShader			=	compile	ps_3_0	Fur_KAZAN2_Emissive_PS (0.75);
+		CullMode			=	none;
+		}
+		pass SFurK7
+		{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.875);
+		PixelShader			=	compile	ps_3_0	Fur_KAZAN2_Emissive_PS (0.875);
+		CullMode			=	none;
+		}
+		pass SFurK8
+		{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cFurVS (1.0);
+		PixelShader			=	compile	ps_3_0	Fur_KAZAN2_Emissive_PS (1.0);
+		CullMode			=	none;
+		}
+}
+//------------------------------------------------------------------
+//	20101019	★追加technique	Fur+KAZAN2+Emissive	ここまで
+//------------------------------------------------------------------
+
+
+//------------------------------------------------------------------
+//	20101019	★追加technique	Fur+KAZAN+Emissive	ここから
+//------------------------------------------------------------------
+
+float4	cShadingFurPSEmissive (cFurShaderData IN,uniform float	ratio): COLOR
+{
+	float3	FurNormal	=	IN.Normal /* + IN.random */;
+	float	L			=	dot( FurNormal, -LightDirForced );
+	float	lp			=	min( 1.0, max( 0.0, ( L * 0.5   ) + ( Ambient   * 0.01 ) ) );
+	float	hp0			=	min( 1.0, max( 0.0, ( L * 0.708 ) + ( HighLight * 0.01 ) ) );
+	float	hp			=	pow( hp0, HighLightPower );
+
+	float4	shadecol	=	tex2D( FurShadeTex, float2( lp, 0.5 ) );
+	float4	furtex		=	tex2D( FurShadeTex, IN.UV * UVMag );
+	float4	texcol		=	tex2D( ColorTex, IN.UV );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	(( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol*1.1 * ( ShadeBlend * 0.1 ) ));
+	col					+=	hl * ( HighLightBlend * 0.0025 );
+
+	col.rgb				*=	ratio + (1.0 - ratio) * FurDarkening;
+	float3	FurBrite	=	(1 - col.rgb) * FurBritening.rgb;
+	col.rgb				=	col.rgb + (((ratio + 1) * (ratio - 0.5)) * FurBrite);
+	texcol.a			*=	1 - (1 - furtex.a) * (ratio + 1);
+
+	return	ColRate( float4( col.rgb, texcol.a ) + Emissive );
+}
+
+technique ShadingFur_KAZAN_Emissive
+{
+		pass SFurK0
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.0);
+		PixelShader			=	compile	ps_3_0	cShadingFurPSEmissive (0.0);
+		CullMode			=	none;
+		}
+		pass SFurK1
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.125);
+		PixelShader			=	compile	ps_3_0	cShadingFurPSEmissive (0.125);
+		CullMode			=	none;
+		}
+		pass SFurK2
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.25);
+		PixelShader			=	compile	ps_3_0	cShadingFurPSEmissive (0.25);
+		CullMode			=	none;
+		}
+		pass SFurK3
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.375);
+		PixelShader			=	compile	ps_3_0	cShadingFurPSEmissive (0.375);
+		CullMode			=	none;
+		}
+		pass SFurK4
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.5);
+		PixelShader			=	compile	ps_3_0	cShadingFurPSEmissive (0.5);
+		CullMode			=	none;
+		}
+		pass SFurK5
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.625);
+		PixelShader			=	compile	ps_3_0	cShadingFurPSEmissive (0.625);
+		CullMode			=	none;
+		}
+		pass SFurK6
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.75);
+		PixelShader			=	compile	ps_3_0	cShadingFurPSEmissive (0.75);
+		CullMode			=	none;
+		}
+		pass SFurK7
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (0.875);
+		PixelShader			=	compile	ps_3_0	cShadingFurPSEmissive (0.875);
+		CullMode			=	none;
+		}
+		pass SFurK8
+		{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cFurVS (1.0);
+		PixelShader			=	compile	ps_3_0	cShadingFurPSEmissive (1.0);
+		CullMode			=	none;
+		}
+}
+
+//------------------------------------------------------------------
+//	20101019	★追加technique	Fur+KAZAN+Emissive	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20110119	★追加technique	_eyedotn 	ここから
+//------------------------------------------------------------------
+
+float4	cMainPS5( cVertexData IN ) : COLOR//デフォルトピクセルシェーダ
+{
+	float4	nnormal		=	float4	(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+
+	//tsoview
+	float2	texcoord;
+
+	texcoord.x			=	( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
+	texcoord.y			=	( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
+	float4	c			=	tex2D( ShadowTex, texcoord );
+	float	z			=	c.r + (c.g + c.b/256.0)/256.0;
+
+	if	( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
+	{
+		ldotn			=	-1.0;
+		hdotn			=	-1.0;
+	}
+
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.6) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4	( hp, hp, hp, 1.0 );
+
+	float4	 col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 ); // old
+
+	float	eyedotn		=	max (0.01, dot (esnormal, -eyedir));
+	float	thickness	=	1.0 / eyedotn;
+	float	alpha		=	1.0 - pow ( ( 1.0 - texcol.a ) , thickness);
+
+	return	ColRate( float4(col.rgb, alpha ) * ColorRate );
+}
+
+float4	cMainPS6( cVertexData IN ) : COLOR//ShadeTex適用範囲変更ピクセルシェーダ
+{
+	float4	nnormal		=	float4	(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+
+	//tsoview
+	float2	texcoord;
+
+	texcoord.x			=	( 1.0 + IN.ZTex.x/IN.ZTex.w ) * 0.5;
+	texcoord.y			=	( 1.0 - IN.ZTex.y/IN.ZTex.w ) * 0.5;
+	float4	c			=	tex2D( ShadowTex, texcoord );
+	float	z			=	c.r + (c.g + c.b/256.0)/256.0;
+
+	if	( IN.ZTex.z / IN.ZTex.w > z + 1.0/256.0 )
+	{
+		ldotn			=	-1.0;
+		hdotn			=	-1.0;
+	}
+
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.1 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4	( hp, hp, hp, 1.0 );
+
+	float4	 col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 ); // old
+
+	float	eyedotn		=	max (0.01, dot (esnormal, -eyedir));
+	float	thickness	=	1.0 / eyedotn;
+	float	alpha		=	1.0 - pow ( ( 1.0 - texcol.a ) , thickness);
+
+	return	ColRate( float4(col.rgb, alpha ) * ColorRate );
+}
+
+technique ShadowOn_eyedotn
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS5();
+	}
+}
+
+technique AllAmb_ShadowOn_eyedotn
+{
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS6();
+	}
+}
+
+//------------------------------------------------------------------
+//	20110119	★追加technique	_eyedotn 	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20110515	★追加technique	既存複合	ここから
+//------------------------------------------------------------------
+
+float4	cMainPS_UVROT_UVFLS( cVertexData IN ) : COLOR //テクスチャ点滅用ピクセルシェーダ
+{
+	float4	nnormal		=	float4	(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol  	=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+	float	FlashAlpha	=	(round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc)) + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc)) * texcol.a;
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 ); // old
+
+	return	ColRate( float4( col.rgb, FlashAlpha ) * ColorRate );
+}
+
+float4	cMainPS_UVROT_UVFLS_emissive( cVertexData IN ) : COLOR //テクスチャ点滅用ピクセルシェーダ
+{
+	float4	nnormal		=	float4	(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.5) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol  	=	tex2D( ColorTex, IN.UV  );
+	float4	hl			=	float4( hp, hp, hp, 1.0 );
+	float	FlashAlpha	=	(round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc)) + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc)) * texcol.a;
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 ); // old
+
+	return	ColRate( float4( col.rgb, FlashAlpha ) + Emissive );
+}
+
+float4	KATAHO_KAZAN_UVROT_UVFLS_emissive( cVertexData IN ) : COLOR //テクスチャ点滅用ピクセルシェーダ
+{
+	float4	t0			=	tex2D( ColorTex, IN.UV  );
+	float4	r0			=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4	lrp			=	r0 + KAZAN2COLOR * ( t0 - r0 );
+	float	t1			=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float	r1			=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, ((r1 - 0.75) * KAZAN2COLOR.a));
+
+	float	FlashAlpha	=	(round(0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(1-FlashFunc)) + ((0.5 + (sin( 10 * UVSCR.x * UVFlash )/2))*(FlashFunc)) * lrp2.a;
+
+	return	ColRate( float4( lrp2.rgb, FlashAlpha )  + Emissive);
+}
+
+technique SCROLL_FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique XYSCROLL_FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique XREPEAT_FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique BOUND_FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique CIRCLE_FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique BLANCO_FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique EIGHT_FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique WAVE_FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique ROTATE_FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique CLOCK_FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique SCROLL_FLASH_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique XYSCROLL_FLASH_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique XREPEAT_FLASH_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique BOUND_FLASH_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique CIRCLE_FLASH_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique BLANCO_FLASH_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique EIGHT_FLASH_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique WAVE_FLASH_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique ROTATE_FLASH_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique CLOCK_FLASH_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique SCROLL_FLASH_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique XYSCROLL_FLASH_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+technique XREPEAT_FLASH_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique BOUND_FLASH_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique CIRCLE_FLASH_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique BLANCO_FLASH_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique EIGHT_FLASH_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique WAVE_FLASH_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique ROTATE_FLASH_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT_UVFLS();
+	}
+}
+
+technique CLOCK_FLASH_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT_UVFLS();
+	}
+}
+
+technique XYSCROLL_FLASH_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+
+technique XREPEAT_FLASH_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique BOUND_FLASH_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique CIRCLE_FLASH_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique BLANCO_FLASH_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique EIGHT_FLASH_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique WAVE_FLASH_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique ROTATE_FLASH_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT_UVFLS_emissive();
+	}
+}
+
+technique CLOCK_FLASH_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT_UVFLS_emissive();
+	}
+}
+
+technique SCROLL_FLASH_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+	}
+}
+
+technique XYSCROLL_FLASH_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+	}
+}
+
+technique XREPEAT_FLASH_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+	}
+}
+
+technique BOUND_FLASH_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+	}
+}
+
+technique CIRCLE_FLASH_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+	}
+}
+
+technique BLANCO_FLASH_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+	}
+}
+
+technique EIGHT_FLASH_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+	}
+}
+
+technique WAVE_FLASH_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+	}
+}
+
+technique ROTATE_FLASH_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVROT_UVFLS();
+	}
+}
+
+technique CLOCK_FLASH_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVROT_UVFLS();
+	}
+}
+
+technique SCROLL_FLASH_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+	}
+}
+
+technique XYSCROLL_FLASH_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+	}
+}
+technique XREPEAT_FLASH_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+	}
+}
+
+technique BOUND_FLASH_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+	}
+}
+
+technique CIRCLE_FLASH_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+	}
+}
+
+technique BLANCO_FLASH_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+	}
+}
+
+technique EIGHT_FLASH_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+	}
+}
+
+technique WAVE_FLASH_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+	}
+}
+
+technique ROTATE_FLASH_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVROT_UVFLS_emissive();
+	}
+}
+
+technique CLOCK_FLASH_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVROT_UVFLS_emissive();
+	}
+}
+
+//------------------------------------------------------------------
+//	20110515	★追加technique	既存複合	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20110805	★追加technique	onlyhighlight	ここから
+//------------------------------------------------------------------
+
+float4	onlyhighlightPS( cVertexData IN ) : COLOR
+{
+	float4	nnormal		=	float4	(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	hl			=	float4	( hp, hp, hp, hp );
+
+	return	ColRate( hl * ColorRate );
+}
+
+float4	onlyhighlightPS_HLC( cVertexData IN ) : COLOR
+{
+	float4	nnormal		=	float4	(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	hl			=	mul( float4	( hp, hp, hp, hp ), HighLightColor );
+
+	return	ColRate( hl * ColorRate );
+}
+
+float4	onlyhighlightPS_Emissive( cVertexData IN ) : COLOR
+{
+	float4	nnormal		=	float4	(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	hl			=	float4	( hp, hp, hp, hp );
+
+	return	ColRate( hl + Emissive );
+}
+
+float4	onlyhighlightPS_HLC_Emissive( cVertexData IN ) : COLOR
+{
+	float4	nnormal		=	float4	(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	hl			=	mul( float4	( hp, hp, hp, hp ), HighLightColor );
+
+	return	ColRate( hl + Emissive );
+}
+
+technique OnlyHighLight
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS();
+		PixelShader			=	compile	ps_3_0	onlyhighlightPS();
+	}
+}
+
+technique OnlyHighLight_HLC
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS();
+		PixelShader			=	compile	ps_3_0	onlyhighlightPS_HLC();
+	}
+}
+
+technique OnlyHighLight_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS();
+		PixelShader			=	compile	ps_3_0	onlyhighlightPS_Emissive();
+	}
+}
+
+technique OnlyHighLight_HLC_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS();
+		PixelShader			=	compile	ps_3_0	onlyhighlightPS_HLC_Emissive();
+	}
+}
+
+//------------------------------------------------------------------
+//	20110805	★追加technique	onlyhighlight	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20120401	★追加technique	ParaHUD	ここから
+//------------------------------------------------------------------
+
+void	calc_skindeform_ParaHUD( float4 ipos, float3 innor, float4	weights, int4 idxs, out float4	outpos, out float3 outnor )
+{
+	float4		inor;
+	inor				=	float4( innor.xyz, 0 );
+	outpos				=	float4( ipos.xyz, 1 );
+	outnor				=	inor.xyz;
+}
+
+//Vertexshader	ここから
+
+cVertexData	cMainVS_ParaHUD( appdata IN )
+{
+	cVertexData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform_ParaHUD( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, mul( wld, proj ) );
+	OUT.UV				=	IN.UV;
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS_UVSCR_ParaHUD( appdata IN )
+{
+	cVertexData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform_ParaHUD( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position	=	mul( pos, mul( wld, proj ) );
+	OUT.UV			=	IN.UV + float2( UVSCR.xy );
+	OUT.Normal		=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS_UVSCR2_ParaHUD( appdata IN ) //追加 XScroll
+{
+	cVertexData	OUT;
+	float4	pos;
+	float3 nor;
+
+	calc_skindeform_ParaHUD( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, mul( wld, proj ) );
+	OUT.UV				=	IN.UV + ( ( ( UVSCR.xy * UVScroll ) ) + ( ( UVSCR.yx * 0 ) ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS_UVSCR3_ParaHUD( appdata IN ) //追加 XRepeat
+{
+	cVertexData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform_ParaHUD( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, mul( wld, proj ) );
+	OUT.UV				=	IN.UV + ( ( sin( UVSCR.xy * UVScrollX ) * UVScrollAmpX ) + ( ( UVSCR.yx * 0 ) ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS_UVSCR4_ParaHUD( appdata IN ) //追加 Bound
+{
+	cVertexData	OUT;
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform_ParaHUD( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, mul( wld, proj ) );
+	OUT.UV				=	IN.UV + ( ( ( UVSCR.xy * 0.3185 ) * UVScrollX ) + ( abs( cos( UVSCR.yx * UVScrollY ) ) * UVScrollAmpY ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS_UVSCR5_ParaHUD( appdata IN ) //追加 Circle
+{
+	cVertexData	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform_ParaHUD( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, mul( wld, proj ) );
+	OUT.UV				=	IN.UV + ( ( sin( UVSCR.xy * UVScrollX ) * UVScrollAmpX ) + ( cos( UVSCR.yx * UVScrollY ) * UVScrollAmpY ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS_UVSCR6_ParaHUD( appdata IN ) //追加 Blanco
+{
+	cVertexData	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform_ParaHUD( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, mul( wld, proj ) );
+	OUT.UV				=	IN.UV + ( sin( cos( UVSCR.xy * UVScrollX ) * UVScrollAmpX ) + cos( sin( UVSCR.yx * UVScrollY ) * UVScrollAmpY ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS_UVSCR7_ParaHUD( appdata IN ) //追加 Eight
+{
+	cVertexData	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform_ParaHUD( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, mul( wld, proj ) );
+	OUT.UV				=	IN.UV + ( ( cos( UVSCR.xy * UVScrollX ) * UVScrollAmpX / 2 ) + ( sin( UVSCR.yx * UVScrollY * 2 ) * UVScrollAmpY / 2 ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS_UVSCR8_ParaHUD( appdata IN ) //追加 Wave
+{
+	cVertexData	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform_ParaHUD( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, mul( wld, proj ) );
+	OUT.UV				=	IN.UV + ( ( ( UVSCR.xy * 0.3185 * UVScrollX ) ) + ( sin( UVSCR.yx * UVScrollY * 2 ) * UVScrollAmpY / 2 ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS_UVSCR9_ParaHUD( appdata IN ) //追加 XYScroll
+{
+	cVertexData	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform_ParaHUD( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, mul( wld, proj ) );
+	OUT.UV				=	IN.UV + ( ( ( UVSCR.xy * UVScrollX ) ) + ( ( UVSCR.yx * UVScrollY ) ) );
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS_UVROT_ParaHUD( appdata IN ) //追加 Rotate
+{
+	cVertexData	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform_ParaHUD( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, mul( wld, proj ) );
+	float	UVROT		=	(UVRotate*(UVSCR.x));
+	float	UVSCL		=	abs(1/cos(UVScale*UVSCR.x));
+	float2 UVTEX 		=	float2(IN.UV.x,IN.UV.y);
+
+	OUT.UV				=	float2(((cos(UVROT)*UVTEX.x)+(sin(UVROT)*UVTEX.y)) , (-(sin(UVROT)*UVTEX.x)+(cos(UVROT)*UVTEX.y)))*UVSCL + float2(0.5,0.5); 
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS_UVCLC_ParaHUD( appdata IN ) //追加 Clock
+{
+	cVertexData	OUT;	
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform_ParaHUD( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, mul( wld, proj ) );
+	float	SCRCOUNT	=	333.34*(UVSCR.x);
+	float	UVROT		=	-floor(SCRCOUNT/UVClock)*3.1415/30;
+	float2 UVTEX		=	float2(IN.UV.x,IN.UV.y);
+
+	OUT.UV				=	float2(((cos(UVROT)*UVTEX.x)+(sin(UVROT)*UVTEX.y)) , (-(sin(UVROT)*UVTEX.x)+(cos(UVROT)*UVTEX.y))) + float2(0.5,0.5); 
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+cVertexData	cMainVS_UVRPL_ParaHUD( appdata IN ) //追加 Ripple UV.x=((SQRT(UVSCR)*IN.UV.x)) UV.y=((SQRT(UVSCR)*IN.UV.y))
+{
+	cVertexData	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform_ParaHUD( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, mul( wld, proj ) );
+	float	UVRPL		=	tan(UVSCR.x * 500)*1;
+	if( UVRPL <=	0 ){UVRPL	=	0;}
+	float2 UVTEX		=	float2(IN.UV.x*10,IN.UV.y*10);
+
+	OUT.UV				=	float2( UVTEX.x/UVRPL , UVTEX.y/UVRPL ) + float2(0.5,0.5); 
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	//tsoview
+	float4x4	m		=	wld;
+	m					=	mul( m, lightview );
+	m					=	mul( m, lightproj );
+	OUT.ZTex			=	mul( pos, m );
+
+	return	OUT;
+}
+
+//VertexShader	ここまで
+
+//technique	ここから
+
+technique ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_ParaHUD();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique SCROLL_ParaHUD
+
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2_ParaHUD();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique XYSCROLL_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_ParaHUD();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique XREPEAT_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3_ParaHUD();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique BOUND_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4_ParaHUD();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique CIRCLE_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5_ParaHUD();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique BLANCO_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6_ParaHUD();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique EIGHT_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7_ParaHUD();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique WAVE_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8_ParaHUD();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique ROTATE_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique CLOCK_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC_ParaHUD();
+		ZEnable				=	false;
+		ZWriteEnable		=	false;
+	}
+}
+
+technique FLASH_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique SCROLL_FLASH_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique XYSCROLL_FLASH_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique XREPEAT_FLASH_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique BOUND_FLASH_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique CIRCLE_FLASH_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique BLANCO_FLASH_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique EIGHT_FLASH_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique WAVE_FLASH_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique ROTATE_FLASH_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique CLOCK_FLASH_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique SCROLL_FLASH_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique XYSCROLL_FLASH_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique XREPEAT_FLASH_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique BOUND_FLASH_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique CIRCLE_FLASH_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique BLANCO_FLASH_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique EIGHT_FLASH_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique WAVE_FLASH_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique ROTATE_FLASH_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique CLOCK_FLASH_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique SCROLL_FLASH_KAZAN_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique XYSCROLL_FLASH_KAZAN_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+technique XREPEAT_FLASH_KAZAN_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique BOUND_FLASH_KAZAN_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique CIRCLE_FLASH_KAZAN_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique BLANCO_FLASH_KAZAN_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique EIGHT_FLASH_KAZAN_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique WAVE_FLASH_KAZAN_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique ROTATE_FLASH_KAZAN_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique CLOCK_FLASH_KAZAN_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique XYSCROLL_FLASH_KAZAN_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+
+technique XREPEAT_FLASH_KAZAN_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique BOUND_FLASH_KAZAN_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique CIRCLE_FLASH_KAZAN_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique BLANCO_FLASH_KAZAN_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique EIGHT_FLASH_KAZAN_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique WAVE_FLASH_KAZAN_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique ROTATE_FLASH_KAZAN_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique CLOCK_FLASH_KAZAN_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique SCROLL_FLASH_KAZAN2_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique XYSCROLL_FLASH_KAZAN2_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+		ZEnable				=	false;
+	}
+}
+technique XREPEAT_FLASH_KAZAN2_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique BOUND_FLASH_KAZAN2_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique CIRCLE_FLASH_KAZAN2_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique BLANCO_FLASH_KAZAN2_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique EIGHT_FLASH_KAZAN2_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique WAVE_FLASH_KAZAN2_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique ROTATE_FLASH_KAZAN2_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVROT_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique CLOCK_FLASH_KAZAN2_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVROT_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique SCROLL_FLASH_KAZAN2_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique XYSCROLL_FLASH_KAZAN2_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+technique XREPEAT_FLASH_KAZAN2_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique BOUND_FLASH_KAZAN2_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique CIRCLE_FLASH_KAZAN2_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique BLANCO_FLASH_KAZAN2_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique EIGHT_FLASH_KAZAN2_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique WAVE_FLASH_KAZAN2_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique ROTATE_FLASH_KAZAN2_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVROT_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique CLOCK_FLASH_KAZAN2_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVROT_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+//technique	ここまで
+
+//------------------------------------------------------------------
+//	20120401	★追加technique	ParaHUD	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20120401	★追加technique	AlphaScroll	ここから
+//------------------------------------------------------------------
+
+//変数指定
+
+ //追加 RGBチャンネルスクロール速度
+float	RGBScroll
+<
+	string UIName		=	"RGBScroll";
+	string UIWidget		=	"Slider";
+	float	UIMin		=	-10.0;
+	float	UIMax		=	 10.0;
+	float	UIStep		=	0.01;
+>						=	0.0;
+
+ //追加 αチャンネルスクロール速度
+float	AScroll
+<
+	string UIName		=	"AScroll";
+	string UIWidget		=	"Slider";
+	float	UIMin		=	-10.0;
+	float	UIMax		=	 10.0;
+	float	UIStep		=	0.01;
+>						=	0.0;
+
+//VertexShader
+
+struct cVertexDataUVa {
+	float4	Position	:	POSITION;
+	float2	UV			:	TEXCOORD0;
+	float2	UVa			:	TEXCOORD1;
+	float3	Normal		:	TEXCOORD2;
+};
+
+cVertexDataUVa	cMainVS_UVSCR9_UVa( appdata IN ) //追加 XYScroll
+{
+	cVertexDataUVa	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1.0 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	OUT.Position		=	mul( pos, wvp );
+	OUT.UV				=	IN.UV + ( ( ( ( UVSCR.xy * UVScrollX ) ) + ( ( UVSCR.yx * UVScrollY ) ) )*RGBScroll);
+	OUT.UVa				=	IN.UV + ( ( ( ( UVSCR.xy * UVScrollX ) ) + ( ( UVSCR.yx * UVScrollY ) ) )*AScroll);
+	OUT.Normal			=	normalize( mul( float4( nor.xyz, 0 ), wld ) );
+
+	return	OUT;
+}
+
+//PixelShader
+
+float4	cMainPS_UVa( cVertexDataUVa IN ) : COLOR//RGB/A分離UVScrollピクセルシェーダ
+{
+	float4	nnormal		=	float4	(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.6) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	texalpha	=	tex2D( ColorTex, IN.UVa  );
+	float4	hl			=	float4	( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 ); // old
+
+	return	ColRate( float4(col.rgb, texalpha.a ) * ColorRate );
+}
+
+float4	cMainPS_UVa_emissive( cVertexDataUVa IN ) : COLOR//RGB/A分離UVScrollピクセルシェーダ+emissive
+{
+	float4	nnormal		=	float4	(normalize (IN.Normal), 0.0);
+	float4	esnormal	=	mul (nnormal, view);
+	float4	eslight		=	mul (LightDirForced, view);
+	float4	eyedir		=	{0, 0, -1, 0};
+	float4	halfvec		=	normalize (eyedir + eslight);
+	
+	float	ldotn		=	dot (nnormal, -LightDirForced);
+	float	hdotn		=	dot (esnormal, -halfvec);
+	float	lp			=	min (1.0, max( 0.0, ( ldotn * 0.6) + (Ambient * 0.01)));
+	float	hp0			=	min (1.0, max( 0.0, (hdotn * 0.708) + (HighLight * 0.01)));
+	float	hp			=	pow (hp0, HighLightPower);
+
+	float4	shadecol	=	tex2D( ShadeTex, float2( lp, 0.5 ) );
+	float4	texcol		=	tex2D( ColorTex, IN.UV  );
+	float4	texalpha	=	tex2D( ColorTex, IN.UVa  );
+	float4	hl			=	float4	( hp, hp, hp, 1.0 );
+
+	float4	col;
+	col					=	( texcol * ( ColorBlend * 0.1 ) ) * ( shadecol * ( ShadeBlend * 0.1 ) );
+	col					+=	hl * ( HighLightBlend * 0.0025 ); // old
+
+	return	ColRate( float4(col.rgb, texalpha.a ) + Emissive  );
+}
+
+float4	KATAHO_KAZAN_UVa( cVertexDataUVa IN ) : COLOR
+{
+	float4	texalpha	=	tex2D( ColorTex, IN.UVa  );
+	float4	t0			=	tex2D( ColorTex, IN.UV  );
+	float4	r0			=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4	lrp			=	r0 + KAZAN2COLOR * ( t0 - r0 );
+	float	t1			=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float	r1			=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, ( r1 - 0.75 ) * texalpha.a * KAZAN2COLOR.a );
+
+	return	ColRate( float4( lrp2 ) * ColorRate);
+}
+
+float4	KATAHO_KAZAN_UVa_emissive( cVertexDataUVa IN ) : COLOR
+{
+	float4	texalpha	=	tex2D( ColorTex, IN.UVa  );
+	float4	t0			=	tex2D( ColorTex, IN.UV  );
+	float4	r0			=	pow(t0,4) + float4(-0.11, -0.11, -0.11, 1.0);
+	float4	lrp			=	r0 + KAZAN2COLOR * ( t0 - r0 );
+	float	t1			=	max ( t0.b, ( max ( t0.r, t0.g ) ) );
+	float	r1			=	min (1.0, max( 0.0, (t1 + 0.75)));
+	float4	lrp2		=	float4(lrp.rgb, ( r1 - 0.75 ) * texalpha.a * KAZAN2COLOR.a );
+
+	return	ColRate( float4( lrp2 ) + Emissive);
+}
+
+//Shadingtechnique
+
+technique XYSCROLL_AlphaScroll
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_UVa();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVa();
+	}
+}
+
+technique XYSCROLL_AlphaScroll_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_UVa();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVa_emissive();
+	}
+}
+
+technique XYSCROLL_KAZAN_AlphaScroll
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_UVa();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVa();
+	}
+}
+
+technique XYSCROLL_KAZAN_AlphaScroll_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_UVa();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVa_emissive();
+	}
+}
+
+technique XYSCROLL_KAZAN2_AlphaScroll
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_UVa();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVa();
+	}
+}
+
+technique XYSCROLL_KAZAN2_AlphaScroll_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_UVa();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVa_emissive();
+	}
+}
+
+technique XYSCROLL_JOUZAN_AlphaScroll
+{
+	pass Main
+	{
+		StateBlock			=	(JOUZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_UVa();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVa();
+	}
+}
+
+technique XYSCROLL_JOUZAN_AlphaScroll_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(JOUZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_UVa();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVa_emissive();
+	}
+}
+
+technique XYSCROLL_GENZAN_AlphaScroll
+{
+	pass Main
+	{
+		StateBlock			=	(GENZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_UVa();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVa();
+	}
+}
+
+technique XYSCROLL_GENZAN_AlphaScroll_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(GENZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_UVa();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVa_emissive();
+	}
+}
+
+technique XYSCROLL_NEGA_AlphaScroll
+{
+	pass Main
+	{
+		StateBlock			=	(NEGAState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_UVa();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVa();
+	}
+}
+
+technique XYSCROLL_NEGA_AlphaScroll_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NEGAState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_UVa();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVa_emissive();
+	}
+}
+
+//------------------------------------------------------------------
+//	20120401	★追加technique AlphaScroll	ここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20120425	★NATスクロール	ここから
+//------------------------------------------------------------------
+
+technique NAT_SCROLL
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2();
+	}
+}
+
+technique NAT_XYSCROLL
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9();
+	}
+}
+
+technique NAT_XREPEAT
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3();
+	}
+}
+
+technique NAT_BOUND
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4();
+	}
+}
+
+technique NAT_CIRCLE
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5();
+	}
+}
+
+technique NAT_BLANCO
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6();
+	}
+}
+
+technique NAT_EIGHT
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7();
+	}
+}
+
+technique NAT_WAVE
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8();
+	}
+}
+
+technique NAT_ROTATE
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT();
+	}
+}
+
+technique NAT_CLOCK
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC();
+	}
+}
+
+technique NAT_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_ParaHUD();
+		ZEnable				=	false;
+	}
+}
+
+technique NAT_SCROLL_ParaHUD
+
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR2_ParaHUD();
+		ZEnable				=	false;
+	}
+}
+
+technique NAT_XYSCROLL_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_ParaHUD();
+		ZEnable				=	false;
+	}
+}
+
+technique NAT_XREPEAT_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR3_ParaHUD();
+		ZEnable				=	false;
+	}
+}
+
+technique NAT_BOUND_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR4_ParaHUD();
+		ZEnable				=	false;
+	}
+}
+
+technique NAT_CIRCLE_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR5_ParaHUD();
+		ZEnable				=	false;
+	}
+}
+
+technique NAT_BLANCO_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR6_ParaHUD();
+		ZEnable				=	false;
+	}
+}
+
+technique NAT_EIGHT_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR7_ParaHUD();
+		ZEnable				=	false;
+	}
+}
+
+technique NAT_WAVE_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR8_ParaHUD();
+		ZEnable				=	false;
+	}
+}
+
+technique NAT_ROTATE_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT();
+		ZEnable				=	false;
+	}
+}
+
+technique NAT_CLOCK_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVCLC_ParaHUD();
+		ZEnable				=	false;
+	}
+}
+
+technique NAT_XYSCROLL_AlphaScroll
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_UVa();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVa();
+	}
+}
+
+technique NAT_XYSCROLL_AlphaScroll_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVSCR9_UVa();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVa_emissive();
+	}
+}
+
+
+//------------------------------------------------------------------
+//	20120425	★NATスクロールここまで
+//------------------------------------------------------------------
+
+//------------------------------------------------------------------
+//	20120428	★RotateRepeatここから
+//------------------------------------------------------------------
+
+technique ROTATERepeat
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+	}
+}
+
+technique NAT_ROTATERepeat
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+	}
+}
+
+technique ROTATERepeat_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+	}
+}
+
+technique ROTATERepeat_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+	}
+}
+
+technique ROTATERepeat_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	cMainPS_emissive();
+	}
+}
+
+technique ROTATERepeat_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_emissive();
+	}
+}
+
+technique ROTATERepeat_FLASH
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+
+technique ROTATERepeat_FLASH_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique ROTATERepeat_FLASH_KAZAN
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+	}
+}
+technique ROTATERepeat_FLASH_KAZAN_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+	}
+}
+
+technique ROTATERepeat_FLASH_KAZAN2
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+	}
+}
+
+technique ROTATERepeat_FLASH_KAZAN2_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+	}
+}
+
+technique RotateRepeat_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		VertexShader		=	compile	vs_3_0	cMainVS_UVROT_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVROT();
+		ZEnable				=	false;
+	}
+}
+
+technique RotateRepeat_FLASH_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique RotateRepeat_FLASH_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		VertexShader		=	compile	vs_3_0	cMainVS_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique RotateRepeat_FLASH_KAZAN_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique RotateRepeat_FLASH_KAZAN_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZANState);
+		VertexShader		=	compile	vs_3_0	cMainVS_ParaHUD();
+		PixelShader			=	compile	ps_3_0	cMainPS_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+technique RotateRepeat_FLASH_KAZAN2_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS();
+		ZEnable				=	false;
+	}
+}
+
+technique RotateRepeat_FLASH_KAZAN2_Emissive_ParaHUD
+{
+	pass Main
+	{
+		StateBlock			=	(KAZAN2State);
+		VertexShader		=	compile	vs_3_0	cMainVS_ParaHUD();
+		PixelShader			=	compile	ps_3_0	KATAHO_KAZAN_UVFLS_emissive();
+		ZEnable				=	false;
+	}
+}
+
+//------------------------------------------------------------------
+//	20120428	★RotateRepeatここまで
+//------------------------------------------------------------------
+// 両面描画関連
+// Append by Konoa
+
+cVertexData2	cBackInkVS( appdata IN )
+{
+	cVertexData2	OUT;
+
+	float4	pos;
+	float3	nor;
+
+	calc_skindeform( float4( IN.Position.xyz, 1 ), IN.Normal, IN.VWeights, IN.BoneIdxs, pos, nor );
+
+	pos				=	float4( pos.xyz + ( normalize( nor ) *-Thickness ), 1);
+
+	float4	p;
+
+	p				=	mul( pos, wvp );
+	OUT.Position	=	p;
+
+	return	OUT;
+}
+
+stateblock	CounterState	=	stateblock_state
+{
+	VertexShader			=	compile	vs_3_0	cMainVS();
+	PixelShader				=	compile	ps_3_0	cMainPS();
+
+	AlphaFunc				=	greaterequal;
+
+	AlphaTestEnable			=	true;
+
+	CullMode				=	CCW;
+};
+
+stateblock	BackInkState		=	stateblock_state
+{
+	VertexShader			=	compile	vs_3_0	cBackInkVS();
+	PixelShader				=	compile	ps_3_0	cInkPS();
+
+	AlphaFunc				=	greaterequal;
+
+	AlphaTestEnable			=	true;
+
+	CullMode				=	CW;
+};
+
+technique BothSide
+{
+	pass BackInk
+	{
+		StateBlock			=	(BackInkState);
+	}
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Counter
+	{
+		StateBlock			=	(CounterState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+	}
+}
+
+technique BothSide_InkOff
+{
+	pass Counter
+	{
+		StateBlock			=	(CounterState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+	}
+}
+
+technique AllAmb_BothSide
+{
+	pass BackInk
+	{
+		StateBlock			=	(BackInkState);
+	}
+	pass Ink
+	{
+		StateBlock			=	(InkState);
+	}
+	pass Counter
+	{
+		StateBlock			=	(CounterState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+}
+
+technique AllAmb_BothSide_InkOff
+{
+	pass Counter
+	{
+		StateBlock			=	(CounterState);
+	}
+	pass Main
+	{
+		StateBlock			=	(DefaultState);
+		PixelShader			=	compile	ps_3_0	cMainPS3();
+	}
+}
+
+technique NZAT_ShadowOff_InkOff_Emissive
+{
+	pass Main
+	{
+		StateBlock			=	(NATState);
+		PixelShader			=	compile	ps_3_0	cMainPS_emissive();
+		ZWriteEnable		=	false;
+	}
+}
