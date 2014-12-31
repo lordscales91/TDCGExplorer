@@ -196,7 +196,9 @@ class Program
             };
 
             png.Load(dest_path + @"\thumbnail.png");
-            png.Save(dest_path + @".new.png");
+            string dest_file = Path.ChangeExtension(dest_path, @".new" + Path.GetExtension(dest_path) + @".png");
+            Console.WriteLine("Save File: " + dest_file);
+            png.Save(dest_file);
             return 0;
         }
 
