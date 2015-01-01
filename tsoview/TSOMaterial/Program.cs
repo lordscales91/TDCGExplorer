@@ -106,6 +106,12 @@ namespace TSOMaterial
                 string name = tex.Name;
                 string file = tex.FileName.Trim('"');
                 string path = Path.Combine(dest_path, file);
+
+                path = Path.ChangeExtension(path, ".bmp");
+
+                if (!File.Exists(path))
+                    path = Path.ChangeExtension(path, ".tga");
+
                 if (!File.Exists(path))
                 {
                     Console.WriteLine("File not found: " + path);
@@ -114,7 +120,7 @@ namespace TSOMaterial
                 Console.WriteLine(file);
                 using (BinaryReader br = new BinaryReader(File.OpenRead(path)))
                 {
-                    switch (Path.GetExtension(file).ToLower())
+                    switch (Path.GetExtension(path).ToLower())
                     {
                         case ".bmp":
                             tex.LoadBMP(br);
