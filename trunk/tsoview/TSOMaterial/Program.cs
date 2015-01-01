@@ -92,14 +92,14 @@ namespace TSOMaterial
 
         public int Compose(string dest_path)
         {
-            string dest_file = dest_path + @".tso";
-            if (!File.Exists(dest_file))
+            string source_file = dest_path + @".tso";
+            if (!File.Exists(source_file))
             {
-                Console.WriteLine("File not found: " + dest_file);
+                Console.WriteLine("File not found: " + source_file);
                 return -1;
             }
             TSOFile tso = new TSOFile();
-            tso.Load(dest_file);
+            tso.Load(source_file);
 
             foreach (TSOTex tex in tso.textures)
             {
@@ -153,19 +153,7 @@ namespace TSOMaterial
                 scr.Load(path);
             }
 
-            {
-                int i = 1;
-                string backup_file = null;
-                while (true)
-                {
-                    backup_file = dest_path + @"." + i.ToString() + @".tso";
-                    if (!File.Exists(backup_file))
-                        break;
-                    i++;
-                }
-                Console.WriteLine("Rename File: " + dest_file + " to " + backup_file);
-                File.Move(dest_file, backup_file);
-            }
+            string dest_file = Path.ChangeExtension(dest_path, @".new" + Path.GetExtension(dest_path) + @".tso");
             Console.WriteLine("Save File: " + dest_file);
             tso.Save(dest_file);
 
